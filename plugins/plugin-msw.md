@@ -6,7 +6,6 @@ description: Generate MSW request handlers from OpenAPI so you can mock the
 outline: 2
 kind: plugin
 id: plugin-msw
-header: plugin
 ---
 
 # @kubb/plugin-msw
