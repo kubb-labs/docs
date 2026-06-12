@@ -103,7 +103,20 @@ See the [plugins catalogue](/plugins) for the full list.
 ## 3. Run generate
 
 ```terminal
-kubb generate
+command: kubb generate
+output:
+  - ◆  Generation started
+  - ◇  @kubb/plugin-ts          completed in 98ms
+  - ◇  @kubb/plugin-client      completed in 77ms
+  - ◇  @kubb/plugin-react-query completed in 201ms
+  - ◇  @kubb/plugin-zod         completed in 134ms
+  - ◇  @kubb/plugin-msw         completed in 63ms
+  - ◇  Generation completed
+  -
+  -  Plugins  5 passed (5)
+  -    Files  156 generated
+  - Duration  1.2s
+  -   Output  ./src/gen
 ```
 
 Kubb creates one folder per plugin under `output.path`. Re-run after every spec change. See [`kubb generate`](../api/commands/generate) for flags like `--watch` and `--reporter`.

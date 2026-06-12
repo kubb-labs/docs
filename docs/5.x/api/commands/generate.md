@@ -10,7 +10,19 @@ outline: [2, 3]
 Reads your [`kubb.config.ts`](/docs/5.x/reference/configuration) and runs the full code-generation pipeline. This is the default command. Running `kubb` without any arguments is equivalent to `kubb generate`.
 
 ```terminal
-kubb generate
+command: kubb generate
+output:
+  - ◆  Generation started
+  - ◇  @kubb/plugin-ts          completed in 98ms
+  - ◇  @kubb/plugin-zod         completed in 134ms
+  - ◇  @kubb/plugin-react-query completed in 201ms
+  - ◇  @kubb/plugin-client      completed in 77ms
+  - ◇  Generation completed
+  -
+  -  Plugins  4 passed (4)
+  -    Files  156 generated
+  - Duration  1.2s
+  -   Output  ./src/gen
 ```
 
 ## Usage

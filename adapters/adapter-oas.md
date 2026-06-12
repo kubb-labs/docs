@@ -7,7 +7,6 @@ description: Parse and convert OpenAPI 2.0, 3.0, and 3.1 specifications into
 outline: 2
 kind: adapter
 id: adapter-oas
-header: adapter
 ---
 
 The OpenAPI adapter is the bridge between your spec and every Kubb plugin. It reads the file at `input.path`, validates it, and converts every schema and operation into Kubb's universal AST that downstream plugins consume.

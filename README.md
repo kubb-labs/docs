@@ -1,59 +1,56 @@
-# kubb-labs/docs
+<div align="center">
+  <a href="https://kubb.dev" target="_blank" rel="noopener noreferrer">
+    <img src="https://kubb.dev/og.png" alt="Kubb banner">
+  </a>
 
-This repository contains the component-free documentation content for [kubb.dev](https://kubb.dev), sourced from [kubb-labs/platform](https://github.com/kubb-labs/platform) under `apps/kubb.dev/`.
+[![Stars][stars-src]][stars-href]
+[![License][license-src]][license-href]
 
-All Markdown is plain VitePress-compatible content with no JSX or Vue components. The platform repo's fetch pipeline reads from this repo to populate the docs site.
+  <h4>
+    <a href="https://kubb.dev" target="_blank">Documentation</a>
+    <span> · </span>
+    <a href="https://github.com/kubb-labs/docs/issues/" target="_blank">Report Bug</a>
+    <span> · </span>
+    <a href="https://github.com/kubb-labs/docs/issues/" target="_blank">Request Feature</a>
+  </h4>
+</div>
 
-## Frontmatter
+<br />
 
-Every page uses a YAML frontmatter block. The following keys are used:
+# Kubb Docs
 
-| Key | Description |
-| --- | --- |
-| `layout` | VitePress layout. Usually `doc`. |
-| `title` | Page title shown in the browser tab and site nav. |
-| `description` | Short description used for SEO meta tags. |
-| `outline` | Heading depth included in the on-page outline (e.g. `2` or `[2, 3]`). |
-| `header` | Extension type badge shown in the page header. One of `plugin`, `adapter`, or `parser`. |
+**Documentation content for [Kubb](https://kubb.dev), the meta framework for code generation.**
 
-Example frontmatter for a plugin page:
+This repository holds the raw markdown documentation files that power [kubb.dev](https://kubb.dev). Content is organized by category: plugins, adapters, parsers, and versioned docs.
 
-```yaml
----
-layout: doc
-title: Kubb TypeScript Plugin
-description: Generate TypeScript types from OpenAPI schemas.
-outline: 2
-header: plugin
----
-```
+Want to improve the docs? See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-## Terminal commands
+## Content
 
-Use a `terminal` code block to render a styled terminal command on the page:
+| Directory | Description |
+|-----------|-------------|
+| [`plugins/`](./plugins/) | Plugin reference pages |
+| [`adapters/`](./adapters/) | Adapter reference pages |
+| [`parsers/`](./parsers/) | Parser reference pages |
+| [`docs/5.x/`](./docs/5.x/) | Versioned documentation for Kubb v5 |
 
-````markdown
-```terminal
-kubb generate
-```
-````
+## Contributing
 
-## Badges
+Found a mistake or want to improve the docs? We welcome contributions:
 
-Inline badges use the `:badge[text]{type=type}` directive syntax:
+- Found an error? File it in the [issue tracker](https://github.com/kubb-labs/docs/issues).
+- Have a suggestion? [Open an issue](https://github.com/kubb-labs/docs/issues/new).
+- Need help? Ask the community on [Discord](https://discord.gg/4dQjA6vrWX).
 
-```markdown
-:badge[stable]{type=tip}
-:badge[beta]{type=warning}
-:badge[deprecated]{type=danger}
-```
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for details on the repo structure and how to submit changes.
 
-## Snippets
+## License
 
-Code snippets shared across multiple pages live in `snippets/`. Include them with the VitePress import syntax:
+[MIT](./LICENSE) © [Stijn Van Hulle](https://github.com/stijnvanhulle)
 
-```markdown
-<<< @/snippets/plugins/plugin-client/kubb.config.ts [kubb.config.ts]
-```
+<!-- Badges -->
 
-The `@` alias resolves to the root of the docs source tree.
+[stars-src]: https://shieldcn.dev/github/stars/kubb-labs/docs.svg?variant=secondary&size=xs&theme=zinc&mode=dark
+[stars-href]: https://github.com/kubb-labs/docs
+[license-src]: https://shieldcn.dev/github/license/kubb-labs/docs.svg?variant=secondary&size=xs&theme=zinc
+[license-href]: https://github.com/kubb-labs/docs/blob/main/LICENSE

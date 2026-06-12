@@ -10,7 +10,9 @@ outline: [2, 3]
 Checks that your Swagger/OpenAPI document is valid without running the full code-generation pipeline. Use it to catch syntax errors early in CI or before committing a spec change.
 
 ```terminal
-kubb validate -i ./petStore.yaml
+command: kubb validate -i ./petStore.yaml
+output:
+  - ✅ Validation success
 ```
 
 > [!IMPORTANT]

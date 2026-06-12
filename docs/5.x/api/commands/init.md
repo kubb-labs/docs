@@ -10,7 +10,20 @@ outline: [2, 3]
 The interactive setup wizard. Answer a few questions and Kubb creates a `package.json` if one is missing, installs your chosen plugins, and writes a ready-to-use `kubb.config.ts`.
 
 ```terminal
-npx kubb init
+command: npx kubb init
+output:
+  - ◆  Welcome to Kubb!
+  - ◇  Where is your OpenAPI spec?
+  - │  ./openapi.yaml
+  - ◇  Where should generated files go?
+  - │  ./src/gen
+  - ◇  Which plugins do you want?
+  - │  plugin-ts, plugin-client, plugin-zod
+  - ◇  Package manager?
+  - │  pnpm
+  - ◇  Installing dependencies…
+  - ◇  Created kubb.config.ts
+  - ◇  All set — run `pnpm kubb generate` to start generating.
 ```
 
 ## Usage

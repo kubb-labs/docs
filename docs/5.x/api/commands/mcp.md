@@ -13,7 +13,10 @@ Starts a [Model Context Protocol](https://modelcontextprotocol.io/) server that 
 > This feature is still under active development. Use it with caution and expect breaking changes.
 
 ```terminal
-kubb mcp
+command: kubb mcp
+output:
+  - ⏳ Starting MCP server...
+  - This feature is still under development, use with caution
 ```
 
 ## Usage
@@ -49,7 +52,11 @@ The default is stdio. The server reads from standard input and writes to standar
 Pass `--port` to switch to HTTP. The server exposes `http://<host>:<port>/mcp` and accepts requests from hosted MCP clients or any machine that can reach the host.
 
 ```terminal
-kubb mcp --port 3001
+command: kubb mcp --port 3001
+output:
+  - ⏳ Starting MCP server...
+  - This feature is still under development, use with caution
+  - Kubb MCP server on http://localhost:3001
 ```
 
 ## Tools
