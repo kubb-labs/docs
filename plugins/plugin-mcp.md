@@ -6,7 +6,6 @@ description: Generate a Model Context Protocol (MCP) server from OpenAPI so AI
 outline: 2
 kind: plugin
 id: plugin-mcp
-header: plugin
 ---
 
 > [!TIP]
