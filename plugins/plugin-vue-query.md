@@ -6,7 +6,6 @@ description: Generate TanStack Query composables for Vue (useQuery, useMutation,
 outline: 2
 kind: plugin
 id: plugin-vue-query
-header: plugin
 ---
 
 > [!TIP]
