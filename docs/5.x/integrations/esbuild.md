@@ -1,0 +1,55 @@
+---
+layout: doc
+title: esbuild Integration
+description: Run Kubb as part of your esbuild build with unplugin-kubb/esbuild.
+outline: [2, 3]
+---
+
+# esbuild
+
+`unplugin-kubb/esbuild` runs Kubb as an [esbuild](https://esbuild.github.io/) plugin. Pass it to the `plugins` array in your build script.
+
+## Install
+
+::: code-group
+
+```shell [bun]
+bun add -d unplugin-kubb
+```
+
+```shell [pnpm]
+pnpm add -D unplugin-kubb
+```
+
+```shell [npm]
+npm install --save-dev unplugin-kubb
+```
+
+```shell [yarn]
+yarn add -D unplugin-kubb
+```
+
+:::
+
+## Configure
+
+```typescript [build.ts]
+import { build } from 'esbuild'
+import kubb from 'unplugin-kubb/esbuild'
+import { defineConfig } from 'kubb'
+import { pluginTs } from '@kubb/plugin-ts'
+
+const config = defineConfig({
+  root: '.',
+  input: { path: './petStore.yaml' },
+  output: { path: './src/gen', clean: true },
+  plugins: [pluginTs({ output: { path: 'models' } })],
+})
+
+await build({
+  entryPoints: ['src/index.ts'],
+  bundle: true,
+  outfile: 'dist/bundle.js',
+  plugins: [kubb({ config })],
+})
+```
