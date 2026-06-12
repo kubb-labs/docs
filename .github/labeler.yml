@@ -1,0 +1,23 @@
+'docs':
+  - any: ['docs/**']
+
+'plugins':
+  - any: ['plugins/**']
+
+'adapters':
+  - any: ['adapters/**']
+
+'parsers':
+  - any: ['parsers/**']
+
+'blog':
+  - any: ['blog/**']
+
+'snippets':
+  - any: ['snippets/**']
+
+feature:
+  - head-branch: ['^feat', 'feat']
+
+bug:
+  - head-branch: ['^bug', 'bug', '^fix', 'fix']
