@@ -1,0 +1,53 @@
+---
+layout: doc
+title: Rolldown Integration
+description: Run Kubb as part of your Rolldown build with unplugin-kubb/rolldown.
+outline: [2, 3]
+---
+
+# Rolldown
+
+`unplugin-kubb/rolldown` runs Kubb as a [Rolldown](https://rolldown.rs/) plugin. Rolldown is a Rust-based Rollup-compatible bundler.
+
+## Install
+
+::: code-group
+
+```shell [bun]
+bun add -d unplugin-kubb
+```
+
+```shell [pnpm]
+pnpm add -D unplugin-kubb
+```
+
+```shell [npm]
+npm install --save-dev unplugin-kubb
+```
+
+```shell [yarn]
+yarn add -D unplugin-kubb
+```
+
+:::
+
+## Configure
+
+```typescript [rolldown.config.ts]
+import kubb from 'unplugin-kubb/rolldown'
+import { defineConfig as defineRolldownConfig } from 'rolldown'
+import { defineConfig } from 'kubb'
+import { pluginTs } from '@kubb/plugin-ts'
+
+const config = defineConfig({
+  root: '.',
+  input: { path: './petStore.yaml' },
+  output: { path: './src/gen', clean: true },
+  plugins: [pluginTs({ output: { path: 'models' } })],
+})
+
+export default defineRolldownConfig({
+  input: 'src/index.ts',
+  plugins: [kubb({ config })],
+})
+```

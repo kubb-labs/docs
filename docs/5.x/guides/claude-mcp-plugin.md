@@ -1,0 +1,310 @@
+---
+layout: doc
+
+title: Use Kubb with Claude AI - AI Integration Guide
+description: Integrate Kubb with Claude AI for enhanced code generation. AI-powered OpenAPI analysis and code suggestions.
+outline: deep
+---
+
+# Setup Claude with Kubb
+
+![Claude](/public/screenshots/claude.png)
+
+[Kubb](https://kubb.dev), [Claude](https://claude.ai), and [MCP (Model Context Provider)](https://modelcontextprotocol.io) connect Kubb's generated code to Claude through MCP for conversational API interactions.
+
+- **Kubb** generates type-safe code from OpenAPI specs, automating the creation of API files, Zod schemas, and MCP server setup.
+
+- **Claude**, a conversational AI, uses [MCP](https://modelcontextprotocol.io) to interact with these APIs through natural dialogues.
+
+- **MCP** ensures Claude maintains relevant and coherent conversations while interacting with your backend.
+
+Together, they automate API calls and build intelligent, conversational applications.
+
+```mermaid
+graph TD
+  A[Kubb<br/>Generates code from OpenAPI] --> B[MCP Server<br/>Handles tool calls]
+  B --> C[Claude<br/>Conversational AI]
+  C -->|Sends tool request| B
+  B -->|Uses generated code| A
+```
+
+```mermaid
+flowchart LR
+  subgraph "Your Computer"
+    Host["MCP Host (e.g., Claude Desktop, IDEs)"]
+    S1["MCP Server A"]
+    S2["MCP Server B"]
+    S3["MCP Server C"]
+    D1["Local Data Source A"]
+    D2["Local Data Source B"]
+    Host -->|MCP Protocol| S1
+    Host -->|MCP Protocol| S2
+    Host -->|MCP Protocol| S3
+    S1 <--> D1
+    S2 <--> D2
+  end
+
+  subgraph "Internet"
+    D3["Remote Service C"]
+    S3 <--> D3
+  end
+
+```
+
+## Installation
+
+Before using [Claude](https://claude.ai), install [Claude desktop](https://claude.ai/download) and follow the tutorial: [https://modelcontextprotocol.io/quickstart/user](https://modelcontextprotocol.io/quickstart/user).
+
+Install Kubb with the [MCP plugin](/plugins/plugin-mcp).
+
+> [!IMPORTANT]
+> Minimal Kubb version of `v3.10.0`.
+
+> [!TIP]
+> The MCP plugin uses the [OAS](/adapters/adapter-oas), [TypeScript](/plugins/plugin-ts), and [Zod](/plugins/plugin-zod) plugins to create all necessary files.
+
+::: code-group
+
+```shell [bun]
+bun add -d @kubb/plugin-mcp @kubb/adapter-oas @kubb/plugin-ts @kubb/plugin-zod
+```
+
+```shell [pnpm]
+pnpm add -D @kubb/plugin-mcp @kubb/adapter-oas @kubb/plugin-ts @kubb/plugin-zod
+```
+
+```shell [npm]
+npm install --save-dev @kubb/plugin-mcp @kubb/adapter-oas @kubb/plugin-ts @kubb/plugin-zod
+```
+
+```shell [yarn]
+yarn add -D @kubb/plugin-mcp @kubb/adapter-oas @kubb/plugin-ts @kubb/plugin-zod
+```
+
+:::
+
+## Define `kubb.config.ts`
+
+To use [Claude](https://claude.ai), define a `kubb.config.ts` file with [MCP](https://modelcontextprotocol.io) server setup and configuration.
+
+> [!IMPORTANT]
+> Define your `baseURL` so Claude knows which endpoints to call.
+
+```typescript [kubb.config.ts] twoslash
+import { defineConfig } from 'kubb'
+import { adapterOas } from '@kubb/adapter-oas'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginMcp } from '@kubb/plugin-mcp'
+import { pluginZod } from '@kubb/plugin-zod'
+
+export default defineConfig({
+  input: {
+    path: './petStore.yaml',
+  },
+  output: {
+    path: './src/gen',
+  },
+  adapter: adapterOas(),
+  plugins: [
+    pluginTs(),
+    pluginMcp({
+      client: {
+        baseURL: 'https://petstore.swagger.io/v2', // [!code ++]
+      },
+    }),
+  ],
+})
+```
+
+## Generate MCP files
+
+Run the following command to create the desired files.
+
+```shell
+npx kubb generate
+```
+
+## Inspect generated files
+
+The `src/mcp` folder contains files for creating an [MCP server](https://modelcontextprotocol.io) and connecting [Claude](https://claude.ai/download) to your APIs.
+
+```
+.
+├── src/
+│   └── mcp/
+│   │   ├── addPet.ts
+│   │   └── getPet.ts
+│   │   └── mcp.json
+│   │   └── server.ts
+│   └── zod/
+│   │   ├── addPetSchema.ts
+│   │   └── getPetSchema.ts
+│   └── models/
+│   │   ├── AddPet.ts
+│   │   └── GetPet.ts
+│   └── index.ts
+├── petStore.yaml
+├── kubb.config.ts
+└── package.json
+```
+
+### src/mcp/addPet.ts
+
+The `addPetHandler` function sends a POST request to the Swagger PetStore API to add a new pet, taking pet data as input and handling the response.
+
+It returns the data as a JSON-formatted message for [MCP](https://modelcontextprotocol.io) to use in conversations.
+
+```typescript [src/mcp/addPet.ts]
+import client from '@kubb/plugin-clients/client/axios'
+import type { AddPetMutationRequest, AddPetMutationResponse, AddPet405 } from '../models/AddPet'
+import type { CallToolResult } from '@modelcontextprotocol/sdk/types'
+
+export async function addPetHandler({ data }: { data: AddPetMutationRequest }): Promise<Promise<CallToolResult>> {
+  const res = await client<AddPetMutationResponse, ResponseErrorConfig<AddPet405>, AddPetMutationRequest>({
+    method: 'POST',
+    url: '/pet',
+    baseURL: 'https://petstore.swagger.io/v2',
+    data,
+  })
+  return {
+    content: [
+      {
+        type: 'text',
+        text: JSON.stringify(res.data),
+      },
+    ],
+  }
+}
+```
+
+### src/mcp/mcp.json
+
+This configuration sets up an [MCP](https://modelcontextprotocol.io) server named `"Swagger PetStore - OpenAPI 3.0"`, uses `info.title` from your OpenAPI/Swagger file.
+
+It runs a TypeScript server (`server.ts`) using the `tsx` command, enabling [MCP](https://modelcontextprotocol.io) to handle API-related tool calls via standard input/output.
+
+```JSON [src/mcp/mcp.json]
+{
+  "mcpServers": {
+    "Swagger PetStore - OpenAPI 3.0": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["tsx", "/mcp/src/gen/mcp/server.ts"]
+    }
+  }
+}
+
+
+```
+
+### src/mcp/server.ts
+
+This code sets up and starts an [MCP](https://modelcontextprotocol.io) server that listens for tool calls to `"add a pet to the store"` via the `"Swagger PetStore API"`(your OpenAPI/Swagger file).
+
+1. Imports the MCP SDK classes and the `addPetHandler` function.
+2. Creates an MCP server named `"Swagger PetStore - OpenAPI 3.0"`.
+3. Registers the `addPet` tool, which calls `addPetHandler` with pet data validated against `addPetMutationRequestSchema` (generated by the Zod plugin).
+4. Connects the server to a `stdio` transport so it communicates through standard input/output.
+
+In short, this code sets up an [MCP](https://modelcontextprotocol.io) server that processes API requests to 'add a new pet' by using the `addPetHandler`.
+
+```typescript [src/mcp/server.ts]
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp'
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio'
+
+import { addPetHandler } from './addPet'
+import { addPetMutationRequestSchema } from '../zod/addPetSchema'
+
+export const server = new McpServer({
+  name: 'Swagger PetStore - OpenAPI 3.0',
+  version: '3.0.3',
+})
+
+server.tool('addPet', 'Add a new pet to the store', { data: addPetMutationRequestSchema }, async ({ data }) => {
+  return addPetHandler({ data })
+})
+
+async function startServer() {
+  try {
+    const transport = new StdioServerTransport()
+    await server.connect(transport)
+  } catch (error) {
+    console.error('Failed to start server:', error)
+    process.exit(1)
+  }
+}
+
+startServer()
+```
+
+## Start Claude with the MCP server
+
+Before starting, let [Claude](https://claude.ai) know where your [MCP](https://modelcontextprotocol.io) server config file is located (`src/mcp/mcp.json`). Open Claude desktop and go to settings.
+
+![Claude setup 1](/public/screenshots/claude-setup1.png)
+
+The settings panel opens. Go to the `developer` section and click `edit config`. A window displays showing the location of the JSON file that contains all [MCP](https://modelcontextprotocol.io) servers.
+
+> [!TIP]
+> Manually navigate to:
+>
+> - Mac: `~/Library/Application Support/Claude/claude_desktop_config.json`
+> - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+
+![Claude setup 2](/public/screenshots/claude-setup2.png)
+
+Copy the content of `src/mcp/mcp.json` to make [Claude](https://claude.ai) aware of your [MCP](https://modelcontextprotocol.io) server.
+
+> [!TIP]
+> If you're using multiple MCP servers, remember to append the config instead of overriding it.
+
+For example:
+
+```JSON [~/Library/Application Support/Claude/claude_desktop_config.json]
+{
+  "mcpServers": {
+    "Swagger PetStore - OpenAPI 3.0": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["tsx", "mcp/src/gen/mcp/server.ts"]
+    },
+    "github": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "mcp/github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "<YOUR_TOKEN>"
+      }
+    }
+  }
+}
+```
+
+## Validate your MCP server
+
+Stop [Claude](https://claude.ai) and reopen the desktop application.
+
+After that, validate that your [MCP](https://modelcontextprotocol.io) server is connected and working by clicking the following button.
+
+![Claude](/public/screenshots/claude-setup3.png)
+
+The following view opens, showing your generated [MCP](https://modelcontextprotocol.io) server.
+
+![Claude](/public/screenshots/claude-setup4.png)
+
+## Use your MCP server
+
+In this example, use the prompt `create a random pet` to call your generated [MCP](https://modelcontextprotocol.io) server. The server attaches the prompt to the tool `addPet`, which calls `addPetHandler` and creates the pet.
+
+![Claude interaction](/public/screenshots/claude-interaction.gif)
+
+## See Also
+
+- [MCP setup](https://modelcontextprotocol.io)
+- [Claude](https://claude.ai)
