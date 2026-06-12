@@ -6,7 +6,6 @@ description: Generate type-safe HTTP clients (axios or fetch) from OpenAPI — o
 outline: 2
 kind: plugin
 id: plugin-client
-header: plugin
 ---
 
 # @kubb/plugin-client
