@@ -6,7 +6,6 @@ description: Generate typed `cy.request()` wrappers from OpenAPI so end-to-end
 outline: 2
 kind: plugin
 id: plugin-cypress
-header: plugin
 ---
 
 # @kubb/plugin-cypress
