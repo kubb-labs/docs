@@ -19,9 +19,8 @@ docs/
 └── snippets/**            # Code snippets included via <<< @/snippets/...
 ```
 
-Do NOT edit auto-generated files:
-- `docs/5.x/changelog.md` — copied from the core repo by the platform pipeline
-- `docs/5.x/migration-guide.md` — copied from the core repo by the platform pipeline
+Do NOT edit:
+- `docs/5.x/changelog.md` — auto-generated from the core repo by the platform pipeline
 
 ## Development workflow
 

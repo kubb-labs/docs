@@ -27,9 +27,8 @@ docs/
 
 Plugin, adapter, and parser pages mirror those in the platform repo at `apps/kubb.dev/`. When a plugin's options change in [kubb-labs/kubb](https://github.com/kubb-labs/kubb) or [kubb-labs/plugins](https://github.com/kubb-labs/plugins), update the matching page here in the same PR.
 
-Do NOT edit auto-generated files:
-- `docs/5.x/changelog.md` — copied from the core repo by the platform pipeline
-- `docs/5.x/migration-guide.md` — copied from the core repo by the platform pipeline
+Do NOT edit:
+- `docs/5.x/changelog.md` — auto-generated from the core repo by the platform pipeline
 
 ## Token optimized CLI (rtk)
 
