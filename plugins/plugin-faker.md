@@ -6,7 +6,6 @@ description: Generate Faker.js mock-data factories from OpenAPI for tests,
 outline: 2
 kind: plugin
 id: plugin-faker
-header: plugin
 ---
 
 # @kubb/plugin-faker
