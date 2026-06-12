@@ -1,4 +1,4 @@
-name: Notify Platform
+name: Deploy
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 permissions: {}
 
 jobs:
-  notify:
+  deploy-platform:
     name: Dispatch content-updated to platform
     runs-on: ubuntu-latest
     permissions: {}
