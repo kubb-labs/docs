@@ -6,7 +6,6 @@ description: Generate TanStack Query hooks for React (useQuery, useMutation,
 outline: 2
 kind: plugin
 id: plugin-react-query
-header: plugin
 ---
 
 > [!TIP]
@@ -426,7 +425,7 @@ src/gen/
     └── GetStoreById.ts
 ```
 
-Pass `group.name` to customize the folder name, for example `name: ({ group }) => \`${group}Controller\``to keep the pre-v5`petController/` layout.
+Pass `group.name` to customize the folder name, for example `name: ({ group }) => \`${group}Controller\`` to keep the pre-v5 `petController/` layout.
 
 #### group.type
 
@@ -1267,7 +1266,7 @@ type CustomOptions = {
 }
 ```
 
-#### Centralized cache invalidation
+#### Centralised cache invalidation
 
 ```typescript [src/useCustomHookOptions.ts]
 import { useQueryClient, type QueryClient } from '@tanstack/react-query'
