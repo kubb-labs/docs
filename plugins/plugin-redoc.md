@@ -6,7 +6,6 @@ description: Render your OpenAPI spec as a single-file HTML page using Redoc,
 outline: 2
 kind: plugin
 id: plugin-redoc
-header: plugin
 ---
 
 # @kubb/plugin-redoc

@@ -6,7 +6,6 @@ description: Default file parser for Kubb. Converts the universal AST to
 outline: 2
 kind: parser
 id: parser-ts
-header: parser
 ---
 
 > [!TIP]

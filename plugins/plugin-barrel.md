@@ -6,7 +6,6 @@ description: Generates `index.ts` re-export files for every plugin output and
 outline: 2
 kind: plugin
 id: plugin-barrel
-header: plugin
 ---
 
 > [!TIP]

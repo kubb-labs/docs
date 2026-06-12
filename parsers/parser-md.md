@@ -6,7 +6,6 @@ description: Markdown file parser for Kubb. Joins source blocks as plain
 outline: 2
 kind: parser
 id: parser-md
-header: parser
 ---
 
 > [!TIP]
