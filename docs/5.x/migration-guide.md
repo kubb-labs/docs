@@ -187,10 +187,10 @@ yarn add -D @kubb/plugin-ts @kubb/plugin-zod @kubb/plugin-client \
 
 The following plugins have no v5 equivalent. Remove them from your config and uninstall the packages.
 
-| v4 package                  | Status |
-| --------------------------- | ------ |
-| `@kubb/plugin-solid-query`  | Vote   |
-| `@kubb/plugin-svelte-query` | Vote   |
+| v4 package                  |
+| --------------------------- |
+| `@kubb/plugin-solid-query`  |
+| `@kubb/plugin-svelte-query` |
 
 > [!NOTE]
 > `@kubb/plugin-swr` was unavailable during the early v5 betas but is **supported again in v5**. See [@kubb/plugin-swr](#kubb-plugin-swr) below.
