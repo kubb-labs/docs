@@ -9,6 +9,67 @@ outline:
 
 # Changelog
 
+## v5.0.0-beta.55 — Jun 13, 2026
+
+### @kubb/adapter-oas
+
+#### Bug Fixes
+
+- Drop the `oas` and `oas-normalize` dependencies in favor of built-in logic.
+  
+  Operation iteration (paths, methods, `operationId`, tags, request/response bodies, content type) now runs through a small internal `Operation` wrapper instead of the `oas` package, and the OpenAPI type aliases come straight from `openapi-types` and `@types/json-schema`. Document loading parses inline YAML/JSON with the `yaml` package, and `kubb validate` validates with `@readme/openapi-parser` directly. Generated output and validation behavior are unchanged, while the dependency tree is considerably smaller. ([#3557](https://github.com/kubb-labs/kubb/pull/3557), [`330ea5b`](https://github.com/kubb-labs/kubb/commit/330ea5ba46d4806bd77742da9cceb9e0e4e3dcd9))
+
+### @kubb/core
+
+#### Breaking Changes
+
+- Remove the incremental build cache.
+  
+  The `cache` config option, the `createCache` factory, the `fsCache` backend, and the `Cache`, `CachedSnapshot`, and `FsCacheOptions` types are gone from `@kubb/core`. `defineConfig` no longer enables `fsCache()` by default, and the `kubb generate --no-cache` flag is removed from the CLI. Every run now regenerates straight from the spec. ([#3558](https://github.com/kubb-labs/kubb/pull/3558), [`b504cf0`](https://github.com/kubb-labs/kubb/commit/b504cf0a91bd317e2ec1d450e447548560c657e8))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.0.0-beta.54 — Jun 12, 2026
+
+### @kubb/adapter-oas
+
+#### Bug Fixes
+
+- Repoint refs at duplicate top-level schemas to the first schema with the same content.
+  
+  When a spec defines a schema and also references an external copy of it (for example `$ref: 'https://petstore3.swagger.io/api/v3/openapi.json#/components/schemas/Category'` next to a local `Category`), the ref bundler hoists the copy under a numeric suffix (`Category1`) and rewrites the ref sites to it, so generators typed properties against `Category1` instead of `Category`.
+  
+  `buildDedupePlan` now records every later top-level schema whose content matches an earlier one in a new `aliasNames` map, `applyDedupe` repoints any ref targeting such a duplicate at the first schema with that content, and the adapter stream no longer emits the duplicate at all. The decision is purely content-based (structural signature), not name-based: `Pet.category` is typed `Category` again, no dead `Category1` model is generated, and a schema with a different shape keeps its own type. This also applies to hand-written schemas that share one content (a `Dog` identical to `Cat` collapses into `Cat`). `applyDedupe` now takes the plan lookups (`{ canonicalBySignature, aliasNames }`) instead of the bare signature map, and `@kubb/ast` exports the `DedupeCanonical` and `DedupeLookups` types. ([#3551](https://github.com/kubb-labs/kubb/pull/3551), [`d8d1aef`](https://github.com/kubb-labs/kubb/commit/d8d1aefc6a5b58ff293ddd227b821a210bd07e2d))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.0.0-beta.53 — Jun 12, 2026
+
+### @kubb/adapter-oas
+
+#### Bug Fixes
+
+- Bundle external `$ref`s with `api-ref-bundler` instead of `@apidevtools/json-schema-ref-parser`.
+  
+  `$RefParser.bundle()` remaps external file refs to the JSON pointer of their first occurrence (for example `#/components/schemas/AppState/properties/currentUser`), so multi-file specs lost their named schemas and generators inlined types instead of emitting named types with imports. `api-ref-bundler` hoists external file schemas into named `components.schemas` entries (`./schemas/User.yaml` becomes `#/components/schemas/User`), matching the earlier Redocly behavior while staying lightweight, and adds a foundation for AsyncAPI support later on.
+  
+  The new bundler resolves local YAML and JSON files and HTTP(S) URLs, including `./` and `../` relative refs and pointer fragments into external files. ([#3549](https://github.com/kubb-labs/kubb/pull/3549), [`3c013ef`](https://github.com/kubb-labs/kubb/commit/3c013efc74071f9d409ca9a082b2c8662a9a32c6))
+- Stop shipping `extension.yaml` in the npm packages and drop the `schemas/extension.json` schema. Extension metadata now lives in the platform repo (`kubb-labs/platform`, `apps/kubb.dev/extensions/`) and the options are documented on each extension's kubb.dev page. ([#3547](https://github.com/kubb-labs/kubb/pull/3547), [`2944481`](https://github.com/kubb-labs/kubb/commit/29444811eb29d87fe2a909635402dcd7170b14f7))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
 ## v5.0.0-beta.52 — Jun 11, 2026
 
 ### @kubb/adapter-oas
