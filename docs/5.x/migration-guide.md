@@ -80,9 +80,6 @@ coercion, guidType, mini, wrapOutput, dateParser, regexGenerator,
 seed, handlers, etc.) are unchanged.
 
 ## 10. New v5 defaults (informational, do not edit the config)
-v5 enables an incremental build cache by default and stores snapshots
-under node_modules/.cache/kubb. Do not add a `cache` key during
-migration. Mention to the user that `cache: false` turns it off.
 
 With `group: { type: 'tag' }`, v5 names each tag folder after the plain
 camelCased tag instead of `${tag}Controller`. Do not add `group.name`
@@ -439,24 +436,6 @@ kubb generate --reporter file
 :::
 
 The `kubb:debug` hook and the `createDebugger` helper are removed alongside the flag. See [`kubb generate`](/docs/5.x/api/commands/generate) for the full flag list and [Diagnostics](/docs/5.x/reference/diagnostics) for the structured problem model the reporters render.
-
-### Incremental cache enabled by default
-
-v5 caches build output between runs. Kubb fingerprints the inputs (spec content, config, plugin options, package versions) and restores the previous output when nothing changed, instead of regenerating it. v4 regenerated everything on every run.
-
-No config change is required, and a cache hit produces the same files as a full run. Snapshots live under `node_modules/.cache/kubb`. Pass `cache: false` to opt out, for example while developing a custom plugin:
-
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  cache: false,
-})
-```
-
-See the [`cache` option](/docs/5.x/reference/configuration#cache) for custom backends.
 
 ## Options moved to `adapterOas`
 

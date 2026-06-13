@@ -536,41 +536,6 @@ export default defineConfig({
 })
 ```
 
-### `cache`
-
-Incremental build cache. Kubb fingerprints the inputs (spec content, config, plugin options, package versions) and, when nothing changed since the last run, restores the previously generated output instead of regenerating it.
-
-`defineConfig` enables `fsCache()` by default, which stores snapshots on local disk under `node_modules/.cache/kubb`. Pass another `Cache` backend to change where snapshots live, or `false` to turn caching off.
-
-|           |                                    |
-| --------: | :--------------------------------- |
-|     Type: | `Cache \| false`                   |
-| Required: | `false`                            |
-|  Default: | `fsCache()` (included with `kubb`) |
-
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { fsCache } from '@kubb/core'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  cache: fsCache({ dir: '.kubb-cache' }),
-})
-```
-
-Turn it off when you want every run to regenerate from scratch, for example while debugging a custom plugin:
-
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  cache: false,
-})
-```
-
 ### `root`
 
 Project root, absolute or relative to the config file location.
