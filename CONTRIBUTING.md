@@ -20,7 +20,7 @@ docs/
 ```
 
 Do NOT edit:
-- `docs/5.x/changelog.md` — auto-generated from the core repo by the platform pipeline
+- `docs/5.x/changelog.md` — auto-synced from kubb-labs/kubb by `.github/workflows/sync-changelog.yml` after each release. To update manually, trigger that workflow with `workflow_dispatch`.
 
 ## Development workflow
 

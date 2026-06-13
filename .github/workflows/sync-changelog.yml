@@ -1,0 +1,55 @@
+name: Sync Changelog
+
+on:
+  repository_dispatch:
+    types: [changelog-sync]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'kubb branch or tag to sync from'
+        default: 'main'
+
+permissions: {}
+
+jobs:
+  sync:
+    name: Sync changelog from kubb
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Resolve kubb ref
+        id: ref
+        env:
+          PAYLOAD_REF: ${{ github.event.client_payload.ref }}
+          INPUT_REF: ${{ inputs.ref }}
+        run: echo "ref=${PAYLOAD_REF:-${INPUT_REF:-main}}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          repository: kubb-labs/kubb
+          ref: ${{ steps.ref.outputs.ref }}
+          path: .kubb-source
+          sparse-checkout: CHANGELOG.md
+          sparse-checkout-cone-mode: false
+
+      - name: Write changelog with frontmatter
+        run: |
+          printf '%s\n' \
+            '---' \
+            'title: Changelog' \
+            'description: Track all updates, features, and improvements to Kubb' \
+            'layout: doc' \
+            'outline:' \
+            '  - 2' \
+            '  - 3' \
+            '---' \
+            '' > docs/5.x/changelog.md
+          cat .kubb-source/CHANGELOG.md >> docs/5.x/changelog.md
+
+      - uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1b6d2f8 # v5
+        with:
+          commit_message: 'chore: sync changelog from kubb ${{ steps.ref.outputs.ref }}'
+          file_pattern: docs/5.x/changelog.md
