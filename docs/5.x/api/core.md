@@ -43,11 +43,9 @@ import {
   createAdapter,
   createKubb,
   createStorage,
-  createCache,
   createReporter,
   fsStorage,
   memoryStorage,
-  fsCache,
   cliReporter,
   jsonReporter,
   fileReporter,
@@ -109,7 +107,7 @@ export default defineConfig(({ watch }) => ({
 
 Use `createKubb` when you need to orchestrate multiple builds, inspect diagnostics, or integrate Kubb output into a larger toolchain. For a single one-off build, chain the call directly: `await createKubb(config).build()`.
 
-`createKubb` takes a plain config object, the same shape `defineConfig` produces in `kubb.config.ts`. It is not a fluent builder, and that stays deliberate. A builder cannot live in a config file, and the config has to remain plain serializable data so Kubb can fingerprint it for the build cache and validate it against the shipped JSON schema.
+`createKubb` takes a plain config object, the same shape `defineConfig` produces in `kubb.config.ts`. It is not a fluent builder, and that stays deliberate. A builder cannot live in a config file, and the config has to remain plain serializable data so Kubb can validate it against the shipped JSON schema.
 
 ```typescript twoslash
 // @module: esnext

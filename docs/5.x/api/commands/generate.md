@@ -55,7 +55,6 @@ kubb generate ./petStore.yaml
 | `--verbose`, `-v`                            | `false` | Shortcut for `--logLevel verbose`. Useful for spotting slow plugins.                      |
 | `--reporter=<cli\|json\|file>`               | `cli`   | Selects which registered reporters to trigger by name, comma separated.                   |
 | `--watch`, `-w`                              | `false` | Re-run the generation pipeline whenever the input spec changes.                            |
-| `--no-cache`                                 | `false` | Skip the incremental build cache and regenerate everything from scratch.                  |
 
 ## Reporters
 
@@ -97,12 +96,6 @@ Run with verbose plugin timings:
 
 ```shell
 kubb generate --verbose
-```
-
-Force a full regeneration and skip the build cache:
-
-```shell
-kubb generate --no-cache
 ```
 
 ## See also
