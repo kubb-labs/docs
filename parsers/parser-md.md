@@ -50,7 +50,7 @@ Set `frontmatter` on `file.meta` inside a plugin to have the parser prepend a YA
 |  Default: | `undefined`                       |
 
 ```typescript [plugin example]
-createFile({
+ast.factory.createFile({
   baseName: 'README.md',
   path: `${config.output.path}/README.md`,
   meta: {
