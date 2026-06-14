@@ -10,14 +10,15 @@ outline: deep
 The `@kubb/ast` package defines Kubb's universal Abstract Syntax Tree. [Adapters](/docs/5.x/concepts/adapters) produce it from a specification (OpenAPI, AsyncAPI, JSON Schema, …), and [plugins](/docs/5.x/concepts/plugins) consume it to emit files. Because every plugin reads the same AST, the same plugin works against any spec a custom adapter can supply.
 
 > [!NOTE]
-> `@kubb/core` re-exports `@kubb/ast` as the `ast` namespace. Most plugins do not need to add `@kubb/ast` as a direct dependency. Install it explicitly only when you want named imports without the `ast.` prefix.
+> `@kubb/core` re-exports `@kubb/ast` as the `ast` namespace, with the node constructors grouped under `ast.factory` the same way TypeScript groups them under `ts.factory`. Most plugins do not need to add `@kubb/ast` as a direct dependency. Install it explicitly only when you want named imports without the `ast.` prefix, taking constructors from the `@kubb/ast/factory` subpath.
 
 ## Quick start
 
 The complete public surface lives behind a handful of factories, three visitors, and a small set of guards:
 
 ```typescript twoslash [example.ts]
-import { createInput, createOperation, createSchema, walk, transform, collect, isSchemaNode, narrowSchema } from '@kubb/ast'
+import { createInput, createOperation, createSchema } from '@kubb/ast/factory'
+import { walk, transform, collect, isSchemaNode, narrowSchema } from '@kubb/ast'
 import type { InputNode, OperationNode, SchemaNode } from '@kubb/ast'
 
 const root: InputNode = createInput({
@@ -111,7 +112,7 @@ An `OperationNode` is a discriminated union keyed on `protocol`, so the model st
 Factories return correctly defaulted, fully typed nodes. Use them in adapters and inside generator handlers. Never construct AST literals by hand.
 
 ```typescript twoslash [factories.ts]
-import { createInput, createOperation, createSchema } from '@kubb/ast'
+import { createInput, createOperation, createSchema } from '@kubb/ast/factory'
 
 const root = createInput({
   schemas: [createSchema({ name: 'Pet', type: 'object', properties: [] }), createSchema({ name: 'Status', type: 'enum', values: ['active', 'inactive'] })],
@@ -119,7 +120,7 @@ const root = createInput({
 })
 ```
 
-`@kubb/ast` also exports factories for source files and TypeScript-level artifacts that generators emit:
+The `@kubb/ast/factory` subpath also provides constructors for source files and TypeScript-level artifacts that generators emit:
 
 | Factory                                                             | Purpose                                                  |
 | ------------------------------------------------------------------- | -------------------------------------------------------- |
@@ -130,8 +131,8 @@ const root = createInput({
 | `createParameter`                                                   | Describe operation parameters.                           |
 | `createTypeLiteral`, `createIndexedAccessType`, `createObjectBindingPattern` | Build inline object types, indexed access types, and destructuring bindings for parameter signatures. |
 | `createProperty`, `createType`                                      | Compose object properties and TypeScript types.          |
-| `createResponse`, `createRequestBody`, `createContent`, `createOutput` | Model responses, request bodies, content entries, and generator outputs. |
-| `createBreak`, `syncOptionality`                                    | Emit line breaks; reconcile optional flags across nodes. |
+| `createResponse`, `createOutput`                                    | Model responses and generator outputs.                   |
+| `createBreak`                                                       | Emit line breaks between nodes.                          |
 | `update`                                                            | Apply an identity-preserving shallow update to any node. |
 
 ## Visitors
@@ -141,7 +142,8 @@ Three visitor functions cover the common traversal patterns. Visitor objects use
 ### `walk`: async traversal with side effects
 
 ```typescript twoslash [walk.ts]
-import { createInput, walk } from '@kubb/ast'
+import { createInput } from '@kubb/ast/factory'
+import { walk } from '@kubb/ast'
 
 const root = createInput({ schemas: [], operations: [] })
 
@@ -162,7 +164,8 @@ await walk(root, {
 ### `transform`: synchronous, returns a new tree
 
 ```typescript twoslash [transform.ts]
-import { createInput, transform } from '@kubb/ast'
+import { createInput } from '@kubb/ast/factory'
+import { transform } from '@kubb/ast'
 
 const root = createInput({ schemas: [], operations: [] })
 
@@ -187,7 +190,7 @@ const enhanced = transform(root, {
 To apply a change while keeping that guarantee, use the `update` factory instead of spreading by hand. It returns the same node when every field you pass already matches:
 
 ```typescript twoslash [update.ts]
-import { createSchema, update } from '@kubb/ast'
+import { createSchema, update } from '@kubb/ast/factory'
 
 const node = createSchema({ name: 'Pet', type: 'object', properties: [] })
 
@@ -198,7 +201,8 @@ update(node, { name: 'Animal' }) // -> new node with `name` replaced
 ### `collect`: gather matching nodes
 
 ```typescript twoslash [collect.ts]
-import { createInput, collect } from '@kubb/ast'
+import { createInput } from '@kubb/ast/factory'
+import { collect } from '@kubb/ast'
 import type { OperationNode, SchemaNode } from '@kubb/ast'
 
 const root = createInput({ schemas: [], operations: [] })
@@ -226,7 +230,8 @@ console.log(`Deprecated schemas: ${deprecated.length}`)
 `@kubb/ast` exports type guards and a `narrowSchema` helper for safe discrimination:
 
 ```typescript twoslash [guards.ts]
-import { isInputNode, isOperationNode, isOutputNode, isSchemaNode, narrowSchema, walk, createInput } from '@kubb/ast'
+import { createInput } from '@kubb/ast/factory'
+import { isInputNode, isOperationNode, isOutputNode, isSchemaNode, narrowSchema, walk } from '@kubb/ast'
 
 const root = createInput({ schemas: [], operations: [] })
 
@@ -292,7 +297,8 @@ Structural rewrites you can apply inside `transform` to normalize schemas:
 `dispatch` walks an ordered table of rules and returns the first node a rule produces. Adapters use it to map a source spec's shapes onto AST nodes without a sprawling `if`/`else` chain: each rule pairs a `match` predicate with a `convert` function, and rules are tried top to bottom.
 
 ```typescript twoslash [dispatch.ts]
-import { dispatch, createSchema } from '@kubb/ast'
+import { createSchema } from '@kubb/ast/factory'
+import { dispatch } from '@kubb/ast'
 import type { DispatchRule } from '@kubb/ast'
 
 type Ctx = { type: string; nullable: boolean }
@@ -323,7 +329,8 @@ See [Concepts: Parsers](/docs/5.x/concepts/parsers) for how parsers consume prin
 ### Collect every operation tag
 
 ```typescript twoslash [tags.ts]
-import { createInput, collect } from '@kubb/ast'
+import { createInput } from '@kubb/ast/factory'
+import { collect } from '@kubb/ast'
 
 const root = createInput({ schemas: [], operations: [] })
 

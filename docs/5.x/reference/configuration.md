@@ -469,7 +469,7 @@ const kubb = createKubb({
           injectFile({
             baseName: 'hello.ts',
             path: './src/gen/hello.ts',
-            sources: [ast.createSource({ nodes: [ast.createText('export const hello = "world"')] })],
+            sources: [ast.factory.createSource({ nodes: [ast.factory.createText('export const hello = "world"')] })],
           })
         },
       },

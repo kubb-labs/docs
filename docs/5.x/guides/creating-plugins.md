@@ -31,7 +31,7 @@ The `kubb:plugin:setup` hook is where you wire generators and resolvers into the
 
 ```typescript twoslash [my-plugin.ts]
 import { definePlugin, defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast'
+import { createFile, createSource, createText } from '@kubb/ast/factory'
 
 export const pluginHello = definePlugin(() => ({
   name: 'plugin-hello',
@@ -166,7 +166,7 @@ export type PluginExample = PluginFactoryOptions<'plugin-example', PluginExample
 
 // @filename: src/generators/exampleGenerator.ts
 import { defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast'
+import { createFile, createSource, createText } from '@kubb/ast/factory'
 import type { PluginExample } from '../types'
 
 /**
@@ -288,7 +288,7 @@ The `ctx` argument inside a handler is a `GeneratorContext` with helpers such as
 
 ```typescript twoslash [exampleGenerator.ts]
 import { defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast'
+import { createFile, createSource, createText } from '@kubb/ast/factory'
 
 const operationGenerator = defineGenerator({
   name: 'operation-files',
@@ -357,7 +357,7 @@ export const resolverExample = defineResolver<PluginExample>(() => ({
 
 ```typescript twoslash [setup-context.ts]
 import { definePlugin, defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast'
+import { createFile, createSource, createText } from '@kubb/ast/factory'
 
 export const pluginExample = definePlugin(() => ({
   name: 'plugin-example',
@@ -436,7 +436,7 @@ Use `createKubb` from `@kubb/core` to create an in-process build and verify that
 // @errors: 2307
 import { describe, it, expect } from 'vitest'
 import { createKubb, definePlugin, defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast'
+import { createFile, createSource, createText } from '@kubb/ast/factory'
 
 const pluginExample = definePlugin(() => ({
   name: 'plugin-example',
@@ -593,7 +593,7 @@ Generate code for each schema definition in the spec:
 
 ```typescript twoslash [schema-generator.ts]
 import { defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast'
+import { createFile, createSource, createText } from '@kubb/ast/factory'
 
 export const schemaGenerator = defineGenerator({
   name: 'schema-generator',
@@ -619,7 +619,7 @@ Declare `dependencies` when your plugin must run after another plugin so Kubb ve
 
 ```typescript twoslash [plugin-with-dep.ts]
 import { definePlugin, defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast'
+import { createFile, createSource, createText } from '@kubb/ast/factory'
 
 export const pluginCustom = definePlugin(() => ({
   name: 'plugin-custom',

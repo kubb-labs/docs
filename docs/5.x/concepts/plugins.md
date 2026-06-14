@@ -115,7 +115,7 @@ Generators are how a plugin actually walks the AST. Register them with `addGener
 
 ```typescript twoslash [generator.ts]
 import { definePlugin, defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast'
+import { createFile, createSource, createText } from '@kubb/ast/factory'
 
 const operationGenerator = defineGenerator({
   name: 'operation-files',
@@ -352,7 +352,7 @@ Generators receive each AST node together with a typed context. Return an array 
 
 ```typescript twoslash [operations.ts]
 import { definePlugin, defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast'
+import { createFile, createSource, createText } from '@kubb/ast/factory'
 
 const operationGenerator = defineGenerator({
   name: 'list-operations',

@@ -18,7 +18,7 @@ A minimal adapter declares its name and produces an empty [`InputNode`](/docs/5.
 
 ```typescript twoslash [adapterCustom.ts]
 import { createAdapter } from '@kubb/core'
-import { createInput } from '@kubb/ast'
+import { createInput } from '@kubb/ast/factory'
 import type { AdapterFactoryOptions } from '@kubb/core'
 
 type AdapterCustom = AdapterFactoryOptions<'adapter-custom', { strict?: boolean }, { strict: boolean }>
@@ -85,7 +85,7 @@ The build driver prefers `stream()` when an adapter implements it. For `parse()`
 
 ```typescript twoslash [adapterStream.ts]
 import { createAdapter } from '@kubb/core'
-import { createStreamInput } from '@kubb/ast'
+import { createStreamInput } from '@kubb/ast/factory'
 import type { AdapterFactoryOptions } from '@kubb/core'
 import type { SchemaNode, OperationNode } from '@kubb/ast'
 
@@ -140,7 +140,7 @@ Export the runtime name as a `satisfies`-typed constant so consumers can referen
 
 ```typescript twoslash [naming.ts]
 import { createAdapter } from '@kubb/core'
-import { createInput } from '@kubb/ast'
+import { createInput } from '@kubb/ast/factory'
 import type { AdapterFactoryOptions } from '@kubb/core'
 
 export type AdapterExample = AdapterFactoryOptions<'example', { strict?: boolean }, { strict: boolean }, unknown>
@@ -216,7 +216,7 @@ Use `createAdapter` with `AdapterFactoryOptions` to model your input format. The
 
 ```typescript twoslash [adapterJsonSchema.ts]
 import { createAdapter } from '@kubb/core'
-import { createInput, createImport, createSchema } from '@kubb/ast'
+import { createInput, createImport, createSchema } from '@kubb/ast/factory'
 import type { AdapterFactoryOptions } from '@kubb/core'
 import type { InputNode } from '@kubb/ast'
 
@@ -300,7 +300,7 @@ The adapter derives a small context from each schema, then runs it through an or
 
 ```typescript twoslash [adapterValidated.ts]
 import { createAdapter } from '@kubb/core'
-import { createInput } from '@kubb/ast'
+import { createInput } from '@kubb/ast/factory'
 import type { AdapterFactoryOptions } from '@kubb/core'
 
 type AdapterValidated = AdapterFactoryOptions<'adapter-validated', Record<string, never>>

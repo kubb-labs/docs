@@ -93,7 +93,7 @@ Adapters follow the same pattern with [`AdapterFactoryOptions`](https://github.c
 
 ```typescript twoslash [adapter-example.ts]
 import { createAdapter } from '@kubb/core'
-import { createInput } from '@kubb/ast'
+import { createInput } from '@kubb/ast/factory'
 import type { AdapterFactoryOptions } from '@kubb/core'
 
 type Options = { strict?: boolean }

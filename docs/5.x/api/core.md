@@ -232,7 +232,7 @@ Each generator method returns `TElement | Array<FileNode> | void`. Returning a r
 
 ```typescript twoslash
 import { defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast'
+import { createFile, createSource, createText } from '@kubb/ast/factory'
 
 const myGenerator = defineGenerator({
   name: 'my-generator',
