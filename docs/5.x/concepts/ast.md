@@ -129,7 +129,7 @@ The `@kubb/ast/factory` subpath also provides constructors for source files and 
 | `createParameter`                                                   | Describe operation parameters.                           |
 | `createTypeLiteral`, `createIndexedAccessType`, `createObjectBindingPattern` | Build inline object types, indexed access types, and destructuring bindings for parameter signatures. |
 | `createProperty`, `createType`                                      | Compose object properties and TypeScript types.          |
-| `createResponse`, `createOutput`                                    | Model responses and generator outputs.                   |
+| `createResponse`, `createRequestBody`, `createContent`, `createOutput` | Model responses, request bodies, content entries, and generator outputs. |
 | `createBreak`                                                       | Emit line breaks between nodes.                          |
 | `update`                                                            | Apply an identity-preserving shallow update to any node. |
 
