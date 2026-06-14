@@ -104,10 +104,11 @@ export const adapterStream = createAdapter<AdapterStream>(() => ({
     throw new Error('Use stream() instead — adapter-stream does not support eager parsing.')
   },
   async stream() {
-    return ast.factory.createStreamInput(streamSchemas(), streamOperations(), {
-      title: 'Streamed spec',
-      circularNames: [],
-      enumNames: [],
+    return ast.factory.createInput({
+      stream: true,
+      schemas: streamSchemas(),
+      operations: streamOperations(),
+      meta: { title: 'Streamed spec', circularNames: [], enumNames: [] },
     })
   },
   getImports() {
@@ -119,7 +120,7 @@ export const adapterStream = createAdapter<AdapterStream>(() => ({
 }))
 ```
 
-Use `ast.factory.createStreamInput(schemas, operations, meta?)` (see [AST](/docs/5.x/concepts/ast)) to assemble the result. The `meta` argument is optional but recommended. When you set it, plugins can read `title`, `version`, and `baseURL` before the first node is yielded.
+Use `ast.factory.createInput({ stream: true, schemas, operations, meta })` (see [AST](/docs/5.x/concepts/ast)) to assemble the result. The `meta` field is optional but recommended. When you set it, plugins can read `title`, `version`, and `baseURL` before the first node is yielded.
 
 ## Naming convention
 
