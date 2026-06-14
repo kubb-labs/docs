@@ -231,19 +231,18 @@ export const pluginExample = definePlugin((options: { prefix?: string } = {}) =>
 Each generator method returns `TElement | Array<FileNode> | void`. Returning a renderer element (e.g., JSX from `@kubb/renderer-jsx`) requires declaring a `renderer` factory on the generator. Returning `Array<FileNode>` directly or calling `ctx.upsertFile()` manually and returning `void` works without a renderer.
 
 ```typescript twoslash
-import { defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast/factory'
+import { ast, defineGenerator } from '@kubb/core'
 
 const myGenerator = defineGenerator({
   name: 'my-generator',
   operation(node, ctx) {
     return [
-      createFile({
+      ast.factory.createFile({
         baseName: `${node.operationId}.ts`,
         path: `./${node.operationId}.ts`,
         sources: [
-          createSource({
-            nodes: [createText(`export const op = '${node.operationId}'`)],
+          ast.factory.createSource({
+            nodes: [ast.factory.createText(`export const op = '${node.operationId}'`)],
           }),
         ],
       }),
@@ -670,6 +669,6 @@ if ('path' in input) {
 - [Creating plugins](/docs/5.x/guides/creating-plugins) for a step-by-step guide to building a full plugin
 - [Programmatic usage recipes](/docs/5.x/recipes#programmatic-build) with `createKubb` usage patterns
 - [Configuration reference](/docs/5.x/reference/configuration) for all `defineConfig` options
-- [`@kubb/ast` package](https://www.npmjs.com/package/@kubb/ast), the node factory helpers re-exported under `ast`
+- [`@kubb/ast` package](https://www.npmjs.com/package/@kubb/ast), the node constructors re-exported under `ast.factory`
 - [TypeScript handbook: narrowing](https://www.typescriptlang.org/docs/handbook/2/narrowing.html) on narrowing `config.input` with the `in` operator
 - [Astro integrations reference](https://docs.astro.build/en/reference/integrations-reference/), the inspiration for the hook-style API

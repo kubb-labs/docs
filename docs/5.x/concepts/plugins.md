@@ -114,19 +114,18 @@ The `hooks` map can subscribe to any event in [`KubbHooks`](https://github.com/k
 Generators are how a plugin actually walks the AST. Register them with `addGenerator` inside `kubb:plugin:setup`:
 
 ```typescript twoslash [generator.ts]
-import { definePlugin, defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast/factory'
+import { ast, definePlugin, defineGenerator } from '@kubb/core'
 
 const operationGenerator = defineGenerator({
   name: 'operation-files',
   async operation(node, ctx) {
     return [
-      createFile({
+      ast.factory.createFile({
         baseName: `${node.operationId}.ts`,
         path: `${ctx.root}/${node.operationId}.ts`,
         sources: [
-          createSource({
-            nodes: [createText(`// ${node.method} ${node.path}\n`)],
+          ast.factory.createSource({
+            nodes: [ast.factory.createText(`// ${node.method} ${node.path}\n`)],
           }),
         ],
       }),
@@ -239,10 +238,9 @@ type Plugin<TFactory> = {
 Use a transformer when you need to rename, filter, or rewrite nodes before generation, without forking the adapter or mutating shared state. Set it from `kubb:plugin:setup` with `ctx.setTransformer`:
 
 ```typescript twoslash [transformer.ts]
-import { definePlugin } from '@kubb/core'
-import type { Visitor } from '@kubb/ast'
+import { ast, definePlugin } from '@kubb/core'
 
-const renameOperationIds: Visitor = {
+const renameOperationIds: ast.Visitor = {
   operation(node) {
     return {
       ...node,
@@ -351,17 +349,16 @@ export const pluginBanner = definePlugin(() => ({
 Generators receive each AST node together with a typed context. Return an array of `FileNode` to emit files, or call `ctx.upsertFile` to merge with output from another generator.
 
 ```typescript twoslash [operations.ts]
-import { definePlugin, defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast/factory'
+import { ast, definePlugin, defineGenerator } from '@kubb/core'
 
 const operationGenerator = defineGenerator({
   name: 'list-operations',
   operation(node, ctx) {
     return [
-      createFile({
+      ast.factory.createFile({
         baseName: `${node.operationId}.ts`,
         path: `${ctx.root}/operations/${node.operationId}.ts`,
-        sources: [createSource({ nodes: [createText(`// ${node.method} ${node.path}\n`)] })],
+        sources: [ast.factory.createSource({ nodes: [ast.factory.createText(`// ${node.method} ${node.path}\n`)] })],
       }),
     ]
   },
