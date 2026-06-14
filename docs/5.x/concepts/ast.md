@@ -283,26 +283,6 @@ Structural rewrites you can apply inside `transform` to normalize schemas:
 | `setEnumName`              | Name an anonymous enum schema.                    |
 | `simplifyUnion`            | Remove duplicates and dead branches from a union. |
 
-## Dispatch
-
-Adapters map a source spec's shapes onto AST nodes. The idiomatic pattern is a plain function with a chain of `if` branches, one per source type. List higher-precedence shapes first and return a fallback at the end.
-
-```typescript twoslash [dispatch.ts]
-import { ast } from '@kubb/core'
-
-type Ctx = { type: string; nullable: boolean }
-
-function toSchema(ctx: Ctx): ReturnType<typeof ast.factory.createSchema> {
-  if (ctx.type === 'string') return ast.factory.createSchema({ type: 'string' })
-  if (ctx.type === 'number') return ast.factory.createSchema({ type: 'number' })
-  return ast.factory.createSchema({ type: 'any' })
-}
-
-const node = toSchema({ type: 'string', nullable: false })
-```
-
-A branch whose condition returns `true` can still return the fallback to defer to the next branch (useful when a broad predicate, such as "has a `format`", only handles some values). See [Concepts: Adapters](/docs/5.x/concepts/adapters) for how an adapter builds its schema table on top of this pattern.
-
 ## Printers
 
 Lower-level helpers for parsers that turn the AST into source code:

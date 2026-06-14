@@ -51,7 +51,7 @@ import {
   KubbDriver,
   Diagnostics,
   AsyncEventEmitter,
-  URLPath,
+  Url,
   logLevel,
   ast,
 } from '@kubb/core'
