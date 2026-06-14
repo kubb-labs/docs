@@ -30,8 +30,7 @@ A plugin is a factory function created with `definePlugin` from [`@kubb/core`](/
 The `kubb:plugin:setup` hook is where you wire generators and resolvers into the build.
 
 ```typescript twoslash [my-plugin.ts]
-import { definePlugin, defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast'
+import { ast, definePlugin, defineGenerator } from '@kubb/core'
 
 export const pluginHello = definePlugin(() => ({
   name: 'plugin-hello',
@@ -42,12 +41,12 @@ export const pluginHello = definePlugin(() => ({
           name: 'hello-generator',
           operation(node, _ctx) {
             return [
-              createFile({
+              ast.factory.createFile({
                 baseName: `${node.operationId}.ts`,
                 path: `${_ctx.root}/${node.operationId}.ts`,
                 sources: [
-                  createSource({
-                    nodes: [createText(`// ${node.method} ${node.path}\n`)],
+                  ast.factory.createSource({
+                    nodes: [ast.factory.createText(`// ${node.method} ${node.path}\n`)],
                   }),
                 ],
               }),
@@ -165,8 +164,7 @@ export interface PluginExampleOptions {
 export type PluginExample = PluginFactoryOptions<'plugin-example', PluginExampleOptions, Required<PluginExampleOptions>>
 
 // @filename: src/generators/exampleGenerator.ts
-import { defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast'
+import { ast, defineGenerator } from '@kubb/core'
 import type { PluginExample } from '../types'
 
 /**
@@ -186,12 +184,12 @@ export function createExampleGenerator(filename: `${string}.${string}`, generate
       collected.push(node.operationId)
 
       return [
-        createFile({
+        ast.factory.createFile({
           baseName: `${node.operationId}.ts`,
           path: `${ctx.root}/${node.operationId}.ts`,
           sources: [
-            createSource({
-              nodes: [createText(`// ${node.method} ${node.path}\n`), createText(`export const operationId = '${node.operationId}'\n`)],
+            ast.factory.createSource({
+              nodes: [ast.factory.createText(`// ${node.method} ${node.path}\n`), ast.factory.createText(`export const operationId = '${node.operationId}'\n`)],
             }),
           ],
         }),
@@ -201,12 +199,12 @@ export function createExampleGenerator(filename: `${string}.${string}`, generate
       if (!generateIndex) return
 
       return [
-        createFile({
+        ast.factory.createFile({
           baseName: filename,
           path: `${ctx.root}/${filename}`,
           sources: [
-            createSource({
-              nodes: [createText(`export const operations = ${JSON.stringify(collected)}\n`)],
+            ast.factory.createSource({
+              nodes: [ast.factory.createText(`export const operations = ${JSON.stringify(collected)}\n`)],
             }),
           ],
         }),
@@ -287,20 +285,19 @@ A parser, the serializer role, runs last and belongs to the build driver. After 
 The `ctx` argument inside a handler is a `GeneratorContext` with helpers such as `addFile`, `upsertFile`, `getResolver`, `requirePlugin`, `warn`, `error`, `info`, and the resolved `config`, `root`, `adapter`, and document `meta` (an `InputMeta` with `title`, `version`, `baseURL`, `circularNames`, and `enumNames`).
 
 ```typescript twoslash [exampleGenerator.ts]
-import { defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast'
+import { ast, defineGenerator } from '@kubb/core'
 
 const operationGenerator = defineGenerator({
   name: 'operation-files',
   operation(node, ctx) {
     // node.operationId is a required string on OperationNode.
     return [
-      createFile({
+      ast.factory.createFile({
         baseName: `${node.operationId}.ts`,
         path: `${ctx.root}/${node.operationId}.ts`,
         sources: [
-          createSource({
-            nodes: [createText(`// Generated from ${node.method} ${node.path}\n`), createText(`export const operationId = '${node.operationId}'\n`)],
+          ast.factory.createSource({
+            nodes: [ast.factory.createText(`// Generated from ${node.method} ${node.path}\n`), ast.factory.createText(`export const operationId = '${node.operationId}'\n`)],
           }),
         ],
       }),
@@ -356,8 +353,7 @@ export const resolverExample = defineResolver<PluginExample>(() => ({
 | `options`         | The user-supplied plugin options.                                                 |
 
 ```typescript twoslash [setup-context.ts]
-import { definePlugin, defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast'
+import { ast, definePlugin, defineGenerator } from '@kubb/core'
 
 export const pluginExample = definePlugin(() => ({
   name: 'plugin-example',
@@ -372,10 +368,10 @@ export const pluginExample = definePlugin(() => ({
           name: 'example-generator',
           operation(node, genCtx) {
             return [
-              createFile({
+              ast.factory.createFile({
                 baseName: `${node.operationId}.ts`,
                 path: `${genCtx.root}/${node.operationId}.ts`,
-                sources: [createSource({ nodes: [createText(`// output: ${outputPath}\n`)] })],
+                sources: [ast.factory.createSource({ nodes: [ast.factory.createText(`// output: ${outputPath}\n`)] })],
               }),
             ]
           },
@@ -435,8 +431,7 @@ Use `createKubb` from `@kubb/core` to create an in-process build and verify that
 ```typescript twoslash [plugin.test.ts]
 // @errors: 2307
 import { describe, it, expect } from 'vitest'
-import { createKubb, definePlugin, defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast'
+import { ast, createKubb, definePlugin, defineGenerator } from '@kubb/core'
 
 const pluginExample = definePlugin(() => ({
   name: 'plugin-example',
@@ -447,10 +442,10 @@ const pluginExample = definePlugin(() => ({
           name: 'example-generator',
           operation(node, genCtx) {
             return [
-              createFile({
+              ast.factory.createFile({
                 baseName: `${node.operationId}.ts`,
                 path: `${genCtx.root}/${node.operationId}.ts`,
-                sources: [createSource({ nodes: [createText(`// ${node.operationId}\n`)] })],
+                sources: [ast.factory.createSource({ nodes: [ast.factory.createText(`// ${node.operationId}\n`)] })],
               }),
             ]
           },
@@ -592,19 +587,18 @@ The [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins) repository conta
 Generate code for each schema definition in the spec:
 
 ```typescript twoslash [schema-generator.ts]
-import { defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast'
+import { ast, defineGenerator } from '@kubb/core'
 
 export const schemaGenerator = defineGenerator({
   name: 'schema-generator',
   schema(node, ctx) {
     return [
-      createFile({
+      ast.factory.createFile({
         baseName: `${node.name}.ts`,
         path: `${ctx.root}/${node.name}.ts`,
         sources: [
-          createSource({
-            nodes: [createText(`// Schema: ${node.name}\nexport type ${node.name} = unknown\n`)],
+          ast.factory.createSource({
+            nodes: [ast.factory.createText(`// Schema: ${node.name}\nexport type ${node.name} = unknown\n`)],
           }),
         ],
       }),
@@ -618,8 +612,7 @@ export const schemaGenerator = defineGenerator({
 Declare `dependencies` when your plugin must run after another plugin so Kubb verifies the dependency at startup:
 
 ```typescript twoslash [plugin-with-dep.ts]
-import { definePlugin, defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast'
+import { ast, definePlugin, defineGenerator } from '@kubb/core'
 
 export const pluginCustom = definePlugin(() => ({
   name: 'plugin-custom',
@@ -635,10 +628,10 @@ export const pluginCustom = definePlugin(() => ({
             const resolver = genCtx.getResolver('plugin-ts')
             const name = resolver.default(node.operationId, 'function')
             return [
-              createFile({
+              ast.factory.createFile({
                 baseName: `${name}.custom.ts`,
                 path: `${genCtx.root}/${name}.custom.ts`,
-                sources: [createSource({ nodes: [createText(`// extends ${name}\n`)] })],
+                sources: [ast.factory.createSource({ nodes: [ast.factory.createText(`// extends ${name}\n`)] })],
               }),
             ]
           },

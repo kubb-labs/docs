@@ -17,8 +17,7 @@ An adapter is the single entry point that turns your input specification into th
 A minimal adapter declares its name and produces an empty [`InputNode`](/docs/5.x/concepts/ast). Plugins won't emit anything for an empty AST, so start here and then populate `schemas` and `operations` from your spec.
 
 ```typescript twoslash [adapterCustom.ts]
-import { createAdapter } from '@kubb/core'
-import { createInput } from '@kubb/ast'
+import { ast, createAdapter } from '@kubb/core'
 import type { AdapterFactoryOptions } from '@kubb/core'
 
 type AdapterCustom = AdapterFactoryOptions<'adapter-custom', { strict?: boolean }, { strict: boolean }>
@@ -28,7 +27,7 @@ export const adapterCustom = createAdapter<AdapterCustom>((options) => ({
   options: { strict: options?.strict ?? false },
   document: null,
   async parse(_source) {
-    return createInput({ schemas: [], operations: [] })
+    return ast.factory.createInput({ schemas: [], operations: [] })
   },
   getImports() {
     return []
@@ -84,18 +83,16 @@ type AdapterSource = { type: 'path'; path: string } | { type: 'data'; data: stri
 The build driver prefers `stream()` when an adapter implements it. For `parse()`-only adapters, the driver wraps the result in a reusable `AsyncIterable` so the rest of the pipeline stays stream-shaped.
 
 ```typescript twoslash [adapterStream.ts]
-import { createAdapter } from '@kubb/core'
-import { createStreamInput } from '@kubb/ast'
+import { ast, createAdapter } from '@kubb/core'
 import type { AdapterFactoryOptions } from '@kubb/core'
-import type { SchemaNode, OperationNode } from '@kubb/ast'
 
 type AdapterStream = AdapterFactoryOptions<'adapter-stream', Record<string, never>>
 
-async function* streamSchemas(): AsyncIterable<SchemaNode> {
+async function* streamSchemas(): AsyncIterable<ast.SchemaNode> {
   // yield each parsed schema as soon as it is ready
 }
 
-async function* streamOperations(): AsyncIterable<OperationNode> {
+async function* streamOperations(): AsyncIterable<ast.OperationNode> {
   // yield each parsed operation as soon as it is ready
 }
 
@@ -107,10 +104,11 @@ export const adapterStream = createAdapter<AdapterStream>(() => ({
     throw new Error('Use stream() instead — adapter-stream does not support eager parsing.')
   },
   async stream() {
-    return createStreamInput(streamSchemas(), streamOperations(), {
-      title: 'Streamed spec',
-      circularNames: [],
-      enumNames: [],
+    return ast.factory.createInput({
+      stream: true,
+      schemas: streamSchemas(),
+      operations: streamOperations(),
+      meta: { title: 'Streamed spec', circularNames: [], enumNames: [] },
     })
   },
   getImports() {
@@ -122,7 +120,7 @@ export const adapterStream = createAdapter<AdapterStream>(() => ({
 }))
 ```
 
-Use `createStreamInput(schemas, operations, meta?)` from [`@kubb/ast`](/docs/5.x/concepts/ast) to assemble the result. The `meta` argument is optional but recommended. When you set it, plugins can read `title`, `version`, and `baseURL` before the first node is yielded.
+Use `ast.factory.createInput({ stream: true, schemas, operations, meta })` (see [AST](/docs/5.x/concepts/ast)) to assemble the result. The `meta` field is optional but recommended. When you set it, plugins can read `title`, `version`, and `baseURL` before the first node is yielded.
 
 ## Naming convention
 
@@ -139,8 +137,7 @@ Adapters follow the same layout as plugins so [`getResolver`](/docs/5.x/api/core
 Export the runtime name as a `satisfies`-typed constant so consumers can reference it without typos:
 
 ```typescript twoslash [naming.ts]
-import { createAdapter } from '@kubb/core'
-import { createInput } from '@kubb/ast'
+import { ast, createAdapter } from '@kubb/core'
 import type { AdapterFactoryOptions } from '@kubb/core'
 
 export type AdapterExample = AdapterFactoryOptions<'example', { strict?: boolean }, { strict: boolean }, unknown>
@@ -151,7 +148,7 @@ export const adapterExample = createAdapter<AdapterExample>((options) => ({
   options: { strict: options.strict ?? false },
   document: null,
   async parse() {
-    return createInput()
+    return ast.factory.createInput()
   },
   getImports() {
     return []
@@ -215,10 +212,8 @@ export default defineConfig({
 Use `createAdapter` with `AdapterFactoryOptions` to model your input format. The example below sketches a JSON Schema adapter that exposes the parsed document for plugins:
 
 ```typescript twoslash [adapterJsonSchema.ts]
-import { createAdapter } from '@kubb/core'
-import { createInput, createImport, createSchema } from '@kubb/ast'
+import { ast, createAdapter } from '@kubb/core'
 import type { AdapterFactoryOptions } from '@kubb/core'
-import type { InputNode } from '@kubb/ast'
 
 type Document = { $schema: string; definitions?: Record<string, unknown> }
 
@@ -233,21 +228,21 @@ export const adapterJsonSchema = createAdapter<AdapterJsonSchema>((options) => {
     get document() {
       return document
     },
-    async parse(source): Promise<InputNode> {
+    async parse(source): Promise<ast.InputNode> {
       if (source.type !== 'path') {
         throw new Error('adapter-json-schema requires { type: "path" } input')
       }
 
       document = { $schema: 'https://json-schema.org/draft/2020-12/schema', definitions: {} }
-      return createInput({
-        schemas: Object.keys(document.definitions ?? {}).map((name) => createSchema({ name, type: 'object', properties: [] })),
+      return ast.factory.createInput({
+        schemas: Object.keys(document.definitions ?? {}).map((name) => ast.factory.createSchema({ name, type: 'object', properties: [] })),
         operations: [],
       })
     },
     getImports(node, resolve) {
       if (node.type === 'ref' && node.ref) {
         const resolved = resolve(node.ref)
-        return [createImport({ name: [resolved.name], path: resolved.path })]
+        return [ast.factory.createImport({ name: [resolved.name], path: resolved.path })]
       }
       return []
     },
@@ -299,8 +294,7 @@ The adapter derives a small context from each schema, then runs it through an or
 ### Validate before parsing
 
 ```typescript twoslash [adapterValidated.ts]
-import { createAdapter } from '@kubb/core'
-import { createInput } from '@kubb/ast'
+import { ast, createAdapter } from '@kubb/core'
 import type { AdapterFactoryOptions } from '@kubb/core'
 
 type AdapterValidated = AdapterFactoryOptions<'adapter-validated', Record<string, never>>
@@ -313,7 +307,7 @@ export const adapterValidated = createAdapter<AdapterValidated>(() => ({
     if (source.type !== 'path' || !source.path.endsWith('.yaml')) {
       throw new Error('Expected a .yaml input file')
     }
-    return createInput({ schemas: [], operations: [] })
+    return ast.factory.createInput({ schemas: [], operations: [] })
   },
   getImports() {
     return []

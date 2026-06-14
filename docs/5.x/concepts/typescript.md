@@ -92,8 +92,7 @@ export const pluginExample = definePlugin<PluginExample>((options) => {
 Adapters follow the same pattern with [`AdapterFactoryOptions`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/types.ts). Pin `TName`, `TOptions`, `TResolvedOptions`, and the parsed `TDocument` once:
 
 ```typescript twoslash [adapter-example.ts]
-import { createAdapter } from '@kubb/core'
-import { createInput } from '@kubb/ast'
+import { ast, createAdapter } from '@kubb/core'
 import type { AdapterFactoryOptions } from '@kubb/core'
 
 type Options = { strict?: boolean }
@@ -106,7 +105,7 @@ export const adapterExample = createAdapter<AdapterExample>((options) => ({
   options: { strict: options.strict ?? false },
   document: null,
   async parse() {
-    return createInput()
+    return ast.factory.createInput()
   },
   getImports() {
     return []
@@ -124,15 +123,14 @@ The same alias flows into [`Adapter<AdapterExample>`](https://github.com/kubb-la
 Parsers receive a [`FileNode<TMeta>`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/nodes/file.ts) in `parse`, so typing the parameter keeps plugin-attached metadata typed:
 
 ```typescript twoslash [parser-typed.ts]
-import { defineParser } from '@kubb/core'
-import type { FileNode } from '@kubb/ast'
+import { ast, defineParser } from '@kubb/core'
 
 type Meta = { language: 'ts' | 'tsx' }
 
 export const parserTyped = defineParser({
   name: 'parser-typed',
   extNames: ['.ts'],
-  parse(file: FileNode<Meta>) {
+  parse(file: ast.FileNode<Meta>) {
     const meta = file.meta // typed as Meta
     return `// ${meta?.language ?? 'unknown'}\n`
   },
@@ -147,20 +145,19 @@ export const parserTyped = defineParser({
 The [`SchemaNode`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/nodes/schema.ts#L640) union shares one `kind: 'Schema'` discriminator and uses `node.type` to differentiate variants. Use the type guards from [`@kubb/ast`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/guards.ts) to narrow without casts:
 
 ```typescript twoslash [narrow.ts]
-import { isSchemaNode, narrowSchema } from '@kubb/ast'
-import type { SchemaNode } from '@kubb/ast'
+import { ast } from '@kubb/core'
 
-declare const node: SchemaNode
+declare const node: ast.SchemaNode
 
-const ref = narrowSchema(node, 'ref')
+const ref = ast.narrowSchema(node, 'ref')
 if (ref?.ref) {
   const refName: string = ref.ref
   console.log(refName)
 }
 
 const child: unknown = node
-if (isSchemaNode(child)) {
-  // child is now SchemaNode
+if (ast.isSchemaNode(child)) {
+  // child is now ast.SchemaNode
   const _kind: 'Schema' = child.kind
 }
 ```
