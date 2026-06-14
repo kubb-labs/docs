@@ -142,7 +142,7 @@ export const parserTyped = defineParser({
 
 ## Narrowing AST nodes
 
-The [`SchemaNode`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/nodes/schema.ts#L640) union shares one `kind: 'Schema'` discriminator and uses `node.type` to differentiate variants. Use `narrowSchema` from [`@kubb/ast`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/guards.ts) to narrow to a specific variant without casts:
+The [`SchemaNode`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/nodes/schema.ts#L640) union shares one `kind: 'Schema'` discriminator and uses `node.type` to differentiate variants. Use `narrowSchema` to narrow a `SchemaNode` to a specific variant, and `isHttpOperationNode` to narrow an `OperationNode` to an `HttpOperationNode`:
 
 ```typescript twoslash [narrow.ts]
 import { ast } from '@kubb/core'
@@ -153,6 +153,12 @@ const ref = ast.narrowSchema(node, 'ref')
 if (ref?.ref) {
   const refName: string = ref.ref
   console.log(refName)
+}
+
+declare const op: ast.OperationNode
+if (ast.isHttpOperationNode(op)) {
+  // op is now HttpOperationNode — method and path are non-nullable
+  const _method: ast.HttpMethod = op.method
 }
 ```
 

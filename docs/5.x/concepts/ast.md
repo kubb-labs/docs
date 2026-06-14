@@ -285,22 +285,23 @@ Structural rewrites you can apply inside `transform` to normalize schemas:
 
 ## Dispatch
 
-`dispatch` walks an ordered table of rules and returns the first node a rule produces. Adapters use it to map a source spec's shapes onto AST nodes without a sprawling `if`/`else` chain: each rule pairs a `match` predicate with a `convert` function, and rules are tried top to bottom.
+Adapters map a source spec's shapes onto AST nodes. The idiomatic pattern is a plain function with a chain of `if` branches, one per source type. List higher-precedence shapes first and return a fallback at the end.
 
-```typescript [dispatch.ts]
+```typescript twoslash [dispatch.ts]
 import { ast } from '@kubb/core'
 
 type Ctx = { type: string; nullable: boolean }
 
-const rules: Array<ast.DispatchRule<Ctx, ReturnType<typeof ast.factory.createSchema>>> = [
-  { name: 'string', match: (ctx) => ctx.type === 'string', convert: () => ast.factory.createSchema({ type: 'string' }) },
-  { name: 'number', match: (ctx) => ctx.type === 'number', convert: () => ast.factory.createSchema({ type: 'number' }) },
-]
+function toSchema(ctx: Ctx): ReturnType<typeof ast.factory.createSchema> {
+  if (ctx.type === 'string') return ast.factory.createSchema({ type: 'string' })
+  if (ctx.type === 'number') return ast.factory.createSchema({ type: 'number' })
+  return ast.factory.createSchema({ type: 'any' })
+}
 
-const node = ast.dispatch(rules, { type: 'string', nullable: false }) ?? ast.factory.createSchema({ type: 'any' })
+const node = toSchema({ type: 'string', nullable: false })
 ```
 
-Order is significant, so list higher-precedence shapes first. A rule whose `match` returns `true` may still `convert` to `null` to defer to the next rule (useful when a broad predicate, such as "has a `format`", only handles some values). `dispatch` returns `null` when no rule produces a node, leaving the caller to apply its own fallback. See [Concepts: Adapters](/docs/5.x/concepts/adapters) for how an adapter builds its schema table on top of this.
+A branch whose condition returns `true` can still return the fallback to defer to the next branch (useful when a broad predicate, such as "has a `format`", only handles some values). See [Concepts: Adapters](/docs/5.x/concepts/adapters) for how an adapter builds its schema table on top of this pattern.
 
 ## Printers
 
