@@ -230,8 +230,6 @@ const root = ast.factory.createInput({ schemas: [], operations: [] })
 
 await ast.walk(root, {
   async schema(node) {
-    if (!ast.isSchemaNode(node)) return
-
     const obj = ast.narrowSchema(node, 'object')
     if (obj) {
       console.log(`object with ${obj.properties.length} properties`)
@@ -241,16 +239,17 @@ await ast.walk(root, {
       console.log(`reference to: ${node.ref}`)
     }
   },
+  async operation(node) {
+    if (ast.isHttpOperationNode(node)) {
+      console.log(`${node.method} ${node.path}`)
+    }
+  },
 })
-
-console.log(ast.isInputNode(root)) // true
-console.log(ast.isOperationNode(root)) // false
-console.log(ast.isOutputNode(root)) // false
 ```
 
 ## Refs and naming helpers
 
-The ref and naming helpers live in the `@kubb/ast/utils` subpath, together with the other string and code-building utilities. `collectImports` stays in the main package because it operates on AST nodes.
+The ref and naming helpers live in the `@kubb/ast/utils` subpath, together with the other string and code-building utilities.
 
 | Helper              | Import from       | Purpose                                             |
 | ------------------- | ----------------- | --------------------------------------------------- |
@@ -258,7 +257,6 @@ The ref and naming helpers live in the `@kubb/ast/utils` subpath, together with 
 | `childName`         | `@kubb/ast/utils` | Derive a child property name from context.          |
 | `enumPropName`      | `@kubb/ast/utils` | Convert an enum value into a valid property name.   |
 | `findDiscriminator` | `@kubb/ast/utils` | Locate a discriminator on a `oneOf`/`union` schema. |
-| `collectImports`    | `@kubb/ast`       | Collect imports required by a schema subtree.       |
 
 ```typescript twoslash [refs.ts]
 import { extractRefName } from '@kubb/ast/utils'
@@ -284,25 +282,6 @@ Structural rewrites you can apply inside `transform` to normalize schemas:
 | `setDiscriminatorEnum`     | Attach a discriminator enum to union members.     |
 | `setEnumName`              | Name an anonymous enum schema.                    |
 | `simplifyUnion`            | Remove duplicates and dead branches from a union. |
-
-## Dispatch
-
-`dispatch` walks an ordered table of rules and returns the first node a rule produces. Adapters use it to map a source spec's shapes onto AST nodes without a sprawling `if`/`else` chain: each rule pairs a `match` predicate with a `convert` function, and rules are tried top to bottom.
-
-```typescript twoslash [dispatch.ts]
-import { ast } from '@kubb/core'
-
-type Ctx = { type: string; nullable: boolean }
-
-const rules: Array<ast.DispatchRule<Ctx, ReturnType<typeof ast.factory.createSchema>>> = [
-  { name: 'string', match: (ctx) => ctx.type === 'string', convert: () => ast.factory.createSchema({ type: 'string' }) },
-  { name: 'number', match: (ctx) => ctx.type === 'number', convert: () => ast.factory.createSchema({ type: 'number' }) },
-]
-
-const node = ast.dispatch(rules, { type: 'string', nullable: false }) ?? ast.factory.createSchema({ type: 'any' })
-```
-
-Order is significant, so list higher-precedence shapes first. A rule whose `match` returns `true` may still `convert` to `null` to defer to the next rule (useful when a broad predicate, such as "has a `format`", only handles some values). `dispatch` returns `null` when no rule produces a node, leaving the caller to apply its own fallback. See [Concepts: Adapters](/docs/5.x/concepts/adapters) for how an adapter builds its schema table on top of this.
 
 ## Printers
 
