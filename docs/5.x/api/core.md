@@ -1,7 +1,7 @@
 ---
 layout: doc
 title: Core API
-description: Public API surface of @kubb/core including createKubb, definePlugin, defineGenerator, defineResolver, defineParser, defineMiddleware, createAdapter, createStorage, Diagnostics, KubbDriver, and all public types.
+description: Public API surface of @kubb/core including createKubb, definePlugin, defineGenerator, defineResolver, defineParser, createAdapter, createStorage, Diagnostics, KubbDriver, and all public types.
 outline: [2, 3]
 ---
 
@@ -39,7 +39,6 @@ import {
   defineParser,
   definePlugin,
   defineResolver,
-  defineMiddleware,
   createAdapter,
   createKubb,
   createStorage,
@@ -516,15 +515,15 @@ Access the driver via `ctx.driver` inside generator context methods, or from the
 
 - [Plugin concepts: lifecycle events](../concepts/plugins#lifecycle-events)
 
-### `URLPath`
+### `Url`
 
-`URLPath` is a helper class for working with OpenAPI path strings. Its primary use is detecting whether a given path string is a remote URL rather than a local file path.
+`Url` is a helper class for working with OpenAPI path strings. Use `Url.canParse` to detect whether a given path string is a remote URL rather than a local file path.
 
 ```typescript twoslash
-import { URLPath } from '@kubb/core'
+import { Url } from '@kubb/core'
 
-new URLPath('https://petstore.swagger.io/v2/swagger.json').isURL // true
-new URLPath('./petStore.yaml').isURL // false
+Url.canParse('https://petstore.swagger.io/v2/swagger.json') // true
+Url.canParse('./petStore.yaml') // false
 ```
 
 ### Narrowing `config.input`

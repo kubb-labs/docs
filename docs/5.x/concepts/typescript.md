@@ -7,7 +7,7 @@ outline: deep
 
 # TypeScript
 
-Kubb is built in TypeScript end-to-end. Every public surface accepts a generic that pins down options, resolved options, and the resolver shape. This includes [`defineConfig`](https://github.com/kubb-labs/kubb/blob/main/packages/kubb/src/defineConfig.ts), [`definePlugin`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/definePlugin.ts#L79), [`defineMiddleware`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineMiddleware.ts), [`defineParser`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineParser.ts), [`createAdapter`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/createAdapter.ts), [`defineGenerator`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineGenerator.ts), and the AST factories. The result is a config file where IntelliSense leads you through every choice and the compiler catches mistakes before generation runs.
+Kubb is built in TypeScript end-to-end. Every public surface accepts a generic that pins down options, resolved options, and the resolver shape. This includes [`defineConfig`](https://github.com/kubb-labs/kubb/blob/main/packages/kubb/src/defineConfig.ts), [`definePlugin`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/definePlugin.ts#L79), [`defineParser`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineParser.ts), [`createAdapter`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/createAdapter.ts), [`defineGenerator`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineGenerator.ts), and the AST factories. The result is a config file where IntelliSense leads you through every choice and the compiler catches mistakes before generation runs.
 
 ## Quick start
 
@@ -142,7 +142,7 @@ export const parserTyped = defineParser({
 
 ## Narrowing AST nodes
 
-The [`SchemaNode`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/nodes/schema.ts#L640) union shares one `kind: 'Schema'` discriminator and uses `node.type` to differentiate variants. Use the type guards from [`@kubb/ast`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/guards.ts) to narrow without casts:
+The [`SchemaNode`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/nodes/schema.ts#L640) union shares one `kind: 'Schema'` discriminator and uses `node.type` to differentiate variants. Use `narrowSchema` from [`@kubb/ast`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/guards.ts) to narrow to a specific variant without casts:
 
 ```typescript twoslash [narrow.ts]
 import { ast } from '@kubb/core'
@@ -154,15 +154,9 @@ if (ref?.ref) {
   const refName: string = ref.ref
   console.log(refName)
 }
-
-const child: unknown = node
-if (ast.isSchemaNode(child)) {
-  // child is now ast.SchemaNode
-  const _kind: 'Schema' = child.kind
-}
 ```
 
-Available guards on [`@kubb/ast`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/guards.ts): `isInputNode`, `isOutputNode`, `isOperationNode`, `isHttpOperationNode`, `isSchemaNode`. For schema variants use `narrowSchema(node, type)`; for HTTP operations use `isHttpOperationNode(node)` to narrow to an `HttpOperationNode` with non-nullable `method`/`path`.
+Available guards on [`@kubb/ast`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/guards.ts): `isHttpOperationNode`, `narrowSchema`. Use `isHttpOperationNode(node)` to narrow an `OperationNode` to an `HttpOperationNode` with non-nullable `method` and `path`. Use `narrowSchema(node, type)` to narrow a `SchemaNode` to a specific variant.
 
 ## See also
 
