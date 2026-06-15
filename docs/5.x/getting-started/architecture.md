@@ -7,14 +7,14 @@ outline: [2, 3]
 
 # Architecture
 
-Kubb transforms API specifications into code through a layered pipeline: the [adapter](/docs/5.x/concepts/adapters) parses the spec into a universal [AST](/docs/5.x/concepts/ast), [plugins](/plugins) walk the AST and emit `FileNode`s, [parsers](/docs/5.x/concepts/parsers) convert each `FileNode` into source code, and [storage](/docs/5.x/concepts/storage) writes the result to disk.
+Kubb transforms API specifications into code through a layered pipeline: the [adapter](/docs/5.x/concepts/adapters) parses the spec into a universal [AST](/docs/5.x/concepts/ast), [macros](/docs/5.x/concepts/macros) rewrite AST nodes before a plugin reads them, [plugins](/plugins) walk the AST and emit `FileNode`s, [parsers](/docs/5.x/concepts/parsers) convert each `FileNode` into source code, and [storage](/docs/5.x/concepts/storage) writes the result to disk.
 
 ## Pipeline overview
 
 ```mermaid
 flowchart LR
     Config["Config\nkubb.config.ts"] --> Setup["Setup\nAdapter → AST"]
-    Setup --> Build["Build\nPlugins · Renderer"]
+    Setup --> Build["Build\nMacros · Plugins · Renderer"]
     Build --> FileProcessor["File processor\nParsers → Storage"]
 ```
 
@@ -82,6 +82,33 @@ InputNode
 | `walk(root, visitors)`      | Async traversal for logging, validation, and side effects.            |
 | `transform(root, visitors)` | Produces a modified copy of the tree. Return `null` to remove a node. |
 | `collect(root, visitors)`   | Gathers matching nodes into a flat array.                             |
+
+## [Macros](/docs/5.x/concepts/macros)
+
+```mermaid
+flowchart LR
+    InputNode["InputNode"] --> Macros["applyMacros(node, [...])"]
+    Macros --> Transformed["InputNode\ntransformed"]
+```
+
+Macros are the second layer of [`@kubb/ast`](/docs/5.x/concepts/ast). A macro is a named, composable transform that rewrites schema and operation nodes before a plugin's generators print code, so you can rename symbols, retype fields, or normalize shapes without forking an adapter or a generator. Because macros run on the shared AST, the same macro works across every adapter and every output target.
+
+Macros run per plugin, so one plugin's macros never change the nodes another plugin sees. Pass them through a plugin's `macros` option, or register them from `kubb:plugin:setup` with `addMacro`. They run before resolver options are computed, so a renamed `operationId` or `SchemaNode.name` flows into `resolveOptions`, `resolvePath`, and `resolveFile`.
+
+```typescript twoslash [kubb.config.ts]
+// @noErrors
+import { defineConfig } from 'kubb'
+import { pluginTs } from '@kubb/plugin-ts'
+import { macroSimplifyUnion } from '@kubb/ast/macros'
+
+export default defineConfig({
+  input: { path: './petStore.yaml' },
+  output: { path: './src/gen' },
+  plugins: [pluginTs({ macros: [macroSimplifyUnion] })],
+})
+```
+
+See [Macros](/docs/5.x/concepts/macros) for writing macros, composing them, and the built-in presets.
 
 ## Plugins
 
@@ -205,7 +232,7 @@ export default defineConfig({
 | [`kubb`](/docs/5.x/api/core)               | Umbrella package. Exports `defineConfig` and bundles `adapterOas`, `parserTs`, `parserTsx`, and `pluginBarrel` for a zero-config setup.                                          |
 | [`@kubb/core`](/docs/5.x/api/core)         | Lower-level runtime with `createKubb`, `definePlugin`, `defineParser`, `createAdapter`, and storage APIs. Use for programmatic generation or custom tooling.                     |
 | [`@kubb/cli`](/docs/5.x/api/commands/)     | Provides the `kubb` command-line binary. Reads `kubb.config.ts` and runs the generation pipeline.                                                                                |
-| [`@kubb/ast`](/docs/5.x/concepts/ast)      | Universal AST layer. Includes all node factories, `walk`, `transform`, `collect`, type guards, and ref helpers.                                                                  |
+| [`@kubb/ast`](/docs/5.x/concepts/ast)      | Universal AST layer. Includes all node factories, `walk`, `transform`, `collect`, type guards, and ref helpers. The macro engine lives on the root and the presets on `@kubb/ast/macros`. |
 | [`@kubb/parser-ts`](/parsers/parser-ts)    | TypeScript and TSX parser. Included automatically with the `kubb` package.                                                                                                       |
 | [`@kubb/renderer-jsx`](/docs/5.x/api/core) | JSX-based rendering for plugins that build files from React components.                                                                                                          |
 
