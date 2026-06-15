@@ -114,6 +114,20 @@ Macros run before resolver options are computed, so a renamed `operationId` or `
 > [!TIP]
 > Keep macros pure. Build a new node and return it rather than mutating the input, since the AST is shared by reference.
 
+## Built-in macros
+
+`@kubb/ast/macros` ships the presets the OpenAPI adapter applies while it normalizes a spec. Import them like any macro and compose them with your own.
+
+`macroSimplifyUnion` drops union members that a broader member already covers, such as a single-value string enum next to a plain `string`. `macroDiscriminatorEnum` rewrites a discriminator property into a string enum of its allowed values, and `macroEnumName` names an inline enum from the schema and property it belongs to. The last two read options, so you call them to build a macro.
+
+```typescript twoslash [presets.ts]
+import { ast } from '@kubb/core'
+import { macroDiscriminatorEnum, macroSimplifyUnion } from '@kubb/ast/macros'
+
+const root = ast.factory.createInput({ schemas: [], operations: [] })
+const next = ast.applyMacros(root, [macroSimplifyUnion, macroDiscriminatorEnum({ propertyName: 'kind', values: ['cat', 'dog'] })])
+```
+
 ## Sharing macros
 
 A macro is a plain value, so you export it and import it wherever you need it. Group related macros in a module and reuse them across plugins and projects, the same way you reuse plugins.
