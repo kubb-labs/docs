@@ -17,13 +17,13 @@ outline: [2, 3]
 The `kubb init` wizard detects your package manager, asks where your spec lives and where generated files should go, lets you pick plugins, installs everything, and writes a `kubb.config.ts`.
 
 ```shell
-npx kubb init
+npx kubb@beta init
 ```
 
 Then run:
 
 ```shell
-npx kubb generate
+npx kubb@beta generate
 ```
 
 ## Manual installation
@@ -33,19 +33,19 @@ npx kubb generate
 ::: code-group
 
 ```shell [bun]
-bun add -d kubb
+bun add -d kubb@beta
 ```
 
 ```shell [pnpm]
-pnpm add -D kubb
+pnpm add -D kubb@beta
 ```
 
 ```shell [npm]
-npm install --save-dev kubb
+npm install --save-dev kubb@beta
 ```
 
 ```shell [yarn]
-yarn add -D kubb
+yarn add -D kubb@beta
 ```
 
 :::
@@ -60,19 +60,19 @@ Each output format is its own package. Install only what you need.
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-ts @kubb/plugin-client @kubb/plugin-react-query
+bun add -d @kubb/plugin-ts@beta @kubb/plugin-client@beta @kubb/plugin-react-query@beta
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-ts @kubb/plugin-client @kubb/plugin-react-query
+pnpm add -D @kubb/plugin-ts@beta @kubb/plugin-client@beta @kubb/plugin-react-query@beta
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/plugin-ts @kubb/plugin-client @kubb/plugin-react-query
+npm install --save-dev @kubb/plugin-ts@beta @kubb/plugin-client@beta @kubb/plugin-react-query@beta
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-ts @kubb/plugin-client @kubb/plugin-react-query
+yarn add -D @kubb/plugin-ts@beta @kubb/plugin-client@beta @kubb/plugin-react-query@beta
 ```
 
 :::

@@ -12,19 +12,19 @@ outline: [2, 3]
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/core
+bun add -d @kubb/core@beta
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/core
+pnpm add -D @kubb/core@beta
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/core
+npm install --save-dev @kubb/core@beta
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/core
+yarn add -D @kubb/core@beta
 ```
 
 :::

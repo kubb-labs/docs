@@ -121,19 +121,19 @@ The default parser for TypeScript and JavaScript output. It uses the official Ty
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/parser-ts
+bun add -d @kubb/parser-ts@beta
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/parser-ts
+pnpm add -D @kubb/parser-ts@beta
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/parser-ts
+npm install --save-dev @kubb/parser-ts@beta
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/parser-ts
+yarn add -D @kubb/parser-ts@beta
 ```
 
 :::

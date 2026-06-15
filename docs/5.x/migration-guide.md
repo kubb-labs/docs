@@ -151,31 +151,31 @@ In v4, every plugin lived in [`kubb-labs/kubb`](https://github.com/kubb-labs/kub
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-ts @kubb/plugin-zod @kubb/plugin-client \
-            @kubb/plugin-react-query @kubb/plugin-vue-query @kubb/plugin-swr \
-            @kubb/plugin-faker @kubb/plugin-msw \
-            @kubb/plugin-mcp @kubb/plugin-cypress @kubb/plugin-redoc
+bun add -d @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-client@beta \
+            @kubb/plugin-react-query@beta @kubb/plugin-vue-query@beta @kubb/plugin-swr@beta \
+            @kubb/plugin-faker@beta @kubb/plugin-msw@beta \
+            @kubb/plugin-mcp@beta @kubb/plugin-cypress@beta @kubb/plugin-redoc@beta
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-ts @kubb/plugin-zod @kubb/plugin-client \
-            @kubb/plugin-react-query @kubb/plugin-vue-query @kubb/plugin-swr \
-            @kubb/plugin-faker @kubb/plugin-msw \
-            @kubb/plugin-mcp @kubb/plugin-cypress @kubb/plugin-redoc
+pnpm add -D @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-client@beta \
+            @kubb/plugin-react-query@beta @kubb/plugin-vue-query@beta @kubb/plugin-swr@beta \
+            @kubb/plugin-faker@beta @kubb/plugin-msw@beta \
+            @kubb/plugin-mcp@beta @kubb/plugin-cypress@beta @kubb/plugin-redoc@beta
 ```
 
 ```shell [npm]
-npm install -D @kubb/plugin-ts @kubb/plugin-zod @kubb/plugin-client \
-               @kubb/plugin-react-query @kubb/plugin-vue-query @kubb/plugin-swr \
-               @kubb/plugin-faker @kubb/plugin-msw \
-               @kubb/plugin-mcp @kubb/plugin-cypress @kubb/plugin-redoc
+npm install -D @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-client@beta \
+               @kubb/plugin-react-query@beta @kubb/plugin-vue-query@beta @kubb/plugin-swr@beta \
+               @kubb/plugin-faker@beta @kubb/plugin-msw@beta \
+               @kubb/plugin-mcp@beta @kubb/plugin-cypress@beta @kubb/plugin-redoc@beta
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-ts @kubb/plugin-zod @kubb/plugin-client \
-            @kubb/plugin-react-query @kubb/plugin-vue-query @kubb/plugin-swr \
-            @kubb/plugin-faker @kubb/plugin-msw \
-            @kubb/plugin-mcp @kubb/plugin-cypress @kubb/plugin-redoc
+yarn add -D @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-client@beta \
+            @kubb/plugin-react-query@beta @kubb/plugin-vue-query@beta @kubb/plugin-swr@beta \
+            @kubb/plugin-faker@beta @kubb/plugin-msw@beta \
+            @kubb/plugin-mcp@beta @kubb/plugin-cypress@beta @kubb/plugin-redoc@beta
 ```
 
 :::

@@ -48,7 +48,7 @@ The CLI and generated code run on **Bun** without extra configuration. Deno is n
 Re-run `kubb generate`. Use the [`clean`](/docs/5.x/reference/configuration#output-clean) option to remove stale files before each run.
 
 ```sh
-npx kubb generate
+npx kubb@beta generate
 ```
 
 ### Do I commit generated files to Git?

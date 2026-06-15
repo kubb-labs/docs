@@ -168,19 +168,19 @@ Official adapter for OpenAPI 2.0 (Swagger), OpenAPI 3.0, and OpenAPI 3.1. Every 
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/adapter-oas
+bun add -d @kubb/adapter-oas@beta
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/adapter-oas
+pnpm add -D @kubb/adapter-oas@beta
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/adapter-oas
+npm install --save-dev @kubb/adapter-oas@beta
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/adapter-oas
+yarn add -D @kubb/adapter-oas@beta
 ```
 
 :::
