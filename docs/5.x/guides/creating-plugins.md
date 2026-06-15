@@ -112,7 +112,7 @@ Scaffold the directories:
 ```bash
 mkdir kubb-plugin-example && cd kubb-plugin-example
 npm init -y
-npm install --save-peer @kubb/core @kubb/ast
+npm install --save-peer @kubb/core@beta @kubb/ast@beta
 npm install --save-dev typescript @types/node vitest
 mkdir -p src/generators src/resolvers mocks
 ```

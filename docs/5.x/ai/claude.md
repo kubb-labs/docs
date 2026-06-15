@@ -31,7 +31,7 @@ then install the plugin:
 The commands run `npx kubb`, so install Kubb yourself, in the project or globally:
 
 ```shell
-npm install -D kubb
+npm install -D kubb@beta
 ```
 
 A `SessionStart` hook checks for `kubb` when a session starts and warns you when it is missing, so

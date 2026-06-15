@@ -10,7 +10,7 @@ outline: [2, 3]
 The interactive setup wizard. Answer a few questions and Kubb creates a `package.json` if one is missing, installs your chosen plugins, and writes a ready-to-use `kubb.config.ts`.
 
 ```terminal
-command: npx kubb init
+command: npx kubb@beta init
 output:
   - ◆  Welcome to Kubb!
   - ◇  Where is your OpenAPI spec?
@@ -31,7 +31,7 @@ output:
 Run the command in the directory where you want your Kubb project to live:
 
 ```shell
-npx kubb init
+npx kubb@beta init
 ```
 
 The wizard prompts for:
@@ -63,31 +63,31 @@ Each flag bypasses only its specific prompt and composes freely with `--yes`. Pr
 Initialize a project from scratch:
 
 ```shell
-npx kubb init
+npx kubb@beta init
 ```
 
 Initialize non-interactively with the defaults:
 
 ```shell
-npx kubb init --yes
+npx kubb@beta init --yes
 ```
 
 Initialize with a specific spec and output directory:
 
 ```shell
-npx kubb init --input ./openapi.yaml --output ./src/gen
+npx kubb@beta init --input ./openapi.yaml --output ./src/gen
 ```
 
 Initialize fully non-interactively with specific plugins:
 
 ```shell
-npx kubb init --input ./openapi.yaml --output ./src/gen --plugins plugin-ts,plugin-zod
+npx kubb@beta init --input ./openapi.yaml --output ./src/gen --plugins plugin-ts,plugin-zod
 ```
 
 Initialize with a plugin selection but still prompt for the spec path:
 
 ```shell
-npx kubb init --plugins plugin-ts,plugin-client,plugin-react-query
+npx kubb@beta init --plugins plugin-ts,plugin-client,plugin-react-query
 ```
 
 > [!TIP]

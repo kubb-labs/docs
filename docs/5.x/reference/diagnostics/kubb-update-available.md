@@ -25,13 +25,13 @@ It is informational, so it never fails the build. The check is skipped when you 
 Update the `@kubb/*` packages to pick up the latest fixes:
 
 ```shell
-npm install -g @kubb/cli
+npm install -g @kubb/cli@beta
 ```
 
 Update the per-project plugins through your package manager as well, for example:
 
 ```shell
-npm install @kubb/adapter-oas@latest @kubb/plugin-ts@latest
+npm install @kubb/adapter-oas@beta @kubb/plugin-ts@beta
 ```
 
 ## See also
