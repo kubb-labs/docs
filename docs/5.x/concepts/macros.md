@@ -116,7 +116,7 @@ Macros run before resolver options are computed, so a renamed `operationId` or `
 
 ## Built-in macros
 
-`@kubb/ast/macros` ships the presets the OpenAPI adapter applies while it normalizes a spec. Import them like any macro and compose them with your own.
+`@kubb/ast/macros` ships built-in macros for common schema normalizations that any adapter can apply. Import them like any macro and compose them with your own.
 
 `macroSimplifyUnion` drops union members that a broader member already covers, such as a single-value string enum next to a plain `string`. `macroDiscriminatorEnum` rewrites a discriminator property into a string enum of its allowed values, and `macroEnumName` names an inline enum from the schema and property it belongs to. The last two read options, so you call them to build a macro.
 
