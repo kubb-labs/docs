@@ -268,7 +268,7 @@ const myGenerator = defineGenerator({
 | `ctx.options`         | `TResolvedOptions`                                  | Per-node resolved options (after exclude/include/override filtering) |
 | `ctx.plugin`          | `Plugin`                                            | The owning plugin descriptor                                         |
 | `ctx.resolver`        | `Resolver`                                          | Resolver for the current plugin                                      |
-| `ctx.transformer`     | `Visitor \| undefined`                              | Deprecated composed view of this plugin's macros. Use the `macros` option or `addMacro`/`setMacros` |
+| `ctx.transformer`     | `Visitor \| undefined`                              | This plugin's macros composed into one visitor, applied to every node before generators run |
 | `ctx.driver`          | `KubbDriver`                                      | Plugin driver for cross-plugin access                                |
 | `ctx.hooks`           | `AsyncEventEmitter<KubbHooks>`                      | Event bus; subscribe to `KubbHooks` events                           |
 | `ctx.adapter`         | `Adapter`                                           | The adapter that parsed the input spec                               |
