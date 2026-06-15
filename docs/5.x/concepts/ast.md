@@ -135,7 +135,7 @@ The `@kubb/ast/factory` subpath also provides constructors for source files and 
 
 ## Visitors
 
-Three visitor functions cover the common traversal patterns. Visitor objects use lowercase, kind-style keys (`input`, `operation`, `schema`, `property`, `parameter`, `response`).
+Three visitor functions cover the common traversal patterns. Visitor objects use lowercase, kind-style keys (`input`, `operation`, `schema`, `property`, `parameter`, `response`). To rewrite nodes inside a plugin, reach for [macros](/docs/5.x/concepts/macros), which add names, ordering, and composition on top of `transform`.
 
 ### `walk`: async traversal with side effects
 
@@ -272,16 +272,15 @@ const name = extractRefName('#/components/schemas/Pet')
 | `httpMethods` | Map of supported HTTP verbs.               |
 | `schemaTypes` | Map of every schema `type` discriminant.   |
 
-## Transformers
+## Macros
 
-Structural rewrites you can apply inside `transform` to normalize schemas:
+A macro is a named, composable transform built on `transform`. Macros are the way plugins rewrite nodes before printing, with ordering, gating, and reuse that a bare visitor does not give you. See [Concepts: Macros](/docs/5.x/concepts/macros).
 
-| Export                     | Purpose                                           |
-| -------------------------- | ------------------------------------------------- |
-| `mergeAdjacentObjectsLazy` | Collapse neighboring object schemas into one.     |
-| `setDiscriminatorEnum`     | Attach a discriminator enum to union members.     |
-| `setEnumName`              | Name an anonymous enum schema.                    |
-| `simplifyUnion`            | Remove duplicates and dead branches from a union. |
+| Export          | Purpose                                          |
+| --------------- | ------------------------------------------------ |
+| `defineMacro`   | Type a macro and read it as one definition.      |
+| `composeMacros` | Fold an ordered list of macros into one visitor. |
+| `applyMacros`   | Run a list of macros over a node tree.           |
 
 ## Printers
 

@@ -207,7 +207,8 @@ export const pluginExample = definePlugin((options: { prefix?: string } = {}) =>
 | ---------------- | --------------------------------------- | --------------------------------------------------------------- |
 | `addGenerator`   | `(generator: Generator) => void`        | Register a generator for this plugin                            |
 | `setResolver`    | `(resolver: Partial<Resolver>) => void` | Set or partially override the file naming resolver              |
-| `setTransformer` | `(visitor: Visitor) => void`            | Set the AST transformer (pre-processes nodes before generators) |
+| `addMacro`       | `(macro: Macro) => void`                | Add a macro that rewrites AST nodes before generators           |
+| `setMacros`      | `(macros: Array<Macro>) => void`        | Replace this plugin's macros with a new list                    |
 | `setRenderer`    | `(renderer: RendererFactory) => void`   | Set the renderer factory for JSX-based generators               |
 | `setOptions`     | `(options: ResolvedOptions) => void`    | Set the resolved options used by generators                     |
 | `injectFile`     | `(file: UserFileNode) => void`          | Inject a raw file into the build output, bypassing generation   |
@@ -267,7 +268,7 @@ const myGenerator = defineGenerator({
 | `ctx.options`         | `TResolvedOptions`                                  | Per-node resolved options (after exclude/include/override filtering) |
 | `ctx.plugin`          | `Plugin`                                            | The owning plugin descriptor                                         |
 | `ctx.resolver`        | `Resolver`                                          | Resolver for the current plugin                                      |
-| `ctx.transformer`     | `Visitor \| undefined`                              | Composed transformer for the current plugin                          |
+| `ctx.transformer`     | `Visitor \| undefined`                              | This plugin's macros composed into one visitor                       |
 | `ctx.driver`          | `KubbDriver`                                      | Plugin driver for cross-plugin access                                |
 | `ctx.hooks`           | `AsyncEventEmitter<KubbHooks>`                      | Event bus; subscribe to `KubbHooks` events                           |
 | `ctx.adapter`         | `Adapter`                                           | The adapter that parsed the input spec                               |
