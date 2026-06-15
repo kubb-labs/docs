@@ -1402,14 +1402,14 @@ Overrides naming and path resolution for the generated composables. Supply only 
 |     Type: | `Partial<ResolverVueQuery>` |
 | Required: | `false`                     |
 
-### transformer
+### macros
 
-AST visitor applied to operation nodes before code is printed. Use this to rewrite operation IDs, tags, or descriptions across the entire output.
+A list of [macros](/docs/5.x/concepts/macros) applied to operation nodes before code is printed. Use this to rewrite operation IDs, tags, or descriptions across the entire output.
 
-|           |               |
-| --------: | :------------ |
-|     Type: | `ast.Visitor` |
-| Required: | `false`       |
+|           |                 |
+| --------: | :-------------- |
+|     Type: | `Array<Macro>`  |
+| Required: | `false`         |
 
 ## Dependencies
 

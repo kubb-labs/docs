@@ -1322,14 +1322,14 @@ export default defineConfig({
 })
 ```
 
-### transformer
+### macros
 
-AST visitor applied to operation nodes before code is printed. Use this to rewrite operation IDs, tags, or descriptions across the entire client.
+A list of [macros](/docs/5.x/concepts/macros) applied to operation nodes before code is printed. Use this to rewrite operation IDs, tags, or descriptions across the entire client.
 
-|           |           |
-| --------: | :-------- |
-|     Type: | `Visitor` |
-| Required: | `false`   |
+|           |                 |
+| --------: | :-------------- |
+|     Type: | `Array<Macro>`  |
+| Required: | `false`         |
 
 ```typescript [Prefix every operationId with "api_"]
 import { defineConfig } from 'kubb'
@@ -1340,11 +1340,14 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginClient({
-      transformer: {
-        operation(node) {
-          return { ...node, operationId: `api_${node.operationId}` }
+      macros: [
+        {
+          name: 'prefix-operation-id',
+          operation(node) {
+            return { ...node, operationId: `api_${node.operationId}` }
+          },
         },
-      },
+      ],
     }),
   ],
 })

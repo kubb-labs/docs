@@ -49,17 +49,17 @@ Delete these from every plugin and set them once on adapterOas():
 Inside a method, call `this.default(name, 'function')` to invoke the
 built-in logic as a fallback.
 
-## 5. Rename transformers.schema → transformer
-- transformer is now an AST visitor object:
-    transformer: { schema(node) { return … } }
+## 5. Rename transformers.schema → macros
+- schema transforms are now macros:
+    macros: [{ name: 'strip-descriptions', schema(node) { return … } }]
 
 ## 6. plugin-ts specific
-- Remove `mapper` (use printer or transformer instead).
+- Remove `mapper` (use printer or macros instead).
 - Remove `UNSTABLE_NAMING` (v5 always uses the new naming convention).
 
 ## 7. plugin-zod specific
 - Remove `version` (always Zod v4 in v5).
-- Remove `mapper` (use printer or transformer instead).
+- Remove `mapper` (use printer or macros instead).
 - Set zod dependency to ^4.
 
 ## 8. Rename output.barrelType → output.barrel (object)
@@ -549,9 +549,9 @@ pluginTs({
 
 :::
 
-### `transformers.schema` → `transformer`
+### `transformers.schema` → `macros`
 
-Schema-level transformations move to a [`transformer`](/docs/5.x/concepts/ast) visitor object. Returning `null` or `undefined` from a visitor method falls back to the preset transformer.
+Schema-level transformations move to [macros](/docs/5.x/concepts/macros). Returning `null` or `undefined` from a macro callback falls back to the preset behavior.
 
 ::: code-group
 
@@ -567,11 +567,14 @@ pluginZod({
 import { pluginZod } from '@kubb/plugin-zod'
 
 pluginZod({
-  transformer: {
-    schema(node) {
-      return { ...node, description: undefined }
+  macros: [
+    {
+      name: 'strip-descriptions',
+      schema(node) {
+        return { ...node, description: undefined }
+      },
     },
-  },
+  ],
 })
 ```
 
@@ -625,7 +628,7 @@ See the full reference in [`@kubb/plugin-ts`](/plugins/plugin-ts).
 pluginTs({ mapper: { status: 'string' } })
 ```
 
-Use [`printer.nodes`](/plugins/plugin-ts#printer) to override specific schema-type renderers, or [`transformer`](/plugins/plugin-ts#transformer) to rewrite AST nodes before printing.
+Use [`printer.nodes`](/plugins/plugin-ts#printer) to override specific schema-type renderers, or [`macros`](/plugins/plugin-ts#macros) to rewrite AST nodes before printing.
 
 ### Moved to `adapterOas`
 
@@ -663,7 +666,7 @@ yarn add zod@^4
 
 ### Removed: `mapper`
 
-Use [`transformer`](/plugins/plugin-zod#transformer) or [`printer`](/plugins/plugin-zod#printer) instead.
+Use [`macros`](/plugins/plugin-zod#macros) or [`printer`](/plugins/plugin-zod#printer) instead.
 
 ### Moved to `adapterOas`
 
@@ -800,7 +803,7 @@ export default defineConfig({
       unknownType: 'unknown', // → adapterOas
       enumSuffix: 'enum', // → adapterOas
       UNSTABLE_NAMING: true, // removed (no replacement)
-      mapper: {}, // removed (use printer or transformer)
+      mapper: {}, // removed (use printer or macros)
       transformers: {
         name: (name) => `Api${name}`,
       },

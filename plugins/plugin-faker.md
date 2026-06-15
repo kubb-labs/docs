@@ -811,14 +811,14 @@ export default defineConfig({
 })
 ```
 
-### transformer
+### macros
 
-AST visitor applied to schema/operation nodes before code is printed. Use this to drop descriptions or rewrite metadata before the mock factory is built.
+A list of [macros](/docs/5.x/concepts/macros) applied to schema/operation nodes before code is printed. Use this to drop descriptions or rewrite metadata before the mock factory is built.
 
-|           |               |
-| --------: | :------------ |
-|     Type: | `ast.Visitor` |
-| Required: | `false`       |
+|           |                 |
+| --------: | :-------------- |
+|     Type: | `Array<Macro>`  |
+| Required: | `false`         |
 
 ```typescript [Strip schema descriptions]
 import { defineConfig } from 'kubb'
@@ -829,11 +829,14 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginFaker({
-      transformer: {
-        schema(node) {
-          return { ...node, description: undefined }
+      macros: [
+        {
+          name: 'strip-descriptions',
+          schema(node) {
+            return { ...node, description: undefined }
+          },
         },
-      },
+      ],
     }),
   ],
 })
