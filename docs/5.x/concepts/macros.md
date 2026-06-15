@@ -11,8 +11,6 @@ Macros are the second layer of `@kubb/ast`. The first layer is the [AST](/docs/5
 
 The engine (`defineMacro`, `composeMacros`, `applyMacros`, and the `Macro` type) lives on the `@kubb/ast` root, next to the node tree it transforms. The built-in macro presets live on the `@kubb/ast/macros` subpath, one per file.
 
-Macro exports follow the same convention as plugins. A plugin is `pluginTs`, a macro is `macroEnumName`.
-
 ## Shape
 
 A macro carries the per-kind callbacks of a [visitor](/docs/5.x/concepts/ast#visitors), plus a `name`, an optional `enforce` order, and an optional `when` gate.
