@@ -269,7 +269,6 @@ const name = extractRefName('#/components/schemas/Pet')
 
 | Export        | Purpose                                    |
 | ------------- | ------------------------------------------ |
-| `httpMethods` | Map of supported HTTP verbs.               |
 | `schemaTypes` | Map of every schema `type` discriminant.   |
 
 ## Macros
