@@ -10,7 +10,7 @@ id: plugin-cypress
 
 # @kubb/plugin-cypress
 
-Generate one typed `cy.request()` wrapper per OpenAPI operation. Each helper has typed path params, body, query, and a typed response — so failing API calls in Cypress show up at compile time instead of inside the test runner.
+Generate one typed `cy.request()` wrapper per OpenAPI operation. Each helper has typed path params, body, query, and a typed response, so a broken API call in Cypress shows up at compile time instead of inside the test runner.
 
 Use these helpers in `before`/`beforeEach` hooks to seed data, in custom commands, or in API-only test specs.
 
@@ -52,7 +52,7 @@ Where the generated Cypress helpers are written and how they are exported.
 
 Folder where the plugin writes its generated code. The path is resolved against the global `output.path` set on `defineConfig`.
 
-Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `'hooks'`). To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension (e.g. `'types.ts'`).
+Point `path` at a folder to keep each generator's output isolated, such as `'types'` or `'clients'`. To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension (e.g. `'types.ts'`).
 
 |           |             |
 | --------: | :---------- |
@@ -104,7 +104,7 @@ How the plugin consolidates its generated code into files.
 |  Default: | `'directory'`           |
 
 > [!TIP]
-> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group` — a single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
+> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group`, since a single-file output has nothing to group. Combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 ::: code-group
 
@@ -309,7 +309,7 @@ export default defineConfig({
 
 #### output.footer
 
-Text appended at the end of every generated file. The mirror of `banner` — use it for closing comments, re-enabling lint rules, or marker lines.
+Text appended at the end of every generated file. It mirrors `banner`. Use it for closing comments, to re-enable lint rules, or to write marker lines.
 
 Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
 
@@ -426,8 +426,8 @@ Each plugin ships with a default resolver:
 
 How operation parameters (path, query, headers) are exposed in the generated function signature.
 
-- `'inline'` (default) — each parameter is a separate positional argument. Compact for operations with one or two params.
-- `'object'` — every parameter is wrapped in a single object argument. Easier to read for operations with many params and named at the call site.
+- `'inline'` (default): each parameter is a separate positional argument. Compact for operations with one or two params.
+- `'object'`: every parameter is wrapped in a single object argument. This reads better for operations with many params and names each one at the call site.
 
 |           |                        |
 | --------: | :--------------------- |
@@ -473,9 +473,9 @@ await deletePet({ petId: 42, headers: { 'X-Api-Key': 'secret' } })
 
 ### paramsCasing
 
-Renames path, query, and header parameters in the generated client to the chosen casing. The HTTP request still uses the original names from the OpenAPI spec — Kubb writes the mapping for you.
+Renames path, query, and header parameters in the generated client to the chosen casing. The HTTP request still uses the original names from the OpenAPI spec, and Kubb writes the mapping for you.
 
-- `'camelcase'` — turn `pet_id` and `X-Api-Key` into `petId` and `xApiKey` in your TypeScript code. The runtime URL still uses `/pet/{pet_id}` and the header is still sent as `X-Api-Key`.
+- `'camelcase'`: turns `pet_id` and `X-Api-Key` into `petId` and `xApiKey` in your TypeScript code. The runtime URL still uses `/pet/{pet_id}` and the header is still sent as `X-Api-Key`.
 
 |           |               |
 | --------: | :------------ |
@@ -523,10 +523,10 @@ export async function deletePet(pet_id: DeletePetPathParams['pet_id'], headers?:
 
 ### pathParamsType
 
-How URL path parameters appear in the generated function signature. Affects only path params; query/header params follow `paramsType`.
+How URL path parameters appear in the generated function signature. This affects only path params. Query and header params follow `paramsType`.
 
-- `'inline'` (default) — each path param is a positional argument: `getPetById(petId)`.
-- `'object'` — path params are wrapped in a single object: `getPetById({ petId })`.
+- `'inline'` (default): each path param is a positional argument, as in `getPetById(petId)`.
+- `'object'`: path params are wrapped in a single object, as in `getPetById({ petId })`.
 
 |           |                        |
 | --------: | :--------------------- |
@@ -638,7 +638,7 @@ Without `group`, every file lands in the plugin's `output.path` folder. With `gr
 > [!TIP]
 > Use `group` to mirror your API's domain structure (pet, store, user) in the generated code. Combine it with `output.barrel: { type: 'named', nested: true }` to get per-tag barrel files.
 >
-> `group` only applies to `output.mode: 'directory'` (the default), where each group becomes a folder. It is not valid with `output.mode: 'file'` — a single-file output has no grouping concept.
+> `group` only applies to `output.mode: 'directory'` (the default), where each group becomes a folder. It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
 
 ::: code-group
 
@@ -671,7 +671,7 @@ src/gen/
     └── GetStoreById.ts
 ```
 
-Pass `group.name` to customize the folder name, for example `name: ({ group }) => \`${group}Controller\``to keep the pre-v5`petController/` layout.
+Pass `group.name` to customize the folder name, for example `name: ({ group }) => \`${group}Controller\`` to keep the pre-v5 `petController/` layout.
 
 #### group.type
 
@@ -685,7 +685,7 @@ Today only `'tag'` is supported: Kubb reads the first tag on the operation (`ope
 | Required: | `true`  |
 
 > [!NOTE]
-> `Required: true*` is conditional — only required when the parent `group` option is used. `group` itself stays optional.
+> `Required: true*` is conditional. It only applies when the parent `group` option is used, and `group` itself stays optional.
 
 #### group.name
 
@@ -703,11 +703,11 @@ Restricts generation to operations that match at least one entry in the list. An
 
 Each entry filters by one of:
 
-- `tag` — the operation's first tag in the OpenAPI spec.
-- `operationId` — the operation's `operationId`.
-- `path` — the URL pattern (`'/pet/{petId}'`).
-- `method` — HTTP method (`'get'`, `'post'`, ...).
-- `contentType` — the media type of the request body.
+- `tag`: the operation's first tag in the OpenAPI spec.
+- `operationId`: the operation's `operationId`.
+- `path`: the URL pattern (`'/pet/{petId}'`).
+- `method`: the HTTP method (`'get'`, `'post'`, ...).
+- `contentType`: the media type of the request body.
 
 `pattern` accepts either a string (exact match) or a `RegExp` for fuzzy matches.
 
@@ -766,11 +766,11 @@ Skips any operation that matches at least one entry in the list. The opposite of
 
 Each entry filters by one of:
 
-- `tag` — the operation's first tag.
-- `operationId` — the operation's `operationId`.
-- `path` — the URL pattern (`'/pet/{petId}'`).
-- `method` — HTTP method (`'get'`, `'post'`, ...).
-- `contentType` — the media type of the request body.
+- `tag`: the operation's first tag.
+- `operationId`: the operation's `operationId`.
+- `path`: the URL pattern (`'/pet/{petId}'`).
+- `method`: the HTTP method (`'get'`, `'post'`, ...).
+- `contentType`: the media type of the request body.
 
 `pattern` accepts a plain string or a `RegExp`. When both `include` and `exclude` are set, `exclude` wins.
 
@@ -829,7 +829,7 @@ Applies a different set of plugin options to operations that match a pattern. Us
 
 Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations.
 
-Entries are evaluated top to bottom. The first matching entry's `options` is merged onto the plugin defaults; later entries do not stack.
+Entries are evaluated top to bottom. The first matching entry's `options` is merged onto the plugin defaults, and later entries do not stack.
 
 |           |                   |
 | --------: | :---------------- |

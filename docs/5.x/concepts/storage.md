@@ -7,7 +7,7 @@ outline: deep
 
 # Storage
 
-The storage driver controls where Kubb writes generated files. Configure it via the [`storage`](/docs/5.x/reference/configuration#storage) option in [`kubb.config.ts`](/docs/5.x/reference/configuration). When `storage` is omitted, Kubb defaults to `fsStorage()`, the built-in filesystem driver. Swap it with `memoryStorage()` for tests or implement the `Storage` interface to target any backend.
+The storage driver controls where Kubb writes generated files. Set it through the [`storage`](/docs/5.x/reference/configuration#storage) option in [`kubb.config.ts`](/docs/5.x/reference/configuration). Leave `storage` out and Kubb falls back to `fsStorage()`, the built-in filesystem driver. Swap in `memoryStorage()` for tests, or implement the `Storage` interface to target any backend.
 
 ## Storage interface
 

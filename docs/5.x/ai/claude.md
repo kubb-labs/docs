@@ -8,8 +8,8 @@ outline: [2, 3]
 # Claude Code plugin
 
 Kubb ships a [Claude Code](https://code.claude.com) plugin that adds slash commands, a config
-skill and an agent for generating code from an OpenAPI spec. The commands run the `kubb` CLI, so
-what happens in the chat is the same build you would run in a terminal.
+skill, and an agent for generating code from an OpenAPI spec. The commands run the `kubb` CLI, so
+a build started in the chat matches the one you run in a terminal.
 
 > [!IMPORTANT]
 > The plugin requires Kubb v5 or higher. It targets the v5 CLI and the built-in MCP server.
@@ -20,8 +20,8 @@ what happens in the chat is the same build you would run in a terminal.
 
 ## Install
 
-The plugin is published from the Kubb repository as a plugin marketplace. Add the marketplace,
-then install the plugin:
+The Kubb repository doubles as a plugin marketplace. Add the marketplace, then install the
+plugin:
 
 ```shell
 /plugin marketplace add kubb-labs/kubb
@@ -63,13 +63,13 @@ A typical first run:
 The plugin ships a `config` skill that teaches Claude how to author a `kubb.config.ts` and pick
 the right `@kubb/plugin-*` packages. See [Skills](/docs/5.x/ai/skills) for what it covers.
 
-The `kubb-expert` agent handles end-to-end "add Kubb to my project" tasks. It validates the spec,
-chooses plugins, scaffolds the config and runs generation.
+The `kubb-expert` agent handles "add Kubb to my project" from start to finish. It validates the
+spec, chooses plugins, scaffolds the config, and runs generation.
 
 ## Conversational generation
 
 The plugin also wires in the Kubb MCP server (`kubb mcp`). When you would rather describe what
-you want than run a command, Claude can call the server directly. See [MCP](/docs/5.x/ai/mcp) for
+you want than type a command, Claude calls the server directly. See [MCP](/docs/5.x/ai/mcp) for
 the server and client setup.
 
 ## See also

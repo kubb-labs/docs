@@ -20,8 +20,8 @@ generation, so the files are written, but the run is marked failed.
 ## What it means
 
 `hooks.done` runs shell commands once generation finishes, for example a formatter or a `tsc`
-check. A command that exits non-zero is reported here. It used to only log a line. Now it shows in
-the summary and `--reporter json`, and fails the run instead of being swallowed.
+check. A command that exits non-zero shows up here, in the summary, and in `--reporter json`, and it
+fails the run. Earlier versions only logged a line and moved on.
 
 ## Common causes
 

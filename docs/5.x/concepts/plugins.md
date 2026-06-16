@@ -111,7 +111,7 @@ The `hooks` map can subscribe to any event in [`KubbHooks`](https://github.com/k
 
 ## Generators
 
-Generators are how a plugin actually walks the AST. Register them with `addGenerator` inside `kubb:plugin:setup`:
+A generator is what walks the AST for a plugin. Register one with `addGenerator` inside `kubb:plugin:setup`:
 
 ```typescript twoslash [generator.ts]
 import { ast, definePlugin, defineGenerator } from '@kubb/core'

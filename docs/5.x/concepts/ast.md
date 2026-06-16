@@ -14,7 +14,7 @@ The `@kubb/ast` package defines Kubb's universal Abstract Syntax Tree. [Adapters
 
 ## Quick start
 
-The complete public surface lives behind a handful of factories, three visitors, and a small set of guards:
+The public surface is a handful of factories, three visitors, and a few guards:
 
 ```typescript twoslash [example.ts]
 import { ast } from '@kubb/core'
@@ -49,7 +49,7 @@ Request bodies and responses hold one `ContentNode` per content type (for exampl
 Every node carries a `kind` field as the discriminant, so `switch (node.kind)` narrows the type for you.
 
 > [!TIP]
-> The AST is **spec-agnostic**. Plugins never look at OpenAPI directly. They consume the AST produced by the [adapter](/docs/5.x/concepts/adapters), which lets the same plugin work for OpenAPI 2.0, 3.0, 3.1, and any custom adapter alike.
+> The AST is spec-agnostic. Plugins never look at OpenAPI directly. They read the AST the [adapter](/docs/5.x/concepts/adapters) produces, which is why one plugin works for OpenAPI 2.0, 3.0, 3.1, and any custom adapter alike.
 
 An `OperationNode` is a discriminated union keyed on `protocol`, so the model stays spec-neutral while keeping HTTP details fully typed. An `HttpOperationNode` (`protocol: 'http'`) guarantees a non-nullable `method` (an `HttpMethod`) and `path`. A `GenericOperationNode` describes a non-HTTP transport and omits both. `@kubb/adapter-oas` produces `HttpOperationNode`s, so OpenAPI output is unchanged.
 
@@ -135,7 +135,7 @@ The `@kubb/ast/factory` subpath also provides constructors for source files and 
 
 ## Visitors
 
-Three visitor functions cover the common traversal patterns. Visitor objects use lowercase, kind-style keys (`input`, `operation`, `schema`, `property`, `parameter`, `response`). To rewrite nodes inside a plugin, reach for [macros](/docs/5.x/concepts/macros), which add names, ordering, and composition on top of `transform`.
+Three visitor functions cover the common traversal patterns. Visitor objects use lowercase, kind-style keys (`input`, `operation`, `schema`, `property`, `parameter`, `response`). To rewrite nodes inside a plugin, reach for [macros](/docs/5.x/concepts/macros). They add names, ordering, and composition on top of `transform`.
 
 ### `walk`: async traversal with side effects
 
@@ -156,7 +156,7 @@ await ast.walk(root, {
 })
 ```
 
-**Use when:** logging, validating, collecting statistics, or triggering side effects per node.
+Reach for `walk` when you log, validate, collect statistics, or trigger a side effect per node.
 
 ### `transform`: synchronous, returns a new tree
 
@@ -178,7 +178,7 @@ const enhanced = ast.transform(root, {
 })
 ```
 
-**Use when:** modifying AST structure, normalizing inconsistencies, or annotating nodes.
+Reach for `transform` when you change AST structure, normalize inconsistencies, or annotate nodes.
 
 > [!NOTE]
 > `transform` preserves identity (structural sharing). When a visitor leaves a node and all of its descendants unchanged, `transform` returns the original reference, so unchanged subtrees and their arrays are reused, not copied. Returning the same node from a visitor is a no-op. Returning a new node replaces it and rebuilds only its ancestors. A no-op pass therefore allocates nothing, and you can detect whether anything changed with `result === input`.
@@ -217,7 +217,7 @@ console.log(`POST operations: ${mutations.length}`)
 console.log(`Deprecated schemas: ${deprecated.length}`)
 ```
 
-**Use when:** finding specific nodes, filtering by criteria, building lists for further processing.
+Reach for `collect` when you find specific nodes, filter by a criterion, or build a list for later processing.
 
 ## Guards and narrowing
 

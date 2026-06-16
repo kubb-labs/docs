@@ -72,7 +72,7 @@ The MCP server exposes three tools to connected clients.
 ### Structured diagnostics
 
 When `generate` or `validate` hits a problem, it returns structured [diagnostics](/docs/5.x/reference/diagnostics)
-rather than a single message string. Each diagnostic keeps its stable code, source pointer,
+instead of a single message string. Each diagnostic keeps its stable code, source pointer,
 suggested fix, and docs link, so an assistant can act on the exact problem. The tools return both a
 readable text block and a JSON payload:
 

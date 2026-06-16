@@ -10,9 +10,9 @@ id: plugin-ts
 
 # @kubb/plugin-ts
 
-`@kubb/plugin-ts` turns your OpenAPI schema into TypeScript `type` aliases and `interface` declarations. It is the foundation that every other Kubb plugin builds on — clients, query hooks, mocks, and validators all reference the names this plugin produces.
+`@kubb/plugin-ts` turns your OpenAPI schema into TypeScript `type` aliases and `interface` declarations. Every other Kubb plugin builds on it. Clients, query hooks, mocks, and validators all reference the names this plugin produces.
 
-Add it once and every request payload, response, path parameter, and enum becomes a compile-time check.
+Add it once, and every request payload, response, path parameter, and enum becomes a compile-time check.
 
 **See also**
 
@@ -57,7 +57,7 @@ Where the generated `.ts` files are written and how they are exported.
 
 Folder where the plugin writes its generated code. The path is resolved against the global `output.path` set on `defineConfig`.
 
-Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `'hooks'`). To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension (e.g. `'types.ts'`).
+Point it at a folder to keep each generator's output isolated, such as `'types'` or `'clients'`. To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension, for example `'types.ts'`.
 
 |           |           |
 | --------: | :-------- |
@@ -109,7 +109,7 @@ How the plugin consolidates its generated code into files.
 |  Default: | `'directory'`           |
 
 > [!TIP]
-> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group` — a single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
+> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group`. A single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 ::: code-group
 
@@ -256,9 +256,9 @@ export default defineConfig({
 
 #### output.banner
 
-Text prepended to every generated file. Useful for license headers, lint disables, or `@ts-nocheck` directives.
+Text prepended to every generated file. Use it for license headers, lint disables, or `@ts-nocheck` directives.
 
-Pass a string for a static banner. Pass a function to compute the banner from each file's `RootNode` (the AST root containing path, schema, and operation context).
+Pass a string for a static banner, or a function that computes the banner from each file's `RootNode` (the AST root that holds the path, schema, and operation context).
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -314,7 +314,7 @@ export default defineConfig({
 
 #### output.footer
 
-Text appended at the end of every generated file. The mirror of `banner` — use it for closing comments, re-enabling lint rules, or marker lines.
+Text appended at the end of every generated file. It mirrors `banner`, so use it for closing comments, re-enabling lint rules, or marker lines.
 
 Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
 
@@ -384,7 +384,7 @@ export default defineConfig({
 
 Splits generated files into subfolders based on the operation's tag, so each tag in your OpenAPI spec gets its own directory.
 
-Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files are bucketed under `{output.path}/{groupName}/`, where `groupName` is derived from the operation's first tag.
+Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files go under `{output.path}/{groupName}/`, where `groupName` comes from the operation's first tag.
 
 |           |         |
 | --------: | :------ |
@@ -394,7 +394,7 @@ Without `group`, every file lands in the plugin's `output.path` folder. With `gr
 > [!TIP]
 > Use `group` to mirror your API's domain structure (pet, store, user) in the generated code. Combine it with `output.barrel: { type: 'named', nested: true }` to get per-tag barrel files.
 >
-> `group` only applies to `output.mode: 'directory'` (the default), where each group becomes a folder. It is not valid with `output.mode: 'file'` — a single-file output has no grouping concept.
+> `group` only applies to `output.mode: 'directory'` (the default), where each group becomes a folder. It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
 
 ::: code-group
 
@@ -441,7 +441,7 @@ Today only `'tag'` is supported: Kubb reads the first tag on the operation (`ope
 | Required: | `true`  |
 
 > [!NOTE]
-> `Required: true*` is conditional — only required when the parent `group` option is used. `group` itself stays optional.
+> `Required: true*` is conditional. It only applies when the parent `group` option is used, and `group` itself stays optional.
 
 #### group.name
 
@@ -700,9 +700,9 @@ export interface Pet {
 
 How optional properties are written in generated types.
 
-- `'questionToken'` (default) — `type?: string`. The property may be missing.
-- `'undefined'` — `type: string | undefined`. The property is required to exist but may be `undefined`.
-- `'questionTokenAndUndefined'` — `type?: string | undefined`. Strictest — the property may be missing or explicitly set to `undefined`.
+- `'questionToken'` (default) writes `type?: string`. The property may be missing.
+- `'undefined'` writes `type: string | undefined`. The property must exist but may be `undefined`.
+- `'questionTokenAndUndefined'` writes `type?: string | undefined`. This is the strictest option: the property may be missing or explicitly set to `undefined`.
 
 |           |                                                                 |
 | --------: | :-------------------------------------------------------------- |
@@ -711,7 +711,7 @@ How optional properties are written in generated types.
 |  Default: | `'questionToken'`                                               |
 
 > [!TIP]
-> Choose `'questionTokenAndUndefined'` when your project enables `"exactOptionalPropertyTypes": true` in `tsconfig.json` — it keeps generated types compatible with that setting.
+> Choose `'questionTokenAndUndefined'` when your project enables `"exactOptionalPropertyTypes": true` in `tsconfig.json`. It keeps generated types compatible with that setting.
 
 ::: code-group
 
@@ -739,8 +739,8 @@ export type Pet = {
 
 Syntax used for array types in generated code.
 
-- `'array'` (default) — postfix `Type[]`. Slightly shorter.
-- `'generic'` — `Array<Type>`. More readable for complex element types (`Array<{ id: number }>`).
+- `'array'` (default) uses the postfix `Type[]`, which is slightly shorter.
+- `'generic'` uses `Array<Type>`, which reads better for complex element types such as `Array<{ id: number }>`.
 
 |           |                        |
 | --------: | :--------------------- |
@@ -776,7 +776,7 @@ Use this when your OpenAPI parameters use snake_case or kebab-case but you want 
 | Required: | `false`       |
 
 > [!IMPORTANT]
-> Every plugin that references parameters must use the same `paramsCasing` value — `@kubb/plugin-client`, `@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, `@kubb/plugin-faker`, `@kubb/plugin-mcp`. Mismatched casing breaks the generated type chain.
+> Every plugin that references parameters must use the same `paramsCasing` value: `@kubb/plugin-client`, `@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, `@kubb/plugin-faker`, and `@kubb/plugin-mcp`. Mismatched casing breaks the generated type chain.
 
 ::: code-group
 
@@ -813,7 +813,7 @@ export type FindPetsByStatusHeaderParams = {
 
 ### resolver
 
-Overrides how the plugin builds names and paths for generated files and symbols. Use this to add prefixes, suffixes, or to swap the casing strategy without forking the plugin.
+Overrides how the plugin builds names and paths for generated files and symbols. Use it to add prefixes or suffixes, or to swap the casing strategy without forking the plugin.
 
 Only override the methods you want to change. Anything you omit falls back to the plugin's default resolver. A method that returns `null` or `undefined` also falls back.
 
@@ -887,13 +887,13 @@ Restricts generation to operations that match at least one entry in the list. An
 
 Each entry filters by one of:
 
-- `tag` — the operation's first tag in the OpenAPI spec.
-- `operationId` — the operation's `operationId`.
-- `path` — the URL pattern (`'/pet/{petId}'`).
-- `method` — HTTP method (`'get'`, `'post'`, ...).
-- `contentType` — the media type of the request body.
+- `tag`: the operation's first tag in the OpenAPI spec.
+- `operationId`: the operation's `operationId`.
+- `path`: the URL pattern, such as `'/pet/{petId}'`.
+- `method`: the HTTP method, such as `'get'` or `'post'`.
+- `contentType`: the media type of the request body.
 
-`pattern` accepts either a string (exact match) or a `RegExp` for fuzzy matches.
+`pattern` accepts either a string for an exact match or a `RegExp` for fuzzy matches.
 
 |           |                  |
 | --------: | :--------------- |
@@ -946,15 +946,15 @@ export default defineConfig({
 
 ### exclude
 
-Skips any operation that matches at least one entry in the list. The opposite of `include`.
+Skips any operation that matches at least one entry in the list. It works as the opposite of `include`.
 
 Each entry filters by one of:
 
-- `tag` — the operation's first tag.
-- `operationId` — the operation's `operationId`.
-- `path` — the URL pattern (`'/pet/{petId}'`).
-- `method` — HTTP method (`'get'`, `'post'`, ...).
-- `contentType` — the media type of the request body.
+- `tag`: the operation's first tag.
+- `operationId`: the operation's `operationId`.
+- `path`: the URL pattern, such as `'/pet/{petId}'`.
+- `method`: the HTTP method, such as `'get'` or `'post'`.
+- `contentType`: the media type of the request body.
 
 `pattern` accepts a plain string or a `RegExp`. When both `include` and `exclude` are set, `exclude` wins.
 
@@ -1009,7 +1009,7 @@ export default defineConfig({
 
 ### override
 
-Applies a different set of plugin options to operations that match a pattern. Use this when most of your API should follow the global config, but a handful of endpoints need different treatment.
+Applies a different set of plugin options to operations that match a pattern. Use it when most of your API follows the global config but a handful of endpoints need different treatment.
 
 Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations.
 
@@ -1039,12 +1039,12 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs({
-      enumType: 'asConst',
+      enum: { type: 'asConst' },
       override: [
         {
           type: 'tag',
           pattern: 'user',
-          options: { enumType: 'literal' },
+          options: { enum: { type: 'literal' } },
         },
       ],
     }),
@@ -1058,7 +1058,7 @@ export default defineConfig({
 
 Adds custom generators that run alongside the plugin's built-in generators. Each generator can emit additional files or post-process existing ones using the plugin's AST and options.
 
-Use this when you need output the plugin does not produce out of the box (a custom client wrapper, an extra index, a metadata file). For end-to-end guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
+Use it when you need output the plugin does not produce out of the box, such as a custom client wrapper, an extra index, or a metadata file. For end-to-end guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
 
 |           |                              |
 | --------: | :--------------------------- |
@@ -1070,7 +1070,7 @@ Use this when you need output the plugin does not produce out of the box (a cust
 
 ### macros
 
-Rewrite AST nodes before they are printed to source code. Use this when you need to rewrite operation IDs, drop descriptions, or change schema metadata without forking the generator.
+Rewrite AST nodes before they are printed to source code. Use it to rename operation IDs, drop descriptions, or change schema metadata without forking the generator.
 
 Each [macro](/docs/5.x/concepts/macros) callback (e.g. `schema`, `operation`) receives the node and a context object. Return a new node to replace it, or return `undefined` to leave it untouched. Callbacks you omit keep the plugin's default behavior. Macros run in order, so a later macro sees the output of an earlier one.
 
@@ -1205,7 +1205,7 @@ export default defineConfig({
       output: { path: './types' },
       exclude: [{ type: 'tag', pattern: 'store' }],
       group: { type: 'tag' },
-      enumType: 'asConst',
+      enum: { type: 'asConst' },
       optionalType: 'questionTokenAndUndefined',
       paramsCasing: 'camelcase',
     }),

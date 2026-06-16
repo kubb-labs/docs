@@ -162,7 +162,7 @@ if (ast.isHttpOperationNode(op)) {
 }
 ```
 
-Available guards on [`@kubb/ast`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/guards.ts): `isHttpOperationNode`, `narrowSchema`. Use `isHttpOperationNode(node)` to narrow an `OperationNode` to an `HttpOperationNode` with non-nullable `method` and `path`. Use `narrowSchema(node, type)` to narrow a `SchemaNode` to a specific variant.
+[`@kubb/ast`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/guards.ts) exports two guards, `isHttpOperationNode` and `narrowSchema`. Call `isHttpOperationNode(node)` to turn an `OperationNode` into an `HttpOperationNode` with non-nullable `method` and `path`, and `narrowSchema(node, type)` to pin a `SchemaNode` to one variant.
 
 ## See also
 

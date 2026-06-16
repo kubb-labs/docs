@@ -10,7 +10,7 @@ id: plugin-faker
 
 # @kubb/plugin-faker
 
-Generate a mock-data factory function for every schema in your OpenAPI spec, powered by [Faker.js](https://fakerjs.dev/). Call `createPet()` to get a realistic `Pet` object — useful for tests, Storybook, and local development without a running backend.
+Generate a mock-data factory function for every schema in your OpenAPI spec, powered by [Faker.js](https://fakerjs.dev/). Call `createPet()` and you get a realistic `Pet` object, which lets you run tests, render Storybook stories, and work on local data without a running backend.
 
 Pair with `@kubb/plugin-msw` to mock entire endpoints, or use the factories directly in your test suite.
 
@@ -104,7 +104,7 @@ How the plugin consolidates its generated code into files.
 |  Default: | `'directory'`           |
 
 > [!TIP]
-> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group` — a single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
+> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group`, since a single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 ::: code-group
 
@@ -251,7 +251,7 @@ export default defineConfig({
 
 #### output.banner
 
-Text prepended to every generated file. Useful for license headers, lint disables, or `@ts-nocheck` directives.
+Text prepended to every generated file. Use it for license headers, lint disables, or `@ts-nocheck` directives.
 
 Pass a string for a static banner. Pass a function to compute the banner from each file's `RootNode` (the AST root containing path, schema, and operation context).
 
@@ -309,7 +309,7 @@ export default defineConfig({
 
 #### output.footer
 
-Text appended at the end of every generated file. The mirror of `banner` — use it for closing comments, re-enabling lint rules, or marker lines.
+Text appended at the end of every generated file. It mirrors `banner`. Use it for closing comments, re-enabling lint rules, or marker lines.
 
 Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
 
@@ -389,7 +389,7 @@ Without `group`, every file lands in the plugin's `output.path` folder. With `gr
 > [!TIP]
 > Use `group` to mirror your API's domain structure (pet, store, user) in the generated code. Combine it with `output.barrel: { type: 'named', nested: true }` to get per-tag barrel files.
 >
-> `group` only applies to `output.mode: 'directory'` (the default), where each group becomes a folder. It is not valid with `output.mode: 'file'` — a single-file output has no grouping concept.
+> `group` only applies to `output.mode: 'directory'` (the default), where each group becomes a folder. It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
 
 ::: code-group
 
@@ -436,7 +436,7 @@ Today only `'tag'` is supported: Kubb reads the first tag on the operation (`ope
 | Required: | `true`  |
 
 > [!NOTE]
-> `Required: true*` is conditional — only required when the parent `group` option is used. `group` itself stays optional.
+> `Required: true*` is conditional. It applies only when the parent `group` option is used, and `group` itself stays optional.
 
 #### group.name
 
@@ -483,7 +483,7 @@ moment(faker.date.anytime()).format('YYYY-MM-DD')
 
 Maps OpenAPI schema names to specific Faker expressions. Use this when the schema name does not give Faker enough context to pick a sensible value (`'email'`, `'phone'`, `'avatarUrl'`).
 
-Keys are the schema name (case-sensitive); values are the JavaScript expression that produces the mock value.
+Keys are the schema name (case-sensitive), and values are the JavaScript expression that produces the mock value.
 
 |           |                          |
 | --------: | :----------------------- |
@@ -524,8 +524,8 @@ Renames properties inside the generated path/query/header mocks. Body mocks are 
 
 Library used to generate strings that satisfy a regex `pattern` keyword in the OpenAPI spec.
 
-- `'faker'` (default) — `faker.helpers.fromRegExp(...)`. No extra dependency.
-- `'randexp'` — uses the `randexp` package, which supports a wider regex grammar (lookaheads, named groups) but adds a runtime dependency.
+- `'faker'` (default): `faker.helpers.fromRegExp(...)`. No extra dependency.
+- `'randexp'`: uses the `randexp` package, which supports a wider regex grammar (lookaheads, named groups) but adds a runtime dependency.
 
 |           |                        |
 | --------: | :--------------------- |
@@ -547,7 +547,7 @@ new RandExp(/^[A-Z]+$/).gen()
 
 ### seed
 
-Seed value passed to `faker.seed(...)`. Set this to get deterministic output across runs — handy for snapshot tests and reproducible local data.
+Seed value passed to `faker.seed(...)`. Set it to get deterministic output across runs, which helps with snapshot tests and reproducible local data.
 
 |           |                      |
 | --------: | :------------------- |
@@ -602,11 +602,11 @@ Restricts generation to operations that match at least one entry in the list. An
 
 Each entry filters by one of:
 
-- `tag` — the operation's first tag in the OpenAPI spec.
-- `operationId` — the operation's `operationId`.
-- `path` — the URL pattern (`'/pet/{petId}'`).
-- `method` — HTTP method (`'get'`, `'post'`, ...).
-- `contentType` — the media type of the request body.
+- `tag`: the operation's first tag in the OpenAPI spec.
+- `operationId`: the operation's `operationId`.
+- `path`: the URL pattern (`'/pet/{petId}'`).
+- `method`: HTTP method (`'get'`, `'post'`, ...).
+- `contentType`: the media type of the request body.
 
 `pattern` accepts either a string (exact match) or a `RegExp` for fuzzy matches.
 
@@ -665,11 +665,11 @@ Skips any operation that matches at least one entry in the list. The opposite of
 
 Each entry filters by one of:
 
-- `tag` — the operation's first tag.
-- `operationId` — the operation's `operationId`.
-- `path` — the URL pattern (`'/pet/{petId}'`).
-- `method` — HTTP method (`'get'`, `'post'`, ...).
-- `contentType` — the media type of the request body.
+- `tag`: the operation's first tag.
+- `operationId`: the operation's `operationId`.
+- `path`: the URL pattern (`'/pet/{petId}'`).
+- `method`: HTTP method (`'get'`, `'post'`, ...).
+- `contentType`: the media type of the request body.
 
 `pattern` accepts a plain string or a `RegExp`. When both `include` and `exclude` are set, `exclude` wins.
 
@@ -728,7 +728,7 @@ Applies a different set of plugin options to operations that match a pattern. Us
 
 Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations.
 
-Entries are evaluated top to bottom. The first matching entry's `options` is merged onto the plugin defaults; later entries do not stack.
+Entries are evaluated top to bottom. The first matching entry's `options` is merged onto the plugin defaults, and later entries do not stack.
 
 |           |                   |
 | --------: | :---------------- |
@@ -785,7 +785,7 @@ Use this when you need output the plugin does not produce out of the box (a cust
 
 ### resolver
 
-Customizes the naming of the generated factory helpers. Common use case: append `Mock` or `Factory` so the helpers do not clash with the imported types.
+Customizes the naming of the generated factory helpers. A common reason to set it is to append `Mock` or `Factory` so the helpers do not clash with the imported types.
 
 |           |                          |
 | --------: | :----------------------- |

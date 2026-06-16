@@ -10,7 +10,7 @@ id: plugin-msw
 
 # @kubb/plugin-msw
 
-Generate [MSW](https://mswjs.io/) handlers from your OpenAPI spec. Drop them into your test setup or service worker to mock the API end-to-end — request path, method, status, and response body all stay in sync with the spec.
+Generate [MSW](https://mswjs.io/) handlers from your OpenAPI spec. Drop them into your test setup or service worker to mock the API end-to-end, so request path, method, status, and response body all stay in sync with the spec.
 
 Combine with `@kubb/plugin-faker` to seed handlers with realistic data, or feed them custom payloads from tests.
 
@@ -104,7 +104,7 @@ How the plugin consolidates its generated code into files.
 |  Default: | `'directory'`           |
 
 > [!TIP]
-> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group` — a single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
+> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group`, since a single-file output has nothing to group. Combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 ::: code-group
 
@@ -309,7 +309,7 @@ export default defineConfig({
 
 #### output.footer
 
-Text appended at the end of every generated file. The mirror of `banner` — use it for closing comments, re-enabling lint rules, or marker lines.
+Text appended at the end of every generated file. It mirrors `banner`. Use it for closing comments, re-enabling lint rules, or marker lines.
 
 Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
 
@@ -440,7 +440,7 @@ Without `group`, every file lands in the plugin's `output.path` folder. With `gr
 > [!TIP]
 > Use `group` to mirror your API's domain structure (pet, store, user) in the generated code. Combine it with `output.barrel: { type: 'named', nested: true }` to get per-tag barrel files.
 >
-> `group` only applies to `output.mode: 'directory'` (the default), where each group becomes a folder. It is not valid with `output.mode: 'file'` — a single-file output has no grouping concept.
+> `group` only applies to `output.mode: 'directory'` (the default), where each group becomes a folder. It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
 
 ::: code-group
 
@@ -487,7 +487,7 @@ Today only `'tag'` is supported: Kubb reads the first tag on the operation (`ope
 | Required: | `true`  |
 
 > [!NOTE]
-> `Required: true*` is conditional — only required when the parent `group` option is used. `group` itself stays optional.
+> `Required: true*` is conditional. It only applies when the parent `group` option is used, and `group` itself stays optional.
 
 #### group.name
 
@@ -503,8 +503,8 @@ Function that builds the folder/identifier name from a group key (the operation'
 
 Source of the response body returned by each generated handler.
 
-- `'data'` (default) — handlers return a typed empty/example payload, ready for you to fill in from tests.
-- `'faker'` — handlers return a value produced by `@kubb/plugin-faker`. Requires the Faker plugin in the plugins array.
+- `'data'` (default): handlers return a typed empty/example payload, ready for you to fill in from tests.
+- `'faker'`: handlers return a value produced by `@kubb/plugin-faker`. Requires the Faker plugin in the plugins array.
 
 |           |                     |
 | --------: | :------------------ |
@@ -535,11 +535,11 @@ Restricts generation to operations that match at least one entry in the list. An
 
 Each entry filters by one of:
 
-- `tag` — the operation's first tag in the OpenAPI spec.
-- `operationId` — the operation's `operationId`.
-- `path` — the URL pattern (`'/pet/{petId}'`).
-- `method` — HTTP method (`'get'`, `'post'`, ...).
-- `contentType` — the media type of the request body.
+- `tag`: the operation's first tag in the OpenAPI spec.
+- `operationId`: the operation's `operationId`.
+- `path`: the URL pattern (`'/pet/{petId}'`).
+- `method`: HTTP method (`'get'`, `'post'`, ...).
+- `contentType`: the media type of the request body.
 
 `pattern` accepts either a string (exact match) or a `RegExp` for fuzzy matches.
 
@@ -598,11 +598,11 @@ Skips any operation that matches at least one entry in the list. The opposite of
 
 Each entry filters by one of:
 
-- `tag` — the operation's first tag.
-- `operationId` — the operation's `operationId`.
-- `path` — the URL pattern (`'/pet/{petId}'`).
-- `method` — HTTP method (`'get'`, `'post'`, ...).
-- `contentType` — the media type of the request body.
+- `tag`: the operation's first tag.
+- `operationId`: the operation's `operationId`.
+- `path`: the URL pattern (`'/pet/{petId}'`).
+- `method`: HTTP method (`'get'`, `'post'`, ...).
+- `contentType`: the media type of the request body.
 
 `pattern` accepts a plain string or a `RegExp`. When both `include` and `exclude` are set, `exclude` wins.
 
@@ -661,7 +661,7 @@ Applies a different set of plugin options to operations that match a pattern. Us
 
 Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations.
 
-Entries are evaluated top to bottom. The first matching entry's `options` is merged onto the plugin defaults; later entries do not stack.
+Entries are evaluated top to bottom. The first matching entry's `options` is merged onto the plugin defaults, and later entries do not stack.
 
 |           |                   |
 | --------: | :---------------- |

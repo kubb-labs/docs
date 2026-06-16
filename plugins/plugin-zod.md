@@ -52,7 +52,7 @@ Where the generated Zod schemas are written and how they are exported.
 
 Folder where the plugin writes its generated code. The path is resolved against the global `output.path` set on `defineConfig`.
 
-Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `'hooks'`). To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension (e.g. `'types.ts'`).
+Use a folder to keep each generator's output isolated, such as `'types'`, `'clients'`, or `'hooks'`. To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension (e.g. `'types.ts'`).
 
 |           |          |
 | --------: | :------- |
@@ -61,7 +61,7 @@ Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `
 |  Default: | `'zod'`  |
 
 > [!TIP]
-> `output.path` sets where files go, `output.mode` sets how many. Use `'directory'` (the default) for one file per operation, optionally grouped into subdirectories with the `group` option. Use `'file'` to write everything into a single file.
+> `output.path` sets where files go. `output.mode` sets how many. Use `'directory'` (the default) for one file per operation, optionally grouped into subdirectories with the `group` option. Use `'file'` to write everything into a single file.
 
 ::: code-group
 
@@ -104,7 +104,7 @@ How the plugin consolidates its generated code into files.
 |  Default: | `'directory'`           |
 
 > [!TIP]
-> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group` — a single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
+> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group`, since a single-file output has nothing to group. Combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 ::: code-group
 
@@ -309,7 +309,7 @@ export default defineConfig({
 
 #### output.footer
 
-Text appended at the end of every generated file. The mirror of `banner` — use it for closing comments, re-enabling lint rules, or marker lines.
+Text appended at the end of every generated file. It mirrors `banner`. Use it for closing comments, re-enabling lint rules, or marker lines.
 
 Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
 
@@ -436,7 +436,7 @@ Without `group`, every file lands in the plugin's `output.path` folder. With `gr
 > [!TIP]
 > Use `group` to mirror your API's domain structure (pet, store, user) in the generated code. Combine it with `output.barrel: { type: 'named', nested: true }` to get per-tag barrel files.
 >
-> `group` only applies to `output.mode: 'directory'` (the default), where each group becomes a folder. It is not valid with `output.mode: 'file'` — a single-file output has no grouping concept.
+> `group` only applies to `output.mode: 'directory'` (the default), where each group becomes a folder. It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
 
 ::: code-group
 
@@ -475,7 +475,7 @@ Pass `group.name` to customize the folder name, for example `name: ({ group }) =
 
 Property used to assign each operation to a group. Required whenever `group` is set.
 
-Today only `'tag'` is supported: Kubb reads the first tag on the operation (`operation.getTags().at(0)?.name`) and uses it as the group key. Operations without a tag are placed in a default group.
+Today only `'tag'` is supported. Kubb reads the first tag on the operation (`operation.getTags().at(0)?.name`) and uses it as the group key. Operations without a tag are placed in a default group.
 
 |           |         |
 | --------: | :------ |
@@ -483,7 +483,7 @@ Today only `'tag'` is supported: Kubb reads the first tag on the operation (`ope
 | Required: | `true`  |
 
 > [!NOTE]
-> `Required: true*` is conditional — only required when the parent `group` option is used. `group` itself stays optional.
+> `Required: true*` is conditional. It only applies when the parent `group` option is used. `group` itself stays optional.
 
 #### group.name
 
@@ -526,7 +526,7 @@ export default defineConfig({
 
 Adds a type annotation that ties each Zod schema to its TypeScript counterpart from `@kubb/plugin-ts`.
 
-With `typed: true`, the generated `petSchema` is typed as `ToZod<Pet>` — TypeScript will fail compilation when the schema drifts from the type. Requires `@kubb/plugin-ts` in the plugins list.
+With `typed: true`, the generated `petSchema` is typed as `ToZod<Pet>`, so TypeScript fails compilation when the schema drifts from the type. Requires `@kubb/plugin-ts` in the plugins list.
 
 |           |           |
 | --------: | :-------- |
@@ -606,9 +606,9 @@ export type PetSchemaType = z.infer<typeof petSchema>
 
 Wraps schemas in `z.coerce` so input is coerced to the expected type before validation. Useful for form data, query params, and any source where everything arrives as a string.
 
-- `true` — coerce strings, numbers, and dates.
-- `false` (default) — no coercion. Strict validation.
-- Object — pick which primitives to coerce.
+- `true` coerces strings, numbers, and dates.
+- `false` (default) applies no coercion and validates strictly.
+- An object lets you pick which primitives to coerce.
 
 See [Coercion for primitives](https://zod.dev/?id=coercion-for-primitives).
 
@@ -648,7 +648,7 @@ z.coerce.number()
 
 Emits an `operations.ts` file that groups schemas per operation: request body, query params, path params, and each response status.
 
-Use this to validate or describe whole operations in one place — handy when wiring Kubb output into a server framework that takes Zod schemas per route.
+Use this to validate or describe whole operations in one place, which helps when wiring Kubb output into a server framework that takes Zod schemas per route.
 
 |           |           |
 | --------: | :-------- |
@@ -682,8 +682,8 @@ export const getPetHeaderParamsSchema = z.object({
 
 Validator used for OpenAPI properties with `format: uuid`.
 
-- `'uuid'` (default) — `z.uuid()`. Standard RFC 4122 UUID.
-- `'guid'` — `z.guid()`. Looser; accepts Microsoft-style GUIDs (allows lowercase, mixed brace styles).
+- `'uuid'` (default) generates `z.uuid()`, a standard RFC 4122 UUID.
+- `'guid'` generates `z.guid()`, which is looser and accepts Microsoft-style GUIDs (allows lowercase and mixed brace styles).
 
 |           |                    |
 | --------: | :----------------- |
@@ -747,11 +747,11 @@ Restricts generation to operations that match at least one entry in the list. An
 
 Each entry filters by one of:
 
-- `tag` — the operation's first tag in the OpenAPI spec.
-- `operationId` — the operation's `operationId`.
-- `path` — the URL pattern (`'/pet/{petId}'`).
-- `method` — HTTP method (`'get'`, `'post'`, ...).
-- `contentType` — the media type of the request body.
+- `tag` matches the operation's first tag in the OpenAPI spec.
+- `operationId` matches the operation's `operationId`.
+- `path` matches the URL pattern (`'/pet/{petId}'`).
+- `method` matches the HTTP method (`'get'`, `'post'`, ...).
+- `contentType` matches the media type of the request body.
 
 `pattern` accepts either a string (exact match) or a `RegExp` for fuzzy matches.
 
@@ -810,11 +810,11 @@ Skips any operation that matches at least one entry in the list. The opposite of
 
 Each entry filters by one of:
 
-- `tag` — the operation's first tag.
-- `operationId` — the operation's `operationId`.
-- `path` — the URL pattern (`'/pet/{petId}'`).
-- `method` — HTTP method (`'get'`, `'post'`, ...).
-- `contentType` — the media type of the request body.
+- `tag` matches the operation's first tag.
+- `operationId` matches the operation's `operationId`.
+- `path` matches the URL pattern (`'/pet/{petId}'`).
+- `method` matches the HTTP method (`'get'`, `'post'`, ...).
+- `contentType` matches the media type of the request body.
 
 `pattern` accepts a plain string or a `RegExp`. When both `include` and `exclude` are set, `exclude` wins.
 
@@ -873,7 +873,7 @@ Applies a different set of plugin options to operations that match a pattern. Us
 
 Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations.
 
-Entries are evaluated top to bottom. The first matching entry's `options` is merged onto the plugin defaults; later entries do not stack.
+Entries are evaluated top to bottom. The first matching entry's `options` is merged onto the plugin defaults, and later entries do not stack.
 
 |           |                   |
 | --------: | :---------------- |
@@ -994,7 +994,7 @@ export default defineConfig({
 
 Replaces the Zod handler for a specific schema type (e.g. `'integer'`, `'date'`, `'string'`). Each handler returns the Zod expression as a string.
 
-When `mini: true`, overrides target the Zod Mini printer; otherwise they target the standard Zod printer.
+When `mini: true`, overrides target the Zod Mini printer. Otherwise they target the standard Zod printer.
 
 |           |                                                      |
 | --------: | :--------------------------------------------------- |
@@ -1059,7 +1059,7 @@ Return a new string to replace the output, or return `undefined` to leave it unt
 | Required: | `false`                                                                |
 
 > [!TIP]
-> Use this to round-trip metadata from OpenAPI back into Zod — examples, descriptions, or `.openapi()` annotations for libraries that re-emit OpenAPI from Zod schemas.
+> Use this to round-trip metadata from OpenAPI back into Zod: examples, descriptions, or `.openapi()` annotations for libraries that re-emit OpenAPI from Zod schemas.
 
 ```typescript [Append .openapi() with metadata]
 import { defineConfig } from 'kubb'

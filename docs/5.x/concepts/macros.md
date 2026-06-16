@@ -7,7 +7,7 @@ outline: deep
 
 # Macros
 
-Macros are the second layer of `@kubb/ast`. The first layer is the [AST](/docs/5.x/concepts/ast) itself, the node tree that adapters produce and generators read. Macros sit on top of it: a macro is a named, composable transform that rewrites those nodes before generators print code, so you can rename symbols, retype fields, strip metadata, or normalize shapes without forking an adapter or a generator. Because macros run on the shared AST, the same macro works across every input adapter (OpenAPI, AsyncAPI, JSON Schema) and every output target (TypeScript, Zod, and any printer a plugin supplies).
+Macros are the second layer of `@kubb/ast`. The first layer is the [AST](/docs/5.x/concepts/ast) itself, the node tree that adapters produce and generators read. A macro sits on top of it: a named, composable transform that rewrites those nodes before generators print code. With one you can rename a symbol, retype a field, strip metadata, or normalize a shape, and you never fork an adapter or a generator to do it. Because macros run on the shared AST, the same macro works across every input adapter (OpenAPI, AsyncAPI, JSON Schema) and every output target (TypeScript, Zod, and any printer a plugin supplies).
 
 The engine (`defineMacro`, `composeMacros`, `applyMacros`, and the `Macro` type) lives on the `@kubb/ast` root, next to the node tree it transforms. The built-in macro presets live on the `@kubb/ast/macros` subpath, one per file.
 
@@ -30,7 +30,7 @@ Each callback returns a replacement node, or `undefined` to leave the node untou
 
 ## Writing a macro
 
-`defineMacro` types a macro and reads as one construction site, the way `definePlugin` does for plugins.
+`defineMacro` types a macro and keeps its definition in one place, the way `definePlugin` does for plugins.
 
 ```typescript twoslash [macro.ts]
 import { ast } from '@kubb/core'
@@ -128,4 +128,4 @@ const next = ast.applyMacros(root, [macroSimplifyUnion, macroDiscriminatorEnum({
 
 ## Sharing macros
 
-A macro is a plain value, so you export it and import it wherever you need it. Group related macros in a module and reuse them across plugins and projects, the same way you reuse plugins.
+A macro is a plain value, so you export it and import it wherever you need it. Group related macros in a module and pull them into any plugin or project, the same way you would with plugins.

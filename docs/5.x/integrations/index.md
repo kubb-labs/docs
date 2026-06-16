@@ -39,7 +39,7 @@ yarn add -D unplugin-kubb@beta
 
 ## Pick your bundler
 
-Each bundler has a dedicated entrypoint. Pick the one that matches your tooling:
+Each bundler has its own entrypoint. Pick the one that matches your tooling:
 
 | Bundler                               | Entrypoint               | Docs                   |
 | ------------------------------------- | ------------------------ | ---------------------- |

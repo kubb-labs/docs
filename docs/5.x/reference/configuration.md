@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Configuration
 
-`kubb.config.ts` is the single source of truth for a Kubb run. The file default-exports an object (or a function returning one, or an array of configs) wrapped in `defineConfig`.
+`kubb.config.ts` drives a Kubb run. The file default-exports a `defineConfig` call, which takes an object, a function that returns one, or an array of configs.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -40,7 +40,7 @@ export default defineConfig({
 
 ### Config function
 
-Pass a function to access context like `watch` or `logLevel`. Useful for conditional config:
+Pass a function when you need the run context, such as `watch` or `logLevel`, to vary the config:
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -111,7 +111,7 @@ export default defineConfig(({ watch }) => [
 
 ### `name`
 
-Friendly name for this config. It shows in the CLI output as `Generating <name>...`.
+A name for this config. The CLI prints it as `Generating <name>...`.
 
 |           |          |
 | --------: | :------- |
@@ -120,7 +120,7 @@ Friendly name for this config. It shows in the CLI output as `Generating <name>.
 
 ### `input`
 
-Where Kubb reads your spec from. Use **either** `path` **or** `data`, not both. Required when an adapter is configured; omit when running in plugin-only mode (no `adapter`).
+Where Kubb reads your spec from. Set either `path` or `data`, not both. It's required when an adapter is configured. Omit it in plugin-only mode, when there is no `adapter`.
 
 #### `input.path`
 
@@ -166,7 +166,7 @@ How a plugin consolidates its generated code into files. Set this on a plugin's 
 | Required: | `false`                  |
 |  Default: | `'directory'`            |
 
-`'directory'` writes one file per operation or schema under `output.path`. `'file'` writes everything into a single file — `output.path` must include the file extension (e.g. `'types.ts'`). Pair `'directory'` with the `group` option to organize that output into per-tag or per-path subdirectories.
+`'directory'` writes one file per operation or schema under `output.path`. `'file'` writes everything into a single file, so `output.path` must include the file extension (e.g. `'types.ts'`). Pair `'directory'` with the `group` option to organize that output into per-tag or per-path subdirectories.
 
 ```typescript
 import { defineConfig } from 'kubb'
@@ -330,8 +330,8 @@ Text prepended to every file a plugin generates. Configure it on an individual p
 |     Type: | `string \| ((meta: BannerMeta) => string)` |
 | Required: | `false`                                |
 
-- A **string** is applied to every file the plugin generates, including barrel (`index.ts`) and group aggregation (`[dir]/[dir].ts`) re-export files.
-- A **function** runs once per file and receives a `BannerMeta`, so you can vary the banner per file or return an empty string to skip it.
+- A string applies to every file the plugin generates, including barrel (`index.ts`) and group aggregation (`[dir]/[dir].ts`) re-export files.
+- A function runs once per file and receives a `BannerMeta`, so you can vary the banner per file or return an empty string to skip it.
 
 `BannerMeta` extends the document `InputMeta` (`title`, `description`, `version`, …) with per-file context:
 
@@ -385,9 +385,9 @@ Controls whether Kubb overwrites files that already exist on disk at the output 
 | Required: | `false`   |
 |  Default: | `false`   |
 
-When `false` (default), Kubb skips any file that already exists, preserving manual edits or files created by other tools. Set to `true` to always write generated files regardless of what is already on disk.
+When `false` (the default), Kubb skips any file that already exists, so it keeps manual edits or files written by other tools. Set it to `true` to always write generated files no matter what is already on disk.
 
-Setting this at the root level makes all plugins inherit the same behaviour. Each plugin also has its own `output.override` that takes precedence over the root value for that plugin only.
+Set this at the root level and every plugin inherits the same behavior. Each plugin also has its own `output.override`, which wins over the root value for that plugin.
 
 ### `plugins`
 
@@ -417,7 +417,7 @@ export default defineConfig({
 
 Adapter that converts your input into the universal AST. When using `defineConfig` from the `kubb` package, this defaults to `adapterOas()` from [`@kubb/adapter-oas`](/adapters/adapter-oas).
 
-Omit `adapter` (and `input`) to run Kubb in **plugin-only mode**: the spec-parsing step is skipped entirely, but `kubb:plugin:setup` hooks still fire and `injectFile` can be used to inject arbitrary files into the build. This is useful for code-generation scripts that don't consume an OpenAPI spec.
+Omit `adapter` (and `input`) to run Kubb in plugin-only mode. Kubb skips spec parsing, but `kubb:plugin:setup` hooks still fire and `injectFile` still injects arbitrary files into the build. Reach for this when a code-generation script doesn't consume an OpenAPI spec at all.
 
 See the [Adapter concept](/docs/5.x/concepts/adapters) for a deeper explanation.
 
@@ -539,7 +539,7 @@ Lifecycle hooks executed after generation finishes.
 
 #### `hooks.done`
 
-Shell command(s) to run when the build finishes. Useful for triggering a formatter or test run.
+Shell command(s) to run when the build finishes, for example a formatter or a test run.
 
 |           |                           |
 | --------: | :------------------------ |

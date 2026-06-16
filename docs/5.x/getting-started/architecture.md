@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Architecture
 
-Kubb transforms API specifications into code through a layered pipeline: the [adapter](/docs/5.x/concepts/adapters) parses the spec into a universal [AST](/docs/5.x/concepts/ast), [macros](/docs/5.x/concepts/macros) rewrite AST nodes before a plugin reads them, [plugins](/plugins) walk the AST and emit `FileNode`s, [parsers](/docs/5.x/concepts/parsers) convert each `FileNode` into source code, and [storage](/docs/5.x/concepts/storage) writes the result to disk.
+Kubb turns API specifications into code through a layered pipeline. The [adapter](/docs/5.x/concepts/adapters) parses the spec into a universal [AST](/docs/5.x/concepts/ast). [Macros](/docs/5.x/concepts/macros) rewrite AST nodes before a plugin reads them. [Plugins](/plugins) walk the AST and emit `FileNode`s, [parsers](/docs/5.x/concepts/parsers) convert each `FileNode` into source code, and [storage](/docs/5.x/concepts/storage) writes the result to disk.
 
 ## Pipeline overview
 
@@ -91,7 +91,7 @@ flowchart LR
     Macros --> Transformed["InputNode\ntransformed"]
 ```
 
-Macros are the second layer of [`@kubb/ast`](/docs/5.x/concepts/ast). A macro is a named, composable transform that rewrites schema and operation nodes before a plugin's generators print code, so you can rename symbols, retype fields, or normalize shapes without forking an adapter or a generator. Because macros run on the shared AST, the same macro works across every adapter and every output target.
+Macros are the second layer of [`@kubb/ast`](/docs/5.x/concepts/ast). A macro is a named, composable transform that rewrites schema and operation nodes before a plugin's generators print code, so you can rename symbols, retype fields, or normalize shapes without forking an adapter or a generator. Macros run on the shared AST, so the same macro works across every adapter and every output target.
 
 Macros run per plugin, so one plugin's macros never change the nodes another plugin sees. Pass them through a plugin's `macros` option, or register them from `kubb:plugin:setup` with `addMacro`. They run before resolver options are computed, so a renamed `operationId` or `SchemaNode.name` flows into `resolveOptions`, `resolvePath`, and `resolveFile`.
 

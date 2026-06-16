@@ -11,11 +11,11 @@ id: plugin-barrel
 > [!TIP]
 > `plugin-barrel` ships with Kubb and is enabled automatically. Install it explicitly only when customizing barrel behavior.
 
-`@kubb/plugin-barrel` generates an `index.ts` for every plugin output directory and one root barrel at `output.path/index.ts` after the build completes. The result is a single import surface for every consumer — `import { Pet, usePetByIdQuery, petMock } from './gen'`.
+`@kubb/plugin-barrel` generates an `index.ts` for every plugin output directory and one root barrel at `output.path/index.ts` after the build completes. Consumers then import from a single entry point, such as `import { Pet, usePetByIdQuery, petMock } from './gen'`.
 
 The plugin ships with Kubb and is registered by default in `defineConfig`, so barrels appear out of the box with no extra configuration. When `pluginBarrel` is part of `config.plugins`, `defineConfig` also applies a default `output.barrel` of `{ type: 'named' }`.
 
-Plugins inherit `output.barrel` from `config.output.barrel` when their own value is omitted. Setting `barrel: false` on a plugin disables that plugin's barrel **and** excludes its files from the root barrel.
+Plugins inherit `output.barrel` from `config.output.barrel` when their own value is omitted. Setting `barrel: false` on a plugin disables that plugin's barrel and excludes its files from the root barrel.
 
 ## Installation
 
@@ -47,14 +47,14 @@ Re-export style used for every generated barrel file. Set via `output.barrel` in
 
 At the config level:
 
-- `{ type: 'all' }` — `export * from '...'` for every generated file.
-- `{ type: 'named' }` — `export { Foo, Bar } from '...'` using each file's named exports.
-- `false` — disables barrel generation entirely.
+- `{ type: 'all' }`: writes `export * from '...'` for every generated file.
+- `{ type: 'named' }`: writes `export { Foo, Bar } from '...'` from each file's named exports.
+- `false`: turns off barrel generation.
 
 At the plugin level you also get `nested`:
 
-- `{ type: 'named', nested: true }` — generates a barrel for every subdirectory, re-exporting only direct children. Lets callers import from any depth.
-- `false` — disables the plugin's barrel and removes its files from the root barrel.
+- `{ type: 'named', nested: true }`: generates a barrel for every subdirectory, re-exporting only direct children, so callers can import from any depth.
+- `false`: turns off the plugin's barrel and removes its files from the root barrel.
 
 The `{ type: 'named' }` default kicks in only when `pluginBarrel` is part of `config.plugins`.
 

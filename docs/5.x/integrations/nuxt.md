@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Nuxt
 
-`unplugin-kubb/nuxt` runs Kubb as a [Nuxt](https://nuxt.com/) module. It works with Nuxt 3 and Nuxt 4 and registers Kubb as both a Vite and webpack plugin depending on your Nuxt renderer.
+`unplugin-kubb/nuxt` runs Kubb as a [Nuxt](https://nuxt.com/) module. It works with Nuxt 3 and Nuxt 4, registering Kubb as a Vite or webpack plugin depending on your Nuxt renderer.
 
 ## Install
 

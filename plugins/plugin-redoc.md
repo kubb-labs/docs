@@ -10,9 +10,9 @@ id: plugin-redoc
 
 # @kubb/plugin-redoc
 
-Generate a static HTML documentation page for your OpenAPI spec using [Redoc](https://redocly.com/). The page is self-contained — drop it on any static host or open it locally.
+Generate a static HTML documentation page for your OpenAPI spec using [Redoc](https://redocly.com/). The page is self-contained, so you can drop it on any static host or open it locally.
 
-Because the file is regenerated on every Kubb build, your docs stay in lockstep with the spec your code was generated from.
+Kubb regenerates the file on every build, so your docs stay in step with the spec your code was generated from.
 
 ## Installation
 
@@ -52,7 +52,7 @@ Output location of the generated HTML file.
 
 File path of the generated HTML, relative to the global `output.path`.
 
-Use a `.html` extension. Unlike most plugins, this option points at a single file rather than a directory.
+Use a `.html` extension. Unlike most plugins, this option points at a single file instead of a directory.
 
 |           |               |
 | --------: | :------------ |

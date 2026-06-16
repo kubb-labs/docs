@@ -21,8 +21,8 @@ The location is a JSON pointer into the source document. OpenAPI is parsed into 
 Kubb points at the node (`#/components/schemas/Pet`) rather than a line and column.
 
 Each code is stable, so you can search for it and link to its page. A run collects every
-diagnostic instead of stopping at the first, so one `kubb generate` surfaces all the problems it
-finds. A run fails only when at least one diagnostic has `error` severity; warnings and info do not
+diagnostic instead of stopping at the first, so a single `kubb generate` surfaces all the problems it
+finds. The run fails only when at least one diagnostic has `error` severity. Warnings and info never
 fail the build.
 
 ## Severity

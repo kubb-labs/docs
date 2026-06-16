@@ -24,7 +24,7 @@ run summary and in `kubb generate --reporter json`.
 
 ## How to fix
 
-Informational only. No action is required.
+It is informational, so no action is required.
 
 ## For plugin authors
 

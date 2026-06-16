@@ -6,15 +6,15 @@ description: Use Kubb's Fetch client for native browser API calls. Configuration
 outline: deep
 ---
 
-# Use of Fetch
+# Swap in a Fetch client
 
-By default, `@kubb/plugin-client` uses the Axios client from `@kubb/plugin-client/templates/axios`, which is based on the Axios instance interface.
+By default, `@kubb/plugin-client` ships the Axios client from `@kubb/plugin-client/templates/axios`, built on the Axios instance interface.
 
-Use [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) or [Ky](https://github.com/sindresorhus/ky) if you need a custom client.
+Reach for [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) or [Ky](https://github.com/sindresorhus/ky) when you want your own client instead.
 
 ## Create `kubb.config.ts`
 
-Set `importPath` to a relative path, import alias, or library (default: `@kubb/plugin-client/templates/axios`).
+Point `importPath` at a relative path, an import alias, or a library. It defaults to `@kubb/plugin-client/templates/axios`.
 
 See [plugins/plugin-client](/plugins/plugin-client).
 
@@ -52,7 +52,7 @@ export default defineConfig(() => {
 
 ## Add `client.ts`
 
-All HTTP requests (POST, PUT, GET, PATCH, DELETE) use the `importPath` to invoke your default export.
+Every HTTP request (POST, PUT, GET, PATCH, DELETE) resolves `importPath` and calls your default export.
 
 The request configuration follows the `RequestConfig` type, modeled after the Axios request interface.
 

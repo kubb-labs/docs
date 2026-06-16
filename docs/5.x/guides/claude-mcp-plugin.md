@@ -6,19 +6,15 @@ description: Integrate Kubb with Claude AI for enhanced code generation. AI-powe
 outline: deep
 ---
 
-# Setup Claude with Kubb
+# Set up Claude with Kubb
 
 ![Claude](/public/screenshots/claude.png)
 
-[Kubb](https://kubb.dev), [Claude](https://claude.ai), and [MCP (Model Context Provider)](https://modelcontextprotocol.io) connect Kubb's generated code to Claude through MCP for conversational API interactions.
+[Kubb](https://kubb.dev) and [Claude](https://claude.ai) talk to each other over [MCP (Model Context Provider)](https://modelcontextprotocol.io), so Claude can call your API through plain conversation.
 
-- **Kubb** generates type-safe code from OpenAPI specs, automating the creation of API files, Zod schemas, and MCP server setup.
+Kubb generates type-safe code from your OpenAPI spec: the API files, the Zod schemas, and the MCP server setup. Claude reads that MCP server and calls the endpoints as you chat with it. MCP is the wire between the two, carrying tool calls back and forth and keeping the conversation tied to your backend.
 
-- **Claude**, a conversational AI, uses [MCP](https://modelcontextprotocol.io) to interact with these APIs through natural dialogues.
-
-- **MCP** ensures Claude maintains relevant and coherent conversations while interacting with your backend.
-
-Together, they automate API calls and build intelligent, conversational applications.
+Put together, you describe what you want and Claude runs the matching API calls for you.
 
 ```mermaid
 graph TD
@@ -53,7 +49,7 @@ flowchart LR
 
 ## Installation
 
-Before using [Claude](https://claude.ai), install [Claude desktop](https://claude.ai/download) and follow the tutorial: [https://modelcontextprotocol.io/quickstart/user](https://modelcontextprotocol.io/quickstart/user).
+Before you use [Claude](https://claude.ai), install [Claude desktop](https://claude.ai/download) and work through the [user quickstart](https://modelcontextprotocol.io/quickstart/user).
 
 Install Kubb with the [MCP plugin](/plugins/plugin-mcp).
 
@@ -85,7 +81,7 @@ yarn add -D @kubb/plugin-mcp@beta @kubb/adapter-oas@beta @kubb/plugin-ts@beta @k
 
 ## Define `kubb.config.ts`
 
-To use [Claude](https://claude.ai), define a `kubb.config.ts` file with [MCP](https://modelcontextprotocol.io) server setup and configuration.
+Define a `kubb.config.ts` file that sets up the [MCP](https://modelcontextprotocol.io) server.
 
 > [!IMPORTANT]
 > Define your `baseURL` so Claude knows which endpoints to call.
@@ -118,7 +114,7 @@ export default defineConfig({
 
 ## Generate MCP files
 
-Run the following command to create the desired files.
+Run the generate command to create the files.
 
 ```shell
 npx kubb@beta generate
@@ -126,7 +122,7 @@ npx kubb@beta generate
 
 ## Inspect generated files
 
-The `src/mcp` folder contains files for creating an [MCP server](https://modelcontextprotocol.io) and connecting [Claude](https://claude.ai/download) to your APIs.
+The `src/mcp` folder holds the files that build an [MCP server](https://modelcontextprotocol.io) and connect [Claude](https://claude.ai/download) to your APIs.
 
 ```
 .
@@ -150,9 +146,9 @@ The `src/mcp` folder contains files for creating an [MCP server](https://modelco
 
 ### src/mcp/addPet.ts
 
-The `addPetHandler` function sends a POST request to the Swagger PetStore API to add a new pet, taking pet data as input and handling the response.
+The `addPetHandler` function takes pet data, sends a POST request to the Swagger PetStore API to add the pet, and handles the response.
 
-It returns the data as a JSON-formatted message for [MCP](https://modelcontextprotocol.io) to use in conversations.
+It returns the data as a JSON-formatted message that [MCP](https://modelcontextprotocol.io) uses in conversations.
 
 ```typescript [src/mcp/addPet.ts]
 import client from '@kubb/plugin-clients/client/axios'
@@ -179,9 +175,9 @@ export async function addPetHandler({ data }: { data: AddPetMutationRequest }): 
 
 ### src/mcp/mcp.json
 
-This configuration sets up an [MCP](https://modelcontextprotocol.io) server named `"Swagger PetStore - OpenAPI 3.0"`, uses `info.title` from your OpenAPI/Swagger file.
+This configuration registers an [MCP](https://modelcontextprotocol.io) server named `"Swagger PetStore - OpenAPI 3.0"`, taken from `info.title` in your OpenAPI or Swagger file.
 
-It runs a TypeScript server (`server.ts`) using the `tsx` command, enabling [MCP](https://modelcontextprotocol.io) to handle API-related tool calls via standard input/output.
+It runs the TypeScript server (`server.ts`) through the `tsx` command, so [MCP](https://modelcontextprotocol.io) handles API tool calls over standard input and output.
 
 ```JSON [src/mcp/mcp.json]
 {
@@ -199,14 +195,12 @@ It runs a TypeScript server (`server.ts`) using the `tsx` command, enabling [MCP
 
 ### src/mcp/server.ts
 
-This code sets up and starts an [MCP](https://modelcontextprotocol.io) server that listens for tool calls to `"add a pet to the store"` via the `"Swagger PetStore API"`(your OpenAPI/Swagger file).
+This code starts an [MCP](https://modelcontextprotocol.io) server that listens for the `"add a pet to the store"` tool call against the Swagger PetStore API from your OpenAPI or Swagger file. It works in four steps:
 
 1. Imports the MCP SDK classes and the `addPetHandler` function.
 2. Creates an MCP server named `"Swagger PetStore - OpenAPI 3.0"`.
 3. Registers the `addPet` tool, which calls `addPetHandler` with pet data validated against `addPetMutationRequestSchema` (generated by the Zod plugin).
-4. Connects the server to a `stdio` transport so it communicates through standard input/output.
-
-In short, this code sets up an [MCP](https://modelcontextprotocol.io) server that processes API requests to 'add a new pet' by using the `addPetHandler`.
+4. Connects the server to a `stdio` transport so it communicates through standard input and output.
 
 ```typescript [src/mcp/server.ts]
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp'
@@ -239,11 +233,11 @@ startServer()
 
 ## Start Claude with the MCP server
 
-Before starting, let [Claude](https://claude.ai) know where your [MCP](https://modelcontextprotocol.io) server config file is located (`src/mcp/mcp.json`). Open Claude desktop and go to settings.
+First, point [Claude](https://claude.ai) at your [MCP](https://modelcontextprotocol.io) server config file (`src/mcp/mcp.json`). Open Claude desktop and go to settings.
 
 ![Claude setup 1](/public/screenshots/claude-setup1.png)
 
-The settings panel opens. Go to the `developer` section and click `edit config`. A window displays showing the location of the JSON file that contains all [MCP](https://modelcontextprotocol.io) servers.
+In the settings panel, open the `developer` section and click `edit config`. A window shows where the JSON file that lists all [MCP](https://modelcontextprotocol.io) servers lives.
 
 > [!TIP]
 > Manually navigate to:
@@ -288,19 +282,19 @@ For example:
 
 ## Validate your MCP server
 
-Stop [Claude](https://claude.ai) and reopen the desktop application.
+Quit [Claude](https://claude.ai) and reopen the desktop app.
 
-After that, validate that your [MCP](https://modelcontextprotocol.io) server is connected and working by clicking the following button.
+Then check that your [MCP](https://modelcontextprotocol.io) server is connected by clicking the button below.
 
 ![Claude](/public/screenshots/claude-setup3.png)
 
-The following view opens, showing your generated [MCP](https://modelcontextprotocol.io) server.
+The view below opens and shows your generated [MCP](https://modelcontextprotocol.io) server.
 
 ![Claude](/public/screenshots/claude-setup4.png)
 
 ## Use your MCP server
 
-In this example, use the prompt `create a random pet` to call your generated [MCP](https://modelcontextprotocol.io) server. The server attaches the prompt to the tool `addPet`, which calls `addPetHandler` and creates the pet.
+Here, the prompt `create a random pet` calls your generated [MCP](https://modelcontextprotocol.io) server. The server maps the prompt to the `addPet` tool, which calls `addPetHandler` and creates the pet.
 
 ![Claude interaction](/public/screenshots/claude-interaction.gif)
 

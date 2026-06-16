@@ -11,12 +11,12 @@ id: parser-ts
 > [!TIP]
 > `@kubb/parser-ts` is bundled with Kubb and used automatically when no `parsers` option is set. Install it explicitly only when combining it with other parsers or providing a fully custom parser list.
 
-`@kubb/parser-ts` takes the `FileNode` staged by your plugins and prints it as TypeScript source using the official [TypeScript compiler](https://www.typescriptlang.org/). It resolves import paths, deduplicates declarations, prints JSDoc, and rewrites extensions based on `output.extension`.
+`@kubb/parser-ts` takes the `FileNode` staged by your plugins and prints it as TypeScript source with the official [TypeScript compiler](https://www.typescriptlang.org/). It resolves import paths, deduplicates declarations, prints JSDoc, and rewrites extensions based on `output.extension`.
 
-Two parsers are exported:
+The package exports two parsers:
 
-- `parserTs` — handles `.ts` and `.js` files.
-- `parserTsx` — handles `.tsx` and `.jsx` files. Use this for React projects so JSX in generated components is preserved.
+- `parserTs` handles `.ts` and `.js` files.
+- `parserTsx` handles `.tsx` and `.jsx` files. Use it for React projects so JSX in generated components is preserved.
 
 ## Installation
 

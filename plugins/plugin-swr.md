@@ -40,7 +40,7 @@ yarn add -D @kubb/plugin-swr@beta
 
 ### output
 
-Specify the export location for the files and define the behavior of the output.
+Set where the plugin writes its files and how the output behaves.
 
 |           |                                                |
 | --------: | :--------------------------------------------- |
@@ -104,7 +104,7 @@ How the plugin consolidates its generated code into files.
 |  Default: | `'directory'`           |
 
 > [!TIP]
-> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group` — a single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
+> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group`, since a single-file output has nothing to group. Combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 ::: code-group
 
@@ -207,8 +207,8 @@ Defines how pathParams are passed to generated functions.
 
 Runtime validator applied to the response body before it is returned.
 
-- `false` (default) — no validation; the response is cast to the generated type.
-- `'zod'` — pipes the response through the Zod schema from `@kubb/plugin-zod`.
+- `false` (default) skips validation and casts the response to the generated type.
+- `'zod'` pipes the response through the Zod schema from `@kubb/plugin-zod`.
 
 |           |                  |
 | --------: | :--------------- |

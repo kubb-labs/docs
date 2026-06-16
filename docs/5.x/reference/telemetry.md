@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Telemetry
 
-The Kubb CLI collects anonymous usage data to understand which plugins and features are most used and to identify performance bottlenecks.
+The Kubb CLI collects anonymous usage data so the team can see which plugins and features people actually use, and spot performance bottlenecks.
 
 > [!IMPORTANT]
 > Telemetry is enabled by default and can be disabled at any time using the `DO_NOT_TRACK` or `KUBB_DISABLE_TELEMETRY` environment variable.
@@ -80,4 +80,4 @@ Both environment variables accept `"1"` or `"true"` as values.
 
 ## Data transmission
 
-Telemetry is formatted as [OpenTelemetry OTLP](https://opentelemetry.io/docs/languages/sdk-configuration/otlp-exporter/) traces and sent to `https://otlp.kubb.dev/v1/traces` at the end of each command. The request fires only when an internet connection is available, has a 5-second timeout, and fails silently.
+Telemetry is formatted as [OpenTelemetry OTLP](https://opentelemetry.io/docs/languages/sdk-configuration/otlp-exporter/) traces and sent to `https://otlp.kubb.dev/v1/traces` at the end of each command. The request only fires when you're online, times out after 5 seconds, and fails silently if anything goes wrong.

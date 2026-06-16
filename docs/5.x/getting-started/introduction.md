@@ -7,9 +7,9 @@ outline: [2, 3]
 
 # Introduction
 
-**Kubb is the meta framework for code generation.** Just like Nuxt gives structure on top of Vue, Kubb gives you a complete, plugin-based generation pipeline on top of any API specification. An [adapter](/adapters) reads your spec, [parsers](/parsers) convert the [AST](/docs/5.x/concepts/ast) into source files, [plugins](/plugins) generate the output, and the pipeline handles writing, formatting, and linting. Everything runs from a single config file.
+Kubb is the meta framework for code generation. Where Nuxt adds structure on top of Vue, Kubb adds a plugin-based generation pipeline on top of any API specification. An [adapter](/adapters) reads your spec, [parsers](/parsers) turn the [AST](/docs/5.x/concepts/ast) into source files, and [plugins](/plugins) generate the output. The pipeline takes care of writing, formatting, and linting, and the whole thing runs from a single config file.
 
-The default adapter supports [OpenAPI](https://www.openapis.org/) 2.0, 3.0, and 3.1. For other formats ([GraphQL](https://graphql.org/), [JSON Schema](https://json-schema.org/), [gRPC](https://grpc.io/)) you can bring your own adapter. Whether you need TypeScript types, React Query hooks, Zod validators, MSW mocks, or a fully custom output, Kubb lets you focus on building your application instead of maintaining generated code by hand. And unlike AI or LLM-generated code, Kubb's output is deterministic: the same spec always produces the same result.
+The default adapter reads [OpenAPI](https://www.openapis.org/) 2.0, 3.0, and 3.1. For [GraphQL](https://graphql.org/), [JSON Schema](https://json-schema.org/), [gRPC](https://grpc.io/), or anything else, you can write your own adapter. From there Kubb generates TypeScript types, React Query hooks, Zod validators, MSW mocks, or a custom output of your own, so you stop hand-maintaining generated code. The output is also deterministic in a way AI or LLM-generated code is not: the same spec always produces the same result.
 
 ## Features
 

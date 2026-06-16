@@ -9,8 +9,8 @@ outline: [2, 3]
 
 **Severity:** error · **Source:** Configuration
 
-An action needs an adapter but none is configured. Without an
-adapter, Kubb cannot read the input into its object model.
+An action needs an adapter but none is configured. Without one, Kubb has no way to read your input
+into the object model that plugins generate from.
 
 ```sh
 × (KUBB_ADAPTER_REQUIRED): An adapter is required, but none is configured.
@@ -20,7 +20,7 @@ adapter, Kubb cannot read the input into its object model.
 
 ## What it means
 
-The adapter turns your spec into the AST that plugins generate from. It must be set before any
+The adapter turns your spec into the AST that plugins generate from, so it has to be set before any
 plugin runs. This diagnostic fires when the config has no `adapter`.
 
 ## How to fix

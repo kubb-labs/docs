@@ -13,9 +13,9 @@ id: plugin-mcp
 
 # @kubb/plugin-mcp
 
-Generate a [Model Context Protocol](https://modelcontextprotocol.io/introduction) server straight from your OpenAPI spec. Every operation becomes a typed MCP tool that AI assistants (Claude Desktop, Claude Code, MCP-compatible clients) can call directly.
+Generate a [Model Context Protocol](https://modelcontextprotocol.io/introduction) server from your OpenAPI spec. Every operation becomes a typed MCP tool that AI assistants such as Claude Desktop, Claude Code, and MCP-compatible clients can call directly.
 
-The plugin emits the tool definitions, the request handlers, and the Zod schemas they validate against. Plug the generated server into Claude with one config file.
+The plugin emits the tool definitions, the request handlers, and the Zod schemas that validate each call. Point Claude at the generated server with one config file.
 
 ```mermaid
 graph TD
@@ -64,7 +64,7 @@ Where the generated MCP tool handlers are written and how they are exported.
 
 Folder where the plugin writes its generated code. The path is resolved against the global `output.path` set on `defineConfig`.
 
-Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `'hooks'`). To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension (e.g. `'types.ts'`).
+Use a folder to keep each generator's output separate, for example `'types'`, `'clients'`, or `'hooks'`. To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension, such as `'types.ts'`.
 
 |           |          |
 | --------: | :------- |
@@ -116,7 +116,7 @@ How the plugin consolidates its generated code into files.
 |  Default: | `'directory'`           |
 
 > [!TIP]
-> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group` — a single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
+> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group`, since a single-file output has nothing to group. Combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 ::: code-group
 
@@ -321,7 +321,7 @@ export default defineConfig({
 
 #### output.footer
 
-Text appended at the end of every generated file. The mirror of `banner` — use it for closing comments, re-enabling lint rules, or marker lines.
+Text appended at the end of every generated file. It mirrors `banner`. Use it for closing comments, re-enabling lint rules, or marker lines.
 
 Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
 
@@ -448,7 +448,7 @@ Without `group`, every file lands in the plugin's `output.path` folder. With `gr
 > [!TIP]
 > Use `group` to mirror your API's domain structure (pet, store, user) in the generated code. Combine it with `output.barrel: { type: 'named', nested: true }` to get per-tag barrel files.
 >
-> `group` only applies to `output.mode: 'directory'` (the default), where each group becomes a folder. It is not valid with `output.mode: 'file'` — a single-file output has no grouping concept.
+> `group` only applies to `output.mode: 'directory'` (the default), where each group becomes a folder. It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
 
 ::: code-group
 
@@ -481,7 +481,7 @@ src/gen/
     └── GetStoreById.ts
 ```
 
-Pass `group.name` to customize the folder name, for example `name: ({ group }) => \`${group}Controller\``to keep the pre-v5`petController/` layout.
+Pass `group.name` to customize the folder name, for example `name: ({ group }) => \`${group}Controller\`` to keep the pre-v5 `petController/` layout.
 
 #### group.type
 
@@ -495,7 +495,7 @@ Today only `'tag'` is supported: Kubb reads the first tag on the operation (`ope
 | Required: | `true`  |
 
 > [!NOTE]
-> `Required: true*` is conditional — only required when the parent `group` option is used. `group` itself stays optional.
+> `Required: true*` is conditional. It only applies when the parent `group` option is used, and `group` itself stays optional.
 
 #### group.name
 
@@ -509,7 +509,7 @@ Function that builds the folder/identifier name from a group key (the operation'
 
 ### paramsCasing
 
-Renames parameter properties in the generated MCP handlers. The HTTP layer still uses the original spec names — Kubb adds the mapping for you.
+Renames parameter properties in the generated MCP handlers. The HTTP layer still uses the original spec names, and Kubb adds the mapping for you.
 
 |           |               |
 | --------: | :------------ |
@@ -570,7 +570,7 @@ Use this when you need to inject auth headers, add interceptors, change the base
 > See the [custom client guide](https://kubb.dev/plugins/plugin-client#importpath) for a worked example.
 
 > [!IMPORTANT]
-> When used with query plugins (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`), generated hooks also import a `Client` type alias. Your module **must** export `Client`, `RequestConfig`, and `ResponseErrorConfig` — TypeScript will fail the import otherwise.
+> When used with query plugins (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`), generated hooks also import a `Client` type alias. Your module must export `Client`, `RequestConfig`, and `ResponseErrorConfig`, or TypeScript will fail the import.
 
 ```typescript [src/client.ts]
 import axios from 'axios'
@@ -643,8 +643,8 @@ Reach for a custom client when you need to:
 
 Without `importPath`:
 
-- `bundle: false` (default) — generated code imports from `@kubb/plugin-client/clients/{axios|fetch}`.
-- `bundle: true` — Kubb writes `.kubb/client.ts` and generated code imports from there.
+- With `bundle: false` (the default), generated code imports from `@kubb/plugin-client/clients/{axios|fetch}`.
+- With `bundle: true`, Kubb writes `.kubb/client.ts` and generated code imports from there.
 
 ##### Required exports
 
@@ -773,13 +773,13 @@ Restricts generation to operations that match at least one entry in the list. An
 
 Each entry filters by one of:
 
-- `tag` — the operation's first tag in the OpenAPI spec.
-- `operationId` — the operation's `operationId`.
-- `path` — the URL pattern (`'/pet/{petId}'`).
-- `method` — HTTP method (`'get'`, `'post'`, ...).
-- `contentType` — the media type of the request body.
+- `tag`: the operation's first tag in the OpenAPI spec.
+- `operationId`: the operation's `operationId`.
+- `path`: the URL pattern (`'/pet/{petId}'`).
+- `method`: the HTTP method (`'get'`, `'post'`, ...).
+- `contentType`: the media type of the request body.
 
-`pattern` accepts either a string (exact match) or a `RegExp` for fuzzy matches.
+`pattern` accepts either a string for an exact match or a `RegExp` for fuzzy matches.
 
 |           |                  |
 | --------: | :--------------- |
@@ -836,11 +836,11 @@ Skips any operation that matches at least one entry in the list. The opposite of
 
 Each entry filters by one of:
 
-- `tag` — the operation's first tag.
-- `operationId` — the operation's `operationId`.
-- `path` — the URL pattern (`'/pet/{petId}'`).
-- `method` — HTTP method (`'get'`, `'post'`, ...).
-- `contentType` — the media type of the request body.
+- `tag`: the operation's first tag.
+- `operationId`: the operation's `operationId`.
+- `path`: the URL pattern (`'/pet/{petId}'`).
+- `method`: the HTTP method (`'get'`, `'post'`, ...).
+- `contentType`: the media type of the request body.
 
 `pattern` accepts a plain string or a `RegExp`. When both `include` and `exclude` are set, `exclude` wins.
 
@@ -899,7 +899,7 @@ Applies a different set of plugin options to operations that match a pattern. Us
 
 Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations.
 
-Entries are evaluated top to bottom. The first matching entry's `options` is merged onto the plugin defaults; later entries do not stack.
+Entries are evaluated top to bottom. The first matching entry's `options` is merged onto the plugin defaults, and later entries do not stack.
 
 |           |                   |
 | --------: | :---------------- |

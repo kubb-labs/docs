@@ -29,4 +29,4 @@ Projects and articles from the community.
 
 ## Community
 
-Join the [Discord](https://discord.gg/shfBFeczrm) for questions and discussion. Using Kubb in a project? Share it on [GitHub Discussions](https://github.com/kubb-labs/kubb/discussions) and we can add it here.
+Join the [Discord](https://discord.gg/shfBFeczrm) for questions and discussion. Using Kubb in a project? Share it on [GitHub Discussions](https://github.com/kubb-labs/kubb/discussions) and we will add it here.

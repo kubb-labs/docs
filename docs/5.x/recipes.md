@@ -7,11 +7,11 @@ outline: [2, 3]
 
 # Recipes
 
-Ready-made `kubb.config.ts` snippets for the setups people use most. Copy one in, install the matching packages, and run [`kubb generate`](./api/commands/generate).
+Ready-made `kubb.config.ts` snippets for the setups people reach for most. Copy one in, install the matching packages, and run [`kubb generate`](./api/commands/generate).
 
 ## TypeScript only
 
-The minimum setup. Generates TypeScript types and interfaces from your OpenAPI spec.
+The smallest setup. Generates TypeScript types and interfaces from your OpenAPI spec.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -115,7 +115,7 @@ export default defineConfig({
 
 ## Multiple specifications
 
-Generate from several specs in a single run. Pass an array to [`defineConfig`](./reference/configuration). Each entry runs independently with its own plugins and output directory.
+Generate from several specs in one run. Pass an array to [`defineConfig`](./reference/configuration). Each entry runs on its own, with its own plugins and output directory.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -255,9 +255,9 @@ export default defineConfig({
 
 ## Programmatic build
 
-Drive Kubb from a script using [`createKubb`](./api/core#createkubb) from `@kubb/core`. Useful for monorepo orchestration or custom build pipelines.
+Drive Kubb from a script with [`createKubb`](./api/core#createkubb) from `@kubb/core`. This fits monorepo orchestration and custom build pipelines.
 
-Unlike `defineConfig`, `createKubb` does not inject defaults. You must provide `adapter`, `parsers`, and any plugins explicitly.
+Unlike `defineConfig`, `createKubb` injects no defaults. Provide `adapter`, `parsers`, and any plugins yourself.
 
 ```typescript twoslash [generate.ts]
 import { createKubb, Diagnostics } from '@kubb/core'

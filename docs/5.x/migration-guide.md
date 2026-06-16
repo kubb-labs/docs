@@ -190,7 +190,7 @@ The following plugins have no v5 equivalent. Remove them from your config and un
 | `@kubb/plugin-svelte-query` |
 
 > [!NOTE]
-> `@kubb/plugin-swr` was unavailable during the early v5 betas but is **supported again in v5**. See [@kubb/plugin-swr](#kubb-plugin-swr) below.
+> `@kubb/plugin-swr` was unavailable during the early v5 betas but is supported again in v5. See [@kubb/plugin-swr](#kubb-plugin-swr) below.
 
 ### New packages in v5
 
@@ -356,7 +356,7 @@ v4 decided between a folder and a single file by looking at the `output.path` ex
 | `'directory'` | One file per operation or schema. The default.                    |
 | `'file'`      | One file for the whole plugin.                                    |
 
-To keep a single-file layout from v4, add `mode: 'file'`. The `output.path` must include the extension — Kubb uses it as-is.
+To keep a single-file layout from v4, add `mode: 'file'`. The `output.path` must include the extension, since Kubb uses it as-is.
 
 ::: code-group
 
@@ -1075,7 +1075,7 @@ v4 wrapped almost every nested ref in a getter. v5 only does so when the schema 
 
 #### Stricter return type and intermediate variable
 
-The `create` prefix is **kept** in v5 (e.g. `createPet` stays `createPet`), matching the naming used by `plugin-msw`. What changes is the return type and the internal structure:
+The `create` prefix stays in v5 (`createPet` is still `createPet`), matching the naming `plugin-msw` uses. What changes is the return type and the internal structure:
 
 ```diff
 - export function createPet(data?: Partial<Pet>): Pet {
@@ -1155,22 +1155,22 @@ This naming pattern applies consistently across all HTTP methods and is inherite
 
 #### Client return type narrows to 2xx responses
 
-The generic on the generated client function now references the union of `2xx` response status types (`AddPetStatus200`) instead of the full response alias (`AddPetResponse`). The returned `Promise` resolves to the success body only; non-`2xx` responses surface through the client's error path.
+The generic on the generated client function now references the union of `2xx` response status types (`AddPetStatus200`) instead of the full response alias (`AddPetResponse`). The returned `Promise` resolves to the success body only. Non-`2xx` responses surface through the client's error path.
 
 ```diff
 - const res = await request<AddPetResponse, ResponseErrorConfig<AddPetStatus405>, AddPetData>({ ... })
 + const res = await request<AddPetStatus200, ResponseErrorConfig<AddPetStatus405>, AddPetData>({ ... })
 ```
 
-`AddPetResponse`, `AddPetResponses`, and the per-status `AddPetStatus<code>` aliases are still emitted by `plugin-ts`; only the generic threaded into the client changes.
+`AddPetResponse`, `AddPetResponses`, and the per-status `AddPetStatus<code>` aliases are still emitted by `plugin-ts`. Only the generic threaded into the client changes.
 
 This matches the default behavior of axios, ky, and Kubb's bundled fetch client, which all throw on non-`2xx`. If you pass raw native `fetch` as the client without a throwing wrapper, narrow with a type guard at the call site or wrap the client to throw on error responses. The previous union type masked the same runtime mismatch.
 
 #### Bundled client runtime exports `client`
 
-The bundled HTTP client runtime exports its request function as `client` for both the `axios` and `fetch` adapters. This name is consistent across bundled and non-bundled output (`@kubb/plugin-client/clients/fetch`, `@kubb/plugin-client/clients/axios`, and the generated `.kubb/client.ts`), so the generated root barrel re-exports a valid `client` symbol. The bundled file is always written to `.kubb/client.ts`; `@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, and `@kubb/plugin-mcp` previously emitted `.kubb/fetch.ts`.
+The bundled HTTP client runtime exports its request function as `client` for both the `axios` and `fetch` adapters. This name is consistent across bundled and non-bundled output (`@kubb/plugin-client/clients/fetch`, `@kubb/plugin-client/clients/axios`, and the generated `.kubb/client.ts`), so the generated root barrel re-exports a valid `client` symbol. The bundled file is always written to `.kubb/client.ts`. Earlier, `@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, and `@kubb/plugin-mcp` emitted `.kubb/fetch.ts`.
 
-Generated code imports the runtime as a default import, so most projects need no changes. If you import the request function as a **named** export, rename it to `client`:
+Generated code imports the runtime as a default import, so most projects need no changes. If you import the request function as a named export, rename it to `client`:
 
 ```diff
 - import { fetch } from '@kubb/plugin-client/clients/fetch'

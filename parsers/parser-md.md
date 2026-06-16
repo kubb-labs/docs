@@ -11,9 +11,9 @@ id: parser-md
 > [!TIP]
 > `parserMd.print({ title: 'Pets', layout: 'doc' })` returns `---\ntitle: Pets\nlayout: doc\n---`. Render it from a plugin to inject frontmatter into a generated page without depending on `yaml` directly.
 
-`@kubb/parser-md` lets Kubb emit `.md` and `.markdown` files. Register it alongside `parserTs` and any plugin that writes a markdown source will have its output serialized automatically.
+`@kubb/parser-md` lets Kubb emit `.md` and `.markdown` files. Register it alongside `parserTs`, and any plugin that writes a markdown source has its output serialized automatically.
 
-The parser joins source blocks with blank lines. When `file.meta.frontmatter` is set, it prepends the YAML envelope — no separate `yaml` dependency needed. Pair it with `parserTs` when a generator emits both TypeScript and documentation files side by side.
+The parser joins source blocks with blank lines. When `file.meta.frontmatter` is set, it prepends the YAML envelope, so you need no separate `yaml` dependency. Pair it with `parserTs` when a generator emits both TypeScript and documentation files side by side.
 
 ## Installation
 
