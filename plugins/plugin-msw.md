@@ -10,9 +10,7 @@ id: plugin-msw
 
 # @kubb/plugin-msw
 
-Generate [MSW](https://mswjs.io/) handlers from your OpenAPI spec. Drop them into your test setup or service worker to mock the API end-to-end — request path, method, status, and response body all stay in sync with the spec.
-
-Combine with `@kubb/plugin-faker` to seed handlers with realistic data, or feed them custom payloads from tests.
+Generate [MSW](https://mswjs.io/) handlers from your OpenAPI spec. Drop them into your test setup or service worker to mock the API end-to-end, so request path, method, status, and response body stay in sync with the spec. Combine with `@kubb/plugin-faker` to seed handlers with realistic data, or feed them custom payloads from tests.
 
 ## Installation
 
@@ -52,7 +50,7 @@ Where the generated MSW handlers are written and how they are exported.
 
 Folder where the plugin writes its generated code. The path is resolved against the global `output.path` set on `defineConfig`.
 
-Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `'hooks'`). To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension (e.g. `'types.ts'`).
+Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `'hooks'`). To write everything into one file, set `output.mode: 'file'` and point `path` at the target file with its extension (e.g. `'types.ts'`).
 
 |           |              |
 | --------: | :----------- |
@@ -104,7 +102,7 @@ How the plugin consolidates its generated code into files.
 |  Default: | `'directory'`           |
 
 > [!TIP]
-> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group` — a single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
+> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group`, since a single-file output has nothing to group. Combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 ::: code-group
 
@@ -251,9 +249,7 @@ export default defineConfig({
 
 #### output.banner
 
-Text prepended to every generated file. Useful for license headers, lint disables, or `@ts-nocheck` directives.
-
-Pass a string for a static banner. Pass a function to compute the banner from each file's `RootNode` (the AST root containing path, schema, and operation context).
+Text prepended to every generated file, for license headers, lint disables, or `@ts-nocheck` directives. Pass a string for a static banner, or a function that computes it from each file's `RootNode` (the AST root with path, schema, and operation context).
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -309,9 +305,7 @@ export default defineConfig({
 
 #### output.footer
 
-Text appended at the end of every generated file. The mirror of `banner` — use it for closing comments, re-enabling lint rules, or marker lines.
-
-Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
+Text appended to every generated file, the counterpart to `banner`, for closing comments, re-enabling lint rules, or marker lines. Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -342,7 +336,7 @@ export default defineConfig({
 
 #### output.override
 
-Allows the plugin to overwrite hand-written files that share a name with a generated file.
+Lets the plugin overwrite hand-written files that share a name with a generated file.
 
 - `false` (default): Kubb skips a file if it already exists and is not marked as generated. This protects manual edits.
 - `true`: Kubb overwrites any file at the target path, including hand-written ones.
@@ -398,9 +392,7 @@ export const server = setupServer(...handlersGet, ...handlersPost)
 
 ### baseURL
 
-Base URL prepended to every request URL in the generated client. When omitted, the URL comes from the OpenAPI spec's `servers[0].url` (or whichever index the adapter is configured to read).
-
-Set this when the generated client should point at a different environment (staging, production) than the one written in the spec.
+Base URL prepended to every handler's request URL. When omitted, the URL comes from the adapter's server URL, usually the spec's `servers[0].url`. Set it to match a different environment (staging, production) than the spec.
 
 |           |          |
 | --------: | :------- |
@@ -411,13 +403,15 @@ Set this when the generated client should point at a different environment (stag
 
 ```typescript [Override the spec's server URL]
 import { defineConfig } from 'kubb'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginMsw } from '@kubb/plugin-msw'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginClient({
+    pluginTs(),
+    pluginMsw({
       baseURL: 'https://petstore.swagger.io/v2',
     }),
   ],
@@ -428,9 +422,7 @@ export default defineConfig({
 
 ### group
 
-Splits generated files into subfolders based on the operation's tag, so each tag in your OpenAPI spec gets its own directory.
-
-Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files are bucketed under `{output.path}/{groupName}/`, where `groupName` is derived from the operation's first tag.
+Splits generated files into subfolders by each operation's tag or path, so related handlers share a directory. Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files go under `{output.path}/{groupName}/`, where `groupName` comes from the operation's first tag or first path segment, depending on `group.type`.
 
 |           |         |
 | --------: | :------ |
@@ -440,7 +432,7 @@ Without `group`, every file lands in the plugin's `output.path` folder. With `gr
 > [!TIP]
 > Use `group` to mirror your API's domain structure (pet, store, user) in the generated code. Combine it with `output.barrel: { type: 'named', nested: true }` to get per-tag barrel files.
 >
-> `group` only applies to `output.mode: 'directory'` (the default), where each group becomes a folder. It is not valid with `output.mode: 'file'` — a single-file output has no grouping concept.
+> `group` only applies to `output.mode: 'directory'` (the default), where each group becomes a folder. It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
 
 ::: code-group
 
@@ -473,38 +465,39 @@ src/gen/
     └── GetStoreById.ts
 ```
 
-Pass `group.name` to customize the folder name, for example `name: ({ group }) => \`${group}Controller\``to keep the pre-v5`petController/` layout.
+Pass `group.name` to customize the folder name. For example, `name: ({ group }) => \`${group}Controller\`` keeps the pre-v5 `petController/` layout.
 
 #### group.type
 
 Property used to assign each operation to a group. Required whenever `group` is set.
 
-Today only `'tag'` is supported: Kubb reads the first tag on the operation (`operation.getTags().at(0)?.name`) and uses it as the group key. Operations without a tag are placed in a default group.
+- `'tag'` reads the first tag on the operation (`operation.getTags().at(0)?.name`) and uses it as the group key. Operations without a tag fall back to a default group.
+- `'path'` uses the first segment of the operation's URL as the group key.
 
-|           |         |
-| --------: | :------ |
-|     Type: | `'tag'` |
-| Required: | `true`  |
+|           |                  |
+| --------: | :--------------- |
+|     Type: | `'tag' \| 'path'` |
+| Required: | `true`           |
 
 > [!NOTE]
-> `Required: true*` is conditional — only required when the parent `group` option is used. `group` itself stays optional.
+> `Required: true*` is conditional. It only applies when the parent `group` option is used, and `group` itself stays optional.
 
 #### group.name
 
-Function that builds the folder/identifier name from a group key (the operation's first tag).
+Function that builds the folder name from a group key. By default `'tag'` groups use the camelCased tag and `'path'` groups use the first path segment.
 
-|           |                                     |
-| --------: | :---------------------------------- |
-|     Type: | `(context: GroupContext) => string` |
-| Required: | `false`                             |
-|  Default: | `(ctx) => \`${ctx.group}\``         |
+|           |                                            |
+| --------: | :----------------------------------------- |
+|     Type: | `(context: { group: string }) => string`   |
+| Required: | `false`                                     |
+|  Default: | camelCased tag, or first path segment       |
 
 ### parser
 
 Source of the response body returned by each generated handler.
 
-- `'data'` (default) — handlers return a typed empty/example payload, ready for you to fill in from tests.
-- `'faker'` — handlers return a value produced by `@kubb/plugin-faker`. Requires the Faker plugin in the plugins array.
+- `'data'` (default): handlers return a typed empty payload from `@kubb/plugin-ts`, ready for you to fill in from tests.
+- `'faker'`: handlers return a value produced by `@kubb/plugin-faker`, which must be in the plugins array. The plugin depends on Faker only when you choose this value.
 
 |           |                     |
 | --------: | :------------------ |
@@ -535,11 +528,11 @@ Restricts generation to operations that match at least one entry in the list. An
 
 Each entry filters by one of:
 
-- `tag` — the operation's first tag in the OpenAPI spec.
-- `operationId` — the operation's `operationId`.
-- `path` — the URL pattern (`'/pet/{petId}'`).
-- `method` — HTTP method (`'get'`, `'post'`, ...).
-- `contentType` — the media type of the request body.
+- `tag`: the operation's first tag in the OpenAPI spec.
+- `operationId`: the operation's `operationId`.
+- `path`: the URL pattern (`'/pet/{petId}'`).
+- `method`: HTTP method (`'get'`, `'post'`, ...).
+- `contentType`: the media type of the request body.
 
 `pattern` accepts either a string (exact match) or a `RegExp` for fuzzy matches.
 
@@ -598,11 +591,11 @@ Skips any operation that matches at least one entry in the list. The opposite of
 
 Each entry filters by one of:
 
-- `tag` — the operation's first tag.
-- `operationId` — the operation's `operationId`.
-- `path` — the URL pattern (`'/pet/{petId}'`).
-- `method` — HTTP method (`'get'`, `'post'`, ...).
-- `contentType` — the media type of the request body.
+- `tag`: the operation's first tag.
+- `operationId`: the operation's `operationId`.
+- `path`: the URL pattern (`'/pet/{petId}'`).
+- `method`: HTTP method (`'get'`, `'post'`, ...).
+- `contentType`: the media type of the request body.
 
 `pattern` accepts a plain string or a `RegExp`. When both `include` and `exclude` are set, `exclude` wins.
 
@@ -657,11 +650,7 @@ export default defineConfig({
 
 ### override
 
-Applies a different set of plugin options to operations that match a pattern. Use this when most of your API should follow the global config, but a handful of endpoints need different treatment.
-
-Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations.
-
-Entries are evaluated top to bottom. The first matching entry's `options` is merged onto the plugin defaults; later entries do not stack.
+Applies a different set of plugin options to operations that match a pattern. Use this when most of your API follows the global config but a few endpoints need different treatment. Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations. Entries are evaluated top to bottom: the first match's `options` is merged onto the plugin defaults, and later entries do not stack.
 
 |           |                   |
 | --------: | :---------------- |
@@ -678,21 +667,25 @@ export type Override = {
 
 ::: code-group
 
-```typescript [Use a different enum style for the user tag]
+```typescript [Use Faker data for the user tag only]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginFaker } from '@kubb/plugin-faker'
+import { pluginMsw } from '@kubb/plugin-msw'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
-      enumType: 'asConst',
+    pluginTs(),
+    pluginFaker(),
+    pluginMsw({
+      parser: 'data',
       override: [
         {
           type: 'tag',
           pattern: 'user',
-          options: { enumType: 'literal' },
+          options: { parser: 'faker' },
         },
       ],
     }),
@@ -704,9 +697,7 @@ export default defineConfig({
 
 ### generators
 
-Adds custom generators that run alongside the plugin's built-in generators. Each generator can emit additional files or post-process existing ones using the plugin's AST and options.
-
-Use this when you need output the plugin does not produce out of the box (a custom client wrapper, an extra index, a metadata file). For end-to-end guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
+Adds custom generators that run alongside the plugin's built-in ones. Each generator can emit extra files or post-process existing ones using the plugin's AST and options. Use this for output the plugin does not produce itself (a custom client wrapper, an extra index, a metadata file). See [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
 
 |           |                               |
 | --------: | :---------------------------- |
@@ -718,11 +709,7 @@ Use this when you need output the plugin does not produce out of the box (a cust
 
 ### resolver
 
-Overrides how the plugin builds names and paths for generated files and symbols. Use this to add prefixes, suffixes, or to swap the casing strategy without forking the plugin.
-
-Only override the methods you want to change. Anything you omit falls back to the plugin's default resolver. A method that returns `null` or `undefined` also falls back.
-
-Inside each method, `this` is bound to the full resolver, so you can call `this.default(name, 'function')` to delegate to the built-in implementation.
+Overrides how the plugin builds names and paths for generated files and symbols. Use it to add prefixes, suffixes, or swap the casing strategy without forking the plugin. Override only the methods you want to change. Anything you omit, or a method that returns `null` or `undefined`, falls back to the default resolver. Inside each method, `this` is bound to the full resolver, so you can call `this.default(name, 'function')` to delegate to the built-in implementation.
 
 |           |                                                |
 | --------: | :--------------------------------------------- |
@@ -765,9 +752,7 @@ Each plugin ships with a default resolver:
 
 ### macros
 
-Rewrite AST nodes before they are printed to source code. Use this when you need to rewrite operation IDs, drop descriptions, or change schema metadata without forking the generator.
-
-Each [macro](/docs/5.x/concepts/macros) callback (e.g. `schema`, `operation`) receives the node and a context object. Return a new node to replace it, or return `undefined` to leave it untouched. Callbacks you omit keep the plugin's default behavior. Macros run in order, so a later macro sees the output of an earlier one.
+Rewrite AST nodes before they are printed to source code, to rewrite operation IDs, drop descriptions, or change schema metadata without forking the generator. Each [macro](/docs/5.x/concepts/macros) callback (e.g. `schema`, `operation`) receives the node and a context object. Return a new node to replace it, or `undefined` to leave it untouched. Callbacks you omit keep the default behavior. Macros run in order, so a later macro sees the output of an earlier one.
 
 |           |                 |
 | --------: | :-------------- |
@@ -827,10 +812,9 @@ export default defineConfig({
 
 ## Dependencies
 
-This plugin requires the following plugins to be installed:
+This plugin always depends on [`@kubb/plugin-ts`](/plugins/plugin-ts), so keep `pluginTs()` in the plugins array.
 
-- [`@kubb/plugin-ts`](/plugins/plugin-ts)
-- [`@kubb/plugin-faker`](/plugins/plugin-faker)
+It depends on [`@kubb/plugin-faker`](/plugins/plugin-faker) only when you set `parser: 'faker'`. With the default `parser: 'data'`, Faker is not needed.
 
 ## Example
 

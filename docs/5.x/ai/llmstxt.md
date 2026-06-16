@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # LLMS.txt
 
-Kubb generates an `llms.txt` file at build time following the [llms.txt standard](https://llmstxt.org/). This gives LLMs a compact, machine-readable index of the entire documentation so they can answer questions about Kubb without hallucinating outdated or missing details.
+Kubb generates an `llms.txt` file at build time, following the [llms.txt standard](https://llmstxt.org/). It gives LLMs a compact, machine-readable index of the whole documentation, so they answer questions about Kubb without inventing outdated or missing details.
 
 ## Available files
 

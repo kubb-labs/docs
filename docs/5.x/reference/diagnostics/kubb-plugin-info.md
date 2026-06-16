@@ -20,7 +20,7 @@ run summary and in `kubb generate --reporter json`.
 
 ## How to fix it
 
-Informational only. No action is required.
+It is informational, so no action is required.
 
 ## For plugin authors
 

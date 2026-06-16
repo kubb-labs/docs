@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Architecture
 
-Kubb transforms API specifications into code through a layered pipeline: the [adapter](/docs/5.x/concepts/adapters) parses the spec into a universal [AST](/docs/5.x/concepts/ast), [macros](/docs/5.x/concepts/macros) rewrite AST nodes before a plugin reads them, [plugins](/plugins) walk the AST and emit `FileNode`s, [parsers](/docs/5.x/concepts/parsers) convert each `FileNode` into source code, and [storage](/docs/5.x/concepts/storage) writes the result to disk.
+Kubb turns API specifications into code through a layered pipeline. The [adapter](/docs/5.x/concepts/adapters) parses the spec into a universal [AST](/docs/5.x/concepts/ast). [Macros](/docs/5.x/concepts/macros) rewrite AST nodes before a plugin reads them. [Plugins](/plugins) walk the AST and emit `FileNode`s, [parsers](/docs/5.x/concepts/parsers) convert each `FileNode` into source code, and [storage](/docs/5.x/concepts/storage) writes the result to disk.
 
 ## Pipeline overview
 
@@ -20,7 +20,7 @@ flowchart LR
 
 ## Config
 
-`defineConfig` from the `kubb` package pre-wires [`adapterOas`](/docs/5.x/concepts/adapters), [`parserTs`, `parserTsx`](/docs/5.x/concepts/parsers), and [`pluginBarrel`](/plugins/plugin-barrel), so a minimal config only needs `input` and `output`.
+`defineConfig` from the `kubb` package pre-wires [`adapterOas`](/docs/5.x/concepts/adapters), [`parserTs`, `parserTsx`, `parserMd`](/docs/5.x/concepts/parsers), and [`pluginBarrel`](/plugins/plugin-barrel), so a minimal config only needs `input` and `output`.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -44,6 +44,8 @@ flowchart LR
 ```
 
 An adapter converts an input specification into the universal [AST](/docs/5.x/concepts/ast). `adapter.parse(source)` returns an `InputNode`; `adapter.getImports(node, resolve)` tracks cross-references so plugins emit correct import paths.
+
+Each adapter also carries a dialect, the one seam where spec-specific schema questions live: nullability, `$ref` resolution, discriminators, binary detection, and schema deduplication. Everything past the adapter is generic JSON Schema, so plugins and parsers never branch on the source format.
 
 The official adapter for OpenAPI 2.0, 3.0, and 3.1 is [`@kubb/adapter-oas`](/adapters/adapter-oas), selected automatically by `defineConfig`.
 
@@ -91,9 +93,9 @@ flowchart LR
     Macros --> Transformed["InputNode\ntransformed"]
 ```
 
-Macros are the second layer of [`@kubb/ast`](/docs/5.x/concepts/ast). A macro is a named, composable transform that rewrites schema and operation nodes before a plugin's generators print code, so you can rename symbols, retype fields, or normalize shapes without forking an adapter or a generator. Because macros run on the shared AST, the same macro works across every adapter and every output target.
+Macros are the second layer of [`@kubb/ast`](/docs/5.x/concepts/ast): named, composable transforms that rewrite schema and operation nodes before a plugin's generators print code, so you can rename symbols, retype fields, or normalize shapes without forking an adapter or a generator. They run on the shared AST, so the same macro works across every adapter and output target.
 
-Macros run per plugin, so one plugin's macros never change the nodes another plugin sees. Pass them through a plugin's `macros` option, or register them from `kubb:plugin:setup` with `addMacro`. They run before resolver options are computed, so a renamed `operationId` or `SchemaNode.name` flows into `resolveOptions`, `resolvePath`, and `resolveFile`.
+Macros run per plugin, so one plugin's macros never change the nodes another plugin sees. Pass them through a plugin's `macros` option, or register them from `kubb:plugin:setup` with `addMacro`.
 
 ```typescript twoslash [kubb.config.ts]
 // @noErrors
@@ -229,10 +231,10 @@ export default defineConfig({
 
 | Package                                    | Purpose                                                                                                                                                                          |
 | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`kubb`](/docs/5.x/api/core)               | Umbrella package. Exports `defineConfig` and bundles `adapterOas`, `parserTs`, `parserTsx`, and `pluginBarrel` for a zero-config setup.                                          |
+| [`kubb`](/docs/5.x/api/core)               | Umbrella package. Exports `defineConfig` and bundles `adapterOas`, `parserTs`, `parserTsx`, `parserMd`, and `pluginBarrel` for a zero-config setup.                             |
 | [`@kubb/core`](/docs/5.x/api/core)         | Lower-level runtime with `createKubb`, `definePlugin`, `defineParser`, `createAdapter`, and storage APIs. Use for programmatic generation or custom tooling.                     |
 | [`@kubb/cli`](/docs/5.x/api/commands/)     | Provides the `kubb` command-line binary. Reads `kubb.config.ts` and runs the generation pipeline.                                                                                |
-| [`@kubb/ast`](/docs/5.x/concepts/ast)      | Universal AST layer. Includes all node factories, `walk`, `transform`, `collect`, type guards, and ref helpers. The macro engine lives on the root and the presets on `@kubb/ast/macros`. |
+| [`@kubb/ast`](/docs/5.x/concepts/ast)      | Universal AST layer. Includes all node factories, `walk`, `transform`, `collect`, type guards, ref helpers, and the `defineDialect` and `optionality` helpers. The macro engine lives on the root and the presets on `@kubb/ast/macros`. |
 | [`@kubb/parser-ts`](/parsers/parser-ts)    | TypeScript and TSX parser. Included automatically with the `kubb` package.                                                                                                       |
 | [`@kubb/renderer-jsx`](/docs/5.x/api/core) | JSX-based rendering for plugins that build files from React components.                                                                                                          |
 

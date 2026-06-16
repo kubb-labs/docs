@@ -9,9 +9,9 @@ kind: adapter
 id: adapter-oas
 ---
 
-The OpenAPI adapter is the bridge between your spec and every Kubb plugin. It reads the file at `input.path`, validates it, and converts every schema and operation into Kubb's universal AST that downstream plugins consume.
+The OpenAPI adapter sits between your spec and every Kubb plugin. It reads the file at `input.path`, validates it, and converts each schema and operation into Kubb's universal AST that downstream plugins consume.
 
-Configure it once on `defineConfig`. Its choices (date representation, integer width, server URL) apply to every plugin in the build.
+Configure it once on `defineConfig`. Its choices for date representation, integer width, and server URL apply to every plugin in the build.
 
 ## Installation
 
@@ -178,8 +178,8 @@ export default defineConfig({
 
 How `discriminator` fields on `oneOf`/`anyOf` schemas are interpreted.
 
-- `'strict'` (default) — child schemas stay exactly as written. The discriminator narrows types at the call site but child shapes are not modified.
-- `'inherit'` — Kubb propagates the discriminator property with the appropriate literal value into each child schema, so each branch's `type` field is precisely typed.
+- `'strict'` (default): child schemas stay exactly as written. The discriminator narrows types at the call site, but child shapes are not modified.
+- `'inherit'`: Kubb propagates the discriminator property with its literal value into each child schema, so each branch's `type` field is precisely typed.
 
 |           |                         |
 | --------: | :---------------------- |
@@ -250,14 +250,6 @@ export type Animal = Cat | Dog
 
 :::
 
-#### strict
-
-Child schemas are emitted verbatim. The discriminator property has whatever type the OpenAPI spec gave it.
-
-#### inherit
-
-Each child schema gets the discriminator value as a literal (`type: 'cat'`, `type: 'dog'`). Catches more bugs at compile time.
-
 ### dedupe
 
 Collapses structurally identical schemas and enums into one shared definition.
@@ -290,11 +282,11 @@ export default defineConfig({
 
 How `format: date-time` schemas are represented downstream.
 
-- `false` — fall through to a plain `string` (no validation).
-- `'string'` (default) — datetime string (`z.string().datetime()`, ISO 8601).
-- `'stringOffset'` — datetime string with timezone offset.
-- `'stringLocal'` — local datetime string (no timezone).
-- `'date'` — JavaScript `Date` object. Best for client code; requires JSON parsing to revive.
+- `false`: fall through to a plain `string` (no validation).
+- `'string'` (default): datetime string (`z.string().datetime()`, ISO 8601).
+- `'stringOffset'`: datetime string with timezone offset.
+- `'stringLocal'`: local datetime string (no timezone).
+- `'date'`: JavaScript `Date` object. Best for client code, though it needs JSON parsing to revive.
 
 |           |                                                                  |
 | --------: | :--------------------------------------------------------------- |
@@ -302,25 +294,12 @@ How `format: date-time` schemas are represented downstream.
 | Required: | `false`                                                          |
 |  Default: | `'string'`                                                       |
 
+The string variants all emit `string` at the TypeScript type level. The offset/local distinction surfaces in schema output such as Zod.
+
 ::: code-group
 
-```typescript [false]
-// format: date-time → plain string
-type CreatedAt = string
-```
-
-```typescript ['string' (default)]
-// format: date-time → ISO 8601 datetime string
-type CreatedAt = string
-```
-
-```typescript ['stringOffset']
-// format: date-time → ISO 8601 datetime with offset
-type CreatedAt = string
-```
-
-```typescript ['stringLocal']
-// format: date-time → local ISO 8601 datetime
+```typescript [string variants]
+// false, 'string', 'stringOffset', 'stringLocal' → string
 type CreatedAt = string
 ```
 
@@ -335,8 +314,8 @@ type CreatedAt = Date
 
 How `type: integer` (and `format: int64`) maps to TypeScript.
 
-- `'bigint'` (default) — exact for 64-bit IDs, but `JSON.stringify`/`JSON.parse` cannot round-trip it. Use only when you also handle bigint serialization explicitly.
-- `'number'` — fits most JSON APIs; loses precision above `Number.MAX_SAFE_INTEGER`.
+- `'bigint'` (default): exact for 64-bit IDs, but `JSON.stringify`/`JSON.parse` cannot round-trip it. Use it only when you also handle bigint serialization explicitly.
+- `'number'`: fits most JSON APIs, and loses precision above `Number.MAX_SAFE_INTEGER`.
 
 |           |                        |
 | --------: | :--------------------- |
@@ -364,7 +343,7 @@ type Pet = {
 
 AST type used when a schema's type cannot be inferred from the spec (`additionalProperties: true`, missing `type`, etc.).
 
-Pick `'unknown'` to force callers to narrow before using the value. `'any'` is the loosest; `'void'` is rarely useful but matches some legacy APIs.
+Pick `'unknown'` to force callers to narrow before using the value. `'any'` is the loosest. `'void'` matches some legacy APIs.
 
 |           |                                |
 | --------: | :----------------------------- |
@@ -405,7 +384,7 @@ AST type used for fully empty schemas (`{}`). Defaults to the value of `unknownT
 |  Default: | `unknownType \| 'any'`         |
 
 > [!TIP]
-> A common pattern: `unknownType: 'unknown'` for safety, `emptySchemaType: 'any'` to keep empty 204 response bodies frictionless to use.
+> A common pairing sets `unknownType: 'unknown'` for safety and `emptySchemaType: 'any'` so empty 204 response bodies stay easy to use.
 
 ::: code-group
 

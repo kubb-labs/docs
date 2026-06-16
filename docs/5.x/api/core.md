@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Core API
 
-`@kubb/core` is the low-level foundation of Kubb. It exports every primitive you need to embed Kubb programmatically, write a custom plugin, implement a new storage backend, or extend the generation pipeline.
+`@kubb/core` is the foundation of Kubb. It exports the primitives you need to embed Kubb in your own code, write a plugin, build a storage backend, or extend the generation pipeline.
 
 ::: code-group
 
@@ -64,7 +64,7 @@ import {
 
 ### `defineConfig`
 
-`defineConfig` is the primary way to add TypeScript type-checking to a `kubb.config.ts` file. It is exported from the `kubb` package (not `@kubb/core`) and automatically applies production-ready defaults: [`adapterOas`](/docs/5.x/concepts/adapters) as the adapter, `[parserTs, parserTsx]` as parsers, and `[pluginBarrel()]` as a post-enforced plugin.
+`defineConfig` is the primary way to add TypeScript type-checking to a `kubb.config.ts` file. It is exported from the `kubb` package (not `@kubb/core`) and automatically applies production-ready defaults: [`adapterOas`](/docs/5.x/concepts/adapters) as the adapter, `[parserTs, parserTsx, parserMd]` as parsers, and `[pluginBarrel()]` as a post-enforced plugin.
 
 ```typescript twoslash
 import { defineConfig } from 'kubb'
@@ -102,11 +102,11 @@ export default defineConfig(({ watch }) => ({
 
 ### `createKubb`
 
-`createKubb` is the entry point for driving Kubb programmatically. It accepts a `UserConfig` and returns a `Kubb` instance. Calling `.build()` on the instance runs the full generation pipeline and returns a `BuildOutput` object.
+`createKubb` is the entry point for driving Kubb from your own code. It accepts a `UserConfig` and returns a `Kubb` instance. Calling `.build()` on the instance runs the full generation pipeline and returns a `BuildOutput` object.
 
-Use `createKubb` when you need to orchestrate multiple builds, inspect diagnostics, or integrate Kubb output into a larger toolchain. For a single one-off build, chain the call directly: `await createKubb(config).build()`.
+Reach for `createKubb` when you need to orchestrate several builds, inspect diagnostics, or feed Kubb output into a larger toolchain. For a one-off build, chain the call directly: `await createKubb(config).build()`.
 
-`createKubb` takes a plain config object, the same shape `defineConfig` produces in `kubb.config.ts`. It is not a fluent builder, and that stays deliberate. A builder cannot live in a config file, and the config has to remain plain serializable data so Kubb can validate it against the shipped JSON schema.
+`createKubb` takes a plain config object, the same shape `defineConfig` produces in `kubb.config.ts`. It is not a fluent builder by design: the config stays plain serializable data so Kubb can validate it against the shipped JSON schema.
 
 ```typescript twoslash
 // @module: esnext
@@ -173,7 +173,7 @@ Each `Diagnostic` carries a `code`, a `severity` (`error`, `warning`, or `info`)
 
 ## Plugin authoring
 
-Plugins are the primary extension point in Kubb. Each plugin owns its file naming, output folder, lifecycle hooks, and the [generators](#definegenerator) that walk the [AST](/docs/5.x/concepts/ast) and emit `FileNode` objects.
+Plugins are the main extension point in Kubb. A plugin owns its file naming, its output folder, its lifecycle hooks, and the [generators](#definegenerator) that walk the [AST](/docs/5.x/concepts/ast) and emit `FileNode` objects.
 
 ### `definePlugin`
 
@@ -209,7 +209,6 @@ export const pluginExample = definePlugin((options: { prefix?: string } = {}) =>
 | `setResolver`    | `(resolver: Partial<Resolver>) => void` | Set or partially override the file naming resolver              |
 | `addMacro`       | `(macro: Macro) => void`                | Add a macro that rewrites AST nodes before generators           |
 | `setMacros`      | `(macros: Array<Macro>) => void`        | Replace this plugin's macros with a new list                    |
-| `setRenderer`    | `(renderer: RendererFactory) => void`   | Set the renderer factory for JSX-based generators               |
 | `setOptions`     | `(options: ResolvedOptions) => void`    | Set the resolved options used by generators                     |
 | `injectFile`     | `(file: UserFileNode) => void`          | Inject a raw file into the build output, bypassing generation   |
 | `updateConfig`   | `(config: Partial<Config>) => void`     | Merge a partial config update into the current build config     |
@@ -343,9 +342,9 @@ The built-in parsers, [`@kubb/parser-ts`](/docs/5.x/concepts/parsers) and its TS
 
 ### `createAdapter`
 
-`createAdapter` is the factory for implementing custom adapters that translate non-OpenAPI specs into Kubb's universal [AST](/docs/5.x/concepts/ast). Built-in adapters include [`@kubb/adapter-oas`](/docs/5.x/concepts/adapters) for OpenAPI and Swagger documents.
+`createAdapter` is the factory for building adapters that translate non-OpenAPI specs into Kubb's universal [AST](/docs/5.x/concepts/ast). The built-in [`@kubb/adapter-oas`](/docs/5.x/concepts/adapters) handles OpenAPI and Swagger documents.
 
-Common use cases for custom adapters include GraphQL schemas, gRPC definitions, AsyncAPI specifications, and custom domain-specific languages.
+Write a custom adapter when your source is something Kubb does not parse yet, such as a GraphQL schema, a gRPC definition, an AsyncAPI spec, or a domain-specific language of your own.
 
 > [!IMPORTANT]
 > Adapters must parse their input format to Kubb's `InputNode` structure. See [Adapter API](/docs/5.x/concepts/adapters) for complete documentation.
@@ -357,7 +356,7 @@ Common use cases for custom adapters include GraphQL schemas, gRPC definitions, 
 
 ## Storage
 
-Storage backends control where generated files are written. Kubb provides filesystem and in-memory implementations out of the box. Use `createStorage` to implement any custom backend.
+Storage backends decide where generated files are written. Kubb ships a filesystem backend and an in-memory one. Use `createStorage` to build your own.
 
 ### `createStorage`
 
@@ -418,7 +417,7 @@ export const memoryStorage = createStorage(() => {
 
 ### `memoryStorage`
 
-`memoryStorage` is the built-in in-memory storage backend. It writes nothing to disk, making it ideal for testing plugins, CI validation, and dry-run scenarios.
+`memoryStorage` is the built-in in-memory storage backend. It writes nothing to disk, so it suits plugin tests, CI validation, and dry runs.
 
 > [!NOTE]
 > Both `fsStorage` and `memoryStorage` are exported from `@kubb/core` and can be passed directly to the `storage` field at the root of your config.
@@ -463,7 +462,7 @@ Files stream through the processor as they arrive: the driver calls `enqueue(fil
 
 For JSX-based rendering, import `jsxRenderer` directly from [`@kubb/renderer-jsx`](https://www.npmjs.com/package/@kubb/renderer-jsx). `@kubb/core` no longer re-exports a `createRenderer` factory.
 
-`jsxRenderer` is a React-free recursive renderer. It walks the same JSX components into `FileNode`s without a React reconciliation pass, and its `stream()` returns a synchronous `Generator<FileNode>` that skips a microtask per file. Components run as plain functions, so hooks and suspense are not available.
+`jsxRenderer` is a React-free recursive renderer. It walks the JSX components into `FileNode`s without a React reconciliation pass, and its `stream()` returns a synchronous `Generator<FileNode>` that skips a microtask per file. Components run as plain functions, so hooks and suspense are not available.
 
 ```typescript twoslash
 import { jsxRenderer } from '@kubb/renderer-jsx'
@@ -471,7 +470,7 @@ import { jsxRenderer } from '@kubb/renderer-jsx'
 const renderer = jsxRenderer()
 ```
 
-Pass the renderer to `ctx.setRenderer()` inside a `kubb:plugin:setup` hook to enable JSX-based generators for your plugin.
+Set the renderer on a generator through its `renderer` field (`renderer: jsxRenderer`) to enable JSX-based output for that generator. Leave it unset, or pass `renderer: null`, to opt out of rendering.
 
 #### Related
 
@@ -507,9 +506,9 @@ Access the driver via `ctx.driver` inside generator context methods, or from the
 
 ### `AsyncEventEmitter`
 
-`AsyncEventEmitter` is the typed, async-friendly event emitter that drives all `KubbHooks`. It is type-safe, supports `await`, and provides error propagation and event filtering.
+`AsyncEventEmitter` is the typed event emitter that drives every `KubbHooks` event. Listeners can be async, the emitter awaits them, and it propagates errors and filters events as it goes.
 
-`@kubb/core` re-exports `AsyncEventEmitter` from `@internals/utils`. You can use it directly if you need to listen to events from a `Kubb` instance before calling `.build()`.
+`@kubb/core` re-exports `AsyncEventEmitter` from `@internals/utils`. Use it directly when you want to listen to events on a `Kubb` instance before calling `.build()`.
 
 #### Related
 
@@ -653,7 +652,7 @@ if ('path' in input) {
 | Type                           | Purpose                                                       |
 | ------------------------------ | ------------------------------------------------------------- |
 | `Storage`                      | Shape returned by `createStorage`                             |
-| `Renderer` / `RendererFactory` | Interfaces for custom renderers passed to `ctx.setRenderer()` |
+| `Renderer` / `RendererFactory` | Interfaces for custom renderers set on a generator's `renderer` field |
 
 > [!NOTE]
 > `defineLogger` and the logger types (`Logger`, `UserLogger`, `LoggerOptions`, `LoggerContext`) have moved to `@kubb/cli`. They are only needed when building a custom CLI logger.

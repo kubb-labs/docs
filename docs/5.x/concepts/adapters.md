@@ -7,14 +7,14 @@ outline: deep
 
 # Adapters
 
-An adapter is the single entry point that turns your input specification into the universal [AST](/docs/5.x/concepts/ast). Every [plugin](/docs/5.x/concepts/plugins) consumes that AST, so the adapter abstracts the input format away from the rest of the build.
+An adapter is the single entry point that turns your input specification into the universal [AST](/docs/5.x/concepts/ast). Every [plugin](/docs/5.x/concepts/plugins) reads that AST, so the adapter is the only piece that knows about the input format.
 
 > [!TIP]
-> For OpenAPI 2.0, 3.0, and 3.1 use the official [`@kubb/adapter-oas`](/adapters/adapter-oas). It is selected automatically when you import `defineConfig` from the top-level `kubb` package. Build a custom adapter only when you target a different specification (AsyncAPI, GraphQL, JSON Schema, gRPC, …).
+> For OpenAPI 2.0, 3.0, and 3.1 use the official [`@kubb/adapter-oas`](/adapters/adapter-oas). Kubb selects it for you when you import `defineConfig` from the top-level `kubb` package. Write a custom adapter only when you target a different specification such as AsyncAPI, GraphQL, JSON Schema, or gRPC.
 
 ## Quick start
 
-A minimal adapter declares its name and produces an empty [`InputNode`](/docs/5.x/concepts/ast). Plugins won't emit anything for an empty AST, so start here and then populate `schemas` and `operations` from your spec.
+A minimal adapter declares its name and produces an empty [`InputNode`](/docs/5.x/concepts/ast). An empty AST makes plugins emit nothing, so fill `schemas` and `operations` from your spec next.
 
 ```typescript twoslash [adapterCustom.ts]
 import { ast, createAdapter } from '@kubb/core'
@@ -78,7 +78,7 @@ type AdapterSource = { type: 'path'; path: string } | { type: 'data'; data: stri
 
 ## Streaming
 
-`stream()` is the streaming counterpart to `parse()`. It returns an `InputStreamNode` whose `schemas` and `operations` are `AsyncIterable`s instead of arrays. Each `for await` loop produces a fresh parse pass over the cached in-memory document, so plugins iterate independently and the runtime never holds every node in memory at once.
+`stream()` returns an `InputStreamNode` whose `schemas` and `operations` are `AsyncIterable`s instead of arrays. Each `for await` loop produces a fresh parse pass over the cached in-memory document, so plugins iterate independently and the runtime never holds every node in memory at once.
 
 The build driver prefers `stream()` when an adapter implements it. For `parse()`-only adapters, the driver wraps the result in a reusable `AsyncIterable` so the rest of the pipeline stays stream-shaped.
 
@@ -120,7 +120,7 @@ export const adapterStream = createAdapter<AdapterStream>(() => ({
 }))
 ```
 
-Use `ast.factory.createInput({ stream: true, schemas, operations, meta })` (see [AST](/docs/5.x/concepts/ast)) to assemble the result. The `meta` field is optional but recommended. When you set it, plugins can read `title`, `version`, and `baseURL` before the first node is yielded.
+Assemble the result with `ast.factory.createInput({ stream: true, schemas, operations, meta })` (see [AST](/docs/5.x/concepts/ast)). The `meta` field is optional, but set it when you can. Plugins then read `title`, `version`, and `baseURL` before the first node is yielded.
 
 ## Naming convention
 
@@ -268,18 +268,15 @@ export default defineConfig({
 })
 ```
 
-> [!TIP]
-> `defineConfig` from `kubb` only fills `adapter` with `adapterOas()` when no `adapter` is provided. Passing your own adapter wins, so the same import works for both built-in and custom adapters.
-
 ### Schema dispatch and dialects
 
-An adapter's hardest job is turning a spec's schema objects into [`SchemaNode`](/docs/5.x/concepts/ast)s. Most of that work is generic JSON Schema (`oneOf`/`anyOf`/`allOf`, `enum`, `const`, `type`, `format`, `items`, `properties`), so adapters follow one contract:
+Turning a spec's schema objects into [`SchemaNode`](/docs/5.x/concepts/ast)s is the heaviest part of an adapter. Most of that work is generic JSON Schema (`oneOf`/`anyOf`/`allOf`, `enum`, `const`, `type`, `format`, `items`, `properties`), so adapters follow one contract:
 
 ```text
 context → [rule.match → rule.convert] → node
 ```
 
-The adapter derives a small context from each schema, then runs it through an ordered table of [`dispatch`](/docs/5.x/concepts/ast#dispatch) rules that map spec shapes onto AST nodes. The few decisions that genuinely differ between specs are isolated behind a dialect, a single object the converter pipeline reads instead of hard-coding OpenAPI assumptions:
+The adapter derives a small context from each schema, then runs it through an ordered table of dispatch rules that map spec shapes onto AST nodes. Only a handful of decisions differ between specs. Those live behind a dialect, a single object the converter pipeline reads so it never hard-codes OpenAPI assumptions:
 
 | Decision      | OpenAPI                                              | AsyncAPI (example)            |
 | ------------- | --------------------------------------------------- | ----------------------------- |
@@ -288,7 +285,7 @@ The adapter derives a small context from each schema, then runs it through an or
 | binary        | `contentMediaType: 'application/octet-stream'`      | `contentEncoding: 'binary'`   |
 | optionality   | a parent's `required` plus the schema's `nullable` set `optional` / `nullish` | same JSON Schema `required` + `null` |
 
-`@kubb/adapter-oas` ships the OpenAPI dialect as its default. A new adapter such as `@kubb/adapter-asyncapi` reuses the same converters and dispatch table and only supplies its own dialect, so it does not reimplement schema parsing. This keeps the spec-specific surface small, discoverable, and easy to test by swapping a single object.
+`@kubb/adapter-oas` ships the OpenAPI dialect as its default. A new adapter such as `@kubb/adapter-asyncapi` reuses the same converters and dispatch table and supplies only its own dialect, so the spec-specific surface stays small and you can test it by swapping that one object.
 
 ## Examples
 

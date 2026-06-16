@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # MCP
 
-Kubb ships a [Model Context Protocol](https://modelcontextprotocol.io/) server that exposes code-generation tools to any MCP-capable client. Once connected, your editor or agent can trigger Kubb generation, validate schemas, and inspect configuration without leaving the chat.
+Kubb ships a [Model Context Protocol](https://modelcontextprotocol.io/) server that exposes code-generation tools to any MCP-capable client. Once connected, your editor or agent runs Kubb generation, validates schemas, and inspects configuration without leaving the chat.
 
 > [!IMPORTANT]
 > The built-in MCP server requires Kubb v5 or higher.
@@ -17,13 +17,12 @@ Kubb ships a [Model Context Protocol](https://modelcontextprotocol.io/) server t
 
 ## Starting the server
 
-Run the MCP server over stdio with a single command:
+Run the server with a single command. It communicates over stdio, the transport every major LLM
+client speaks:
 
 ```shell
 kubb mcp
 ```
-
-The server communicates over stdio, the transport all major LLM clients use.
 
 ## Client configuration
 
@@ -44,7 +43,7 @@ Add the following to your `claude_desktop_config.json` (usually at `~/Library/Ap
 
 ### Cursor
 
-Open **Settings → MCP** and add a new server entry:
+Open `Settings → MCP` and add a new server entry:
 
 ```json
 {
@@ -59,7 +58,7 @@ Open **Settings → MCP** and add a new server entry:
 
 ### VS Code (GitHub Copilot)
 
-Add the following to your `.vscode/mcp.json` (workspace) or run **MCP: Open User Configuration** in the Command Palette for a global setup:
+Add the following to your `.vscode/mcp.json` (workspace), or run `MCP: Open User Configuration` in the Command Palette for a global setup:
 
 ```json [.vscode/mcp.json]
 {

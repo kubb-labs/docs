@@ -9,16 +9,16 @@ outline: [2, 3]
 
 A skill is a short instruction file in the open `SKILL.md` format that teaches an AI assistant
 how to do one thing well. Kubb ships skills so assistants write correct configuration instead of
-guessing at an API that changed between major versions.
+guessing at an API that shifts between major versions.
 
 > [!IMPORTANT]
 > The skills ship in the Kubb Claude Code plugin and target Kubb v5 or higher.
 
 ## Install
 
-The fastest way to install the Kubb skills is the [`skills` CLI](https://www.skills.sh). Run it
-from your project root and it auto-detects your installed agents, including Claude Code, Cursor,
-Codex, Windsurf and Cline:
+The fastest way to install the skills is the [`skills` CLI](https://www.skills.sh). Run it from
+your project root and it auto-detects your installed agents, including Claude Code, Cursor, Codex,
+Windsurf and Cline:
 
 ```shell
 npx skills add kubb-labs/kubb

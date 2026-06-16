@@ -20,8 +20,8 @@ name and appears in the run summary and in `kubb generate --reporter json`.
 
 ## How to fix it
 
-- Review the message. Adjust the plugin options or the input if the warning is unwanted.
-- No action is required to make the build pass. Warnings do not fail a run.
+Read the message and adjust the plugin options or the input if the warning is unwanted. Nothing is
+required to make the build pass, since a warning never fails a run.
 
 ## For plugin authors
 

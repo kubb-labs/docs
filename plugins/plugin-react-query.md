@@ -13,7 +13,7 @@ id: plugin-react-query
 
 # @kubb/plugin-react-query
 
-Generate one [TanStack Query](https://tanstack.com/query) hook per OpenAPI operation. Queries become `useFooQuery`/`useFooSuspenseQuery`/`useFooInfiniteQuery`; mutations become `useFooMutation`. Each hook is fully typed: query keys, input variables, response data, and error shape all come from the spec.
+Generate one [TanStack Query](https://tanstack.com/query) hook per OpenAPI operation. Queries become `useFooQuery`, `useFooSuspenseQuery`, or `useFooInfiniteQuery`, and mutations become `useFooMutation`. Each hook is typed. Query keys, input variables, response data, and error shape all come from the spec.
 
 Pairs with `@kubb/plugin-client` for the HTTP layer and `@kubb/plugin-ts` for types.
 
@@ -53,9 +53,7 @@ Where the generated hooks are written and how they are exported.
 
 #### output.path
 
-Folder where the plugin writes its generated code. The path is resolved against the global `output.path` set on `defineConfig`.
-
-Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `'hooks'`). To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension (e.g. `'types.ts'`).
+Folder where the plugin writes its generated code, resolved against the global `output.path` set on `defineConfig`. To put everything in one file instead, set `output.mode: 'file'` and point `path` at a target file including its extension (e.g. `'types.ts'`).
 
 |           |           |
 | --------: | :-------- |
@@ -107,7 +105,7 @@ How the plugin consolidates its generated code into files.
 |  Default: | `'directory'`           |
 
 > [!TIP]
-> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group` — a single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
+> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group`, since a single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 ::: code-group
 
@@ -151,7 +149,7 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 - `{ type: 'named' }` re-exports each symbol by name. Best for tree-shaking and explicit imports.
 - `{ type: 'all' }` uses `export *`. Smaller barrel file, but exports everything.
 - `{ nested: true }` creates a barrel in every subdirectory, so callers can import from any depth.
-- `false` skips the barrel entirely. The plugin's files are also excluded from the root `index.ts`.
+- `false` skips the barrel. The plugin's files are also excluded from the root `index.ts`.
 
 |           |                                                         |
 | --------: | :------------------------------------------------------ |
@@ -184,42 +182,14 @@ export { Pet, PetStatus } from './Pet'
 export { Store } from './Store'
 ```
 
-```typescript ['all']
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { barrel: { type: 'all' } },
-    }),
-  ],
-})
-```
-
-```typescript [src/gen/types/index.ts]
+```typescript ['all' → src/gen/types/index.ts]
+// output: { barrel: { type: 'all' } }
 export * from './Pet'
 export * from './Store'
 ```
 
-```typescript [nested]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { barrel: { type: 'named', nested: true } },
-    }),
-  ],
-})
-```
-
-```text [Generated tree]
+```text [nested → generated tree]
+// output: { barrel: { type: 'named', nested: true } }
 src/gen/types/
 ├── index.ts          # re-exports ./pet and ./store
 ├── pet/
@@ -230,22 +200,8 @@ src/gen/types/
     └── Store.ts
 ```
 
-```typescript [false]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { barrel: false },
-    }),
-  ],
-})
-```
-
-```text [Result]
+```text [false → result]
+// output: { barrel: false }
 # No index.ts is generated for this plugin.
 # Its files are also excluded from the root index.ts.
 ```
@@ -254,9 +210,7 @@ export default defineConfig({
 
 #### output.banner
 
-Text prepended to every generated file. Useful for license headers, lint disables, or `@ts-nocheck` directives.
-
-Pass a string for a static banner. Pass a function to compute the banner from each file's `RootNode` (the AST root containing path, schema, and operation context).
+Text prepended to every generated file, for license headers, lint disables, or `@ts-nocheck` directives. Pass a string for a static banner, or a function to compute it from each file's `RootNode` (the AST root holding path, schema, and operation context).
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -312,9 +266,7 @@ export default defineConfig({
 
 #### output.footer
 
-Text appended at the end of every generated file. The mirror of `banner` — use it for closing comments, re-enabling lint rules, or marker lines.
-
-Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
+Text appended to every generated file. Mirrors `banner`, for closing comments, re-enabling lint rules, or marker lines. Pass a string or a function that receives the file's `RootNode` and returns the footer text.
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -345,10 +297,10 @@ export default defineConfig({
 
 #### output.override
 
-Allows the plugin to overwrite hand-written files that share a name with a generated file.
+Lets the plugin overwrite hand-written files that share a name with a generated file.
 
-- `false` (default): Kubb skips a file if it already exists and is not marked as generated. This protects manual edits.
-- `true`: Kubb overwrites any file at the target path, including hand-written ones.
+- `false` (default): skips a file that already exists and is not marked as generated, protecting manual edits.
+- `true`: overwrites any file at the target path, including hand-written ones.
 
 |           |           |
 | --------: | :-------- |
@@ -380,9 +332,7 @@ export default defineConfig({
 
 ### group
 
-Splits generated files into subfolders based on the operation's tag, so each tag in your OpenAPI spec gets its own directory.
-
-Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files are bucketed under `{output.path}/{groupName}/`, where `groupName` is derived from the operation's first tag.
+Splits generated files into subfolders by the operation's first tag, so each tag gets its own directory under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`.
 
 |           |         |
 | --------: | :------ |
@@ -392,7 +342,7 @@ Without `group`, every file lands in the plugin's `output.path` folder. With `gr
 > [!TIP]
 > Use `group` to mirror your API's domain structure (pet, store, user) in the generated code. Combine it with `output.barrel: { type: 'named', nested: true }` to get per-tag barrel files.
 >
-> `group` only applies to `output.mode: 'directory'` (the default), where each group becomes a folder. It is not valid with `output.mode: 'file'` — a single-file output has no grouping concept.
+> `group` only applies to `output.mode: 'directory'` (the default). It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
 
 ::: code-group
 
@@ -431,154 +381,54 @@ Pass `group.name` to customize the folder name, for example `name: ({ group }) =
 
 Property used to assign each operation to a group. Required whenever `group` is set.
 
-Today only `'tag'` is supported: Kubb reads the first tag on the operation (`operation.getTags().at(0)?.name`) and uses it as the group key. Operations without a tag are placed in a default group.
+- `'tag'` reads the first tag on the operation and uses it as the group key. Operations without a tag land in a default group.
+- `'path'` uses the first segment of the operation's URL, so `/pet/findByStatus` groups under `pet`.
 
-|           |         |
-| --------: | :------ |
-|     Type: | `'tag'` |
-| Required: | `true`  |
+|           |                  |
+| --------: | :--------------- |
+|     Type: | `'tag' \| 'path'` |
+| Required: | `true`           |
 
 > [!NOTE]
-> `Required: true*` is conditional — only required when the parent `group` option is used. `group` itself stays optional.
+> `Required: true*` is conditional. It is only required when the parent `group` option is used, and `group` itself stays optional.
 
 #### group.name
 
-Function that builds the folder/identifier name from a group key (the operation's first tag).
+Function that builds the folder name from a group key. The default camelCases the tag for `tag` groups and takes the first path segment for `path` groups.
 
-|           |                                     |
-| --------: | :---------------------------------- |
-|     Type: | `(context: GroupContext) => string` |
-| Required: | `false`                             |
-|  Default: | `(ctx) => \`${ctx.group}\``         |
+|           |                                          |
+| --------: | :--------------------------------------- |
+|     Type: | `(context: { group: string }) => string` |
+| Required: | `false`                                  |
+|  Default: | `(ctx) => camelCase(ctx.group)`          |
 
 ### client
 
-HTTP client used inside every generated hook. Each generated hook calls into this client to perform the actual request.
-
-Mirrors a subset of `pluginClient` options. Set these here when the React Query hooks need different client behavior than the rest of your app (for example, a different base URL or full response objects).
+HTTP client used inside every generated hook. Mirrors a subset of `pluginClient` options; set these when the React Query hooks need different client behavior than the rest of your app (a different base URL or full response objects, for example).
 
 |           |                                                                          |
 | --------: | :----------------------------------------------------------------------- |
-|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, bundle? }` |
-| Required: | `false`                                                                  |
+|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, bundle?, paramsCasing? }` |
+| Required: | `false`                                                                                 |
 
 #### client.importPath
 
-Path or module specifier of a custom client module. Generated code imports its HTTP runtime from here instead of `@kubb/plugin-client/clients/{client}`.
-
-Use this when you need to inject auth headers, add interceptors, change the base URL at runtime, or wrap a different HTTP library (ky, ofetch, ...). Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work.
+Path or module specifier of a custom client module. Generated code imports its HTTP runtime from here instead of `@kubb/plugin-client/clients/{client}`, letting you inject auth headers, add interceptors, change the base URL at runtime, or wrap a different HTTP library (ky, ofetch, ...). Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work. See the [custom client guide](https://kubb.dev/plugins/plugin-client#importpath) for the full module shape and a worked example.
 
 |           |          |
 | --------: | :------- |
 |     Type: | `string` |
 | Required: | `false`  |
 
-> [!TIP]
-> See the [custom client guide](https://kubb.dev/plugins/plugin-client#importpath) for a worked example.
-
 > [!IMPORTANT]
-> When used with query plugins (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`), generated hooks also import a `Client` type alias. Your module **must** export `Client`, `RequestConfig`, and `ResponseErrorConfig` — TypeScript will fail the import otherwise.
-
-```typescript [src/client.ts]
-import axios from 'axios'
-
-export type RequestConfig<TData = unknown> = {
-  url?: string
-  method: 'GET' | 'PUT' | 'PATCH' | 'POST' | 'DELETE'
-  params?: object
-  data?: TData | FormData
-  responseType?: 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream'
-  signal?: AbortSignal
-  headers?: HeadersInit
-}
-
-export type ResponseConfig<TData = unknown> = {
-  data: TData
-  status: number
-  statusText: string
-}
-
-export type ResponseErrorConfig<TError = unknown> = TError
-
-// Required when used with @kubb/plugin-react-query or @kubb/plugin-vue-query
-export type Client = <TData, _TError = unknown, TVariables = unknown>(config: RequestConfig<TVariables>) => Promise<ResponseConfig<TData>>
-
-const client: Client = async (config) => {
-  const response = await axios.request<TData>({
-    ...config,
-    headers: {
-      Authorization: `Bearer ${process.env.API_TOKEN}`,
-      ...config.headers,
-    },
-  })
-
-  return response
-}
-
-export default client
-```
-
-::: code-group
-
-```typescript [Wire up a custom client]
-import { defineConfig } from 'kubb'
-import { pluginClient } from '@kubb/plugin-client'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginClient({
-      importPath: './src/client.ts',
-    }),
-  ],
-})
-```
-
-:::
-
-##### When to use `importPath`
-
-Reach for a custom client when you need to:
-
-- Add an auth token to every request.
-- Plug in interceptors, retries, or logging.
-- Configure `baseURL` and headers from environment variables.
-- Wrap a library other than `axios`/`fetch`.
-
-##### Default behavior
-
-Without `importPath`:
-
-- `bundle: false` (default) — generated code imports from `@kubb/plugin-client/clients/{axios|fetch}`.
-- `bundle: true` — Kubb writes `.kubb/client.ts` and generated code imports from there.
-
-##### Required exports
-
-The module pointed to by `importPath` must satisfy the same shape as the built-in client. At minimum:
-
-- A default export of the `client` function.
-- A `RequestConfig` type.
-- A `ResponseErrorConfig` type.
-
-When used together with a query plugin (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`), it must also export a `Client` type alias.
-
-##### How generated files import it
-
-Generated code imports the client as a default import (bound to the local name `client`) and the runtime types as named type imports:
-
-```typescript
-import client from '${client.importPath}'
-import type { RequestConfig, ResponseErrorConfig } from '${client.importPath}'
-// ... rest of the generated file
-```
+> Generated hooks also import a `Client` type alias, so your module must export `Client`, `RequestConfig`, and `ResponseErrorConfig`, or TypeScript fails the import.
 
 #### client.dataReturnType
 
 Shape of the value returned from each generated client function.
 
 - `'data'` returns only the response body (`response.data`).
-- `'full'` returns a discriminated union keyed by HTTP status code. Each member is `{ status: N; data: StatusNType; statusText: string }`. Narrowing on `res.status` also narrows `res.data` to the matching response type.
+- `'full'` returns a discriminated union keyed by HTTP status code. Each member is `{ status: N; data: StatusNType; statusText: string }`. Narrowing on `res.status` narrows `res.data` to the matching response type.
 
 |           |                    |
 | --------: | :----------------- |
@@ -619,40 +469,19 @@ if (res.status === 405) {
 
 #### client.baseURL
 
-Base URL prepended to every request URL in the generated client. When omitted, the URL comes from the OpenAPI spec's `servers[0].url` (or whichever index the adapter is configured to read).
-
-Set this when the generated client should point at a different environment (staging, production) than the one written in the spec.
+Base URL prepended to every request URL in the generated client, for pointing at a different environment (staging, production) than the spec. When omitted, the URL comes from the spec's `servers[0].url` (or whichever index the adapter reads).
 
 |           |          |
 | --------: | :------- |
 |     Type: | `string` |
 | Required: | `false`  |
 
-::: code-group
-
-```typescript [Override the spec's server URL]
-import { defineConfig } from 'kubb'
-import { pluginClient } from '@kubb/plugin-client'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginClient({
-      baseURL: 'https://petstore.swagger.io/v2',
-    }),
-  ],
-})
-```
-
-:::
-
 #### client.clientType
 
 Style of the HTTP client that this plugin imports from `@kubb/plugin-client`.
 
-- `'function'` — imports the function client (`getPetById(...)`). Required for query plugins.
-- `'class'` — also generates a wrapper class on top, but only usable inside `@kubb/plugin-client`.
+- `'function'` imports the function client (`getPetById(...)`). Required for query plugins.
+- `'class'` also generates a wrapper class on top, but it is only usable inside `@kubb/plugin-client`.
 
 |           |                         |
 | --------: | :---------------------- |
@@ -665,10 +494,10 @@ Style of the HTTP client that this plugin imports from `@kubb/plugin-client`.
 
 #### client.bundle
 
-Copies the HTTP client runtime into the generated output, so the consuming app does not need `@kubb/plugin-client` installed at runtime.
+Copies the HTTP client runtime into the generated output, so the consuming app does not need `@kubb/plugin-client` at runtime.
 
-- `false` (default) — generated files import from `@kubb/plugin-client/clients/{client}`. Smaller diff, but the package must be a runtime dependency.
-- `true` — Kubb writes a `.kubb/client.ts` file with the client implementation. Generated code imports from that local file and the project no longer pulls `@kubb/plugin-client` at runtime.
+- `false` (default) makes generated files import from `@kubb/plugin-client/clients/{client}`. Smaller diff, but the package must be a runtime dependency.
+- `true` makes Kubb write a `.kubb/client.ts` with the client implementation and generated code imports from there, so the project no longer pulls `@kubb/plugin-client` at runtime.
 - Setting `client.importPath` overrides both behaviors and uses your custom client instead.
 
 |           |           |
@@ -677,32 +506,12 @@ Copies the HTTP client runtime into the generated output, so the consuming app d
 | Required: | `false`   |
 |  Default: | `false`   |
 
-::: code-group
-
-```typescript [Bundle the runtime]
-import { defineConfig } from 'kubb'
-import { pluginClient } from '@kubb/plugin-client'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginClient({
-      client: 'fetch',
-      bundle: true,
-    }),
-  ],
-})
-```
-
-:::
-
 ### paramsType
 
 How operation parameters (path, query, headers) are exposed in the generated function signature.
 
-- `'inline'` (default) — each parameter is a separate positional argument. Compact for operations with one or two params.
-- `'object'` — every parameter is wrapped in a single object argument. Easier to read for operations with many params and named at the call site.
+- `'inline'` (default) makes each parameter a separate positional argument. Compact for operations with one or two params.
+- `'object'` wraps every parameter in a single object argument. Easier to read for operations with many params, and the arguments are named at the call site.
 
 |           |                        |
 | --------: | :--------------------- |
@@ -748,9 +557,9 @@ await deletePet({ petId: 42, headers: { 'X-Api-Key': 'secret' } })
 
 ### paramsCasing
 
-Renames path, query, and header parameters in the generated client to the chosen casing. The HTTP request still uses the original names from the OpenAPI spec — Kubb writes the mapping for you.
+Renames path, query, and header parameters in the generated client to the chosen casing. The HTTP request still uses the original names from the OpenAPI spec, and Kubb writes the mapping.
 
-- `'camelcase'` — turn `pet_id` and `X-Api-Key` into `petId` and `xApiKey` in your TypeScript code. The runtime URL still uses `/pet/{pet_id}` and the header is still sent as `X-Api-Key`.
+- `'camelcase'` turns `pet_id` and `X-Api-Key` into `petId` and `xApiKey` in your TypeScript code. The runtime URL still uses `/pet/{pet_id}` and the header is still sent as `X-Api-Key`.
 
 |           |               |
 | --------: | :------------ |
@@ -798,10 +607,10 @@ export async function deletePet(pet_id: DeletePetPathParams['pet_id'], headers?:
 
 ### pathParamsType
 
-How URL path parameters appear in the generated function signature. Affects only path params; query/header params follow `paramsType`.
+How URL path parameters appear in the generated function signature. This affects only path params. Query and header params follow `paramsType`.
 
-- `'inline'` (default) — each path param is a positional argument: `getPetById(petId)`.
-- `'object'` — path params are wrapped in a single object: `getPetById({ petId })`.
+- `'inline'` (default) makes each path param a positional argument: `getPetById(petId)`.
+- `'object'` wraps path params in a single object: `getPetById({ petId })`.
 
 |           |                        |
 | --------: | :--------------------- |
@@ -887,7 +696,7 @@ export default defineConfig({
 
 ### infinite
 
-Enables `useInfiniteQuery` hooks for cursor- or page-based pagination. Pass an object to configure how the cursor is read from the response; pass `false` (default) to skip infinite query generation.
+Enables `useInfiniteQuery` hooks for cursor- or page-based pagination. Pass an object to configure how the cursor is read from the response. Pass `false` (default) to skip infinite query generation.
 
 |           |                     |
 | --------: | :------------------ |
@@ -899,15 +708,15 @@ Enables `useInfiniteQuery` hooks for cursor- or page-based pagination. Pass an o
 type Infinite =
   | {
       /** Query-param key used as the page cursor. Defaults to `'id'`. */
-      queryParam: string
+      queryParam?: string
       /** @deprecated Use `nextParam` / `previousParam` instead. */
-      cursorParam?: string
+      cursorParam?: string | null
       /** Path to the next-page cursor in the response. Dot or array form. */
-      nextParam?: string | string[]
+      nextParam?: string | string[] | null
       /** Path to the previous-page cursor in the response. Dot or array form. */
-      previousParam?: string | string[]
+      previousParam?: string | string[] | null
       /** Value of `pageParam` for the first page. Defaults to `0`. */
-      initialPageParam: unknown
+      initialPageParam?: unknown
     }
   | false
 ```
@@ -959,41 +768,45 @@ Initial value for `pageParam` on the first fetch.
 #### infinite.cursorParam
 
 > [!WARNING]
-> **Deprecated.** `cursorParam` is deprecated. Use `nextParam` and `previousParam` for richer pagination control.
+> `cursorParam` is deprecated. Use `nextParam` and `previousParam` for finer pagination control.
 
-Path to the cursor field on the response. Leave undefined when the cursor is not known.
+Path to the cursor field on the response. Leave it `null` when the cursor is not known.
 
-|           |                       |
-| --------: | :-------------------- |
-|     Type: | `string \| undefined` |
-| Required: | `false`               |
+|           |                  |
+| --------: | :--------------- |
+|     Type: | `string \| null` |
+| Required: | `false`          |
+|  Default: | `null`           |
 
 #### infinite.nextParam
 
 Path to the next-page cursor on the response. Supports dot notation (`'pagination.next.id'`) or array form (`['pagination', 'next', 'id']`).
 
-|           |                                   |
-| --------: | :-------------------------------- |
-|     Type: | `string \| string[] \| undefined` |
-| Required: | `false`                           |
+|           |                              |
+| --------: | :--------------------------- |
+|     Type: | `string \| string[] \| null` |
+| Required: | `false`                      |
+|  Default: | `null`                       |
 
 #### infinite.previousParam
 
 Path to the previous-page cursor on the response. Supports dot notation (`'pagination.prev.id'`) or array form (`['pagination', 'prev', 'id']`).
 
-|           |                                   |
-| --------: | :-------------------------------- |
-|     Type: | `string \| string[] \| undefined` |
-| Required: | `false`                           |
+|           |                              |
+| --------: | :--------------------------- |
+|     Type: | `string \| string[] \| null` |
+| Required: | `false`                      |
+|  Default: | `null`                       |
 
 ### query
 
-Configures the query hooks. Pass `false` to skip generating hooks entirely and only emit `queryOptions(...)` helpers — useful when you want to call `useQuery` yourself in app code.
+Configures the query hooks. The plugin generates them by default. Pass `false` to skip the hooks and emit only `queryOptions(...)` helpers, useful when you want to call `useQuery` yourself in app code.
 
 |           |         |
 | --------: | :------ |
 |     Type: | `Query` |
 | Required: | `false` |
+|  Default: | `{}`    |
 
 ```typescript [Query type]
 type Query =
@@ -1047,17 +860,14 @@ Module specifier used in the `import { useQuery } from '...'` statement at the t
 
 ### queryKey
 
-Builds the `queryKey` for each generated hook. Use this to add a version namespace, swap to operation IDs, or shape keys to match an existing `queryClient.invalidateQueries` strategy.
+Builds the `queryKey` for each generated hook. Use this to add a version namespace, key off the operation ID, or match an existing `queryClient.invalidateQueries` strategy.
 
-The callback receives:
+The callback receives a `node` and the active `casing`. `node` is the operation's AST node, exposing `operationId`, `tags`, `method`, `path`, `parameters`, and `requestBody`. `casing` is `'camelcase'` when `paramsCasing` is set, otherwise `undefined`. Return the array of values that make up the key.
 
-- `operation` — the OpenAPI operation (`getTags()`, `getOperationId()`, ...).
-- `schemas` — operation schemas including `pathParams`, `queryParams`, `request`, `response`.
-
-|           |                                                                             |
-| --------: | :-------------------------------------------------------------------------- |
-|     Type: | `(props: { operation: Operation; schemas: OperationSchemas }) => unknown[]` |
-| Required: | `false`                                                                     |
+|           |                                                                       |
+| --------: | :-------------------------------------------------------------------- |
+|     Type: | `(props: { node: OperationNode; casing?: 'camelcase' }) => unknown[]` |
+| Required: | `false`                                                               |
 
 > [!WARNING]
 > String values are inlined verbatim into generated code. Wrap any string you want emitted as a literal in `JSON.stringify(...)`.
@@ -1075,9 +885,9 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginReactQuery({
-      queryKey: ({ operation, schemas }) => {
-        const tags = operation.getTags().map((tag) => JSON.stringify(tag.name))
-        const pathParams = schemas.pathParams?.keys ?? []
+      queryKey: ({ node }) => {
+        const tags = node.tags.map((tag) => JSON.stringify(tag))
+        const pathParams = node.parameters.filter((param) => param.in === 'path').map((param) => param.name)
         return [...tags, ...pathParams]
       },
     }),
@@ -1089,36 +899,9 @@ export default defineConfig({
 export const getUserByNameQueryKey = ({ username }: { username: GetUserByNamePathParams['username'] }) => ['user', username] as const
 ```
 
-#### Extend the default transformer
-
-Prepend a version prefix to the default query key:
-
-```typescript
-import { defineConfig } from 'kubb'
-import { pluginReactQuery } from '@kubb/plugin-react-query'
-import { QueryKey } from '@kubb/plugin-react-query/components'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginReactQuery({
-      queryKey: (props) => {
-        const defaultKeys = QueryKey.getTransformer(props)
-        return [JSON.stringify('v5'), ...defaultKeys]
-      },
-    }),
-  ],
-})
-```
-
-```typescript
-export const findPetsByTagsQueryKey = (params?: FindPetsByTagsQueryParams) => ['v5', { url: '/pet/findByTags' }, ...(params ? [params] : [])] as const
-```
-
 #### Key from operationId
 
-Use the operationId as the only key. Smallest possible key.
+Use the operation ID as the only key to keep the key as small as possible.
 
 ```typescript
 import { defineConfig } from 'kubb'
@@ -1129,15 +912,15 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginReactQuery({
-      queryKey: ({ operation }) => [JSON.stringify(operation.getOperationId())],
+      queryKey: ({ node }) => [JSON.stringify(node.operationId)],
     }),
   ],
 })
 ```
 
-#### Conditional keys based on params
+#### Add a version prefix
 
-Include query params in the key only when they are present:
+Prepend a fixed version segment in front of the path:
 
 ```typescript
 import { defineConfig } from 'kubb'
@@ -1148,27 +931,19 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginReactQuery({
-      queryKey: ({ operation, schemas }) => {
-        const keys: unknown[] = [JSON.stringify(operation.getOperationId())]
-
-        if (schemas.pathParams?.keys) {
-          keys.push(...schemas.pathParams.keys)
-        }
-
-        if (schemas.queryParams?.name) {
-          keys.push('...(params ? [params] : [])')
-        }
-
-        return keys
-      },
+      queryKey: ({ node }) => [JSON.stringify('v5'), JSON.stringify(node.path)],
     }),
   ],
 })
+```
+
+```typescript
+export const findPetsByTagsQueryKey = (params?: FindPetsByTagsQueryParams) => ['v5', '/pet/findByTags'] as const
 ```
 
 ### suspense
 
-Adds `useSuspenseQuery` hooks alongside the regular `useQuery` ones. Pass an empty object (`{}`) to enable; omit or set to `false` to skip.
+Adds `useSuspenseQuery` hooks alongside the regular `useQuery` ones. The plugin generates these hooks by default. Set `suspense` to `false` to skip them.
 
 Suspense queries throw promises while loading and require a `<Suspense>` boundary in the React tree. TanStack Query v5+ only.
 
@@ -1176,15 +951,17 @@ Suspense queries throw promises while loading and require a `<Suspense>` boundar
 | --------: | :---------------- |
 |     Type: | `object \| false` |
 | Required: | `false`           |
+|  Default: | `{}`              |
 
 ### mutation
 
-Configures mutation hooks. Set to `false` to skip mutation generation entirely.
+Configures mutation hooks. The plugin generates them by default. Set to `false` to skip mutation generation entirely.
 
 |           |            |
 | --------: | :--------- |
 |     Type: | `Mutation` |
 | Required: | `false`    |
+|  Default: | `{}`       |
 
 ```typescript [Mutation type]
 type Mutation =
@@ -1238,21 +1015,19 @@ Module specifier used in the `import { useMutation } from '...'` statement at th
 
 ### mutationKey
 
-Builds the `mutationKey` for each mutation hook. Useful when you batch invalidations or read mutation state via `useMutationState`.
+Builds the `mutationKey` for each mutation hook. Use it when you batch invalidations or read mutation state via `useMutationState`. The callback receives the same `{ node, casing }` props as `queryKey`.
 
-|           |                                                                             |
-| --------: | :-------------------------------------------------------------------------- |
-|     Type: | `(props: { operation: Operation; schemas: OperationSchemas }) => unknown[]` |
-| Required: | `false`                                                                     |
+|           |                                                                       |
+| --------: | :-------------------------------------------------------------------- |
+|     Type: | `(props: { node: OperationNode; casing?: 'camelcase' }) => unknown[]` |
+| Required: | `false`                                                               |
 
 > [!WARNING]
 > String values are inlined verbatim into generated code. Wrap literal strings in `JSON.stringify(...)`.
 
 ### customOptions
 
-Wires every generated hook through a user-supplied function that returns extra options (`onSuccess`, `onError`, `select`, ...). The plugin also emits a `HookOptions` type so your wrapper stays in sync with the generated hooks.
-
-Use this to centralize cache invalidation, error toasts, or analytics in one place instead of repeating them at every call site.
+Wires every generated hook through a user-supplied function that returns extra options (`onSuccess`, `onError`, `select`, ...), to centralize cache invalidation, error toasts, or analytics instead of repeating them at every call site. The plugin also emits a `HookOptions` type so your wrapper stays in sync with the generated hooks.
 
 |           |                 |
 | --------: | :-------------- |
@@ -1266,7 +1041,7 @@ type CustomOptions = {
 }
 ```
 
-#### Centralised cache invalidation
+#### Centralized cache invalidation
 
 ```typescript [src/useCustomHookOptions.ts]
 import { useQueryClient, type QueryClient } from '@tanstack/react-query'
@@ -1302,38 +1077,11 @@ export function useCustomHookOptions<T extends keyof HookOptions>({ hookName }: 
 }
 ```
 
-#### App-wide error reporting
-
-```typescript [src/useCustomHookOptions.ts]
-import { toast } from 'sonner'
-import { useQueryClient, type QueryClient } from '@tanstack/react-query'
-import type { HookOptions } from '../gen/hookOptions'
-
-function getCustomHookOptions({ queryClient }: { queryClient: QueryClient }): Partial<HookOptions> {
-  return {
-    useUpdatePetHook: {
-      onError: (error) => {
-        console.error('Failed to update pet:', error)
-      },
-    },
-    useDeletePetHook: {
-      onError: (_error, variables) => {
-        toast.error(`Failed to delete pet with id '${variables.pet_id}'`)
-      },
-    },
-  }
-}
-
-export function useCustomHookOptions<T extends keyof HookOptions>({ hookName }: { hookName: T; operationId: string }): HookOptions[T] {
-  const queryClient = useQueryClient()
-  const customOptions = getCustomHookOptions({ queryClient })
-  return customOptions[hookName] ?? {}
-}
-```
+The same wrapper centralizes other concerns: return `onError` handlers from `getCustomHookOptions` to report errors or show toasts app-wide.
 
 #### customOptions.importPath
 
-Module specifier of your custom-options hook. Imported as `import ${name} from '${importPath}'`. Use a relative path from the generated file or a bare specifier.
+Module specifier of your custom-options hook. The generated code imports it as a named import, `import { ${name} } from '${importPath}'`. Use a relative path from the generated file or a bare specifier.
 
 |           |          |
 | --------: | :------- |
@@ -1342,7 +1090,7 @@ Module specifier of your custom-options hook. Imported as `import ${name} from '
 
 #### customOptions.name
 
-Exported function name of your custom-options hook. Imported as `import ${name} from '${importPath}'`.
+Exported function name of your custom-options hook. The generated code imports it as a named import, `import { ${name} } from '${importPath}'`, so your module must export this name.
 
 |           |                          |
 | --------: | :----------------------- |
@@ -1352,15 +1100,13 @@ Exported function name of your custom-options hook. Imported as `import ${name} 
 
 ### include
 
-Restricts generation to operations that match at least one entry in the list. Anything not matched is skipped.
+Restricts generation to operations that match at least one entry in the list. Anything else is skipped. Each entry filters by one of:
 
-Each entry filters by one of:
-
-- `tag` — the operation's first tag in the OpenAPI spec.
-- `operationId` — the operation's `operationId`.
-- `path` — the URL pattern (`'/pet/{petId}'`).
-- `method` — HTTP method (`'get'`, `'post'`, ...).
-- `contentType` — the media type of the request body.
+- `tag`: the operation's first tag in the OpenAPI spec.
+- `operationId`: the operation's `operationId`.
+- `path`: the URL pattern (`'/pet/{petId}'`).
+- `method`: HTTP method (`'get'`, `'post'`, ...).
+- `contentType`: the media type of the request body.
 
 `pattern` accepts either a string (exact match) or a `RegExp` for fuzzy matches.
 
@@ -1415,17 +1161,7 @@ export default defineConfig({
 
 ### exclude
 
-Skips any operation that matches at least one entry in the list. The opposite of `include`.
-
-Each entry filters by one of:
-
-- `tag` — the operation's first tag.
-- `operationId` — the operation's `operationId`.
-- `path` — the URL pattern (`'/pet/{petId}'`).
-- `method` — HTTP method (`'get'`, `'post'`, ...).
-- `contentType` — the media type of the request body.
-
-`pattern` accepts a plain string or a `RegExp`. When both `include` and `exclude` are set, `exclude` wins.
+Skips any operation that matches at least one entry in the list, the opposite of `include`. Entries take the same `type` (`tag`, `operationId`, `path`, `method`, `contentType`) and `pattern` (string or `RegExp`) as `include`. When both are set, `exclude` wins.
 
 |           |                  |
 | --------: | :--------------- |
@@ -1478,11 +1214,7 @@ export default defineConfig({
 
 ### override
 
-Applies a different set of plugin options to operations that match a pattern. Use this when most of your API should follow the global config, but a handful of endpoints need different treatment.
-
-Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations.
-
-Entries are evaluated top to bottom. The first matching entry's `options` is merged onto the plugin defaults; later entries do not stack.
+Applies a different set of plugin options to operations that match a pattern, for the handful of endpoints that need different treatment. Each entry takes the same `type` and `pattern` as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations. Entries evaluate top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
 
 |           |                   |
 | --------: | :---------------- |
@@ -1499,21 +1231,20 @@ export type Override = {
 
 ::: code-group
 
-```typescript [Use a different enum style for the user tag]
+```typescript [Skip query hooks for the user tag]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginReactQuery } from '@kubb/plugin-react-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
-      enumType: 'asConst',
+    pluginReactQuery({
       override: [
         {
           type: 'tag',
           pattern: 'user',
-          options: { enumType: 'literal' },
+          options: { query: false },
         },
       ],
     }),
@@ -1525,9 +1256,7 @@ export default defineConfig({
 
 ### generators
 
-Adds custom generators that run alongside the plugin's built-in generators. Each generator can emit additional files or post-process existing ones using the plugin's AST and options.
-
-Use this when you need output the plugin does not produce out of the box (a custom client wrapper, an extra index, a metadata file). For end-to-end guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
+Adds custom generators that run alongside the built-in ones, each emitting extra files or post-processing existing ones using the plugin's AST and options. Use it for output the plugin does not produce by default (a custom client wrapper, an extra index, a metadata file). See [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
 
 |           |                                      |
 | --------: | :----------------------------------- |
@@ -1539,11 +1268,7 @@ Use this when you need output the plugin does not produce out of the box (a cust
 
 ### resolver
 
-Overrides how the plugin builds names and paths for generated files and symbols. Use this to add prefixes, suffixes, or to swap the casing strategy without forking the plugin.
-
-Only override the methods you want to change. Anything you omit falls back to the plugin's default resolver. A method that returns `null` or `undefined` also falls back.
-
-Inside each method, `this` is bound to the full resolver, so you can call `this.default(name, 'function')` to delegate to the built-in implementation.
+Overrides how the plugin builds names and paths for generated files and symbols, to add prefixes, suffixes, or a different casing strategy without forking the plugin. Override only the methods you want to change; anything you omit (or that returns `null`/`undefined`) falls back to the default resolver. Inside each method, `this` is bound to the full resolver, so you can call `this.default(name, 'function')` to delegate to the built-in version.
 
 |           |                                                              |
 | --------: | :----------------------------------------------------------- |
@@ -1586,9 +1311,7 @@ Each plugin ships with a default resolver:
 
 ### macros
 
-Rewrite AST nodes before they are printed to source code. Use this when you need to rewrite operation IDs, drop descriptions, or change schema metadata without forking the generator.
-
-Each [macro](/docs/5.x/concepts/macros) callback (e.g. `schema`, `operation`) receives the node and a context object. Return a new node to replace it, or return `undefined` to leave it untouched. Callbacks you omit keep the plugin's default behavior. Macros run in order, so a later macro sees the output of an earlier one.
+Rewrite AST nodes before they are printed to source code, to rewrite operation IDs, drop descriptions, or change schema metadata without forking the generator. Each [macro](/docs/5.x/concepts/macros) callback (e.g. `schema`, `operation`) receives the node and a context object. Return a new node to replace it, or `undefined` to leave it untouched. Callbacks you omit keep the default behavior, and macros run in order so a later one sees the output of an earlier one.
 
 |           |                 |
 | --------: | :-------------- |

@@ -12,7 +12,7 @@ There are two main places to contribute:
 1. [Kubb core](#kubb-core): the runtime, [AST](/docs/5.x/concepts/ast), [adapter](/docs/5.x/concepts/adapters), [parsers](/docs/5.x/concepts/parsers), and built-in plugins that live in [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb).
 2. [Kubb plugins](#kubb-plugins): community and official plugins listed in the registry at [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins).
 
-Before diving in, take a look at the open [issues](https://github.com/kubb-labs/kubb/issues) and [pull requests](https://github.com/kubb-labs/kubb/pulls), and join the community on [Discord](https://discord.gg/4dQjA6vrWX).
+Before you start, scan the open [issues](https://github.com/kubb-labs/kubb/issues) and [pull requests](https://github.com/kubb-labs/kubb/pulls) so you don't duplicate work, and say hello on [Discord](https://discord.gg/4dQjA6vrWX).
 
 ## Prerequisites
 
@@ -22,7 +22,7 @@ Before diving in, take a look at the open [issues](https://github.com/kubb-labs/
 
 ## Kubb core
 
-The core monorepo at [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb) holds everything that ships in the `kubb` and `@kubb/*` packages.
+The monorepo at [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb) holds everything that ships in the `kubb` and `@kubb/*` packages.
 
 ### 1. Fork and clone
 
@@ -85,7 +85,7 @@ pnpm run test
 
 ## Kubb plugins
 
-There are two ways to contribute a plugin: build a community plugin in your own repository, or propose a new official plugin in the core monorepo.
+You can contribute a plugin in two ways: build a community plugin in your own repository, or propose an official one in the core monorepo.
 
 ### Build a community plugin
 

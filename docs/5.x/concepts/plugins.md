@@ -103,7 +103,6 @@ The `hooks` map can subscribe to any event in [`KubbHooks`](https://github.com/k
 | `setResolver`     | Set or override the [resolver](/docs/5.x/api/core#resolver) (file naming + paths).     |
 | `addMacro`        | Add a [macro](/docs/5.x/concepts/macros) that rewrites AST nodes before generators.   |
 | `setMacros`       | Replace this plugin's [macros](/docs/5.x/concepts/macros) with a new list.             |
-| `setRenderer`     | Set the [renderer](/docs/5.x/concepts/parsers) factory that handles JSX-style returns. |
 | `setOptions`      | Provide resolved options to the build loop.                                            |
 | `injectFile`      | Inject a raw `UserFileNode` into the build, bypassing generators.                      |
 | `updateConfig`    | Merge a partial config update into the running build.                                  |
@@ -112,7 +111,7 @@ The `hooks` map can subscribe to any event in [`KubbHooks`](https://github.com/k
 
 ## Generators
 
-Generators are how a plugin actually walks the AST. Register them with `addGenerator` inside `kubb:plugin:setup`:
+A generator is what walks the AST for a plugin. Register one with `addGenerator` inside `kubb:plugin:setup`:
 
 ```typescript twoslash [generator.ts]
 import { ast, definePlugin, defineGenerator } from '@kubb/core'
@@ -152,9 +151,9 @@ A generator may implement any combination of three handlers:
 | `operation`  | Each `OperationNode` in the AST.                         | `Array<FileNode>`, `void`, or JSX. |
 | `operations` | Once with all `OperationNode`s after the operation walk. | `Array<FileNode>`, `void`, or JSX. |
 
-Each handler receives a `GeneratorContext` with helpers like `addFile`, `upsertFile`, `getResolver(name)`, `requirePlugin(name)`, `info`, `warn`, `error`, plus the resolved `adapter`, the document `meta` (an `InputMeta` with `title`, `version`, `baseURL`, `circularNames`, and `enumNames`), and per-node `options`.
+Each handler receives a `GeneratorContext` with helpers like `addFile`, `upsertFile` (merge with another generator's output), `getResolver(name)`, `requirePlugin(name)`, `info`, `warn`, `error`, plus the resolved `adapter`, the document `meta` (an `InputMeta` with `title`, `version`, `baseURL`, `circularNames`, and `enumNames`), and per-node `options`.
 
-A handler returns `Array<FileNode>` built with the `create*` factories from [`@kubb/ast`](/docs/5.x/concepts/ast), which is the default. It may instead return JSX, in which case the plugin sets `renderer: jsxRenderer` and `@kubb/renderer-jsx` walks the JSX into the same `FileNode`s. The [creating-plugins guide](/docs/5.x/guides/creating-plugins#emit-roles) names the printer, renderer, and serializer roles around that path.
+A handler returns `Array<FileNode>` built with the `create*` factories from [`@kubb/ast`](/docs/5.x/concepts/ast), which is the default. It may instead return JSX, in which case the generator sets `renderer: jsxRenderer` and `@kubb/renderer-jsx` walks the JSX into the same `FileNode`s. The [creating-plugins guide](/docs/5.x/guides/creating-plugins#emit-roles) names the printer, renderer, and serializer roles around that path.
 
 ## Resolvers
 
@@ -227,7 +226,7 @@ export const pluginConsumer = definePlugin(() => ({
 
 ## Macros
 
-A [macro](/docs/5.x/concepts/macros) is a named, composable transform that rewrites nodes before they reach this plugin's generators. The walker runs the plugin's macros for each `SchemaNode`, `OperationNode`, and other node it encounters, and whatever a macro returns replaces the original node for that plugin only. Other plugins keep seeing the untransformed AST.
+A [macro](/docs/5.x/concepts/macros) is a named, composable transform that rewrites nodes before they reach this plugin's generators. Whatever a macro returns replaces the original node for that plugin only, so other plugins keep seeing the untransformed AST.
 
 ```ts
 type Plugin<TFactory> = {
@@ -272,9 +271,7 @@ A few rules apply:
 - Returning `undefined` keeps the original node. Returning a node of the same type replaces it.
 - Macros run per plugin and in order, so a later macro sees the output of an earlier one. To share a macro across plugins, export it and add it from each plugin's setup.
 - Macros run before resolver options are computed, so renamed `operationId`s and `SchemaNode.name`s flow into `resolveOptions`, `resolvePath`, and `resolveFile`.
-
-> [!TIP]
-> Keep macros pure. Build a new node and return it rather than mutating the input, since the AST is shared by reference.
+- Keep macros pure. Build a new node and return it rather than mutating the input, since the AST is shared by reference.
 
 ## Naming convention
 
@@ -346,39 +343,9 @@ export const pluginBanner = definePlugin(() => ({
 }))
 ```
 
-### Walk operations with a generator
-
-Generators receive each AST node together with a typed context. Return an array of `FileNode` to emit files, or call `ctx.upsertFile` to merge with output from another generator.
-
-```typescript twoslash [operations.ts]
-import { ast, definePlugin, defineGenerator } from '@kubb/core'
-
-const operationGenerator = defineGenerator({
-  name: 'list-operations',
-  operation(node, ctx) {
-    return [
-      ast.factory.createFile({
-        baseName: `${node.operationId}.ts`,
-        path: `${ctx.root}/operations/${node.operationId}.ts`,
-        sources: [ast.factory.createSource({ nodes: [ast.factory.createText(`// ${node.method} ${node.path}\n`)] })],
-      }),
-    ]
-  },
-})
-
-export const pluginOperations = definePlugin(() => ({
-  name: 'plugin-operations',
-  hooks: {
-    'kubb:plugin:setup'(ctx) {
-      ctx.addGenerator(operationGenerator)
-    },
-  },
-}))
-```
-
 ### Declare a dependency on another plugin
 
-Use `dependencies` to guarantee a sibling plugin runs first. Order in the `plugins` array becomes irrelevant; missing dependencies fail the build with a clear error.
+Use `dependencies` to guarantee a sibling plugin runs first. Order in the `plugins` array stops mattering, and a missing dependency fails the build with a clear error.
 
 ```typescript twoslash [depends.ts]
 import { definePlugin } from '@kubb/core'
@@ -416,7 +383,7 @@ export const pluginBarrel = definePlugin(() => ({
 
 - Split unrelated outputs into separate plugins so users can opt in or out.
 - Prefix the name with `plugin-` (or `@scope/plugin-`) and keep it stable; other plugins look it up by name.
-- Use `dependencies` instead of relying on declaration order. Order is fragile; declared dependencies are explicit.
+- Use `dependencies` instead of relying on declaration order. Order is fragile, and declared dependencies are explicit.
 - Generators should ask `ctx.getResolver(name)` rather than building paths inline.
 - Use closure state inside the factory or rely on the setup context. Plugins may run in parallel, so avoid global state.
 - Throw early in `kubb:plugin:setup` when required options are missing. The build aborts before any file is written.

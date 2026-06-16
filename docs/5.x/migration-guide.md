@@ -7,7 +7,7 @@ outline: [2, 3, 4]
 
 # Migration Guide: v4 → v5
 
-Kubb v5 introduces a layered architecture that splits responsibilities between [adapters](/docs/5.x/concepts/adapters), [plugins](/docs/5.x/concepts/plugins), [parsers](/docs/5.x/concepts/parsers), and [storage](/docs/5.x/concepts/storage). This guide lists every user-facing breaking change and shows the matching v5 syntax. Each section follows the same pattern: a short rationale, a before/after diff, and a link to the relevant reference.
+Kubb v5 introduces a layered architecture that splits responsibilities between [adapters](/docs/5.x/concepts/adapters), [plugins](/docs/5.x/concepts/plugins), [parsers](/docs/5.x/concepts/parsers), and [storage](/docs/5.x/concepts/storage). This guide lists every user-facing breaking change with the matching v5 syntax. Each section gives a short rationale, a before/after diff, and a link to the reference.
 
 > [!TIP]
 > Start with the [Upgrade prompt](#upgrade-prompt) to migrate most configurations automatically, then walk through this page to verify the result.
@@ -103,7 +103,7 @@ Now migrate the following kubb.config.ts:
 
 ## Performance
 
-v5 generates code faster than v4. Benchmarks compare `@kubb/core@4.37.8` with the v5 `kubb` meta-package, using `write: false` to focus on the generation pipeline.
+v5 generates code faster than v4. Benchmarks compare `@kubb/core@4.37.8` with the v5 `kubb` meta-package, with file writing disabled to focus on the generation pipeline.
 
 > [!NOTE]
 > Measured on a 4-core Intel Xeon @ 2.80 GHz, Linux. Speedup is the headline. Absolute milliseconds are hardware-dependent.
@@ -132,7 +132,7 @@ v5 generates code faster than v4. Benchmarks compare `@kubb/core@4.37.8` with th
 | `plugin-ts` + `plugin-client`                                 | 7,662 ms  | 1,544 ms | **+396%** |
 | `plugin-ts` + `plugin-client` + `plugin-zod` + `plugin-faker` | 14,943 ms | 2,461 ms | **+507%** |
 
-The gap widens on bigger specs. In v4, every plugin bootstrapped its own `pluginOas` instance, so OAS parsing ran once per plugin. The `adapterOas` in v5 parses the spec once and shares the result across all plugins.
+The gap widens on bigger specs. In v4, every plugin bootstrapped its own `pluginOas` instance, so parsing ran once per plugin. The `adapterOas` in v5 parses the spec once and shares the result across all plugins.
 
 ## System requirements
 
@@ -146,7 +146,7 @@ Update your CI pipelines, the `engines` field in `package.json`, and any `Docker
 
 ### Plugins moved to a separate repository
 
-In v4, every plugin lived in [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb). In v5 the plugins were extracted into [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins) but keep the same npm package names, so no rename is required.
+In v4, every plugin lived in [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb). v5 extracted them into [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins), but the npm package names are unchanged, so no rename is required.
 
 ::: code-group
 
@@ -190,7 +190,7 @@ The following plugins have no v5 equivalent. Remove them from your config and un
 | `@kubb/plugin-svelte-query` |
 
 > [!NOTE]
-> `@kubb/plugin-swr` was unavailable during the early v5 betas but is **supported again in v5**. See [@kubb/plugin-swr](#kubb-plugin-swr) below.
+> `@kubb/plugin-swr` was unavailable during the early v5 betas but is supported again in v5. See [@kubb/plugin-swr](#kubb-plugin-swr) below.
 
 ### New packages in v5
 
@@ -225,7 +225,7 @@ v5 introduces three top-level keys that replace behaviour previously embedded in
 | Option       | Package                                                     | Purpose                                       | Default                 |
 | ------------ | ----------------------------------------------------------- | --------------------------------------------- | ----------------------- |
 | `adapter`    | [`@kubb/adapter-oas`](/adapters/adapter-oas)                | Parses the input spec into a universal AST.   | `adapterOas()`          |
-| `parsers`    | [`@kubb/parser-ts`](/parsers/parser-ts)                     | Converts AST nodes to `.ts` and `.tsx` files. | `[parserTs, parserTsx]` |
+| `parsers`    | [`@kubb/parser-ts`](/parsers/parser-ts)                     | Converts AST nodes to `.ts`, `.tsx`, and `.md` files. | `[parserTs, parserTsx, parserMd]` |
 | `plugins` (post) | [`@kubb/plugin-barrel`](/plugins/plugin-barrel) | Post-processes output, like barrel files.     | `[pluginBarrel()]`  |
 
 ### `@kubb/plugin-oas` removed
@@ -349,14 +349,14 @@ See [`@kubb/plugin-barrel`](/plugins/plugin-barrel) for the full `barrel` option
 
 ### Single-file output uses `output.mode`
 
-v4 decided between a folder and a single file by looking at the `output.path` extension: a path ending in `.ts` produced one file, anything else produced a folder. v5 removes that guess. The new `output.mode` option states the layout outright.
+v4 chose between a folder and a single file from the `output.path` extension: a path ending in `.ts` produced one file, anything else a folder. v5 removes that guess and states the layout outright with `output.mode`.
 
 | `output.mode` | Layout                                                            |
 | ------------- | ----------------------------------------------------------------- |
 | `'directory'` | One file per operation or schema. The default.                    |
 | `'file'`      | One file for the whole plugin.                                    |
 
-To keep a single-file layout from v4, add `mode: 'file'`. The `output.path` must include the extension — Kubb uses it as-is.
+To keep a single-file layout from v4, add `mode: 'file'`. The `output.path` must include the extension, since Kubb uses it as-is.
 
 ::: code-group
 
@@ -388,7 +388,7 @@ export default defineConfig({
 
 ### Group folders use the plain tag
 
-With `group: { type: 'tag' }`, every plugin now writes each tag to a folder named after the camelCased tag. v4 appended a `Controller` suffix (and `Requests` for the Cypress and MCP plugins), so `pet` operations landed in `petController/`. v5 drops the suffix and uses `pet/`. Nothing in the generated output referenced the suffix, so the change is folder layout only.
+With `group: { type: 'tag' }`, every plugin now writes each tag to a folder named after the camelCased tag. v4 appended a `Controller` suffix (and `Requests` for the Cypress and MCP plugins), so `pet` operations landed in `petController/`. v5 drops the suffix and uses `pet/`. Nothing in the generated output referenced the suffix, so only the folder layout changes.
 
 The config stays the same. Only the output folders change:
 
@@ -415,7 +415,7 @@ export default defineConfig({
 
 ### Logging: `--debug` replaced by reporters
 
-The `--debug` flag and the `debug` value of `--logLevel` are gone. v5 renders a run through reporters, picked on the CLI with `--reporter` (comma-separated) or in the config with `reporters`. The CLI flag overrides the config. Three ship built in:
+The `--debug` flag and the `debug` value of `--logLevel` are gone. v5 renders a run through reporters, picked on the CLI with `--reporter` (comma-separated) or in the config with `reporters`. The CLI flag wins. Three ship built in:
 
 | Reporter          | Output                                                                  |
 | ----------------- | ----------------------------------------------------------------------- |
@@ -439,7 +439,7 @@ The `kubb:debug` hook and the `createDebugger` helper are removed alongside the 
 
 ## Options moved to `adapterOas`
 
-Schema-level options that previously had to be repeated on every plugin now live on [`adapterOas`](/adapters/adapter-oas) and apply globally. Remove them from each plugin and set them once on the adapter.
+Schema-level options that v4 repeated on every plugin now live on [`adapterOas`](/adapters/adapter-oas) and apply globally. Remove them from each plugin and set them once on the adapter.
 
 | Option            | Removed from                              | v5 location                       |
 | ----------------- | ----------------------------------------- | --------------------------------- |
@@ -691,7 +691,7 @@ export default defineConfig({
 
 With `inferred: true`, the `z.infer<typeof schema>` alias now carries a `SchemaType` suffix. `petSchema` exports `PetSchemaType` instead of `PetSchema`.
 
-Before, the schema value and its inferred type differed only by casing (`petSchema` and `PetSchema`). An all-uppercase schema name such as `SUV`, `URL`, or `API` produced the same identifier for both, so the generated barrel re-exported it twice and failed to compile with `TS2300: Duplicate identifier`. The `Type` suffix keeps the value and the type distinct regardless of casing.
+Before, the schema value and its inferred type differed only by casing (`petSchema` and `PetSchema`). An all-uppercase name such as `SUV`, `URL`, or `API` produced the same identifier for both, so the barrel re-exported it twice and failed to compile with `TS2300: Duplicate identifier`. The `Type` suffix keeps the value and type distinct regardless of casing.
 
 ```typescript [zod/petSchema.ts]
 export const petSchema = z.object({
@@ -722,7 +722,7 @@ See the full reference in [`@kubb/plugin-client`](/plugins/plugin-client).
 
 `transformers.name` is replaced by [`resolver.resolveName`](#transformersname-resolver). The `wrapper` option is renamed to `sdk`.
 
-Class clients (`clientType: 'class'`, `clientType: 'staticClass'`, and `sdk`) now name each tag class with a `Client` suffix. A `pet` tag generates `class PetClient` instead of `class Pet`. The old name matched the schema model of the same name, so the barrel re-exported both and `tsc` failed with `TS2300: Duplicate identifier`. The suffix keeps the class and the model apart.
+Class clients (`clientType: 'class'`, `clientType: 'staticClass'`, and `sdk`) now name each tag class with a `Client` suffix. A `pet` tag generates `class PetClient` instead of `class Pet`. The old name collided with the schema model of the same name, so the barrel re-exported both and `tsc` failed with `TS2300: Duplicate identifier`. The suffix keeps the class and model apart.
 
 ```ts
 // Before
@@ -763,7 +763,7 @@ See the full reference in [`@kubb/plugin-msw`](/plugins/plugin-msw).
 
 See the full reference in [`@kubb/plugin-swr`](/plugins/plugin-swr).
 
-`@kubb/plugin-swr` is supported again in v5. It now follows the same conventions as the React Query and Vue Query plugins: `transformers.name` is replaced by [`resolver.resolveName`](#transformersname-resolver), and the `client` sub-object for HTTP client configuration is unchanged. Because SWR has no `enabled` option, the param-presence guard is folded into the null-key gate (`useSWR(shouldFetch && !!(petId) ? queryKey : null, ...)`), so passing `undefined` disables the request.
+`@kubb/plugin-swr` is supported again in v5 and follows the same conventions as the React Query and Vue Query plugins: `transformers.name` is replaced by [`resolver.resolveName`](#transformersname-resolver), and the `client` sub-object is unchanged. Since SWR has no `enabled` option, the param-presence guard folds into the null-key gate (`useSWR(shouldFetch && !!(petId) ? queryKey : null, ...)`), so passing `undefined` disables the request.
 
 ## Removed plugins: Solid Query, Svelte Query
 
@@ -889,7 +889,7 @@ export default defineConfig({
 
 ## Generated output changes per plugin
 
-Beyond config changes, v5 also changes what the generators emit. Update any code that imports from the generated files accordingly.
+Beyond config changes, v5 changes what the generators emit. Update any code that imports from the generated files accordingly.
 
 ### [`@kubb/plugin-ts`](/plugins/plugin-ts)
 
@@ -1000,7 +1000,7 @@ Set `integerType: 'number'` on `adapterOas` to restore the previous output.
 
 #### Open string unions use `(string & {})`
 
-To preserve IntelliSense suggestions, v5 writes the well-known TypeScript trick.
+To preserve IntelliSense suggestions, v5 writes the known TypeScript trick.
 
 ```diff
 - status?: 'accepted' | string
@@ -1075,7 +1075,7 @@ v4 wrapped almost every nested ref in a getter. v5 only does so when the schema 
 
 #### Stricter return type and intermediate variable
 
-The `create` prefix is **kept** in v5 (e.g. `createPet` stays `createPet`), matching the naming used by `plugin-msw`. What changes is the return type and the internal structure:
+The `create` prefix stays in v5 (`createPet` is still `createPet`), matching the naming `plugin-msw` uses. What changes is the return type and the internal structure:
 
 ```diff
 - export function createPet(data?: Partial<Pet>): Pet {
@@ -1155,22 +1155,22 @@ This naming pattern applies consistently across all HTTP methods and is inherite
 
 #### Client return type narrows to 2xx responses
 
-The generic on the generated client function now references the union of `2xx` response status types (`AddPetStatus200`) instead of the full response alias (`AddPetResponse`). The returned `Promise` resolves to the success body only; non-`2xx` responses surface through the client's error path.
+The generic on the generated client function now references the union of `2xx` response status types (`AddPetStatus200`) instead of the full response alias (`AddPetResponse`). The returned `Promise` resolves to the success body only. Non-`2xx` responses surface through the client's error path.
 
 ```diff
 - const res = await request<AddPetResponse, ResponseErrorConfig<AddPetStatus405>, AddPetData>({ ... })
 + const res = await request<AddPetStatus200, ResponseErrorConfig<AddPetStatus405>, AddPetData>({ ... })
 ```
 
-`AddPetResponse`, `AddPetResponses`, and the per-status `AddPetStatus<code>` aliases are still emitted by `plugin-ts`; only the generic threaded into the client changes.
+`AddPetResponse`, `AddPetResponses`, and the per-status `AddPetStatus<code>` aliases are still emitted by `plugin-ts`. Only the generic threaded into the client changes.
 
-This matches the default behavior of axios, ky, and Kubb's bundled fetch client, which all throw on non-`2xx`. If you pass raw native `fetch` as the client without a throwing wrapper, narrow with a type guard at the call site or wrap the client to throw on error responses. The previous union type masked the same runtime mismatch.
+This matches the default behavior of axios, ky, and Kubb's bundled fetch client, which all throw on non-`2xx`. If you pass raw native `fetch` without a throwing wrapper, narrow with a type guard at the call site or wrap the client to throw on error responses. The previous union type masked the same runtime mismatch.
 
 #### Bundled client runtime exports `client`
 
-The bundled HTTP client runtime exports its request function as `client` for both the `axios` and `fetch` adapters. This name is consistent across bundled and non-bundled output (`@kubb/plugin-client/clients/fetch`, `@kubb/plugin-client/clients/axios`, and the generated `.kubb/client.ts`), so the generated root barrel re-exports a valid `client` symbol. The bundled file is always written to `.kubb/client.ts`; `@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, and `@kubb/plugin-mcp` previously emitted `.kubb/fetch.ts`.
+The bundled HTTP client runtime exports its request function as `client` for both the `axios` and `fetch` adapters. The name is consistent across bundled and non-bundled output (`@kubb/plugin-client/clients/fetch`, `@kubb/plugin-client/clients/axios`, and the generated `.kubb/client.ts`), so the root barrel re-exports a valid `client` symbol. The bundled file is always written to `.kubb/client.ts`. Earlier, `@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, and `@kubb/plugin-mcp` emitted `.kubb/fetch.ts`.
 
-Generated code imports the runtime as a default import, so most projects need no changes. If you import the request function as a **named** export, rename it to `client`:
+Generated code imports the runtime as a default import, so most projects need no changes. If you import the request function as a named export, rename it to `client`:
 
 ```diff
 - import { fetch } from '@kubb/plugin-client/clients/fetch'
@@ -1221,11 +1221,12 @@ const pet = await mutateAsync({ data: { name: 'Rex' } })
 pet.id // typed as Pet.id — no narrowing required
 ```
 
-The change applies to `queryFn`, `queryOptions`, and the hook generics in a single pass. No config flag toggles the old behavior. If your client returns non-`2xx` bodies as resolved data instead of throwing, wrap it to throw on error responses so TanStack Query's `error` / `onError` path fires correctly. The previous typing made this silently broken at runtime.
+The change applies to `queryFn`, `queryOptions`, and the hook generics in one pass. No config flag toggles the old behavior. If your client returns non-`2xx` bodies as resolved data instead of throwing, wrap it to throw so TanStack Query's `error` / `onError` path fires. The previous typing was silently broken at runtime.
 
 #### `enabled`-guarded params are now optional
 
 `*QueryOptions` and `*InfiniteQueryOptions` emit an `enabled` guard derived from the required path and query parameters (`enabled: !!petId` in React Query, `enabled: () => !!toValue(petId)` in Vue Query). In v4 those parameters stayed required in the generated type, so a caller could never pass `undefined` to reach the disabled state the guard already implements. The type contradicted the runtime.
+
 
 v5 makes those parameters optional in the generated `queryKey`, `queryOptions`, and hook signatures, and the `queryFn` calls the client with a non-null assertion. The `enabled` guard is unchanged.
 

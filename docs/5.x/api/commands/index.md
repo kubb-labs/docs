@@ -7,11 +7,11 @@ outline: [2, 3]
 
 # Commands
 
-The `kubb` CLI is your main interface. It reads your [configuration](/docs/5.x/reference/configuration), runs the generation pipeline, and can also bootstrap new projects, validate specs, and start a Model Context Protocol server for LLMs.
+The `kubb` CLI is your main interface to Kubb. It reads your [configuration](/docs/5.x/reference/configuration) and runs the generation pipeline. It also scaffolds new projects, validates specs, and starts a Model Context Protocol server for LLMs.
 
 ## Installation
 
-The CLI comes bundled with the `kubb` package. If you have already completed [installation](/docs/5.x/getting-started/installation), you are ready to go. Otherwise, install the CLI separately:
+The CLI comes bundled with the `kubb` package, so after [installation](/docs/5.x/getting-started/installation) you are ready to go. To install it separately:
 
 ::: code-group
 

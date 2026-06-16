@@ -7,9 +7,9 @@ outline: [2, 3]
 
 # Creating your first plugin
 
-A [plugin](/docs/5.x/concepts/plugins) teaches Kubb to generate something new. It owns its output folder, file naming, [generators](/docs/5.x/concepts/plugins#generators) that walk the [AST](/docs/5.x/concepts/ast), and lifecycle hooks that react to the build.
+A [plugin](/docs/5.x/concepts/plugins) teaches Kubb to generate something new. It owns its output folder and file naming, runs [generators](/docs/5.x/concepts/plugins#generators) that walk the [AST](/docs/5.x/concepts/ast), and hooks into the build lifecycle.
 
-This guide walks you through building a complete `kubb-plugin-example` package from scratch and publishing it to npm.
+This guide builds a `kubb-plugin-example` package from scratch and publishes it to npm.
 
 > [!TIP]
 > Before writing a plugin, check the [Plugins registry](/plugins) to see if an existing plugin already covers your use case.
@@ -59,7 +59,7 @@ export const pluginHello = definePlugin(() => ({
 }))
 ```
 
-Wire it into your `kubb.config.ts`:
+Wire it into `kubb.config.ts`:
 
 ```typescript twoslash [kubb.config.ts]
 // @errors: 2307
@@ -81,9 +81,7 @@ kubb generate
 
 ## Project layout
 
-Every official Kubb plugin follows the same package layout. The reference implementation at [`@kubb/plugin-client`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-client) uses dedicated folders per concern: `generators/`, `resolvers/`, `components/`, and `templates/`.
-
-Mirror this layout in your own plugin so contributors can navigate it without surprises:
+Every official Kubb plugin follows the same layout, a folder per concern: `generators/`, `resolvers/`, `components/`, and `templates/`. The reference implementation is [`@kubb/plugin-client`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-client). Mirror it so contributors can find their way around:
 
 ```
 kubb-plugin-example/
@@ -105,7 +103,7 @@ kubb-plugin-example/
 ```
 
 > [!TIP]
-> Use [`@kubb/plugin-client`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-client) as the canonical example. Its `src/index.ts` re-exports each generator, resolver, and the plugin factory by name, and its `src/plugin.ts` declares a `pluginClientName satisfies PluginClient['name']` constant that other plugins consume.
+> In [`@kubb/plugin-client`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-client), `src/index.ts` re-exports each generator, resolver, and the plugin factory by name, and `src/plugin.ts` declares a `pluginClientName satisfies PluginClient['name']` constant that other plugins consume.
 
 Scaffold the directories:
 
@@ -119,7 +117,7 @@ mkdir -p src/generators src/resolvers mocks
 
 ## Naming conventions
 
-Choose the package name and internal identifiers to match Kubb conventions so the registry and other tooling can discover them.
+Match the package name and internal identifiers to Kubb conventions so the registry and other tooling can find them.
 
 | Surface                 | Pattern                                 | Example               |
 | ----------------------- | --------------------------------------- | --------------------- |
@@ -142,7 +140,7 @@ export const pluginExampleName = 'plugin-example' satisfies Plugin['name']
 
 ## Plugin anatomy
 
-The following four files form the skeleton of a plugin package. Each file is shown in the order it is typically read: types first, then the implementation files, then the public entry point.
+Four files form the skeleton, in reading order: types first, then the implementation, then the public entry point.
 
 ```typescript twoslash
 // @filename: src/types.ts
@@ -276,9 +274,9 @@ A generator returns `Array<FileNode>` built with the `create*` factories from `@
 
 A printer renders one `SchemaNode` to a string, such as a TypeScript type or `z.object({ ... })`. A handler calls it and stages the result on a `FileNode`.
 
-A renderer turns JSX into `FileNode`s. Return an element instead of `Array<FileNode>` and set `renderer: jsxRenderer`, and `@kubb/renderer-jsx` walks the JSX into the same nodes the builder would. It is sugar over the builder rather than a separate pipeline.
+A renderer turns JSX into `FileNode`s. Return an element instead of `Array<FileNode>` and set `renderer: jsxRenderer` on the generator, and `@kubb/renderer-jsx` walks the JSX into the same nodes the builder would produce. It is sugar over the builder, not a separate pipeline.
 
-A parser, the serializer role, runs last and belongs to the build driver. After every plugin finishes, the matching [parser](/docs/5.x/concepts/parsers) writes each `FileNode` out as the final file string. Plugins never call it.
+A parser handles serialization, runs last, and belongs to the build driver. Once every plugin finishes, the matching [parser](/docs/5.x/concepts/parsers) writes each `FileNode` out as the final file string. Plugins never call it.
 
 ### src/generators/exampleGenerator.ts
 
@@ -317,7 +315,7 @@ A [resolver](/docs/5.x/api/core#resolver) controls how file names and output pat
 
 ### src/resolvers/resolverExample.ts
 
-`defineResolver` injects sensible defaults for every resolver method. Provide only `name` and `pluginName` in the builder and override specific methods when you need custom behavior. Returning `null` from `resolveOptions` excludes the node from generation, so only return `null` when you explicitly want to filter a node out.
+`defineResolver` fills in defaults for every resolver method. Provide `name` and `pluginName` in the builder, then override the methods where you need custom behavior. Returning `null` from `resolveOptions` excludes the node from generation, so return `null` only when you mean to filter a node out.
 
 ```typescript twoslash [resolvers.ts]
 import { defineResolver } from '@kubb/core'
@@ -345,7 +343,7 @@ export const resolverExample = defineResolver<PluginExample>(() => ({
 | `addGenerator`    | Register a [`Generator`](/docs/5.x/concepts/plugins#generators) for the AST walk. |
 | `setResolver`     | Set or override the resolver (file naming and paths).                             |
 | `addMacro`        | Add a [macro](/docs/5.x/concepts/macros) that rewrites AST nodes before generators. |
-| `setRenderer`     | Set the renderer factory for JSX-style generator returns.                         |
+| `setMacros`       | Replace this plugin's macros with a new list.                                     |
 | `setOptions`      | Provide resolved options to the build loop.                                       |
 | `injectFile`      | Inject a raw `UserFileNode` into the build, bypassing generators.                 |
 | `updateConfig`    | Merge a partial config update into the running build.                             |
@@ -426,7 +424,7 @@ export const pluginExample = definePlugin<PluginExample>((options) => {
 
 ## Testing
 
-Use `createKubb` from `@kubb/core` to create an in-process build and verify that your generator emits the expected files. Pair it with a small [OpenAPI](https://spec.openapis.org/oas/latest.html) fixture to keep tests fast and deterministic.
+Use `createKubb` from `@kubb/core` to run an in-process build and check that your generator emits the files you expect. Pair it with a small [OpenAPI](https://spec.openapis.org/oas/latest.html) fixture so tests stay fast and deterministic.
 
 ```typescript twoslash [plugin.test.ts]
 // @errors: 2307
@@ -501,7 +499,7 @@ await kubb.build()
 
 ### Configure package.json
 
-Set up `package.json` for dual-format publishing. Peer-depend on `@kubb/core` and `@kubb/ast` at v5 to keep the runtime out of your bundle, and mark them as `devDependencies` for local builds.
+Peer-depend on `@kubb/core` and `@kubb/ast` at v5 to keep the runtime out of your bundle, and list them under `devDependencies` for local builds.
 
 ```json
 {
@@ -580,7 +578,7 @@ npm publish --access public
 
 ## Examples
 
-The [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins) repository contains official community plugins that follow all conventions described in this guide. Browse the source to see how generators, resolvers, and options are wired together in production packages.
+The [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins) repository holds official plugins that follow these conventions. Browse the source to see how generators, resolvers, and options fit together in published packages.
 
 ### Schema generator
 

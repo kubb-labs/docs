@@ -47,7 +47,7 @@ kubb mcp --port 3001
 
 `kubb mcp` supports two transports.
 
-The default is stdio. The server reads from standard input and writes to standard output, which matches the [Model Context Protocol](https://modelcontextprotocol.io/) transport used by Claude Desktop, Cursor, VS Code, and other editor integrations. No flags are required.
+The default is stdio: the server reads from standard input and writes to standard output, matching the [Model Context Protocol](https://modelcontextprotocol.io/) transport used by Claude Desktop, Cursor, VS Code, and other editor integrations. No flags are required.
 
 Pass `--port` to switch to HTTP. The server exposes `http://<host>:<port>/mcp` and accepts requests from hosted MCP clients or any machine that can reach the host.
 
@@ -72,7 +72,7 @@ The MCP server exposes three tools to connected clients.
 ### Structured diagnostics
 
 When `generate` or `validate` hits a problem, it returns structured [diagnostics](/docs/5.x/reference/diagnostics)
-rather than a single message string. Each diagnostic keeps its stable code, source pointer,
+instead of a single message string. Each diagnostic keeps its stable code, source pointer,
 suggested fix, and docs link, so an assistant can act on the exact problem. The tools return both a
 readable text block and a JSON payload:
 

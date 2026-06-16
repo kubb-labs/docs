@@ -16,8 +16,8 @@ written, but the run is marked failed.
 ## What happened
 
 When `output.lint` is set, Kubb runs the configured linter (oxlint, biome, or eslint) over the
-output directory. A non-zero exit from the linter is reported here. It used to be swallowed. Now it
-shows in the summary and `--reporter json`, and fails the run.
+output directory. A non-zero exit from the linter shows up here, in the summary, and in
+`--reporter json`, and it fails the run. Earlier versions swallowed it.
 
 ## How to fix it
 

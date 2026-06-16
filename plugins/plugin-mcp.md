@@ -13,9 +13,7 @@ id: plugin-mcp
 
 # @kubb/plugin-mcp
 
-Generate a [Model Context Protocol](https://modelcontextprotocol.io/introduction) server straight from your OpenAPI spec. Every operation becomes a typed MCP tool that AI assistants (Claude Desktop, Claude Code, MCP-compatible clients) can call directly.
-
-The plugin emits the tool definitions, the request handlers, and the Zod schemas they validate against. Plug the generated server into Claude with one config file.
+Generate a [Model Context Protocol](https://modelcontextprotocol.io/introduction) server from your OpenAPI spec. Every operation becomes a typed MCP tool that AI assistants such as Claude Desktop, Claude Code, and MCP-compatible clients call directly. The plugin emits the tool definitions, the request handlers, and the Zod schemas that validate each call, and you point Claude at the server with one config file.
 
 ```mermaid
 graph TD
@@ -64,7 +62,7 @@ Where the generated MCP tool handlers are written and how they are exported.
 
 Folder where the plugin writes its generated code. The path is resolved against the global `output.path` set on `defineConfig`.
 
-Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `'hooks'`). To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension (e.g. `'types.ts'`).
+Use a folder to keep each generator's output separate, for example `'types'`, `'clients'`, or `'hooks'`. To write everything into one file, set `output.mode: 'file'` and point `path` at the target file with its extension, such as `'types.ts'`.
 
 |           |          |
 | --------: | :------- |
@@ -79,14 +77,14 @@ Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginMcp } from '@kubb/plugin-mcp'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
-      output: { path: './types' },
+    pluginMcp({
+      output: { path: './mcp' },
     }),
   ],
 })
@@ -95,9 +93,9 @@ export default defineConfig({
 ```text [Resulting tree]
 src/
 └── gen/
-    └── types/
-        ├── Pet.ts
-        └── Store.ts
+    └── mcp/
+        ├── addPetHandler.ts
+        └── getPetByIdHandler.ts
 ```
 
 :::
@@ -116,7 +114,7 @@ How the plugin consolidates its generated code into files.
 |  Default: | `'directory'`           |
 
 > [!TIP]
-> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group` — a single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
+> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group`, since a single-file output has nothing to group. Combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 ::: code-group
 
@@ -160,7 +158,7 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 - `{ type: 'named' }` re-exports each symbol by name. Best for tree-shaking and explicit imports.
 - `{ type: 'all' }` uses `export *`. Smaller barrel file, but exports everything.
 - `{ nested: true }` creates a barrel in every subdirectory, so callers can import from any depth.
-- `false` skips the barrel entirely. The plugin's files are also excluded from the root `index.ts`.
+- `false` skips the barrel. The plugin's files are also excluded from the root `index.ts`.
 
 |           |                                                         |
 | --------: | :------------------------------------------------------ |
@@ -263,9 +261,7 @@ export default defineConfig({
 
 #### output.banner
 
-Text prepended to every generated file. Useful for license headers, lint disables, or `@ts-nocheck` directives.
-
-Pass a string for a static banner. Pass a function to compute the banner from each file's `RootNode` (the AST root containing path, schema, and operation context).
+Text prepended to every generated file, for license headers, lint disables, or `@ts-nocheck` directives. Pass a string for a static banner, or a function that builds it from each file's `RootNode` (the AST root holding path, schema, and operation context).
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -321,9 +317,7 @@ export default defineConfig({
 
 #### output.footer
 
-Text appended at the end of every generated file. The mirror of `banner` — use it for closing comments, re-enabling lint rules, or marker lines.
-
-Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
+Text appended to every generated file, the counterpart to `banner`, for closing comments, re-enabling lint rules, or marker lines. Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -354,7 +348,7 @@ export default defineConfig({
 
 #### output.override
 
-Allows the plugin to overwrite hand-written files that share a name with a generated file.
+Lets the plugin overwrite hand-written files that share a name with a generated file.
 
 - `false` (default): Kubb skips a file if it already exists and is not marked as generated. This protects manual edits.
 - `true`: Kubb overwrites any file at the target path, including hand-written ones.
@@ -389,11 +383,7 @@ export default defineConfig({
 
 ### resolver
 
-Overrides how the plugin builds names and paths for generated files and symbols. Use this to add prefixes, suffixes, or to swap the casing strategy without forking the plugin.
-
-Only override the methods you want to change. Anything you omit falls back to the plugin's default resolver. A method that returns `null` or `undefined` also falls back.
-
-Inside each method, `this` is bound to the full resolver, so you can call `this.default(name, 'function')` to delegate to the built-in implementation.
+Overrides how the plugin builds names and paths for generated files and symbols. Use it to add prefixes, suffixes, or swap the casing strategy without forking the plugin. Override only the methods you want to change. Anything you omit, or a method that returns `null` or `undefined`, falls back to the default resolver. Inside each method, `this` is bound to the full resolver, so you can call `this.default(name, 'function')` to delegate to the built-in version.
 
 |           |                                                |
 | --------: | :--------------------------------------------- |
@@ -436,31 +426,30 @@ Each plugin ships with a default resolver:
 
 ### group
 
-Splits generated files into subfolders based on the operation's tag, so each tag in your OpenAPI spec gets its own directory.
-
-Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files are bucketed under `{output.path}/{groupName}/`, where `groupName` is derived from the operation's first tag.
+Splits the generated handlers into subfolders, giving each tag or path segment its own directory. Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files go under `{output.path}/{groupName}/`, where `groupName` comes from the operation's first tag or first path segment.
 
 |           |         |
 | --------: | :------ |
 |     Type: | `Group` |
 | Required: | `false` |
+|  Default: | `null`  |
 
 > [!TIP]
-> Use `group` to mirror your API's domain structure (pet, store, user) in the generated code. Combine it with `output.barrel: { type: 'named', nested: true }` to get per-tag barrel files.
+> Use `group` to mirror your API's domain structure in the generated code. Combine it with `output.barrel: { type: 'named', nested: true }` to get a barrel file per group.
 >
-> `group` only applies to `output.mode: 'directory'` (the default), where each group becomes a folder. It is not valid with `output.mode: 'file'` — a single-file output has no grouping concept.
+> `group` only applies to `output.mode: 'directory'` (the default), where each group becomes a folder. It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept. Combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 ::: code-group
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginMcp } from '@kubb/plugin-mcp'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginMcp({
       group: { type: 'tag' },
     }),
   ],
@@ -474,42 +463,42 @@ With the configuration above, the generator emits one folder per tag, named afte
 ```text
 src/gen/
 ├── pet/
-│   ├── AddPet.ts
-│   └── GetPet.ts
+│   ├── addPetHandler.ts
+│   └── getPetByIdHandler.ts
 └── store/
-    ├── CreateStore.ts
-    └── GetStoreById.ts
+    ├── getInventoryHandler.ts
+    └── placeOrderHandler.ts
 ```
 
-Pass `group.name` to customize the folder name, for example `name: ({ group }) => \`${group}Controller\``to keep the pre-v5`petController/` layout.
+Pass `group.name` to customize the folder name, for example `name: ({ group }) => \`${group}Controller\`` to keep the pre-v5 `petController/` layout.
 
 #### group.type
 
-Property used to assign each operation to a group. Required whenever `group` is set.
+Property the plugin reads to assign each operation to a group. Required when `group` is set.
 
-Today only `'tag'` is supported: Kubb reads the first tag on the operation (`operation.getTags().at(0)?.name`) and uses it as the group key. Operations without a tag are placed in a default group.
+- `'tag'` reads the first tag on the operation (`operation.getTags().at(0)?.name`). Operations without a tag fall into a default group.
+- `'path'` reads the first segment of the operation's URL.
 
-|           |         |
-| --------: | :------ |
-|     Type: | `'tag'` |
-| Required: | `true`  |
+|           |                  |
+| --------: | :--------------- |
+|     Type: | `'tag' \| 'path'` |
+| Required: | `true`           |
 
 > [!NOTE]
-> `Required: true*` is conditional — only required when the parent `group` option is used. `group` itself stays optional.
+> `Required` here is conditional. It applies only when the parent `group` option is set, and `group` itself stays optional.
 
 #### group.name
 
-Function that builds the folder/identifier name from a group key (the operation's first tag).
+Function that builds the folder name from the group key. The default depends on `group.type`: a `'tag'` group uses the camelCased tag, a `'path'` group uses the second path segment (`/pet/findByStatus` becomes `pet`). A `group.name` you pass always wins over the default.
 
-|           |                                     |
-| --------: | :---------------------------------- |
-|     Type: | `(context: GroupContext) => string` |
-| Required: | `false`                             |
-|  Default: | `(ctx) => \`${ctx.group}\``         |
+|           |                                           |
+| --------: | :---------------------------------------- |
+|     Type: | `(context: { group: string }) => string` |
+| Required: | `false`                                   |
 
 ### paramsCasing
 
-Renames parameter properties in the generated MCP handlers. The HTTP layer still uses the original spec names — Kubb adds the mapping for you.
+Renames parameter properties in the generated MCP handlers. The HTTP layer still uses the original spec names, and Kubb adds the mapping for you.
 
 |           |               |
 | --------: | :------------ |
@@ -555,11 +544,19 @@ HTTP client used by each MCP handler to call the underlying API. Mirrors a subse
 |     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, bundle?, paramsCasing? }` |
 | Required: | `false`                                                                                 |
 
+#### client.client
+
+Built-in HTTP client the handlers import. `'axios'` imports from `@kubb/plugin-client/clients/axios` and needs `axios` at runtime. `'fetch'` imports from `@kubb/plugin-client/clients/fetch` and uses the global `fetch`. Set `client.importPath` instead when you want a custom module, since `client` and `importPath` are mutually exclusive.
+
+|           |                      |
+| --------: | :------------------- |
+|     Type: | `'axios' \| 'fetch'` |
+| Required: | `false`              |
+|  Default: | `'axios'`            |
+
 #### client.importPath
 
-Path or module specifier of a custom client module. Generated code imports its HTTP runtime from here instead of `@kubb/plugin-client/clients/{client}`.
-
-Use this when you need to inject auth headers, add interceptors, change the base URL at runtime, or wrap a different HTTP library (ky, ofetch, ...). Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work.
+Path or module specifier of a custom client module. Generated code imports its HTTP runtime from here instead of `@kubb/plugin-client/clients/{client}`. Use it to inject auth headers, add interceptors, set the base URL at runtime, or wrap a different HTTP library (ky, ofetch, ...). Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work.
 
 |           |          |
 | --------: | :------- |
@@ -570,7 +567,7 @@ Use this when you need to inject auth headers, add interceptors, change the base
 > See the [custom client guide](https://kubb.dev/plugins/plugin-client#importpath) for a worked example.
 
 > [!IMPORTANT]
-> When used with query plugins (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`), generated hooks also import a `Client` type alias. Your module **must** export `Client`, `RequestConfig`, and `ResponseErrorConfig` — TypeScript will fail the import otherwise.
+> When used with query plugins (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`), generated hooks also import a `Client` type alias. Your module must export `Client`, `RequestConfig`, and `ResponseErrorConfig`, or TypeScript will fail the import.
 
 ```typescript [src/client.ts]
 import axios from 'axios'
@@ -630,31 +627,9 @@ export default defineConfig({
 
 :::
 
-##### When to use `importPath`
-
-Reach for a custom client when you need to:
-
-- Add an auth token to every request.
-- Plug in interceptors, retries, or logging.
-- Configure `baseURL` and headers from environment variables.
-- Wrap a library other than `axios`/`fetch`.
-
-##### Default behavior
-
-Without `importPath`:
-
-- `bundle: false` (default) — generated code imports from `@kubb/plugin-client/clients/{axios|fetch}`.
-- `bundle: true` — Kubb writes `.kubb/client.ts` and generated code imports from there.
-
 ##### Required exports
 
-The module pointed to by `importPath` must satisfy the same shape as the built-in client. At minimum:
-
-- A default export of the `client` function.
-- A `RequestConfig` type.
-- A `ResponseErrorConfig` type.
-
-When used together with a query plugin (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`), it must also export a `Client` type alias.
+The module must match the shape of the built-in client: a default export of the `client` function, a `RequestConfig` type, and a `ResponseErrorConfig` type. With a query plugin (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`) it must also export a `Client` type alias.
 
 ##### How generated files import it
 
@@ -712,9 +687,7 @@ if (res.status === 405) {
 
 #### client.baseURL
 
-Base URL prepended to every request URL in the generated client. When omitted, the URL comes from the OpenAPI spec's `servers[0].url` (or whichever index the adapter is configured to read).
-
-Set this when the generated client should point at a different environment (staging, production) than the one written in the spec.
+Base URL prepended to every request URL in the generated client. When omitted, the URL comes from the spec's `servers[0].url` (or whichever index the adapter reads). Set it to point the client at a different environment (staging, production) than the spec.
 
 |           |          |
 | --------: | :------- |
@@ -748,6 +721,7 @@ Shape of the underlying client the handlers call into. Mirrors `pluginClient`'s 
 | --------: | :--------------------------------------- |
 |     Type: | `'function' \| 'class' \| 'staticClass'` |
 | Required: | `false`                                  |
+|  Default: | `'function'`                             |
 
 #### client.bundle
 
@@ -773,13 +747,14 @@ Restricts generation to operations that match at least one entry in the list. An
 
 Each entry filters by one of:
 
-- `tag` — the operation's first tag in the OpenAPI spec.
-- `operationId` — the operation's `operationId`.
-- `path` — the URL pattern (`'/pet/{petId}'`).
-- `method` — HTTP method (`'get'`, `'post'`, ...).
-- `contentType` — the media type of the request body.
+- `tag`: the operation's first tag in the OpenAPI spec.
+- `operationId`: the operation's `operationId`.
+- `path`: the URL pattern (`'/pet/{petId}'`).
+- `method`: the HTTP method (`'get'`, `'post'`, ...).
+- `contentType`: the media type of the request body.
+- `schemaName`: a component schema name under `#/components/schemas`.
 
-`pattern` accepts either a string (exact match) or a `RegExp` for fuzzy matches.
+`pattern` accepts either a string for an exact match or a `RegExp` for fuzzy matches.
 
 |           |                  |
 | --------: | :--------------- |
@@ -788,7 +763,7 @@ Each entry filters by one of:
 
 ```typescript [Type definition]
 export type Include = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType'
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
   pattern: string | RegExp
 }
 ```
@@ -797,13 +772,13 @@ export type Include = {
 
 ```typescript [Only the pet tag]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginMcp } from '@kubb/plugin-mcp'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginMcp({
       include: [{ type: 'tag', pattern: 'pet' }],
     }),
   ],
@@ -812,13 +787,13 @@ export default defineConfig({
 
 ```typescript [Only GET operations under /pet]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginMcp } from '@kubb/plugin-mcp'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginMcp({
       include: [
         { type: 'method', pattern: 'get' },
         { type: 'path', pattern: /^\/pet/ },
@@ -836,13 +811,14 @@ Skips any operation that matches at least one entry in the list. The opposite of
 
 Each entry filters by one of:
 
-- `tag` — the operation's first tag.
-- `operationId` — the operation's `operationId`.
-- `path` — the URL pattern (`'/pet/{petId}'`).
-- `method` — HTTP method (`'get'`, `'post'`, ...).
-- `contentType` — the media type of the request body.
+- `tag`: the operation's first tag.
+- `operationId`: the operation's `operationId`.
+- `path`: the URL pattern (`'/pet/{petId}'`).
+- `method`: the HTTP method (`'get'`, `'post'`, ...).
+- `contentType`: the media type of the request body.
+- `schemaName`: a component schema name under `#/components/schemas`.
 
-`pattern` accepts a plain string or a `RegExp`. When both `include` and `exclude` are set, `exclude` wins.
+`pattern` accepts a plain string or a `RegExp`. When both `include` and `exclude` match an operation, `exclude` wins.
 
 |           |                  |
 | --------: | :--------------- |
@@ -851,7 +827,7 @@ Each entry filters by one of:
 
 ```typescript [Type definition]
 export type Exclude = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType'
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
   pattern: string | RegExp
 }
 ```
@@ -860,13 +836,13 @@ export type Exclude = {
 
 ```typescript [Skip everything under the store tag]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginMcp } from '@kubb/plugin-mcp'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginMcp({
       exclude: [{ type: 'tag', pattern: 'store' }],
     }),
   ],
@@ -875,13 +851,13 @@ export default defineConfig({
 
 ```typescript [Skip a specific operation and all delete methods]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginMcp } from '@kubb/plugin-mcp'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginMcp({
       exclude: [
         { type: 'operationId', pattern: 'deletePet' },
         { type: 'method', pattern: 'delete' },
@@ -895,11 +871,7 @@ export default defineConfig({
 
 ### override
 
-Applies a different set of plugin options to operations that match a pattern. Use this when most of your API should follow the global config, but a handful of endpoints need different treatment.
-
-Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations.
-
-Entries are evaluated top to bottom. The first matching entry's `options` is merged onto the plugin defaults; later entries do not stack.
+Applies a different set of plugin options to operations that match a pattern. Use this when most of your API follows the global config but a few endpoints need different treatment. Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations. Entries are evaluated top to bottom: the first match's `options` is merged onto the plugin defaults, and later entries do not stack.
 
 |           |                   |
 | --------: | :---------------- |
@@ -908,29 +880,29 @@ Entries are evaluated top to bottom. The first matching entry's `options` is mer
 
 ```typescript [Type definition]
 export type Override = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType'
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
   pattern: string | RegExp
-  options: PluginOptions
+  options: Partial<Options>
 }
 ```
 
 ::: code-group
 
-```typescript [Use a different enum style for the user tag]
+```typescript [Send the admin tag to its own folder]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginMcp } from '@kubb/plugin-mcp'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
-      enumType: 'asConst',
+    pluginMcp({
+      output: { path: './mcp' },
       override: [
         {
           type: 'tag',
-          pattern: 'user',
-          options: { enumType: 'literal' },
+          pattern: 'admin',
+          options: { output: { path: './mcp/admin' } },
         },
       ],
     }),
@@ -942,9 +914,7 @@ export default defineConfig({
 
 ### generators
 
-Adds custom generators that run alongside the plugin's built-in generators. Each generator can emit additional files or post-process existing ones using the plugin's AST and options.
-
-Use this when you need output the plugin does not produce out of the box (a custom client wrapper, an extra index, a metadata file). For end-to-end guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
+Adds custom generators that run alongside the plugin's built-in ones. Each generator can emit extra files or post-process existing ones using the plugin's AST and options. Use this for output the plugin does not produce itself (a custom client wrapper, an extra index, a metadata file). See [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
 
 |           |                               |
 | --------: | :---------------------------- |
@@ -956,9 +926,7 @@ Use this when you need output the plugin does not produce out of the box (a cust
 
 ### macros
 
-Rewrite AST nodes before they are printed to source code. Use this when you need to rewrite operation IDs, drop descriptions, or change schema metadata without forking the generator.
-
-Each [macro](/docs/5.x/concepts/macros) callback (e.g. `schema`, `operation`) receives the node and a context object. Return a new node to replace it, or return `undefined` to leave it untouched. Callbacks you omit keep the plugin's default behavior. Macros run in order, so a later macro sees the output of an earlier one.
+Rewrite AST nodes before they are printed to source code, to rewrite operation IDs, drop descriptions, or change schema metadata without forking the generator. Each [macro](/docs/5.x/concepts/macros) callback (e.g. `schema`, `operation`) receives the node and a context object. Return a new node to replace it, or `undefined` to leave it untouched. Callbacks you omit keep the default behavior. Macros run in order, so a later macro sees the output of an earlier one.
 
 |           |                 |
 | --------: | :-------------- |
@@ -972,13 +940,13 @@ Each [macro](/docs/5.x/concepts/macros) callback (e.g. `schema`, `operation`) re
 
 ```typescript [Strip descriptions before printing]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginMcp } from '@kubb/plugin-mcp'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginMcp({
       macros: [
         {
           name: 'strip-descriptions',
@@ -994,13 +962,13 @@ export default defineConfig({
 
 ```typescript [Prefix every operationId]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginMcp } from '@kubb/plugin-mcp'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginMcp({
       macros: [
         {
           name: 'prefix-operation-id',
@@ -1018,11 +986,12 @@ export default defineConfig({
 
 ## Dependencies
 
-This plugin requires the following plugins to be installed:
+This plugin requires two plugins. Kubb runs them before `plugin-mcp` so the handlers can import the generated types and Zod schemas:
 
 - [`@kubb/plugin-ts`](/plugins/plugin-ts)
-- [`@kubb/plugin-client`](/plugins/plugin-client)
 - [`@kubb/plugin-zod`](/plugins/plugin-zod)
+
+[`@kubb/plugin-client`](/plugins/plugin-client) is optional. Add it to share one client across plugins, or leave it out and let `plugin-mcp` inject its own client into `.kubb/client.ts`.
 
 ## Example
 

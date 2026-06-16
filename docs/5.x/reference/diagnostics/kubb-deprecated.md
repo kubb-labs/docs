@@ -14,7 +14,7 @@ A referenced schema or operation is marked `deprecated`.
 
 ## What happened
 
-The OpenAPI adapter found a `deprecated: true` on a schema while walking the named component schemas. Kubb still generates it. This is informational, so it does not fail the build. The adapter reports it on every run.
+The OpenAPI adapter found `deprecated: true` on a schema while walking the named component schemas. Kubb still generates it, and the notice is informational, so it never fails the build. The adapter reports it on every run.
 
 ## How to fix it
 

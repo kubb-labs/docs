@@ -9,7 +9,7 @@ outline: [2, 3]
 
 Kubb, [orval](https://orval.dev), [HeyAPI](https://heyapi.dev), and [openapi-typescript](https://openapi-ts.dev) all generate code from OpenAPI specs. The table below maps each Kubb plugin and adapter to the equivalent support in every tool.
 
-This comparison strives to be as accurate and unbiased as possible. If you use any of these tools and believe a row could be improved, open an issue or pull request in [kubb-labs/kubb](https://github.com/kubb-labs/kubb/issues) with notes or evidence.
+We aim to keep this comparison accurate and fair. If you use one of these tools and think a row is wrong, open an issue or pull request in [kubb-labs/kubb](https://github.com/kubb-labs/kubb/issues) with notes or evidence.
 
 ## Plugin and feature coverage
 
@@ -45,19 +45,19 @@ This comparison strives to be as accurate and unbiased as possible. If you use a
 
 ### Plugin architecture
 
-Every output is a separate [plugin](/docs/5.x/concepts/plugins). You add only what you need. All plugins run against a shared [AST](/docs/5.x/concepts/ast), so the spec is parsed once and naming stays consistent across every output.
+Every output is a separate [plugin](/docs/5.x/concepts/plugins), so you add only what you need. The plugins run against a shared [AST](/docs/5.x/concepts/ast), which means the spec is parsed once and naming stays consistent across every output.
 
 ### Custom adapters and parsers
 
-[Custom adapters](/docs/5.x/concepts/adapters) let you swap `adapterOas` for any input format: AsyncAPI, GraphQL, or JSON Schema. [Custom parsers](/docs/5.x/concepts/parsers) let you target any output language: Python, Kotlin, Rust, or other. Neither orval nor HeyAPI supports either. Because you can combine custom adapters, parsers, and plugins in one pipeline, Kubb covers a broader range of inputs and outputs.
+A [custom adapter](/docs/5.x/concepts/adapters) swaps `adapterOas` for another input format such as AsyncAPI, GraphQL, or JSON Schema. A [custom parser](/docs/5.x/concepts/parsers) targets another output language such as Python, Kotlin, or Rust. Neither orval nor HeyAPI supports either. Combine custom adapters, parsers, and plugins in one pipeline and Kubb reaches inputs and outputs the others cannot.
 
 ### Post-enforced plugins
 
-Plugins with `enforce: 'post'` run after all regular plugins finish, handling cross-cutting concerns like barrel files and manifests without modifying each plugin individually. [`@kubb/plugin-barrel`](/plugins/plugin-barrel) uses this mechanism.
+Plugins with `enforce: 'post'` run after every regular plugin finishes. They handle cross-cutting work like barrel files and manifests without touching each plugin individually. [`@kubb/plugin-barrel`](/plugins/plugin-barrel) works this way.
 
 ### Bundler integration
 
-[`unplugin-kubb`](/docs/5.x/integrations/) integrates generation into Vite, Rollup, Rolldown, Webpack, Rspack, esbuild, Farm, Nuxt, and Astro. HeyAPI ships a Vite-only plugin; orval has no bundler integration.
+[`unplugin-kubb`](/docs/5.x/integrations/) integrates generation into Vite, Rollup, Rolldown, Webpack, Rspack, esbuild, Farm, Nuxt, and Astro. HeyAPI ships a Vite-only plugin, and orval has no bundler integration.
 
 ## When not to use Kubb
 
