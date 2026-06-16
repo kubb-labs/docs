@@ -427,7 +427,7 @@ src/gen/
     └── GetStoreById.ts
 ```
 
-Pass `group.name` to customize the folder name, for example `name: ({ group }) => \`${group}Controller\``to keep the pre-v5`petController/` layout.
+Pass `group.name` to customize the folder name. For example, a `name` function that appends `Controller` to the group keeps the pre-v5 `petController/` layout.
 
 #### group.type
 
@@ -883,15 +883,16 @@ Each plugin ships with a default resolver:
 
 ### include
 
-Restricts generation to operations that match at least one entry in the list. Anything not matched is skipped.
+Restricts generation to operations and schemas that match at least one entry in the list. Anything not matched is skipped.
 
 Each entry filters by one of:
 
 - `tag`: the operation's first tag in the OpenAPI spec.
 - `operationId`: the operation's `operationId`.
-- `path`: the URL pattern, such as `'/pet/{petId}'`.
+- `path`: the URL path, such as `'/pet/{petId}'`.
 - `method`: the HTTP method, such as `'get'` or `'post'`.
-- `contentType`: the media type of the request body.
+- `contentType`: the request or response media type, such as `'application/json'`.
+- `schemaName`: the component schema name under `#/components/schemas`.
 
 `pattern` accepts either a string for an exact match or a `RegExp` for fuzzy matches.
 
@@ -902,7 +903,7 @@ Each entry filters by one of:
 
 ```typescript [Type definition]
 export type Include = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType'
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
   pattern: string | RegExp
 }
 ```
@@ -946,15 +947,16 @@ export default defineConfig({
 
 ### exclude
 
-Skips any operation that matches at least one entry in the list. It works as the opposite of `include`.
+Skips any operation or schema that matches at least one entry in the list. It works as the opposite of `include`.
 
 Each entry filters by one of:
 
 - `tag`: the operation's first tag.
 - `operationId`: the operation's `operationId`.
-- `path`: the URL pattern, such as `'/pet/{petId}'`.
+- `path`: the URL path, such as `'/pet/{petId}'`.
 - `method`: the HTTP method, such as `'get'` or `'post'`.
-- `contentType`: the media type of the request body.
+- `contentType`: the request or response media type, such as `'application/json'`.
+- `schemaName`: the component schema name under `#/components/schemas`.
 
 `pattern` accepts a plain string or a `RegExp`. When both `include` and `exclude` are set, `exclude` wins.
 
@@ -965,7 +967,7 @@ Each entry filters by one of:
 
 ```typescript [Type definition]
 export type Exclude = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType'
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
   pattern: string | RegExp
 }
 ```
@@ -1011,9 +1013,9 @@ export default defineConfig({
 
 Applies a different set of plugin options to operations that match a pattern. Use it when most of your API follows the global config but a handful of endpoints need different treatment.
 
-Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations.
+Each entry has the same `type` and `pattern` shape as `include` and `exclude`, plus an `options` object that overrides the plugin's options for matched operations. The `options` object accepts any plugin option except `override` itself, so the rules cannot nest.
 
-Entries are evaluated top to bottom. The first matching entry's `options` is merged onto the plugin defaults; later entries do not stack.
+Entries are evaluated top to bottom. The first matching entry's `options` is merged onto the plugin defaults. Later entries do not stack.
 
 |           |                   |
 | --------: | :---------------- |
@@ -1022,9 +1024,9 @@ Entries are evaluated top to bottom. The first matching entry's `options` is mer
 
 ```typescript [Type definition]
 export type Override = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType'
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
   pattern: string | RegExp
-  options: PluginOptions
+  options: Omit<Partial<Options>, 'override'>
 }
 ```
 

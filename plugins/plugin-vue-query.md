@@ -71,13 +71,15 @@ Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
-      output: { path: './types' },
+    pluginTs(),
+    pluginVueQuery({
+      output: { path: './hooks' },
     }),
   ],
 })
@@ -86,9 +88,9 @@ export default defineConfig({
 ```text [Resulting tree]
 src/
 └── gen/
-    └── types/
-        ├── Pet.ts
-        └── Store.ts
+    └── hooks/
+        ├── useGetPetByIdQuery.ts
+        └── useAddPetMutation.ts
 ```
 
 :::
@@ -114,17 +116,15 @@ How the plugin consolidates its generated code into files.
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
-      output: { path: 'types.ts', mode: 'file' },
-    }),
-    pluginClient({
-      output: { path: 'clients', mode: 'directory' },
+    pluginTs(),
+    pluginVueQuery({
+      output: { path: 'hooks', mode: 'directory' },
       group: { type: 'tag' },
     }),
   ],
@@ -134,12 +134,11 @@ export default defineConfig({
 ```text [Resulting tree]
 src/
 └── gen/
-    ├── types.ts
-    └── clients/
+    └── hooks/
         ├── pet/
-        │   └── getPetById.ts
+        │   └── useGetPetByIdQuery.ts
         └── store/
-            └── getInventory.ts
+            └── useGetInventoryQuery.ts
 ```
 
 :::
@@ -167,78 +166,87 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 ```typescript ['named' (default)]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginTs(),
+    pluginVueQuery({
       output: { barrel: { type: 'named' } },
     }),
   ],
 })
 ```
 
-```typescript [src/gen/types/index.ts]
-export { Pet, PetStatus } from './Pet'
-export { Store } from './Store'
+```typescript [src/gen/hooks/index.ts]
+export { useGetPetByIdQuery, getPetByIdQueryKey } from './useGetPetByIdQuery'
+export { useAddPetMutation } from './useAddPetMutation'
 ```
 
 ```typescript ['all']
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginTs(),
+    pluginVueQuery({
       output: { barrel: { type: 'all' } },
     }),
   ],
 })
 ```
 
-```typescript [src/gen/types/index.ts]
-export * from './Pet'
-export * from './Store'
+```typescript [src/gen/hooks/index.ts]
+export * from './useGetPetByIdQuery'
+export * from './useAddPetMutation'
 ```
 
 ```typescript [nested]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginTs(),
+    pluginVueQuery({
       output: { barrel: { type: 'named', nested: true } },
+      group: { type: 'tag' },
     }),
   ],
 })
 ```
 
 ```text [Generated tree]
-src/gen/types/
+src/gen/hooks/
 ├── index.ts          # re-exports ./pet and ./store
 ├── pet/
-│   ├── index.ts      # re-exports Pet, Store, ...
-│   └── Pet.ts
+│   ├── index.ts      # re-exports the pet composables
+│   └── useGetPetByIdQuery.ts
 └── store/
     ├── index.ts
-    └── Store.ts
+    └── useGetInventoryQuery.ts
 ```
 
 ```typescript [false]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginTs(),
+    pluginVueQuery({
       output: { barrel: false },
     }),
   ],
@@ -268,12 +276,14 @@ Pass a string for a static banner. Pass a function to compute the banner from ea
 ```typescript [Static banner]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginTs(),
+    pluginVueQuery({
       output: {
         banner: '/* eslint-disable */\n// @ts-nocheck',
       },
@@ -285,21 +295,21 @@ export default defineConfig({
 ```typescript [Generated file]
 /* eslint-disable */
 // @ts-nocheck
-export type Pet = {
-  id: number
-  name: string
-}
+import { useQuery } from '@tanstack/vue-query'
+// ... rest of the generated composable
 ```
 
 ```typescript [Dynamic banner]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginTs(),
+    pluginVueQuery({
       output: {
         banner: (node) => `// Source: ${node.path}\n// Generated at ${new Date().toISOString()}`,
       },
@@ -326,12 +336,14 @@ Pass a string for a static footer, or a function that receives the file's `RootN
 ```typescript [Re-enable lint after a banner disable]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginTs(),
+    pluginVueQuery({
       output: {
         banner: '/* eslint-disable */',
         footer: '/* eslint-enable */',
@@ -364,12 +376,14 @@ Allows the plugin to overwrite hand-written files that share a name with a gener
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginTs(),
+    pluginVueQuery({
       output: { override: true },
     }),
   ],
@@ -399,12 +413,14 @@ Without `group`, every file lands in the plugin's `output.path` folder. With `gr
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginTs(),
+    pluginVueQuery({
       group: { type: 'tag' },
     }),
   ],
@@ -416,13 +432,13 @@ export default defineConfig({
 With the configuration above, the generator emits one folder per tag, named after the camelCased tag:
 
 ```text
-src/gen/
+src/gen/hooks/
 ├── pet/
-│   ├── AddPet.ts
-│   └── GetPet.ts
+│   ├── useAddPetMutation.ts
+│   └── useGetPetByIdQuery.ts
 └── store/
-    ├── CreateStore.ts
-    └── GetStoreById.ts
+    ├── usePlaceOrderMutation.ts
+    └── useGetInventoryQuery.ts
 ```
 
 Pass `group.name` to customize the folder name, for example `name: ({ group }) => \`${group}Controller\``to keep the pre-v5`petController/` layout.
@@ -457,10 +473,20 @@ HTTP client used inside every generated composable. Each composable calls into t
 
 Mirrors a subset of `pluginClient` options. Set these here when the Vue composables need different client behavior than the rest of your app.
 
-|           |                                                                                         |
-| --------: | :-------------------------------------------------------------------------------------- |
-|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, bundle?, paramsCasing? }` |
-| Required: | `false`                                                                                 |
+|           |                                                                                          |
+| --------: | :--------------------------------------------------------------------------------------- |
+|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, bundle?, paramsCasing? }`  |
+| Required: | `false`                                                                                  |
+
+#### client.client
+
+HTTP client that the generated composables call. `'axios'` imports from `@kubb/plugin-client/clients/axios` and needs `axios` at runtime. `'fetch'` imports from `@kubb/plugin-client/clients/fetch` and uses the global `fetch`. Set `client.importPath` to point at a custom module instead, in which case `client.client` is ignored.
+
+|           |                      |
+| --------: | :------------------- |
+|     Type: | `'axios' \| 'fetch'` |
+| Required: | `false`              |
+|  Default: | `'axios'`            |
 
 #### client.importPath
 
@@ -522,14 +548,16 @@ export default client
 
 ```typescript [Wire up a custom client]
 import { defineConfig } from 'kubb'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginClient({
-      importPath: './src/client.ts',
+    pluginTs(),
+    pluginVueQuery({
+      client: { importPath: './src/client.ts' },
     }),
   ],
 })
@@ -632,14 +660,16 @@ Set this when the generated client should point at a different environment (stag
 
 ```typescript [Override the spec's server URL]
 import { defineConfig } from 'kubb'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginClient({
-      baseURL: 'https://petstore.swagger.io/v2',
+    pluginTs(),
+    pluginVueQuery({
+      client: { baseURL: 'https://petstore.swagger.io/v2' },
     }),
   ],
 })
@@ -681,21 +711,31 @@ Copies the HTTP client runtime into the generated output, so the consuming app d
 
 ```typescript [Bundle the runtime]
 import { defineConfig } from 'kubb'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginClient({
-      client: 'fetch',
-      bundle: true,
+    pluginTs(),
+    pluginVueQuery({
+      client: { client: 'fetch', bundle: true },
     }),
   ],
 })
 ```
 
 :::
+
+#### client.paramsCasing
+
+Casing applied to path, query, and header parameters inside the generated client. Set it on `client` to match the top-level `paramsCasing` option, so the composable and the client agree on parameter names.
+
+|           |               |
+| --------: | :------------ |
+|     Type: | `'camelcase'` |
+| Required: | `false`       |
 
 ### paramsType
 
@@ -847,8 +887,8 @@ With `coercion` enabled in `@kubb/plugin-zod`, request-side parsing also normali
 
 ```typescript [Validate responses with Zod]
 import { defineConfig } from 'kubb'
-import { pluginClient } from '@kubb/plugin-client'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 import { pluginZod } from '@kubb/plugin-zod'
 
 export default defineConfig({
@@ -857,7 +897,7 @@ export default defineConfig({
   plugins: [
     pluginTs(),
     pluginZod(),
-    pluginClient({
+    pluginVueQuery({
       parser: 'zod',
     }),
   ],
@@ -866,8 +906,8 @@ export default defineConfig({
 
 ```typescript [Validate both request and response with Zod]
 import { defineConfig } from 'kubb'
-import { pluginClient } from '@kubb/plugin-client'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 import { pluginZod } from '@kubb/plugin-zod'
 
 export default defineConfig({
@@ -876,7 +916,7 @@ export default defineConfig({
   plugins: [
     pluginTs(),
     pluginZod(),
-    pluginClient({
+    pluginVueQuery({
       parser: { request: 'zod', response: 'zod' },
     }),
   ],
@@ -899,15 +939,15 @@ Enables `useInfiniteQuery` composables for cursor- or page-based pagination. Pas
 type Infinite =
   | {
       /** Query-param key used as the page cursor. Defaults to `'id'`. */
-      queryParam: string
-      /** @deprecated Use `nextParam` / `previousParam` instead. */
-      cursorParam?: string
+      queryParam?: string
+      /** @deprecated Use `nextParam` and `previousParam` instead. */
+      cursorParam?: string | null
       /** Path to the next-page cursor in the response. Dot or array form. */
-      nextParam?: string | string[]
+      nextParam?: string | string[] | null
       /** Path to the previous-page cursor in the response. Dot or array form. */
-      previousParam?: string | string[]
+      previousParam?: string | string[] | null
       /** Value of `pageParam` for the first page. Defaults to `0`. */
-      initialPageParam: unknown
+      initialPageParam?: unknown
     }
   | false
 ```
@@ -937,30 +977,30 @@ Initial value for `pageParam` on the first fetch.
 > [!WARNING]
 > `cursorParam` is deprecated. Use `nextParam` and `previousParam` for finer pagination control.
 
-Path to the cursor field on the response. Leave undefined when the cursor is not known.
+Path to the cursor field on the response. Leave it unset when the cursor is not known.
 
-|           |                       |
-| --------: | :-------------------- |
-|     Type: | `string \| undefined` |
-| Required: | `false`               |
+|           |                  |
+| --------: | :--------------- |
+|     Type: | `string \| null` |
+| Required: | `false`          |
 
 #### infinite.nextParam
 
 Path to the next-page cursor on the response. Supports dot notation (`'pagination.next.id'`) or array form (`['pagination', 'next', 'id']`).
 
-|           |                                   |
-| --------: | :-------------------------------- |
-|     Type: | `string \| string[] \| undefined` |
-| Required: | `false`                           |
+|           |                              |
+| --------: | :--------------------------- |
+|     Type: | `string \| string[] \| null` |
+| Required: | `false`                      |
 
 #### infinite.previousParam
 
 Path to the previous-page cursor on the response. Supports dot notation (`'pagination.prev.id'`) or array form.
 
-|           |                                   |
-| --------: | :-------------------------------- |
-|     Type: | `string \| string[] \| undefined` |
-| Required: | `false`                           |
+|           |                              |
+| --------: | :--------------------------- |
+|     Type: | `string \| string[] \| null` |
+| Required: | `false`                      |
 
 ### queryKey
 
@@ -1110,13 +1150,15 @@ Defaults to `['get']`. Add other methods (for example `'head'`) only when your A
 
 ```typescript [Allow HEAD as a query method]
 import { defineConfig } from 'kubb'
-import { pluginReactQuery } from '@kubb/plugin-react-query'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginReactQuery({
+    pluginTs(),
+    pluginVueQuery({
       query: { methods: ['get', 'head'] },
     }),
   ],
@@ -1169,13 +1211,15 @@ Defaults to `['post', 'put', 'patch', 'delete']`. Narrow the list if your API us
 
 ```typescript [Treat only POST and PUT as mutations]
 import { defineConfig } from 'kubb'
-import { pluginReactQuery } from '@kubb/plugin-react-query'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginReactQuery({
+    pluginTs(),
+    pluginVueQuery({
       mutation: { methods: ['post', 'put'] },
     }),
   ],
@@ -1237,12 +1281,14 @@ export type Include = {
 ```typescript [Only the pet tag]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginTs(),
+    pluginVueQuery({
       include: [{ type: 'tag', pattern: 'pet' }],
     }),
   ],
@@ -1252,12 +1298,14 @@ export default defineConfig({
 ```typescript [Only GET operations under /pet]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginTs(),
+    pluginVueQuery({
       include: [
         { type: 'method', pattern: 'get' },
         { type: 'path', pattern: /^\/pet/ },
@@ -1300,12 +1348,14 @@ export type Exclude = {
 ```typescript [Skip everything under the store tag]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginTs(),
+    pluginVueQuery({
       exclude: [{ type: 'tag', pattern: 'store' }],
     }),
   ],
@@ -1315,12 +1365,14 @@ export default defineConfig({
 ```typescript [Skip a specific operation and all delete methods]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginTs(),
+    pluginVueQuery({
       exclude: [
         { type: 'operationId', pattern: 'deletePet' },
         { type: 'method', pattern: 'delete' },
@@ -1355,21 +1407,23 @@ export type Override = {
 
 ::: code-group
 
-```typescript [Use a different enum style for the user tag]
+```typescript [Use object params for the user tag only]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
-      enumType: 'asConst',
+    pluginTs(),
+    pluginVueQuery({
+      paramsType: 'inline',
       override: [
         {
           type: 'tag',
           pattern: 'user',
-          options: { enumType: 'literal' },
+          options: { paramsType: 'object' },
         },
       ],
     }),
@@ -1413,10 +1467,9 @@ A list of [macros](/docs/5.x/concepts/macros) applied to operation nodes before 
 
 ## Dependencies
 
-This plugin requires the following plugins to be installed:
+This plugin depends on [`@kubb/plugin-ts`](/plugins/plugin-ts), so add it to the plugins list. The composables call an HTTP client from `@kubb/plugin-client`, which the plugin imports or bundles for you, so a separate `@kubb/plugin-client` entry is optional.
 
-- [`@kubb/plugin-ts`](/plugins/plugin-ts)
-- [`@kubb/plugin-client`](/plugins/plugin-client)
+Set `parser` to `'zod'` and the plugin also depends on [`@kubb/plugin-zod`](/plugins/plugin-zod), which then has to be in the plugins list too.
 
 ## Example
 

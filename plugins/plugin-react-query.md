@@ -431,25 +431,26 @@ Pass `group.name` to customize the folder name, for example `name: ({ group }) =
 
 Property used to assign each operation to a group. Required whenever `group` is set.
 
-Today only `'tag'` is supported: Kubb reads the first tag on the operation (`operation.getTags().at(0)?.name`) and uses it as the group key. Operations without a tag are placed in a default group.
+- `'tag'` reads the first tag on the operation and uses it as the group key. Operations without a tag land in a default group.
+- `'path'` uses the first segment of the operation's URL, so `/pet/findByStatus` groups under `pet`.
 
-|           |         |
-| --------: | :------ |
-|     Type: | `'tag'` |
-| Required: | `true`  |
+|           |                  |
+| --------: | :--------------- |
+|     Type: | `'tag' \| 'path'` |
+| Required: | `true`           |
 
 > [!NOTE]
 > `Required: true*` is conditional. It is only required when the parent `group` option is used, and `group` itself stays optional.
 
 #### group.name
 
-Function that builds the folder/identifier name from a group key (the operation's first tag).
+Function that builds the folder name from a group key. The default camelCases the tag for `tag` groups and takes the first path segment for `path` groups.
 
-|           |                                     |
-| --------: | :---------------------------------- |
-|     Type: | `(context: GroupContext) => string` |
-| Required: | `false`                             |
-|  Default: | `(ctx) => \`${ctx.group}\``         |
+|           |                                          |
+| --------: | :--------------------------------------- |
+|     Type: | `(context: { group: string }) => string` |
+| Required: | `false`                                  |
+|  Default: | `(ctx) => camelCase(ctx.group)`          |
 
 ### client
 
@@ -459,8 +460,8 @@ Mirrors a subset of `pluginClient` options. Set these here when the React Query 
 
 |           |                                                                          |
 | --------: | :----------------------------------------------------------------------- |
-|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, bundle? }` |
-| Required: | `false`                                                                  |
+|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, bundle?, paramsCasing? }` |
+| Required: | `false`                                                                                 |
 
 #### client.importPath
 
@@ -899,15 +900,15 @@ Enables `useInfiniteQuery` hooks for cursor- or page-based pagination. Pass an o
 type Infinite =
   | {
       /** Query-param key used as the page cursor. Defaults to `'id'`. */
-      queryParam: string
+      queryParam?: string
       /** @deprecated Use `nextParam` / `previousParam` instead. */
-      cursorParam?: string
+      cursorParam?: string | null
       /** Path to the next-page cursor in the response. Dot or array form. */
-      nextParam?: string | string[]
+      nextParam?: string | string[] | null
       /** Path to the previous-page cursor in the response. Dot or array form. */
-      previousParam?: string | string[]
+      previousParam?: string | string[] | null
       /** Value of `pageParam` for the first page. Defaults to `0`. */
-      initialPageParam: unknown
+      initialPageParam?: unknown
     }
   | false
 ```
@@ -959,41 +960,45 @@ Initial value for `pageParam` on the first fetch.
 #### infinite.cursorParam
 
 > [!WARNING]
-> **Deprecated.** `cursorParam` is deprecated. Use `nextParam` and `previousParam` for richer pagination control.
+> `cursorParam` is deprecated. Use `nextParam` and `previousParam` for finer pagination control.
 
-Path to the cursor field on the response. Leave undefined when the cursor is not known.
+Path to the cursor field on the response. Leave it `null` when the cursor is not known.
 
-|           |                       |
-| --------: | :-------------------- |
-|     Type: | `string \| undefined` |
-| Required: | `false`               |
+|           |                  |
+| --------: | :--------------- |
+|     Type: | `string \| null` |
+| Required: | `false`          |
+|  Default: | `null`           |
 
 #### infinite.nextParam
 
 Path to the next-page cursor on the response. Supports dot notation (`'pagination.next.id'`) or array form (`['pagination', 'next', 'id']`).
 
-|           |                                   |
-| --------: | :-------------------------------- |
-|     Type: | `string \| string[] \| undefined` |
-| Required: | `false`                           |
+|           |                              |
+| --------: | :--------------------------- |
+|     Type: | `string \| string[] \| null` |
+| Required: | `false`                      |
+|  Default: | `null`                       |
 
 #### infinite.previousParam
 
 Path to the previous-page cursor on the response. Supports dot notation (`'pagination.prev.id'`) or array form (`['pagination', 'prev', 'id']`).
 
-|           |                                   |
-| --------: | :-------------------------------- |
-|     Type: | `string \| string[] \| undefined` |
-| Required: | `false`                           |
+|           |                              |
+| --------: | :--------------------------- |
+|     Type: | `string \| string[] \| null` |
+| Required: | `false`                      |
+|  Default: | `null`                       |
 
 ### query
 
-Configures the query hooks. Pass `false` to skip generating hooks entirely and only emit `queryOptions(...)` helpers, which is handy when you want to call `useQuery` yourself in app code.
+Configures the query hooks. The plugin generates them by default. Pass `false` to skip the hooks and emit only `queryOptions(...)` helpers, which is handy when you want to call `useQuery` yourself in app code.
 
 |           |         |
 | --------: | :------ |
 |     Type: | `Query` |
 | Required: | `false` |
+|  Default: | `{}`    |
 
 ```typescript [Query type]
 type Query =
@@ -1047,17 +1052,14 @@ Module specifier used in the `import { useQuery } from '...'` statement at the t
 
 ### queryKey
 
-Builds the `queryKey` for each generated hook. Use this to add a version namespace, swap to operation IDs, or shape keys to match an existing `queryClient.invalidateQueries` strategy.
+Builds the `queryKey` for each generated hook. Use this to add a version namespace, key off the operation ID, or match an existing `queryClient.invalidateQueries` strategy.
 
-The callback receives:
+The callback receives a `node` and the active `casing`. `node` is the operation's AST node, so it exposes `operationId`, `tags`, `method`, `path`, `parameters`, and `requestBody`. `casing` is `'camelcase'` when `paramsCasing` is set, otherwise `undefined`. Return the array of values that make up the key.
 
-- `operation`: the OpenAPI operation (`getTags()`, `getOperationId()`, ...).
-- `schemas`: operation schemas including `pathParams`, `queryParams`, `request`, `response`.
-
-|           |                                                                             |
-| --------: | :-------------------------------------------------------------------------- |
-|     Type: | `(props: { operation: Operation; schemas: OperationSchemas }) => unknown[]` |
-| Required: | `false`                                                                     |
+|           |                                                                       |
+| --------: | :-------------------------------------------------------------------- |
+|     Type: | `(props: { node: OperationNode; casing?: 'camelcase' }) => unknown[]` |
+| Required: | `false`                                                               |
 
 > [!WARNING]
 > String values are inlined verbatim into generated code. Wrap any string you want emitted as a literal in `JSON.stringify(...)`.
@@ -1075,9 +1077,9 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginReactQuery({
-      queryKey: ({ operation, schemas }) => {
-        const tags = operation.getTags().map((tag) => JSON.stringify(tag.name))
-        const pathParams = schemas.pathParams?.keys ?? []
+      queryKey: ({ node }) => {
+        const tags = node.tags.map((tag) => JSON.stringify(tag))
+        const pathParams = node.parameters.filter((param) => param.in === 'path').map((param) => param.name)
         return [...tags, ...pathParams]
       },
     }),
@@ -1089,36 +1091,9 @@ export default defineConfig({
 export const getUserByNameQueryKey = ({ username }: { username: GetUserByNamePathParams['username'] }) => ['user', username] as const
 ```
 
-#### Extend the default transformer
-
-Prepend a version prefix to the default query key:
-
-```typescript
-import { defineConfig } from 'kubb'
-import { pluginReactQuery } from '@kubb/plugin-react-query'
-import { QueryKey } from '@kubb/plugin-react-query/components'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginReactQuery({
-      queryKey: (props) => {
-        const defaultKeys = QueryKey.getTransformer(props)
-        return [JSON.stringify('v5'), ...defaultKeys]
-      },
-    }),
-  ],
-})
-```
-
-```typescript
-export const findPetsByTagsQueryKey = (params?: FindPetsByTagsQueryParams) => ['v5', { url: '/pet/findByTags' }, ...(params ? [params] : [])] as const
-```
-
 #### Key from operationId
 
-Use the operationId as the only key, which keeps the key as small as it can be.
+Use the operation ID as the only key to keep the key as small as possible.
 
 ```typescript
 import { defineConfig } from 'kubb'
@@ -1129,15 +1104,15 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginReactQuery({
-      queryKey: ({ operation }) => [JSON.stringify(operation.getOperationId())],
+      queryKey: ({ node }) => [JSON.stringify(node.operationId)],
     }),
   ],
 })
 ```
 
-#### Conditional keys based on params
+#### Add a version prefix
 
-Include query params in the key only when they are present:
+Prepend a fixed version segment in front of the path:
 
 ```typescript
 import { defineConfig } from 'kubb'
@@ -1148,27 +1123,19 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginReactQuery({
-      queryKey: ({ operation, schemas }) => {
-        const keys: unknown[] = [JSON.stringify(operation.getOperationId())]
-
-        if (schemas.pathParams?.keys) {
-          keys.push(...schemas.pathParams.keys)
-        }
-
-        if (schemas.queryParams?.name) {
-          keys.push('...(params ? [params] : [])')
-        }
-
-        return keys
-      },
+      queryKey: ({ node }) => [JSON.stringify('v5'), JSON.stringify(node.path)],
     }),
   ],
 })
+```
+
+```typescript
+export const findPetsByTagsQueryKey = (params?: FindPetsByTagsQueryParams) => ['v5', '/pet/findByTags'] as const
 ```
 
 ### suspense
 
-Adds `useSuspenseQuery` hooks alongside the regular `useQuery` ones. Pass an empty object (`{}`) to enable. Omit it or set it to `false` to skip.
+Adds `useSuspenseQuery` hooks alongside the regular `useQuery` ones. The plugin generates these hooks by default. Set `suspense` to `false` to skip them.
 
 Suspense queries throw promises while loading and require a `<Suspense>` boundary in the React tree. TanStack Query v5+ only.
 
@@ -1176,15 +1143,17 @@ Suspense queries throw promises while loading and require a `<Suspense>` boundar
 | --------: | :---------------- |
 |     Type: | `object \| false` |
 | Required: | `false`           |
+|  Default: | `{}`              |
 
 ### mutation
 
-Configures mutation hooks. Set to `false` to skip mutation generation entirely.
+Configures mutation hooks. The plugin generates them by default. Set to `false` to skip mutation generation entirely.
 
 |           |            |
 | --------: | :--------- |
 |     Type: | `Mutation` |
 | Required: | `false`    |
+|  Default: | `{}`       |
 
 ```typescript [Mutation type]
 type Mutation =
@@ -1238,12 +1207,12 @@ Module specifier used in the `import { useMutation } from '...'` statement at th
 
 ### mutationKey
 
-Builds the `mutationKey` for each mutation hook. Useful when you batch invalidations or read mutation state via `useMutationState`.
+Builds the `mutationKey` for each mutation hook. Useful when you batch invalidations or read mutation state via `useMutationState`. The callback receives the same `{ node, casing }` props as `queryKey`.
 
-|           |                                                                             |
-| --------: | :-------------------------------------------------------------------------- |
-|     Type: | `(props: { operation: Operation; schemas: OperationSchemas }) => unknown[]` |
-| Required: | `false`                                                                     |
+|           |                                                                       |
+| --------: | :-------------------------------------------------------------------- |
+|     Type: | `(props: { node: OperationNode; casing?: 'camelcase' }) => unknown[]` |
+| Required: | `false`                                                               |
 
 > [!WARNING]
 > String values are inlined verbatim into generated code. Wrap literal strings in `JSON.stringify(...)`.
@@ -1266,7 +1235,7 @@ type CustomOptions = {
 }
 ```
 
-#### Centralised cache invalidation
+#### Centralized cache invalidation
 
 ```typescript [src/useCustomHookOptions.ts]
 import { useQueryClient, type QueryClient } from '@tanstack/react-query'
@@ -1333,7 +1302,7 @@ export function useCustomHookOptions<T extends keyof HookOptions>({ hookName }: 
 
 #### customOptions.importPath
 
-Module specifier of your custom-options hook. Imported as `import ${name} from '${importPath}'`. Use a relative path from the generated file or a bare specifier.
+Module specifier of your custom-options hook. The generated code imports it as a named import, `import { ${name} } from '${importPath}'`. Use a relative path from the generated file or a bare specifier.
 
 |           |          |
 | --------: | :------- |
@@ -1342,7 +1311,7 @@ Module specifier of your custom-options hook. Imported as `import ${name} from '
 
 #### customOptions.name
 
-Exported function name of your custom-options hook. Imported as `import ${name} from '${importPath}'`.
+Exported function name of your custom-options hook. The generated code imports it as a named import, `import { ${name} } from '${importPath}'`, so your module must export this name.
 
 |           |                          |
 | --------: | :----------------------- |
@@ -1499,21 +1468,20 @@ export type Override = {
 
 ::: code-group
 
-```typescript [Use a different enum style for the user tag]
+```typescript [Skip query hooks for the user tag]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginReactQuery } from '@kubb/plugin-react-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
-      enumType: 'asConst',
+    pluginReactQuery({
       override: [
         {
           type: 'tag',
           pattern: 'user',
-          options: { enumType: 'literal' },
+          options: { query: false },
         },
       ],
     }),

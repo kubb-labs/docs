@@ -452,7 +452,7 @@ Function that builds the folder/identifier name from a group key (the operation'
 
 Path or module specifier of a custom client module. Generated code imports its HTTP runtime from here instead of `@kubb/plugin-client/clients/{client}`.
 
-Use this when you need to inject auth headers, add interceptors, change the base URL at runtime, or wrap a different HTTP library such as ky or ofetch. Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work.
+Use this when you need to inject auth headers, attach interceptors, or wrap a different HTTP library such as ky or ofetch. Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work. Setting `importPath` takes priority over `client` and turns off `bundle`, since the runtime now comes from your module.
 
 |           |          |
 | --------: | :------- |
@@ -523,15 +523,6 @@ export default defineConfig({
 
 :::
 
-#### When to use `importPath`
-
-Reach for a custom client when you need to:
-
-- Add an auth token to every request.
-- Plug in interceptors, retries, or logging.
-- Configure `baseURL` and headers from environment variables.
-- Wrap a library other than `axios`/`fetch`.
-
 #### Default behavior
 
 Without `importPath`:
@@ -541,11 +532,7 @@ Without `importPath`:
 
 #### Required exports
 
-The module pointed to by `importPath` must satisfy the same shape as the built-in client. At minimum:
-
-- A default export of the `client` function.
-- A `RequestConfig` type.
-- A `ResponseErrorConfig` type.
+The module pointed to by `importPath` must match the shape of the built-in client. At minimum it exports the `client` function as the default export, a `RequestConfig` type, and a `ResponseErrorConfig` type.
 
 When used together with a query plugin (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`), it must also export a `Client` type alias.
 
@@ -892,16 +879,16 @@ export default defineConfig({
 })
 ```
 
-```typescript [Generated Pet.ts (excerpt)]
-import client from '@kubb/plugin-client/clients/fetch'
+```typescript [Generated petClient.ts (excerpt)]
+import type { Client, RequestConfig } from './.kubb/client'
 import type { GetPetByIdPathParams, GetPetByIdQueryResponse } from '../../models/ts/pet/GetPetById'
-import type { RequestConfig } from '@kubb/plugin-client/clients/fetch'
+import { client, mergeConfig } from './.kubb/client'
 
-export class Pet {
-  static #client: typeof client = client
+export class PetClient {
+  static #config: Partial<RequestConfig> & { client?: Client } = {}
 
-  static async getPetById({ petId }: { petId: GetPetByIdPathParams['petId'] }, config: Partial<RequestConfig> & { client?: typeof client } = {}) {
-    const { client: request = this.#client, ...requestConfig } = config
+  static async getPetById({ petId }: { petId: GetPetByIdPathParams['petId'] }, config: Partial<RequestConfig> & { client?: Client } = {}) {
+    const { client: request = client, ...requestConfig } = mergeConfig(this.#config, config)
     const res = await request<GetPetByIdQueryResponse>({
       method: 'GET',
       url: `/pet/${petId}`,
@@ -913,9 +900,9 @@ export class Pet {
 ```
 
 ```typescript [usage.ts]
-import { Pet } from './gen/clients/Pet'
+import { PetClient } from './gen/clients/petClient'
 
-const pet = await Pet.getPetById({ petId: 1 })
+const pet = await PetClient.getPetById({ petId: 1 })
 ```
 
 ```typescript ['class']
@@ -937,20 +924,20 @@ export default defineConfig({
 })
 ```
 
-```typescript [Generated Pet.ts (excerpt)]
-import client from '@kubb/plugin-client/clients/fetch'
+```typescript [Generated petClient.ts (excerpt)]
+import type { Client, RequestConfig } from './.kubb/client'
 import type { GetPetByIdPathParams, GetPetByIdQueryResponse } from '../../models/ts/pet/GetPetById'
-import type { RequestConfig } from '@kubb/plugin-client/clients/fetch'
+import { client, mergeConfig } from './.kubb/client'
 
-export class Pet {
-  #client: typeof client
+export class PetClient {
+  #config: Partial<RequestConfig> & { client?: Client }
 
-  constructor(config: Partial<RequestConfig> & { client?: typeof client } = {}) {
-    this.#client = config.client || client
+  constructor(config: Partial<RequestConfig> & { client?: Client } = {}) {
+    this.#config = config
   }
 
-  async getPetById({ petId }: { petId: GetPetByIdPathParams['petId'] }, config: Partial<RequestConfig> & { client?: typeof client } = {}) {
-    const { client: request = this.#client, ...requestConfig } = config
+  async getPetById({ petId }: { petId: GetPetByIdPathParams['petId'] }, config: Partial<RequestConfig> & { client?: Client } = {}) {
+    const { client: request = client, ...requestConfig } = mergeConfig(this.#config, config)
     const res = await request<GetPetByIdQueryResponse>({
       method: 'GET',
       url: `/pet/${petId}`,
@@ -962,9 +949,9 @@ export class Pet {
 ```
 
 ```typescript [usage.ts]
-import { Pet } from './gen/clients/Pet'
+import { PetClient } from './gen/clients/petClient'
 
-const petClient = new Pet()
+const petClient = new PetClient()
 const pet = await petClient.getPetById({ petId: 1 })
 ```
 
@@ -1013,19 +1000,19 @@ export default defineConfig({
 
 ```typescript [Generated PetStoreClient.ts]
 import type { Client, RequestConfig } from './.kubb/client'
-import { pet } from './pet/pet'
-import { store } from './store/store'
-import { user } from './user/user'
+import { PetClient } from './pet/PetClient'
+import { StoreClient } from './store/StoreClient'
+import { UserClient } from './user/UserClient'
 
 export class PetStoreClient {
-  readonly pet: pet
-  readonly store: store
-  readonly user: user
+  readonly pet: PetClient
+  readonly store: StoreClient
+  readonly user: UserClient
 
   constructor(config: Partial<RequestConfig> & { client?: Client } = {}) {
-    this.pet = new pet(config)
-    this.store = new store(config)
-    this.user = new user(config)
+    this.pet = new PetClient(config)
+    this.store = new StoreClient(config)
+    this.user = new UserClient(config)
   }
 }
 ```
@@ -1047,7 +1034,7 @@ Copies the HTTP client runtime into the generated output, so the consuming app d
 
 - `false` (default): generated files import from `@kubb/plugin-client/clients/{client}`. Smaller diff, but the package must be a runtime dependency.
 - `true`: Kubb writes a `.kubb/client.ts` file with the client implementation. Generated code imports from that local file, and the project no longer pulls `@kubb/plugin-client` at runtime.
-- Setting `client.importPath` overrides both behaviors and uses your custom client instead.
+- Setting `importPath` overrides both behaviors and uses your custom client instead. `bundle` has no effect when `importPath` is set.
 
 |           |           |
 | --------: | :-------- |
@@ -1233,9 +1220,9 @@ export default defineConfig({
 
 ### override
 
-Applies a different set of plugin options to operations that match a pattern. Use this when most of your API should follow the global config, but a handful of endpoints need different treatment.
+Applies a different set of plugin options to operations that match a pattern. Use this when most of your API follows the global config, but a few endpoints need their own settings.
 
-Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations.
+Each entry has the same `type` and `pattern` shape as `include` and `exclude`, plus an `options` object that overrides the plugin's options for matched operations. The `options` object accepts any plugin-client option, such as `bundle`, `client`, or `dataReturnType`.
 
 Entries are evaluated top to bottom. The first matching entry's `options` is merged onto the plugin defaults, and later entries do not stack.
 
@@ -1254,21 +1241,21 @@ export type Override = {
 
 ::: code-group
 
-```typescript [Use a different enum style for the user tag]
+```typescript [Bundle the runtime only for the user tag]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginClient } from '@kubb/plugin-client'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
-      enumType: 'asConst',
+    pluginClient({
+      client: 'fetch',
       override: [
         {
           type: 'tag',
           pattern: 'user',
-          options: { enumType: 'literal' },
+          options: { bundle: true },
         },
       ],
     }),

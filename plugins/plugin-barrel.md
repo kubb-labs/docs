@@ -43,20 +43,22 @@ yarn add -D @kubb/plugin-barrel@beta
 
 ### barrel
 
-Re-export style used for every generated barrel file. Set via `output.barrel` in `defineConfig` (applies to all plugins and the root barrel) or per plugin via that plugin's own `output.barrel`. It is not an argument to the plugin itself.
+Sets the re-export style for generated barrel files. `pluginBarrel` takes no arguments, so you configure it through `output.barrel`. Set it on `defineConfig` to control the root barrel and supply the default every plugin inherits, or set it on an individual plugin to override that plugin's barrel.
 
-At the config level:
+The `type` field picks the export style. `{ type: 'all' }` writes `export * from '...'` for every generated file. `{ type: 'named' }` writes `export { Foo, Bar } from '...'` using each file's named exports. Setting `barrel` to `false` turns off barrel generation.
 
-- `{ type: 'all' }`: writes `export * from '...'` for every generated file.
-- `{ type: 'named' }`: writes `export { Foo, Bar } from '...'` from each file's named exports.
-- `false`: turns off barrel generation.
+A plugin's `output.barrel` also accepts `nested`. With `{ type: 'named', nested: true }` the plugin writes an `index.ts` in every subdirectory, and each one re-exports only what sits directly inside it. The root `output.barrel` has no `nested` field, so it always stays flat.
 
-At the plugin level you also get `nested`:
+Setting `barrel` to `false` on `defineConfig` disables only the root barrel. Each plugin still emits its own. Setting `barrel` to `false` on a plugin disables that plugin's barrel and removes its files from the root barrel.
 
-- `{ type: 'named', nested: true }`: generates a barrel for every subdirectory, re-exporting only direct children, so callers can import from any depth.
-- `false`: turns off the plugin's barrel and removes its files from the root barrel.
+The `{ type: 'named' }` default applies only when `pluginBarrel` is part of `config.plugins`.
 
-The `{ type: 'named' }` default kicks in only when `pluginBarrel` is part of `config.plugins`.
+| Field | Type | Default | Required |
+| --- | --- | --- | --- |
+| `type` | `'all' \| 'named'` | `'named'` | `true` (when `barrel` is an object) |
+| `nested` | `boolean` | `false` | `false` (plugin-level `output.barrel` only) |
+
+The whole value is `{ type: 'all' \| 'named', nested?: boolean } \| false` at the plugin level and `{ type: 'all' \| 'named' } \| false` at the config level.
 
 |           |                                                         |
 | --------: | :------------------------------------------------------ |
@@ -131,28 +133,32 @@ export * from './types/User'
 export * from './User'
 ```
 
-```typescript [{ type: 'named', nested: true }]
+```typescript [{ type: 'all', nested: true } (plugin level)]
 import { defineConfig } from 'kubb'
+import { pluginTs } from '@kubb/plugin-ts'
 
+// nested lives on a plugin's output.barrel, not on the root output.barrel.
 export default defineConfig({
   input: { path: './petStore.yaml' },
-  output: { path: './src/gen', barrel: { type: 'named', nested: true } },
-  plugins: [],
+  output: { path: './src/gen' },
+  plugins: [pluginTs({ output: { path: 'api', barrel: { type: 'all', nested: true } } })],
 })
 ```
 
 ```typescript [Generated output (chained structure)]
-// src/gen/index.ts (only exports directories)
-export * from './api'
-export * from './hooks'
-
-// src/gen/api/index.ts (exports files and subdirs)
+// src/gen/api/index.ts re-exports its files and subdirectories
 export * from './user'
 export * from './post'
 export * from './types'
 
-// src/gen/api/types/index.ts (exports files)
+// src/gen/api/types/index.ts re-exports its files
 export * from './User'
+
+// the root src/gen/index.ts still re-exports the plugin's files,
+// using the config-level default ({ type: 'named' })
+export { getUser, User } from './api/user'
+export { getPost, Post } from './api/post'
+export { User } from './api/types/User'
 ```
 
 ```typescript [Disable the barrel for a single plugin]

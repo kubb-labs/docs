@@ -40,7 +40,7 @@ yarn add -D @kubb/plugin-redoc@beta
 
 ### output
 
-Output location of the generated HTML file.
+Sets where the generated Redoc HTML file lands. The path resolves against the global `output.path` you set on `defineConfig`.
 
 |           |                         |
 | --------: | :---------------------- |
@@ -50,9 +50,9 @@ Output location of the generated HTML file.
 
 #### output.path
 
-File path of the generated HTML, relative to the global `output.path`.
+File path of the generated HTML, resolved relative to the global `output.path`. Unlike most plugins, this points at a single file rather than a directory.
 
-Use a `.html` extension. Unlike most plugins, this option points at a single file instead of a directory.
+End the path with a `.html` extension. If you leave the extension off, Kubb still writes the file and uses the path as the plugin output name.
 
 |           |               |
 | --------: | :------------ |
@@ -60,21 +60,18 @@ Use a `.html` extension. Unlike most plugins, this option points at a single fil
 | Required: | `true`        |
 |  Default: | `'docs.html'` |
 
-> [!TIP]
-> `output.path` sets where files go, `output.mode` sets how many. Use `'directory'` (the default) for one file per operation, optionally grouped into subdirectories with the `group` option. Use `'file'` to write everything into a single file.
-
 ::: code-group
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginRedoc } from '@kubb/plugin-redoc'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
-      output: { path: './types' },
+    pluginRedoc({
+      output: { path: 'docs.html' },
     }),
   ],
 })
@@ -83,9 +80,7 @@ export default defineConfig({
 ```text [Resulting tree]
 src/
 └── gen/
-    └── types/
-        ├── Pet.ts
-        └── Store.ts
+    └── docs.html
 ```
 
 :::

@@ -377,9 +377,9 @@ export default defineConfig({
 
 ### group
 
-Splits generated files into subfolders based on the operation's tag, so each tag in your OpenAPI spec gets its own directory.
+Splits the generated files into subfolders based on each operation's tag or path, so related mocks end up in the same directory.
 
-Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files are bucketed under `{output.path}/{groupName}/`, where `groupName` is derived from the operation's first tag.
+Without `group`, every file lands in the plugin's `output.path` folder. With `group`, the plugin writes each file under `{output.path}/{groupName}/`, where `groupName` comes from the operation's first tag or first path segment.
 
 |           |         |
 | --------: | :------ |
@@ -387,7 +387,7 @@ Without `group`, every file lands in the plugin's `output.path` folder. With `gr
 | Required: | `false` |
 
 > [!TIP]
-> Use `group` to mirror your API's domain structure (pet, store, user) in the generated code. Combine it with `output.barrel: { type: 'named', nested: true }` to get per-tag barrel files.
+> Use `group` to mirror your API's domain structure (pet, store, user) in the generated code. Combine it with `output.barrel: { type: 'named', nested: true }` to get per-group barrel files.
 >
 > `group` only applies to `output.mode: 'directory'` (the default), where each group becomes a folder. It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
 
@@ -395,13 +395,13 @@ Without `group`, every file lands in the plugin's `output.path` folder. With `gr
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginFaker } from '@kubb/plugin-faker'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginFaker({
       group: { type: 'tag' },
     }),
   ],
@@ -422,31 +422,34 @@ src/gen/
     └── GetStoreById.ts
 ```
 
-Pass `group.name` to customize the folder name, for example `name: ({ group }) => \`${group}Controller\``to keep the pre-v5`petController/` layout.
+Pass `group.name` to customize the folder name, for example `name: ({ group }) => \`${group}Controller\`` to keep the pre-v5 `petController/` layout.
 
 #### group.type
 
-Property used to assign each operation to a group. Required whenever `group` is set.
+Picks the property that assigns each operation to a group.
 
-Today only `'tag'` is supported: Kubb reads the first tag on the operation (`operation.getTags().at(0)?.name`) and uses it as the group key. Operations without a tag are placed in a default group.
+- `'tag'` reads the operation's first tag (`operation.getTags().at(0)?.name`) and uses it as the group key. Operations without a tag fall into a default group.
+- `'path'` uses the first segment of the operation's URL.
 
-|           |         |
-| --------: | :------ |
-|     Type: | `'tag'` |
-| Required: | `true`  |
+`group.type` is required whenever you set `group`, and `group` itself stays optional.
+
+|           |                  |
+| --------: | :--------------- |
+|     Type: | `'tag' \| 'path'` |
+| Required: | `true`\*         |
 
 > [!NOTE]
-> `Required: true*` is conditional. It applies only when the parent `group` option is used, and `group` itself stays optional.
+> `Required: true`\* is conditional. It applies only when you set the parent `group` option, which stays optional.
 
 #### group.name
 
-Function that builds the folder/identifier name from a group key (the operation's first tag).
+Builds the folder name from a group key, which is the operation's first tag or first path segment.
 
-|           |                                     |
-| --------: | :---------------------------------- |
-|     Type: | `(context: GroupContext) => string` |
-| Required: | `false`                             |
-|  Default: | `(ctx) => \`${ctx.group}\``         |
+|           |                                       |
+| --------: | :------------------------------------ |
+|     Type: | `(context: { group: string }) => string` |
+| Required: | `false`                               |
+|  Default: | camelCased tag or first path segment  |
 
 ### dateParser
 
@@ -626,13 +629,13 @@ export type Include = {
 
 ```typescript [Only the pet tag]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginFaker } from '@kubb/plugin-faker'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginFaker({
       include: [{ type: 'tag', pattern: 'pet' }],
     }),
   ],
@@ -641,13 +644,13 @@ export default defineConfig({
 
 ```typescript [Only GET operations under /pet]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginFaker } from '@kubb/plugin-faker'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginFaker({
       include: [
         { type: 'method', pattern: 'get' },
         { type: 'path', pattern: /^\/pet/ },
@@ -689,13 +692,13 @@ export type Exclude = {
 
 ```typescript [Skip everything under the store tag]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginFaker } from '@kubb/plugin-faker'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginFaker({
       exclude: [{ type: 'tag', pattern: 'store' }],
     }),
   ],
@@ -704,13 +707,13 @@ export default defineConfig({
 
 ```typescript [Skip a specific operation and all delete methods]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginFaker } from '@kubb/plugin-faker'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginFaker({
       exclude: [
         { type: 'operationId', pattern: 'deletePet' },
         { type: 'method', pattern: 'delete' },
@@ -745,21 +748,21 @@ export type Override = {
 
 ::: code-group
 
-```typescript [Use a different enum style for the user tag]
+```typescript [Use a different date parser for the user tag]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginFaker } from '@kubb/plugin-faker'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
-      enumType: 'asConst',
+    pluginFaker({
+      dateParser: 'faker',
       override: [
         {
           type: 'tag',
           pattern: 'user',
-          options: { enumType: 'literal' },
+          options: { dateParser: 'dayjs' },
         },
       ],
     }),

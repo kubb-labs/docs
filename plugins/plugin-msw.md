@@ -398,9 +398,9 @@ export const server = setupServer(...handlersGet, ...handlersPost)
 
 ### baseURL
 
-Base URL prepended to every request URL in the generated client. When omitted, the URL comes from the OpenAPI spec's `servers[0].url` (or whichever index the adapter is configured to read).
+Base URL prepended to every handler's request URL. When omitted, the URL comes from the adapter's server URL, usually the OpenAPI spec's `servers[0].url`.
 
-Set this when the generated client should point at a different environment (staging, production) than the one written in the spec.
+Set this when the handlers should match a different environment (staging, production) than the one written in the spec.
 
 |           |          |
 | --------: | :------- |
@@ -411,13 +411,15 @@ Set this when the generated client should point at a different environment (stag
 
 ```typescript [Override the spec's server URL]
 import { defineConfig } from 'kubb'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginMsw } from '@kubb/plugin-msw'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginClient({
+    pluginTs(),
+    pluginMsw({
       baseURL: 'https://petstore.swagger.io/v2',
     }),
   ],
@@ -428,9 +430,9 @@ export default defineConfig({
 
 ### group
 
-Splits generated files into subfolders based on the operation's tag, so each tag in your OpenAPI spec gets its own directory.
+Splits generated files into subfolders based on each operation's tag or path, so related handlers share a directory.
 
-Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files are bucketed under `{output.path}/{groupName}/`, where `groupName` is derived from the operation's first tag.
+Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files are bucketed under `{output.path}/{groupName}/`, where `groupName` comes from the operation's first tag or first path segment, depending on `group.type`.
 
 |           |         |
 | --------: | :------ |
@@ -473,38 +475,39 @@ src/gen/
     └── GetStoreById.ts
 ```
 
-Pass `group.name` to customize the folder name, for example `name: ({ group }) => \`${group}Controller\``to keep the pre-v5`petController/` layout.
+Pass `group.name` to customize the folder name. For example, `name: ({ group }) => \`${group}Controller\`` keeps the pre-v5 `petController/` layout.
 
 #### group.type
 
 Property used to assign each operation to a group. Required whenever `group` is set.
 
-Today only `'tag'` is supported: Kubb reads the first tag on the operation (`operation.getTags().at(0)?.name`) and uses it as the group key. Operations without a tag are placed in a default group.
+- `'tag'` reads the first tag on the operation (`operation.getTags().at(0)?.name`) and uses it as the group key. Operations without a tag fall back to a default group.
+- `'path'` uses the first segment of the operation's URL as the group key.
 
-|           |         |
-| --------: | :------ |
-|     Type: | `'tag'` |
-| Required: | `true`  |
+|           |                  |
+| --------: | :--------------- |
+|     Type: | `'tag' \| 'path'` |
+| Required: | `true`           |
 
 > [!NOTE]
 > `Required: true*` is conditional. It only applies when the parent `group` option is used, and `group` itself stays optional.
 
 #### group.name
 
-Function that builds the folder/identifier name from a group key (the operation's first tag).
+Function that builds the folder name from a group key. By default `'tag'` groups use the camelCased tag and `'path'` groups use the first path segment.
 
-|           |                                     |
-| --------: | :---------------------------------- |
-|     Type: | `(context: GroupContext) => string` |
-| Required: | `false`                             |
-|  Default: | `(ctx) => \`${ctx.group}\``         |
+|           |                                            |
+| --------: | :----------------------------------------- |
+|     Type: | `(context: { group: string }) => string`   |
+| Required: | `false`                                     |
+|  Default: | camelCased tag, or first path segment       |
 
 ### parser
 
 Source of the response body returned by each generated handler.
 
-- `'data'` (default): handlers return a typed empty/example payload, ready for you to fill in from tests.
-- `'faker'`: handlers return a value produced by `@kubb/plugin-faker`. Requires the Faker plugin in the plugins array.
+- `'data'` (default): handlers return a typed empty payload from `@kubb/plugin-ts`, ready for you to fill in from tests.
+- `'faker'`: handlers return a value produced by `@kubb/plugin-faker`. This needs `@kubb/plugin-faker` in the plugins array, and the plugin only depends on Faker when you choose this value.
 
 |           |                     |
 | --------: | :------------------ |
@@ -678,21 +681,25 @@ export type Override = {
 
 ::: code-group
 
-```typescript [Use a different enum style for the user tag]
+```typescript [Use Faker data for the user tag only]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginFaker } from '@kubb/plugin-faker'
+import { pluginMsw } from '@kubb/plugin-msw'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
-      enumType: 'asConst',
+    pluginTs(),
+    pluginFaker(),
+    pluginMsw({
+      parser: 'data',
       override: [
         {
           type: 'tag',
           pattern: 'user',
-          options: { enumType: 'literal' },
+          options: { parser: 'faker' },
         },
       ],
     }),
@@ -827,10 +834,9 @@ export default defineConfig({
 
 ## Dependencies
 
-This plugin requires the following plugins to be installed:
+This plugin always depends on [`@kubb/plugin-ts`](/plugins/plugin-ts), so keep `pluginTs()` in the plugins array.
 
-- [`@kubb/plugin-ts`](/plugins/plugin-ts)
-- [`@kubb/plugin-faker`](/plugins/plugin-faker)
+It depends on [`@kubb/plugin-faker`](/plugins/plugin-faker) only when you set `parser: 'faker'`. With the default `parser: 'data'`, Faker is not needed.
 
 ## Example
 

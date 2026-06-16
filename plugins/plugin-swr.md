@@ -12,7 +12,7 @@ id: plugin-swr
 
 # @kubb/plugin-swr
 
-Generate type-safe SWR hooks from your OpenAPI schema for data fetching, caching, and mutations.
+Generate type-safe SWR hooks from your OpenAPI schema. The plugin emits `useSWR` hooks for queries and `useSWRMutation` hooks for writes.
 
 ## Installation
 
@@ -158,7 +158,7 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 
 ### group
 
-Grouping combines files in a folder based on a specific `type`.
+Organize `output.mode: 'directory'` output into per-tag or per-path subdirectories.
 
 |           |         |
 | --------: | :------ |
@@ -167,7 +167,7 @@ Grouping combines files in a folder based on a specific `type`.
 
 ### client
 
-Client configuration for HTTP request generation.
+Configure how the generated hooks call the HTTP client. This sets the client kind, the shape of the returned data, the base URL, whether to bundle the client, the import path, and parameter casing.
 
 |           |                                                                                         |
 | --------: | :-------------------------------------------------------------------------------------- |
@@ -176,7 +176,7 @@ Client configuration for HTTP request generation.
 
 ### paramsType
 
-Defines how parameters are passed to generated functions.
+Set how the generated hooks receive request parameters. `'inline'` spreads each parameter as its own argument. `'object'` groups them into a single argument.
 
 |           |                        |
 | --------: | :--------------------- |
@@ -186,7 +186,7 @@ Defines how parameters are passed to generated functions.
 
 ### paramsCasing
 
-Transform parameter names to a specific casing format.
+Apply a casing convention to parameter names. Set `'camelcase'` to rename parameters to camelCase. Leave it unset to keep the names from the OpenAPI document.
 
 |           |               |
 | --------: | :------------ |
@@ -195,7 +195,7 @@ Transform parameter names to a specific casing format.
 
 ### pathParamsType
 
-Defines how pathParams are passed to generated functions.
+Set how the generated hooks receive path parameters. `'inline'` spreads each path parameter as its own argument. `'object'` groups them into a single argument. When `paramsType` is `'object'`, path parameters default to `'object'` as well.
 
 |           |                        |
 | --------: | :--------------------- |
@@ -205,10 +205,7 @@ Defines how pathParams are passed to generated functions.
 
 ### parser
 
-Runtime validator applied to the response body before it is returned.
-
-- `false` (default) skips validation and casts the response to the generated type.
-- `'zod'` pipes the response through the Zod schema from `@kubb/plugin-zod`.
+Validate the response body before the hook returns it. `false` skips validation and casts the response to the generated type. `'zod'` runs the response through the matching Zod schema from `@kubb/plugin-zod`, which adds that plugin as a dependency.
 
 |           |                  |
 | --------: | :--------------- |
@@ -218,35 +215,34 @@ Runtime validator applied to the response body before it is returned.
 
 ### query
 
-Override some `useSWR` behaviors. Pass `false` to disable query hook generation.
+Configure the generated `useSWR` hooks. Pass an object to change the HTTP methods or the import path. Pass `false` to skip query hook generation.
 
-|           |         |
-| --------: | :------ |
-|     Type: | `Query` |
-| Required: | `false` |
+|           |                        |
+| --------: | :--------------------- |
+|     Type: | `Partial<Query> \| false` |
+| Required: | `false`                |
+|  Default: | `{ methods: ['get'], importPath: 'swr' }` |
 
 ```typescript [Query]
-type Query =
-  | {
-      methods: Array<HttpMethod>
-      importPath?: string
-    }
-  | false
+type Query = {
+  methods?: Array<string>
+  importPath?: string
+}
 ```
 
 #### query.methods
 
-Define which HttpMethods can be used for queries.
+List the HTTP methods that produce query hooks.
 
-|           |                     |
-| --------: | :------------------ |
-|     Type: | `Array<HttpMethod>` |
-| Required: | `false`             |
-|  Default: | `['get']`           |
+|           |           |
+| --------: | :-------- |
+|     Type: | `Array<string>` |
+| Required: | `false`   |
+|  Default: | `['get']` |
 
 #### query.importPath
 
-Path to the `useSWR` import.
+Set the module that `useSWR` is imported from. The plugin emits `import useSWR from '${importPath}'`. The value accepts relative and absolute paths and is used as written, with relative paths resolved against the generated file.
 
 |           |          |
 | --------: | :------- |
@@ -256,44 +252,43 @@ Path to the `useSWR` import.
 
 ### queryKey
 
-Customize the queryKey that will be used for the query.
+Build the SWR key used by each query hook. Pass a function that receives the operation and its schemas and returns the key array. The plugin uses its built-in transformer when this is unset.
 
-|           |                                                                             |
-| --------: | :-------------------------------------------------------------------------- |
-|     Type: | `(props: { operation: Operation; schemas: OperationSchemas }) => unknown[]` |
-| Required: | `false`                                                                     |
+|           |             |
+| --------: | :---------- |
+|     Type: | `Transformer` |
+| Required: | `false`     |
 
 ### mutation
 
-Override some `useSWRMutation` behaviors. Pass `false` to disable mutation hook generation.
+Configure the generated `useSWRMutation` hooks. Pass an object to change the HTTP methods or the import path. Pass `false` to skip mutation hook generation.
 
-|           |            |
-| --------: | :--------- |
-|     Type: | `Mutation` |
-| Required: | `false`    |
+|           |                           |
+| --------: | :------------------------ |
+|     Type: | `Partial<Mutation> \| false` |
+| Required: | `false`                   |
+|  Default: | `{ methods: ['post', 'put', 'patch', 'delete'], importPath: 'swr/mutation' }` |
 
 ```typescript [Mutation]
-type Mutation =
-  | {
-      methods: Array<HttpMethod>
-      importPath?: string
-    }
-  | false
+type Mutation = {
+  methods?: Array<string>
+  importPath?: string
+}
 ```
 
 #### mutation.methods
 
-Define which HttpMethods can be used for mutations.
+List the HTTP methods that produce mutation hooks.
 
 |           |                                      |
 | --------: | :----------------------------------- |
-|     Type: | `Array<HttpMethod>`                  |
+|     Type: | `Array<string>`                      |
 | Required: | `false`                              |
 |  Default: | `['post', 'put', 'patch', 'delete']` |
 
 #### mutation.importPath
 
-Path to the `useSWRMutation` import.
+Set the module that `useSWRMutation` is imported from. The plugin emits `import useSWRMutation from '${importPath}'`. The value accepts relative and absolute paths and is used as written, with relative paths resolved against the generated file.
 
 |           |                  |
 | --------: | :--------------- |
@@ -303,16 +298,16 @@ Path to the `useSWRMutation` import.
 
 ### mutationKey
 
-Customize the mutationKey.
+Build the SWR key used by each mutation hook. Pass a function that receives the operation and its schemas and returns the key array. The plugin uses its built-in transformer when this is unset.
 
-|           |                                                                             |
-| --------: | :-------------------------------------------------------------------------- |
-|     Type: | `(props: { operation: Operation; schemas: OperationSchemas }) => unknown[]` |
-| Required: | `false`                                                                     |
+|           |             |
+| --------: | :---------- |
+|     Type: | `Transformer` |
+| Required: | `false`     |
 
 ### include
 
-Array containing include parameters.
+Limit generation to the listed tags, operations, or paths.
 
 |           |                  |
 | --------: | :--------------- |
@@ -321,7 +316,7 @@ Array containing include parameters.
 
 ### exclude
 
-Array containing exclude parameters.
+Skip the listed tags, operations, or paths during generation.
 
 |           |                  |
 | --------: | :--------------- |
@@ -330,7 +325,7 @@ Array containing exclude parameters.
 
 ### override
 
-Array containing override parameters.
+Apply different options to specific tags, operations, or paths.
 
 |           |                   |
 | --------: | :---------------- |
@@ -339,7 +334,7 @@ Array containing override parameters.
 
 ### generators
 
-Define additional generators next to the built-in generators.
+Add custom generators that run alongside the built-in query and mutation generators.
 
 |           |                               |
 | --------: | :---------------------------- |
@@ -348,7 +343,7 @@ Define additional generators next to the built-in generators.
 
 ### resolver
 
-Override naming conventions for function names and types.
+Override the naming for generated function names and types. Pass the methods you want to change. The plugin keeps its defaults for the rest.
 
 |           |                                                |
 | --------: | :--------------------------------------------- |
@@ -357,7 +352,7 @@ Override naming conventions for function names and types.
 
 ### macros
 
-A list of [macros](/docs/5.x/concepts/macros) that rewrite generated nodes before printing.
+Pass a list of [macros](/docs/5.x/concepts/macros) that rewrite generated nodes before they are printed.
 
 |           |                 |
 | --------: | :-------------- |

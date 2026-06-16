@@ -38,6 +38,9 @@ yarn add -D @kubb/plugin-zod@beta
 
 ## Options
 
+> [!NOTE]
+> Schema-shaping options such as `enum`, `dateType`, `integerType`, `unknownType`, `emptySchemaType`, `enumSuffix`, and `contentType` moved to [`@kubb/adapter-oas`](/adapters/adapter-oas) in v5. Set them with `adapterOas({ ... })` instead of on this plugin.
+
 ### output
 
 Where the generated Zod schemas are written and how they are exported.
@@ -575,33 +578,6 @@ export const petSchema = z.object({
 export type PetSchemaType = z.infer<typeof petSchema>
 ```
 
-### integerType
-
-|           |         |
-| --------: | :------ |
-| Required: | `false` |
-
-> [!WARNING]
-> Moved to [`adapterOas`](/adapters/adapter-oas#integerType). Use `adapterOas({ integerType })` instead.
-
-### unknownType
-
-|           |         |
-| --------: | :------ |
-| Required: | `false` |
-
-> [!WARNING]
-> Moved to [`adapterOas`](/adapters/adapter-oas#unknownType). Use `adapterOas({ unknownType })` instead.
-
-### emptySchemaType
-
-|           |         |
-| --------: | :------ |
-| Required: | `false` |
-
-> [!WARNING]
-> Moved to [`adapterOas`](/adapters/adapter-oas#emptySchemaType). Use `adapterOas({ emptySchemaType })` instead.
-
 ### coercion
 
 Wraps schemas in `z.coerce` so input is coerced to the expected type before validation. Useful for form data, query params, and any source where everything arrives as a string.
@@ -614,7 +590,7 @@ See [Coercion for primitives](https://zod.dev/?id=coercion-for-primitives).
 
 |           |                                                                        |
 | --------: | :--------------------------------------------------------------------- |
-|     Type: | `boolean \| { dates?: boolean, strings?: boolean, numbers?: boolean }` |
+|     Type: | `boolean \| { dates?: boolean; strings?: boolean; numbers?: boolean }` |
 | Required: | `false`                                                                |
 |  Default: | `false`                                                                |
 
@@ -890,21 +866,21 @@ export type Override = {
 
 ::: code-group
 
-```typescript [Use a different enum style for the user tag]
+```typescript [Coerce input only for the user tag]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginZod } from '@kubb/plugin-zod'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
-      enumType: 'asConst',
+    pluginZod({
+      coercion: false,
       override: [
         {
           type: 'tag',
           pattern: 'user',
-          options: { enumType: 'literal' },
+          options: { coercion: true },
         },
       ],
     }),
