@@ -5,24 +5,20 @@ description: The KUBB_PLUGIN_INFO diagnostic carries an informational message a 
 outline: [2, 3]
 ---
 
-# KUBB_PLUGIN_INFO
+# KUBB_PLUGIN_INFO: Plugin info
 
-**Severity:** info · **Source:** Plugin
+Code: `KUBB_PLUGIN_INFO`
+Level: info
 
 A plugin reported an informational message through `ctx.info`. It is advisory and does not fail the
 run.
 
-```sh
-ℹ @kubb/plugin-client(KUBB_PLUGIN_INFO): Using fetch as the HTTP client.
-  docs: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-plugin-info
-```
-
-## What it means
+## What happened
 
 A plugin surfaced context about what it did. The message carries the plugin name and appears in the
 run summary and in `kubb generate --reporter json`.
 
-## How to fix
+## How to fix it
 
 Informational only. No action is required.
 
@@ -30,6 +26,13 @@ Informational only. No action is required.
 
 `ctx.info(message)` reports a `KUBB_PLUGIN_INFO`. For a stable code and a source pointer, build an
 `info` diagnostic and call `Diagnostics.report(...)` instead.
+
+## Example output
+
+```txt
+[KUBB_PLUGIN_INFO] @kubb/plugin-client: Using fetch as the HTTP client.
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-plugin-info
+```
 
 ## See also
 

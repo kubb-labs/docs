@@ -5,23 +5,25 @@ description: The KUBB_LINT_FAILED diagnostic fires when the linter pass over the
 outline: [2, 3]
 ---
 
-# KUBB_LINT_FAILED
+# KUBB_LINT_FAILED: Lint failed
 
-**Severity:** error · **Source:** CLI
+Code: `KUBB_LINT_FAILED`
+Level: error
 
 The linter pass over the generated files failed. Linting runs after generation, so the files are
 written, but the run is marked failed.
 
-```sh
-× (KUBB_LINT_FAILED): linter failed
-  docs: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-lint-failed
-```
-
-## What it means
+## What happened
 
 When `output.lint` is set, Kubb runs the configured linter (oxlint, biome, or eslint) over the
 output directory. A non-zero exit from the linter is reported here. It used to be swallowed. Now it
 shows in the summary and `--reporter json`, and fails the run.
+
+## How to fix it
+
+- Confirm the linter is installed and its config is valid.
+- Run it manually on the output to see the underlying error, for example `oxlint ./src/gen`.
+- Relax the rules for generated files, or remove `output.lint` if you do not want a linter pass.
 
 ## Common causes
 
@@ -29,11 +31,12 @@ shows in the summary and `--reporter json`, and fails the run.
 - The linter config is invalid or points at a missing file.
 - Lint rules that flag the generated code as errors.
 
-## How to fix
+## Example output
 
-- Confirm the linter is installed and its config is valid.
-- Run it manually on the output to see the underlying error, for example `oxlint ./src/gen`.
-- Relax the rules for generated files, or remove `output.lint` if you do not want a linter pass.
+```txt
+[KUBB_LINT_FAILED]: linter failed
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-lint-failed
+```
 
 ## See also
 

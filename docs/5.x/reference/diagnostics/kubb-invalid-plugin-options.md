@@ -5,21 +5,16 @@ description: The KUBB_INVALID_PLUGIN_OPTIONS diagnostic fires when a plugin is c
 outline: [2, 3]
 ---
 
-# KUBB_INVALID_PLUGIN_OPTIONS
+# KUBB_INVALID_PLUGIN_OPTIONS: Invalid plugin options
 
-**Severity:** error · **Source:** Configuration
+Code: `KUBB_INVALID_PLUGIN_OPTIONS`
+Level: error
 
 A plugin was given options that cannot be honored together. The main case is `output.mode: 'file'`
 paired with a `group` option: a single-file output has nothing to split into groups, so the build
 stops instead of producing something the options do not describe.
 
-```sh
-× plugin-client(KUBB_INVALID_PLUGIN_OPTIONS): Plugin "plugin-client" sets `output.mode: 'file'` but also configures a `group` option.
-  help: A single-file output has nothing to group. Remove the `group` option, or use `output.mode: 'directory'` to organize files into subdirectories.
-  docs: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-invalid-plugin-options
-```
-
-## What it means
+## What happened
 
 `output.mode: 'file'` writes everything into one file at `output.path`. The `group` option splits
 output into per-tag or per-path subdirectories, which only applies to `output.mode: 'directory'`.
@@ -27,11 +22,7 @@ Combining the two contradicts itself, so Kubb reports the configuration as inval
 rather than guessing a layout. The TypeScript types catch the same mistake at compile time, but a
 config written in JavaScript or cast to `any` only surfaces it here.
 
-## Common causes
-
-- A plugin sets `output: { mode: 'file' }` but also passes a sibling `group` option.
-
-## How to fix
+## How to fix it
 
 - Remove the `group` option when you want a single file.
 - Or switch to `output.mode: 'directory'` (the default, one file per operation or schema) and keep
@@ -51,6 +42,18 @@ export default defineConfig({
     }),
   ],
 })
+```
+
+## Common causes
+
+- A plugin sets `output: { mode: 'file' }` but also passes a sibling `group` option.
+
+## Example output
+
+```txt
+[KUBB_INVALID_PLUGIN_OPTIONS] plugin-client: Plugin "plugin-client" sets `output.mode: 'file'` but also configures a `group` option.
+  fix: A single-file output has nothing to group. Remove the `group` option, or use `output.mode: 'directory'` to organize files into subdirectories.
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-invalid-plugin-options
 ```
 
 ## See also

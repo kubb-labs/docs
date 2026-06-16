@@ -5,13 +5,14 @@ description: The KUBB_PERFORMANCE diagnostic records how long a plugin took, fee
 outline: [2, 3]
 ---
 
-# KUBB_PERFORMANCE
+# KUBB_PERFORMANCE: Performance
 
-**Severity:** info · **Source:** build
+Code: `KUBB_PERFORMANCE`
+Level: info
 
 Records a plugin's elapsed time. One is collected per plugin during a build.
 
-## What it means
+## What happened
 
 This is bookkeeping, not a problem. Kubb attaches a `KUBB_PERFORMANCE` record to every plugin with
 the milliseconds it took to generate. It never fails the build and is not printed in the terminal as
@@ -41,7 +42,7 @@ Duration  81ms
 Because the total is the sum of plugin timings, it counts generation only. The config load, the
 formatter, the linter, and post-generate hooks are not included.
 
-## How to fix
+## How to fix it
 
 Nothing to fix. To find a slow plugin, run `kubb generate --verbose` and read the timing bars, then
 review that plugin's options or the schemas it generates.
