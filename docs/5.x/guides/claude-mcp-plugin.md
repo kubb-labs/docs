@@ -14,7 +14,7 @@ outline: deep
 
 Kubb generates type-safe code from your OpenAPI spec: the API files, the Zod schemas, and the MCP server setup. Claude reads that MCP server and calls the endpoints as you chat with it. MCP is the wire between the two, carrying tool calls back and forth and keeping the conversation tied to your backend.
 
-Put together, you describe what you want and Claude runs the matching API calls for you.
+So you describe what you want and Claude runs the matching API calls for you.
 
 ```mermaid
 graph TD
@@ -237,7 +237,7 @@ First, point [Claude](https://claude.ai) at your [MCP](https://modelcontextproto
 
 ![Claude setup 1](/public/screenshots/claude-setup1.png)
 
-In the settings panel, open the `developer` section and click `edit config`. A window shows where the JSON file that lists all [MCP](https://modelcontextprotocol.io) servers lives.
+In the settings panel, open the `developer` section and click `edit config`. A window shows where the JSON file that lists your [MCP](https://modelcontextprotocol.io) servers lives.
 
 > [!TIP]
 > Manually navigate to:

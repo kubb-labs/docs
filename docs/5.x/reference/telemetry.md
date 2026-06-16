@@ -7,10 +7,10 @@ outline: [2, 3]
 
 # Telemetry
 
-The Kubb CLI collects anonymous usage data so the team can see which plugins and features people actually use, and spot performance bottlenecks.
+The Kubb CLI collects anonymous usage data so the team can see which plugins and features people use, and spot performance bottlenecks.
 
 > [!IMPORTANT]
-> Telemetry is enabled by default and can be disabled at any time using the `DO_NOT_TRACK` or `KUBB_DISABLE_TELEMETRY` environment variable.
+> Telemetry is enabled by default. Disable it any time with the `DO_NOT_TRACK` or `KUBB_DISABLE_TELEMETRY` environment variable.
 
 ## What is collected
 

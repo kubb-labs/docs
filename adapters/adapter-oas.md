@@ -179,7 +179,7 @@ export default defineConfig({
 How `discriminator` fields on `oneOf`/`anyOf` schemas are interpreted.
 
 - `'strict'` (default): child schemas stay exactly as written. The discriminator narrows types at the call site, but child shapes are not modified.
-- `'inherit'`: Kubb propagates the discriminator property with the appropriate literal value into each child schema, so each branch's `type` field is precisely typed.
+- `'inherit'`: Kubb propagates the discriminator property with its literal value into each child schema, so each branch's `type` field is precisely typed.
 
 |           |                         |
 | --------: | :---------------------- |
@@ -364,7 +364,7 @@ type Pet = {
 
 AST type used when a schema's type cannot be inferred from the spec (`additionalProperties: true`, missing `type`, etc.).
 
-Pick `'unknown'` to force callers to narrow before using the value. `'any'` is the loosest. `'void'` is rarely useful, but it matches some legacy APIs.
+Pick `'unknown'` to force callers to narrow before using the value. `'any'` is the loosest. `'void'` matches some legacy APIs.
 
 |           |                                |
 | --------: | :----------------------------- |

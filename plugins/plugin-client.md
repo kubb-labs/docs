@@ -253,7 +253,7 @@ export default defineConfig({
 
 Text prepended to every generated file. Useful for license headers, lint disables, or `@ts-nocheck` directives.
 
-Pass a string for a static banner. Pass a function to compute the banner from each file's `RootNode` (the AST root containing path, schema, and operation context).
+Pass a string for a static banner, or a function to compute the banner from each file's `RootNode` (the AST root containing path, schema, and operation context).
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -309,7 +309,7 @@ export default defineConfig({
 
 #### output.footer
 
-Text appended at the end of every generated file. It mirrors `banner`, so use it for closing comments, re-enabling lint rules, or marker lines.
+Text appended to every generated file. It mirrors `banner`, so use it for closing comments, re-enabling lint rules, or marker lines.
 
 Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
 
@@ -342,7 +342,7 @@ export default defineConfig({
 
 #### output.override
 
-Allows the plugin to overwrite hand-written files that share a name with a generated file.
+Lets the plugin overwrite hand-written files that share a name with a generated file.
 
 - `false` (default): Kubb skips a file if it already exists and is not marked as generated. This protects manual edits.
 - `true`: Kubb overwrites any file at the target path, including hand-written ones.
@@ -452,7 +452,7 @@ Function that builds the folder/identifier name from a group key (the operation'
 
 Path or module specifier of a custom client module. Generated code imports its HTTP runtime from here instead of `@kubb/plugin-client/clients/{client}`.
 
-Use this when you need to inject auth headers, attach interceptors, or wrap a different HTTP library such as ky or ofetch. Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work. Setting `importPath` takes priority over `client` and turns off `bundle`, since the runtime now comes from your module.
+Use this to inject auth headers, attach interceptors, or wrap a different HTTP library such as ky or ofetch. Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work. Setting `importPath` takes priority over `client` and turns off `bundle`, since the runtime now comes from your module.
 
 |           |          |
 | --------: | :------- |
@@ -548,7 +548,7 @@ import type { RequestConfig, ResponseErrorConfig } from '${client.importPath}'
 
 ### operations
 
-Emits an `operations.ts` file that re-exports every generated function grouped by HTTP method. Useful for building meta-tooling (route registries, API explorers) on top of the generated code.
+Emits an `operations.ts` file that re-exports every generated function grouped by HTTP method. Use it to build meta-tooling such as route registries or API explorers on top of the generated code.
 
 |           |           |
 | --------: | :-------- |
@@ -604,7 +604,7 @@ if (res.status === 405) {
 
 Controls whether the URL builder helpers (`get<Operation>Url`) are exported alongside each client function.
 
-- `'export'`: expose them through the barrel. Useful when you call the API through a different transport such as `navigator.sendBeacon` or server actions.
+- `'export'`: expose them through the barrel. Use this when you call the API through a different transport such as `navigator.sendBeacon` or server actions.
 - `false` (default): keep them private to the generated module.
 
 |           |                     |
@@ -757,7 +757,7 @@ Runtime validator applied to request and response data using schemas from `@kubb
 
 Requires `@kubb/plugin-zod` in the plugins list when either direction is set to `'zod'`.
 
-With `coercion` enabled in `@kubb/plugin-zod`, request-side parsing also normalizes types (`z.coerce.number()` converts a stringified number from a form field).
+With `coercion` enabled in `@kubb/plugin-zod`, request-side parsing also normalizes types. For example, `z.coerce.number()` converts a stringified number from a form field.
 
 |           |                                                           |
 | --------: | :-------------------------------------------------------- |
@@ -961,7 +961,7 @@ const pet = await petClient.getPetById({ petId: 1 })
 
 Generates a single SDK class that composes the per-tag client classes into one entry point. Setting `sdk` automatically enables `clientType: 'class'`, so you only need to add `group: { type: 'tag' }` to split the clients per tag.
 
-Use this when you want a single object to hand around your app (`api.pet.findById`, `api.user.login`) instead of importing each tag client separately.
+Use this when you want a single object to pass around your app (`api.pet.findById`, `api.user.login`) instead of importing each tag client separately.
 
 |           |                         |
 | --------: | :---------------------- |
@@ -1269,7 +1269,7 @@ export default defineConfig({
 
 Adds custom generators that run alongside the plugin's built-in generators. Each generator can emit additional files or post-process existing ones using the plugin's AST and options.
 
-Use this when you need output the plugin does not produce out of the box (a custom client wrapper, an extra index, a metadata file). For end-to-end guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
+Use this when you need output the plugin does not produce out of the box, such as a custom client wrapper, an extra index, or a metadata file. For full guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
 
 |           |                                  |
 | --------: | :------------------------------- |

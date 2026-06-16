@@ -167,7 +167,7 @@ Organize `output.mode: 'directory'` output into per-tag or per-path subdirectori
 
 ### client
 
-Configure how the generated hooks call the HTTP client. This sets the client kind, the shape of the returned data, the base URL, whether to bundle the client, the import path, and parameter casing.
+Configure how the generated hooks call the HTTP client. Set the client kind, the shape of the returned data, the base URL, whether to bundle the client, the import path, and parameter casing.
 
 |           |                                                                                         |
 | --------: | :-------------------------------------------------------------------------------------- |
@@ -242,7 +242,7 @@ List the HTTP methods that produce query hooks.
 
 #### query.importPath
 
-Set the module that `useSWR` is imported from. The plugin emits `import useSWR from '${importPath}'`. The value accepts relative and absolute paths and is used as written, with relative paths resolved against the generated file.
+Set the module that `useSWR` is imported from. The plugin emits `import useSWR from '${importPath}'`. The value accepts relative and absolute paths and is used as written. Relative paths resolve against the generated file.
 
 |           |          |
 | --------: | :------- |
@@ -288,7 +288,7 @@ List the HTTP methods that produce mutation hooks.
 
 #### mutation.importPath
 
-Set the module that `useSWRMutation` is imported from. The plugin emits `import useSWRMutation from '${importPath}'`. The value accepts relative and absolute paths and is used as written, with relative paths resolved against the generated file.
+Set the module that `useSWRMutation` is imported from. The plugin emits `import useSWRMutation from '${importPath}'`. The value accepts relative and absolute paths and is used as written. Relative paths resolve against the generated file.
 
 |           |                  |
 | --------: | :--------------- |

@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Core API
 
-`@kubb/core` is the low-level foundation of Kubb. It exports the primitives you need to embed Kubb in your own code, write a plugin, implement a storage backend, or extend the generation pipeline.
+`@kubb/core` is the foundation of Kubb. It exports the primitives you need to embed Kubb in your own code, write a plugin, build a storage backend, or extend the generation pipeline.
 
 ::: code-group
 
@@ -106,7 +106,7 @@ export default defineConfig(({ watch }) => ({
 
 Reach for `createKubb` when you need to orchestrate several builds, inspect diagnostics, or feed Kubb output into a larger toolchain. For a one-off build, chain the call directly: `await createKubb(config).build()`.
 
-`createKubb` takes a plain config object, the same shape `defineConfig` produces in `kubb.config.ts`. It is not a fluent builder, and that stays deliberate. A builder cannot live in a config file, and the config has to remain plain serializable data so Kubb can validate it against the shipped JSON schema.
+`createKubb` takes a plain config object, the same shape `defineConfig` produces in `kubb.config.ts`. It is not a fluent builder, and that is deliberate. A builder cannot live in a config file, and the config has to stay plain serializable data so Kubb can validate it against the shipped JSON schema.
 
 ```typescript twoslash
 // @module: esnext
@@ -506,7 +506,7 @@ Access the driver via `ctx.driver` inside generator context methods, or from the
 
 ### `AsyncEventEmitter`
 
-`AsyncEventEmitter` is the typed event emitter that drives every `KubbHooks` event. Listeners can be async, the emitter awaits them, and it propagates errors and filters events along the way.
+`AsyncEventEmitter` is the typed event emitter that drives every `KubbHooks` event. Listeners can be async, the emitter awaits them, and it propagates errors and filters events as it goes.
 
 `@kubb/core` re-exports `AsyncEventEmitter` from `@internals/utils`. Use it directly when you want to listen to events on a `Kubb` instance before calling `.build()`.
 

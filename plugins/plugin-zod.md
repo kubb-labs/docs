@@ -55,7 +55,7 @@ Where the generated Zod schemas are written and how they are exported.
 
 Folder where the plugin writes its generated code. The path is resolved against the global `output.path` set on `defineConfig`.
 
-Use a folder to keep each generator's output isolated, such as `'types'`, `'clients'`, or `'hooks'`. To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension (e.g. `'types.ts'`).
+Use a folder to keep each generator's output isolated, such as `'types'`, `'clients'`, or `'hooks'`. To put everything in one file, set `output.mode: 'file'` and point `path` at the target file with its extension (e.g. `'types.ts'`).
 
 |           |          |
 | --------: | :------- |
@@ -254,7 +254,7 @@ export default defineConfig({
 
 #### output.banner
 
-Text prepended to every generated file. Useful for license headers, lint disables, or `@ts-nocheck` directives.
+Text prepended to every generated file. Use it for license headers, lint disables, or `@ts-nocheck` directives.
 
 Pass a string for a static banner. Pass a function to compute the banner from each file's `RootNode` (the AST root containing path, schema, and operation context).
 
@@ -345,7 +345,7 @@ export default defineConfig({
 
 #### output.override
 
-Allows the plugin to overwrite hand-written files that share a name with a generated file.
+Lets the plugin overwrite hand-written files that share a name with a generated file.
 
 - `false` (default): Kubb skips a file if it already exists and is not marked as generated. This protects manual edits.
 - `true`: Kubb overwrites any file at the target path, including hand-written ones.
@@ -382,7 +382,7 @@ export default defineConfig({
 
 Overrides how the plugin builds names and paths for generated files and symbols. Use this to add prefixes, suffixes, or to swap the casing strategy without forking the plugin.
 
-Only override the methods you want to change. Anything you omit falls back to the plugin's default resolver. A method that returns `null` or `undefined` also falls back.
+Override only the methods you want to change. Anything you omit falls back to the plugin's default resolver. A method that returns `null` or `undefined` also falls back.
 
 Inside each method, `this` is bound to the full resolver, so you can call `this.default(name, 'function')` to delegate to the built-in implementation.
 
@@ -502,7 +502,7 @@ Function that builds the folder/identifier name from a group key (the operation'
 
 Module specifier used in the `import { z } from '...'` statement at the top of generated files.
 
-Defaults to `'zod'`, or `'zod/mini'` when the `mini` option is enabled. Set it explicitly to import from a custom path, for example when re-exporting Zod from your own module.
+Defaults to `'zod'`, or `'zod/mini'` when the `mini` option is enabled. Set it to import from a custom path, for example when re-exporting Zod from your own module.
 
 |           |                             |
 | --------: | :-------------------------- |
@@ -559,7 +559,7 @@ export const petSchema: ToZod<Pet> = z.object({
 
 Exports a `z.infer<typeof schema>` type alias next to every generated schema. The alias is the PascalCased schema name with a `SchemaType` suffix (`petSchema` → `PetSchemaType`), so the schema value and its inferred type never share an identifier, even for all-uppercase names like `SUV` or `URL`.
 
-Use this when you want one source of truth (the Zod schema) and a TypeScript type derived from it, instead of importing types separately from `@kubb/plugin-ts`.
+Use this when you want one source of truth (the Zod schema) with a TypeScript type derived from it, instead of importing types separately from `@kubb/plugin-ts`.
 
 |           |           |
 | --------: | :-------- |
@@ -580,7 +580,7 @@ export type PetSchemaType = z.infer<typeof petSchema>
 
 ### coercion
 
-Wraps schemas in `z.coerce` so input is coerced to the expected type before validation. Useful for form data, query params, and any source where everything arrives as a string.
+Wraps schemas in `z.coerce` so input is coerced to the expected type before validation. Use it for form data, query params, and any source where everything arrives as a string.
 
 - `true` coerces strings, numbers, and dates.
 - `false` (default) applies no coercion and validates strictly.
@@ -624,7 +624,7 @@ z.coerce.number()
 
 Emits an `operations.ts` file that groups schemas per operation: request body, query params, path params, and each response status.
 
-Use this to validate or describe whole operations in one place, which helps when wiring Kubb output into a server framework that takes Zod schemas per route.
+Use this to validate or describe whole operations in one place when wiring Kubb output into a server framework that takes Zod schemas per route.
 
 |           |           |
 | --------: | :-------- |
@@ -681,7 +681,7 @@ z.guid()
 
 ### mini
 
-Switches code generation to [Zod Mini](https://zod.dev/packages/mini). Schemas use the functional API (`z.optional(z.string())`) instead of the chainable one (`z.string().optional()`), which lets bundlers tree-shake unused validators.
+Switches code generation to [Zod Mini](https://zod.dev/packages/mini). Schemas use the functional API (`z.optional(z.string())`) instead of the chainable one (`z.string().optional()`), so bundlers can tree-shake unused validators.
 
 Setting `mini: true` also defaults `importPath` to `'zod/mini'`.
 
@@ -845,7 +845,7 @@ export default defineConfig({
 
 ### override
 
-Applies a different set of plugin options to operations that match a pattern. Use this when most of your API should follow the global config, but a handful of endpoints need different treatment.
+Applies a different set of plugin options to operations that match a pattern. Use this when most of your API follows the global config, but a handful of endpoints need different treatment.
 
 Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations.
 
@@ -892,7 +892,7 @@ export default defineConfig({
 
 ### generators
 
-Adds custom generators that run alongside the plugin's built-in generators. Each generator can emit additional files or post-process existing ones using the plugin's AST and options.
+Adds custom generators that run alongside the plugin's built-in generators. Each generator can emit extra files or post-process existing ones using the plugin's AST and options.
 
 Use this when you need output the plugin does not produce out of the box (a custom client wrapper, an extra index, a metadata file). For end-to-end guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
 
@@ -1025,7 +1025,7 @@ export default defineConfig({
 
 ### wrapOutput
 
-Lets you wrap the generated Zod schema string with extra calls before it is written to disk. The callback receives the raw schema output and the originating `SchemaNode`.
+Wraps the generated Zod schema string with extra calls before it is written to disk. The callback receives the raw schema output and the originating `SchemaNode`.
 
 Return a new string to replace the output, or return `undefined` to leave it untouched.
 

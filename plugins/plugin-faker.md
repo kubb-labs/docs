@@ -10,7 +10,7 @@ id: plugin-faker
 
 # @kubb/plugin-faker
 
-Generate a mock-data factory function for every schema in your OpenAPI spec, powered by [Faker.js](https://fakerjs.dev/). Call `createPet()` and you get a realistic `Pet` object, which lets you run tests, render Storybook stories, and work on local data without a running backend.
+Generate a mock-data factory function for every schema in your OpenAPI spec with [Faker.js](https://fakerjs.dev/). Call `createPet()` and you get a realistic `Pet` object, so you can run tests, render Storybook stories, and work on local data without a running backend.
 
 Pair with `@kubb/plugin-msw` to mock entire endpoints, or use the factories directly in your test suite.
 
@@ -52,7 +52,7 @@ Where the generated mock factories are written and how they are exported.
 
 Folder where the plugin writes its generated code. The path is resolved against the global `output.path` set on `defineConfig`.
 
-Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `'hooks'`). To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension (e.g. `'types.ts'`).
+Use a folder to keep each generator's output separate (`'types'`, `'clients'`, `'hooks'`). To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension (e.g. `'types.ts'`).
 
 |           |           |
 | --------: | :-------- |
@@ -389,7 +389,7 @@ Without `group`, every file lands in the plugin's `output.path` folder. With `gr
 > [!TIP]
 > Use `group` to mirror your API's domain structure (pet, store, user) in the generated code. Combine it with `output.barrel: { type: 'named', nested: true }` to get per-group barrel files.
 >
-> `group` only applies to `output.mode: 'directory'` (the default), where each group becomes a folder. It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
+> `group` only applies to `output.mode: 'directory'` (the default), where each group becomes a folder. It is not valid with `output.mode: 'file'`, since a single-file output has nothing to group.
 
 ::: code-group
 
@@ -455,7 +455,7 @@ Builds the folder name from a group key, which is the operation's first tag or f
 
 Library used to format `date`, `time`, and `datetime` fields that are represented as strings.
 
-Use a value other than `'faker'` when you already have a date library in the project and want consistent formatting across mocks and runtime. The plugin auto-imports the default export of the library you choose.
+Use a value other than `'faker'` when your project already has a date library and you want consistent formatting across mocks and runtime. The plugin auto-imports the default export of the library you choose.
 
 |           |                                            |
 | --------: | :----------------------------------------- |
@@ -727,7 +727,7 @@ export default defineConfig({
 
 ### override
 
-Applies a different set of plugin options to operations that match a pattern. Use this when most of your API should follow the global config, but a handful of endpoints need different treatment.
+Applies a different set of plugin options to operations that match a pattern. Use this when most of your API follows the global config but a few endpoints need different treatment.
 
 Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations.
 
@@ -774,7 +774,7 @@ export default defineConfig({
 
 ### generators
 
-Adds custom generators that run alongside the plugin's built-in generators. Each generator can emit additional files or post-process existing ones using the plugin's AST and options.
+Adds custom generators that run alongside the plugin's built-in ones. Each generator can emit extra files or post-process existing ones using the plugin's AST and options.
 
 Use this when you need output the plugin does not produce out of the box (a custom client wrapper, an extra index, a metadata file). For end-to-end guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
 
@@ -788,7 +788,7 @@ Use this when you need output the plugin does not produce out of the box (a cust
 
 ### resolver
 
-Customizes the naming of the generated factory helpers. A common reason to set it is to append `Mock` or `Factory` so the helpers do not clash with the imported types.
+Customizes the names of the generated factory helpers. Set it to append `Mock` or `Factory` so the helpers do not clash with the imported types.
 
 |           |                          |
 | --------: | :----------------------- |

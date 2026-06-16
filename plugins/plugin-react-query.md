@@ -13,7 +13,7 @@ id: plugin-react-query
 
 # @kubb/plugin-react-query
 
-Generate one [TanStack Query](https://tanstack.com/query) hook per OpenAPI operation. Queries become `useFooQuery`, `useFooSuspenseQuery`, or `useFooInfiniteQuery`, and mutations become `useFooMutation`. Each hook is fully typed. Query keys, input variables, response data, and error shape all come from the spec.
+Generate one [TanStack Query](https://tanstack.com/query) hook per OpenAPI operation. Queries become `useFooQuery`, `useFooSuspenseQuery`, or `useFooInfiniteQuery`, and mutations become `useFooMutation`. Each hook is typed. Query keys, input variables, response data, and error shape all come from the spec.
 
 Pairs with `@kubb/plugin-client` for the HTTP layer and `@kubb/plugin-ts` for types.
 
@@ -151,7 +151,7 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 - `{ type: 'named' }` re-exports each symbol by name. Best for tree-shaking and explicit imports.
 - `{ type: 'all' }` uses `export *`. Smaller barrel file, but exports everything.
 - `{ nested: true }` creates a barrel in every subdirectory, so callers can import from any depth.
-- `false` skips the barrel entirely. The plugin's files are also excluded from the root `index.ts`.
+- `false` skips the barrel. The plugin's files are also excluded from the root `index.ts`.
 
 |           |                                                         |
 | --------: | :------------------------------------------------------ |
@@ -254,7 +254,7 @@ export default defineConfig({
 
 #### output.banner
 
-Text prepended to every generated file. Useful for license headers, lint disables, or `@ts-nocheck` directives.
+Text prepended to every generated file. Use it for license headers, lint disables, or `@ts-nocheck` directives.
 
 Pass a string for a static banner. Pass a function to compute the banner from each file's `RootNode` (the AST root containing path, schema, and operation context).
 
@@ -345,7 +345,7 @@ export default defineConfig({
 
 #### output.override
 
-Allows the plugin to overwrite hand-written files that share a name with a generated file.
+Lets the plugin overwrite hand-written files that share a name with a generated file.
 
 - `false` (default): Kubb skips a file if it already exists and is not marked as generated. This protects manual edits.
 - `true`: Kubb overwrites any file at the target path, including hand-written ones.
@@ -382,7 +382,7 @@ export default defineConfig({
 
 Splits generated files into subfolders based on the operation's tag, so each tag in your OpenAPI spec gets its own directory.
 
-Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files are bucketed under `{output.path}/{groupName}/`, where `groupName` is derived from the operation's first tag.
+Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files go under `{output.path}/{groupName}/`, where `groupName` comes from the operation's first tag.
 
 |           |         |
 | --------: | :------ |
@@ -454,7 +454,7 @@ Function that builds the folder name from a group key. The default camelCases th
 
 ### client
 
-HTTP client used inside every generated hook. Each generated hook calls into this client to perform the actual request.
+HTTP client used inside every generated hook. Each hook calls into this client to perform the request.
 
 Mirrors a subset of `pluginClient` options. Set these here when the React Query hooks need different client behavior than the rest of your app (for example, a different base URL or full response objects).
 
@@ -467,7 +467,7 @@ Mirrors a subset of `pluginClient` options. Set these here when the React Query 
 
 Path or module specifier of a custom client module. Generated code imports its HTTP runtime from here instead of `@kubb/plugin-client/clients/{client}`.
 
-Use this when you need to inject auth headers, add interceptors, change the base URL at runtime, or wrap a different HTTP library (ky, ofetch, ...). Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work.
+Use this to inject auth headers, add interceptors, change the base URL at runtime, or wrap a different HTTP library (ky, ofetch, ...). Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work.
 
 |           |          |
 | --------: | :------- |
@@ -478,7 +478,7 @@ Use this when you need to inject auth headers, add interceptors, change the base
 > See the [custom client guide](https://kubb.dev/plugins/plugin-client#importpath) for a worked example.
 
 > [!IMPORTANT]
-> When used with query plugins (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`), generated hooks also import a `Client` type alias. Your module must export `Client`, `RequestConfig`, and `ResponseErrorConfig`, or TypeScript will fail the import.
+> When used with query plugins (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`), generated hooks also import a `Client` type alias. Your module must export `Client`, `RequestConfig`, and `ResponseErrorConfig`, or TypeScript fails the import.
 
 ```typescript [src/client.ts]
 import axios from 'axios'
@@ -540,7 +540,7 @@ export default defineConfig({
 
 ##### When to use `importPath`
 
-Reach for a custom client when you need to:
+Use a custom client when you need to:
 
 - Add an auth token to every request.
 - Plug in interceptors, retries, or logging.
@@ -620,9 +620,9 @@ if (res.status === 405) {
 
 #### client.baseURL
 
-Base URL prepended to every request URL in the generated client. When omitted, the URL comes from the OpenAPI spec's `servers[0].url` (or whichever index the adapter is configured to read).
+Base URL prepended to every request URL in the generated client. When omitted, the URL comes from the OpenAPI spec's `servers[0].url` (or whichever index the adapter reads).
 
-Set this when the generated client should point at a different environment (staging, production) than the one written in the spec.
+Set this when the generated client should point at a different environment (staging, production) than the one in the spec.
 
 |           |          |
 | --------: | :------- |
@@ -666,7 +666,7 @@ Style of the HTTP client that this plugin imports from `@kubb/plugin-client`.
 
 #### client.bundle
 
-Copies the HTTP client runtime into the generated output, so the consuming app does not need `@kubb/plugin-client` installed at runtime.
+Copies the HTTP client runtime into the generated output, so the consuming app does not need `@kubb/plugin-client` at runtime.
 
 - `false` (default) makes generated files import from `@kubb/plugin-client/clients/{client}`. Smaller diff, but the package must be a runtime dependency.
 - `true` makes Kubb write a `.kubb/client.ts` file with the client implementation. Generated code imports from that local file and the project no longer pulls `@kubb/plugin-client` at runtime.
@@ -749,7 +749,7 @@ await deletePet({ petId: 42, headers: { 'X-Api-Key': 'secret' } })
 
 ### paramsCasing
 
-Renames path, query, and header parameters in the generated client to the chosen casing. The HTTP request still uses the original names from the OpenAPI spec, and Kubb writes the mapping for you.
+Renames path, query, and header parameters in the generated client to the chosen casing. The HTTP request still uses the original names from the OpenAPI spec, and Kubb writes the mapping.
 
 - `'camelcase'` turns `pet_id` and `X-Api-Key` into `petId` and `xApiKey` in your TypeScript code. The runtime URL still uses `/pet/{pet_id}` and the header is still sent as `X-Api-Key`.
 
@@ -992,7 +992,7 @@ Path to the previous-page cursor on the response. Supports dot notation (`'pagin
 
 ### query
 
-Configures the query hooks. The plugin generates them by default. Pass `false` to skip the hooks and emit only `queryOptions(...)` helpers, which is handy when you want to call `useQuery` yourself in app code.
+Configures the query hooks. The plugin generates them by default. Pass `false` to skip the hooks and emit only `queryOptions(...)` helpers, useful when you want to call `useQuery` yourself in app code.
 
 |           |         |
 | --------: | :------ |
@@ -1054,7 +1054,7 @@ Module specifier used in the `import { useQuery } from '...'` statement at the t
 
 Builds the `queryKey` for each generated hook. Use this to add a version namespace, key off the operation ID, or match an existing `queryClient.invalidateQueries` strategy.
 
-The callback receives a `node` and the active `casing`. `node` is the operation's AST node, so it exposes `operationId`, `tags`, `method`, `path`, `parameters`, and `requestBody`. `casing` is `'camelcase'` when `paramsCasing` is set, otherwise `undefined`. Return the array of values that make up the key.
+The callback receives a `node` and the active `casing`. `node` is the operation's AST node, exposing `operationId`, `tags`, `method`, `path`, `parameters`, and `requestBody`. `casing` is `'camelcase'` when `paramsCasing` is set, otherwise `undefined`. Return the array of values that make up the key.
 
 |           |                                                                       |
 | --------: | :-------------------------------------------------------------------- |
@@ -1207,7 +1207,7 @@ Module specifier used in the `import { useMutation } from '...'` statement at th
 
 ### mutationKey
 
-Builds the `mutationKey` for each mutation hook. Useful when you batch invalidations or read mutation state via `useMutationState`. The callback receives the same `{ node, casing }` props as `queryKey`.
+Builds the `mutationKey` for each mutation hook. Use it when you batch invalidations or read mutation state via `useMutationState`. The callback receives the same `{ node, casing }` props as `queryKey`.
 
 |           |                                                                       |
 | --------: | :-------------------------------------------------------------------- |
@@ -1221,7 +1221,7 @@ Builds the `mutationKey` for each mutation hook. Useful when you batch invalidat
 
 Wires every generated hook through a user-supplied function that returns extra options (`onSuccess`, `onError`, `select`, ...). The plugin also emits a `HookOptions` type so your wrapper stays in sync with the generated hooks.
 
-Use this to centralize cache invalidation, error toasts, or analytics in one place instead of repeating them at every call site.
+Use this to centralize cache invalidation, error toasts, or analytics instead of repeating them at every call site.
 
 |           |                 |
 | --------: | :-------------- |
@@ -1447,7 +1447,7 @@ export default defineConfig({
 
 ### override
 
-Applies a different set of plugin options to operations that match a pattern. Use this when most of your API should follow the global config, but a handful of endpoints need different treatment.
+Applies a different set of plugin options to operations that match a pattern. Use this when most of your API follows the global config, but a handful of endpoints need different treatment.
 
 Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations.
 
@@ -1495,7 +1495,7 @@ export default defineConfig({
 
 Adds custom generators that run alongside the plugin's built-in generators. Each generator can emit additional files or post-process existing ones using the plugin's AST and options.
 
-Use this when you need output the plugin does not produce out of the box (a custom client wrapper, an extra index, a metadata file). For end-to-end guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
+Use this when you need output the plugin does not produce by default (a custom client wrapper, an extra index, a metadata file). For full guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
 
 |           |                                      |
 | --------: | :----------------------------------- |
@@ -1511,7 +1511,7 @@ Overrides how the plugin builds names and paths for generated files and symbols.
 
 Only override the methods you want to change. Anything you omit falls back to the plugin's default resolver. A method that returns `null` or `undefined` also falls back.
 
-Inside each method, `this` is bound to the full resolver, so you can call `this.default(name, 'function')` to delegate to the built-in implementation.
+Inside each method, `this` is bound to the full resolver, so you can call `this.default(name, 'function')` to delegate to the built-in version.
 
 |           |                                                              |
 | --------: | :----------------------------------------------------------- |

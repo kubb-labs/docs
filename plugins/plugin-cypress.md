@@ -52,7 +52,7 @@ Where the generated Cypress helpers are written and how they are exported.
 
 Folder where the plugin writes its generated code. The path is resolved against the global `output.path` set on `defineConfig`.
 
-Point `path` at a folder to keep each generator's output isolated, such as `'types'` or `'clients'`. To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension (e.g. `'types.ts'`).
+Point `path` at a folder to keep each generator's output isolated, such as `'types'` or `'clients'`. To put everything in one file, set `output.mode: 'file'` and point `path` at the target file with its extension (e.g. `'types.ts'`).
 
 |           |             |
 | --------: | :---------- |
@@ -263,7 +263,7 @@ export default defineConfig({
 
 Text prepended to every generated file. Useful for license headers, lint disables, or `@ts-nocheck` directives.
 
-Pass a string for a static banner. Pass a function to compute the banner from each file's `RootNode` (the AST root containing path, schema, and operation context).
+Pass a string for a static banner, or a function to compute the banner from each file's `RootNode` (the AST root containing path, schema, and operation context).
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -363,7 +363,7 @@ export default defineConfig({
 
 #### output.override
 
-Allows the plugin to overwrite hand-written files that share a name with a generated file.
+Lets the plugin overwrite hand-written files that share a name with a generated file.
 
 - `false` (default): Kubb skips a file if it already exists and is not marked as generated. This protects manual edits.
 - `true`: Kubb overwrites any file at the target path, including hand-written ones.
@@ -400,7 +400,7 @@ export default defineConfig({
 
 ### resolver
 
-Overrides how the plugin builds names and paths for generated files and symbols. Use this to add prefixes, suffixes, or to swap the casing strategy without forking the plugin.
+Overrides how the plugin builds names and paths for generated files and symbols. Use it to add prefixes, suffixes, or swap the casing strategy without forking the plugin.
 
 Only override the methods you want to change. Anything you omit falls back to the plugin's default resolver. A method that returns `null` or `undefined` also falls back.
 
@@ -612,7 +612,7 @@ showPetById(1).then((response) => {
 
 ### baseURL
 
-Base URL prepended to every request URL in the generated client. When omitted, the URL comes from the OpenAPI spec's `servers[0].url` (or whichever index the adapter is configured to read).
+Base URL prepended to every request URL in the generated client. When omitted, the URL comes from the OpenAPI spec's `servers[0].url` (or whichever index the adapter reads).
 
 Set this when the generated client should point at a different environment (staging, production) than the one written in the spec.
 
@@ -646,7 +646,7 @@ export default defineConfig({
 
 Splits generated files into subfolders based on the operation's tag or first path segment, so related helpers share a directory.
 
-Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files are bucketed under `{output.path}/{groupName}/`, where `groupName` comes from the operation's first tag or first path segment.
+Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files go under `{output.path}/{groupName}/`, where `groupName` comes from the operation's first tag or first path segment.
 
 |           |         |
 | --------: | :------ |
@@ -903,9 +903,9 @@ export default defineConfig({
 
 ### generators
 
-Adds custom generators that run alongside the plugin's built-in generators. Each generator can emit additional files or post-process existing ones using the plugin's AST and options.
+Adds custom generators that run alongside the plugin's built-in generators. Each generator can emit extra files or post-process existing ones using the plugin's AST and options.
 
-Use this when you need output the plugin does not produce out of the box (a custom client wrapper, an extra index, a metadata file). For end-to-end guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
+Use this when you need output the plugin does not produce out of the box (a custom client wrapper, an extra index, a metadata file). For guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
 
 |           |                                   |
 | --------: | :-------------------------------- |
@@ -919,7 +919,7 @@ Use this when you need output the plugin does not produce out of the box (a cust
 
 Rewrite AST nodes before they are printed to source code. Use this when you need to rewrite operation IDs, drop descriptions, or change schema metadata without forking the generator.
 
-Each [macro](/docs/5.x/concepts/macros) callback (e.g. `schema`, `operation`) receives the node and a context object. Return a new node to replace it, or return `undefined` to leave it untouched. Callbacks you omit keep the plugin's default behavior. Macros run in order, so a later macro sees the output of an earlier one.
+Each [macro](/docs/5.x/concepts/macros) callback (e.g. `schema`, `operation`) receives the node and a context object. Return a new node to replace it, or `undefined` to leave it untouched. Callbacks you omit keep the plugin's default behavior. Macros run in order, so a later macro sees the output of an earlier one.
 
 |           |                 |
 | --------: | :-------------- |

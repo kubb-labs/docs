@@ -57,7 +57,7 @@ Where the generated `.ts` files are written and how they are exported.
 
 Folder where the plugin writes its generated code. The path is resolved against the global `output.path` set on `defineConfig`.
 
-Point it at a folder to keep each generator's output isolated, such as `'types'` or `'clients'`. To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension, for example `'types.ts'`.
+Point it at a folder to keep each generator's output isolated, such as `'types'` or `'clients'`. To put everything in one file, set `output.mode: 'file'` and point `path` at the target file with its extension, for example `'types.ts'`.
 
 |           |           |
 | --------: | :-------- |
@@ -99,7 +99,7 @@ src/
 
 How the plugin consolidates its generated code into files.
 
-- `'directory'` writes one file per operation or schema under `output.path`. This is the default.
+- `'directory'` (default) writes one file per operation or schema under `output.path`.
 - `'file'` writes everything into a single file. The `output.path` must include the file extension (e.g. `'types.ts'`, `'models.py'`).
 
 |           |                         |
@@ -258,7 +258,7 @@ export default defineConfig({
 
 Text prepended to every generated file. Use it for license headers, lint disables, or `@ts-nocheck` directives.
 
-Pass a string for a static banner, or a function that computes the banner from each file's `RootNode` (the AST root that holds the path, schema, and operation context).
+Pass a string for a static banner, or a function that builds the banner from each file's `RootNode` (the AST root that holds the path, schema, and operation context).
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -347,7 +347,7 @@ export default defineConfig({
 
 #### output.override
 
-Allows the plugin to overwrite hand-written files that share a name with a generated file.
+Lets the plugin overwrite hand-written files that share a name with a generated file.
 
 - `false` (default): Kubb skips a file if it already exists and is not marked as generated. This protects manual edits.
 - `true`: Kubb overwrites any file at the target path, including hand-written ones.
@@ -433,7 +433,7 @@ Pass `group.name` to customize the folder name. For example, a `name` function t
 
 Property used to assign each operation to a group. Required whenever `group` is set.
 
-Today only `'tag'` is supported: Kubb reads the first tag on the operation (`operation.getTags().at(0)?.name`) and uses it as the group key. Operations without a tag are placed in a default group.
+Today only `'tag'` is supported. Kubb reads the first tag on the operation (`operation.getTags().at(0)?.name`) and uses it as the group key. Operations without a tag go in a default group.
 
 |           |         |
 | --------: | :------ |
@@ -614,7 +614,7 @@ export type PetType = (typeof petType)[keyof typeof petType]
 
 #### enum.keyCasing
 
-Casing applied to enum key names. By default the key is the raw value from the spec, so switch to a project convention when needed.
+Casing applied to enum key names. By default the key is the raw value from the spec. Switch to a project convention when needed.
 
 |           |                                                                                |
 | --------: | :----------------------------------------------------------------------------- |
@@ -817,7 +817,7 @@ Overrides how the plugin builds names and paths for generated files and symbols.
 
 Only override the methods you want to change. Anything you omit falls back to the plugin's default resolver. A method that returns `null` or `undefined` also falls back.
 
-Inside each method, `this` is bound to the full resolver, so you can call `this.default(name, 'function')` to delegate to the built-in implementation.
+Inside each method, `this` is bound to the full resolver, so you can call `this.default(name, 'function')` to fall back to the built-in implementation.
 
 |           |                                              |
 | --------: | :------------------------------------------- |
@@ -1060,7 +1060,7 @@ export default defineConfig({
 
 Adds custom generators that run alongside the plugin's built-in generators. Each generator can emit additional files or post-process existing ones using the plugin's AST and options.
 
-Use it when you need output the plugin does not produce out of the box, such as a custom client wrapper, an extra index, or a metadata file. For end-to-end guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
+Use it when you need output the plugin does not produce, such as a custom client wrapper, an extra index, or a metadata file. For more guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
 
 |           |                              |
 | --------: | :--------------------------- |
@@ -1134,7 +1134,7 @@ export default defineConfig({
 
 ### printer
 
-Replaces the TypeScript node handler for a specific schema type (e.g. `'integer'`, `'date'`, `'string'`). Each handler is a function that builds a TypeScript AST node for that schema type.
+Replaces the TypeScript node handler for a specific schema type (e.g. `'integer'`, `'date'`, `'string'`). Each handler builds a TypeScript AST node for that schema type.
 
 Use `this.transform` to recurse into nested schema nodes and `this.options` to read printer options.
 

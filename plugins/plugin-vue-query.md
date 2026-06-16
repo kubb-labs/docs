@@ -55,7 +55,7 @@ Where the generated composables are written and how they are exported.
 
 Folder where the plugin writes its generated code. The path is resolved against the global `output.path` set on `defineConfig`.
 
-Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `'hooks'`). To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension (e.g. `'types.ts'`).
+Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `'hooks'`). To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension (`'types.ts'`).
 
 |           |           |
 | --------: | :-------- |
@@ -262,9 +262,9 @@ export default defineConfig({
 
 #### output.banner
 
-Text prepended to every generated file. Useful for license headers, lint disables, or `@ts-nocheck` directives.
+Text prepended to every generated file. Use it for license headers, lint disables, or `@ts-nocheck` directives.
 
-Pass a string for a static banner. Pass a function to compute the banner from each file's `RootNode` (the AST root containing path, schema, and operation context).
+Pass a string for a static banner. Pass a function to compute the banner from each file's `RootNode`, the AST root containing path, schema, and operation context.
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -322,7 +322,7 @@ export default defineConfig({
 
 #### output.footer
 
-Text appended at the end of every generated file. This is the counterpart to `banner`. Use it for closing comments, re-enabling lint rules, or marker lines.
+Text appended to the end of every generated file, the counterpart to `banner`. Use it for closing comments, re-enabling lint rules, or marker lines.
 
 Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
 
@@ -357,7 +357,7 @@ export default defineConfig({
 
 #### output.override
 
-Allows the plugin to overwrite hand-written files that share a name with a generated file.
+Lets the plugin overwrite hand-written files that share a name with a generated file.
 
 - `false` (default): Kubb skips a file if it already exists and is not marked as generated. This protects manual edits.
 - `true`: Kubb overwrites any file at the target path, including hand-written ones.
@@ -447,7 +447,7 @@ Pass `group.name` to customize the folder name, for example `name: ({ group }) =
 
 Property used to assign each operation to a group. Required whenever `group` is set.
 
-Today only `'tag'` is supported: Kubb reads the first tag on the operation (`operation.getTags().at(0)?.name`) and uses it as the group key. Operations without a tag are placed in a default group.
+Today only `'tag'` is supported. Kubb reads the first tag on the operation (`operation.getTags().at(0)?.name`) and uses it as the group key. Operations without a tag go into a default group.
 
 |           |         |
 | --------: | :------ |
@@ -480,7 +480,7 @@ Mirrors a subset of `pluginClient` options. Set these here when the Vue composab
 
 #### client.client
 
-HTTP client that the generated composables call. `'axios'` imports from `@kubb/plugin-client/clients/axios` and needs `axios` at runtime. `'fetch'` imports from `@kubb/plugin-client/clients/fetch` and uses the global `fetch`. Set `client.importPath` to point at a custom module instead, in which case `client.client` is ignored.
+HTTP client that the generated composables call. `'axios'` imports from `@kubb/plugin-client/clients/axios` and needs `axios` at runtime. `'fetch'` imports from `@kubb/plugin-client/clients/fetch` and uses the global `fetch`. Set `client.importPath` to point at a custom module instead, which ignores `client.client`.
 
 |           |                      |
 | --------: | :------------------- |
@@ -492,7 +492,7 @@ HTTP client that the generated composables call. `'axios'` imports from `@kubb/p
 
 Path or module specifier of a custom client module. Generated code imports its HTTP runtime from here instead of `@kubb/plugin-client/clients/{client}`.
 
-Use this when you need to inject auth headers, add interceptors, change the base URL at runtime, or wrap a different HTTP library (ky, ofetch, ...). Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work.
+Use this to inject auth headers, add interceptors, change the base URL at runtime, or wrap a different HTTP library (ky, ofetch, ...). Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work.
 
 |           |          |
 | --------: | :------- |
@@ -567,7 +567,7 @@ export default defineConfig({
 
 ##### When to use `importPath`
 
-Reach for a custom client when you need to:
+Reach for a custom client to:
 
 - Add an auth token to every request.
 - Plug in interceptors, retries, or logging.
@@ -649,7 +649,7 @@ if (res.status === 405) {
 
 Base URL prepended to every request URL in the generated client. When omitted, the URL comes from the OpenAPI spec's `servers[0].url` (or whichever index the adapter is configured to read).
 
-Set this when the generated client should point at a different environment (staging, production) than the one written in the spec.
+Set this when the generated client should point at a different environment (staging, production) than the spec.
 
 |           |          |
 | --------: | :------- |
@@ -695,7 +695,7 @@ Style of the HTTP client that this plugin imports from `@kubb/plugin-client`.
 
 #### client.bundle
 
-Copies the HTTP client runtime into the generated output, so the consuming app does not need `@kubb/plugin-client` installed at runtime.
+Copies the HTTP client runtime into the generated output, so the consuming app does not need `@kubb/plugin-client` at runtime.
 
 - `false` (default): generated files import from `@kubb/plugin-client/clients/{client}`. Smaller diff, but the package must be a runtime dependency.
 - `true`: Kubb writes a `.kubb/client.ts` file with the client implementation. Generated code imports from that local file and the project no longer pulls `@kubb/plugin-client` at runtime.
@@ -743,6 +743,7 @@ How operation parameters (path, query, headers) are exposed in the generated fun
 
 - `'inline'` (default): each parameter is a separate positional argument. Compact for operations with one or two params.
 - `'object'`: every parameter is wrapped in a single object argument. Easier to read for operations with many params, and named at the call site.
+
 
 |           |                        |
 | --------: | :--------------------- |
@@ -1138,7 +1139,7 @@ type Query =
 
 HTTP methods treated as queries. Operations using one of these methods generate a `useQuery`-style hook (or `queryOptions` helper) instead of a mutation.
 
-Defaults to `['get']`. Add other methods (for example `'head'`) only when your API uses them for cache-friendly reads.
+Defaults to `['get']`. Add other methods (such as `'head'`) only when your API uses them for cache-friendly reads.
 
 |           |                     |
 | --------: | :------------------ |
@@ -1169,7 +1170,7 @@ export default defineConfig({
 
 #### query.importPath
 
-Module specifier used in the `import { useQuery } from '...'` statement at the top of every generated composable file. Useful for routing through your own wrapper.
+Module specifier used in the `import { useQuery } from '...'` statement at the top of every generated composable file. Use it to route through your own wrapper.
 
 |           |                         |
 | --------: | :---------------------- |
@@ -1252,7 +1253,7 @@ Builds the `mutationKey` for each mutation composable. Useful when you batch inv
 
 ### include
 
-Restricts generation to operations that match at least one entry in the list. Anything not matched is skipped.
+Restricts generation to operations that match at least one entry in the list. Kubb skips anything not matched.
 
 Each entry filters by one of:
 
@@ -1435,9 +1436,9 @@ export default defineConfig({
 
 ### generators
 
-Adds custom generators that run alongside the plugin's built-in generators. Each generator can emit additional files or post-process existing ones using the plugin's AST and options.
+Adds custom generators that run alongside the plugin's built-in generators. Each generator can emit extra files or post-process existing ones using the plugin's AST and options.
 
-Use this when you need output the plugin does not produce out of the box (a custom client wrapper, an extra index, a metadata file). For end-to-end guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
+Use this when you need output the plugin does not produce out of the box (a custom client wrapper, an extra index, a metadata file). For more, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
 
 |           |                                    |
 | --------: | :--------------------------------- |
@@ -1449,7 +1450,7 @@ Use this when you need output the plugin does not produce out of the box (a cust
 
 ### resolver
 
-Overrides naming and path resolution for the generated composables. Supply only the methods you want to change, and everything else falls back to the default resolver.
+Overrides naming and path resolution for the generated composables. Supply only the methods you want to change. The rest fall back to the default resolver.
 
 |           |                             |
 | --------: | :-------------------------- |
@@ -1469,7 +1470,7 @@ A list of [macros](/docs/5.x/concepts/macros) applied to operation nodes before 
 
 This plugin depends on [`@kubb/plugin-ts`](/plugins/plugin-ts), so add it to the plugins list. The composables call an HTTP client from `@kubb/plugin-client`, which the plugin imports or bundles for you, so a separate `@kubb/plugin-client` entry is optional.
 
-Set `parser` to `'zod'` and the plugin also depends on [`@kubb/plugin-zod`](/plugins/plugin-zod), which then has to be in the plugins list too.
+Set `parser` to `'zod'` and the plugin also depends on [`@kubb/plugin-zod`](/plugins/plugin-zod), which then has to be in the plugins list.
 
 ## Example
 

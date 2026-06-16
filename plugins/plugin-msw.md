@@ -52,7 +52,7 @@ Where the generated MSW handlers are written and how they are exported.
 
 Folder where the plugin writes its generated code. The path is resolved against the global `output.path` set on `defineConfig`.
 
-Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `'hooks'`). To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension (e.g. `'types.ts'`).
+Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `'hooks'`). To put everything in one file, set `output.mode: 'file'` and point `path` at the target file with its extension (e.g. `'types.ts'`).
 
 |           |              |
 | --------: | :----------- |
@@ -253,7 +253,7 @@ export default defineConfig({
 
 Text prepended to every generated file. Useful for license headers, lint disables, or `@ts-nocheck` directives.
 
-Pass a string for a static banner. Pass a function to compute the banner from each file's `RootNode` (the AST root containing path, schema, and operation context).
+Pass a string for a static banner, or a function to compute the banner from each file's `RootNode` (the AST root with path, schema, and operation context).
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -342,7 +342,7 @@ export default defineConfig({
 
 #### output.override
 
-Allows the plugin to overwrite hand-written files that share a name with a generated file.
+Lets the plugin overwrite hand-written files that share a name with a generated file.
 
 - `false` (default): Kubb skips a file if it already exists and is not marked as generated. This protects manual edits.
 - `true`: Kubb overwrites any file at the target path, including hand-written ones.
@@ -432,7 +432,7 @@ export default defineConfig({
 
 Splits generated files into subfolders based on each operation's tag or path, so related handlers share a directory.
 
-Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files are bucketed under `{output.path}/{groupName}/`, where `groupName` comes from the operation's first tag or first path segment, depending on `group.type`.
+Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files go under `{output.path}/{groupName}/`, where `groupName` comes from the operation's first tag or first path segment, depending on `group.type`.
 
 |           |         |
 | --------: | :------ |
@@ -507,7 +507,7 @@ Function that builds the folder name from a group key. By default `'tag'` groups
 Source of the response body returned by each generated handler.
 
 - `'data'` (default): handlers return a typed empty payload from `@kubb/plugin-ts`, ready for you to fill in from tests.
-- `'faker'`: handlers return a value produced by `@kubb/plugin-faker`. This needs `@kubb/plugin-faker` in the plugins array, and the plugin only depends on Faker when you choose this value.
+- `'faker'`: handlers return a value produced by `@kubb/plugin-faker`. This needs `@kubb/plugin-faker` in the plugins array, and the plugin depends on Faker only when you choose this value.
 
 |           |                     |
 | --------: | :------------------ |
@@ -660,7 +660,7 @@ export default defineConfig({
 
 ### override
 
-Applies a different set of plugin options to operations that match a pattern. Use this when most of your API should follow the global config, but a handful of endpoints need different treatment.
+Applies a different set of plugin options to operations that match a pattern. Use this when most of your API follows the global config, but a few endpoints need different treatment.
 
 Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations.
 
@@ -713,7 +713,7 @@ export default defineConfig({
 
 Adds custom generators that run alongside the plugin's built-in generators. Each generator can emit additional files or post-process existing ones using the plugin's AST and options.
 
-Use this when you need output the plugin does not produce out of the box (a custom client wrapper, an extra index, a metadata file). For end-to-end guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
+Use this when you need output the plugin does not produce by default (a custom client wrapper, an extra index, a metadata file). For guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
 
 |           |                               |
 | --------: | :---------------------------- |

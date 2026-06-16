@@ -279,7 +279,7 @@ Turning a spec's schema objects into [`SchemaNode`](/docs/5.x/concepts/ast)s is 
 context → [rule.match → rule.convert] → node
 ```
 
-The adapter derives a small context from each schema, then runs it through an ordered table of [`dispatch`](/docs/5.x/concepts/ast#dispatch) rules that map spec shapes onto AST nodes. Only a handful of decisions actually differ between specs. Those live behind a dialect, a single object the converter pipeline reads so it never hard-codes OpenAPI assumptions:
+The adapter derives a small context from each schema, then runs it through an ordered table of [`dispatch`](/docs/5.x/concepts/ast#dispatch) rules that map spec shapes onto AST nodes. Only a handful of decisions differ between specs. Those live behind a dialect, a single object the converter pipeline reads so it never hard-codes OpenAPI assumptions:
 
 | Decision      | OpenAPI                                              | AsyncAPI (example)            |
 | ------------- | --------------------------------------------------- | ----------------------------- |

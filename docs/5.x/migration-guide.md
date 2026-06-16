@@ -889,7 +889,7 @@ export default defineConfig({
 
 ## Generated output changes per plugin
 
-Beyond config changes, v5 also changes what the generators emit. Update any code that imports from the generated files accordingly.
+Beyond config changes, v5 changes what the generators emit. Update any code that imports from the generated files accordingly.
 
 ### [`@kubb/plugin-ts`](/plugins/plugin-ts)
 
@@ -1000,7 +1000,7 @@ Set `integerType: 'number'` on `adapterOas` to restore the previous output.
 
 #### Open string unions use `(string & {})`
 
-To preserve IntelliSense suggestions, v5 writes the well-known TypeScript trick.
+To preserve IntelliSense suggestions, v5 writes the known TypeScript trick.
 
 ```diff
 - status?: 'accepted' | string

@@ -13,7 +13,7 @@ id: plugin-barrel
 
 `@kubb/plugin-barrel` generates an `index.ts` for every plugin output directory and one root barrel at `output.path/index.ts` after the build completes. Consumers then import from a single entry point, such as `import { Pet, usePetByIdQuery, petMock } from './gen'`.
 
-The plugin ships with Kubb and is registered by default in `defineConfig`, so barrels appear out of the box with no extra configuration. When `pluginBarrel` is part of `config.plugins`, `defineConfig` also applies a default `output.barrel` of `{ type: 'named' }`.
+The plugin ships with Kubb and is registered by default in `defineConfig`, so barrels appear with no extra configuration. When `pluginBarrel` is part of `config.plugins`, `defineConfig` also applies a default `output.barrel` of `{ type: 'named' }`.
 
 Plugins inherit `output.barrel` from `config.output.barrel` when their own value is omitted. Setting `barrel: false` on a plugin disables that plugin's barrel and excludes its files from the root barrel.
 

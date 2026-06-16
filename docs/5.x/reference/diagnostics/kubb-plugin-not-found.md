@@ -22,7 +22,7 @@ never list `@kubb/plugin-oas`.
 ## How to fix it
 
 - Add the required plugin to the `plugins` array (and install it if needed).
-- Order does not matter. Kubb sorts plugins so dependencies run first, so just make sure the plugin is present.
+- Order does not matter. Kubb sorts plugins so dependencies run first, so make sure the plugin is present.
 - Remove the plugin that depends on it if you do not need it.
 
 ## Common causes

@@ -64,7 +64,7 @@ Where the generated MCP tool handlers are written and how they are exported.
 
 Folder where the plugin writes its generated code. The path is resolved against the global `output.path` set on `defineConfig`.
 
-Use a folder to keep each generator's output separate, for example `'types'`, `'clients'`, or `'hooks'`. To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension, such as `'types.ts'`.
+Use a folder to keep each generator's output separate, for example `'types'`, `'clients'`, or `'hooks'`. To put everything in one file, set `output.mode: 'file'` and point `path` at the target file with its extension, such as `'types.ts'`.
 
 |           |          |
 | --------: | :------- |
@@ -160,7 +160,7 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 - `{ type: 'named' }` re-exports each symbol by name. Best for tree-shaking and explicit imports.
 - `{ type: 'all' }` uses `export *`. Smaller barrel file, but exports everything.
 - `{ nested: true }` creates a barrel in every subdirectory, so callers can import from any depth.
-- `false` skips the barrel entirely. The plugin's files are also excluded from the root `index.ts`.
+- `false` skips the barrel. The plugin's files are also excluded from the root `index.ts`.
 
 |           |                                                         |
 | --------: | :------------------------------------------------------ |
@@ -265,7 +265,7 @@ export default defineConfig({
 
 Text prepended to every generated file. Useful for license headers, lint disables, or `@ts-nocheck` directives.
 
-Pass a string for a static banner. Pass a function to compute the banner from each file's `RootNode` (the AST root containing path, schema, and operation context).
+Pass a string for a static banner. Pass a function to build the banner from each file's `RootNode` (the AST root containing path, schema, and operation context).
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -354,7 +354,7 @@ export default defineConfig({
 
 #### output.override
 
-Allows the plugin to overwrite hand-written files that share a name with a generated file.
+Lets the plugin overwrite hand-written files that share a name with a generated file.
 
 - `false` (default): Kubb skips a file if it already exists and is not marked as generated. This protects manual edits.
 - `true`: Kubb overwrites any file at the target path, including hand-written ones.
@@ -393,7 +393,7 @@ Overrides how the plugin builds names and paths for generated files and symbols.
 
 Only override the methods you want to change. Anything you omit falls back to the plugin's default resolver. A method that returns `null` or `undefined` also falls back.
 
-Inside each method, `this` is bound to the full resolver, so you can call `this.default(name, 'function')` to delegate to the built-in implementation.
+Inside each method, `this` is bound to the full resolver, so you can call `this.default(name, 'function')` to delegate to the built-in version.
 
 |           |                                                |
 | --------: | :--------------------------------------------- |
@@ -436,7 +436,7 @@ Each plugin ships with a default resolver:
 
 ### group
 
-Splits the generated handlers into subfolders, so each tag or path segment in your OpenAPI spec gets its own directory.
+Splits the generated handlers into subfolders, giving each tag or path segment in your OpenAPI spec its own directory.
 
 Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files are bucketed under `{output.path}/{groupName}/`, where `groupName` comes from the operation's first tag or first path segment.
 
@@ -486,7 +486,7 @@ Pass `group.name` to customize the folder name, for example `name: ({ group }) =
 
 #### group.type
 
-Property the plugin reads to assign each operation to a group. Required whenever `group` is set.
+Property the plugin reads to assign each operation to a group. Required when `group` is set.
 
 - `'tag'` reads the first tag on the operation (`operation.getTags().at(0)?.name`). Operations without a tag fall into a default group.
 - `'path'` reads the first segment of the operation's URL.
@@ -572,7 +572,7 @@ Built-in HTTP client the handlers import. `'axios'` imports from `@kubb/plugin-c
 
 Path or module specifier of a custom client module. Generated code imports its HTTP runtime from here instead of `@kubb/plugin-client/clients/{client}`.
 
-Use this when you need to inject auth headers, add interceptors, change the base URL at runtime, or wrap a different HTTP library (ky, ofetch, ...). Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work.
+Use this to inject auth headers, add interceptors, change the base URL at runtime, or wrap a different HTTP library (ky, ofetch, ...). Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work.
 
 |           |          |
 | --------: | :------- |
@@ -911,7 +911,7 @@ export default defineConfig({
 
 ### override
 
-Applies a different set of plugin options to operations that match a pattern. Use this when most of your API should follow the global config, but a handful of endpoints need different treatment.
+Applies a different set of plugin options to operations that match a pattern. Use this when most of your API follows the global config, but a few endpoints need different treatment.
 
 Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations.
 
@@ -960,7 +960,7 @@ export default defineConfig({
 
 Adds custom generators that run alongside the plugin's built-in generators. Each generator can emit additional files or post-process existing ones using the plugin's AST and options.
 
-Use this when you need output the plugin does not produce out of the box (a custom client wrapper, an extra index, a metadata file). For end-to-end guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
+Use this when you need output the plugin does not produce by default (a custom client wrapper, an extra index, a metadata file). For end-to-end guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
 
 |           |                               |
 | --------: | :---------------------------- |
@@ -1034,7 +1034,7 @@ export default defineConfig({
 
 ## Dependencies
 
-This plugin declares two required plugins. Kubb runs them before `plugin-mcp` so the handlers can import the generated types and Zod schemas:
+This plugin requires two plugins. Kubb runs them before `plugin-mcp` so the handlers can import the generated types and Zod schemas:
 
 - [`@kubb/plugin-ts`](/plugins/plugin-ts)
 - [`@kubb/plugin-zod`](/plugins/plugin-zod)

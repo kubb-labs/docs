@@ -83,7 +83,7 @@ kubb generate
 
 Every official Kubb plugin follows the same package layout. The reference implementation at [`@kubb/plugin-client`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-client) keeps a folder per concern: `generators/`, `resolvers/`, `components/`, and `templates/`.
 
-Mirror this layout in your own plugin so contributors can find their way around it:
+Mirror this layout in your own plugin so contributors can find their way around:
 
 ```
 kubb-plugin-example/
@@ -142,7 +142,7 @@ export const pluginExampleName = 'plugin-example' satisfies Plugin['name']
 
 ## Plugin anatomy
 
-Four files form the skeleton of a plugin package. They appear here in the order you usually read them: types first, then the implementation, then the public entry point.
+Four files form the skeleton of a plugin package, shown here in reading order: types first, then the implementation, then the public entry point.
 
 ```typescript twoslash
 // @filename: src/types.ts

@@ -120,7 +120,7 @@ A name for this config. The CLI prints it as `Generating <name>...`.
 
 ### `input`
 
-Where Kubb reads your spec from. Set either `path` or `data`, not both. It's required when an adapter is configured. Omit it in plugin-only mode, when there is no `adapter`.
+Where Kubb reads your spec from. Set either `path` or `data`, not both. Required when an adapter is configured. Omit it in plugin-only mode, when there is no `adapter`.
 
 #### `input.path`
 
@@ -166,7 +166,7 @@ How a plugin consolidates its generated code into files. Set this on a plugin's 
 | Required: | `false`                  |
 |  Default: | `'directory'`            |
 
-`'directory'` writes one file per operation or schema under `output.path`. `'file'` writes everything into a single file, so `output.path` must include the file extension (e.g. `'types.ts'`). Pair `'directory'` with the `group` option to organize that output into per-tag or per-path subdirectories.
+`'directory'` writes one file per operation or schema under `output.path`. `'file'` writes everything into a single file, so `output.path` must include the file extension (e.g. `'types.ts'`). Pair `'directory'` with the `group` option to organize the output into per-tag or per-path subdirectories.
 
 ```typescript
 import { defineConfig } from 'kubb'
@@ -211,7 +211,7 @@ Formatter to run on every generated file.
 | Required: | `false`                                               |
 |  Default: | `false`                                               |
 
-Use `'auto'` to detect the first available formatter ([oxfmt](https://oxc.rs) → [Biome](https://biomejs.dev) → [Prettier](https://prettier.io)), force one with `'prettier'`, `'biome'`, or `'oxfmt'`, or set `false` to skip formatting. Kubb respects your local `.prettierrc` or `biome.json`.
+Use `'auto'` to detect the first available formatter ([oxfmt](https://oxc.rs) → [Biome](https://biomejs.dev) → [Prettier](https://prettier.io)), force one with `'prettier'`, `'biome'`, or `'oxfmt'`, or set `false` to skip formatting. Kubb uses your local `.prettierrc` or `biome.json`.
 
 #### `output.lint`
 
@@ -276,7 +276,7 @@ export * from './operations/getPet'
 
 :::
 
-Individual plugins keep their own `output.barrel` for their sub-folder and can override the root setting. Setting `barrel: false` on a plugin both disables that plugin's barrel and excludes its files from the root barrel. The `nested` flag only takes effect at the plugin level, where `{ nested: true }` writes a barrel in every subdirectory so callers can import from any depth. The root `output.barrel` ignores `nested`.
+Individual plugins keep their own `output.barrel` for their sub-folder and can override the root setting. Setting `barrel: false` on a plugin disables that plugin's barrel and excludes its files from the root barrel. The `nested` flag only takes effect at the plugin level, where `{ nested: true }` writes a barrel in every subdirectory so callers can import from any depth. The root `output.barrel` ignores `nested`.
 
 > [!NOTE]
 > The `{ type: 'named' }` default is only applied when `pluginBarrel` is present in `config.plugins`. Configs that omit `pluginBarrel` entirely leave barrel generation untouched.
@@ -323,7 +323,7 @@ Auto-generated banner injected at the top of each file.
 
 #### `output.banner`
 
-Text prepended to every file a plugin generates. Configure it on an individual plugin (the root `output` only exposes [`output.defaultBanner`](#output-defaultbanner)) to add license headers, lint-disable comments, or framework directives such as `'use server'`.
+Text prepended to every file a plugin generates. Configure it on an individual plugin (the root `output` only exposes [`output.defaultBanner`](#output-defaultbanner)) to add license headers, lint-disable comments, or framework directives like `'use server'`.
 
 |           |                                        |
 | --------: | :------------------------------------- |
@@ -385,7 +385,7 @@ Controls whether Kubb overwrites files that already exist on disk at the output 
 | Required: | `false`   |
 |  Default: | `false`   |
 
-When `false` (the default), Kubb skips any file that already exists, so it keeps manual edits or files written by other tools. Set it to `true` to always write generated files no matter what is already on disk.
+When `false` (the default), Kubb skips any file that already exists, keeping manual edits or files written by other tools. Set it to `true` to always write generated files regardless of what is on disk.
 
 Set this at the root level and every plugin inherits the same behavior. Each plugin also has its own `output.override`, which wins over the root value for that plugin.
 
