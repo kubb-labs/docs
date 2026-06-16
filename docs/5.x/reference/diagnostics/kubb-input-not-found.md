@@ -5,21 +5,16 @@ description: The KUBB_INPUT_NOT_FOUND diagnostic fires when the file set in inpu
 outline: [2, 3]
 ---
 
-# KUBB_INPUT_NOT_FOUND
+# KUBB_INPUT_NOT_FOUND: Input not found
 
-**Severity:** error · **Source:** OpenAPI adapter
+Code: `KUBB_INPUT_NOT_FOUND`
+Level: error
 
 The file set in `input.path` (or passed as `kubb generate PATH`) could not be read. The OpenAPI
 adapter checks the path before parsing, so the run stops here instead of failing later with a vague
 read error.
 
-```sh
-× @kubb/adapter-oas(KUBB_INPUT_NOT_FOUND): Cannot read the file set in `input.path` (or via `kubb generate PATH`): ./petStore.yaml
-  help: Check that the path exists and is readable, then set it in `input.path` or pass it as `kubb generate PATH`.
-  docs: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-input-not-found
-```
-
-## What it means
+## What happened
 
 Kubb resolves `input.path` relative to the config file, then confirms the file exists before
 reading it. This diagnostic fires when nothing is there. URLs are not checked this way, so a remote
@@ -31,12 +26,20 @@ spec surfaces its own fetch error instead.
 - The spec was moved or renamed but the config still points at the old location.
 - `kubb generate ./spec.yaml` was run from a directory where that relative path does not resolve.
 
-## How to fix
+## How to fix it
 
 - Check the path exists and is readable, then set it in `input.path` or pass it as
   `kubb generate PATH`.
 - Use a path relative to your `kubb.config.ts`, or an absolute path.
 - For a remote spec, set `input.path` to the full URL.
+
+## Example output
+
+```txt
+[KUBB_INPUT_NOT_FOUND] @kubb/adapter-oas: Cannot read the file set in `input.path` (or via `kubb generate PATH`): ./petStore.yaml
+  fix: Check that the path exists and is readable, then set it in `input.path` or pass it as `kubb generate PATH`.
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-input-not-found
+```
 
 ## See also
 

@@ -8,13 +8,13 @@ outline: [2, 3]
 # Diagnostics
 
 When a build fails, Kubb prints a diagnostic: a stable code, the message, the location in your
-document, and a suggested fix. The CLI renders it in the oxlint style:
+document, and a suggested fix. The CLI leads with the code and lists the details below it:
 
-```sh
-× @kubb/plugin-zod(KUBB_REF_NOT_FOUND): Could not find a definition for #/components/schemas/Pet.
-  at #/components/schemas/Pet
-  help: Add the schema under components.schemas, or fix the $ref.
-  docs: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-ref-not-found
+```txt
+[KUBB_REF_NOT_FOUND] @kubb/plugin-zod: Could not find a definition for #/components/schemas/Pet.
+  at: #/components/schemas/Pet
+  fix: Add the schema under components.schemas, or fix the $ref.
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-ref-not-found
 ```
 
 The location is a JSON pointer into the source document. OpenAPI is parsed into an object model, so
@@ -27,11 +27,13 @@ fail the build.
 
 ## Severity
 
-| Severity | Glyph | Effect |
+The severity tints the `[CODE]` tag.
+
+| Severity | Color | Effect |
 | --- | --- | --- |
-| `error` | `×` | Fails the run with a non-zero exit code. |
-| `warning` | `⚠` | Reported, does not fail the run. |
-| `info` | `ℹ` | Advisory, does not fail the run. |
+| `error` | red | Fails the run with a non-zero exit code. |
+| `warning` | yellow | Reported, does not fail the run. |
+| `info` | blue | Advisory, does not fail the run. |
 
 ## Input
 
@@ -132,12 +134,12 @@ for the other reporters.
 
 ## Reading a diagnostic in the terminal
 
-- The header shows the severity glyph, the plugin that emitted the diagnostic (when known), and the
-  code: `× plugin(CODE): message`.
-- `at` holds the JSON pointer to the offending node. Config-level diagnostics such as
+- The header shows the code in the severity color, then the plugin that emitted the diagnostic
+  (when known), then the message: `[CODE] plugin: message`.
+- `at:` holds the JSON pointer to the offending node. Config-level diagnostics such as
   `KUBB_PLUGIN_NOT_FOUND` have no pointer, so they skip this line.
-- `help:` is a suggested fix.
-- `docs:` links to the page for that code.
+- `fix:` is a suggested fix.
+- `see:` links to the page for that code.
 
 At `--logLevel silent` the diagnostic log is suppressed; the run still fails with a non-zero exit
 code, so CI keeps working without the noise.

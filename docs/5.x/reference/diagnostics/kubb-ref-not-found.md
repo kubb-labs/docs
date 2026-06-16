@@ -5,24 +5,26 @@ description: The KUBB_REF_NOT_FOUND diagnostic, raised when a $ref in your OpenA
 outline: [2, 3]
 ---
 
-# KUBB_REF_NOT_FOUND
+# KUBB_REF_NOT_FOUND: Reference not found
 
-**Severity:** error · **Source:** OpenAPI adapter
+Code: `KUBB_REF_NOT_FOUND`
+Level: error
 
 A `$ref` points at a definition that does not exist in the document.
 
-```sh
-× @kubb/plugin-zod(KUBB_REF_NOT_FOUND): Could not find a definition for #/components/schemas/Pet.
-  at #/components/schemas/Pet
-  help: Add the schema under components.schemas, or fix the $ref. Run `kubb validate` to check the spec.
-  docs: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-ref-not-found
-```
-
-## What it means
+## What happened
 
 Kubb resolves local references (`#/...`) against the document it parsed. This diagnostic fires when
 a reference points at a path that is not there, so the schema or operation it belongs to cannot be
 generated.
+
+## How to fix it
+
+- Add the missing definition under `components.schemas`, or correct the `$ref` to match an existing
+  one.
+- Run [`kubb validate`](/docs/5.x/api/commands/validate) to catch unresolved references before
+  generating.
+- If the target lives in another file, bundle the document first so all references are local.
 
 ## Common causes
 
@@ -45,13 +47,14 @@ paths:
                 $ref: '#/components/schemas/Pet'   # Pet is never defined
 ```
 
-## How to fix
+## Example output
 
-- Add the missing definition under `components.schemas`, or correct the `$ref` to match an existing
-  one.
-- Run [`kubb validate`](/docs/5.x/api/commands/validate) to catch unresolved references before
-  generating.
-- If the target lives in another file, bundle the document first so all references are local.
+```txt
+[KUBB_REF_NOT_FOUND] @kubb/plugin-zod: Could not find a definition for #/components/schemas/Pet.
+  at: #/components/schemas/Pet
+  fix: Add the schema under components.schemas, or fix the $ref. Run `kubb validate` to check the spec.
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-ref-not-found
+```
 
 ## See also
 

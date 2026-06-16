@@ -5,25 +5,20 @@ description: The KUBB_ADAPTER_REQUIRED diagnostic fires when an action needs an 
 outline: [2, 3]
 ---
 
-# KUBB_ADAPTER_REQUIRED
+# KUBB_ADAPTER_REQUIRED: Adapter required
 
-**Severity:** error · **Source:** Configuration
+Code: `KUBB_ADAPTER_REQUIRED`
+Level: error
 
 An action needs an adapter but none is configured. Without one, Kubb has no way to read your input
 into the object model that plugins generate from.
 
-```sh
-× (KUBB_ADAPTER_REQUIRED): An adapter is required, but none is configured.
-  help: Set `adapter` in kubb.config.ts (for example `adapterOas()`).
-  docs: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-adapter-required
-```
-
-## What it means
+## What happened
 
 The adapter turns your spec into the AST that plugins generate from, so it has to be set before any
 plugin runs. This diagnostic fires when the config has no `adapter`.
 
-## How to fix
+## How to fix it
 
 Set `adapter` in `kubb.config.ts`:
 
@@ -37,6 +32,14 @@ export default defineConfig({
   adapter: adapterOas(),
   plugins: [/* ... */],
 })
+```
+
+## Example output
+
+```txt
+[KUBB_ADAPTER_REQUIRED]: An adapter is required, but none is configured.
+  fix: Set `adapter` in kubb.config.ts (for example `adapterOas()`).
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-adapter-required
 ```
 
 ## See also
