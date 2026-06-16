@@ -1,26 +1,26 @@
 ---
 layout: doc
-title: NUXT_B2011
-description: The NUXT_B2011 diagnostic fires when a Nuxt plugin's filename suffix (.client / .server) conflicts with its registered mode property.
+title: KUBB_B2011
+description: The KUBB_B2011 diagnostic fires when a Nuxt plugin's filename suffix (.client / .server) conflicts with its registered mode property.
 outline: [2, 3]
 ---
 
-# NUXT_B2011
+# KUBB_B2011
 
 **Severity:** error · **Source:** Nuxt plugin resolver
 
 A plugin's filename suffix says it should run on one side, but its `mode` property says the other.
 
 ```txt
-[NUXT_B2011] Plugin `./runtime/analytics.server.ts` is server-only but was registered with mode `client`.
+[KUBB_B2011] Plugin `./runtime/analytics.server.ts` is server-only but was registered with mode `client`.
 ├▶ fix: Rename the file or register it with mode `server`.
 ├▶ sources: nuxt.config.ts:12:5
-╰▶ see: https://nuxt.com/e/b2011
+╰▶ see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-b2011
 ```
 
 ## What it means
 
-Nuxt resolves a plugin's execution environment from two sources: the filename suffix (`.client.ts`, `.server.ts`) and the explicit `mode` field on a plugin registration. When they disagree, Nuxt emits this diagnostic so the conflict is resolved before the app starts.
+Nuxt resolves a plugin's execution environment from two sources: the filename suffix (`.client.ts`, `.server.ts`) and the explicit `mode` field on a plugin registration. When they disagree, Kubb emits this diagnostic so the conflict is resolved before the app starts.
 
 ## Common causes
 
@@ -59,20 +59,20 @@ parameters, so the message reflects the actual file path and modes involved:
 import { defineDiagnostics, createConsoleReporter } from 'nostics'
 
 const diagnostics = defineDiagnostics({
-  docsBase: (code) => `https://nuxt.com/e/${code.replace('NUXT_', '').toLowerCase()}`,
+  docsBase: (code) => `https://kubb.dev/docs/5.x/reference/diagnostics/${code.toLowerCase().replace('_', '-')}`,
   reporters: [createConsoleReporter()],
   codes: {
-    NUXT_B2011: {
+    KUBB_B2011: {
       why: ({ src, registeredMode, suffixMode }: { src: string; registeredMode: 'client' | 'server'; suffixMode: 'client' | 'server' }) =>
         `Plugin \`${src}\` is ${suffixMode}-only but was registered with mode \`${registeredMode}\`.`,
-      fix: ({ src, suffixMode }: { src: string; registeredMode: 'client' | 'server'; suffixMode: 'client' | 'server' }) =>
+      fix: ({ suffixMode }: { src: string; registeredMode: 'client' | 'server'; suffixMode: 'client' | 'server' }) =>
         `Rename the file to remove the suffix, or register it with mode \`${suffixMode}\`.`,
     },
   },
 })
 
 // Diagnostics extend Error and can be thrown directly.
-throw diagnostics.NUXT_B2011({
+throw diagnostics.KUBB_B2011({
   src: plugin.src,
   registeredMode: plugin.mode,
   suffixMode: resolvedSuffix,

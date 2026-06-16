@@ -84,7 +84,7 @@ reported as a diagnostic and fails the run.
 
 | Code | Severity | Summary |
 | --- | --- | --- |
-| [`NUXT_B2011`](/docs/5.x/reference/diagnostics/nuxt-b2011) | error | A plugin's filename suffix conflicts with its registered `mode`. |
+| [`KUBB_B2011`](/docs/5.x/reference/diagnostics/kubb-b2011) | error | A plugin's filename suffix conflicts with its registered `mode`. |
 
 ## Other
 
