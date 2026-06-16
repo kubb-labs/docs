@@ -80,6 +80,12 @@ reported as a diagnostic and fails the run.
 | [`KUBB_LINT_FAILED`](/docs/5.x/reference/diagnostics/kubb-lint-failed) | error | The linter pass over the generated files failed. |
 | [`KUBB_HOOK_FAILED`](/docs/5.x/reference/diagnostics/kubb-hook-failed) | error | A post-generate `hooks.done` command exited non-zero. |
 
+## Nuxt
+
+| Code | Severity | Summary |
+| --- | --- | --- |
+| [`NUXT_B2011`](/docs/5.x/reference/diagnostics/nuxt-b2011) | error | A plugin's filename suffix conflicts with its registered `mode`. |
+
 ## Other
 
 | Code | Severity | Summary |
