@@ -16,9 +16,9 @@ guessing at an API that shifts between major versions.
 
 ## Install
 
-The fastest way to install the Kubb skills is the [`skills` CLI](https://www.skills.sh). Run it
-from your project root and it auto-detects your installed agents, including Claude Code, Cursor,
-Codex, Windsurf and Cline:
+The fastest way to install the skills is the [`skills` CLI](https://www.skills.sh). Run it from
+your project root and it auto-detects your installed agents, including Claude Code, Cursor, Codex,
+Windsurf and Cline:
 
 ```shell
 npx skills add kubb-labs/kubb

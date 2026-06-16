@@ -47,7 +47,7 @@ kubb mcp --port 3001
 
 `kubb mcp` supports two transports.
 
-The default is stdio. The server reads from standard input and writes to standard output, which matches the [Model Context Protocol](https://modelcontextprotocol.io/) transport used by Claude Desktop, Cursor, VS Code, and other editor integrations. No flags are required.
+The default is stdio: the server reads from standard input and writes to standard output, matching the [Model Context Protocol](https://modelcontextprotocol.io/) transport used by Claude Desktop, Cursor, VS Code, and other editor integrations. No flags are required.
 
 Pass `--port` to switch to HTTP. The server exposes `http://<host>:<port>/mcp` and accepts requests from hosted MCP clients or any machine that can reach the host.
 

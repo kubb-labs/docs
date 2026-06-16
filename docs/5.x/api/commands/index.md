@@ -11,7 +11,7 @@ The `kubb` CLI is your main interface to Kubb. It reads your [configuration](/do
 
 ## Installation
 
-The CLI comes bundled with the `kubb` package. If you have already completed [installation](/docs/5.x/getting-started/installation), you are ready to go. Otherwise, install the CLI separately:
+The CLI comes bundled with the `kubb` package, so after [installation](/docs/5.x/getting-started/installation) you are ready to go. To install it separately:
 
 ::: code-group
 

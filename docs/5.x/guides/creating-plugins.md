@@ -59,7 +59,7 @@ export const pluginHello = definePlugin(() => ({
 }))
 ```
 
-Wire it into your `kubb.config.ts`:
+Wire it into `kubb.config.ts`:
 
 ```typescript twoslash [kubb.config.ts]
 // @errors: 2307
@@ -81,9 +81,7 @@ kubb generate
 
 ## Project layout
 
-Every official Kubb plugin follows the same package layout. The reference implementation at [`@kubb/plugin-client`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-client) keeps a folder per concern: `generators/`, `resolvers/`, `components/`, and `templates/`.
-
-Mirror this layout in your own plugin so contributors can find their way around:
+Every official Kubb plugin follows the same layout, a folder per concern: `generators/`, `resolvers/`, `components/`, and `templates/`. The reference implementation is [`@kubb/plugin-client`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-client). Mirror it so contributors can find their way around:
 
 ```
 kubb-plugin-example/
@@ -105,7 +103,7 @@ kubb-plugin-example/
 ```
 
 > [!TIP]
-> Use [`@kubb/plugin-client`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-client) as the canonical example. Its `src/index.ts` re-exports each generator, resolver, and the plugin factory by name, and its `src/plugin.ts` declares a `pluginClientName satisfies PluginClient['name']` constant that other plugins consume.
+> In [`@kubb/plugin-client`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-client), `src/index.ts` re-exports each generator, resolver, and the plugin factory by name, and `src/plugin.ts` declares a `pluginClientName satisfies PluginClient['name']` constant that other plugins consume.
 
 Scaffold the directories:
 
@@ -142,7 +140,7 @@ export const pluginExampleName = 'plugin-example' satisfies Plugin['name']
 
 ## Plugin anatomy
 
-Four files form the skeleton of a plugin package, shown here in reading order: types first, then the implementation, then the public entry point.
+Four files form the skeleton, in reading order: types first, then the implementation, then the public entry point.
 
 ```typescript twoslash
 // @filename: src/types.ts
@@ -501,7 +499,7 @@ await kubb.build()
 
 ### Configure package.json
 
-Set up `package.json` for dual-format publishing. Peer-depend on `@kubb/core` and `@kubb/ast` at v5 to keep the runtime out of your bundle, and list them under `devDependencies` for local builds.
+Peer-depend on `@kubb/core` and `@kubb/ast` at v5 to keep the runtime out of your bundle, and list them under `devDependencies` for local builds.
 
 ```json
 {
@@ -580,7 +578,7 @@ npm publish --access public
 
 ## Examples
 
-The [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins) repository holds official community plugins that follow the conventions in this guide. Browse the source to see how generators, resolvers, and options fit together in published packages.
+The [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins) repository holds official plugins that follow these conventions. Browse the source to see how generators, resolvers, and options fit together in published packages.
 
 ### Schema generator
 

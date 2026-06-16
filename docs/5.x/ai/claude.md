@@ -20,8 +20,7 @@ a build started in the chat matches the one you run in a terminal.
 
 ## Install
 
-The Kubb repository doubles as a plugin marketplace. Add the marketplace, then install the
-plugin:
+The Kubb repository doubles as a plugin marketplace. Add it, then install the plugin:
 
 ```shell
 /plugin marketplace add kubb-labs/kubb
@@ -70,7 +69,7 @@ spec, chooses plugins, scaffolds the config, and runs generation.
 
 The plugin also wires in the Kubb MCP server (`kubb mcp`). When you would rather describe what
 you want than type a command, Claude calls the server directly. See [MCP](/docs/5.x/ai/mcp) for
-the server and client setup.
+setup.
 
 ## See also
 

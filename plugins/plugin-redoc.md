@@ -85,27 +85,6 @@ src/
 
 :::
 
-## Example
-
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginRedoc } from '@kubb/plugin-redoc'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginRedoc({
-      output: { path: 'docs.html' },
-    }),
-  ],
-})
-```
-
-:::
-
 ## See Also
 
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-redoc/CHANGELOG.md)

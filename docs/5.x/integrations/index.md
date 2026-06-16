@@ -39,7 +39,7 @@ yarn add -D unplugin-kubb@beta
 
 ## Pick your bundler
 
-Each bundler has its own entrypoint. Pick the one that matches your tooling:
+Each bundler has its own entrypoint:
 
 | Bundler                               | Entrypoint               | Docs                   |
 | ------------------------------------- | ------------------------ | ---------------------- |
@@ -55,7 +55,7 @@ Each bundler has its own entrypoint. Pick the one that matches your tooling:
 
 ## Options
 
-Pass your Kubb config to the `config` option. The value is a [`UserConfig`](/docs/5.x/reference/configuration) object with the same shape as `kubb.config.ts`:
+Pass your Kubb config to the `config` option, a [`UserConfig`](/docs/5.x/reference/configuration) object with the same shape as `kubb.config.ts`:
 
 ```typescript twoslash [vite.config.ts]
 import kubb from 'unplugin-kubb/vite'

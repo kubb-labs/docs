@@ -42,20 +42,6 @@ kubb validate -i https://petstore3.swagger.io/api/v3/openapi.json
 | ----------------------------- | ------- | -------- | -------------------------------------------------------- |
 | `--input=<path>`, `-i <path>` |         | `true`   | Path or URL to the Swagger/OpenAPI document to validate. |
 
-## Examples
-
-Validate a local file:
-
-```shell
-kubb validate -i ./petStore.yaml
-```
-
-Validate a remote spec in CI:
-
-```shell
-kubb validate -i https://petstore3.swagger.io/api/v3/openapi.json
-```
-
 > [!TIP]
 > `kubb validate` exits with a non-zero status code on failure, so you can use it as a pre-commit hook or CI step to fail the build when the spec is invalid.
 

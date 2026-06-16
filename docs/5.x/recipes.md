@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Recipes
 
-Ready-made `kubb.config.ts` snippets for the setups people reach for most. Copy one in, install the matching packages, and run [`kubb generate`](./api/commands/generate).
+Ready-made `kubb.config.ts` snippets for common setups. Copy one in, install the matching packages, and run [`kubb generate`](./api/commands/generate).
 
 ## TypeScript only
 

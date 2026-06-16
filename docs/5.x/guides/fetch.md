@@ -52,9 +52,7 @@ export default defineConfig(() => {
 
 ## Add `client.ts`
 
-Every HTTP request (POST, PUT, GET, PATCH, DELETE) resolves `importPath` and calls your default export.
-
-The request configuration follows the `RequestConfig` type, modeled on the Axios request interface.
+Every HTTP request (POST, PUT, GET, PATCH, DELETE) resolves `importPath` and calls your default export. The request configuration follows the `RequestConfig` type, modeled on the Axios request interface.
 
 > [!IMPORTANT]
 > The client must return an object in the shape of `ResponseConfig`, even if you change `dataReturnType` with `dataReturnType: 'data'`.

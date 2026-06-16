@@ -93,9 +93,9 @@ flowchart LR
     Macros --> Transformed["InputNode\ntransformed"]
 ```
 
-Macros are the second layer of [`@kubb/ast`](/docs/5.x/concepts/ast). A macro is a named, composable transform that rewrites schema and operation nodes before a plugin's generators print code, so you can rename symbols, retype fields, or normalize shapes without forking an adapter or a generator. Macros run on the shared AST, so the same macro works across every adapter and every output target.
+Macros are the second layer of [`@kubb/ast`](/docs/5.x/concepts/ast): named, composable transforms that rewrite schema and operation nodes before a plugin's generators print code, so you can rename symbols, retype fields, or normalize shapes without forking an adapter or a generator. They run on the shared AST, so the same macro works across every adapter and output target.
 
-Macros run per plugin, so one plugin's macros never change the nodes another plugin sees. Pass them through a plugin's `macros` option, or register them from `kubb:plugin:setup` with `addMacro`. They run before resolver options are computed, so a renamed `operationId` or `SchemaNode.name` flows into `resolveOptions`, `resolvePath`, and `resolveFile`.
+Macros run per plugin, so one plugin's macros never change the nodes another plugin sees. Pass them through a plugin's `macros` option, or register them from `kubb:plugin:setup` with `addMacro`.
 
 ```typescript twoslash [kubb.config.ts]
 // @noErrors

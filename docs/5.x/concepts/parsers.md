@@ -9,12 +9,10 @@ outline: deep
 
 A parser turns a [`FileNode`](/docs/5.x/concepts/ast) into the source string that [storage](/docs/5.x/concepts/storage) writes to disk. Every parser registers the file extensions it handles, and the file processor in `@kubb/core` routes each emitted file to the matching parser.
 
-There are two distinct jobs in a parser:
+A parser has two distinct jobs:
 
 - `print(...nodes)` is called by plugins to render language-specific AST nodes into a string before staging them on `FileNode.sources`.
 - `parse(file)` is called by the file processor after all plugins have run, to join the staged sources into the final output string.
-
-Plugins call `print()`, and the file processor calls `parse()`. Keep those two roles in mind and a custom parser falls into place.
 
 > [!TIP]
 > For TypeScript and JavaScript output use the built-in [`@kubb/parser-ts`](/parsers/parser-ts). It is added by default when you import `defineConfig` from the top-level `kubb` package. Build a custom parser only when you target a different language, such as Python, Kotlin, or Rust.
@@ -214,26 +212,5 @@ export default defineConfig({
 > [!TIP]
 > Set `extNames: undefined` to register a catch-all fallback that runs when no other parser matches. Useful for a default `.txt` writer or for inspecting what files the build produces.
 
-## Examples
-
-### Parser that joins pre-formatted sources
-
-`parse()` runs synchronously, so external formatting (a service call, a child process, or a worker thread) must finish before the file reaches the parser. Stage the pre-formatted output on `FileNode.sources[].nodes` inside a generator, then let the parser join it verbatim:
-
-```typescript twoslash [parserFormatted.ts]
-import { defineParser } from '@kubb/core'
-
-export const parserFormatted = defineParser({
-  name: 'parser-formatted',
-  extNames: ['.ts'],
-  parse(file) {
-    return file.sources
-      .flatMap((source) => source.nodes ?? [])
-      .map((node) => (node.kind === 'Text' ? node.value : ''))
-      .join('\n')
-  },
-  print(...nodes) {
-    return nodes.map(String).join('\n')
-  },
-})
-```
+> [!NOTE]
+> `parse()` runs synchronously, so external formatting (a service call, a child process, or a worker thread) must finish before the file reaches the parser. Stage the pre-formatted output on `FileNode.sources[].nodes` inside a generator, then let the parser join it verbatim.

@@ -17,13 +17,12 @@ Kubb ships a [Model Context Protocol](https://modelcontextprotocol.io/) server t
 
 ## Starting the server
 
-Run the MCP server over stdio with a single command:
+Run the server with a single command. It communicates over stdio, the transport every major LLM
+client speaks:
 
 ```shell
 kubb mcp
 ```
-
-It communicates over stdio, the transport every major LLM client speaks.
 
 ## Client configuration
 

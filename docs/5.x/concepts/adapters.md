@@ -14,7 +14,7 @@ An adapter is the single entry point that turns your input specification into th
 
 ## Quick start
 
-A minimal adapter declares its name and produces an empty [`InputNode`](/docs/5.x/concepts/ast). An empty AST makes plugins emit nothing, so start here and fill `schemas` and `operations` from your spec next.
+A minimal adapter declares its name and produces an empty [`InputNode`](/docs/5.x/concepts/ast). An empty AST makes plugins emit nothing, so fill `schemas` and `operations` from your spec next.
 
 ```typescript twoslash [adapterCustom.ts]
 import { ast, createAdapter } from '@kubb/core'
@@ -78,7 +78,7 @@ type AdapterSource = { type: 'path'; path: string } | { type: 'data'; data: stri
 
 ## Streaming
 
-`stream()` is the streaming counterpart to `parse()`. It returns an `InputStreamNode` whose `schemas` and `operations` are `AsyncIterable`s instead of arrays. Each `for await` loop produces a fresh parse pass over the cached in-memory document, so plugins iterate independently and the runtime never holds every node in memory at once.
+`stream()` returns an `InputStreamNode` whose `schemas` and `operations` are `AsyncIterable`s instead of arrays. Each `for await` loop produces a fresh parse pass over the cached in-memory document, so plugins iterate independently and the runtime never holds every node in memory at once.
 
 The build driver prefers `stream()` when an adapter implements it. For `parse()`-only adapters, the driver wraps the result in a reusable `AsyncIterable` so the rest of the pipeline stays stream-shaped.
 
@@ -268,9 +268,6 @@ export default defineConfig({
 })
 ```
 
-> [!TIP]
-> `defineConfig` from `kubb` only fills `adapter` with `adapterOas()` when no `adapter` is provided. Passing your own adapter wins, so the same import works for both built-in and custom adapters.
-
 ### Schema dispatch and dialects
 
 Turning a spec's schema objects into [`SchemaNode`](/docs/5.x/concepts/ast)s is the heaviest part of an adapter. Most of that work is generic JSON Schema (`oneOf`/`anyOf`/`allOf`, `enum`, `const`, `type`, `format`, `items`, `properties`), so adapters follow one contract:
@@ -288,7 +285,7 @@ The adapter derives a small context from each schema, then runs it through an or
 | binary        | `contentMediaType: 'application/octet-stream'`      | `contentEncoding: 'binary'`   |
 | optionality   | a parent's `required` plus the schema's `nullable` set `optional` / `nullish` | same JSON Schema `required` + `null` |
 
-`@kubb/adapter-oas` ships the OpenAPI dialect as its default. A new adapter such as `@kubb/adapter-asyncapi` reuses the same converters and dispatch table and supplies only its own dialect, so it never reimplements schema parsing. The spec-specific surface stays small, and you can test it by swapping that one object.
+`@kubb/adapter-oas` ships the OpenAPI dialect as its default. A new adapter such as `@kubb/adapter-asyncapi` reuses the same converters and dispatch table and supplies only its own dialect, so the spec-specific surface stays small and you can test it by swapping that one object.
 
 ## Examples
 

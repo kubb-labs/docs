@@ -11,7 +11,7 @@ id: plugin-barrel
 > [!TIP]
 > `plugin-barrel` ships with Kubb and is enabled automatically. Install it explicitly only when customizing barrel behavior.
 
-`@kubb/plugin-barrel` generates an `index.ts` for every plugin output directory and one root barrel at `output.path/index.ts` after the build completes. Consumers then import from a single entry point, such as `import { Pet, usePetByIdQuery, petMock } from './gen'`.
+`@kubb/plugin-barrel` generates an `index.ts` for every plugin output directory and one root barrel at `output.path/index.ts` after the build completes, so consumers import from a single entry point, such as `import { Pet, usePetByIdQuery, petMock } from './gen'`.
 
 The plugin ships with Kubb and is registered by default in `defineConfig`, so barrels appear with no extra configuration. When `pluginBarrel` is part of `config.plugins`, `defineConfig` also applies a default `output.barrel` of `{ type: 'named' }`.
 
@@ -43,13 +43,13 @@ yarn add -D @kubb/plugin-barrel@beta
 
 ### barrel
 
-Sets the re-export style for generated barrel files. `pluginBarrel` takes no arguments, so you configure it through `output.barrel`. Set it on `defineConfig` to control the root barrel and supply the default every plugin inherits, or set it on an individual plugin to override that plugin's barrel.
+Sets the re-export style for generated barrel files. `pluginBarrel` takes no arguments, so you configure it through `output.barrel`: set it on `defineConfig` to control the root barrel and the default every plugin inherits, or on an individual plugin to override that plugin's barrel.
 
-The `type` field picks the export style. `{ type: 'all' }` writes `export * from '...'` for every generated file. `{ type: 'named' }` writes `export { Foo, Bar } from '...'` using each file's named exports. Setting `barrel` to `false` turns off barrel generation.
+The `type` field picks the export style. `{ type: 'all' }` writes `export * from '...'` for every generated file, `{ type: 'named' }` writes `export { Foo, Bar } from '...'` from each file's named exports, and `false` turns off barrel generation.
 
-A plugin's `output.barrel` also accepts `nested`. With `{ type: 'named', nested: true }` the plugin writes an `index.ts` in every subdirectory, and each one re-exports only what sits directly inside it. The root `output.barrel` has no `nested` field, so it always stays flat.
+A plugin's `output.barrel` also accepts `nested`. With `{ type: 'named', nested: true }` the plugin writes an `index.ts` in every subdirectory, each re-exporting only what sits directly inside it. The root `output.barrel` has no `nested` field, so it always stays flat.
 
-Setting `barrel` to `false` on `defineConfig` disables only the root barrel. Each plugin still emits its own. Setting `barrel` to `false` on a plugin disables that plugin's barrel and removes its files from the root barrel.
+Setting `barrel: false` on `defineConfig` disables only the root barrel and each plugin still emits its own. Setting `barrel: false` on a plugin disables that plugin's barrel and removes its files from the root barrel.
 
 The `{ type: 'named' }` default applies only when `pluginBarrel` is part of `config.plugins`.
 

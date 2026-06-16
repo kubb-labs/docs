@@ -12,9 +12,7 @@ outline: deep
 
 [Kubb](https://kubb.dev) and [Claude](https://claude.ai) talk to each other over [MCP (Model Context Provider)](https://modelcontextprotocol.io), so Claude can call your API through plain conversation.
 
-Kubb generates type-safe code from your OpenAPI spec: the API files, the Zod schemas, and the MCP server setup. Claude reads that MCP server and calls the endpoints as you chat with it. MCP is the wire between the two, carrying tool calls back and forth and keeping the conversation tied to your backend.
-
-So you describe what you want and Claude runs the matching API calls for you.
+Kubb generates type-safe code from your OpenAPI spec: the API files, the Zod schemas, and the MCP server setup. Claude reads that MCP server and calls the endpoints as you chat with it. You describe what you want, and Claude runs the matching API calls for you.
 
 ```mermaid
 graph TD
@@ -114,8 +112,6 @@ export default defineConfig({
 
 ## Generate MCP files
 
-Run the generate command to create the files.
-
 ```shell
 npx kubb@beta generate
 ```
@@ -195,7 +191,7 @@ It runs the TypeScript server (`server.ts`) through the `tsx` command, so [MCP](
 
 ### src/mcp/server.ts
 
-This code starts an [MCP](https://modelcontextprotocol.io) server that listens for the `"add a pet to the store"` tool call against the Swagger PetStore API from your OpenAPI or Swagger file. It works in four steps:
+This code starts an [MCP](https://modelcontextprotocol.io) server for the Swagger PetStore API in four steps:
 
 1. Imports the MCP SDK classes and the `addPetHandler` function.
 2. Creates an MCP server named `"Swagger PetStore - OpenAPI 3.0"`.
@@ -233,7 +229,7 @@ startServer()
 
 ## Start Claude with the MCP server
 
-First, point [Claude](https://claude.ai) at your [MCP](https://modelcontextprotocol.io) server config file (`src/mcp/mcp.json`). Open Claude desktop and go to settings.
+Point [Claude](https://claude.ai) at your [MCP](https://modelcontextprotocol.io) server config file (`src/mcp/mcp.json`). Open Claude desktop and go to settings.
 
 ![Claude setup 1](/public/screenshots/claude-setup1.png)
 
@@ -282,9 +278,7 @@ For example:
 
 ## Validate your MCP server
 
-Quit [Claude](https://claude.ai) and reopen the desktop app.
-
-Then check that your [MCP](https://modelcontextprotocol.io) server is connected by clicking the button below.
+Quit [Claude](https://claude.ai) and reopen the desktop app. Check that your [MCP](https://modelcontextprotocol.io) server is connected by clicking the button below.
 
 ![Claude](/public/screenshots/claude-setup3.png)
 
@@ -294,7 +288,7 @@ The view below opens and shows your generated [MCP](https://modelcontextprotocol
 
 ## Use your MCP server
 
-Here, the prompt `create a random pet` calls your generated [MCP](https://modelcontextprotocol.io) server. The server maps the prompt to the `addPet` tool, which calls `addPetHandler` and creates the pet.
+The prompt `create a random pet` calls your generated [MCP](https://modelcontextprotocol.io) server. The server maps the prompt to the `addPet` tool, which calls `addPetHandler` and creates the pet.
 
 ![Claude interaction](/public/screenshots/claude-interaction.gif)
 

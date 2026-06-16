@@ -10,9 +10,7 @@ id: plugin-msw
 
 # @kubb/plugin-msw
 
-Generate [MSW](https://mswjs.io/) handlers from your OpenAPI spec. Drop them into your test setup or service worker to mock the API end-to-end, so request path, method, status, and response body all stay in sync with the spec.
-
-Combine with `@kubb/plugin-faker` to seed handlers with realistic data, or feed them custom payloads from tests.
+Generate [MSW](https://mswjs.io/) handlers from your OpenAPI spec. Drop them into your test setup or service worker to mock the API end-to-end, so request path, method, status, and response body stay in sync with the spec. Combine with `@kubb/plugin-faker` to seed handlers with realistic data, or feed them custom payloads from tests.
 
 ## Installation
 
@@ -52,7 +50,7 @@ Where the generated MSW handlers are written and how they are exported.
 
 Folder where the plugin writes its generated code. The path is resolved against the global `output.path` set on `defineConfig`.
 
-Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `'hooks'`). To put everything in one file, set `output.mode: 'file'` and point `path` at the target file with its extension (e.g. `'types.ts'`).
+Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `'hooks'`). To write everything into one file, set `output.mode: 'file'` and point `path` at the target file with its extension (e.g. `'types.ts'`).
 
 |           |              |
 | --------: | :----------- |
@@ -251,9 +249,7 @@ export default defineConfig({
 
 #### output.banner
 
-Text prepended to every generated file. Useful for license headers, lint disables, or `@ts-nocheck` directives.
-
-Pass a string for a static banner, or a function to compute the banner from each file's `RootNode` (the AST root with path, schema, and operation context).
+Text prepended to every generated file, for license headers, lint disables, or `@ts-nocheck` directives. Pass a string for a static banner, or a function that computes it from each file's `RootNode` (the AST root with path, schema, and operation context).
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -309,9 +305,7 @@ export default defineConfig({
 
 #### output.footer
 
-Text appended at the end of every generated file. It mirrors `banner`. Use it for closing comments, re-enabling lint rules, or marker lines.
-
-Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
+Text appended to every generated file, the counterpart to `banner`, for closing comments, re-enabling lint rules, or marker lines. Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -398,9 +392,7 @@ export const server = setupServer(...handlersGet, ...handlersPost)
 
 ### baseURL
 
-Base URL prepended to every handler's request URL. When omitted, the URL comes from the adapter's server URL, usually the OpenAPI spec's `servers[0].url`.
-
-Set this when the handlers should match a different environment (staging, production) than the one written in the spec.
+Base URL prepended to every handler's request URL. When omitted, the URL comes from the adapter's server URL, usually the spec's `servers[0].url`. Set it to match a different environment (staging, production) than the spec.
 
 |           |          |
 | --------: | :------- |
@@ -430,9 +422,7 @@ export default defineConfig({
 
 ### group
 
-Splits generated files into subfolders based on each operation's tag or path, so related handlers share a directory.
-
-Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files go under `{output.path}/{groupName}/`, where `groupName` comes from the operation's first tag or first path segment, depending on `group.type`.
+Splits generated files into subfolders by each operation's tag or path, so related handlers share a directory. Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files go under `{output.path}/{groupName}/`, where `groupName` comes from the operation's first tag or first path segment, depending on `group.type`.
 
 |           |         |
 | --------: | :------ |
@@ -507,7 +497,7 @@ Function that builds the folder name from a group key. By default `'tag'` groups
 Source of the response body returned by each generated handler.
 
 - `'data'` (default): handlers return a typed empty payload from `@kubb/plugin-ts`, ready for you to fill in from tests.
-- `'faker'`: handlers return a value produced by `@kubb/plugin-faker`. This needs `@kubb/plugin-faker` in the plugins array, and the plugin depends on Faker only when you choose this value.
+- `'faker'`: handlers return a value produced by `@kubb/plugin-faker`, which must be in the plugins array. The plugin depends on Faker only when you choose this value.
 
 |           |                     |
 | --------: | :------------------ |
@@ -660,11 +650,7 @@ export default defineConfig({
 
 ### override
 
-Applies a different set of plugin options to operations that match a pattern. Use this when most of your API follows the global config, but a few endpoints need different treatment.
-
-Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations.
-
-Entries are evaluated top to bottom. The first matching entry's `options` is merged onto the plugin defaults, and later entries do not stack.
+Applies a different set of plugin options to operations that match a pattern. Use this when most of your API follows the global config but a few endpoints need different treatment. Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations. Entries are evaluated top to bottom: the first match's `options` is merged onto the plugin defaults, and later entries do not stack.
 
 |           |                   |
 | --------: | :---------------- |
@@ -711,9 +697,7 @@ export default defineConfig({
 
 ### generators
 
-Adds custom generators that run alongside the plugin's built-in generators. Each generator can emit additional files or post-process existing ones using the plugin's AST and options.
-
-Use this when you need output the plugin does not produce by default (a custom client wrapper, an extra index, a metadata file). For guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
+Adds custom generators that run alongside the plugin's built-in ones. Each generator can emit extra files or post-process existing ones using the plugin's AST and options. Use this for output the plugin does not produce itself (a custom client wrapper, an extra index, a metadata file). See [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
 
 |           |                               |
 | --------: | :---------------------------- |
@@ -725,11 +709,7 @@ Use this when you need output the plugin does not produce by default (a custom c
 
 ### resolver
 
-Overrides how the plugin builds names and paths for generated files and symbols. Use this to add prefixes, suffixes, or to swap the casing strategy without forking the plugin.
-
-Only override the methods you want to change. Anything you omit falls back to the plugin's default resolver. A method that returns `null` or `undefined` also falls back.
-
-Inside each method, `this` is bound to the full resolver, so you can call `this.default(name, 'function')` to delegate to the built-in implementation.
+Overrides how the plugin builds names and paths for generated files and symbols. Use it to add prefixes, suffixes, or swap the casing strategy without forking the plugin. Override only the methods you want to change. Anything you omit, or a method that returns `null` or `undefined`, falls back to the default resolver. Inside each method, `this` is bound to the full resolver, so you can call `this.default(name, 'function')` to delegate to the built-in implementation.
 
 |           |                                                |
 | --------: | :--------------------------------------------- |
@@ -772,9 +752,7 @@ Each plugin ships with a default resolver:
 
 ### macros
 
-Rewrite AST nodes before they are printed to source code. Use this when you need to rewrite operation IDs, drop descriptions, or change schema metadata without forking the generator.
-
-Each [macro](/docs/5.x/concepts/macros) callback (e.g. `schema`, `operation`) receives the node and a context object. Return a new node to replace it, or return `undefined` to leave it untouched. Callbacks you omit keep the plugin's default behavior. Macros run in order, so a later macro sees the output of an earlier one.
+Rewrite AST nodes before they are printed to source code, to rewrite operation IDs, drop descriptions, or change schema metadata without forking the generator. Each [macro](/docs/5.x/concepts/macros) callback (e.g. `schema`, `operation`) receives the node and a context object. Return a new node to replace it, or `undefined` to leave it untouched. Callbacks you omit keep the default behavior. Macros run in order, so a later macro sees the output of an earlier one.
 
 |           |                 |
 | --------: | :-------------- |

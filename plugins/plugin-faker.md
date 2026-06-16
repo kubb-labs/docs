@@ -10,9 +10,7 @@ id: plugin-faker
 
 # @kubb/plugin-faker
 
-Generate a mock-data factory function for every schema in your OpenAPI spec with [Faker.js](https://fakerjs.dev/). Call `createPet()` and you get a realistic `Pet` object, so you can run tests, render Storybook stories, and work on local data without a running backend.
-
-Pair with `@kubb/plugin-msw` to mock entire endpoints, or use the factories directly in your test suite.
+Generate a mock-data factory function for every schema in your OpenAPI spec with [Faker.js](https://fakerjs.dev/). Call `createPet()` to get a realistic `Pet` object for tests, Storybook stories, and local data without a running backend. Pair with `@kubb/plugin-msw` to mock entire endpoints, or use the factories directly in your test suite.
 
 ## Installation
 
@@ -52,7 +50,7 @@ Where the generated mock factories are written and how they are exported.
 
 Folder where the plugin writes its generated code. The path is resolved against the global `output.path` set on `defineConfig`.
 
-Use a folder to keep each generator's output separate (`'types'`, `'clients'`, `'hooks'`). To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension (e.g. `'types.ts'`).
+Use a folder to keep each generator's output separate (`'types'`, `'clients'`, `'hooks'`). To write everything into one file, set `output.mode: 'file'` and point `path` at the target file including its extension (e.g. `'types.ts'`).
 
 |           |           |
 | --------: | :-------- |
@@ -251,9 +249,7 @@ export default defineConfig({
 
 #### output.banner
 
-Text prepended to every generated file. Use it for license headers, lint disables, or `@ts-nocheck` directives.
-
-Pass a string for a static banner. Pass a function to compute the banner from each file's `RootNode` (the AST root containing path, schema, and operation context).
+Text prepended to every generated file, for license headers, lint disables, or `@ts-nocheck` directives. Pass a string for a static banner, or a function that computes it from each file's `RootNode` (the AST root holding path, schema, and operation context).
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -309,9 +305,7 @@ export default defineConfig({
 
 #### output.footer
 
-Text appended at the end of every generated file. It mirrors `banner`. Use it for closing comments, re-enabling lint rules, or marker lines.
-
-Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
+Text appended to every generated file, the counterpart to `banner`, for closing comments, re-enabling lint rules, or marker lines. Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -377,9 +371,7 @@ export default defineConfig({
 
 ### group
 
-Splits the generated files into subfolders based on each operation's tag or path, so related mocks end up in the same directory.
-
-Without `group`, every file lands in the plugin's `output.path` folder. With `group`, the plugin writes each file under `{output.path}/{groupName}/`, where `groupName` comes from the operation's first tag or first path segment.
+Splits the generated files into subfolders by each operation's tag or path, so related mocks end up in the same directory. Without `group`, every file lands in the plugin's `output.path` folder. With `group`, each file goes under `{output.path}/{groupName}/`, where `groupName` comes from the operation's first tag or first path segment.
 
 |           |         |
 | --------: | :------ |
@@ -453,9 +445,7 @@ Builds the folder name from a group key, which is the operation's first tag or f
 
 ### dateParser
 
-Library used to format `date`, `time`, and `datetime` fields that are represented as strings.
-
-Use a value other than `'faker'` when your project already has a date library and you want consistent formatting across mocks and runtime. The plugin auto-imports the default export of the library you choose.
+Library used to format `date`, `time`, and `datetime` fields represented as strings. Use a value other than `'faker'` when your project already has a date library and you want consistent formatting across mocks and runtime. The plugin auto-imports the default export of the library you choose.
 
 |           |                                            |
 | --------: | :----------------------------------------- |
@@ -484,9 +474,7 @@ moment(faker.date.anytime()).format('YYYY-MM-DD')
 
 ### mapper
 
-Maps OpenAPI schema names to specific Faker expressions. Use this when the schema name does not give Faker enough context to pick a sensible value (`'email'`, `'phone'`, `'avatarUrl'`).
-
-Keys are the schema name (case-sensitive), and values are the JavaScript expression that produces the mock value.
+Maps OpenAPI schema names to specific Faker expressions, for when the schema name does not give Faker enough context to pick a sensible value (`'email'`, `'phone'`, `'avatarUrl'`). Keys are the case-sensitive schema name, values are the JavaScript expression that produces the mock value.
 
 |           |                          |
 | --------: | :----------------------- |
@@ -550,7 +538,7 @@ new RandExp(/^[A-Z]+$/).gen()
 
 ### seed
 
-Seed value passed to `faker.seed(...)`. Set it to get deterministic output across runs, which helps with snapshot tests and reproducible local data.
+Seed value passed to `faker.seed(...)`. Set it for deterministic output across runs, which helps with snapshot tests and reproducible local data.
 
 |           |                      |
 | --------: | :------------------- |
@@ -574,9 +562,7 @@ export default defineConfig({
 
 ### locale
 
-Faker locale used for generated mock values. Switches the named import to `fakerXX` from `@faker-js/faker` so names, addresses, and phone numbers reflect the target region.
-
-Defaults to `'en'`, which imports `fakerEN`.
+Faker locale used for generated mock values. Switches the named import to `fakerXX` from `@faker-js/faker` so names, addresses, and phone numbers reflect the target region. The default `'en'` imports `fakerEN`.
 
 |           |          |
 | --------: | :------- |
@@ -727,11 +713,7 @@ export default defineConfig({
 
 ### override
 
-Applies a different set of plugin options to operations that match a pattern. Use this when most of your API follows the global config but a few endpoints need different treatment.
-
-Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations.
-
-Entries are evaluated top to bottom. The first matching entry's `options` is merged onto the plugin defaults, and later entries do not stack.
+Applies a different set of plugin options to operations that match a pattern. Use this when most of your API follows the global config but a few endpoints need different treatment. Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations. Entries are evaluated top to bottom: the first match's `options` is merged onto the plugin defaults, and later entries do not stack.
 
 |           |                   |
 | --------: | :---------------- |
@@ -774,9 +756,7 @@ export default defineConfig({
 
 ### generators
 
-Adds custom generators that run alongside the plugin's built-in ones. Each generator can emit extra files or post-process existing ones using the plugin's AST and options.
-
-Use this when you need output the plugin does not produce out of the box (a custom client wrapper, an extra index, a metadata file). For end-to-end guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
+Adds custom generators that run alongside the plugin's built-in ones. Each generator can emit extra files or post-process existing ones using the plugin's AST and options. Use this for output the plugin does not produce itself (a custom client wrapper, an extra index, a metadata file). See [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
 
 |           |                                 |
 | --------: | :------------------------------ |

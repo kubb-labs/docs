@@ -10,9 +10,7 @@ id: plugin-cypress
 
 # @kubb/plugin-cypress
 
-Generate one typed `cy.request()` wrapper per OpenAPI operation. Each helper has typed path params, body, query, and a typed response, so a broken API call in Cypress shows up at compile time instead of inside the test runner.
-
-Use these helpers in `before`/`beforeEach` hooks to seed data, in custom commands, or in API-only test specs.
+Generate one typed `cy.request()` wrapper per OpenAPI operation. Each helper has typed path params, body, query, and response, so a broken API call shows up at compile time instead of inside the test runner. Use them in `before`/`beforeEach` hooks to seed data, in custom commands, or in API-only specs.
 
 ## Installation
 
@@ -52,7 +50,7 @@ Where the generated Cypress helpers are written and how they are exported.
 
 Folder where the plugin writes its generated code. The path is resolved against the global `output.path` set on `defineConfig`.
 
-Point `path` at a folder to keep each generator's output isolated, such as `'types'` or `'clients'`. To put everything in one file, set `output.mode: 'file'` and point `path` at the target file with its extension (e.g. `'types.ts'`).
+Point `path` at a folder to keep each generator's output isolated, such as `'types'` or `'clients'`. To write everything into one file, set `output.mode: 'file'` and point `path` at the target file with its extension (e.g. `'types.ts'`).
 
 |           |             |
 | --------: | :---------- |
@@ -261,9 +259,7 @@ export default defineConfig({
 
 #### output.banner
 
-Text prepended to every generated file. Useful for license headers, lint disables, or `@ts-nocheck` directives.
-
-Pass a string for a static banner, or a function to compute the banner from each file's `RootNode` (the AST root containing path, schema, and operation context).
+Text prepended to every generated file, for license headers, lint disables, or `@ts-nocheck` directives. Pass a string for a static banner, or a function that computes it from each file's `RootNode` (the AST root holding path, schema, and operation context).
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -328,9 +324,7 @@ export default defineConfig({
 
 #### output.footer
 
-Text appended at the end of every generated file. It mirrors `banner`. Use it for closing comments, to re-enable lint rules, or to write marker lines.
-
-Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
+Text appended to every generated file, the counterpart to `banner`, for closing comments, re-enabling lint rules, or marker lines. Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -400,11 +394,7 @@ export default defineConfig({
 
 ### resolver
 
-Overrides how the plugin builds names and paths for generated files and symbols. Use it to add prefixes, suffixes, or swap the casing strategy without forking the plugin.
-
-Only override the methods you want to change. Anything you omit falls back to the plugin's default resolver. A method that returns `null` or `undefined` also falls back.
-
-Inside each method, `this` is bound to the full resolver, so you can call `this.default(name, 'function')` to delegate to the built-in implementation.
+Overrides how the plugin builds names and paths for generated files and symbols. Use it to add prefixes, suffixes, or swap the casing strategy without forking the plugin. Override only the methods you want to change. Anything you omit, or a method that returns `null` or `undefined`, falls back to the default resolver. Inside each method, `this` is bound to the full resolver, so you can call `this.default(name, 'function')` to delegate to the built-in implementation.
 
 |           |                                                        |
 | --------: | :----------------------------------------------------- |
@@ -452,7 +442,7 @@ Each plugin ships with a default resolver:
 How operation parameters (path, query, headers) are exposed in the generated function signature.
 
 - `'inline'` (default): each parameter is a separate positional argument. Compact for operations with one or two params.
-- `'object'`: every parameter is wrapped in a single object argument. This reads better for operations with many params and names each one at the call site.
+- `'object'`: every parameter is wrapped in a single object argument. Reads better for operations with many params and names each one at the call site.
 
 |           |                        |
 | --------: | :--------------------- |
@@ -497,9 +487,7 @@ updatePet({ petId: 42, data: { name: 'Fido' }, params: { status: 'available' } }
 
 ### paramsCasing
 
-Renames the path, query, and header parameters in the generated helpers to camelCase. The request still carries the original names from the OpenAPI spec, and Kubb writes the mapping back for you.
-
-`'camelcase'` turns `page_size` into `pageSize` in your TypeScript code. The request `qs` still sends `page_size`, so the API sees the name it expects.
+Renames the path, query, and header parameters in the generated helpers to camelCase. The request still carries the original names from the spec, and Kubb writes the mapping back for you. So `'camelcase'` turns `page_size` into `pageSize` in your TypeScript code, while the request `qs` still sends `page_size`.
 
 |           |               |
 | --------: | :------------ |
@@ -543,7 +531,7 @@ export function getPets(params?: { page_size?: GetPetsQueryPageSize }, options: 
 
 ### pathParamsType
 
-How URL path parameters appear in the generated function signature. This affects only path params. Query params follow `paramsType`.
+How URL path parameters appear in the generated function signature. Affects only path params. Query params follow `paramsType`.
 
 - `'inline'` (default): each path param is a positional argument, as in `showPetById(petId)`.
 - `'object'`: path params are wrapped in a single object, as in `showPetById({ petId })`.
@@ -612,9 +600,7 @@ showPetById(1).then((response) => {
 
 ### baseURL
 
-Base URL prepended to every request URL in the generated client. When omitted, the URL comes from the OpenAPI spec's `servers[0].url` (or whichever index the adapter reads).
-
-Set this when the generated client should point at a different environment (staging, production) than the one written in the spec.
+Base URL prepended to every request URL in the generated client. When omitted, the URL comes from the spec's `servers[0].url` (or whichever index the adapter reads). Set it to point the client at a different environment (staging, production) than the spec.
 
 |           |          |
 | --------: | :------- |
@@ -644,9 +630,7 @@ export default defineConfig({
 
 ### group
 
-Splits generated files into subfolders based on the operation's tag or first path segment, so related helpers share a directory.
-
-Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files go under `{output.path}/{groupName}/`, where `groupName` comes from the operation's first tag or first path segment.
+Splits generated files into subfolders by the operation's tag or first path segment, so related helpers share a directory. Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files go under `{output.path}/{groupName}/`, where `groupName` comes from the operation's first tag or first path segment.
 
 |           |         |
 | --------: | :------ |
@@ -854,11 +838,7 @@ export default defineConfig({
 
 ### override
 
-Applies a different set of plugin options to operations that match a pattern. Use this when most of your API should follow the global config, but a handful of endpoints need different treatment.
-
-Each entry shares the `type` and `pattern` shape of `include` and `exclude`, plus an `options` object that overrides the plugin's options for the matched operations.
-
-Entries are evaluated top to bottom. The first matching entry's `options` is merged onto the plugin defaults, and later entries do not stack.
+Applies a different set of plugin options to operations that match a pattern. Use this when most of your API follows the global config but a handful of endpoints need different treatment. Each entry shares the `type` and `pattern` shape of `include` and `exclude`, plus an `options` object that overrides the plugin's options for the matched operations. Entries are evaluated top to bottom: the first match's `options` is merged onto the plugin defaults, and later entries do not stack.
 
 |           |                   |
 | --------: | :---------------- |
@@ -903,9 +883,7 @@ export default defineConfig({
 
 ### generators
 
-Adds custom generators that run alongside the plugin's built-in generators. Each generator can emit extra files or post-process existing ones using the plugin's AST and options.
-
-Use this when you need output the plugin does not produce out of the box (a custom client wrapper, an extra index, a metadata file). For guidance, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
+Adds custom generators that run alongside the plugin's built-in ones. Each generator can emit extra files or post-process existing ones using the plugin's AST and options. Use this for output the plugin does not produce itself (a custom client wrapper, an extra index, a metadata file). See [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
 
 |           |                                   |
 | --------: | :-------------------------------- |
@@ -917,9 +895,7 @@ Use this when you need output the plugin does not produce out of the box (a cust
 
 ### macros
 
-Rewrite AST nodes before they are printed to source code. Use this when you need to rewrite operation IDs, drop descriptions, or change schema metadata without forking the generator.
-
-Each [macro](/docs/5.x/concepts/macros) callback (e.g. `schema`, `operation`) receives the node and a context object. Return a new node to replace it, or `undefined` to leave it untouched. Callbacks you omit keep the plugin's default behavior. Macros run in order, so a later macro sees the output of an earlier one.
+Rewrite AST nodes before they are printed to source code, to rewrite operation IDs, drop descriptions, or change schema metadata without forking the generator. Each [macro](/docs/5.x/concepts/macros) callback (e.g. `schema`, `operation`) receives the node and a context object. Return a new node to replace it, or `undefined` to leave it untouched. Callbacks you omit keep the default behavior. Macros run in order, so a later macro sees the output of an earlier one.
 
 |           |                 |
 | --------: | :-------------- |

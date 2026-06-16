@@ -106,7 +106,7 @@ export default defineConfig(({ watch }) => ({
 
 Reach for `createKubb` when you need to orchestrate several builds, inspect diagnostics, or feed Kubb output into a larger toolchain. For a one-off build, chain the call directly: `await createKubb(config).build()`.
 
-`createKubb` takes a plain config object, the same shape `defineConfig` produces in `kubb.config.ts`. It is not a fluent builder, and that is deliberate. A builder cannot live in a config file, and the config has to stay plain serializable data so Kubb can validate it against the shipped JSON schema.
+`createKubb` takes a plain config object, the same shape `defineConfig` produces in `kubb.config.ts`. It is not a fluent builder by design: the config stays plain serializable data so Kubb can validate it against the shipped JSON schema.
 
 ```typescript twoslash
 // @module: esnext
@@ -462,7 +462,7 @@ Files stream through the processor as they arrive: the driver calls `enqueue(fil
 
 For JSX-based rendering, import `jsxRenderer` directly from [`@kubb/renderer-jsx`](https://www.npmjs.com/package/@kubb/renderer-jsx). `@kubb/core` no longer re-exports a `createRenderer` factory.
 
-`jsxRenderer` is a React-free recursive renderer. It walks the same JSX components into `FileNode`s without a React reconciliation pass, and its `stream()` returns a synchronous `Generator<FileNode>` that skips a microtask per file. Components run as plain functions, so hooks and suspense are not available.
+`jsxRenderer` is a React-free recursive renderer. It walks the JSX components into `FileNode`s without a React reconciliation pass, and its `stream()` returns a synchronous `Generator<FileNode>` that skips a microtask per file. Components run as plain functions, so hooks and suspense are not available.
 
 ```typescript twoslash
 import { jsxRenderer } from '@kubb/renderer-jsx'

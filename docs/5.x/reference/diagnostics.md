@@ -20,10 +20,9 @@ document, and a suggested fix. The CLI leads with the code and lists the details
 The location is a JSON pointer into the source document. OpenAPI is parsed into an object model, so
 Kubb points at the node (`#/components/schemas/Pet`) rather than a line and column.
 
-Each code is stable, so you can search for it and link to its page. A run collects every
-diagnostic instead of stopping at the first, so a single `kubb generate` surfaces all the problems it
-finds. The run fails only when at least one diagnostic has `error` severity. Warnings and info never
-fail the build.
+Each code is stable, so you can search for it and link to its page. A run collects every diagnostic
+instead of stopping at the first, so one `kubb generate` surfaces every problem. The run fails only
+when at least one diagnostic has `error` severity. Warnings and info never fail the build.
 
 ## Severity
 
@@ -100,8 +99,8 @@ and notices, not the diagnostic log.
 
 ## Machine-readable output
 
-`kubb generate --reporter json` prints a stable report to stdout, so CI can read the diagnostics
-without scraping the terminal:
+`kubb generate --reporter json` prints a stable report to stdout, so CI can read diagnostics without
+scraping the terminal:
 
 ```json
 {

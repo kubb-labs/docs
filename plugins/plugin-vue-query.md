@@ -13,7 +13,7 @@ id: plugin-vue-query
 
 # @kubb/plugin-vue-query
 
-Generate one [TanStack Query](https://tanstack.com/query) composable per OpenAPI operation, ready to use inside Vue's Composition API. Queries become `useFooQuery`, and optionally `useFooInfiniteQuery`. Mutations become `useFooMutation`. Each composable is typed against the operation's request and response.
+Generate one [TanStack Query](https://tanstack.com/query) composable per OpenAPI operation for Vue's Composition API. Queries become `useFooQuery` and optionally `useFooInfiniteQuery`, mutations become `useFooMutation`, each typed against the operation's request and response.
 
 Pairs with `@kubb/plugin-client` for the HTTP layer and `@kubb/plugin-ts` for types.
 
@@ -55,7 +55,7 @@ Where the generated composables are written and how they are exported.
 
 Folder where the plugin writes its generated code. The path is resolved against the global `output.path` set on `defineConfig`.
 
-Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `'hooks'`). To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension (`'types.ts'`).
+Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `'hooks'`). To write everything into one file, set `output.mode: 'file'` and point `path` at the target file including its extension (`'types.ts'`).
 
 |           |           |
 | --------: | :-------- |
@@ -262,9 +262,7 @@ export default defineConfig({
 
 #### output.banner
 
-Text prepended to every generated file. Use it for license headers, lint disables, or `@ts-nocheck` directives.
-
-Pass a string for a static banner. Pass a function to compute the banner from each file's `RootNode`, the AST root containing path, schema, and operation context.
+Text prepended to every generated file, for license headers, lint disables, or `@ts-nocheck` directives. Pass a string for a static banner, or a function that computes it from each file's `RootNode` (the AST root holding path, schema, and operation context).
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -322,9 +320,7 @@ export default defineConfig({
 
 #### output.footer
 
-Text appended to the end of every generated file, the counterpart to `banner`. Use it for closing comments, re-enabling lint rules, or marker lines.
-
-Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
+Text appended to every generated file, the counterpart to `banner`, for closing comments, re-enabling lint rules, or marker lines. Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -394,9 +390,7 @@ export default defineConfig({
 
 ### group
 
-Splits generated files into subfolders based on the operation's tag, so each tag in your OpenAPI spec gets its own directory.
-
-Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files are bucketed under `{output.path}/{groupName}/`, where `groupName` is derived from the operation's first tag.
+Splits generated files into subfolders by the operation's tag, so each tag gets its own directory. Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files go under `{output.path}/{groupName}/`, where `groupName` derives from the operation's first tag.
 
 |           |         |
 | --------: | :------ |
@@ -490,9 +484,7 @@ HTTP client that the generated composables call. `'axios'` imports from `@kubb/p
 
 #### client.importPath
 
-Path or module specifier of a custom client module. Generated code imports its HTTP runtime from here instead of `@kubb/plugin-client/clients/{client}`.
-
-Use this to inject auth headers, add interceptors, change the base URL at runtime, or wrap a different HTTP library (ky, ofetch, ...). Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work.
+Path or module specifier of a custom client module. Generated code imports its HTTP runtime from here instead of `@kubb/plugin-client/clients/{client}`. Use it to inject auth headers, add interceptors, set the base URL at runtime, or wrap a different HTTP library (ky, ofetch, ...). Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work.
 
 |           |          |
 | --------: | :------- |
@@ -565,31 +557,9 @@ export default defineConfig({
 
 :::
 
-##### When to use `importPath`
-
-Reach for a custom client to:
-
-- Add an auth token to every request.
-- Plug in interceptors, retries, or logging.
-- Configure `baseURL` and headers from environment variables.
-- Wrap a library other than `axios`/`fetch`.
-
-##### Default behavior
-
-Without `importPath`:
-
-- `bundle: false` (default): generated code imports from `@kubb/plugin-client/clients/{axios|fetch}`.
-- `bundle: true`: Kubb writes `.kubb/client.ts` and generated code imports from there.
-
 ##### Required exports
 
-The module pointed to by `importPath` must satisfy the same shape as the built-in client. At minimum:
-
-- A default export of the `client` function.
-- A `RequestConfig` type.
-- A `ResponseErrorConfig` type.
-
-When used together with a query plugin (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`), it must also export a `Client` type alias.
+The module must match the shape of the built-in client: a default export of the `client` function, a `RequestConfig` type, and a `ResponseErrorConfig` type. With a query plugin (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`) it must also export a `Client` type alias.
 
 ##### How generated files import it
 
@@ -647,9 +617,7 @@ if (res.status === 405) {
 
 #### client.baseURL
 
-Base URL prepended to every request URL in the generated client. When omitted, the URL comes from the OpenAPI spec's `servers[0].url` (or whichever index the adapter is configured to read).
-
-Set this when the generated client should point at a different environment (staging, production) than the spec.
+Base URL prepended to every request URL in the generated client. When omitted, the URL comes from the spec's `servers[0].url` (or whichever index the adapter reads). Set it to point the client at a different environment (staging, production) than the spec.
 
 |           |          |
 | --------: | :------- |
@@ -695,7 +663,7 @@ Style of the HTTP client that this plugin imports from `@kubb/plugin-client`.
 
 #### client.bundle
 
-Copies the HTTP client runtime into the generated output, so the consuming app does not need `@kubb/plugin-client` at runtime.
+Copies the HTTP client runtime into the generated output, so the consuming app does not depend on `@kubb/plugin-client` at runtime.
 
 - `false` (default): generated files import from `@kubb/plugin-client/clients/{client}`. Smaller diff, but the package must be a runtime dependency.
 - `true`: Kubb writes a `.kubb/client.ts` file with the client implementation. Generated code imports from that local file and the project no longer pulls `@kubb/plugin-client` at runtime.
@@ -730,7 +698,7 @@ export default defineConfig({
 
 #### client.paramsCasing
 
-Casing applied to path, query, and header parameters inside the generated client. Set it on `client` to match the top-level `paramsCasing` option, so the composable and the client agree on parameter names.
+Casing applied to path, query, and header parameters inside the generated client. Match it to the top-level `paramsCasing` so the composable and the client agree on parameter names.
 
 |           |               |
 | --------: | :------------ |
@@ -789,7 +757,7 @@ await deletePet({ petId: 42, headers: { 'X-Api-Key': 'secret' } })
 
 ### paramsCasing
 
-Renames path, query, and header parameters in the generated client to the chosen casing. The HTTP request still uses the original names from the OpenAPI spec, and Kubb writes the mapping for you.
+Renames path, query, and header parameters in the generated client to the chosen casing. The HTTP request still uses the original names from the spec, and Kubb writes the mapping for you.
 
 - `'camelcase'`: turn `pet_id` and `X-Api-Key` into `petId` and `xApiKey` in your TypeScript code. The runtime URL still uses `/pet/{pet_id}` and the header is still sent as `X-Api-Key`.
 
@@ -1137,9 +1105,7 @@ type Query =
 
 #### query.methods
 
-HTTP methods treated as queries. Operations using one of these methods generate a `useQuery`-style hook (or `queryOptions` helper) instead of a mutation.
-
-Defaults to `['get']`. Add other methods (such as `'head'`) only when your API uses them for cache-friendly reads.
+HTTP methods treated as queries. Operations using one of these generate a `useQuery`-style hook (or `queryOptions` helper) instead of a mutation. Add methods such as `'head'` only when your API uses them for cache-friendly reads.
 
 |           |                     |
 | --------: | :------------------ |
@@ -1198,9 +1164,7 @@ type Mutation =
 
 #### mutation.methods
 
-HTTP methods treated as mutations. Operations using one of these methods generate a `useMutation`-style hook instead of a query.
-
-Defaults to `['post', 'put', 'patch', 'delete']`. Narrow the list if your API uses one of these methods for reads.
+HTTP methods treated as mutations. Operations using one of these generate a `useMutation`-style hook instead of a query. Narrow the list if your API uses one of these methods for reads.
 
 |           |                                      |
 | --------: | :----------------------------------- |
@@ -1436,9 +1400,7 @@ export default defineConfig({
 
 ### generators
 
-Adds custom generators that run alongside the plugin's built-in generators. Each generator can emit extra files or post-process existing ones using the plugin's AST and options.
-
-Use this when you need output the plugin does not produce out of the box (a custom client wrapper, an extra index, a metadata file). For more, see [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
+Adds custom generators that run alongside the plugin's built-in ones. Each generator can emit extra files or post-process existing ones using the plugin's AST and options. Use this for output the plugin does not produce itself (a custom client wrapper, an extra index, a metadata file). See [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
 
 |           |                                    |
 | --------: | :--------------------------------- |
@@ -1450,7 +1412,7 @@ Use this when you need output the plugin does not produce out of the box (a cust
 
 ### resolver
 
-Overrides naming and path resolution for the generated composables. Supply only the methods you want to change. The rest fall back to the default resolver.
+Overrides naming and path resolution for the generated composables. Supply only the methods you want to change, and the rest fall back to the default resolver.
 
 |           |                             |
 | --------: | :-------------------------- |
@@ -1459,7 +1421,7 @@ Overrides naming and path resolution for the generated composables. Supply only 
 
 ### macros
 
-A list of [macros](/docs/5.x/concepts/macros) applied to operation nodes before code is printed. Use this to rewrite operation IDs, tags, or descriptions across the entire output.
+A list of [macros](/docs/5.x/concepts/macros) applied to operation nodes before code is printed. Use it to rewrite operation IDs, tags, or descriptions across the output.
 
 |           |                 |
 | --------: | :-------------- |

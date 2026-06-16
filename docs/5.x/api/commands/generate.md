@@ -58,7 +58,7 @@ kubb generate ./petStore.yaml
 
 ## Reporters
 
-A reporter decides how a run is rendered. The config registers the available reporters with [`reporters`](/docs/5.x/reference/configuration), which defaults to the built-ins, and `--reporter` picks which ones to trigger by name (comma separated, like `--reporter cli,file`). Without the flag, the `cli` reporter runs. Three reporters ship out of the box:
+A reporter decides how a run is rendered. The config registers the available reporters with [`reporters`](/docs/5.x/reference/configuration), which defaults to the built-ins, and `--reporter` picks which ones to trigger by name (comma separated, like `--reporter cli,file`). Without the flag, the `cli` reporter runs. Three ship out of the box:
 
 | Reporter | Output                                                                          |
 | -------- | ------------------------------------------------------------------------------- |

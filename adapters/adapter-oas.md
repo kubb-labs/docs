@@ -250,14 +250,6 @@ export type Animal = Cat | Dog
 
 :::
 
-#### strict
-
-Child schemas are emitted verbatim. The discriminator property has whatever type the OpenAPI spec gave it.
-
-#### inherit
-
-Each child schema gets the discriminator value as a literal (`type: 'cat'`, `type: 'dog'`). Catches more bugs at compile time.
-
 ### dedupe
 
 Collapses structurally identical schemas and enums into one shared definition.
@@ -302,25 +294,12 @@ How `format: date-time` schemas are represented downstream.
 | Required: | `false`                                                          |
 |  Default: | `'string'`                                                       |
 
+The string variants all emit `string` at the TypeScript type level. The offset/local distinction surfaces in schema output such as Zod.
+
 ::: code-group
 
-```typescript [false]
-// format: date-time → plain string
-type CreatedAt = string
-```
-
-```typescript ['string' (default)]
-// format: date-time → ISO 8601 datetime string
-type CreatedAt = string
-```
-
-```typescript ['stringOffset']
-// format: date-time → ISO 8601 datetime with offset
-type CreatedAt = string
-```
-
-```typescript ['stringLocal']
-// format: date-time → local ISO 8601 datetime
+```typescript [string variants]
+// false, 'string', 'stringOffset', 'stringLocal' → string
 type CreatedAt = string
 ```
 

@@ -18,9 +18,9 @@ stops instead of producing something the options do not describe.
 
 `output.mode: 'file'` writes everything into one file at `output.path`. The `group` option splits
 output into per-tag or per-path subdirectories, which only applies to `output.mode: 'directory'`.
-Combining the two contradicts itself, so Kubb reports the configuration as invalid at plugin setup
-rather than guessing a layout. The TypeScript types catch the same mistake at compile time, but a
-config written in JavaScript or cast to `any` only surfaces it here.
+The two contradict each other, so Kubb reports the config as invalid at plugin setup rather than
+guessing a layout. The TypeScript types catch the same mistake at compile time, but a config written
+in JavaScript or cast to `any` only surfaces it here.
 
 ## How to fix it
 

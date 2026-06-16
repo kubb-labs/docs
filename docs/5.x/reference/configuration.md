@@ -183,7 +183,7 @@ export default defineConfig({
 })
 ```
 
-The config above writes every type into `src/gen/types.ts` and one client file per operation, organized into a folder per tag (`src/gen/clients/pet/`, `src/gen/clients/store/`).
+This writes every type into `src/gen/types.ts` and one client file per operation, organized into a folder per tag (`src/gen/clients/pet/`, `src/gen/clients/store/`).
 
 > [!TIP]
 > `mode: 'file'` forbids the `group` option, since a single file has nothing to group. Pairing them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
@@ -342,7 +342,7 @@ Text prepended to every file a plugin generates. Configure it on an individual p
 |   `isBarrel` | `boolean` | `true` for `index.ts` re-export barrels.                 |
 | `isAggregation` | `boolean` | `true` for group `[dir]/[dir].ts` aggregation files. |
 
-The function form is useful for Next.js Server Actions: add `'use server'` to source files, but skip it on re-export files, which only re-export symbols or return function references and break under the directive.
+The function form fits Next.js Server Actions: add `'use server'` to source files, but skip it on re-export files, which only re-export symbols or return function references and break under the directive.
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'

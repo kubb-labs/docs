@@ -7,7 +7,7 @@ outline: deep
 
 # TypeScript
 
-Kubb is built in TypeScript end-to-end. Every public surface accepts a generic that pins down options, resolved options, and the resolver shape. This includes [`defineConfig`](https://github.com/kubb-labs/kubb/blob/main/packages/kubb/src/defineConfig.ts), [`definePlugin`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/definePlugin.ts#L79), [`defineParser`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineParser.ts), [`createAdapter`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/createAdapter.ts), [`defineGenerator`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineGenerator.ts), and the AST factories. The result is a config file where IntelliSense leads you through every choice and the compiler catches mistakes before generation runs.
+Kubb is built in TypeScript end-to-end. Every public surface accepts a generic that pins down options, resolved options, and the resolver shape: [`defineConfig`](https://github.com/kubb-labs/kubb/blob/main/packages/kubb/src/defineConfig.ts), [`definePlugin`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/definePlugin.ts#L79), [`defineParser`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineParser.ts), [`createAdapter`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/createAdapter.ts), [`defineGenerator`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineGenerator.ts), and the AST factories. IntelliSense leads you through every choice, and the compiler catches mistakes before generation runs.
 
 ## Quick start
 

@@ -10,7 +10,7 @@ outline: deep
 The `@kubb/ast` package defines Kubb's universal Abstract Syntax Tree. [Adapters](/docs/5.x/concepts/adapters) produce it from a specification (OpenAPI, AsyncAPI, JSON Schema, …), and [plugins](/docs/5.x/concepts/plugins) consume it to emit files. Because every plugin reads the same AST, the same plugin works against any spec a custom adapter can supply.
 
 > [!NOTE]
-> `@kubb/core` re-exports `@kubb/ast` as the `ast` namespace, with the node constructors grouped under `ast.factory` the same way TypeScript groups them under `ts.factory`. Most plugins do not need to add `@kubb/ast` as a direct dependency. Install it explicitly only when you want named imports without the `ast.` prefix, taking constructors from the `@kubb/ast/factory` subpath.
+> `@kubb/core` re-exports `@kubb/ast` as the `ast` namespace, with node constructors grouped under `ast.factory` the way TypeScript groups them under `ts.factory`. Most plugins do not need `@kubb/ast` as a direct dependency. Install it explicitly only for named imports without the `ast.` prefix, taking constructors from the `@kubb/ast/factory` subpath.
 
 ## Quick start
 
@@ -181,7 +181,7 @@ const enhanced = ast.transform(root, {
 Reach for `transform` when you change AST structure, normalize inconsistencies, or annotate nodes.
 
 > [!NOTE]
-> `transform` preserves identity (structural sharing). When a visitor leaves a node and all of its descendants unchanged, `transform` returns the original reference, so unchanged subtrees and their arrays are reused, not copied. Returning the same node from a visitor is a no-op. Returning a new node replaces it and rebuilds only its ancestors. A no-op pass therefore allocates nothing, and you can detect whether anything changed with `result === input`.
+> `transform` preserves identity (structural sharing). When a visitor leaves a node and all of its descendants unchanged, `transform` returns the original reference, so unchanged subtrees and their arrays are reused, not copied. Returning the same node is a no-op. Returning a new node replaces it and rebuilds only its ancestors. A no-op pass allocates nothing, and you can detect whether anything changed with `result === input`.
 
 To apply a change while keeping that guarantee, use the `update` factory instead of spreading by hand. It returns the same node when every field you pass already matches:
 
@@ -273,7 +273,7 @@ const name = extractRefName('#/components/schemas/Pet')
 
 ## Macros
 
-A macro is a named, composable transform built on `transform`. Macros are the way plugins rewrite nodes before printing, with ordering, gating, and reuse that a bare visitor does not give you. See [Concepts: Macros](/docs/5.x/concepts/macros).
+A macro is a named, composable transform built on `transform`. Macros rewrite nodes before printing, with ordering, gating, and reuse that a bare visitor does not give you. See [Concepts: Macros](/docs/5.x/concepts/macros).
 
 | Export          | Purpose                                          |
 | --------------- | ------------------------------------------------ |

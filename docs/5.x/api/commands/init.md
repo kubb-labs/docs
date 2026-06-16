@@ -60,31 +60,19 @@ Each flag bypasses only its specific prompt and composes freely with `--yes`. Pr
 
 ## Examples
 
-Initialize a project from scratch:
-
-```shell
-npx kubb@beta init
-```
-
 Initialize non-interactively with the defaults:
 
 ```shell
 npx kubb@beta init --yes
 ```
 
-Initialize with a specific spec and output directory:
-
-```shell
-npx kubb@beta init --input ./openapi.yaml --output ./src/gen
-```
-
-Initialize fully non-interactively with specific plugins:
+Initialize fully non-interactively with a specific spec, output directory, and plugins:
 
 ```shell
 npx kubb@beta init --input ./openapi.yaml --output ./src/gen --plugins plugin-ts,plugin-zod
 ```
 
-Initialize with a plugin selection but still prompt for the spec path:
+Pass a plugin selection but still prompt for the spec path:
 
 ```shell
 npx kubb@beta init --plugins plugin-ts,plugin-client,plugin-react-query
