@@ -162,7 +162,7 @@ if (ast.isHttpOperationNode(op)) {
 }
 ```
 
-[`@kubb/ast`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/guards.ts) exports two guards, `isHttpOperationNode` and `narrowSchema`. Call `isHttpOperationNode(node)` to turn an `OperationNode` into an `HttpOperationNode` with non-nullable `method` and `path`, and `narrowSchema(node, type)` to pin a `SchemaNode` to one variant.
+These are the only two guards [`@kubb/ast`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/guards.ts) exports. Everything else narrows through the `kind` and `type` discriminants directly.
 
 ## See also
 

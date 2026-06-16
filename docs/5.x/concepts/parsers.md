@@ -14,7 +14,7 @@ There are two distinct jobs in a parser:
 - `print(...nodes)` is called by plugins to render language-specific AST nodes into a string before staging them on `FileNode.sources`.
 - `parse(file)` is called by the file processor after all plugins have run, to join the staged sources into the final output string.
 
-Plugins call `print()`, and the build driver calls `parse()`. Keep those two in mind and a custom parser falls into place.
+Plugins call `print()`, and the file processor calls `parse()`. Keep those two roles in mind and a custom parser falls into place.
 
 > [!TIP]
 > For TypeScript and JavaScript output use the built-in [`@kubb/parser-ts`](/parsers/parser-ts). It is added by default when you import `defineConfig` from the top-level `kubb` package. Build a custom parser only when you target a different language, such as Python, Kotlin, or Rust.
@@ -74,7 +74,7 @@ Every value returned from `defineParser` matches the `Parser` interface from [`@
 > `parse()` is synchronous. The file processor streams files through a synchronous pipeline, so returning a `Promise` is not supported. Do async work before the file reaches the parser and pass the result through `FileNode`.
 
 > [!NOTE]
-> Formatting and linting (Prettier, Biome, oxlint) run **after** `parse()`. Keep `parse()` focused on producing syntactically valid output.
+> Formatting and linting (Prettier, Biome, oxlint) run after `parse()`. Keep `parse()` focused on producing syntactically valid output.
 
 When no parser matches a file's extension, the file processor falls back to joining the file's source strings directly.
 

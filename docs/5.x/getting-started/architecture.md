@@ -45,6 +45,8 @@ flowchart LR
 
 An adapter converts an input specification into the universal [AST](/docs/5.x/concepts/ast). `adapter.parse(source)` returns an `InputNode`; `adapter.getImports(node, resolve)` tracks cross-references so plugins emit correct import paths.
 
+Each adapter also carries a dialect, the one seam where spec-specific schema questions live: nullability, `$ref` resolution, discriminators, binary detection, and schema deduplication. Everything past the adapter is generic JSON Schema, so plugins and parsers never branch on the source format.
+
 The official adapter for OpenAPI 2.0, 3.0, and 3.1 is [`@kubb/adapter-oas`](/adapters/adapter-oas), selected automatically by `defineConfig`.
 
 ```typescript twoslash [kubb.config.ts]
@@ -229,10 +231,10 @@ export default defineConfig({
 
 | Package                                    | Purpose                                                                                                                                                                          |
 | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`kubb`](/docs/5.x/api/core)               | Umbrella package. Exports `defineConfig` and bundles `adapterOas`, `parserTs`, `parserTsx`, and `pluginBarrel` for a zero-config setup.                                          |
+| [`kubb`](/docs/5.x/api/core)               | Umbrella package. Exports `defineConfig` and bundles `adapterOas`, `parserTs`, `parserTsx`, `parserMd`, and `pluginBarrel` for a zero-config setup.                             |
 | [`@kubb/core`](/docs/5.x/api/core)         | Lower-level runtime with `createKubb`, `definePlugin`, `defineParser`, `createAdapter`, and storage APIs. Use for programmatic generation or custom tooling.                     |
 | [`@kubb/cli`](/docs/5.x/api/commands/)     | Provides the `kubb` command-line binary. Reads `kubb.config.ts` and runs the generation pipeline.                                                                                |
-| [`@kubb/ast`](/docs/5.x/concepts/ast)      | Universal AST layer. Includes all node factories, `walk`, `transform`, `collect`, type guards, and ref helpers. The macro engine lives on the root and the presets on `@kubb/ast/macros`. |
+| [`@kubb/ast`](/docs/5.x/concepts/ast)      | Universal AST layer. Includes all node factories, `walk`, `transform`, `collect`, type guards, ref helpers, and the `defineDialect` and `optionality` helpers. The macro engine lives on the root and the presets on `@kubb/ast/macros`. |
 | [`@kubb/parser-ts`](/parsers/parser-ts)    | TypeScript and TSX parser. Included automatically with the `kubb` package.                                                                                                       |
 | [`@kubb/renderer-jsx`](/docs/5.x/api/core) | JSX-based rendering for plugins that build files from React components.                                                                                                          |
 

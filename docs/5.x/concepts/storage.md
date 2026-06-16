@@ -137,4 +137,4 @@ if (!error) {
 }
 ```
 
-See [Testing your plugin locally](/docs/5.x/concepts/plugins#testing-your-plugin-locally) for a complete plugin test setup.
+See [Testing](/docs/5.x/guides/creating-plugins#testing) for a complete plugin test setup.

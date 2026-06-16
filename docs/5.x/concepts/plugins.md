@@ -377,7 +377,7 @@ export const pluginOperations = definePlugin(() => ({
 
 ### Declare a dependency on another plugin
 
-Use `dependencies` to guarantee a sibling plugin runs first. Order in the `plugins` array becomes irrelevant; missing dependencies fail the build with a clear error.
+Use `dependencies` to guarantee a sibling plugin runs first. Order in the `plugins` array stops mattering, and a missing dependency fails the build with a clear error.
 
 ```typescript twoslash [depends.ts]
 import { definePlugin } from '@kubb/core'
@@ -415,7 +415,7 @@ export const pluginBarrel = definePlugin(() => ({
 
 - Split unrelated outputs into separate plugins so users can opt in or out.
 - Prefix the name with `plugin-` (or `@scope/plugin-`) and keep it stable; other plugins look it up by name.
-- Use `dependencies` instead of relying on declaration order. Order is fragile; declared dependencies are explicit.
+- Use `dependencies` instead of relying on declaration order. Order is fragile, and declared dependencies are explicit.
 - Generators should ask `ctx.getResolver(name)` rather than building paths inline.
 - Use closure state inside the factory or rely on the setup context. Plugins may run in parallel, so avoid global state.
 - Throw early in `kubb:plugin:setup` when required options are missing. The build aborts before any file is written.
