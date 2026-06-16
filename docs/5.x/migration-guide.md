@@ -103,7 +103,7 @@ Now migrate the following kubb.config.ts:
 
 ## Performance
 
-v5 generates code faster than v4. Benchmarks compare `@kubb/core@4.37.8` with the v5 `kubb` meta-package, using `write: false` to focus on the generation pipeline.
+v5 generates code faster than v4. Benchmarks compare `@kubb/core@4.37.8` with the v5 `kubb` meta-package, with file writing disabled to focus on the generation pipeline.
 
 > [!NOTE]
 > Measured on a 4-core Intel Xeon @ 2.80 GHz, Linux. Speedup is the headline. Absolute milliseconds are hardware-dependent.
