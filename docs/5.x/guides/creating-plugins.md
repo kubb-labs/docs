@@ -345,7 +345,7 @@ export const resolverExample = defineResolver<PluginExample>(() => ({
 | `addGenerator`    | Register a [`Generator`](/docs/5.x/concepts/plugins#generators) for the AST walk. |
 | `setResolver`     | Set or override the resolver (file naming and paths).                             |
 | `addMacro`        | Add a [macro](/docs/5.x/concepts/macros) that rewrites AST nodes before generators. |
-| `setRenderer`     | Set the renderer factory for JSX-style generator returns.                         |
+| `setMacros`       | Replace this plugin's macros with a new list.                                     |
 | `setOptions`      | Provide resolved options to the build loop.                                       |
 | `injectFile`      | Inject a raw `UserFileNode` into the build, bypassing generators.                 |
 | `updateConfig`    | Merge a partial config update into the running build.                             |

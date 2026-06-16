@@ -389,19 +389,6 @@ When `false` (default), Kubb skips any file that already exists, preserving manu
 
 Setting this at the root level makes all plugins inherit the same behaviour. Each plugin also has its own `output.override` that takes precedence over the root value for that plugin only.
 
-#### `output.write`
-
-Set to `false` to run a dry-run where files are kept in memory only.
-
-|           |           |
-| --------: | :-------- |
-|     Type: | `boolean` |
-| Required: | `false`   |
-|  Default: | `true`    |
-
-> [!WARNING]
-> Deprecated in favour of root-level `storage`, but still supported.
-
 ### `plugins`
 
 Array of Kubb plugins. Plugins may declare dependencies, and Kubb throws an error at startup if any are missing.

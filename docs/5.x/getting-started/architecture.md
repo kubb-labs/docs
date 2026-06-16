@@ -20,7 +20,7 @@ flowchart LR
 
 ## Config
 
-`defineConfig` from the `kubb` package pre-wires [`adapterOas`](/docs/5.x/concepts/adapters), [`parserTs`, `parserTsx`](/docs/5.x/concepts/parsers), and [`pluginBarrel`](/plugins/plugin-barrel), so a minimal config only needs `input` and `output`.
+`defineConfig` from the `kubb` package pre-wires [`adapterOas`](/docs/5.x/concepts/adapters), [`parserTs`, `parserTsx`, `parserMd`](/docs/5.x/concepts/parsers), and [`pluginBarrel`](/plugins/plugin-barrel), so a minimal config only needs `input` and `output`.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'

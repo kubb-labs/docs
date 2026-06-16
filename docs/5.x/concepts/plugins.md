@@ -103,7 +103,6 @@ The `hooks` map can subscribe to any event in [`KubbHooks`](https://github.com/k
 | `setResolver`     | Set or override the [resolver](/docs/5.x/api/core#resolver) (file naming + paths).     |
 | `addMacro`        | Add a [macro](/docs/5.x/concepts/macros) that rewrites AST nodes before generators.   |
 | `setMacros`       | Replace this plugin's [macros](/docs/5.x/concepts/macros) with a new list.             |
-| `setRenderer`     | Set the [renderer](/docs/5.x/concepts/parsers) factory that handles JSX-style returns. |
 | `setOptions`      | Provide resolved options to the build loop.                                            |
 | `injectFile`      | Inject a raw `UserFileNode` into the build, bypassing generators.                      |
 | `updateConfig`    | Merge a partial config update into the running build.                                  |
@@ -154,7 +153,7 @@ A generator may implement any combination of three handlers:
 
 Each handler receives a `GeneratorContext` with helpers like `addFile`, `upsertFile`, `getResolver(name)`, `requirePlugin(name)`, `info`, `warn`, `error`, plus the resolved `adapter`, the document `meta` (an `InputMeta` with `title`, `version`, `baseURL`, `circularNames`, and `enumNames`), and per-node `options`.
 
-A handler returns `Array<FileNode>` built with the `create*` factories from [`@kubb/ast`](/docs/5.x/concepts/ast), which is the default. It may instead return JSX, in which case the plugin sets `renderer: jsxRenderer` and `@kubb/renderer-jsx` walks the JSX into the same `FileNode`s. The [creating-plugins guide](/docs/5.x/guides/creating-plugins#emit-roles) names the printer, renderer, and serializer roles around that path.
+A handler returns `Array<FileNode>` built with the `create*` factories from [`@kubb/ast`](/docs/5.x/concepts/ast), which is the default. It may instead return JSX, in which case the generator sets `renderer: jsxRenderer` and `@kubb/renderer-jsx` walks the JSX into the same `FileNode`s. The [creating-plugins guide](/docs/5.x/guides/creating-plugins#emit-roles) names the printer, renderer, and serializer roles around that path.
 
 ## Resolvers
 

@@ -64,7 +64,7 @@ import {
 
 ### `defineConfig`
 
-`defineConfig` is the primary way to add TypeScript type-checking to a `kubb.config.ts` file. It is exported from the `kubb` package (not `@kubb/core`) and automatically applies production-ready defaults: [`adapterOas`](/docs/5.x/concepts/adapters) as the adapter, `[parserTs, parserTsx]` as parsers, and `[pluginBarrel()]` as a post-enforced plugin.
+`defineConfig` is the primary way to add TypeScript type-checking to a `kubb.config.ts` file. It is exported from the `kubb` package (not `@kubb/core`) and automatically applies production-ready defaults: [`adapterOas`](/docs/5.x/concepts/adapters) as the adapter, `[parserTs, parserTsx, parserMd]` as parsers, and `[pluginBarrel()]` as a post-enforced plugin.
 
 ```typescript twoslash
 import { defineConfig } from 'kubb'
@@ -209,7 +209,6 @@ export const pluginExample = definePlugin((options: { prefix?: string } = {}) =>
 | `setResolver`    | `(resolver: Partial<Resolver>) => void` | Set or partially override the file naming resolver              |
 | `addMacro`       | `(macro: Macro) => void`                | Add a macro that rewrites AST nodes before generators           |
 | `setMacros`      | `(macros: Array<Macro>) => void`        | Replace this plugin's macros with a new list                    |
-| `setRenderer`    | `(renderer: RendererFactory) => void`   | Set the renderer factory for JSX-based generators               |
 | `setOptions`     | `(options: ResolvedOptions) => void`    | Set the resolved options used by generators                     |
 | `injectFile`     | `(file: UserFileNode) => void`          | Inject a raw file into the build output, bypassing generation   |
 | `updateConfig`   | `(config: Partial<Config>) => void`     | Merge a partial config update into the current build config     |
@@ -471,7 +470,7 @@ import { jsxRenderer } from '@kubb/renderer-jsx'
 const renderer = jsxRenderer()
 ```
 
-Pass the renderer to `ctx.setRenderer()` inside a `kubb:plugin:setup` hook to enable JSX-based generators for your plugin.
+Set the renderer on a generator through its `renderer` field (`renderer: jsxRenderer`) to enable JSX-based output for that generator. Leave it unset, or pass `renderer: null`, to opt out of rendering.
 
 #### Related
 
@@ -653,7 +652,7 @@ if ('path' in input) {
 | Type                           | Purpose                                                       |
 | ------------------------------ | ------------------------------------------------------------- |
 | `Storage`                      | Shape returned by `createStorage`                             |
-| `Renderer` / `RendererFactory` | Interfaces for custom renderers passed to `ctx.setRenderer()` |
+| `Renderer` / `RendererFactory` | Interfaces for custom renderers set on a generator's `renderer` field |
 
 > [!NOTE]
 > `defineLogger` and the logger types (`Logger`, `UserLogger`, `LoggerOptions`, `LoggerContext`) have moved to `@kubb/cli`. They are only needed when building a custom CLI logger.
