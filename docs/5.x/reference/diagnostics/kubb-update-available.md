@@ -12,8 +12,8 @@ Level: info
 
 A newer Kubb version is published on npm than the one running.
 
-```sh
-ℹ (KUBB_UPDATE_AVAILABLE): Update available: v5.0.0 → v5.1.0. Run `npm install -g @kubb/cli` to update.
+```txt
+[KUBB_UPDATE_AVAILABLE] Update available: v5.0.0 → v5.1.0. Run `npm install -g @kubb/cli` to update.
 ```
 
 ## What happened

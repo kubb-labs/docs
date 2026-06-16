@@ -15,7 +15,7 @@ A fallback for an error that does not yet carry a specific diagnostic code.
 ## What happened
 
 Kubb wraps every failure in a diagnostic. When the underlying error has no structured code, it is
-reported as `KUBB_UNKNOWN` with the original message. There is no `help:` or `docs:` line because
+reported as `KUBB_UNKNOWN` with the original message. There is no `fix:` or `see:` line because
 the failure mode is not yet classified.
 
 ## Common causes
