@@ -5,19 +5,15 @@ description: The KUBB_PLUGIN_FAILED diagnostic fires when a plugin throws while 
 outline: [2, 3]
 ---
 
-# KUBB_PLUGIN_FAILED
+# KUBB_PLUGIN_FAILED: Plugin failed
 
-**Severity:** error · **Source:** Plugin
+Code: `KUBB_PLUGIN_FAILED`
+Level: error
 
 A plugin threw while generating, or reported an error through `ctx.error`. The diagnostic is
 attributed to the plugin and fails the run.
 
-```sh
-× @kubb/plugin-ts(KUBB_PLUGIN_FAILED): Cannot generate type for operation getPetById.
-  docs: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-plugin-failed
-```
-
-## What it means
+## What happened
 
 Each plugin runs against the AST and can fail on a specific schema or operation. A thrown error or
 a `ctx.error(...)` call lands here, carrying the plugin name. When the plugin passed an `Error`, it
@@ -29,7 +25,7 @@ is kept as the diagnostic `cause`, so the underlying stack is preserved.
 - A schema or operation shape the plugin cannot map.
 - A bug in the plugin, surfaced as a thrown error.
 
-## How to fix
+## How to fix it
 
 - Read the underlying message and check the plugin's options against its docs.
 - Inspect the schema or operation the message points at.
@@ -53,6 +49,13 @@ const diagnostic: Diagnostic = {
 }
 
 Diagnostics.report(diagnostic)
+```
+
+## Example output
+
+```txt
+[KUBB_PLUGIN_FAILED] @kubb/plugin-ts: Cannot generate type for operation getPetById.
+╰▶ see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-plugin-failed
 ```
 
 ## See also

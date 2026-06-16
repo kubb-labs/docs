@@ -5,23 +5,32 @@ description: The KUBB_INPUT_REQUIRED diagnostic fires when an adapter is configu
 outline: [2, 3]
 ---
 
-# KUBB_INPUT_REQUIRED
+# KUBB_INPUT_REQUIRED: Input required
 
-**Severity:** error · **Source:** OpenAPI adapter
+Code: `KUBB_INPUT_REQUIRED`
+Level: error
 
 An adapter is configured but no `input` was provided, so there is nothing to parse.
 
-```sh
-× @kubb/adapter-oas(KUBB_INPUT_REQUIRED): An adapter is configured without an input.
-  help: Provide `input.path` (a file or URL) or `input.data` (an inline spec) in your Kubb config.
-  docs: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-input-required
-```
-
-## What it means
+## What happened
 
 The adapter needs a source document. It reads one from `input.path` (a file or URL) or
 `input.data` (an inline spec). This diagnostic fires when neither is set, including the case where
 merging is asked for but no documents are passed.
+
+## How to fix it
+
+- Set `input.path` to a file or URL:
+
+  ```typescript
+  input: { path: './petStore.yaml' }
+  ```
+
+- Or pass an inline spec with `input.data`:
+
+  ```typescript
+  input: { data: openapiObject }
+  ```
 
 ## Example
 
@@ -35,19 +44,13 @@ export default defineConfig({
 })
 ```
 
-## How to fix
+## Example output
 
-- Set `input.path` to a file or URL:
-
-  ```typescript
-  input: { path: './petStore.yaml' }
-  ```
-
-- Or pass an inline spec with `input.data`:
-
-  ```typescript
-  input: { data: openapiObject }
-  ```
+```txt
+[KUBB_INPUT_REQUIRED] @kubb/adapter-oas: An adapter is configured without an input.
+├▶ fix: Provide `input.path` (a file or URL) or `input.data` (an inline spec) in your Kubb config.
+╰▶ see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-input-required
+```
 
 ## See also
 

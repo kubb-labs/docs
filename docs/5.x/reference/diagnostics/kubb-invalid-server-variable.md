@@ -5,23 +5,23 @@ description: The KUBB_INVALID_SERVER_VARIABLE diagnostic, raised when a server U
 outline: [2, 3]
 ---
 
-# KUBB_INVALID_SERVER_VARIABLE
+# KUBB_INVALID_SERVER_VARIABLE: Invalid server variable
 
-**Severity:** error · **Source:** OpenAPI adapter
+Code: `KUBB_INVALID_SERVER_VARIABLE`
+Level: error
 
 A server variable resolves to a value that its `enum` does not allow.
 
-```sh
-× KUBB_INVALID_SERVER_VARIABLE: Invalid server variable value 'staging' for 'env' when resolving https://{env}.api.example.com. Valid values are: dev, prod.
-  at #/servers
-  help: Use one of the allowed enum values, or drop the enum on the 'env' server variable.
-  docs: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-invalid-server-variable
-```
-
-## What it means
+## What happened
 
 OpenAPI server URLs can contain `{variable}` placeholders. When a variable declares an `enum`, the
 value Kubb resolves it to must be in that list. This diagnostic fires when the resolved value is not.
+
+## How to fix it
+
+- Pass a value that the `enum` allows, or make the `default` a member of the `enum`.
+- Add the value to the `enum` if the server supports it.
+- Remove the `enum` if the variable is open-ended.
 
 ## Common causes
 
@@ -40,11 +40,14 @@ servers:
         enum: [dev, prod]   # 'staging' is not allowed
 ```
 
-## How to fix
+## Example output
 
-- Pass a value that the `enum` allows, or make the `default` a member of the `enum`.
-- Add the value to the `enum` if the server supports it.
-- Remove the `enum` if the variable is open-ended.
+```txt
+[KUBB_INVALID_SERVER_VARIABLE]: Invalid server variable value 'staging' for 'env' when resolving https://{env}.api.example.com. Valid values are: dev, prod.
+├▶ at: #/servers
+├▶ fix: Use one of the allowed enum values, or drop the enum on the 'env' server variable.
+╰▶ see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-invalid-server-variable
+```
 
 ## See also
 

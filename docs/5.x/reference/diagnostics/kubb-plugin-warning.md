@@ -5,24 +5,20 @@ description: The KUBB_PLUGIN_WARNING diagnostic carries a non-fatal warning a pl
 outline: [2, 3]
 ---
 
-# KUBB_PLUGIN_WARNING
+# KUBB_PLUGIN_WARNING: Plugin warning
 
-**Severity:** warning · **Source:** Plugin
+Code: `KUBB_PLUGIN_WARNING`
+Level: warning
 
 A plugin reported a non-fatal warning through `ctx.warn`. It is collected and shown, but does not
 fail the run.
 
-```sh
-⚠ @kubb/plugin-zod(KUBB_PLUGIN_WARNING): Falling back to z.any() for an untyped schema.
-  docs: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-plugin-warning
-```
-
-## What it means
+## What happened
 
 A plugin found something worth flagging but could still generate. The warning carries the plugin
 name and appears in the run summary and in `kubb generate --reporter json`.
 
-## How to fix
+## How to fix it
 
 - Review the message. Adjust the plugin options or the input if the warning is unwanted.
 - No action is required to make the build pass. Warnings do not fail a run.
@@ -31,6 +27,13 @@ name and appears in the run summary and in `kubb generate --reporter json`.
 
 `ctx.warn(message)` reports a `KUBB_PLUGIN_WARNING`. For a stable code and a source pointer, build a
 `warning` diagnostic and call `Diagnostics.report(...)` instead.
+
+## Example output
+
+```txt
+[KUBB_PLUGIN_WARNING] @kubb/plugin-zod: Falling back to z.any() for an untyped schema.
+╰▶ see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-plugin-warning
+```
 
 ## See also
 

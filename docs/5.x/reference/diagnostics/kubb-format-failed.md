@@ -5,24 +5,26 @@ description: The KUBB_FORMAT_FAILED diagnostic fires when the formatter pass ove
 outline: [2, 3]
 ---
 
-# KUBB_FORMAT_FAILED
+# KUBB_FORMAT_FAILED: Format failed
 
-**Severity:** error · **Source:** CLI
+Code: `KUBB_FORMAT_FAILED`
+Level: error
 
 The formatter pass over the generated files failed. Formatting runs after generation, so the files
 are written, but the run is marked failed.
 
-```sh
-× (KUBB_FORMAT_FAILED): formatter failed
-  docs: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-format-failed
-```
-
-## What it means
+## What happened
 
 When `output.format` is set, Kubb runs the configured formatter (oxfmt, biome, or prettier) over
 the output directory. A non-zero exit from the formatter is reported here. It used to be swallowed,
 so a broken config went unnoticed. Now it shows in the summary and `--reporter json`, and fails the
 run.
+
+## How to fix it
+
+- Confirm the formatter is installed and its config is valid.
+- Run it manually on the output to see the underlying error, for example `biome check --write ./src/gen`.
+- Remove or change `output.format` if you do not want a formatter pass.
 
 ## Common causes
 
@@ -30,11 +32,12 @@ run.
 - The formatter config is invalid or points at a missing file.
 - Generated code the formatter rejects.
 
-## How to fix
+## Example output
 
-- Confirm the formatter is installed and its config is valid.
-- Run it manually on the output to see the underlying error, for example `biome check --write ./src/gen`.
-- Remove or change `output.format` if you do not want a formatter pass.
+```txt
+[KUBB_FORMAT_FAILED]: formatter failed
+╰▶ see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-format-failed
+```
 
 ## See also
 
