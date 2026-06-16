@@ -825,7 +825,7 @@ Inside each method, `this` is bound to the full resolver, so you can call `this.
 | Required: | `false`                                      |
 
 > [!TIP]
-> Use `resolver` for naming and file-location tweaks. For changing the AST nodes themselves (e.g. stripping descriptions), use `transformer` instead.
+> Use `resolver` for naming and file-location tweaks. For changing the AST nodes themselves (e.g. stripping descriptions), use `macros` instead.
 
 ```typescript [Add an Api prefix to every name]
 import { defineConfig } from 'kubb'
@@ -1068,22 +1068,19 @@ Use this when you need output the plugin does not produce out of the box (a cust
 > [!WARNING]
 > Generators are an experimental, low-level API. The signature may change between minor releases.
 
-### transformer
+### macros
 
-Modifies AST nodes before they are printed to source code. Use this when you need to rewrite operation IDs, drop descriptions, or change schema metadata without forking the generator.
+Rewrite AST nodes before they are printed to source code. Use this when you need to rewrite operation IDs, drop descriptions, or change schema metadata without forking the generator.
 
-Each visitor method (e.g. `schema`, `operation`) receives the node and a context object. Return a new node to replace it, or return `undefined` to leave it untouched. Methods you omit keep the plugin's default behavior.
+Each [macro](/docs/5.x/concepts/macros) callback (e.g. `schema`, `operation`) receives the node and a context object. Return a new node to replace it, or return `undefined` to leave it untouched. Callbacks you omit keep the plugin's default behavior. Macros run in order, so a later macro sees the output of an earlier one.
 
-|           |           |
-| --------: | :-------- |
-|     Type: | `Visitor` |
-| Required: | `false`   |
+|           |                 |
+| --------: | :-------------- |
+|     Type: | `Array<Macro>`  |
+| Required: | `false`         |
 
 > [!TIP]
-> Use `transformer` to rewrite node properties before printing. For changing the names of generated symbols and files, use `resolver` instead.
-
-> [!NOTE]
-> `@kubb/plugin-ts` uses AST visitors for schema/operation node transforms. For renaming generated symbols, use `resolver` instead.
+> Use `macros` to rewrite node properties before printing. For changing the names of generated symbols and files, use `resolver` instead.
 
 ::: code-group
 
@@ -1096,11 +1093,14 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs({
-      transformer: {
-        schema(node) {
-          return { ...node, description: undefined }
+      macros: [
+        {
+          name: 'strip-descriptions',
+          schema(node) {
+            return { ...node, description: undefined }
+          },
         },
-      },
+      ],
     }),
   ],
 })
@@ -1115,11 +1115,14 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs({
-      transformer: {
-        operation(node) {
-          return { ...node, operationId: `api_${node.operationId}` }
+      macros: [
+        {
+          name: 'prefix-operation-id',
+          operation(node) {
+            return { ...node, operationId: `api_${node.operationId}` }
+          },
         },
-      },
+      ],
     }),
   ],
 })

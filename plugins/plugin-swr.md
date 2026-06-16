@@ -355,14 +355,14 @@ Override naming conventions for function names and types.
 |     Type: | `Partial<ResolverSwr> & ThisType<ResolverSwr>` |
 | Required: | `false`                                        |
 
-### transformer
+### macros
 
-AST visitor to transform generated nodes.
+A list of [macros](/docs/5.x/concepts/macros) that rewrite generated nodes before printing.
 
-|           |           |
-| --------: | :-------- |
-|     Type: | `Visitor` |
-| Required: | `false`   |
+|           |                 |
+| --------: | :-------------- |
+|     Type: | `Array<Macro>`  |
+| Required: | `false`         |
 
 ## Dependencies
 

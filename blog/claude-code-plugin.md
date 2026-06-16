@@ -32,8 +32,8 @@ Add the repository as a marketplace and install the plugin:
 The commands run `npx kubb`, so install Kubb in your project or globally first:
 
 ```shell
-npm install -D kubb   # in the project
-npm install -g kubb   # or globally
+npm install -D kubb@beta   # in the project
+npm install -g kubb@beta   # or globally
 ```
 
 A `SessionStart` hook checks for `kubb` when a session starts and warns you when it is missing. It never installs anything for you, so nothing runs behind your back.

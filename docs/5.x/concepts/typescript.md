@@ -7,7 +7,7 @@ outline: deep
 
 # TypeScript
 
-Kubb is built in TypeScript end-to-end. Every public surface accepts a generic that pins down options, resolved options, and the resolver shape. This includes [`defineConfig`](https://github.com/kubb-labs/kubb/blob/main/packages/kubb/src/defineConfig.ts), [`definePlugin`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/definePlugin.ts#L79), [`defineMiddleware`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineMiddleware.ts), [`defineParser`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineParser.ts), [`createAdapter`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/createAdapter.ts), [`defineGenerator`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineGenerator.ts), and the AST factories. The result is a config file where IntelliSense leads you through every choice and the compiler catches mistakes before generation runs.
+Kubb is built in TypeScript end-to-end. Every public surface accepts a generic that pins down options, resolved options, and the resolver shape. This includes [`defineConfig`](https://github.com/kubb-labs/kubb/blob/main/packages/kubb/src/defineConfig.ts), [`definePlugin`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/definePlugin.ts#L79), [`defineParser`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineParser.ts), [`createAdapter`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/createAdapter.ts), [`defineGenerator`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineGenerator.ts), and the AST factories. The result is a config file where IntelliSense leads you through every choice and the compiler catches mistakes before generation runs.
 
 ## Quick start
 
@@ -92,8 +92,7 @@ export const pluginExample = definePlugin<PluginExample>((options) => {
 Adapters follow the same pattern with [`AdapterFactoryOptions`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/types.ts). Pin `TName`, `TOptions`, `TResolvedOptions`, and the parsed `TDocument` once:
 
 ```typescript twoslash [adapter-example.ts]
-import { createAdapter } from '@kubb/core'
-import { createInput } from '@kubb/ast'
+import { ast, createAdapter } from '@kubb/core'
 import type { AdapterFactoryOptions } from '@kubb/core'
 
 type Options = { strict?: boolean }
@@ -106,7 +105,7 @@ export const adapterExample = createAdapter<AdapterExample>((options) => ({
   options: { strict: options.strict ?? false },
   document: null,
   async parse() {
-    return createInput()
+    return ast.factory.createInput()
   },
   getImports() {
     return []
@@ -124,15 +123,14 @@ The same alias flows into [`Adapter<AdapterExample>`](https://github.com/kubb-la
 Parsers receive a [`FileNode<TMeta>`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/nodes/file.ts) in `parse`, so typing the parameter keeps plugin-attached metadata typed:
 
 ```typescript twoslash [parser-typed.ts]
-import { defineParser } from '@kubb/core'
-import type { FileNode } from '@kubb/ast'
+import { ast, defineParser } from '@kubb/core'
 
 type Meta = { language: 'ts' | 'tsx' }
 
 export const parserTyped = defineParser({
   name: 'parser-typed',
   extNames: ['.ts'],
-  parse(file: FileNode<Meta>) {
+  parse(file: ast.FileNode<Meta>) {
     const meta = file.meta // typed as Meta
     return `// ${meta?.language ?? 'unknown'}\n`
   },
@@ -144,28 +142,27 @@ export const parserTyped = defineParser({
 
 ## Narrowing AST nodes
 
-The [`SchemaNode`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/nodes/schema.ts#L640) union shares one `kind: 'Schema'` discriminator and uses `node.type` to differentiate variants. Use the type guards from [`@kubb/ast`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/guards.ts) to narrow without casts:
+The [`SchemaNode`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/nodes/schema.ts#L640) union shares one `kind: 'Schema'` discriminator and uses `node.type` to differentiate variants. Use `narrowSchema` to narrow a `SchemaNode` to a specific variant, and `isHttpOperationNode` to narrow an `OperationNode` to an `HttpOperationNode`:
 
 ```typescript twoslash [narrow.ts]
-import { isSchemaNode, narrowSchema } from '@kubb/ast'
-import type { SchemaNode } from '@kubb/ast'
+import { ast } from '@kubb/core'
 
-declare const node: SchemaNode
+declare const node: ast.SchemaNode
 
-const ref = narrowSchema(node, 'ref')
+const ref = ast.narrowSchema(node, 'ref')
 if (ref?.ref) {
   const refName: string = ref.ref
   console.log(refName)
 }
 
-const child: unknown = node
-if (isSchemaNode(child)) {
-  // child is now SchemaNode
-  const _kind: 'Schema' = child.kind
+declare const op: ast.OperationNode
+if (ast.isHttpOperationNode(op)) {
+  // op is now HttpOperationNode — method and path are non-nullable
+  const _method: ast.HttpMethod = op.method
 }
 ```
 
-Available guards on [`@kubb/ast`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/guards.ts): `isInputNode`, `isOutputNode`, `isOperationNode`, `isHttpOperationNode`, `isSchemaNode`. For schema variants use `narrowSchema(node, type)`; for HTTP operations use `isHttpOperationNode(node)` to narrow to an `HttpOperationNode` with non-nullable `method`/`path`.
+Available guards on [`@kubb/ast`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/guards.ts): `isHttpOperationNode`, `narrowSchema`. Use `isHttpOperationNode(node)` to narrow an `OperationNode` to an `HttpOperationNode` with non-nullable `method` and `path`. Use `narrowSchema(node, type)` to narrow a `SchemaNode` to a specific variant.
 
 ## See also
 

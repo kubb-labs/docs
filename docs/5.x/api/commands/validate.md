@@ -19,7 +19,7 @@ output:
 > `@kubb/adapter-oas` is an optional peer dependency. Install it before running this command:
 >
 > ```shell
-> npm i @kubb/adapter-oas
+> npm i @kubb/adapter-oas@beta
 > ```
 
 ## Usage

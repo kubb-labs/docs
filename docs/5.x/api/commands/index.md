@@ -16,19 +16,19 @@ The CLI comes bundled with the `kubb` package. If you have already completed [in
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/cli
+bun add -d @kubb/cli@beta
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/cli
+pnpm add -D @kubb/cli@beta
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/cli
+npm install --save-dev @kubb/cli@beta
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/cli
+yarn add -D @kubb/cli@beta
 ```
 
 :::

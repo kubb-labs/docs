@@ -66,19 +66,19 @@ Install Kubb with the [MCP plugin](/plugins/plugin-mcp).
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-mcp @kubb/adapter-oas @kubb/plugin-ts @kubb/plugin-zod
+bun add -d @kubb/plugin-mcp@beta @kubb/adapter-oas@beta @kubb/plugin-ts@beta @kubb/plugin-zod@beta
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-mcp @kubb/adapter-oas @kubb/plugin-ts @kubb/plugin-zod
+pnpm add -D @kubb/plugin-mcp@beta @kubb/adapter-oas@beta @kubb/plugin-ts@beta @kubb/plugin-zod@beta
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/plugin-mcp @kubb/adapter-oas @kubb/plugin-ts @kubb/plugin-zod
+npm install --save-dev @kubb/plugin-mcp@beta @kubb/adapter-oas@beta @kubb/plugin-ts@beta @kubb/plugin-zod@beta
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-mcp @kubb/adapter-oas @kubb/plugin-ts @kubb/plugin-zod
+yarn add -D @kubb/plugin-mcp@beta @kubb/adapter-oas@beta @kubb/plugin-ts@beta @kubb/plugin-zod@beta
 ```
 
 :::
@@ -121,7 +121,7 @@ export default defineConfig({
 Run the following command to create the desired files.
 
 ```shell
-npx kubb generate
+npx kubb@beta generate
 ```
 
 ## Inspect generated files

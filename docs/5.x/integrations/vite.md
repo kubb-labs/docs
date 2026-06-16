@@ -14,19 +14,19 @@ outline: [2, 3]
 ::: code-group
 
 ```shell [bun]
-bun add -d unplugin-kubb
+bun add -d unplugin-kubb@beta
 ```
 
 ```shell [pnpm]
-pnpm add -D unplugin-kubb
+pnpm add -D unplugin-kubb@beta
 ```
 
 ```shell [npm]
-npm install --save-dev unplugin-kubb
+npm install --save-dev unplugin-kubb@beta
 ```
 
 ```shell [yarn]
-yarn add -D unplugin-kubb
+yarn add -D unplugin-kubb@beta
 ```
 
 :::

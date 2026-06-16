@@ -66,7 +66,7 @@ The `hooks` map can subscribe to any event in [`KubbHooks`](https://github.com/k
 | Lifecycle   | `kubb:lifecycle:start`                                                   | [`KubbLifecycleStartContext`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/types.ts)       | Beginning of the Kubb run, before configuration loading.                 |
 | Lifecycle   | `kubb:lifecycle:end`                                                     | none                                                                                                       | End of the run, after every other event.                                 |
 | Generation  | `kubb:generation:start`                                                  | [`KubbGenerationStartContext`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/types.ts)      | Code generation phase begins.                                            |
-| Plugin      | `kubb:plugin:setup`                                                      | [`KubbPluginSetupContext`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/definePlugin.ts)    | Once per plugin. Register generators, resolver, transformer, renderer.   |
+| Plugin      | `kubb:plugin:setup`                                                      | [`KubbPluginSetupContext`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/definePlugin.ts)    | Once per plugin. Register generators, resolver, macros, renderer.        |
 | Plugin      | `kubb:build:start`                                                       | [`KubbBuildStartContext`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/types.ts)     | After all `kubb:plugin:setup` handlers, before the plugin loop.          |
 | Plugin      | `kubb:plugin:start`                                                      | [`KubbPluginStartContext`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/definePlugin.ts)          | Just before this plugin's generators run.                                |
 | Plugin      | `kubb:generate:schema`                                                   | `(node: SchemaNode, ctx: GeneratorContext)`                                                                | For each schema node during the AST walk.                                |
@@ -101,7 +101,8 @@ The `hooks` map can subscribe to any event in [`KubbHooks`](https://github.com/k
 | ----------------- | -------------------------------------------------------------------------------------- |
 | `addGenerator`    | Register a [`Generator`](/docs/5.x/api/core#generator) that walks the AST.             |
 | `setResolver`     | Set or override the [resolver](/docs/5.x/api/core#resolver) (file naming + paths).     |
-| `setTransformer`  | Pre-process AST nodes with a [`Visitor`](/docs/5.x/concepts/ast#visitors).             |
+| `addMacro`        | Add a [macro](/docs/5.x/concepts/macros) that rewrites AST nodes before generators.   |
+| `setMacros`       | Replace this plugin's [macros](/docs/5.x/concepts/macros) with a new list.             |
 | `setRenderer`     | Set the [renderer](/docs/5.x/concepts/parsers) factory that handles JSX-style returns. |
 | `setOptions`      | Provide resolved options to the build loop.                                            |
 | `injectFile`      | Inject a raw `UserFileNode` into the build, bypassing generators.                      |
@@ -114,19 +115,18 @@ The `hooks` map can subscribe to any event in [`KubbHooks`](https://github.com/k
 Generators are how a plugin actually walks the AST. Register them with `addGenerator` inside `kubb:plugin:setup`:
 
 ```typescript twoslash [generator.ts]
-import { definePlugin, defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast'
+import { ast, definePlugin, defineGenerator } from '@kubb/core'
 
 const operationGenerator = defineGenerator({
   name: 'operation-files',
   async operation(node, ctx) {
     return [
-      createFile({
+      ast.factory.createFile({
         baseName: `${node.operationId}.ts`,
         path: `${ctx.root}/${node.operationId}.ts`,
         sources: [
-          createSource({
-            nodes: [createText(`// ${node.method} ${node.path}\n`)],
+          ast.factory.createSource({
+            nodes: [ast.factory.createText(`// ${node.method} ${node.path}\n`)],
           }),
         ],
       }),
@@ -225,24 +225,24 @@ export const pluginConsumer = definePlugin(() => ({
 }))
 ```
 
-## Transformer
+## Macros
 
-A transformer is an [`ast.Visitor`](/docs/5.x/concepts/ast#visitors) that pre-processes nodes before they reach this plugin's generators. The walker calls the visitor for each `SchemaNode`, `OperationNode`, and other node it encounters; whatever the visitor returns replaces the original node for that plugin only. Other plugins keep seeing the untransformed AST.
+A [macro](/docs/5.x/concepts/macros) is a named, composable transform that rewrites nodes before they reach this plugin's generators. The walker runs the plugin's macros for each `SchemaNode`, `OperationNode`, and other node it encounters, and whatever a macro returns replaces the original node for that plugin only. Other plugins keep seeing the untransformed AST.
 
 ```ts
 type Plugin<TFactory> = {
   // ...
-  transformer?: ast.Visitor
+  macros?: Array<ast.Macro>
 }
 ```
 
-Use a transformer when you need to rename, filter, or rewrite nodes before generation, without forking the adapter or mutating shared state. Set it from `kubb:plugin:setup` with `ctx.setTransformer`:
+Use macros when you need to rename, filter, or rewrite nodes before generation, without forking the adapter or mutating shared state. Register them from `kubb:plugin:setup` with `ctx.addMacro` or `ctx.setMacros`:
 
-```typescript twoslash [transformer.ts]
-import { definePlugin } from '@kubb/core'
-import type { Visitor } from '@kubb/ast'
+```typescript twoslash [macros.ts]
+import { ast, definePlugin } from '@kubb/core'
 
-const renameOperationIds: Visitor = {
+const macroRename = ast.defineMacro({
+  name: 'rename',
   operation(node) {
     return {
       ...node,
@@ -254,13 +254,13 @@ const renameOperationIds: Visitor = {
       return { ...node, name: `${node.name}Dto` }
     }
   },
-}
+})
 
 export const pluginRename = definePlugin(() => ({
   name: 'plugin-rename',
   hooks: {
     'kubb:plugin:setup'(ctx) {
-      ctx.setTransformer(renameOperationIds)
+      ctx.addMacro(macroRename)
     },
   },
 }))
@@ -268,13 +268,13 @@ export const pluginRename = definePlugin(() => ({
 
 A few rules apply:
 
-- Each visitor key (`input`, `output`, `operation`, `schema`, `property`, `parameter`, `response`) is optional. Unhandled node types pass through unchanged.
-- Returning `void` keeps the original node. Returning a node of the same type replaces it.
-- Transformers run per plugin. To share a transform across plugins, export the visitor and import it from each plugin's setup.
-- Transformers run before resolver options are computed, so renamed `operationId`s and `SchemaNode.name`s flow into `resolveOptions`, `resolvePath`, and `resolveFile`.
+- Each macro callback (`input`, `output`, `operation`, `schema`, `property`, `parameter`, `response`) is optional. Unhandled node types pass through unchanged.
+- Returning `undefined` keeps the original node. Returning a node of the same type replaces it.
+- Macros run per plugin and in order, so a later macro sees the output of an earlier one. To share a macro across plugins, export it and add it from each plugin's setup.
+- Macros run before resolver options are computed, so renamed `operationId`s and `SchemaNode.name`s flow into `resolveOptions`, `resolvePath`, and `resolveFile`.
 
 > [!TIP]
-> Keep transformers pure. Mutating the input node leaks the change into other plugins because the AST is shared by reference.
+> Keep macros pure. Build a new node and return it rather than mutating the input, since the AST is shared by reference.
 
 ## Naming convention
 
@@ -351,17 +351,16 @@ export const pluginBanner = definePlugin(() => ({
 Generators receive each AST node together with a typed context. Return an array of `FileNode` to emit files, or call `ctx.upsertFile` to merge with output from another generator.
 
 ```typescript twoslash [operations.ts]
-import { definePlugin, defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast'
+import { ast, definePlugin, defineGenerator } from '@kubb/core'
 
 const operationGenerator = defineGenerator({
   name: 'list-operations',
   operation(node, ctx) {
     return [
-      createFile({
+      ast.factory.createFile({
         baseName: `${node.operationId}.ts`,
         path: `${ctx.root}/operations/${node.operationId}.ts`,
-        sources: [createSource({ nodes: [createText(`// ${node.method} ${node.path}\n`)] })],
+        sources: [ast.factory.createSource({ nodes: [ast.factory.createText(`// ${node.method} ${node.path}\n`)] })],
       }),
     ]
   },

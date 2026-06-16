@@ -1,7 +1,7 @@
 ---
 layout: doc
 title: Core API
-description: Public API surface of @kubb/core including createKubb, definePlugin, defineGenerator, defineResolver, defineParser, defineMiddleware, createAdapter, createStorage, Diagnostics, KubbDriver, and all public types.
+description: Public API surface of @kubb/core including createKubb, definePlugin, defineGenerator, defineResolver, defineParser, createAdapter, createStorage, Diagnostics, KubbDriver, and all public types.
 outline: [2, 3]
 ---
 
@@ -12,19 +12,19 @@ outline: [2, 3]
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/core
+bun add -d @kubb/core@beta
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/core
+pnpm add -D @kubb/core@beta
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/core
+npm install --save-dev @kubb/core@beta
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/core
+yarn add -D @kubb/core@beta
 ```
 
 :::
@@ -39,7 +39,6 @@ import {
   defineParser,
   definePlugin,
   defineResolver,
-  defineMiddleware,
   createAdapter,
   createKubb,
   createStorage,
@@ -52,7 +51,7 @@ import {
   KubbDriver,
   Diagnostics,
   AsyncEventEmitter,
-  URLPath,
+  Url,
   logLevel,
   ast,
 } from '@kubb/core'
@@ -208,7 +207,8 @@ export const pluginExample = definePlugin((options: { prefix?: string } = {}) =>
 | ---------------- | --------------------------------------- | --------------------------------------------------------------- |
 | `addGenerator`   | `(generator: Generator) => void`        | Register a generator for this plugin                            |
 | `setResolver`    | `(resolver: Partial<Resolver>) => void` | Set or partially override the file naming resolver              |
-| `setTransformer` | `(visitor: Visitor) => void`            | Set the AST transformer (pre-processes nodes before generators) |
+| `addMacro`       | `(macro: Macro) => void`                | Add a macro that rewrites AST nodes before generators           |
+| `setMacros`      | `(macros: Array<Macro>) => void`        | Replace this plugin's macros with a new list                    |
 | `setRenderer`    | `(renderer: RendererFactory) => void`   | Set the renderer factory for JSX-based generators               |
 | `setOptions`     | `(options: ResolvedOptions) => void`    | Set the resolved options used by generators                     |
 | `injectFile`     | `(file: UserFileNode) => void`          | Inject a raw file into the build output, bypassing generation   |
@@ -231,19 +231,18 @@ export const pluginExample = definePlugin((options: { prefix?: string } = {}) =>
 Each generator method returns `TElement | Array<FileNode> | void`. Returning a renderer element (e.g., JSX from `@kubb/renderer-jsx`) requires declaring a `renderer` factory on the generator. Returning `Array<FileNode>` directly or calling `ctx.upsertFile()` manually and returning `void` works without a renderer.
 
 ```typescript twoslash
-import { defineGenerator } from '@kubb/core'
-import { createFile, createSource, createText } from '@kubb/ast'
+import { ast, defineGenerator } from '@kubb/core'
 
 const myGenerator = defineGenerator({
   name: 'my-generator',
   operation(node, ctx) {
     return [
-      createFile({
+      ast.factory.createFile({
         baseName: `${node.operationId}.ts`,
         path: `./${node.operationId}.ts`,
         sources: [
-          createSource({
-            nodes: [createText(`export const op = '${node.operationId}'`)],
+          ast.factory.createSource({
+            nodes: [ast.factory.createText(`export const op = '${node.operationId}'`)],
           }),
         ],
       }),
@@ -269,7 +268,6 @@ const myGenerator = defineGenerator({
 | `ctx.options`         | `TResolvedOptions`                                  | Per-node resolved options (after exclude/include/override filtering) |
 | `ctx.plugin`          | `Plugin`                                            | The owning plugin descriptor                                         |
 | `ctx.resolver`        | `Resolver`                                          | Resolver for the current plugin                                      |
-| `ctx.transformer`     | `Visitor \| undefined`                              | Composed transformer for the current plugin                          |
 | `ctx.driver`          | `KubbDriver`                                      | Plugin driver for cross-plugin access                                |
 | `ctx.hooks`           | `AsyncEventEmitter<KubbHooks>`                      | Event bus; subscribe to `KubbHooks` events                           |
 | `ctx.adapter`         | `Adapter`                                           | The adapter that parsed the input spec                               |
@@ -517,15 +515,15 @@ Access the driver via `ctx.driver` inside generator context methods, or from the
 
 - [Plugin concepts: lifecycle events](../concepts/plugins#lifecycle-events)
 
-### `URLPath`
+### `Url`
 
-`URLPath` is a helper class for working with OpenAPI path strings. Its primary use is detecting whether a given path string is a remote URL rather than a local file path.
+`Url` is a helper class for working with OpenAPI path strings. Use `Url.canParse` to detect whether a given path string is a remote URL rather than a local file path.
 
 ```typescript twoslash
-import { URLPath } from '@kubb/core'
+import { Url } from '@kubb/core'
 
-new URLPath('https://petstore.swagger.io/v2/swagger.json').isURL // true
-new URLPath('./petStore.yaml').isURL // false
+Url.canParse('https://petstore.swagger.io/v2/swagger.json') // true
+Url.canParse('./petStore.yaml') // false
 ```
 
 ### Narrowing `config.input`
@@ -670,6 +668,6 @@ if ('path' in input) {
 - [Creating plugins](/docs/5.x/guides/creating-plugins) for a step-by-step guide to building a full plugin
 - [Programmatic usage recipes](/docs/5.x/recipes#programmatic-build) with `createKubb` usage patterns
 - [Configuration reference](/docs/5.x/reference/configuration) for all `defineConfig` options
-- [`@kubb/ast` package](https://www.npmjs.com/package/@kubb/ast), the node factory helpers re-exported under `ast`
+- [`@kubb/ast` package](https://www.npmjs.com/package/@kubb/ast), the node constructors re-exported under `ast.factory`
 - [TypeScript handbook: narrowing](https://www.typescriptlang.org/docs/handbook/2/narrowing.html) on narrowing `config.input` with the `in` operator
 - [Astro integrations reference](https://docs.astro.build/en/reference/integrations-reference/), the inspiration for the hook-style API

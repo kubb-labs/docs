@@ -9,6 +9,235 @@ outline:
 
 # Changelog
 
+## v5.0.0-beta.61 — Jun 15, 2026
+
+### @kubb/adapter-oas
+
+#### Bug Fixes
+
+- Consolidate the OAS parser's per-site macro calls behind `applyShallow` and a `nameEnums` helper. Output is unchanged; the parser test suite stays byte-identical. ([#3600](https://github.com/kubb-labs/kubb/pull/3600), [`ec32ab9`](https://github.com/kubb-labs/kubb/commit/ec32ab9dd7ede355c0b8f712c870cf27ae63e6c6))
+
+### @kubb/ast
+
+#### Breaking Changes
+
+- Add macros, a named and composable way to rewrite the AST, and make them the single transform layer.
+  
+  `defineMacro`, `composeMacros`, and `applyMacros` live on the `@kubb/ast` root and turn an anonymous transform into a named unit with an optional `enforce` order and a `when` gate. Macros follow the `macro<Name>` convention, mirroring plugins (`pluginTs`). The built-in presets live on the new `@kubb/ast/macros` subpath, one file per macro. Plugins register macros through the new `addMacro` and `setMacros` setup-context methods in `@kubb/core`, replacing the old `setTransformer`.
+  
+  The plugin `transformer?: Visitor` field is gone, and `createMockedPlugin` from `@kubb/core/mocks` takes `macros` instead of a `transformer` visitor.
+  
+  The schema rewriters are retired into macros. `setDiscriminatorEnum`, `simplifyUnion`, and `setEnumName` are removed from `@kubb/ast` and replaced by `macroDiscriminatorEnum`, `macroSimplifyUnion`, and `macroEnumName` on `@kubb/ast/macros`. `mergeAdjacentObjects` and `syncSchemaRef` move to the `@kubb/ast/utils` subpath. `@kubb/adapter-oas` normalizes through these macros. ([#3600](https://github.com/kubb-labs/kubb/pull/3600), [`f5b4db2`](https://github.com/kubb-labs/kubb/commit/f5b4db2efc073b6b33e613c1cbe075a264a83f03))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.0.0-beta.60 — Jun 15, 2026
+
+### @kubb/ast
+
+#### Features
+
+- Add shared schema-traversal helpers to `@kubb/ast/utils` for printers to build on. `mapSchemaProperties`, `mapSchemaMembers`, and `mapSchemaItems` walk an object's properties, a union or intersection's members, and an array or tuple's items, pairing each child with its transformed output. They are generic over the output type, so a printer can return `string` or `ts.TypeNode`. `lazyGetter` emits the `get key() { return body }` form for circular-ref positions, and `resolveRefName` is now exported from the subpath as the shared ref-name resolver. Pure addition, no behavior change. ([#3596](https://github.com/kubb-labs/kubb/pull/3596), [`67bb92c`](https://github.com/kubb-labs/kubb/commit/67bb92c8b1e4988742d9e94d4fde5aa3d2e3ba48))
+
+#### Bug Fixes
+
+- Fix the CJS build dropping re-export-only `@kubb/ast/utils` helpers.
+  
+  With `"sideEffects": false`, rolldown tree-shook the modules that the `utils` subpath only re-exports (`schemaGraph`, `operationParams`, `codegen`, `strings`, and friends) out of the multi-entry CJS bundle, while still emitting their export getters. Requiring `@kubb/ast/utils` from a CommonJS context then threw `findCircularSchemas is not defined` (and the same for `createOperationParams`, `containsCircularRef`, `caseParams`, `buildJSDoc`, and the rest). The ESM build was unaffected, so this only surfaced for CJS consumers such as a `kubb.config.cjs`. Dropping the `sideEffects` declaration keeps those modules in the CJS output. ([#3598](https://github.com/kubb-labs/kubb/pull/3598), [`3c3f03d`](https://github.com/kubb-labs/kubb/commit/3c3f03d29c7697456c8a3ae5f087bf116fa0586d))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.0.0-beta.59 — Jun 15, 2026
+
+### @kubb/adapter-oas
+
+#### Bug Fixes
+
+- Tighten the JSDoc prose across the core packages so the published types read naturally. This cuts rule-of-three filler, `-ing`-participle clauses, clause-joining semicolons, marketing words, and sentences that only restate the TypeScript type. The change is comment-only, so no API or behavior changes. ([#3593](https://github.com/kubb-labs/kubb/pull/3593), [`1f71069`](https://github.com/kubb-labs/kubb/commit/1f7106995ed5d3eb6cd4cfc9fca711fe359e92d4))
+
+### @kubb/ast
+
+#### Features
+
+- Reduce the files you touch to add a node.
+  
+  `types.ts` now derives its node-type exports from the node barrel (`export type * from './nodes/index.ts'`) instead of a hand-maintained list, so adding a node no longer edits `types.ts`. This also surfaces five node types the old list had drifted from: `BreakNode`, `ContentNode`, `GenericOperationNode`, `RequestBodyNode`, and `ScalarSchemaNode`.
+  
+  The `@kubb/ast` barrel now sources its node defs from the registry (`export * from './registry.ts'`), so adding a node no longer edits the barrel either. This surfaces `nodeDefs` on the barrel. The visitor tables it derives stay internal to `visitor.ts`.
+  
+  A new test fails when a node def has no matching `factory.create*`, so missing wiring is caught in CI. The package README documents the remaining touch-points. ([#3595](https://github.com/kubb-labs/kubb/pull/3595), [`4dcfe98`](https://github.com/kubb-labs/kubb/commit/4dcfe98b0bc6b5c0ba393fa42a4e26b7ead471dd))
+- Clarify the `@kubb/ast` abstraction boundaries. No runtime behavior changes.
+  
+  `dedupe.ts` and `utils/fileMerge.ts` each gained a header that explains the split. `dedupe.ts` collapses duplicate schema shapes by structural signature, while `fileMerge.ts` merges one file's imports, exports, and sources.
+  
+  `syncSchemaRef` now lives in `transformers.ts` next to the other `SchemaNode` transforms. It is still exported from `@kubb/ast/utils`, so its import path is unchanged.
+  
+  `createOperationParams` is no longer surfaced through the `factory` namespace. It is a high-level builder, not a `ts.factory` primitive, so import it from `@kubb/ast/utils` instead of `ast.factory`.
+  
+  The OpenAPI discriminator helpers `createDiscriminantNode` and `findDiscriminator` moved out of `@kubb/ast` into `@kubb/adapter-oas`, since the OAS adapter was their only consumer. This keeps `@kubb/ast` spec-agnostic. ([#3594](https://github.com/kubb-labs/kubb/pull/3594), [`25b7936`](https://github.com/kubb-labs/kubb/commit/25b79363f8bd1829cafbbb9b33fa3b1393099776))
+
+#### Bug Fixes
+
+- Reorganize the `@kubb/ast` utils layer into concern-based modules. The grab-bag `utils/ast.ts` and `utils/index.ts` files now split into `strings.ts`, `codegen.ts`, `refs.ts`, `schemaGraph.ts`, `operationParams.ts`, and `fileMerge.ts`, each with its tests alongside it. `utils/index.ts` stays a thin barrel, so `@kubb/ast`, `@kubb/ast/factory`, `@kubb/ast/types`, and `@kubb/ast/utils` export the same names with the same behavior. No public API changes. ([#3591](https://github.com/kubb-labs/kubb/pull/3591), [`c069f04`](https://github.com/kubb-labs/kubb/commit/c069f0494ec0473f54cafd5cdeca2be3f4bf1313))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.0.0-beta.58 — Jun 14, 2026
+
+### @kubb/ast
+
+#### Breaking Changes
+
+- Reshape the `@kubb/ast` factory surface around an `ast.factory` namespace that mirrors `ts.factory.createX`.
+  
+  The flat `createX` node constructors leave the `@kubb/ast` root barrel. Reach them through the `factory` namespace as `ast.factory.createSchema(...)`, or import them from the new `@kubb/ast/factory` subpath. Migrate `createSchema(...)` and `ast.createSchema(...)` calls to `ast.factory.createSchema(...)`.
+  
+  The node and AST helpers `buildGroupParam`, `buildTypeLiteral`, `caseParams`, `collectUsedSchemaNames`, `containsCircularRef`, `findCircularSchemas`, `isStringType`, `resolveParamType`, and `syncSchemaRef` move off the root barrel onto the `@kubb/ast/utils` subpath. Import them from `@kubb/ast/utils` rather than `@kubb/ast` or the `ast` namespace.
+  
+  `createStreamInput` folds into `createInput`. Pass `stream: true` for the streaming variant: `createInput({ stream: true, schemas, operations, meta })` returns the streaming `InputNode<true>` with `AsyncIterable` sources, while `createInput({ schemas, operations })` still returns the eager `InputNode`.
+  
+  The function-parameter printer key type `FunctionNodeType` becomes `FunctionParamKind`, derived from `FunctionParamNode['kind']` so its values match the PascalCase node `kind` discriminants.
+  
+  `@kubb/core` re-exports `@kubb/ast` as the `ast` namespace, so `import { ast } from '@kubb/core'` reaches node definitions as `ast.schemaDef`, guards and helpers as `ast.narrowSchema`, and constructors as `ast.factory.createSchema(...)`. ([#3570](https://github.com/kubb-labs/kubb/pull/3570), [`3553f14`](https://github.com/kubb-labs/kubb/commit/3553f146288fd7e672c57dd0ba62caebb0b1dff0))
+
+#### Features
+
+- Split the operation-parameter helpers across `@kubb/ast` by what they return. The node builders `resolveParamType`, `buildGroupParam`, and `buildTypeLiteral` stay on the main `@kubb/ast` entry. The helpers that return plain values move to the `@kubb/ast/utils` subpath: `resolveGroupType` (a `ParamGroupType` descriptor) and `extractStringsFromNodes` (a string), along with the `ParamGroupType` and `BuildGroupArgs` types.
+  
+  `extractStringsFromNodes` is no longer re-exported from the main `@kubb/ast` barrel or the `ast` namespace re-exported by `@kubb/core`. Import it from `@kubb/ast/utils` instead. The plugins migration (Phase 2) builds query, header, and path parameter groups from these helpers instead of redefining them. ([#3570](https://github.com/kubb-labs/kubb/pull/3570), [`f213bed`](https://github.com/kubb-labs/kubb/commit/f213bed895a418f3685f8c9262947ee4ae333689))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.0.0-beta.57 — Jun 14, 2026
+
+### @kubb/ast
+
+#### Breaking Changes
+
+- Reshape function parameter and type nodes onto the `ts.factory` model.
+  
+  A type reference is now a plain `string`. The `ParamsType` node (with its `reference`, `struct`, and `member` variants) and the separate `ParameterGroup` node are gone. Three new nodes replace them: `TypeLiteral` for an inline object type (`{ petId: string; name?: string }`), `IndexedAccessType` for a single field read from a named type (`PathParams['petId']`), and `ObjectBindingPattern` for a destructured binding (`{ id, name }`).
+  
+  `createFunctionParameter` now takes either a `name` or a flat `properties` list. Passing `properties` builds one destructured parameter, an `ObjectBindingPattern` name paired with a `TypeLiteral` type, so a whole group is a single parameter instead of its own node type.
+  
+  Migration:
+  
+  - `createParamsType({ variant: 'reference', name: 'string' })` becomes the string `'string'`.
+  - `createParamsType({ variant: 'member', base, key })` becomes `createIndexedAccessType({ objectType: base, indexType: key })`.
+  - `createParamsType({ variant: 'struct', properties })` becomes `createTypeLiteral({ members })`.
+  - `createParameterGroup({ properties })` becomes `createFunctionParameter({ properties })`.
+  
+  The 24 standalone `isXxxNode` guards that were deprecated in the previous release are also removed. Use each node's `Def.is` instead, for example `schemaDef.is(node)` over `isSchemaNode(node)`. `narrowSchema` and `isHttpOperationNode` stay. ([#3569](https://github.com/kubb-labs/kubb/pull/3569), [`1388155`](https://github.com/kubb-labs/kubb/commit/1388155df8460c7e8be1ac322e7a9159f49089e5))
+
+#### Features
+
+- Introduce `defineNode` as the single source-of-truth for AST nodes.
+  
+  Each node is now defined once in its `nodes/*.ts` file with `defineNode`, which derives its `create` builder, its `is*` guard, and the visitor traversal tables (`VISITOR_KEYS`, `VISITOR_KEY_BY_KIND`, `nodeFinalizers`) from that one definition. The public API is re-exported from `index.ts` straight from each node file, the hand-maintained visitor tables moved to a generated `registry.ts`, and the node-shape `as` casts are gone. `factory.ts` now holds only `createFile` and `update`.
+  
+  This is non-breaking: every existing export keeps its shape and behavior, and the generated output is unchanged. It also adds an `is*` guard for every node kind (24 in total), so `isContentNode`, `isPropertyNode`, `isFileNode`, `isTextNode`, and the rest are now available alongside the existing guards.
+  
+  The per-node definitions (`schemaDef`, `propertyDef`, …) and `defineNode` are now exported. The standalone `is*` guards are deprecated in favor of each node's `<node>Def.is` (for example `schemaDef.is` over `isSchemaNode`), which keeps the guard next to the node it belongs to.
+  
+  The param and type helpers that Phase 1 ([#3563](https://github.com/kubb-labs/kubb/issues/3563)) reshapes are marked `@deprecated` with their migration paths: `createParamsType` (pass the type name as a plain string), `createParameterGroup` (use `createFunctionParameter({ properties: [...] })`), and the `ParamsTypeNode`/`ParameterGroupNode` types. ([#3567](https://github.com/kubb-labs/kubb/pull/3567), [`218b365`](https://github.com/kubb-labs/kubb/commit/218b3659947c77aee2564d100b701ad65603ec8b))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.0.0-beta.56 — Jun 13, 2026
+
+### @kubb/core
+
+#### Bug Fixes
+
+- Expose Url ([`f333037`](https://github.com/kubb-labs/kubb/commit/f3330377a6068d36033eb00120fc0e64fd4b9b02))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.0.0-beta.55 — Jun 13, 2026
+
+### @kubb/adapter-oas
+
+#### Bug Fixes
+
+- Drop the `oas` and `oas-normalize` dependencies in favor of built-in logic.
+  
+  Operation iteration (paths, methods, `operationId`, tags, request/response bodies, content type) now runs through a small internal `Operation` wrapper instead of the `oas` package, and the OpenAPI type aliases come straight from `openapi-types` and `@types/json-schema`. Document loading parses inline YAML/JSON with the `yaml` package, and `kubb validate` validates with `@readme/openapi-parser` directly. Generated output and validation behavior are unchanged, while the dependency tree is considerably smaller. ([#3557](https://github.com/kubb-labs/kubb/pull/3557), [`330ea5b`](https://github.com/kubb-labs/kubb/commit/330ea5ba46d4806bd77742da9cceb9e0e4e3dcd9))
+
+### @kubb/core
+
+#### Breaking Changes
+
+- Remove the incremental build cache.
+  
+  The `cache` config option, the `createCache` factory, the `fsCache` backend, and the `Cache`, `CachedSnapshot`, and `FsCacheOptions` types are gone from `@kubb/core`. `defineConfig` no longer enables `fsCache()` by default, and the `kubb generate --no-cache` flag is removed from the CLI. Every run now regenerates straight from the spec. ([#3558](https://github.com/kubb-labs/kubb/pull/3558), [`b504cf0`](https://github.com/kubb-labs/kubb/commit/b504cf0a91bd317e2ec1d450e447548560c657e8))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.0.0-beta.54 — Jun 12, 2026
+
+### @kubb/adapter-oas
+
+#### Bug Fixes
+
+- Repoint refs at duplicate top-level schemas to the first schema with the same content.
+  
+  When a spec defines a schema and also references an external copy of it (for example `$ref: 'https://petstore3.swagger.io/api/v3/openapi.json#/components/schemas/Category'` next to a local `Category`), the ref bundler hoists the copy under a numeric suffix (`Category1`) and rewrites the ref sites to it, so generators typed properties against `Category1` instead of `Category`.
+  
+  `buildDedupePlan` now records every later top-level schema whose content matches an earlier one in a new `aliasNames` map, `applyDedupe` repoints any ref targeting such a duplicate at the first schema with that content, and the adapter stream no longer emits the duplicate at all. The decision is purely content-based (structural signature), not name-based: `Pet.category` is typed `Category` again, no dead `Category1` model is generated, and a schema with a different shape keeps its own type. This also applies to hand-written schemas that share one content (a `Dog` identical to `Cat` collapses into `Cat`). `applyDedupe` now takes the plan lookups (`{ canonicalBySignature, aliasNames }`) instead of the bare signature map, and `@kubb/ast` exports the `DedupeCanonical` and `DedupeLookups` types. ([#3551](https://github.com/kubb-labs/kubb/pull/3551), [`d8d1aef`](https://github.com/kubb-labs/kubb/commit/d8d1aefc6a5b58ff293ddd227b821a210bd07e2d))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.0.0-beta.53 — Jun 12, 2026
+
+### @kubb/adapter-oas
+
+#### Bug Fixes
+
+- Bundle external `$ref`s with `api-ref-bundler` instead of `@apidevtools/json-schema-ref-parser`.
+  
+  `$RefParser.bundle()` remaps external file refs to the JSON pointer of their first occurrence (for example `#/components/schemas/AppState/properties/currentUser`), so multi-file specs lost their named schemas and generators inlined types instead of emitting named types with imports. `api-ref-bundler` hoists external file schemas into named `components.schemas` entries (`./schemas/User.yaml` becomes `#/components/schemas/User`), matching the earlier Redocly behavior while staying lightweight, and adds a foundation for AsyncAPI support later on.
+  
+  The new bundler resolves local YAML and JSON files and HTTP(S) URLs, including `./` and `../` relative refs and pointer fragments into external files. ([#3549](https://github.com/kubb-labs/kubb/pull/3549), [`3c013ef`](https://github.com/kubb-labs/kubb/commit/3c013efc74071f9d409ca9a082b2c8662a9a32c6))
+- Stop shipping `extension.yaml` in the npm packages and drop the `schemas/extension.json` schema. Extension metadata now lives in the platform repo (`kubb-labs/platform`, `apps/kubb.dev/extensions/`) and the options are documented on each extension's kubb.dev page. ([#3547](https://github.com/kubb-labs/kubb/pull/3547), [`2944481`](https://github.com/kubb-labs/kubb/commit/29444811eb29d87fe2a909635402dcd7170b14f7))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
 ## v5.0.0-beta.52 — Jun 11, 2026
 
 ### @kubb/adapter-oas
