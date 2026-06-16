@@ -291,6 +291,7 @@ The adapter derives a small context from each schema, then runs it through an or
 | nullable      | `nullable: true`, `x-nullable`, or `type: ['…','null']` | `type: ['…', 'null']`         |
 | discriminator | a `discriminator` object with a `mapping`           | no discriminator object       |
 | binary        | `contentMediaType: 'application/octet-stream'`      | `contentEncoding: 'binary'`   |
+| optionality   | a parent's `required` plus the schema's `nullable` set `optional` / `nullish` | same JSON Schema `required` + `null` |
 
 `@kubb/adapter-oas` ships the OpenAPI dialect as its default. A new adapter such as `@kubb/adapter-asyncapi` reuses the same converters and dispatch table and only supplies its own dialect, so it does not reimplement schema parsing. This keeps the spec-specific surface small, discoverable, and easy to test by swapping a single object.
 

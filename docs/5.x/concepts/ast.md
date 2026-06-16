@@ -130,7 +130,7 @@ const root = createInput({
 | `createParameter`, `createParameterGroup`, `createParamsType`       | Describe operation parameters.                           |
 | `createProperty`, `createType`                                      | Compose object properties and TypeScript types.          |
 | `createResponse`, `createRequestBody`, `createContent`, `createOutput` | Model responses, request bodies, content entries, and generator outputs. |
-| `createBreak`, `syncOptionality`                                    | Emit line breaks; reconcile optional flags across nodes. |
+| `createBreak`                                                       | Emit line breaks.                                        |
 | `update`                                                            | Apply an identity-preserving shallow update to any node. |
 
 ## Visitors
@@ -272,7 +272,6 @@ const name = extractRefName('#/components/schemas/Pet')
 
 | Export        | Purpose                                    |
 | ------------- | ------------------------------------------ |
-| `httpMethods` | Map of supported HTTP verbs.               |
 | `schemaTypes` | Map of every schema `type` discriminant.   |
 
 ## Transformers
