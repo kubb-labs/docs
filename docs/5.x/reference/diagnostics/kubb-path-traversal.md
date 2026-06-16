@@ -35,8 +35,8 @@ warning.
 
 ```txt
 [KUBB_PATH_TRAVERSAL]: Resolved path "/tmp/evil.ts" is outside the output directory "/app/src/gen".
-├▶ fix: This can stem from a path traversal in the OpenAPI specification or a misconfigured `group.name` function. Keep generated paths within the output directory.
-╰▶ see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-path-traversal
+  fix: This can stem from a path traversal in the OpenAPI specification or a misconfigured `group.name` function. Keep generated paths within the output directory.
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-path-traversal
 ```
 
 ## See also

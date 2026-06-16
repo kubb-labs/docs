@@ -36,7 +36,7 @@ run.
 
 ```txt
 [KUBB_FORMAT_FAILED]: formatter failed
-╰▶ see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-format-failed
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-format-failed
 ```
 
 ## See also

@@ -48,8 +48,8 @@ export default defineConfig({
 
 ```txt
 [KUBB_INPUT_REQUIRED] @kubb/adapter-oas: An adapter is configured without an input.
-├▶ fix: Provide `input.path` (a file or URL) or `input.data` (an inline spec) in your Kubb config.
-╰▶ see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-input-required
+  fix: Provide `input.path` (a file or URL) or `input.data` (an inline spec) in your Kubb config.
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-input-required
 ```
 
 ## See also

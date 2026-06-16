@@ -8,13 +8,13 @@ outline: [2, 3]
 # Diagnostics
 
 When a build fails, Kubb prints a diagnostic: a stable code, the message, the location in your
-document, and a suggested fix. The CLI renders it as a box-drawing tree:
+document, and a suggested fix. The CLI leads with the code and lists the details below it:
 
 ```txt
 [KUBB_REF_NOT_FOUND] @kubb/plugin-zod: Could not find a definition for #/components/schemas/Pet.
-├▶ at: #/components/schemas/Pet
-├▶ fix: Add the schema under components.schemas, or fix the $ref.
-╰▶ see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-ref-not-found
+  at: #/components/schemas/Pet
+  fix: Add the schema under components.schemas, or fix the $ref.
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-ref-not-found
 ```
 
 The location is a JSON pointer into the source document. OpenAPI is parsed into an object model, so
@@ -27,7 +27,7 @@ fail the build.
 
 ## Severity
 
-The severity tints the `[CODE]` tag and the tree connectors.
+The severity tints the `[CODE]` tag.
 
 | Severity | Color | Effect |
 | --- | --- | --- |
@@ -140,7 +140,6 @@ for the other reporters.
   `KUBB_PLUGIN_NOT_FOUND` have no pointer, so they skip this line.
 - `fix:` is a suggested fix.
 - `see:` links to the page for that code.
-- The rows form a tree: each uses a `├▶` connector, and the last uses `╰▶`.
 
 At `--logLevel silent` the diagnostic log is suppressed; the run still fails with a non-zero exit
 code, so CI keeps working without the noise.

@@ -38,8 +38,8 @@ export default defineConfig({
 
 ```txt
 [KUBB_ADAPTER_REQUIRED]: An adapter is required, but none is configured.
-├▶ fix: Set `adapter` in kubb.config.ts (for example `adapterOas()`).
-╰▶ see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-adapter-required
+  fix: Set `adapter` in kubb.config.ts (for example `adapterOas()`).
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-adapter-required
 ```
 
 ## See also

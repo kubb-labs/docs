@@ -46,7 +46,7 @@ export default defineConfig({
 
 ```txt
 [KUBB_HOOK_FAILED]: Post-generate hook failed
-╰▶ see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-hook-failed
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-hook-failed
 ```
 
 ## See also

@@ -31,7 +31,7 @@ Informational only. No action is required.
 
 ```txt
 [KUBB_PLUGIN_INFO] @kubb/plugin-client: Using fetch as the HTTP client.
-╰▶ see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-plugin-info
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-plugin-info
 ```
 
 ## See also

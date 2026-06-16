@@ -35,7 +35,7 @@ shows in the summary and `--reporter json`, and fails the run.
 
 ```txt
 [KUBB_LINT_FAILED]: linter failed
-╰▶ see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-lint-failed
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-lint-failed
 ```
 
 ## See also

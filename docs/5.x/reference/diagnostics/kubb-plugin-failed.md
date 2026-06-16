@@ -55,7 +55,7 @@ Diagnostics.report(diagnostic)
 
 ```txt
 [KUBB_PLUGIN_FAILED] @kubb/plugin-ts: Cannot generate type for operation getPetById.
-╰▶ see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-plugin-failed
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-plugin-failed
 ```
 
 ## See also

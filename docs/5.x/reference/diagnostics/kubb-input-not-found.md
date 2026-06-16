@@ -37,8 +37,8 @@ spec surfaces its own fetch error instead.
 
 ```txt
 [KUBB_INPUT_NOT_FOUND] @kubb/adapter-oas: Cannot read the file set in `input.path` (or via `kubb generate PATH`): ./petStore.yaml
-├▶ fix: Check that the path exists and is readable, then set it in `input.path` or pass it as `kubb generate PATH`.
-╰▶ see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-input-not-found
+  fix: Check that the path exists and is readable, then set it in `input.path` or pass it as `kubb generate PATH`.
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-input-not-found
 ```
 
 ## See also

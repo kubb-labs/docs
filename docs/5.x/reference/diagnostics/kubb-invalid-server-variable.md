@@ -44,9 +44,9 @@ servers:
 
 ```txt
 [KUBB_INVALID_SERVER_VARIABLE]: Invalid server variable value 'staging' for 'env' when resolving https://{env}.api.example.com. Valid values are: dev, prod.
-├▶ at: #/servers
-├▶ fix: Use one of the allowed enum values, or drop the enum on the 'env' server variable.
-╰▶ see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-invalid-server-variable
+  at: #/servers
+  fix: Use one of the allowed enum values, or drop the enum on the 'env' server variable.
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-invalid-server-variable
 ```
 
 ## See also

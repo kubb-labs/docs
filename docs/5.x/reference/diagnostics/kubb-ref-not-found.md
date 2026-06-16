@@ -51,9 +51,9 @@ paths:
 
 ```txt
 [KUBB_REF_NOT_FOUND] @kubb/plugin-zod: Could not find a definition for #/components/schemas/Pet.
-├▶ at: #/components/schemas/Pet
-├▶ fix: Add the schema under components.schemas, or fix the $ref. Run `kubb validate` to check the spec.
-╰▶ see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-ref-not-found
+  at: #/components/schemas/Pet
+  fix: Add the schema under components.schemas, or fix the $ref. Run `kubb validate` to check the spec.
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-ref-not-found
 ```
 
 ## See also

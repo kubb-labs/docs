@@ -32,7 +32,7 @@ name and appears in the run summary and in `kubb generate --reporter json`.
 
 ```txt
 [KUBB_PLUGIN_WARNING] @kubb/plugin-zod: Falling back to z.any() for an untyped schema.
-╰▶ see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-plugin-warning
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-plugin-warning
 ```
 
 ## See also

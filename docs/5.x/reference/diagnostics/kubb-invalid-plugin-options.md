@@ -52,8 +52,8 @@ export default defineConfig({
 
 ```txt
 [KUBB_INVALID_PLUGIN_OPTIONS] plugin-client: Plugin "plugin-client" sets `output.mode: 'file'` but also configures a `group` option.
-├▶ fix: A single-file output has nothing to group. Remove the `group` option, or use `output.mode: 'directory'` to organize files into subdirectories.
-╰▶ see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-invalid-plugin-options
+  fix: A single-file output has nothing to group. Remove the `group` option, or use `output.mode: 'directory'` to organize files into subdirectories.
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-invalid-plugin-options
 ```
 
 ## See also
