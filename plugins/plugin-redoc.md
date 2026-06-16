@@ -61,7 +61,7 @@ Use a `.html` extension. Unlike most plugins, this option points at a single fil
 |  Default: | `'docs.html'` |
 
 > [!TIP]
-> `output.path` sets where files go, `output.mode` sets how many. See `output.mode` for the single-file and one-file-per-group layouts.
+> `output.path` sets where files go, `output.mode` sets how many. Use `'directory'` (the default) for one file per operation, optionally grouped into subdirectories with the `group` option. Use `'file'` to write everything into a single file.
 
 ::: code-group
 

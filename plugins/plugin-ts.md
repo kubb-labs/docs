@@ -66,7 +66,7 @@ Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `
 |  Default: | `'types'` |
 
 > [!TIP]
-> `output.path` sets where files go, `output.mode` sets how many. See `output.mode` for the single-file and one-file-per-group layouts.
+> `output.path` sets where files go, `output.mode` sets how many. Use `'directory'` (the default) for one file per operation, optionally grouped into subdirectories with the `group` option. Use `'file'` to write everything into a single file.
 
 ::: code-group
 
