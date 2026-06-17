@@ -135,8 +135,8 @@ The gap widens on bigger specs. In v4, every plugin bootstrapped its own `plugin
 
 ## System requirements
 
-|         | v4   | v5   |
-| ------- | ---- | ---- |
+| Version | v4   | v5   |
+|---------| ---- | ---- |
 | Node.js | ≥ 18 | ≥ 22 |
 
 Update your CI pipelines, the `engines` field in `package.json`, and any `Dockerfile` `FROM node` lines. See [Installation](/docs/5.x/getting-started/installation) for the full setup.
