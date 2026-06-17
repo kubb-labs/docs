@@ -690,40 +690,6 @@ v5 also changes what the generators emit, so update any code that imports from t
 
 The output changes specific to each generator live on its [per-extension page](#per-extension-changes).
 
-## Plugin author migration
-
-If you maintain a custom plugin or generator, update the following:
-
-### `PluginManager` → `PluginDriver`
-
-The internal orchestration class was renamed. Update every import and usage:
-
-```diff
-- import { PluginManager } from '@kubb/core'
-+ import { PluginDriver } from '@kubb/core'
-
-- const manager = new PluginManager(config)
-+ const driver = new PluginDriver(config)
-
-- ctx.pluginManager.getPlugin(name)
-+ ctx.driver.getPlugin(name)
-```
-
-The generator context property follows the same rename: `pluginManager` → `driver`.
-
-### `pluginKey` → `pluginName`
-
-Each plugin now has a single `pluginName` identifier. The `pluginKey` array property is removed.
-
-```diff
-- export const myPlugin = definePlugin(() => ({
--   pluginKey: ['my-plugin'],
-+ export const myPlugin = definePlugin(() => ({
-+   pluginName: 'my-plugin',
-```
-
-Duplicate plugins (same `pluginName` registered twice) now throw at startup.
-
 ## See also
 
 - [Adapters](/docs/5.x/concepts/adapters): how the OpenAPI input is parsed into the universal AST.
