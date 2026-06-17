@@ -91,7 +91,7 @@ End the path with a `.html` extension. If you leave the extension off, Kubb stil
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginRedoc } from '@kubb/plugin-redoc'
 

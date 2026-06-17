@@ -94,7 +94,7 @@ Folder where the plugin writes its generated code, resolved against the global `
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -137,7 +137,7 @@ How the plugin consolidates its generated code into files.
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginClient } from '@kubb/plugin-client'
@@ -190,7 +190,7 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 
 ::: code-group
 
-```typescript ['named' (default)]
+```typescript twoslash ['named' (default)]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -199,7 +199,7 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs({
-      output: { barrel: { type: 'named' } },
+      output: { path: 'types', barrel: { type: 'named' } },
     }),
   ],
 })
@@ -247,7 +247,7 @@ Text prepended to every generated file, for license headers, lint disables, or `
 
 ::: code-group
 
-```typescript [Static banner]
+```typescript twoslash [Static banner]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -257,6 +257,7 @@ export default defineConfig({
   plugins: [
     pluginTs({
       output: {
+        path: 'types',
         banner: '/* eslint-disable */\n// @ts-nocheck',
       },
     }),
@@ -273,7 +274,7 @@ export type Pet = {
 }
 ```
 
-```typescript [Dynamic banner]
+```typescript twoslash [Dynamic banner]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -283,7 +284,8 @@ export default defineConfig({
   plugins: [
     pluginTs({
       output: {
-        banner: (node) => `// Source: ${node.path}\n// Generated at ${new Date().toISOString()}`,
+        path: 'types',
+        banner: (meta) => `// Source: ${meta.filePath}\n// Generated at ${new Date().toISOString()}`,
       },
     }),
   ],
@@ -303,7 +305,7 @@ Text appended to every generated file. Mirrors `banner`, for closing comments, r
 
 ::: code-group
 
-```typescript [Re-enable lint after a banner disable]
+```typescript twoslash [Re-enable lint after a banner disable]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -313,6 +315,7 @@ export default defineConfig({
   plugins: [
     pluginTs({
       output: {
+        path: 'types',
         banner: '/* eslint-disable */',
         footer: '/* eslint-enable */',
       },
@@ -339,7 +342,7 @@ Splits generated files into subfolders by the operation's first tag, so each tag
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -762,7 +765,7 @@ Overrides how the plugin builds names and paths for generated files and symbols,
 > [!TIP]
 > Use `resolver` for naming and file-location tweaks. For changing the AST nodes themselves (e.g. stripping descriptions), use `macros` instead.
 
-```typescript [Add an Api prefix to every name]
+```typescript twoslash [Add an Api prefix to every name]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -772,7 +775,7 @@ export default defineConfig({
   plugins: [
     pluginTs({
       resolver: {
-        resolveName(name) {
+        resolveTypeName(name) {
           return `Api${this.default(name, 'function')}`
         },
       },
@@ -820,7 +823,7 @@ export type Include = {
 
 ::: code-group
 
-```typescript [Only the pet tag]
+```typescript twoslash [Only the pet tag]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -835,7 +838,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [Only GET operations under /pet]
+```typescript twoslash [Only GET operations under /pet]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -845,7 +848,7 @@ export default defineConfig({
   plugins: [
     pluginTs({
       include: [
-        { type: 'method', pattern: 'get' },
+        { type: 'method', pattern: 'GET' },
         { type: 'path', pattern: /^\/pet/ },
       ],
     }),
@@ -873,7 +876,7 @@ export type Exclude = {
 
 ::: code-group
 
-```typescript [Skip everything under the store tag]
+```typescript twoslash [Skip everything under the store tag]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -888,7 +891,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [Skip a specific operation and all delete methods]
+```typescript twoslash [Skip a specific operation and all delete methods]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -899,7 +902,7 @@ export default defineConfig({
     pluginTs({
       exclude: [
         { type: 'operationId', pattern: 'deletePet' },
-        { type: 'method', pattern: 'delete' },
+        { type: 'method', pattern: 'DELETE' },
       ],
     }),
   ],
@@ -927,7 +930,7 @@ export type Override = {
 
 ::: code-group
 
-```typescript [Use a different enum style for the user tag]
+```typescript twoslash [Use a different enum style for the user tag]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -941,7 +944,7 @@ export default defineConfig({
         {
           type: 'tag',
           pattern: 'user',
-          options: { enum: { type: 'literal' } },
+          options: { enum: { type: 'literal', constCasing: 'camelCase', typeSuffix: 'Key', keyCasing: 'none' } },
         },
       ],
     }),
@@ -977,7 +980,7 @@ Rewrite AST nodes before they are printed to source code, to rename operation ID
 
 ::: code-group
 
-```typescript [Strip descriptions before printing]
+```typescript twoslash [Strip descriptions before printing]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -999,7 +1002,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [Prefix every operationId]
+```typescript twoslash [Prefix every operationId]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -1036,7 +1039,7 @@ Use `this.transform` to recurse into nested schema nodes and `this.options` to r
 
 ::: code-group
 
-```typescript [Use the JavaScript Date object for date schemas]
+```typescript twoslash [Use the JavaScript Date object for date schemas]
 import ts from 'typescript'
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
@@ -1058,7 +1061,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [Use bigint for integers]
+```typescript twoslash [Use bigint for integers]
 import ts from 'typescript'
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
@@ -1086,7 +1089,7 @@ export default defineConfig({
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 

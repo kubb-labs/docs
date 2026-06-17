@@ -100,7 +100,7 @@ Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -145,7 +145,7 @@ How the plugin consolidates its generated code into files.
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -195,7 +195,7 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 
 ::: code-group
 
-```typescript ['named' (default)]
+```typescript twoslash ['named' (default)]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -206,7 +206,7 @@ export default defineConfig({
   plugins: [
     pluginTs(),
     pluginVueQuery({
-      output: { barrel: { type: 'named' } },
+      output: { path: 'hooks', barrel: { type: 'named' } },
     }),
   ],
 })
@@ -217,7 +217,7 @@ export { useGetPetByIdQuery, getPetByIdQueryKey } from './useGetPetByIdQuery'
 export { useAddPetMutation } from './useAddPetMutation'
 ```
 
-```typescript ['all']
+```typescript twoslash ['all']
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -228,7 +228,7 @@ export default defineConfig({
   plugins: [
     pluginTs(),
     pluginVueQuery({
-      output: { barrel: { type: 'all' } },
+      output: { path: 'hooks', barrel: { type: 'all' } },
     }),
   ],
 })
@@ -239,7 +239,7 @@ export * from './useGetPetByIdQuery'
 export * from './useAddPetMutation'
 ```
 
-```typescript [nested]
+```typescript twoslash [nested]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -250,7 +250,7 @@ export default defineConfig({
   plugins: [
     pluginTs(),
     pluginVueQuery({
-      output: { barrel: { type: 'named', nested: true } },
+      output: { path: 'hooks', barrel: { type: 'named', nested: true } },
       group: { type: 'tag' },
     }),
   ],
@@ -268,7 +268,7 @@ src/gen/hooks/
     └── useGetInventoryQuery.ts
 ```
 
-```typescript [false]
+```typescript twoslash [false]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -279,7 +279,7 @@ export default defineConfig({
   plugins: [
     pluginTs(),
     pluginVueQuery({
-      output: { barrel: false },
+      output: { path: 'hooks', barrel: false },
     }),
   ],
 })
@@ -303,7 +303,7 @@ Text prepended to every generated file, for license headers, lint disables, or `
 
 ::: code-group
 
-```typescript [Static banner]
+```typescript twoslash [Static banner]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -315,6 +315,7 @@ export default defineConfig({
     pluginTs(),
     pluginVueQuery({
       output: {
+        path: 'hooks',
         banner: '/* eslint-disable */\n// @ts-nocheck',
       },
     }),
@@ -329,7 +330,7 @@ import { useQuery } from '@tanstack/vue-query'
 // ... rest of the generated composable
 ```
 
-```typescript [Dynamic banner]
+```typescript twoslash [Dynamic banner]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -341,7 +342,8 @@ export default defineConfig({
     pluginTs(),
     pluginVueQuery({
       output: {
-        banner: (node) => `// Source: ${node.path}\n// Generated at ${new Date().toISOString()}`,
+        path: 'hooks',
+        banner: (node) => `// Source: ${node.filePath}\n// Generated at ${new Date().toISOString()}`,
       },
     }),
   ],
@@ -361,7 +363,7 @@ Text appended to every generated file, the counterpart to `banner`, for closing 
 
 ::: code-group
 
-```typescript [Re-enable lint after a banner disable]
+```typescript twoslash [Re-enable lint after a banner disable]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -373,6 +375,7 @@ export default defineConfig({
     pluginTs(),
     pluginVueQuery({
       output: {
+        path: 'hooks',
         banner: '/* eslint-disable */',
         footer: '/* eslint-enable */',
       },
@@ -399,7 +402,7 @@ Splits generated files into subfolders by the operation's tag, so each tag gets 
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -533,7 +536,7 @@ export default client
 
 ::: code-group
 
-```typescript [Wire up a custom client]
+```typescript twoslash [Wire up a custom client]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -621,7 +624,7 @@ Base URL prepended to every request URL in the generated client. When omitted, t
 
 ::: code-group
 
-```typescript [Override the spec's server URL]
+```typescript twoslash [Override the spec's server URL]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -814,7 +817,7 @@ With `coercion` enabled in `@kubb/plugin-zod`, request-side parsing also normali
 
 ::: code-group
 
-```typescript [Validate responses with Zod]
+```typescript twoslash [Validate responses with Zod]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -833,7 +836,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [Validate both request and response with Zod]
+```typescript twoslash [Validate both request and response with Zod]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -949,7 +952,7 @@ The callback receives the OpenAPI `operation` and a `schemas` object containing 
 
 Build a key from the operation's first tag plus its path parameters:
 
-```typescript
+```typescript twoslash
 import { defineConfig } from 'kubb'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
@@ -958,9 +961,9 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginVueQuery({
-      queryKey: ({ operation, schemas }) => {
-        const tags = operation.getTags().map((tag) => JSON.stringify(tag.name))
-        const pathParams = schemas.pathParams?.keys ?? []
+      queryKey: ({ node }) => {
+        const tags = node.tags.map((tag) => JSON.stringify(tag))
+        const pathParams = node.parameters.filter((param) => param.in === 'path').map((param) => param.name)
         return [...tags, ...pathParams]
       },
     }),
@@ -976,18 +979,18 @@ export const getUserByNameQueryKey = ({ username }: { username: GetUserByNamePat
 
 Prepend a version prefix to the default query key:
 
-```typescript
+```typescript twoslash
 import { defineConfig } from 'kubb'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
-import { QueryKey } from '@kubb/plugin-vue-query/components'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
     pluginVueQuery({
-      queryKey: (props) => {
-        const defaultKeys = QueryKey.getTransformer(props)
+      queryKey: ({ node }) => {
+        const hasQueryParams = node.parameters.some((param) => param.in === 'query')
+        const defaultKeys = [`{ url: ${JSON.stringify(node.path)} }`, hasQueryParams ? '...(params ? [params] : [])' : null].filter(Boolean)
         return [JSON.stringify('v5'), ...defaultKeys]
       },
     }),
@@ -1001,7 +1004,7 @@ export const findPetsByTagsQueryKey = (params?: FindPetsByTagsQueryParams) => ['
 
 #### Key from operationId
 
-```typescript
+```typescript twoslash
 import { defineConfig } from 'kubb'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
@@ -1010,7 +1013,7 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginVueQuery({
-      queryKey: ({ operation }) => [JSON.stringify(operation.getOperationId())],
+      queryKey: ({ node }) => [JSON.stringify(node.operationId)],
     }),
   ],
 })
@@ -1018,7 +1021,7 @@ export default defineConfig({
 
 #### Conditional keys based on params
 
-```typescript
+```typescript twoslash
 import { defineConfig } from 'kubb'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
@@ -1027,14 +1030,15 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginVueQuery({
-      queryKey: ({ operation, schemas }) => {
-        const keys: unknown[] = [JSON.stringify(operation.getOperationId())]
+      queryKey: ({ node }) => {
+        const keys: unknown[] = [JSON.stringify(node.operationId)]
 
-        if (schemas.pathParams?.keys) {
-          keys.push(...schemas.pathParams.keys)
+        const pathParams = node.parameters.filter((param) => param.in === 'path')
+        if (pathParams.length) {
+          keys.push(...pathParams.map((param) => param.name))
         }
 
-        if (schemas.queryParams?.name) {
+        if (node.parameters.some((param) => param.in === 'query')) {
           keys.push('...(params ? [params] : [])')
         }
 
@@ -1075,7 +1079,7 @@ HTTP methods treated as queries. Operations using one of these generate a `useQu
 
 ::: code-group
 
-```typescript [Allow HEAD as a query method]
+```typescript twoslash [Allow HEAD as a query method]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -1134,7 +1138,7 @@ HTTP methods treated as mutations. Operations using one of these generate a `use
 
 ::: code-group
 
-```typescript [Treat only POST and PUT as mutations]
+```typescript twoslash [Treat only POST and PUT as mutations]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -1203,7 +1207,7 @@ export type Include = {
 
 ::: code-group
 
-```typescript [Only the pet tag]
+```typescript twoslash [Only the pet tag]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -1220,7 +1224,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [Only GET operations under /pet]
+```typescript twoslash [Only GET operations under /pet]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -1232,7 +1236,7 @@ export default defineConfig({
     pluginTs(),
     pluginVueQuery({
       include: [
-        { type: 'method', pattern: 'get' },
+        { type: 'method', pattern: 'GET' },
         { type: 'path', pattern: /^\/pet/ },
       ],
     }),
@@ -1270,7 +1274,7 @@ export type Exclude = {
 
 ::: code-group
 
-```typescript [Skip everything under the store tag]
+```typescript twoslash [Skip everything under the store tag]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -1287,7 +1291,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [Skip a specific operation and all delete methods]
+```typescript twoslash [Skip a specific operation and all delete methods]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -1300,7 +1304,7 @@ export default defineConfig({
     pluginVueQuery({
       exclude: [
         { type: 'operationId', pattern: 'deletePet' },
-        { type: 'method', pattern: 'delete' },
+        { type: 'method', pattern: 'DELETE' },
       ],
     }),
   ],
@@ -1332,7 +1336,7 @@ export type Override = {
 
 ::: code-group
 
-```typescript [Use object params for the user tag only]
+```typescript twoslash [Use object params for the user tag only]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -1398,7 +1402,7 @@ Set `parser` to `'zod'` and the plugin also depends on [`@kubb/plugin-zod`](/plu
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'

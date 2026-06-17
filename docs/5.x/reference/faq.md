@@ -63,7 +63,7 @@ Yes. Each plugin exposes a `resolver` option to rename operations and types, and
 
 Yes. Pass an array to `defineConfig`. Each entry has its own `input`, `output`, and `plugins`.
 
-```ts [kubb.config.ts]
+```ts twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 
 export default defineConfig([

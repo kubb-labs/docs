@@ -94,7 +94,7 @@ Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -137,7 +137,7 @@ How the plugin consolidates its generated code into files.
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginClient } from '@kubb/plugin-client'
@@ -399,7 +399,7 @@ This plugin requires the following plugins to be installed:
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginSwr } from '@kubb/plugin-swr'

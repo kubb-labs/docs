@@ -351,6 +351,7 @@ export const resolverExample = defineResolver<PluginExample>(() => ({
 | `options`         | The user-supplied plugin options.                                                 |
 
 ```typescript twoslash [setup-context.ts]
+import { fileURLToPath } from 'node:url'
 import { ast, definePlugin, defineGenerator } from '@kubb/core'
 
 export const pluginExample = definePlugin(() => ({

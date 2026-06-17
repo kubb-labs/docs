@@ -93,7 +93,7 @@ Folder where the plugin writes its generated code, resolved against the global `
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -136,7 +136,7 @@ How the plugin consolidates its generated code into files.
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginClient } from '@kubb/plugin-client'
@@ -189,7 +189,7 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 
 ::: code-group
 
-```typescript ['named' (default)]
+```typescript twoslash ['named' (default)]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -198,7 +198,7 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs({
-      output: { barrel: { type: 'named' } },
+      output: { path: 'types', barrel: { type: 'named' } },
     }),
   ],
 })
@@ -246,7 +246,7 @@ Text prepended to every generated file, for license headers, lint disables, or `
 
 ::: code-group
 
-```typescript [Static banner]
+```typescript twoslash [Static banner]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -256,6 +256,7 @@ export default defineConfig({
   plugins: [
     pluginTs({
       output: {
+        path: 'types',
         banner: '/* eslint-disable */\n// @ts-nocheck',
       },
     }),
@@ -272,7 +273,7 @@ export type Pet = {
 }
 ```
 
-```typescript [Dynamic banner]
+```typescript twoslash [Dynamic banner]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -282,7 +283,8 @@ export default defineConfig({
   plugins: [
     pluginTs({
       output: {
-        banner: (node) => `// Source: ${node.path}\n// Generated at ${new Date().toISOString()}`,
+        path: 'types',
+        banner: (node) => `// Source: ${node.filePath}\n// Generated at ${new Date().toISOString()}`,
       },
     }),
   ],
@@ -302,7 +304,7 @@ Text appended to every generated file. Mirrors `banner`, for closing comments, r
 
 ::: code-group
 
-```typescript [Re-enable lint after a banner disable]
+```typescript twoslash [Re-enable lint after a banner disable]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -312,6 +314,7 @@ export default defineConfig({
   plugins: [
     pluginTs({
       output: {
+        path: 'types',
         banner: '/* eslint-disable */',
         footer: '/* eslint-enable */',
       },
@@ -338,7 +341,7 @@ Splits generated files into subfolders by the operation's first tag, so each tag
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -449,7 +452,7 @@ export default client
 
 ::: code-group
 
-```typescript [Wire up a custom client]
+```typescript twoslash [Wire up a custom client]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 
@@ -705,7 +708,7 @@ With `coercion` enabled in `@kubb/plugin-zod`, request-side parsing also normali
 
 ::: code-group
 
-```typescript [Validate responses with Zod]
+```typescript twoslash [Validate responses with Zod]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 import { pluginTs } from '@kubb/plugin-ts'
@@ -724,7 +727,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [Validate both request and response with Zod]
+```typescript twoslash [Validate both request and response with Zod]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 import { pluginTs } from '@kubb/plugin-ts'
@@ -762,7 +765,7 @@ To plug in your own client, use [`importPath`](#importpath) instead.
 
 ::: code-group
 
-```typescript [Use fetch]
+```typescript twoslash [Use fetch]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 
@@ -798,7 +801,7 @@ Shape of the generated client code.
 
 ::: code-group
 
-```typescript ['staticClass']
+```typescript twoslash ['staticClass']
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 import { pluginTs } from '@kubb/plugin-ts'
@@ -843,7 +846,7 @@ import { PetClient } from './gen/clients/petClient'
 const pet = await PetClient.getPetById({ petId: 1 })
 ```
 
-```typescript ['class']
+```typescript twoslash ['class']
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 import { pluginTs } from '@kubb/plugin-ts'
@@ -915,7 +918,7 @@ Name of the generated SDK class, used as the export name and file name.
 
 ::: code-group
 
-```typescript [A composed PetStoreClient]
+```typescript twoslash [A composed PetStoreClient]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 import { pluginTs } from '@kubb/plugin-ts'
@@ -975,7 +978,7 @@ Base URL prepended to every request URL in the generated client, for pointing at
 
 ::: code-group
 
-```typescript [Override the spec's server URL]
+```typescript twoslash [Override the spec's server URL]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 
@@ -1018,7 +1021,7 @@ export type Include = {
 
 ::: code-group
 
-```typescript [Only the pet tag]
+```typescript twoslash [Only the pet tag]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -1033,7 +1036,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [Only GET operations under /pet]
+```typescript twoslash [Only GET operations under /pet]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -1043,7 +1046,7 @@ export default defineConfig({
   plugins: [
     pluginTs({
       include: [
-        { type: 'method', pattern: 'get' },
+        { type: 'method', pattern: 'GET' },
         { type: 'path', pattern: /^\/pet/ },
       ],
     }),
@@ -1071,7 +1074,7 @@ export type Exclude = {
 
 ::: code-group
 
-```typescript [Skip everything under the store tag]
+```typescript twoslash [Skip everything under the store tag]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -1086,7 +1089,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [Skip a specific operation and all delete methods]
+```typescript twoslash [Skip a specific operation and all delete methods]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -1097,7 +1100,7 @@ export default defineConfig({
     pluginTs({
       exclude: [
         { type: 'operationId', pattern: 'deletePet' },
-        { type: 'method', pattern: 'delete' },
+        { type: 'method', pattern: 'DELETE' },
       ],
     }),
   ],
@@ -1125,7 +1128,7 @@ export type Override = {
 
 ::: code-group
 
-```typescript [Return the full response only for the user tag]
+```typescript twoslash [Return the full response only for the user tag]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 
@@ -1170,7 +1173,7 @@ Overrides naming and path resolution for the generated client. Only the methods 
 |     Type: | `Partial<ResolverClient> & ThisType<ResolverClient>` |
 | Required: | `false`                                              |
 
-```typescript [Append "Client" to every name]
+```typescript twoslash [Append "Client" to every name]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 
@@ -1198,7 +1201,7 @@ A list of [macros](/docs/5.x/concepts/macros) applied to operation nodes before 
 |     Type: | `Array<Macro>`  |
 | Required: | `false`         |
 
-```typescript [Prefix every operationId with "api_"]
+```typescript twoslash [Prefix every operationId with "api_"]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 

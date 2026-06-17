@@ -89,7 +89,7 @@ The whole value is `{ type: 'all' \| 'named', nested?: boolean } \| false` at th
 | Required: | `false`                                                 |
 |  Default: | `{ type: 'named' }`                                     |
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginBarrel } from '@kubb/plugin-barrel'
 
@@ -104,7 +104,7 @@ export default defineConfig({
 
 ::: code-group
 
-```typescript [{ type: 'named' } (default)]
+```typescript twoslash [{ type: 'named' } (default)]
 import { defineConfig } from 'kubb'
 
 export default defineConfig({
@@ -130,7 +130,7 @@ export { User } from './types/User'
 export { User } from './User'
 ```
 
-```typescript [{ type: 'all' }]
+```typescript twoslash [{ type: 'all' }]
 import { defineConfig } from 'kubb'
 
 export default defineConfig({
@@ -156,7 +156,7 @@ export * from './types/User'
 export * from './User'
 ```
 
-```typescript [{ type: 'all', nested: true } (plugin level)]
+```typescript twoslash [{ type: 'all', nested: true } (plugin level)]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -184,7 +184,7 @@ export { getPost, Post } from './api/post'
 export { User } from './api/types/User'
 ```
 
-```typescript [Disable the barrel for a single plugin]
+```typescript twoslash [Disable the barrel for a single plugin]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'
@@ -194,11 +194,11 @@ import { pluginZod } from '@kubb/plugin-zod'
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
-  plugins: [pluginTs(), pluginZod({ output: { barrel: false } })],
+  plugins: [pluginTs(), pluginZod({ output: { path: 'zod', barrel: false } })],
 })
 ```
 
-```typescript [Disable only the root barrel]
+```typescript twoslash [Disable only the root barrel]
 import { defineConfig } from 'kubb'
 
 // No root index.ts is generated, but each plugin

@@ -22,7 +22,7 @@ plugin runs. This diagnostic fires when the config has no `adapter`.
 
 Set `adapter` in `kubb.config.ts`:
 
-```typescript
+```typescript twoslash
 import { defineConfig } from 'kubb'
 import { adapterOas } from '@kubb/adapter-oas'
 

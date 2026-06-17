@@ -94,7 +94,7 @@ Use a folder to keep each generator's output separate (`'types'`, `'clients'`, `
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -137,7 +137,7 @@ How the plugin consolidates its generated code into files.
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginClient } from '@kubb/plugin-client'
@@ -190,7 +190,7 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 
 ::: code-group
 
-```typescript ['named' (default)]
+```typescript twoslash ['named' (default)]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -199,7 +199,7 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs({
-      output: { barrel: { type: 'named' } },
+      output: { path: 'types', barrel: { type: 'named' } },
     }),
   ],
 })
@@ -210,7 +210,7 @@ export { Pet, PetStatus } from './Pet'
 export { Store } from './Store'
 ```
 
-```typescript ['all']
+```typescript twoslash ['all']
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -219,7 +219,7 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs({
-      output: { barrel: { type: 'all' } },
+      output: { path: 'types', barrel: { type: 'all' } },
     }),
   ],
 })
@@ -230,7 +230,7 @@ export * from './Pet'
 export * from './Store'
 ```
 
-```typescript [nested]
+```typescript twoslash [nested]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -239,7 +239,7 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs({
-      output: { barrel: { type: 'named', nested: true } },
+      output: { path: 'types', barrel: { type: 'named', nested: true } },
     }),
   ],
 })
@@ -256,7 +256,7 @@ src/gen/types/
     └── Store.ts
 ```
 
-```typescript [false]
+```typescript twoslash [false]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -265,7 +265,7 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs({
-      output: { barrel: false },
+      output: { path: 'types', barrel: false },
     }),
   ],
 })
@@ -289,7 +289,7 @@ Text prepended to every generated file, for license headers, lint disables, or `
 
 ::: code-group
 
-```typescript [Static banner]
+```typescript twoslash [Static banner]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -299,6 +299,7 @@ export default defineConfig({
   plugins: [
     pluginTs({
       output: {
+        path: 'types',
         banner: '/* eslint-disable */\n// @ts-nocheck',
       },
     }),
@@ -315,7 +316,7 @@ export type Pet = {
 }
 ```
 
-```typescript [Dynamic banner]
+```typescript twoslash [Dynamic banner]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -325,7 +326,8 @@ export default defineConfig({
   plugins: [
     pluginTs({
       output: {
-        banner: (node) => `// Source: ${node.path}\n// Generated at ${new Date().toISOString()}`,
+        path: 'types',
+        banner: (node) => `// Source: ${node.filePath}\n// Generated at ${new Date().toISOString()}`,
       },
     }),
   ],
@@ -345,7 +347,7 @@ Text appended to every generated file, the counterpart to `banner`, for closing 
 
 ::: code-group
 
-```typescript [Re-enable lint after a banner disable]
+```typescript twoslash [Re-enable lint after a banner disable]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -355,6 +357,7 @@ export default defineConfig({
   plugins: [
     pluginTs({
       output: {
+        path: 'types',
         banner: '/* eslint-disable */',
         footer: '/* eslint-enable */',
       },
@@ -381,7 +384,7 @@ Splits the generated files into subfolders by each operation's tag or path, so r
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -477,7 +480,7 @@ Maps OpenAPI schema names to specific Faker expressions, for when the schema nam
 |     Type: | `Record<string, string>` |
 | Required: | `false`                  |
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -543,7 +546,7 @@ Seed value passed to `faker.seed(...)`. Set it for deterministic output across r
 
 ::: code-group
 
-```typescript [Deterministic seed]
+```typescript twoslash [Deterministic seed]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -609,7 +612,7 @@ export type Include = {
 
 ::: code-group
 
-```typescript [Only the pet tag]
+```typescript twoslash [Only the pet tag]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -624,7 +627,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [Only GET operations under /pet]
+```typescript twoslash [Only GET operations under /pet]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -634,7 +637,7 @@ export default defineConfig({
   plugins: [
     pluginFaker({
       include: [
-        { type: 'method', pattern: 'get' },
+        { type: 'method', pattern: 'GET' },
         { type: 'path', pattern: /^\/pet/ },
       ],
     }),
@@ -672,7 +675,7 @@ export type Exclude = {
 
 ::: code-group
 
-```typescript [Skip everything under the store tag]
+```typescript twoslash [Skip everything under the store tag]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -687,7 +690,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [Skip a specific operation and all delete methods]
+```typescript twoslash [Skip a specific operation and all delete methods]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -698,7 +701,7 @@ export default defineConfig({
     pluginFaker({
       exclude: [
         { type: 'operationId', pattern: 'deletePet' },
-        { type: 'method', pattern: 'delete' },
+        { type: 'method', pattern: 'DELETE' },
       ],
     }),
   ],
@@ -726,7 +729,7 @@ export type Override = {
 
 ::: code-group
 
-```typescript [Use a different date parser for the user tag]
+```typescript twoslash [Use a different date parser for the user tag]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -771,7 +774,7 @@ Customizes the names of the generated factory helpers. Set it to append `Mock` o
 |     Type: | `Partial<ResolverFaker>` |
 | Required: | `false`                  |
 
-```typescript [Append "Mock" to every factory name]
+```typescript twoslash [Append "Mock" to every factory name]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -799,7 +802,7 @@ A list of [macros](/docs/5.x/concepts/macros) applied to schema/operation nodes 
 |     Type: | `Array<Macro>`  |
 | Required: | `false`         |
 
-```typescript [Strip schema descriptions]
+```typescript twoslash [Strip schema descriptions]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -834,7 +837,7 @@ Use `this.transform` to recurse into nested schema nodes and `this.options` to r
 
 ::: code-group
 
-```typescript [Use faker.number.float() for integers]
+```typescript twoslash [Use faker.number.float() for integers]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -855,7 +858,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [Override date strings]
+```typescript twoslash [Override date strings]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -892,7 +895,7 @@ This plugin requires the following plugins to be installed:
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 import { pluginTs } from '@kubb/plugin-ts'
