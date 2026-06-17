@@ -112,7 +112,7 @@ This matches the default behavior of axios, ky, and Kubb's bundled fetch client,
 
 ### Bundled client runtime exports `client`
 
-The bundled HTTP client runtime exports its request function as `client` for both the `axios` and `fetch` adapters. The name stays `client` whether the runtime is bundled into `.kubb/client.ts` or imported from `@kubb/plugin-client/clients/fetch` or `@kubb/plugin-client/clients/axios`. When the client is bundled, the root barrel re-exports that `client` symbol. The bundled file always lands at `.kubb/client.ts`. In v4, `@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, and `@kubb/plugin-mcp` emitted `.kubb/fetch.ts`.
+The HTTP client runtime exports its request function as `client` for both the `axios` and `fetch` adapters, whether bundled into `.kubb/client.ts` or imported from `@kubb/plugin-client/clients/{axios,fetch}`. When bundled it lands at `.kubb/client.ts` and the root barrel re-exports that `client`. In v4, `@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, and `@kubb/plugin-mcp` emitted `.kubb/fetch.ts`.
 
 Generated code imports the runtime as a default import, so most projects need no changes. If you import the request function as a named export, rename it to `client`.
 
