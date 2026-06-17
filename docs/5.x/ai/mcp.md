@@ -73,5 +73,5 @@ Add the following to your `.vscode/mcp.json` (workspace), or run `MCP: Open User
 
 ## See also
 
-- [`kubb mcp` command](/docs/5.x/api/commands/mcp): CLI reference with all flags and transport details
+- [`kubb mcp` command](/docs/5.x/api/commands/mcp): CLI reference and transport details
 - [`@kubb/plugin-mcp`](/plugins/plugin-mcp) generates an MCP server from your OpenAPI spec
