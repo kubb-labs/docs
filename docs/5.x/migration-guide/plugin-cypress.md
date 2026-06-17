@@ -5,14 +5,13 @@ description: Changes for @kubb/plugin-cypress when migrating from Kubb v4 to v5.
 
 # Migration: `@kubb/plugin-cypress`
 
-Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). See the full option reference in [`@kubb/plugin-cypress`](/plugins/plugin-cypress).
+Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). For the full option reference, see [`@kubb/plugin-cypress`](/plugins/plugin-cypress).
 
-The plugin options are unchanged. `transformers.name` is replaced by [`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver).
+The plugin options stay the same. [`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) takes over from `transformers.name`.
 
 ## Generated output
 
-- HTTP method constants are uppercased (`'post'` → `'POST'`).
-- Imports follow the new `*Data` / `*Response` naming.
+Two things change in the generated output. HTTP method constants are now uppercase (`'post'` → `'POST'`), and imports follow the new `*Data` / `*Response` naming.
 
 ```diff
 - import type { AddPetMutationRequest, AddPetMutationResponse } from '../../models/AddPet.ts'

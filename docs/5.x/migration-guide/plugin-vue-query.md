@@ -5,10 +5,10 @@ description: Configuration and generated-output changes for @kubb/plugin-vue-que
 
 # Migration: `@kubb/plugin-vue-query`
 
-Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). See the full option reference in [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query).
+Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). For the full option reference, see [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query).
 
-`transformers.name` is replaced by [`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver). The `client` sub-object for HTTP client configuration is unchanged. All other options are unchanged.
+[`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) takes over from `transformers.name`. The `client` sub-object for HTTP client configuration stays the same, as do all other options.
 
 ## Generated output
 
-The generated output changes are identical to React Query: the `*MutationKey` type alias is gone, `TData` narrows to 2xx responses, and `enabled`-guarded params become optional (Vue Query writes the guard as `enabled: () => !!toValue(petId)`). See [Generated output: @kubb/plugin-react-query](/docs/5.x/migration-guide/plugin-react-query#generated-output).
+The generated output changes match React Query: the `*MutationKey` type alias is gone, `TData` narrows to 2xx responses, and `enabled`-guarded params become optional (Vue Query writes the guard as `enabled: () => !!toValue(petId)`). See [Generated output: @kubb/plugin-react-query](/docs/5.x/migration-guide/plugin-react-query#generated-output).

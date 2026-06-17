@@ -39,7 +39,7 @@ Use [`macros`](/plugins/plugin-zod#macros) or [`printer`](/plugins/plugin-zod#pr
 
 ## Renamed: `transformers.name`
 
-`transformers.name` is replaced by [`resolver.resolveSchemaName`](/docs/5.x/migration-guide#transformersname-resolver).
+[`resolver.resolveSchemaName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`.
 
 ## Moved to `adapterOas`
 
@@ -47,7 +47,7 @@ Use [`macros`](/plugins/plugin-zod#macros) or [`printer`](/plugins/plugin-zod#pr
 
 ## New: `mini`
 
-Generate [Zod Mini](https://zod.dev/packages/mini)'s functional syntax for better tree-shaking. When `mini: true`, `importPath` defaults to `'zod/mini'`.
+Generate the functional syntax of [Zod Mini](https://zod.dev/packages/mini), which tree-shakes better. When `mini: true`, `importPath` defaults to `'zod/mini'`.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -64,7 +64,7 @@ export default defineConfig({
 
 With `inferred: true`, the `z.infer<typeof schema>` alias now carries a `SchemaType` suffix. `petSchema` exports `PetSchemaType` instead of `PetSchema`.
 
-Before, the schema value and its inferred type differed only by casing (`petSchema` and `PetSchema`). An all-uppercase name such as `SUV`, `URL`, or `API` produced the same identifier for both, so the barrel re-exported it twice and failed to compile with `TS2300: Duplicate identifier`. The `Type` suffix keeps the value and type distinct regardless of casing.
+In v4 the schema value and its inferred type differed only by casing (`petSchema` and `PetSchema`). An all-uppercase name such as `SUV`, `URL`, or `API` produced the same identifier for both, so the barrel re-exported it twice and failed to compile with `TS2300: Duplicate identifier`. The `Type` suffix keeps the value and type apart no matter the casing.
 
 ```typescript [zod/petSchema.ts]
 export const petSchema = z.object({
@@ -87,7 +87,7 @@ import type { PetSchema } from './gen/zod/petSchema.ts' // [!code --]
 
 ### Chained syntax instead of functional wrappers
 
-v5 prefers the chained Zod 4 syntax. `.optional()` always sits at the end of the chain, before `.describe()`.
+v5 prefers the chained Zod 4 syntax. `.optional()` always sits at the end of the chain, right before `.describe()`.
 
 ::: code-group
 
@@ -109,7 +109,7 @@ The functional form (`z.optional(...)`) is now reserved for `mini: true` output,
 
 ### Self-referencing getters only for true cycles
 
-v4 wrapped almost every nested ref in a getter. v5 only does so when the schema is genuinely circular (a schema that references itself or its parent).
+v4 wrapped almost every nested ref in a getter. v5 only does so when the schema is truly circular, meaning it references itself or its parent.
 
 ```diff
 - get category() {

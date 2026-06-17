@@ -7,14 +7,14 @@ outline: [2, 3, 4]
 
 # Migration Guide: v4 → v5
 
-Kubb v5 introduces a layered architecture that splits responsibilities between [adapters](/docs/5.x/concepts/adapters), [plugins](/docs/5.x/concepts/plugins), [parsers](/docs/5.x/concepts/parsers), and [storage](/docs/5.x/concepts/storage). This guide lists every user-facing breaking change with the matching v5 syntax. Each section gives a short rationale, a before/after diff, and a link to the reference.
+Kubb v5 splits responsibilities across [adapters](/docs/5.x/concepts/adapters), [plugins](/docs/5.x/concepts/plugins), [parsers](/docs/5.x/concepts/parsers), and [storage](/docs/5.x/concepts/storage), so the upgrade touches more than a version number. This page covers the changes that affect every project: the new import path, the core config, the shared plugin API, and the package moves. Anything specific to one plugin or adapter lives on its [per-extension page](#per-extension-changes), with a before/after diff and a link to the reference.
 
 > [!TIP]
-> Start with the [Upgrade prompt](#upgrade-prompt) to migrate most configurations automatically, then walk through this page to verify the result.
+> Start with the [Upgrade prompt](#upgrade-prompt) to migrate most configurations automatically, then read through this page to verify the result.
 
 ## Upgrade prompt
 
-Copy the prompt below, paste it into any LLM ([Claude](https://claude.ai), [ChatGPT](https://chat.openai.com), [Gemini](https://gemini.google.com), …), and append your `kubb.config.ts` at the end.
+Copy the prompt below, paste it into any LLM ([Claude](https://claude.ai), [ChatGPT](https://chat.openai.com), [Gemini](https://gemini.google.com), …), and add your `kubb.config.ts` at the end.
 
 ::: details Expand upgrade prompt
 
@@ -91,8 +91,8 @@ v5 no longer infers a single file from an `output.path` that ends in `.ts`.
 For every plugin whose `output.path` points at a file (ends in `.ts`), add
 `mode: 'file'` to its `output` and keep the extension in the path:
   - output: { path: 'models.ts' } → output: { path: 'models.ts', mode: 'file' }
-The extension is required — do not drop it. Leave folder paths unchanged;
-they default to `mode: 'directory'`. `output.mode` only accepts
+The extension is required, do not drop it. Leave folder paths unchanged.
+They default to `mode: 'directory'`. `output.mode` only accepts
 `'directory'` or `'file'`.
 
 Now migrate the following kubb.config.ts:
@@ -102,7 +102,7 @@ Now migrate the following kubb.config.ts:
 
 ## Performance
 
-v5 generates code faster than v4. Benchmarks compare `@kubb/core@4.37.8` with the v5 `kubb` meta-package, with file writing disabled to focus on the generation pipeline.
+v5 generates code faster than v4. The benchmarks compare `@kubb/core@4.37.8` with the v5 `kubb` meta-package. File writing is disabled so the numbers reflect the generation pipeline alone.
 
 > [!NOTE]
 > Measured on a 4-core Intel Xeon @ 2.80 GHz, Linux. Speedup is the headline. Absolute milliseconds are hardware-dependent.
@@ -131,7 +131,7 @@ v5 generates code faster than v4. Benchmarks compare `@kubb/core@4.37.8` with th
 | `plugin-ts` + `plugin-client`                                 | 7,662 ms  | 1,544 ms | **+396%** |
 | `plugin-ts` + `plugin-client` + `plugin-zod` + `plugin-faker` | 14,943 ms | 2,461 ms | **+507%** |
 
-The gap widens on bigger specs. In v4, every plugin bootstrapped its own `pluginOas` instance, so parsing ran once per plugin. The `adapterOas` in v5 parses the spec once and shares the result across all plugins.
+The gap widens on bigger specs. In v4, every plugin bootstrapped its own `pluginOas` instance, so parsing ran once per plugin. In v5, `adapterOas` parses the spec once and shares the result across all plugins.
 
 ## System requirements
 
@@ -145,7 +145,7 @@ Update your CI pipelines, the `engines` field in `package.json`, and any `Docker
 
 ### Plugins moved to a separate repository
 
-In v4, every plugin lived in [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb). v5 extracted them into [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins), but the npm package names are unchanged, so no rename is required.
+In v4, every plugin lived in [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb). v5 moves them into [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins). The npm package names stay the same, so you do not need to rename anything.
 
 ::: code-group
 
@@ -203,7 +203,7 @@ The following plugins have no v5 equivalent. Remove them from your config and un
 
 ### Import source
 
-Always import [`defineConfig`](/docs/5.x/api/core) from the top-level `kubb` package. The `kubb` package wires the OpenAPI [adapter](/docs/5.x/concepts/adapters), TypeScript [parsers](/docs/5.x/concepts/parsers), and the barrel [plugin](/plugins/plugin-barrel) automatically.
+Import [`defineConfig`](/docs/5.x/api/core) from the top-level `kubb` package. That package wires up the OpenAPI [adapter](/docs/5.x/concepts/adapters), the TypeScript [parsers](/docs/5.x/concepts/parsers), and the barrel [plugin](/plugins/plugin-barrel) for you.
 
 ::: code-group
 
@@ -219,7 +219,7 @@ import { defineConfig } from 'kubb'
 
 ### Layered architecture
 
-v5 introduces three top-level keys that replace behaviour previously embedded in each plugin. When you import from `kubb`, all three defaults are applied automatically.
+v5 adds three top-level keys that replace behavior each plugin used to carry on its own. When you import from `kubb`, all three defaults apply automatically.
 
 | Option       | Package                                                     | Purpose                                       | Default                 |
 | ------------ | ----------------------------------------------------------- | --------------------------------------------- | ----------------------- |
@@ -229,7 +229,7 @@ v5 introduces three top-level keys that replace behaviour previously embedded in
 
 ### `@kubb/plugin-oas` removed
 
-`pluginOas()` no longer belongs in `plugins`. Its configuration moves to the top-level `adapter` key.
+`pluginOas()` no longer belongs in `plugins`. Its options move to the top-level `adapter` key.
 
 ::: code-group
 
@@ -278,7 +278,7 @@ export default defineConfig({
 
 ### `output.format` and `output.lint`: new auto-detection
 
-Both options gained an `'auto'` value that detects available tools, and `'oxfmt'` / `'oxlint'` joined the formatter and linter lists.
+Both options gained an `'auto'` value that detects the tools you have installed, and `'oxfmt'` and `'oxlint'` joined the formatter and linter lists.
 
 | Option          | New v5 values        | Detection order                                                                          |
 | --------------- | -------------------- | ---------------------------------------------------------------------------------------- |
@@ -287,7 +287,7 @@ Both options gained an `'auto'` value that detects available tools, and `'oxfmt'
 
 ### `output.barrelType` → `output.barrel`
 
-The string-based `barrelType` option is replaced by an object-based `barrel` option with a `type` field. At the plugin level, a `nested` flag replaces the old `'propagate'` string.
+The string `barrelType` option becomes an object `barrel` option with a `type` field. At the plugin level, a `nested` flag replaces the old `'propagate'` string.
 
 | v4 (old) `output.barrelType`  | v5 (new) `output.barrel`          |
 | ----------------------------- | --------------------------------- |
@@ -348,14 +348,14 @@ See [`@kubb/plugin-barrel`](/plugins/plugin-barrel) for the full `barrel` option
 
 ### Single-file output uses `output.mode`
 
-v4 chose between a folder and a single file from the `output.path` extension: a path ending in `.ts` produced one file, anything else a folder. v5 removes that guess and states the layout outright with `output.mode`.
+v4 chose between a folder and a single file from the `output.path` extension. A path ending in `.ts` produced one file, anything else a folder. v5 drops that guess and asks you to state the layout with `output.mode`.
 
 | `output.mode` | Layout                                                            |
 | ------------- | ----------------------------------------------------------------- |
 | `'directory'` | One file per operation or schema. The default.                    |
 | `'file'`      | One file for the whole plugin.                                    |
 
-To keep a single-file layout from v4, add `mode: 'file'`. The `output.path` must include the extension, since Kubb uses it as-is.
+To keep a single-file layout from v4, add `mode: 'file'`. The `output.path` must include the extension, because Kubb uses it as-is.
 
 ::: code-group
 
@@ -383,13 +383,13 @@ export default defineConfig({
 
 :::
 
-`mode: 'file'` forbids the `group` option, since a single file has nothing to group. Pairing them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error. To organize `'directory'` output into per-tag or per-path subfolders, keep `mode: 'directory'` and add the `group` option (covered next).
+`mode: 'file'` forbids the `group` option, because a single file has nothing to group. Pairing them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error. To organize `'directory'` output into per-tag or per-path subfolders, keep `mode: 'directory'` and add the `group` option (covered next).
 
 ### Group folders use the plain tag
 
 With `group: { type: 'tag' }`, every plugin now writes each tag to a folder named after the camelCased tag. v4 appended a `Controller` suffix (and `Requests` for the Cypress and MCP plugins), so `pet` operations landed in `petController/`. v5 drops the suffix and uses `pet/`. Nothing in the generated output referenced the suffix, so only the folder layout changes.
 
-The config stays the same. Only the output folders change:
+Your config stays the same. Only the output folders change:
 
 ```text
 v4: src/gen/clients/petController/  →  v5: src/gen/clients/pet/
@@ -414,7 +414,7 @@ export default defineConfig({
 
 ### Logging: `--debug` replaced by reporters
 
-The `--debug` flag and the `debug` value of `--logLevel` are gone. v5 renders a run through reporters, picked on the CLI with `--reporter` (comma-separated) or in the config with `reporters`. The CLI flag wins. Three ship built in:
+The `--debug` flag and the `debug` value of `--logLevel` are gone. v5 renders a run through reporters, picked on the CLI with `--reporter` (comma-separated) or in the config with `reporters`. The CLI flag wins when both are set. Three reporters ship built in:
 
 | Reporter          | Output                                                                  |
 | ----------------- | ----------------------------------------------------------------------- |
@@ -434,15 +434,15 @@ kubb generate --reporter file
 
 :::
 
-The `kubb:debug` hook and the `createDebugger` helper are removed alongside the flag. See [`kubb generate`](/docs/5.x/api/commands/generate) for the full flag list and [Diagnostics](/docs/5.x/reference/diagnostics) for the structured problem model the reporters render.
+The `kubb:debug` hook and the `createDebugger` helper go away with the flag. See [`kubb generate`](/docs/5.x/api/commands/generate) for the full flag list and [Diagnostics](/docs/5.x/reference/diagnostics) for the structured problem model the reporters render.
 
 ## Shared plugin API
 
-These changes apply to every plugin that defined `transformers` in v4.
+These changes apply to every plugin that used `transformers` in v4.
 
 ### `transformers.name` → `resolver`
 
-The single `transformers.name(name, type)` callback is replaced by typed [resolver](/docs/5.x/concepts/plugins#resolvers) methods. The exact method depends on the plugin:
+Typed [resolver](/docs/5.x/concepts/plugins#resolvers) methods replace the single `transformers.name(name, type)` callback. Which method you use depends on the plugin:
 
 | Plugin                                                                                                                                                                                                                                                                                                                                                    | Resolver method           |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
@@ -450,7 +450,7 @@ The single `transformers.name(name, type)` callback is replaced by typed [resolv
 | [`@kubb/plugin-zod`](/plugins/plugin-zod)                                                                                                                                                                                                                                                                                                                 | `resolveSchemaName(name)` |
 | [`@kubb/plugin-client`](/plugins/plugin-client), [`@kubb/plugin-react-query`](/plugins/plugin-react-query), [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query), [`@kubb/plugin-msw`](/plugins/plugin-msw), [`@kubb/plugin-faker`](/plugins/plugin-faker), [`@kubb/plugin-cypress`](/plugins/plugin-cypress), [`@kubb/plugin-mcp`](/plugins/plugin-mcp) | `resolveName(name)`       |
 
-Inside a resolver method, `this` is bound to the full resolver, so `this.default(name, 'function')` falls back to the preset logic.
+Inside a resolver method, `this` is bound to the full resolver, so `this.default(name, 'function')` falls back to the built-in logic.
 
 ::: code-group
 
@@ -478,7 +478,7 @@ pluginTs({
 
 ### `transformers.schema` → `macros`
 
-Schema-level transformations move to [macros](/docs/5.x/concepts/macros). Returning `null` or `undefined` from a macro callback falls back to the preset behavior.
+Schema-level transformations move to [macros](/docs/5.x/concepts/macros). Returning `null` or `undefined` from a macro callback falls back to the built-in behavior.
 
 ::: code-group
 
@@ -509,7 +509,7 @@ pluginZod({
 
 ### New: `printer`
 
-Code-generating plugins now accept a `printer` option for overriding individual AST node renderers. Use it instead of the removed `mapper` option for type-level customizations.
+Code-generating plugins now accept a `printer` option that overrides individual AST node renderers. Use it in place of the removed `mapper` option for type-level customizations.
 
 ```typescript twoslash [v5]
 import ts from 'typescript'
@@ -528,7 +528,7 @@ pluginTs({
 
 ## Multiple content types
 
-When an OpenAPI operation declares multiple content types for its `requestBody`, v5 generates a separate type per content type and a union alias. In v4, only the first content type was used.
+When an OpenAPI operation declares multiple content types for its `requestBody`, v5 generates one type per content type plus a union alias. v4 used only the first content type.
 
 ```typescript
 // plugin-ts output for an operation with application/json + multipart/form-data
@@ -537,7 +537,7 @@ export type UploadFileFormData = { file: Blob }
 export type UploadFileData = UploadFileJsonData | UploadFileFormData
 ```
 
-The generated client exposes `contentType` as a typed literal union and defaults to the first declared content type:
+The generated client exposes `contentType` as a typed literal union, defaulting to the first declared content type:
 
 ```typescript
 uploadFile(petId, data, { contentType: 'multipart/form-data' })
@@ -547,7 +547,7 @@ Single-content-type operations are unchanged.
 
 ## Per-extension changes
 
-Each extension keeps its configuration changes on its own page. Open the one you use.
+Each extension documents its own configuration changes on its own page. Open the one you use.
 
 - [`@kubb/adapter-oas`](/docs/5.x/migration-guide/adapter-oas)
 - [`@kubb/plugin-ts`](/docs/5.x/migration-guide/plugin-ts)
@@ -562,7 +562,7 @@ Each extension keeps its configuration changes on its own page. Open the one you
 - [`@kubb/plugin-mcp`](/docs/5.x/migration-guide/plugin-mcp)
 - [`@kubb/parser-ts`](/docs/5.x/migration-guide/parser-ts)
 
-The adapter page also covers the schema options that moved off the plugins, and each plugin page lists that extension's generated-output changes.
+The adapter page also covers the schema options that moved off the plugins. Each plugin page lists that extension's generated-output changes.
 
 ## Complete before/after example
 
@@ -685,44 +685,10 @@ export default defineConfig({
 
 v5 also changes what the generators emit, so update any code that imports from the generated files. Two changes apply to every generator:
 
-- The banner (`/* Generated by Kubb */`) is controlled by [`output.defaultBanner`](/docs/5.x/reference/configuration#output-defaultbanner) on the root config (default `'simple'`). Use [`output.banner`](/docs/5.x/reference/configuration#output-banner) (and [`output.footer`](/docs/5.x/reference/configuration#output-footer)) on individual plugins to override the text for a specific plugin's files. A string applies to every file. Pass a function to receive per-file context (`isBarrel`, `isAggregation`, `filePath`, `baseName`) and skip the banner on re-export files, for example to add `'use server'` to source files but not to barrel or group aggregation files.
-- All response status types are suffixed with `Status<code>`.
+- The banner (`/* Generated by Kubb */`) is controlled by [`output.defaultBanner`](/docs/5.x/reference/configuration#output-defaultbanner) on the root config (default `'simple'`). Use [`output.banner`](/docs/5.x/reference/configuration#output-banner) (and [`output.footer`](/docs/5.x/reference/configuration#output-footer)) on individual plugins to override the text for one plugin's files. A string applies to every file. A function receives per-file context (`isBarrel`, `isAggregation`, `filePath`, `baseName`), which lets you skip the banner on re-export files, for example to add `'use server'` to source files but not to barrel or group aggregation files.
+- Response status types now carry a `Status<code>` suffix.
 
 The output changes specific to each generator live on its [per-extension page](#per-extension-changes).
-
-## Plugin author migration
-
-If you maintain a custom plugin or generator, update the following:
-
-### `PluginManager` → `PluginDriver`
-
-The internal orchestration class was renamed. Update every import and usage:
-
-```diff
-- import { PluginManager } from '@kubb/core'
-+ import { PluginDriver } from '@kubb/core'
-
-- const manager = new PluginManager(config)
-+ const driver = new PluginDriver(config)
-
-- ctx.pluginManager.getPlugin(name)
-+ ctx.driver.getPlugin(name)
-```
-
-The generator context property follows the same rename: `pluginManager` → `driver`.
-
-### `pluginKey` → `pluginName`
-
-Each plugin now has a single `pluginName` identifier. The `pluginKey` array property is removed.
-
-```diff
-- export const myPlugin = definePlugin(() => ({
--   pluginKey: ['my-plugin'],
-+ export const myPlugin = definePlugin(() => ({
-+   pluginName: 'my-plugin',
-```
-
-Duplicate plugins (same `pluginName` registered twice) now throw at startup.
 
 ## See also
 
