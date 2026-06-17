@@ -13,36 +13,26 @@ The plugin options stay the same. [`resolver.resolveName`](/docs/5.x/migration-g
 
 Handlers take the MCP `RequestHandlerExtra` object as a second argument and forward it to the underlying client. Update existing tools to thread it through.
 
-::: code-group
+```typescript
+import type { CallToolResult } from '@modelcontextprotocol/sdk/types' // [!code --]
+import type { CallToolResult, ServerNotification, ServerRequest } from '@modelcontextprotocol/sdk/types' // [!code ++]
+import type { RequestHandlerExtra } from '@modelcontextprotocol/sdk/shared/protocol' // [!code ++]
 
-```typescript [v4]
-import type { CallToolResult } from '@modelcontextprotocol/sdk/types'
-
-export async function addPetHandler({ data }: { data: AddPetMutationRequest }): Promise<CallToolResult> {
-  const res = await fetch<AddPetMutationResponse, ResponseErrorConfig<AddPet405>, AddPetMutationRequest>({
-    method: 'POST',
-    url: '/pet',
-    baseURL: 'https://petstore.swagger.io/v2',
-    data,
-  })
+export async function addPetHandler({ data }: { data: AddPetMutationRequest }): Promise<CallToolResult> { // [!code --]
+export async function addPetHandler( // [!code ++]
+  { data }: { data: AddPetData }, // [!code ++]
+  request: RequestHandlerExtra<ServerRequest, ServerNotification>, // [!code ++]
+): Promise<CallToolResult> { // [!code ++]
+  const res = await fetch<AddPetMutationResponse, ResponseErrorConfig<AddPet405>, AddPetMutationRequest>({ // [!code --]
+    method: 'POST', // [!code --]
+    url: '/pet', // [!code --]
+    baseURL: 'https://petstore.swagger.io/v2', // [!code --]
+    data, // [!code --]
+  }) // [!code --]
+  const res = await client<AddPetResponse, ResponseErrorConfig<AddPetStatus405>, AddPetData>( // [!code ++]
+    { method: 'POST', url: `/pet`, baseURL: `https://petstore.swagger.io/v2`, data }, // [!code ++]
+    request, // [!code ++]
+  ) // [!code ++]
   ...
 }
 ```
-
-```typescript [v5]
-import type { CallToolResult, ServerNotification, ServerRequest } from '@modelcontextprotocol/sdk/types'
-import type { RequestHandlerExtra } from '@modelcontextprotocol/sdk/shared/protocol'
-
-export async function addPetHandler(
-  { data }: { data: AddPetData },
-  request: RequestHandlerExtra<ServerRequest, ServerNotification>,
-): Promise<CallToolResult> {
-  const res = await client<AddPetResponse, ResponseErrorConfig<AddPetStatus405>, AddPetData>(
-    { method: 'POST', url: `/pet`, baseURL: `https://petstore.swagger.io/v2`, data },
-    request,
-  )
-  ...
-}
-```
-
-:::

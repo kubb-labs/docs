@@ -34,7 +34,7 @@ merging is asked for but no documents are passed.
 
 ## Example
 
-```typescript
+```typescript twoslash
 import { defineConfig } from 'kubb'
 
 export default defineConfig({

@@ -94,7 +94,7 @@ Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -137,7 +137,7 @@ How the plugin consolidates its generated code into files.
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginClient } from '@kubb/plugin-client'
@@ -196,11 +196,11 @@ Organize `output.mode: 'directory'` output into per-tag or per-path subdirectori
 
 ### client
 
-Configure how the generated hooks call the HTTP client. Set the client kind, the shape of the returned data, the base URL, whether to bundle the client, the import path, and parameter casing.
+Configure how the generated hooks call the HTTP client. Set the client kind, the shape of the returned data, the base URL, the import path, and parameter casing.
 
 |           |                                                                                         |
 | --------: | :-------------------------------------------------------------------------------------- |
-|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, bundle?, paramsCasing? }` |
+|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, paramsCasing? }` |
 | Required: | `false`                                                                                 |
 
 ### paramsType
@@ -399,7 +399,7 @@ This plugin requires the following plugins to be installed:
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginSwr } from '@kubb/plugin-swr'

@@ -351,6 +351,7 @@ export const resolverExample = defineResolver<PluginExample>(() => ({
 | `options`         | The user-supplied plugin options.                                                 |
 
 ```typescript twoslash [setup-context.ts]
+import { fileURLToPath } from 'node:url'
 import { ast, definePlugin, defineGenerator } from '@kubb/core'
 
 export const pluginExample = definePlugin(() => ({
@@ -382,10 +383,19 @@ export const pluginExample = definePlugin(() => ({
         path: `${outputPath}/README.md`,
         sources: [{ kind: 'Source', nodes: [{ kind: 'Text', value: '# Generated\n' }] }],
       })
+
+      // Copy a real file shipped in your package into the output, verbatim.
+      ctx.injectFile({
+        baseName: 'runtime.ts',
+        path: `${outputPath}/runtime.ts`,
+        copy: fileURLToPath(new URL('../templates/runtime.ts', import.meta.url)),
+      })
     },
   },
 }))
 ```
+
+Set `copy` to an absolute on-disk path and Kubb writes that file's content into the output unchanged, applying only `banner`/`footer` and skipping the language parser. This keeps a hand-authored template as a real `.ts` file (linted, type-checked, tested) and drops it into the generated folder without inlining its source as a string. The JSX renderer accepts the same field: `<File baseName="runtime.ts" path={…} copy={templatePath} />`.
 
 ## Options
 

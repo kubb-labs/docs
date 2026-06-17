@@ -30,7 +30,7 @@ fails the run. Earlier versions only logged a line and moved on.
 - Run the command manually from the project root to see its output.
 - Confirm the binary is installed and the command is spelled correctly.
 
-```typescript
+```typescript twoslash
 import { defineConfig } from 'kubb'
 
 export default defineConfig({

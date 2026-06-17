@@ -92,29 +92,17 @@ export default defineConfig({
 
 v5 emits a `const`-asserted object plus a `*Key` type union. This drops the runtime cost of a TypeScript `enum` and stays tree-shakable.
 
-::: code-group
-
-```typescript [v4]
-export enum ParamsStatusEnum {
+```typescript
+export enum ParamsStatusEnum { // [!code --]
+export enum orderParamsStatusEnum { // [!code ++]
   placed = 'placed',
   approved = 'approved',
   delivered = 'delivered',
 }
 
-status: ParamsStatusEnum
+status: ParamsStatusEnum // [!code --]
+status: OrderParamsStatusEnumKey // [!code ++]
 ```
-
-```typescript [v5]
-export enum orderParamsStatusEnum {
-  placed = 'placed',
-  approved = 'approved',
-  delivered = 'delivered',
-}
-
-status: OrderParamsStatusEnumKey
-```
-
-:::
 
 - Enum names are now operation-scoped (`orderParamsStatusEnum`, `customerParamsStatusEnum`, …) instead of suffix-deduplicated (`ParamsStatusEnum`, `ParamsStatusEnum2`, …), so the numeric collisions are gone.
 - Configure [`enum`](/plugins/plugin-ts) on `pluginTs` when you want `enum`, `constEnum`, `literal`, or a different const and type casing.

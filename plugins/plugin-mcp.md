@@ -109,7 +109,7 @@ Use a folder to keep each generator's output separate, for example `'types'`, `'
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginMcp } from '@kubb/plugin-mcp'
 
@@ -152,7 +152,7 @@ How the plugin consolidates its generated code into files.
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginClient } from '@kubb/plugin-client'
@@ -205,7 +205,7 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 
 ::: code-group
 
-```typescript ['named' (default)]
+```typescript twoslash ['named' (default)]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -214,7 +214,7 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs({
-      output: { barrel: { type: 'named' } },
+      output: { path: 'types', barrel: { type: 'named' } },
     }),
   ],
 })
@@ -225,7 +225,7 @@ export { Pet, PetStatus } from './Pet'
 export { Store } from './Store'
 ```
 
-```typescript ['all']
+```typescript twoslash ['all']
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -234,7 +234,7 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs({
-      output: { barrel: { type: 'all' } },
+      output: { path: 'types', barrel: { type: 'all' } },
     }),
   ],
 })
@@ -245,7 +245,7 @@ export * from './Pet'
 export * from './Store'
 ```
 
-```typescript [nested]
+```typescript twoslash [nested]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -254,7 +254,7 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs({
-      output: { barrel: { type: 'named', nested: true } },
+      output: { path: 'types', barrel: { type: 'named', nested: true } },
     }),
   ],
 })
@@ -271,7 +271,7 @@ src/gen/types/
     └── Store.ts
 ```
 
-```typescript [false]
+```typescript twoslash [false]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -280,7 +280,7 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs({
-      output: { barrel: false },
+      output: { path: 'types', barrel: false },
     }),
   ],
 })
@@ -304,7 +304,7 @@ Text prepended to every generated file, for license headers, lint disables, or `
 
 ::: code-group
 
-```typescript [Static banner]
+```typescript twoslash [Static banner]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -314,6 +314,7 @@ export default defineConfig({
   plugins: [
     pluginTs({
       output: {
+        path: 'types',
         banner: '/* eslint-disable */\n// @ts-nocheck',
       },
     }),
@@ -330,7 +331,7 @@ export type Pet = {
 }
 ```
 
-```typescript [Dynamic banner]
+```typescript twoslash [Dynamic banner]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -340,7 +341,8 @@ export default defineConfig({
   plugins: [
     pluginTs({
       output: {
-        banner: (node) => `// Source: ${node.path}\n// Generated at ${new Date().toISOString()}`,
+        path: 'types',
+        banner: (node) => `// Source: ${node.filePath}\n// Generated at ${new Date().toISOString()}`,
       },
     }),
   ],
@@ -360,7 +362,7 @@ Text appended to every generated file, the counterpart to `banner`, for closing 
 
 ::: code-group
 
-```typescript [Re-enable lint after a banner disable]
+```typescript twoslash [Re-enable lint after a banner disable]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -370,44 +372,10 @@ export default defineConfig({
   plugins: [
     pluginTs({
       output: {
+        path: 'types',
         banner: '/* eslint-disable */',
         footer: '/* eslint-enable */',
       },
-    }),
-  ],
-})
-```
-
-:::
-
-#### output.override
-
-Lets the plugin overwrite hand-written files that share a name with a generated file.
-
-- `false` (default): Kubb skips a file if it already exists and is not marked as generated. This protects manual edits.
-- `true`: Kubb overwrites any file at the target path, including hand-written ones.
-
-|           |           |
-| --------: | :-------- |
-|     Type: | `boolean` |
-| Required: | `false`   |
-|  Default: | `false`   |
-
-> [!WARNING]
-> Enable this only when you are sure the target folder contains nothing you need to keep. Local edits are lost on the next generation.
-
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { override: true },
     }),
   ],
 })
@@ -427,7 +395,7 @@ Overrides how the plugin builds names and paths for generated files and symbols.
 > [!TIP]
 > Use `resolver` for naming and file-location tweaks. For changing the AST nodes themselves (e.g. stripping descriptions), use `macros` instead.
 
-```typescript [Prefix every tool name with "Mcp"]
+```typescript twoslash [Prefix every tool name with "Mcp"]
 import { defineConfig } from 'kubb'
 import { pluginMcp } from '@kubb/plugin-mcp'
 
@@ -475,7 +443,7 @@ Splits the generated handlers into subfolders, giving each tag or path segment i
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginMcp } from '@kubb/plugin-mcp'
 
@@ -575,7 +543,7 @@ HTTP client used by each MCP handler to call the underlying API. Mirrors a subse
 
 |           |                                                                                         |
 | --------: | :-------------------------------------------------------------------------------------- |
-|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, bundle?, paramsCasing? }` |
+|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, paramsCasing? }` |
 | Required: | `false`                                                                                 |
 
 #### client.client
@@ -644,7 +612,7 @@ export default client
 
 ::: code-group
 
-```typescript [Wire up a custom client]
+```typescript twoslash [Wire up a custom client]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 
@@ -730,7 +698,7 @@ Base URL prepended to every request URL in the generated client. When omitted, t
 
 ::: code-group
 
-```typescript [Override the spec's server URL]
+```typescript twoslash [Override the spec's server URL]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 
@@ -756,15 +724,6 @@ Shape of the underlying client the handlers call into. Mirrors `pluginClient`'s 
 |     Type: | `'function' \| 'class' \| 'staticClass'` |
 | Required: | `false`                                  |
 |  Default: | `'function'`                             |
-
-#### client.bundle
-
-Copies the HTTP client runtime into the generated output so consumers do not need `@kubb/plugin-client` at runtime. Mirrors `pluginClient`'s `bundle` option.
-
-|           |           |
-| --------: | :-------- |
-|     Type: | `boolean` |
-| Required: | `false`   |
 
 #### client.paramsCasing
 
@@ -804,7 +763,7 @@ export type Include = {
 
 ::: code-group
 
-```typescript [Only the pet tag]
+```typescript twoslash [Only the pet tag]
 import { defineConfig } from 'kubb'
 import { pluginMcp } from '@kubb/plugin-mcp'
 
@@ -819,7 +778,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [Only GET operations under /pet]
+```typescript twoslash [Only GET operations under /pet]
 import { defineConfig } from 'kubb'
 import { pluginMcp } from '@kubb/plugin-mcp'
 
@@ -829,7 +788,7 @@ export default defineConfig({
   plugins: [
     pluginMcp({
       include: [
-        { type: 'method', pattern: 'get' },
+        { type: 'method', pattern: 'GET' },
         { type: 'path', pattern: /^\/pet/ },
       ],
     }),
@@ -868,7 +827,7 @@ export type Exclude = {
 
 ::: code-group
 
-```typescript [Skip everything under the store tag]
+```typescript twoslash [Skip everything under the store tag]
 import { defineConfig } from 'kubb'
 import { pluginMcp } from '@kubb/plugin-mcp'
 
@@ -883,7 +842,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [Skip a specific operation and all delete methods]
+```typescript twoslash [Skip a specific operation and all delete methods]
 import { defineConfig } from 'kubb'
 import { pluginMcp } from '@kubb/plugin-mcp'
 
@@ -894,7 +853,7 @@ export default defineConfig({
     pluginMcp({
       exclude: [
         { type: 'operationId', pattern: 'deletePet' },
-        { type: 'method', pattern: 'delete' },
+        { type: 'method', pattern: 'DELETE' },
       ],
     }),
   ],
@@ -922,7 +881,7 @@ export type Override = {
 
 ::: code-group
 
-```typescript [Send the admin tag to its own folder]
+```typescript twoslash [Send the admin tag to its own folder]
 import { defineConfig } from 'kubb'
 import { pluginMcp } from '@kubb/plugin-mcp'
 
@@ -972,7 +931,7 @@ Rewrite AST nodes before they are printed to source code, to rewrite operation I
 
 ::: code-group
 
-```typescript [Strip descriptions before printing]
+```typescript twoslash [Strip descriptions before printing]
 import { defineConfig } from 'kubb'
 import { pluginMcp } from '@kubb/plugin-mcp'
 
@@ -994,7 +953,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [Prefix every operationId]
+```typescript twoslash [Prefix every operationId]
 import { defineConfig } from 'kubb'
 import { pluginMcp } from '@kubb/plugin-mcp'
 
@@ -1031,7 +990,7 @@ This plugin requires two plugins. Kubb runs them before `plugin-mcp` so the hand
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginClient } from '@kubb/plugin-client'

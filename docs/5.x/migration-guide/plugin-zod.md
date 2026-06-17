@@ -89,21 +89,14 @@ import type { PetSchema } from './gen/zod/petSchema.ts' // [!code --]
 
 v5 prefers the chained Zod 4 syntax. `.optional()` always sits at the end of the chain, right before `.describe()`.
 
-::: code-group
-
-```typescript [v4]
-id: z.optional(z.int()),
-shipDate: z.optional(z.iso.datetime()),
-status: z.optional(z.enum(['placed', 'approved']).describe('Order Status')),
+```typescript
+id: z.optional(z.int()), // [!code --]
+shipDate: z.optional(z.iso.datetime()), // [!code --]
+status: z.optional(z.enum(['placed', 'approved']).describe('Order Status')), // [!code --]
+id: z.int().optional(), // [!code ++]
+shipDate: z.iso.datetime().optional(), // [!code ++]
+status: z.enum(['placed', 'approved']).optional().describe('Order Status'), // [!code ++]
 ```
-
-```typescript [v5]
-id: z.int().optional(),
-shipDate: z.iso.datetime().optional(),
-status: z.enum(['placed', 'approved']).optional().describe('Order Status'),
-```
-
-:::
 
 The functional form (`z.optional(...)`) is now reserved for `mini: true` output, which lives in its own configured `output.path`.
 

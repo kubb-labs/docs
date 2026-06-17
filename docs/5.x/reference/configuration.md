@@ -168,7 +168,7 @@ How a plugin consolidates its generated code into files. Set this on a plugin's 
 
 `'directory'` writes one file per operation or schema under `output.path`. `'file'` writes everything into a single file, so `output.path` must include the file extension (e.g. `'types.ts'`). Pair `'directory'` with the `group` option to organize the output into per-tag or per-path subdirectories.
 
-```typescript
+```typescript twoslash
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginClient } from '@kubb/plugin-client'
@@ -344,7 +344,7 @@ Text prepended to every file a plugin generates. Configure it on an individual p
 
 The function form fits Next.js Server Actions: add `'use server'` to source files, but skip it on re-export files, which only re-export symbols or return function references and break under the directive.
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 
@@ -374,20 +374,6 @@ Text appended to the end of every file a plugin generates. Mirror of [`output.ba
 | --------: | :------------------------------------- |
 |     Type: | `string \| ((meta: BannerMeta) => string)` |
 | Required: | `false`                                |
-
-#### `output.override`
-
-Controls whether Kubb overwrites files that already exist on disk at the output path.
-
-|           |           |
-| --------: | :-------- |
-|     Type: | `boolean` |
-| Required: | `false`   |
-|  Default: | `false`   |
-
-When `false` (the default), Kubb skips any file that already exists, keeping manual edits or files written by other tools. Set it to `true` to always write generated files regardless of what is on disk.
-
-Set this at the root level and every plugin inherits the same behavior. Each plugin also has its own `output.override`, which wins over the root value for that plugin.
 
 ### `plugins`
 
@@ -570,7 +556,7 @@ The reporters available to the run, registered as instances. `defineConfig` regi
 
 Register extra reporters (or your own, built with [`createReporter`](/docs/5.x/api/core)) by adding them to the array, then select them on the CLI with `--reporter <name>`.
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { cliReporter, jsonReporter } from '@kubb/core'
 import { defineConfig } from 'kubb'
 

@@ -28,7 +28,7 @@ in JavaScript or cast to `any` only surfaces it here.
 - Or switch to `output.mode: 'directory'` (the default, one file per operation or schema) and keep
   `group` to organize that output into subdirectories.
 
-```typescript
+```typescript twoslash
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 

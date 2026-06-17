@@ -93,7 +93,7 @@ Point `path` at a folder to keep each generator's output isolated, such as `'typ
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
@@ -138,7 +138,7 @@ How the plugin consolidates its generated code into files.
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
@@ -191,7 +191,7 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 
 ::: code-group
 
-```typescript ['named' (default)]
+```typescript twoslash ['named' (default)]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
@@ -202,7 +202,7 @@ export default defineConfig({
   plugins: [
     pluginTs(),
     pluginCypress({
-      output: { barrel: { type: 'named' } },
+      output: { path: 'cypress', barrel: { type: 'named' } },
     }),
   ],
 })
@@ -213,7 +213,7 @@ export { getPetById } from './getPetById'
 export { getInventory } from './getInventory'
 ```
 
-```typescript ['all']
+```typescript twoslash ['all']
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
@@ -224,7 +224,7 @@ export default defineConfig({
   plugins: [
     pluginTs(),
     pluginCypress({
-      output: { barrel: { type: 'all' } },
+      output: { path: 'cypress', barrel: { type: 'all' } },
     }),
   ],
 })
@@ -235,7 +235,7 @@ export * from './getPetById'
 export * from './getInventory'
 ```
 
-```typescript [nested]
+```typescript twoslash [nested]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
@@ -246,7 +246,7 @@ export default defineConfig({
   plugins: [
     pluginTs(),
     pluginCypress({
-      output: { barrel: { type: 'named', nested: true } },
+      output: { path: 'cypress', barrel: { type: 'named', nested: true } },
     }),
   ],
 })
@@ -263,7 +263,7 @@ src/gen/cypress/
     └── getInventory.ts
 ```
 
-```typescript [false]
+```typescript twoslash [false]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
@@ -274,7 +274,7 @@ export default defineConfig({
   plugins: [
     pluginTs(),
     pluginCypress({
-      output: { barrel: false },
+      output: { path: 'cypress', barrel: false },
     }),
   ],
 })
@@ -298,7 +298,7 @@ Text prepended to every generated file, for license headers, lint disables, or `
 
 ::: code-group
 
-```typescript [Static banner]
+```typescript twoslash [Static banner]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
@@ -310,6 +310,7 @@ export default defineConfig({
     pluginTs(),
     pluginCypress({
       output: {
+        path: 'cypress',
         banner: '/* eslint-disable */\n// @ts-nocheck',
       },
     }),
@@ -331,7 +332,7 @@ export function getPetById(petId: GetPetByIdPathPetId, options: Partial<Cypress.
 }
 ```
 
-```typescript [Dynamic banner]
+```typescript twoslash [Dynamic banner]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
@@ -343,7 +344,8 @@ export default defineConfig({
     pluginTs(),
     pluginCypress({
       output: {
-        banner: (node) => `// Source: ${node.path}\n// Generated at ${new Date().toISOString()}`,
+        path: 'cypress',
+        banner: (node) => `// Source: ${node.filePath}\n// Generated at ${new Date().toISOString()}`,
       },
     }),
   ],
@@ -363,7 +365,7 @@ Text appended to every generated file, the counterpart to `banner`, for closing 
 
 ::: code-group
 
-```typescript [Re-enable lint after a banner disable]
+```typescript twoslash [Re-enable lint after a banner disable]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
@@ -375,46 +377,10 @@ export default defineConfig({
     pluginTs(),
     pluginCypress({
       output: {
+        path: 'cypress',
         banner: '/* eslint-disable */',
         footer: '/* eslint-enable */',
       },
-    }),
-  ],
-})
-```
-
-:::
-
-#### output.override
-
-Lets the plugin overwrite hand-written files that share a name with a generated file.
-
-- `false` (default): Kubb skips a file if it already exists and is not marked as generated. This protects manual edits.
-- `true`: Kubb overwrites any file at the target path, including hand-written ones.
-
-|           |           |
-| --------: | :-------- |
-|     Type: | `boolean` |
-| Required: | `false`   |
-|  Default: | `false`   |
-
-> [!WARNING]
-> Enable this only when you are sure the target folder contains nothing you need to keep. Local edits are lost on the next generation.
-
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginCypress } from '@kubb/plugin-cypress'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginCypress({
-      output: { override: true },
     }),
   ],
 })
@@ -434,7 +400,7 @@ Overrides how the plugin builds names and paths for generated files and symbols.
 > [!TIP]
 > Use `resolver` for naming and file-location tweaks. For changing the AST nodes themselves (e.g. stripping descriptions), use `macros` instead.
 
-```typescript [Add an Api prefix to every name]
+```typescript twoslash [Add an Api prefix to every name]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
@@ -639,7 +605,7 @@ Base URL prepended to every request URL in the generated client. When omitted, t
 
 ::: code-group
 
-```typescript [Override the spec's server URL]
+```typescript twoslash [Override the spec's server URL]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
@@ -674,7 +640,7 @@ Splits generated files into subfolders by the operation's tag or first path segm
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
@@ -760,7 +726,7 @@ export type Include = {
 
 ::: code-group
 
-```typescript [Only the pet tag]
+```typescript twoslash [Only the pet tag]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
@@ -777,7 +743,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [Only GET operations under /pet]
+```typescript twoslash [Only GET operations under /pet]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
@@ -789,7 +755,7 @@ export default defineConfig({
     pluginTs(),
     pluginCypress({
       include: [
-        { type: 'method', pattern: 'get' },
+        { type: 'method', pattern: 'GET' },
         { type: 'path', pattern: /^\/pet/ },
       ],
     }),
@@ -827,7 +793,7 @@ export type Exclude = {
 
 ::: code-group
 
-```typescript [Skip everything under the store tag]
+```typescript twoslash [Skip everything under the store tag]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
@@ -844,7 +810,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [Skip a specific operation and all delete methods]
+```typescript twoslash [Skip a specific operation and all delete methods]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
@@ -857,7 +823,7 @@ export default defineConfig({
     pluginCypress({
       exclude: [
         { type: 'operationId', pattern: 'deletePet' },
-        { type: 'method', pattern: 'delete' },
+        { type: 'method', pattern: 'DELETE' },
       ],
     }),
   ],
@@ -885,7 +851,7 @@ export type Override = {
 
 ::: code-group
 
-```typescript [Return the full response for the user tag]
+```typescript twoslash [Return the full response for the user tag]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
@@ -937,7 +903,7 @@ Rewrite AST nodes before they are printed to source code, to rewrite operation I
 
 ::: code-group
 
-```typescript [Strip descriptions before printing]
+```typescript twoslash [Strip descriptions before printing]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
@@ -961,7 +927,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [Prefix every operationId]
+```typescript twoslash [Prefix every operationId]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
@@ -997,7 +963,7 @@ This plugin requires the following plugins to be installed:
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
