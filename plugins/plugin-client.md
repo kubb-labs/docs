@@ -398,7 +398,7 @@ Function that builds the folder/identifier name from a group key (the operation'
 
 ### importPath
 
-Path or module specifier of a custom client module. By default the selected `client` is bundled into `.kubb/client.ts` and generated code imports it from there. Set `importPath` to import the HTTP runtime from your own module instead. Use this to inject auth headers, attach interceptors, or wrap a different HTTP library such as ky or ofetch. Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work. Setting `importPath` takes priority over `client`, since the runtime now comes from your module.
+Path or module specifier of a custom client module. By default the selected `client` is bundled into `.kubb/client.ts` and generated code imports it from there. Set `importPath` to skip that bundle and import the runtime straight from your own module instead, for injecting auth headers, attaching interceptors, or wrapping a library such as ky or ofetch. Relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`, `@kubb/plugin-client/clients/axios`) both work, and take priority over `client`.
 
 |           |          |
 | --------: | :------- |
