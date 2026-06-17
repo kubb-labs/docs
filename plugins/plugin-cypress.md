@@ -6,6 +6,36 @@ description: Generate typed `cy.request()` wrappers from OpenAPI so end-to-end
 outline: 2
 kind: plugin
 id: plugin-cypress
+name: Cypress
+category: testing
+type: official
+npmPackage: "@kubb/plugin-cypress"
+repo: https://github.com/kubb-labs/plugins
+docsPath: /plugins/plugin-cypress
+featured: false
+icon:
+  light: https://kubb.dev/feature/cypress.svg
+maintainers:
+  - name: Stijn Van Hulle
+    github: stijnvanhulle
+compatibility:
+  kubb: ">=5.0.0"
+  node: ">=22"
+tags:
+  - cypress
+  - e2e-testing
+  - api-testing
+  - test-generation
+  - codegen
+  - openapi
+dependencies:
+  - plugin-ts
+resources:
+  documentation: https://kubb.dev/plugins/plugin-cypress
+  repository: https://github.com/kubb-labs/plugins
+  issues: https://github.com/kubb-labs/plugins/issues
+  changelog: https://github.com/kubb-labs/plugins/blob/main/packages/plugin-cypress/CHANGELOG.md
+  codesandbox: https://codesandbox.io/p/github/kubb-labs/plugins/main/examples/cypress
 ---
 
 # @kubb/plugin-cypress

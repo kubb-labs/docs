@@ -6,6 +6,40 @@ description: Generate a Model Context Protocol (MCP) server from OpenAPI so AI
 outline: 2
 kind: plugin
 id: plugin-mcp
+name: MCP
+category: ai
+type: official
+npmPackage: "@kubb/plugin-mcp"
+repo: https://github.com/kubb-labs/plugins
+docsPath: /plugins/plugin-mcp
+featured: false
+icon:
+  light: https://kubb.dev/feature/mcp-light.svg
+  dark: https://kubb.dev/feature/mcp-dark.svg
+maintainers:
+  - name: Stijn Van Hulle
+    github: stijnvanhulle
+compatibility:
+  kubb: ">=5.0.0"
+  node: ">=22"
+tags:
+  - mcp
+  - model-context-protocol
+  - ai
+  - claude
+  - llm
+  - codegen
+  - openapi
+dependencies:
+  - plugin-ts
+  - plugin-client
+  - plugin-zod
+resources:
+  documentation: https://kubb.dev/plugins/plugin-mcp
+  repository: https://github.com/kubb-labs/plugins
+  issues: https://github.com/kubb-labs/plugins/issues
+  changelog: https://github.com/kubb-labs/plugins/blob/main/packages/plugin-mcp/CHANGELOG.md
+  codesandbox: https://codesandbox.io/p/github/kubb-labs/plugins/main/examples/mcp
 ---
 
 > [!TIP]

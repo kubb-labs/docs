@@ -6,6 +6,30 @@ description: Markdown file parser for Kubb. Joins source blocks as plain
 outline: 2
 kind: parser
 id: parser-md
+name: Markdown
+category: docs
+type: official
+npmPackage: "@kubb/parser-md"
+repo: https://github.com/kubb-labs/kubb
+docsPath: /parsers/parser-md
+featured: false
+maintainers:
+  - name: Stijn Van Hulle
+    github: stijnvanhulle
+compatibility:
+  kubb: ">=5.0.0"
+  node: ">=22"
+tags:
+  - markdown
+  - frontmatter
+  - parser
+  - docs
+  - yaml
+resources:
+  documentation: https://kubb.dev/parsers/parser-md
+  repository: https://github.com/kubb-labs/kubb
+  issues: https://github.com/kubb-labs/kubb/issues
+  changelog: https://github.com/kubb-labs/kubb/blob/main/packages/parser-md/CHANGELOG.md
 ---
 
 > [!TIP]
