@@ -5,8 +5,8 @@ description: Configuration changes for @kubb/plugin-swr when migrating from Kubb
 
 # Migration: `@kubb/plugin-swr`
 
-Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). See the full option reference in [`@kubb/plugin-swr`](/plugins/plugin-swr).
+Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). For the full option reference, see [`@kubb/plugin-swr`](/plugins/plugin-swr).
 
-`@kubb/plugin-swr` was unavailable during the early v5 betas but is supported again in v5. It follows the same conventions as the React Query and Vue Query plugins: `transformers.name` is replaced by [`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver), and the `client` sub-object is unchanged.
+`@kubb/plugin-swr` dropped out during the early v5 betas and is supported again in v5. It follows the same conventions as the React Query and Vue Query plugins: [`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) takes over from `transformers.name`, and the `client` sub-object stays the same.
 
-Since SWR has no `enabled` option, the param-presence guard folds into the null-key gate (`useSWR(shouldFetch && !!(petId) ? queryKey : null, ...)`), so passing `undefined` disables the request.
+SWR has no `enabled` option, so the param-presence guard folds into the null-key gate (`useSWR(shouldFetch && !!(petId) ? queryKey : null, ...)`). Passing `undefined` disables the request.

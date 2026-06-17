@@ -7,7 +7,7 @@ description: Configuration changes for @kubb/adapter-oas when migrating from Kub
 
 Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). See the full option reference in [`@kubb/adapter-oas`](/adapters/adapter-oas).
 
-Schema-level options that v4 repeated on every plugin now live on [`adapterOas`](/adapters/adapter-oas) and apply globally. Remove them from each plugin and set them once on the adapter.
+v4 made you repeat the same schema-level options on every plugin. In v5 they live on [`adapterOas`](/adapters/adapter-oas) and apply globally. Remove them from each plugin and set them once on the adapter.
 
 | Option            | Removed from                              | v5 location                       |
 | ----------------- | ----------------------------------------- | --------------------------------- |
