@@ -39,9 +39,14 @@ resources:
 
 # @kubb/plugin-zod
 
-Generate [Zod](https://zod.dev/) v4 schemas from your OpenAPI spec. Use them to validate API responses at runtime, build form schemas, or feed back into router libraries that consume Zod (`tRPC`, `Hono`, `Elysia`).
+`@kubb/plugin-zod` turns your OpenAPI schemas into [Zod](https://zod.dev/) v4 schemas. Use them to validate API responses at runtime, build form schemas, or feed router libraries that take Zod (`tRPC`, `Hono`, `Elysia`).
 
-Pair with `@kubb/plugin-client` and set the client's `parser: 'zod'` to validate every response automatically.
+Pair it with `@kubb/plugin-client` and set the client's `parser: 'zod'` to validate every response.
+
+**See also**
+
+- [Zod](https://zod.dev/)
+- [Zod Mini](https://zod.dev/packages/mini)
 
 ## Installation
 
@@ -329,7 +334,7 @@ export default defineConfig({
 
 ### resolver
 
-Overrides how the plugin builds names and paths for generated files and symbols, to add prefixes, suffixes, or a different casing strategy without forking the plugin. Override only the methods you want to change; anything you omit (or that returns `null`/`undefined`) falls back to the default resolver. Inside each method, `this` is bound to the full resolver, so you can call `this.default(name, 'function')` to delegate to the built-in implementation.
+Changes how the plugin names generated files and symbols. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change. Anything you omit, or that returns `null` or `undefined`, falls back to the default. Inside a method, `this` is the full resolver, so you can call `this.default(name, 'function')` to reuse the built-in name.
 
 |           |                                                |
 | --------: | :--------------------------------------------- |
@@ -372,7 +377,7 @@ Each plugin ships with a default resolver:
 
 ### group
 
-Splits generated files into subfolders by the operation's first tag, so each tag gets its own directory under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`.
+Splits generated files into subfolders by the operation's tag or URL path. Each group gets its own directory under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`.
 
 |           |         |
 | --------: | :------ |
@@ -415,18 +420,21 @@ src/gen/
     └── GetStoreById.ts
 ```
 
-Pass `group.name` to customize the folder name, for example `name: ({ group }) => \`${group}Controller\``to keep the pre-v5`petController/` layout.
+Pass `group.name` to customize the folder name. For example, a `name` function that appends `Controller` to the group keeps the pre-v5 `petController/` layout.
 
 #### group.type
 
 Property used to assign each operation to a group. Required whenever `group` is set.
 
-Today only `'tag'` is supported. Kubb reads the first tag on the operation (`operation.getTags().at(0)?.name`) and uses it as the group key. Operations without a tag are placed in a default group.
+- `'tag'` uses the operation's first tag (`operation.getTags().at(0)?.name`).
+- `'path'` uses the first segment of the operation's URL, such as `pet` for `/pet/{petId}`.
 
-|           |         |
-| --------: | :------ |
-|     Type: | `'tag'` |
-| Required: | `true`  |
+Operations with no tag are placed in a default group.
+
+|           |                   |
+| --------: | :---------------- |
+|     Type: | `'tag' \| 'path'` |
+| Required: | `true`            |
 
 > [!NOTE]
 > `Required: true*` is conditional. It only applies when the parent `group` option is used. `group` itself stays optional.
@@ -443,7 +451,7 @@ Function that builds the folder/identifier name from a group key (the operation'
 
 ### importPath
 
-Module specifier used in the `import { z } from '...'` statement at the top of generated files, for example when re-exporting Zod from your own module. Defaults to `'zod'`, or `'zod/mini'` when the `mini` option is enabled.
+Module specifier for the `import { z } from '...'` statement at the top of every generated file. Set it to re-export Zod from your own module. It defaults to `'zod'`, or to `'zod/mini'` when the `mini` option is on.
 
 |           |                             |
 | --------: | :-------------------------- |
@@ -453,22 +461,24 @@ Module specifier used in the `import { z } from '...'` statement at the top of g
 
 ::: code-group
 
-```typescript twoslash [Use Zod's mini bundle]
-import { defineConfig } from 'kubb'
-import { pluginZod } from '@kubb/plugin-zod'
+```typescript ['zod' (default)]
+import { z } from 'zod'
+```
 
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [pluginZod({ importPath: 'zod/mini' })],
-})
+```typescript ['zod/mini']
+import { z } from 'zod/mini'
+```
+
+```typescript [Your own module]
+// importPath: '../lib/zod'
+import { z } from '../lib/zod'
 ```
 
 :::
 
 ### typed
 
-Adds a type annotation that ties each Zod schema to its TypeScript counterpart from `@kubb/plugin-ts`. With `typed: true`, the generated `petSchema` is typed as `ToZod<Pet>`, so TypeScript fails compilation when the schema drifts from the type. Requires `@kubb/plugin-ts` in the plugins list.
+Ties each Zod schema to its TypeScript type from `@kubb/plugin-ts`. With `typed: true`, the generated `petSchema` is typed as `ToZod<Pet>`. TypeScript then fails to compile when the schema drifts from the type. This needs `@kubb/plugin-ts` in the plugins list.
 
 |           |           |
 | --------: | :-------- |
@@ -481,7 +491,7 @@ Adds a type annotation that ties each Zod schema to its TypeScript counterpart f
 
 ::: code-group
 
-```typescript [Schema linked to its TS type]
+```typescript [typed: true]
 import { z } from 'zod'
 import type { ToZod } from '@kubb/plugin-zod'
 import type { Pet } from '../ts/Pet'
@@ -492,11 +502,20 @@ export const petSchema: ToZod<Pet> = z.object({
 })
 ```
 
+```typescript [typed: false (default)]
+import { z } from 'zod'
+
+export const petSchema = z.object({
+  name: z.string(),
+  status: z.enum(['available', 'pending', 'sold']).optional(),
+})
+```
+
 :::
 
 ### inferred
 
-Exports a `z.infer<typeof schema>` type alias next to every generated schema, so the Zod schema is one source of truth and you do not import types separately from `@kubb/plugin-ts`. The alias is the PascalCased schema name with a `SchemaType` suffix (`petSchema` → `PetSchemaType`), so the value and its inferred type never share an identifier, even for all-uppercase names like `SUV` or `URL`.
+Exports a `z.infer<typeof schema>` type alias next to every generated schema. The Zod schema becomes the single source of truth, so you do not import types from `@kubb/plugin-ts`. The alias is the PascalCased schema name with a `SchemaType` suffix (`petSchema` becomes `PetSchemaType`). The value and its inferred type never share a name, even for all-uppercase names like `SUV` or `URL`.
 
 |           |           |
 | --------: | :-------- |
@@ -504,24 +523,35 @@ Exports a `z.infer<typeof schema>` type alias next to every generated schema, so
 | Required: | `false`   |
 |  Default: | `false`   |
 
-```typescript [With inferred enabled]
+::: code-group
+
+```typescript [inferred: true]
 import { z } from 'zod'
 
 export const petSchema = z.object({
   name: z.string(),
-  status: z.enum(['available', 'pending', 'sold']).optional(),
 })
 
 export type PetSchemaType = z.infer<typeof petSchema>
 ```
+
+```typescript [inferred: false (default)]
+import { z } from 'zod'
+
+export const petSchema = z.object({
+  name: z.string(),
+})
+```
+
+:::
 
 ### coercion
 
 Wraps schemas in `z.coerce` so input is coerced to the expected type before validation. Use it for form data, query params, and any source where everything arrives as a string.
 
 - `true` coerces strings, numbers, and dates.
-- `false` (default) applies no coercion and validates strictly.
-- An object lets you pick which primitives to coerce.
+- `false` (default) coerces nothing and validates strictly.
+- An object picks which primitives to coerce.
 
 See [Coercion for primitives](https://zod.dev/?id=coercion-for-primitives).
 
@@ -532,7 +562,7 @@ See [Coercion for primitives](https://zod.dev/?id=coercion-for-primitives).
 |  Default: | `false`                                                                |
 
 > [!TIP]
-> When `@kubb/adapter-oas` runs with `dateType: 'date'` (date fields typed as `Date`), the generated schemas round-trip dates at the validation boundary rather than coercing: response schemas decode the ISO `string` into a `Date` (`z.iso.datetime().transform(...)`), and an `${name}InputSchema` variant encodes `Date` back into an ISO `string` (`z.date().transform(...)`) for request bodies. `coercion.dates` has no effect on these fields.
+> When `@kubb/adapter-oas` runs with `dateType: 'date'` (date fields typed as `Date`), the generated schemas round-trip dates at the validation boundary instead of coercing. Response schemas decode the ISO `string` into a `Date` (`z.iso.datetime().transform(...)`), and an `${name}InputSchema` variant encodes `Date` back into an ISO `string` (`z.date().transform(...)`) for request bodies. So `coercion.dates` has no effect on these fields.
 
 ::: code-group
 
@@ -559,7 +589,7 @@ z.coerce.number()
 
 ### operations
 
-Emits an `operations.ts` file that groups schemas per operation (request body, query params, path params, and each response status), for validating or describing whole operations in one place when wiring Kubb output into a server framework that takes Zod schemas per route.
+Emits an `operations.ts` file. It groups the schemas per operation: request body, path/query/header params, each response status, and errors. The map is keyed by `operationId`, and a `paths` map links each URL and method back to it. Use it when you wire Kubb output into a server framework that takes one set of Zod schemas per route.
 
 |           |           |
 | --------: | :-------- |
@@ -567,9 +597,40 @@ Emits an `operations.ts` file that groups schemas per operation (request body, q
 | Required: | `false`   |
 |  Default: | `false`   |
 
+::: code-group
+
+```typescript [operations: true → operations.ts]
+export const operations = {
+  getPetById: {
+    request: undefined,
+    parameters: {
+      path: getPetByIdPathParamsSchema,
+      query: undefined,
+      header: undefined,
+    },
+    responses: {
+      200: getPetById200Schema,
+    },
+    errors: {},
+  },
+} as const
+
+export const paths = {
+  '/pet/{petId}': {
+    get: operations['getPetById'],
+  },
+} as const
+```
+
+```typescript [operations: false (default)]
+// No operations.ts is generated.
+```
+
+:::
+
 ### paramsCasing
 
-Renames properties inside the path/query/header schemas to the chosen casing; body schemas are unaffected. Must match `paramsCasing` on `@kubb/plugin-ts` so the generated Zod schemas stay assignable to the generated types.
+Renames the properties inside the path, query, and header schemas to camelCase. Body schemas stay untouched. Set the same value on `@kubb/plugin-ts` so the Zod schemas stay assignable to the generated types.
 
 |           |               |
 | --------: | :------------ |
@@ -592,7 +653,7 @@ export const getPetHeaderParamsSchema = z.object({
 Validator used for OpenAPI properties with `format: uuid`.
 
 - `'uuid'` (default) generates `z.uuid()`, a standard RFC 4122 UUID.
-- `'guid'` generates `z.guid()`, which is looser and accepts Microsoft-style GUIDs (allows lowercase and mixed brace styles).
+- `'guid'` generates `z.guid()`, which is looser and accepts Microsoft-style GUIDs.
 
 |           |                    |
 | --------: | :----------------- |
@@ -614,7 +675,7 @@ z.guid()
 
 ### mini
 
-Switches code generation to [Zod Mini](https://zod.dev/packages/mini). Schemas use the functional API (`z.optional(z.string())`) instead of the chainable one (`z.string().optional()`), so bundlers can tree-shake unused validators. Setting `mini: true` also defaults `importPath` to `'zod/mini'`.
+Switches code generation to [Zod Mini](https://zod.dev/packages/mini). Schemas use the functional API (`z.optional(z.string())`) instead of the chainable one (`z.string().optional()`). Bundlers can then tree-shake unused validators. Setting `mini: true` also defaults `importPath` to `'zod/mini'`.
 
 |           |           |
 | --------: | :-------- |
@@ -650,13 +711,14 @@ z.array(z.string()).min(1).max(10)
 
 ### include
 
-Restricts generation to operations that match at least one entry in the list. Anything else is skipped. Each entry filters by one of:
+Generates only the operations that match at least one entry in the list. Everything else is skipped. Each entry filters by one of:
 
 - `tag`: the operation's first tag in the OpenAPI spec.
 - `operationId`: the operation's `operationId`.
-- `path`: the URL pattern (`'/pet/{petId}'`).
-- `method`: the HTTP method (`'get'`, `'post'`, ...).
-- `contentType`: the media type of the request body.
+- `path`: the URL path, such as `'/pet/{petId}'`.
+- `method`: the HTTP method, such as `'get'` or `'post'`.
+- `contentType`: the request body media type, such as `'application/json'`.
+- `schemaName`: the component schema name under `#/components/schemas`.
 
 `pattern` accepts either a string (exact match) or a `RegExp` for fuzzy matches.
 
@@ -667,7 +729,7 @@ Restricts generation to operations that match at least one entry in the list. An
 
 ```typescript [Type definition]
 export type Include = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType'
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
   pattern: string | RegExp
 }
 ```
@@ -711,7 +773,7 @@ export default defineConfig({
 
 ### exclude
 
-Skips any operation that matches at least one entry in the list, the opposite of `include`. Entries take the same `type` (`tag`, `operationId`, `path`, `method`, `contentType`) and `pattern` (string or `RegExp`) as `include`. When both are set, `exclude` wins.
+Skips any operation or schema that matches at least one entry in the list. It is the opposite of `include`. Entries use the same `type` (`tag`, `operationId`, `path`, `method`, `contentType`, `schemaName`) and `pattern` (string or `RegExp`). When both are set, `exclude` wins.
 
 |           |                  |
 | --------: | :--------------- |
@@ -720,7 +782,7 @@ Skips any operation that matches at least one entry in the list, the opposite of
 
 ```typescript [Type definition]
 export type Exclude = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType'
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
   pattern: string | RegExp
 }
 ```
@@ -764,7 +826,7 @@ export default defineConfig({
 
 ### override
 
-Applies a different set of plugin options to operations that match a pattern, for the handful of endpoints that need different treatment. Each entry takes the same `type` and `pattern` as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations. Entries evaluate top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
+Applies different plugin options to operations that match a pattern. Use it for the few endpoints that need special treatment. Each entry takes the same `type` and `pattern` as `include` and `exclude`, plus an `options` object. That object accepts any plugin option except `override`, so rules cannot nest. Entries run top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
 
 |           |                   |
 | --------: | :---------------- |
@@ -773,9 +835,9 @@ Applies a different set of plugin options to operations that match a pattern, fo
 
 ```typescript [Type definition]
 export type Override = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType'
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
   pattern: string | RegExp
-  options: PluginOptions
+  options: Omit<Partial<Options>, 'override'>
 }
 ```
 
@@ -807,7 +869,7 @@ export default defineConfig({
 
 ### generators
 
-Adds custom generators that run alongside the built-in ones, each emitting extra files or post-processing existing ones using the plugin's AST and options. Use it for output the plugin does not produce out of the box (a custom client wrapper, an extra index, a metadata file). See [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
+Adds custom generators that run next to the built-in ones. Each generator can emit extra files or post-process existing ones using the plugin's AST and options. Use it for output the plugin does not produce, such as a custom client wrapper or a metadata file. See [Creating plugins](/docs/5.x/guides/creating-plugins).
 
 |           |                               |
 | --------: | :---------------------------- |
@@ -819,7 +881,7 @@ Adds custom generators that run alongside the built-in ones, each emitting extra
 
 ### macros
 
-Rewrite AST nodes before they are printed to source code, to rewrite operation IDs, drop descriptions, or change schema metadata without forking the generator. Each [macro](/docs/5.x/concepts/macros) callback (e.g. `schema`, `operation`) receives the node and a context object. Return a new node to replace it, or `undefined` to leave it untouched. Callbacks you omit keep the default behavior, and macros run in order so a later one sees the output of an earlier one.
+Rewrites AST nodes before they are printed to source. Use it to rename operation IDs, drop descriptions, or change schema metadata without forking the generator. Each [macro](/docs/5.x/concepts/macros) callback (such as `schema` or `operation`) receives the node and a context object. Return a new node to replace it, or `undefined` to leave it as is. Callbacks you omit keep their default behavior. Macros run in order, so a later one sees the output of an earlier one.
 
 |           |                 |
 | --------: | :-------------- |
@@ -879,7 +941,7 @@ export default defineConfig({
 
 ### printer
 
-Replaces the Zod handler for a specific schema type (e.g. `'integer'`, `'date'`, `'string'`). Each handler returns the Zod expression as a string.
+Replaces the Zod handler for a specific schema type, such as `'integer'`, `'date'`, or `'string'`. Each handler returns the Zod expression as a string.
 
 When `mini: true`, overrides target the Zod Mini printer. Otherwise they target the standard Zod printer.
 
@@ -936,7 +998,7 @@ export default defineConfig({
 
 ### wrapOutput
 
-Wraps the generated Zod schema string with extra calls before it is written to disk. The callback receives the raw schema output and the originating `SchemaNode`. Return a new string to replace the output, or `undefined` to leave it untouched.
+Wraps the generated Zod schema string with extra calls before it is written to disk. The callback receives the raw schema string and its `SchemaNode`. Return a new string to replace the output, or `undefined` to leave it untouched.
 
 |           |                                                                        |
 | --------: | :--------------------------------------------------------------------- |
@@ -944,7 +1006,7 @@ Wraps the generated Zod schema string with extra calls before it is written to d
 | Required: | `false`                                                                |
 
 > [!TIP]
-> Use this to round-trip metadata from OpenAPI back into Zod: examples, descriptions, or `.openapi()` annotations for libraries that re-emit OpenAPI from Zod schemas.
+> Use this to round-trip OpenAPI metadata back into Zod, such as examples, descriptions, or `.openapi()` annotations for libraries that re-emit OpenAPI from Zod schemas.
 
 ```typescript twoslash [Append .openapi() with metadata]
 import { defineConfig } from 'kubb'

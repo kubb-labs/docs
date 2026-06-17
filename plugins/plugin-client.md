@@ -40,9 +40,14 @@ resources:
 
 # @kubb/plugin-client
 
-Generate HTTP client functions for every operation in your OpenAPI spec. Each function types its path params, query params, body, and response, so you call the API like any other typed function.
+`@kubb/plugin-client` generates one HTTP client function per operation in your OpenAPI spec. Each function types its path params, query params, body, and response. You call the API like any other typed function.
 
 The plugin ships with `axios` and `fetch` runtimes. To bring your own client for auth, retries, or a custom base URL, point `importPath` at your module.
+
+**See also**
+
+- [axios](https://axios-http.com/)
+- [`@kubb/plugin-ts`](/plugins/plugin-ts)
 
 ## Installation
 
@@ -80,7 +85,7 @@ Where the generated client files are written and how they are exported.
 
 #### output.path
 
-Folder where the plugin writes its generated code, resolved against the global `output.path` set on `defineConfig`. To put everything in one file instead, set `output.mode: 'file'` and point `path` at a target file including its extension (for example `'types.ts'`).
+Folder where the plugin writes its files. It is resolved against the global `output.path` on `defineConfig`. To write everything to one file instead, set `output.mode: 'file'` and give `path` a file name with its extension, such as `'clients.ts'`.
 
 |           |             |
 | --------: | :---------- |
@@ -91,39 +96,11 @@ Folder where the plugin writes its generated code, resolved against the global `
 > [!TIP]
 > `output.path` sets where files go, `output.mode` sets how many. Use `'directory'` (the default) for one file per operation, optionally grouped into subdirectories with the `group` option. Use `'file'` to write everything into a single file.
 
-::: code-group
-
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { path: './types' },
-    }),
-  ],
-})
-```
-
-```text [Resulting tree]
-src/
-└── gen/
-    └── types/
-        ├── Pet.ts
-        └── Store.ts
-```
-
-:::
-
 #### output.mode
 
 How the plugin consolidates its generated code into files.
 
-- `'directory'` writes one file per operation or schema under `output.path`. This is the default.
-- `'file'` writes everything into a single file. The `output.path` must include the file extension (e.g. `'types.ts'`, `'models.py'`).
+`'directory'` (the default) writes one file per operation under `output.path`. `'file'` writes everything into a single file, in which case `output.path` must include the file extension (for example `'clients.ts'`).
 
 |           |                         |
 | --------: | :---------------------- |
@@ -132,51 +109,13 @@ How the plugin consolidates its generated code into files.
 |  Default: | `'directory'`           |
 
 > [!TIP]
-> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group`, since a single-file output has nothing to group. Combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
-
-::: code-group
-
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginClient } from '@kubb/plugin-client'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { path: 'types.ts', mode: 'file' },
-    }),
-    pluginClient({
-      output: { path: 'clients', mode: 'directory' },
-      group: { type: 'tag' },
-    }),
-  ],
-})
-```
-
-```text [Resulting tree]
-src/
-└── gen/
-    ├── types.ts
-    └── clients/
-        ├── pet/
-        │   └── getPetById.ts
-        └── store/
-            └── getInventory.ts
-```
-
-:::
+> Pair `'directory'` with the `group` option to organize output into per-tag subdirectories. `mode: 'file'` forbids `group`. A single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 #### output.barrel
 
 Controls how the generated `index.ts` (barrel) file re-exports the plugin's output.
 
-- `{ type: 'named' }` re-exports each symbol by name. Best for tree-shaking and explicit imports.
-- `{ type: 'all' }` uses `export *`. Smaller barrel file, but exports everything.
-- `{ nested: true }` creates a barrel in every subdirectory, so callers can import from any depth.
-- `false` skips the barrel entirely. The plugin's files are also excluded from the root `index.ts`.
+`{ type: 'named' }` re-exports each symbol by name. It tree-shakes well and keeps imports explicit. `{ type: 'all' }` uses `export *` for a smaller barrel that exports everything. Add `{ nested: true }` to create a barrel in every subdirectory. Set it to `false` to skip the barrel and leave the plugin's files out of the root `index.ts`.
 
 |           |                                                         |
 | --------: | :------------------------------------------------------ |
@@ -184,150 +123,27 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 | Required: | `false`                                                 |
 |  Default: | `{ type: 'named' }`                                     |
 
-> [!TIP]
-> Pick `'named'` when consumers care about which symbols they import (better tree-shaking, friendlier auto-import). Pick `'all'` when the file count is small and you want a one-line barrel.
-
-::: code-group
-
-```typescript twoslash ['named' (default)]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { path: 'types', barrel: { type: 'named' } },
-    }),
-  ],
-})
-```
-
-```typescript [src/gen/types/index.ts]
-export { Pet, PetStatus } from './Pet'
-export { Store } from './Store'
-```
-
-```typescript ['all' → src/gen/types/index.ts]
-// output: { barrel: { type: 'all' } }
-export * from './Pet'
-export * from './Store'
-```
-
-```text [nested → generated tree]
-// output: { barrel: { type: 'named', nested: true } }
-src/gen/types/
-├── index.ts          # re-exports ./pet and ./store
-├── pet/
-│   ├── index.ts      # re-exports Pet, Store, ...
-│   └── Pet.ts
-└── store/
-    ├── index.ts
-    └── Store.ts
-```
-
-```text [false → result]
-// output: { barrel: false }
-# No index.ts is generated for this plugin.
-# Its files are also excluded from the root index.ts.
-```
-
-:::
-
 #### output.banner
 
-Text prepended to every generated file, for license headers, lint disables, or `@ts-nocheck` directives. Pass a string for a static banner, or a function to compute it from each file's `RootNode` (the AST root holding path, schema, and operation context).
+Text added to the top of every generated file. Use it for license headers, lint disables, or a `@ts-nocheck` directive. Pass a string for a fixed banner, or a function that builds one from each file's `RootNode` (the AST root with the path, schema, and operation context).
 
 |           |                                          |
 | --------: | :--------------------------------------- |
 |     Type: | `string \| ((node: RootNode) => string)` |
 | Required: | `false`                                  |
-
-::: code-group
-
-```typescript twoslash [Static banner]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: {
-        path: 'types',
-        banner: '/* eslint-disable */\n// @ts-nocheck',
-      },
-    }),
-  ],
-})
-```
-
-```typescript [Generated file]
-/* eslint-disable */
-// @ts-nocheck
-export type Pet = {
-  id: number
-  name: string
-}
-```
-
-```typescript twoslash [Dynamic banner]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: {
-        path: 'types',
-        banner: (node) => `// Source: ${node.filePath}\n// Generated at ${new Date().toISOString()}`,
-      },
-    }),
-  ],
-})
-```
-
-:::
 
 #### output.footer
 
-Text appended to every generated file. Mirrors `banner`, for closing comments, re-enabling lint rules, or marker lines. Pass a string or a function that receives the file's `RootNode` and returns the footer text.
+Text added to the bottom of every generated file. It works like `banner` but for closing comments, such as re-enabling a lint rule. Pass a string or a function that receives the file's `RootNode` and returns the text.
 
 |           |                                          |
 | --------: | :--------------------------------------- |
 |     Type: | `string \| ((node: RootNode) => string)` |
 | Required: | `false`                                  |
 
-::: code-group
-
-```typescript twoslash [Re-enable lint after a banner disable]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: {
-        path: 'types',
-        banner: '/* eslint-disable */',
-        footer: '/* eslint-enable */',
-      },
-    }),
-  ],
-})
-```
-
-:::
-
 ### group
 
-Splits generated files into subfolders by the operation's first tag, so each tag gets its own directory under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`.
+Splits generated files into subfolders by the operation's tag or URL path. Each group gets its own directory under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`.
 
 |           |         |
 | --------: | :------ |
@@ -344,51 +160,51 @@ Splits generated files into subfolders by the operation's first tag, so each tag
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginClient } from '@kubb/plugin-client'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginTs(),
+    pluginClient({
       group: { type: 'tag' },
     }),
   ],
 })
 ```
 
-:::
-
-With the configuration above, the generator emits one folder per tag, named after the camelCased tag:
-
-```text
-src/gen/
+```text [Resulting tree]
+src/gen/clients/
 ├── pet/
-│   ├── AddPet.ts
-│   └── GetPet.ts
+│   ├── addPet.ts
+│   └── getPetById.ts
 └── store/
-    ├── CreateStore.ts
-    └── GetStoreById.ts
+    └── getInventory.ts
 ```
 
-Pass `group.name` to customize the folder name. For example, `name: ({ group }) => \`${group}Controller\`` keeps the pre-v5 `petController/` layout.
+:::
 
 #### group.type
 
 Property used to assign each operation to a group. Required whenever `group` is set.
 
-Today only `'tag'` is supported. Kubb reads the first tag on the operation (`operation.getTags().at(0)?.name`) and uses it as the group key. Operations without a tag go into a default group.
+- `'tag'` uses the operation's first tag (`operation.getTags().at(0)?.name`).
+- `'path'` uses the first segment of the operation's URL, such as `pet` for `/pet/{petId}`.
 
-|           |         |
-| --------: | :------ |
-|     Type: | `'tag'` |
-| Required: | `true`  |
+Operations with no tag go in a default group.
+
+|           |                   |
+| --------: | :---------------- |
+|     Type: | `'tag' \| 'path'` |
+| Required: | `true`            |
 
 > [!NOTE]
 > `Required: true*` is conditional. It only applies when the parent `group` option is used, and `group` itself stays optional.
 
 #### group.name
 
-Function that builds the folder/identifier name from a group key (the operation's first tag).
+Function that turns a group key (the operation's first tag) into a folder name. For example, a `name` function that appends `Controller` keeps the pre-v5 `petController/` layout.
 
 |           |                                     |
 | --------: | :---------------------------------- |
@@ -396,20 +212,65 @@ Function that builds the folder/identifier name from a group key (the operation'
 | Required: | `false`                             |
 |  Default: | `(ctx) => \`${ctx.group}\``         |
 
+### client
+
+HTTP client used by the generated code. To plug in your own client, use [`importPath`](#importpath) instead.
+
+`'axios'` calls into `@kubb/plugin-client/clients/axios` and needs `axios` as a runtime dependency. `'fetch'` calls into `@kubb/plugin-client/clients/fetch` and uses the global `fetch` with no extra dependency.
+
+|           |                      |
+| --------: | :------------------- |
+|     Type: | `'axios' \| 'fetch'` |
+| Required: | `false`              |
+|  Default: | `'axios'`            |
+
+::: code-group
+
+```typescript twoslash [axios (default)]
+import { defineConfig } from 'kubb'
+import { pluginClient } from '@kubb/plugin-client'
+
+export default defineConfig({
+  input: { path: './petStore.yaml' },
+  output: { path: './src/gen' },
+  plugins: [
+    pluginClient({
+      client: 'axios',
+    }),
+  ],
+})
+```
+
+```typescript twoslash [fetch]
+import { defineConfig } from 'kubb'
+import { pluginClient } from '@kubb/plugin-client'
+
+export default defineConfig({
+  input: { path: './petStore.yaml' },
+  output: { path: './src/gen' },
+  plugins: [
+    pluginClient({
+      client: 'fetch',
+    }),
+  ],
+})
+```
+
+:::
+
 ### importPath
 
-Path or module specifier of a custom client module. By default the selected `client` is bundled into `.kubb/client.ts` and generated code imports it from there. Set `importPath` to skip that bundle and import the runtime straight from your own module instead, for injecting auth headers, attaching interceptors, or wrapping a library such as ky or ofetch. Relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`, `@kubb/plugin-client/clients/axios`) both work, and take priority over `client`.
+Path or module specifier of a custom client module. By default the selected `client` is bundled into `.kubb/client.ts` and the generated code imports it from there. Set `importPath` to skip that bundle and import the runtime straight from your own module. Use it to inject auth headers, attach interceptors, or wrap a library such as ky or ofetch. Relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) both work. `importPath` takes priority over `client`.
 
 |           |          |
 | --------: | :------- |
 |     Type: | `string` |
 | Required: | `false`  |
 
-> [!TIP]
-> See the [custom client guide](https://kubb.dev/plugins/plugin-client#importpath) for a worked example.
-
 > [!IMPORTANT]
-> When used with query plugins (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`), generated hooks also import a `Client` type alias. Your module must export `Client`, `RequestConfig`, and `ResponseErrorConfig`, or TypeScript will fail the import.
+> The module must default-export the `client` function and export a `RequestConfig` type and a `ResponseErrorConfig` type. With a query plugin (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`), it must also export a `Client` type alias, or TypeScript fails the import.
+
+Generated code imports the client as a default import (named `client`) and the runtime types as named type imports.
 
 ```typescript [src/client.ts]
 import axios from 'axios'
@@ -432,7 +293,7 @@ export type ResponseConfig<TData = unknown> = {
 
 export type ResponseErrorConfig<TError = unknown> = TError
 
-// Required when used with @kubb/plugin-react-query or @kubb/plugin-vue-query
+// Required with @kubb/plugin-react-query or @kubb/plugin-vue-query
 export type Client = <TData, _TError = unknown, TVariables = unknown>(config: RequestConfig<TVariables>) => Promise<ResponseConfig<TData>>
 
 const client: Client = async (config) => {
@@ -469,326 +330,11 @@ export default defineConfig({
 
 :::
 
-#### Default behavior
-
-Without `importPath`, the selected `client` (`axios` or `fetch`) is bundled into `.kubb/client.ts` and generated code imports it from there. The consuming app does not need `@kubb/plugin-client` installed at runtime.
-
-#### Required exports
-
-The module must match the shape of the built-in client: a default export of the `client` function, a `RequestConfig` type, and a `ResponseErrorConfig` type. With a query plugin (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`) it must also export a `Client` type alias.
-
-#### How generated files import it
-
-Generated code imports the client as a default import (bound to the local name `client`) and the runtime types as named type imports:
-
-```typescript
-import client from '${client.importPath}'
-import type { RequestConfig, ResponseErrorConfig } from '${client.importPath}'
-// ... rest of the generated file
-```
-
-### operations
-
-Emits an `operations.ts` file that re-exports every generated function grouped by HTTP method, useful for building meta-tooling such as route registries or API explorers on top of the generated code.
-
-|           |           |
-| --------: | :-------- |
-|     Type: | `boolean` |
-| Required: | `false`   |
-|  Default: | `false`   |
-
-### dataReturnType
-
-Shape of the value returned from each generated client function.
-
-- `'data'` returns only the response body (`response.data`).
-- `'full'` returns a discriminated union keyed by HTTP status code. Each member is `{ status: N; data: StatusNType; statusText: string }`. Narrowing on `res.status` also narrows `res.data` to the matching response type.
-
-|           |                    |
-| --------: | :----------------- |
-|     Type: | `'data' \| 'full'` |
-| Required: | `false`            |
-|  Default: | `'data'`           |
-
-::: code-group
-
-```typescript ['data' (default)]
-export async function getPetById<TData>(petId: GetPetByIdPathParams): Promise<ResponseConfig<TData>['data']> {
-  // ...
-}
-```
-
-```typescript [usage.ts]
-const pet = await getPetById(1)
-//    ^? Pet
-```
-
-```typescript ['full']
-export async function addPet(data: AddPetData, config = {}) {
-  const res = await request<AddPetStatus200 | AddPetStatus405, ...>(...)
-  return res as
-    | { status: 200; data: AddPetStatus200; statusText: string }
-    | { status: 405; data: AddPetStatus405; statusText: string }
-}
-```
-
-```typescript [usage.ts]
-const res = await addPet(petData)
-if (res.status === 405) {
-  res.data // narrowed to AddPetStatus405
-}
-```
-
-:::
-
-### urlType
-
-Controls whether the URL builder helpers (`get<Operation>Url`) are exported alongside each client function.
-
-- `'export'`: expose them through the barrel, for calling the API through a different transport such as `navigator.sendBeacon` or server actions.
-- `false` (default): keep them private to the generated module.
-
-|           |                     |
-| --------: | :------------------ |
-|     Type: | `'export' \| false` |
-| Required: | `false`             |
-|  Default: | `false`             |
-
-```typescript [Generated URL helper]
-export function getGetPetByIdUrl(petId: GetPetByIdPathParams['petId']) {
-  return `/pet/${petId}` as const
-}
-```
-
-### paramsType
-
-How operation parameters (path, query, headers) are exposed in the generated function signature.
-
-- `'inline'` (default): each parameter is a separate positional argument. Compact for operations with one or two params.
-- `'object'`: every parameter is wrapped in a single object argument. Easier to read for operations with many params, and named at the call site.
-
-|           |                        |
-| --------: | :--------------------- |
-|     Type: | `'object' \| 'inline'` |
-| Required: | `false`                |
-|  Default: | `'inline'`             |
-
-> [!TIP]
-> Setting `paramsType: 'object'` implicitly sets `pathParamsType: 'object'` as well, so call sites are consistent.
-
-::: code-group
-
-```typescript ['inline' (default)]
-export async function deletePet(petId: DeletePetPathParams['petId'], headers?: DeletePetHeaderParams, config: Partial<RequestConfig> = {}) {
-  // ...
-}
-```
-
-```typescript [Caller]
-await deletePet(42)
-```
-
-```typescript ['object']
-export async function deletePet(
-  {
-    petId,
-    headers,
-  }: {
-    petId: DeletePetPathParams['petId']
-    headers?: DeletePetHeaderParams
-  },
-  config: Partial<RequestConfig> = {},
-) {
-  // ...
-}
-```
-
-```typescript [Caller]
-await deletePet({ petId: 42, headers: { 'X-Api-Key': 'secret' } })
-```
-
-:::
-
-### paramsCasing
-
-Renames path, query, and header parameters in the generated client to the chosen casing. The HTTP request still uses the original names from the OpenAPI spec, and Kubb writes the mapping for you.
-
-- `'camelcase'`: turn `pet_id` and `X-Api-Key` into `petId` and `xApiKey` in your TypeScript code. The runtime URL still uses `/pet/{pet_id}` and the header is still sent as `X-Api-Key`.
-
-|           |               |
-| --------: | :------------ |
-|     Type: | `'camelcase'` |
-| Required: | `false`       |
-
-> [!TIP]
-> Callers write friendly camelCase names. The generated client maps them back to whatever the API expects (snake_case path params, kebab-case headers, ...).
-
-> [!IMPORTANT]
-> Set the same `paramsCasing` on every plugin that touches operation parameters (`@kubb/plugin-ts`, `@kubb/plugin-client`, `@kubb/plugin-react-query`, `@kubb/plugin-faker`, `@kubb/plugin-mcp`). Mismatched casing causes type errors between generated layers.
-
-::: code-group
-
-```typescript [With paramsCasing: 'camelcase']
-// Function takes camelCase parameters
-export async function deletePet(petId: DeletePetPathParams['petId'], headers?: DeletePetHeaderParams, config: Partial<RequestConfig> = {}) {
-  // ...mapped back to the original API name internally
-  const pet_id = petId
-
-  return client({
-    method: 'DELETE',
-    url: `/pet/${pet_id}`,
-    ...config,
-  })
-}
-```
-
-```typescript [Caller]
-await deletePet(42)
-```
-
-```typescript [Without paramsCasing]
-// Function parameters mirror the OpenAPI spec
-export async function deletePet(pet_id: DeletePetPathParams['pet_id'], headers?: DeletePetHeaderParams, config: Partial<RequestConfig> = {}) {
-  return client({
-    method: 'DELETE',
-    url: `/pet/${pet_id}`,
-    ...config,
-  })
-}
-```
-
-:::
-
-### pathParamsType
-
-How URL path parameters appear in the generated function signature. This affects only path params. Query and header params follow `paramsType`.
-
-- `'inline'` (default): each path param is a positional argument, as in `getPetById(petId)`.
-- `'object'`: path params are wrapped in a single object, as in `getPetById({ petId })`.
-
-|           |                        |
-| --------: | :--------------------- |
-|     Type: | `'object' \| 'inline'` |
-| Required: | `false`                |
-|  Default: | `'inline'`             |
-
-::: code-group
-
-```typescript ['inline' (default)]
-export async function getPetById(petId: GetPetByIdPathParams) {
-  // ...
-}
-```
-
-```typescript ['object']
-export async function getPetById({ petId }: GetPetByIdPathParams) {
-  // ...
-}
-```
-
-:::
-
-### parser
-
-Runtime validator applied to request and response data using schemas from `@kubb/plugin-zod`.
-
-- `false` (default): no validation. The client returns the response cast to the generated TypeScript type without parsing.
-- `'zod'`: validates response bodies only (backward-compatible shorthand).
-- `{ request?: 'zod', response?: 'zod' }`: opt in per direction. `request` validates the request body and query parameters before the call. `response` validates the response body after.
-
-Requires `@kubb/plugin-zod` in the plugins list when either direction is set to `'zod'`.
-
-With `coercion` enabled in `@kubb/plugin-zod`, request-side parsing also normalizes types. For example, `z.coerce.number()` converts a stringified number from a form field.
-
-|           |                                                           |
-| --------: | :-------------------------------------------------------- |
-|     Type: | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` |
-| Required: | `false`                                                   |
-|  Default: | `false`                                                   |
-
-::: code-group
-
-```typescript twoslash [Validate responses with Zod]
-import { defineConfig } from 'kubb'
-import { pluginClient } from '@kubb/plugin-client'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginZod } from '@kubb/plugin-zod'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginZod(),
-    pluginClient({
-      parser: 'zod',
-    }),
-  ],
-})
-```
-
-```typescript twoslash [Validate both request and response with Zod]
-import { defineConfig } from 'kubb'
-import { pluginClient } from '@kubb/plugin-client'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginZod } from '@kubb/plugin-zod'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginZod(),
-    pluginClient({
-      parser: { request: 'zod', response: 'zod' },
-    }),
-  ],
-})
-```
-
-:::
-
-### client
-
-HTTP client used by the generated code.
-
-- `'axios'`: generated functions call into `@kubb/plugin-client/clients/axios`. Requires `axios` as a runtime dependency.
-- `'fetch'`: generated functions call into `@kubb/plugin-client/clients/fetch`. Uses the global `fetch` with no extra runtime dependency.
-
-To plug in your own client, use [`importPath`](#importpath) instead.
-
-|           |                      |
-| --------: | :------------------- |
-|     Type: | `'axios' \| 'fetch'` |
-| Required: | `false`              |
-|  Default: | `'axios'`            |
-
-::: code-group
-
-```typescript twoslash [Use fetch]
-import { defineConfig } from 'kubb'
-import { pluginClient } from '@kubb/plugin-client'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginClient({
-      client: 'fetch',
-    }),
-  ],
-})
-```
-
-:::
-
 ### clientType
 
 Shape of the generated client code.
 
-- `'function'` (default): one standalone async function per operation. Tree-shakes cleanly and works with every query plugin.
-- `'class'`: one class per group/tag with an instance method per operation. Use this to share configuration such as auth and headers through the constructor.
-- `'staticClass'`: one class per group/tag with static methods. Call as `Pet.getPetById(...)` without instantiating. Good for app-wide singleton clients.
+`'function'` (the default) emits one standalone async function per operation. It tree-shakes cleanly and works with every query plugin. `'class'` emits one class per tag with an instance method per operation, so you can share config such as auth and headers through the constructor. `'staticClass'` emits one class per tag with static methods, called as `Pet.getPetById(...)` without instantiating.
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -797,79 +343,22 @@ Shape of the generated client code.
 |  Default: | `'function'`                             |
 
 > [!WARNING]
-> Only `'function'` is compatible with query plugins (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`). To use both classes and query hooks, register two `pluginClient` instances. The first uses `clientType: 'function'` for the query plugins to consume, and the second uses `clientType: 'class'` or `'staticClass'` for your direct usage.
+> Only `'function'` works with query plugins (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`). To use both classes and query hooks, register two `pluginClient` instances. One uses `clientType: 'function'` for the query plugins, the other uses `'class'` or `'staticClass'` for your direct usage.
 
 ::: code-group
 
-```typescript twoslash ['staticClass']
-import { defineConfig } from 'kubb'
-import { pluginClient } from '@kubb/plugin-client'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginClient({
-      output: { path: './clients' },
-      clientType: 'staticClass',
-      group: { type: 'tag' },
-    }),
-  ],
-})
-```
-
-```typescript [Generated petClient.ts (excerpt)]
-import type { Client, RequestConfig } from './.kubb/client'
-import type { GetPetByIdPathParams, GetPetByIdQueryResponse } from '../../models/ts/pet/GetPetById'
-import { client, mergeConfig } from './.kubb/client'
-
-export class PetClient {
-  static #config: Partial<RequestConfig> & { client?: Client } = {}
-
-  static async getPetById({ petId }: { petId: GetPetByIdPathParams['petId'] }, config: Partial<RequestConfig> & { client?: Client } = {}) {
-    const { client: request = client, ...requestConfig } = mergeConfig(this.#config, config)
-    const res = await request<GetPetByIdQueryResponse>({
-      method: 'GET',
-      url: `/pet/${petId}`,
-      ...requestConfig,
-    })
-    return res.data
-  }
+```typescript ['function' (default)]
+export async function getPetById(petId: GetPetByIdPathParams['petId'], config: Partial<RequestConfig> = {}) {
+  const res = await client<GetPetByIdQueryResponse>({
+    method: 'GET',
+    url: `/pet/${petId}`,
+    ...config,
+  })
+  return res.data
 }
 ```
 
-```typescript [usage.ts]
-import { PetClient } from './gen/clients/petClient'
-
-const pet = await PetClient.getPetById({ petId: 1 })
-```
-
-```typescript twoslash ['class']
-import { defineConfig } from 'kubb'
-import { pluginClient } from '@kubb/plugin-client'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginClient({
-      output: { path: './clients' },
-      clientType: 'class',
-      group: { type: 'tag' },
-    }),
-  ],
-})
-```
-
-```typescript [Generated petClient.ts (excerpt)]
-import type { Client, RequestConfig } from './.kubb/client'
-import type { GetPetByIdPathParams, GetPetByIdQueryResponse } from '../../models/ts/pet/GetPetById'
-import { client, mergeConfig } from './.kubb/client'
-
+```typescript ['class']
 export class PetClient {
   #config: Partial<RequestConfig> & { client?: Client }
 
@@ -877,30 +366,31 @@ export class PetClient {
     this.#config = config
   }
 
-  async getPetById({ petId }: { petId: GetPetByIdPathParams['petId'] }, config: Partial<RequestConfig> & { client?: Client } = {}) {
+  async getPetById({ petId }: { petId: GetPetByIdPathParams['petId'] }, config: Partial<RequestConfig> = {}) {
     const { client: request = client, ...requestConfig } = mergeConfig(this.#config, config)
-    const res = await request<GetPetByIdQueryResponse>({
-      method: 'GET',
-      url: `/pet/${petId}`,
-      ...requestConfig,
-    })
+    const res = await request<GetPetByIdQueryResponse>({ method: 'GET', url: `/pet/${petId}`, ...requestConfig })
     return res.data
   }
 }
 ```
 
-```typescript [usage.ts]
-import { PetClient } from './gen/clients/petClient'
+```typescript ['staticClass']
+export class PetClient {
+  static #config: Partial<RequestConfig> & { client?: Client } = {}
 
-const petClient = new PetClient()
-const pet = await petClient.getPetById({ petId: 1 })
+  static async getPetById({ petId }: { petId: GetPetByIdPathParams['petId'] }, config: Partial<RequestConfig> = {}) {
+    const { client: request = client, ...requestConfig } = mergeConfig(this.#config, config)
+    const res = await request<GetPetByIdQueryResponse>({ method: 'GET', url: `/pet/${petId}`, ...requestConfig })
+    return res.data
+  }
+}
 ```
 
 :::
 
 ### sdk
 
-Generates a single SDK class that composes the per-tag client classes into one entry point, so you can pass one object around your app (`api.pet.findById`, `api.user.login`) instead of importing each tag client separately. Setting `sdk` automatically enables `clientType: 'class'`, so you only add `group: { type: 'tag' }` to split the clients per tag.
+Generates a single SDK class that composes the per-tag client classes into one entry point. You pass one object around your app (`api.pet.findById`, `api.user.login`) instead of importing each tag client. Setting `sdk` enables `clientType: 'class'` for you, so you only add `group: { type: 'tag' }` to split the clients per tag.
 
 |           |                         |
 | --------: | :---------------------- |
@@ -909,7 +399,7 @@ Generates a single SDK class that composes the per-tag client classes into one e
 
 #### sdk.className
 
-Name of the generated SDK class, used as the export name and file name.
+Name of the generated SDK class. Used as the export name and the file name.
 
 |           |          |
 | --------: | :------- |
@@ -937,25 +427,6 @@ export default defineConfig({
 })
 ```
 
-```typescript [Generated PetStoreClient.ts]
-import type { Client, RequestConfig } from './.kubb/client'
-import { PetClient } from './pet/PetClient'
-import { StoreClient } from './store/StoreClient'
-import { UserClient } from './user/UserClient'
-
-export class PetStoreClient {
-  readonly pet: PetClient
-  readonly store: StoreClient
-  readonly user: UserClient
-
-  constructor(config: Partial<RequestConfig> & { client?: Client } = {}) {
-    this.pet = new PetClient(config)
-    this.store = new StoreClient(config)
-    this.user = new UserClient(config)
-  }
-}
-```
-
 ```typescript [usage.ts]
 import { PetStoreClient } from './gen/clients/PetStoreClient'
 
@@ -967,9 +438,208 @@ const user = await api.user.getUserByName({ username: 'john' })
 
 :::
 
+### dataReturnType
+
+Shape of the value returned from each generated client function.
+
+`'data'` (the default) returns only the response body (`response.data`). `'full'` returns a discriminated union keyed by HTTP status code. Each member is `{ status: N; data: StatusNType; statusText: string }`, so narrowing on `res.status` also narrows `res.data` to the matching response type.
+
+|           |                    |
+| --------: | :----------------- |
+|     Type: | `'data' \| 'full'` |
+| Required: | `false`            |
+|  Default: | `'data'`           |
+
+::: code-group
+
+```typescript ['data' (default)]
+const pet = await getPetById(1)
+//    ^? Pet
+```
+
+```typescript ['full']
+const res = await getPetById(1)
+if (res.status === 200) {
+  res.data // narrowed to the 200 response type
+}
+```
+
+:::
+
+### parser
+
+Runtime validator applied to request and response data using schemas from `@kubb/plugin-zod`. Requires `@kubb/plugin-zod` in the plugins list when either direction is set to `'zod'`.
+
+`false` (the default) does no validation and returns the response cast to the generated type. `'zod'` validates response bodies only. `{ request?: 'zod', response?: 'zod' }` opts in per direction, where `request` validates the request body and query params before the call and `response` validates the response body after.
+
+|           |                                                           |
+| --------: | :-------------------------------------------------------- |
+|     Type: | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` |
+| Required: | `false`                                                   |
+|  Default: | `false`                                                   |
+
+::: code-group
+
+```typescript twoslash [Validate responses]
+import { defineConfig } from 'kubb'
+import { pluginClient } from '@kubb/plugin-client'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginZod } from '@kubb/plugin-zod'
+
+export default defineConfig({
+  input: { path: './petStore.yaml' },
+  output: { path: './src/gen' },
+  plugins: [
+    pluginTs(),
+    pluginZod(),
+    pluginClient({
+      parser: 'zod',
+    }),
+  ],
+})
+```
+
+```typescript twoslash [Validate request and response]
+import { defineConfig } from 'kubb'
+import { pluginClient } from '@kubb/plugin-client'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginZod } from '@kubb/plugin-zod'
+
+export default defineConfig({
+  input: { path: './petStore.yaml' },
+  output: { path: './src/gen' },
+  plugins: [
+    pluginTs(),
+    pluginZod(),
+    pluginClient({
+      parser: { request: 'zod', response: 'zod' },
+    }),
+  ],
+})
+```
+
+:::
+
+### paramsType
+
+How operation parameters (path, query, headers) appear in the generated function signature.
+
+`'inline'` (the default) makes each parameter a separate positional argument. It stays compact for operations with one or two params. `'object'` wraps every parameter in a single object argument. It reads better for operations with many params and names each one at the call site.
+
+|           |                        |
+| --------: | :--------------------- |
+|     Type: | `'object' \| 'inline'` |
+| Required: | `false`                |
+|  Default: | `'inline'`             |
+
+> [!TIP]
+> Setting `paramsType: 'object'` also sets `pathParamsType: 'object'`, so call sites stay consistent.
+
+::: code-group
+
+```typescript ['inline' (default)]
+export async function deletePet(petId: DeletePetPathParams['petId'], headers?: DeletePetHeaderParams, config: Partial<RequestConfig> = {}) {
+  // ...
+}
+
+await deletePet(42, { 'X-Api-Key': 'secret' })
+```
+
+```typescript ['object']
+export async function deletePet(
+  { petId, headers }: { petId: DeletePetPathParams['petId']; headers?: DeletePetHeaderParams },
+  config: Partial<RequestConfig> = {},
+) {
+  // ...
+}
+
+await deletePet({ petId: 42, headers: { 'X-Api-Key': 'secret' } })
+```
+
+:::
+
+### pathParamsType
+
+How URL path parameters appear in the generated function signature. This affects only path params. Query and header params follow `paramsType`. It has no effect when `paramsType` is `'object'`, since path params already live inside the single object.
+
+`'inline'` (the default) makes each path param a positional argument, as in `getPetById(petId)`. `'object'` wraps the path params in a single object, as in `getPetById({ petId })`.
+
+|           |                        |
+| --------: | :--------------------- |
+|     Type: | `'object' \| 'inline'` |
+| Required: | `false`                |
+|  Default: | `'inline'`             |
+
+::: code-group
+
+```typescript ['inline' (default)]
+export async function getPetById(petId: GetPetByIdPathParams['petId']) {
+  // ...
+}
+```
+
+```typescript ['object']
+export async function getPetById({ petId }: GetPetByIdPathParams) {
+  // ...
+}
+```
+
+:::
+
+### paramsCasing
+
+Renames path, query, and header parameters in the generated client to the chosen casing. The HTTP request still uses the original names from the spec, and Kubb writes the mapping for you.
+
+`'camelcase'` turns `pet_id` and `X-Api-Key` into `petId` and `xApiKey` in your TypeScript code. The runtime URL still uses `/pet/{pet_id}` and the header is still sent as `X-Api-Key`.
+
+|           |               |
+| --------: | :------------ |
+|     Type: | `'camelcase'` |
+| Required: | `false`       |
+
+> [!IMPORTANT]
+> Set the same `paramsCasing` on every plugin that touches operation parameters (`@kubb/plugin-ts`, `@kubb/plugin-client`, `@kubb/plugin-react-query`, `@kubb/plugin-faker`, `@kubb/plugin-mcp`). Mismatched casing causes type errors between generated layers.
+
+::: code-group
+
+```typescript [With paramsCasing: 'camelcase']
+// Function takes camelCase params, mapped back to the spec name internally
+export async function deletePet(petId: DeletePetPathParams['petId'], config: Partial<RequestConfig> = {}) {
+  const pet_id = petId
+  return client({ method: 'DELETE', url: `/pet/${pet_id}`, ...config })
+}
+```
+
+```typescript [Without paramsCasing]
+// Function params mirror the spec
+export async function deletePet(pet_id: DeletePetPathParams['pet_id'], config: Partial<RequestConfig> = {}) {
+  return client({ method: 'DELETE', url: `/pet/${pet_id}`, ...config })
+}
+```
+
+:::
+
+### urlType
+
+Controls whether the URL builder helpers (`get<Operation>Url`) are exported alongside each client function.
+
+`'export'` exposes them through the barrel, so you can call the API through a different transport such as `navigator.sendBeacon` or a server action. `false` (the default) keeps them private to the generated module.
+
+|           |                     |
+| --------: | :------------------ |
+|     Type: | `'export' \| false` |
+| Required: | `false`             |
+|  Default: | `false`             |
+
+```typescript [Generated URL helper]
+export function getGetPetByIdUrl(petId: GetPetByIdPathParams['petId']) {
+  return `/pet/${petId}` as const
+}
+```
+
 ### baseURL
 
-Base URL prepended to every request URL in the generated client, for pointing at a different environment (staging, production) than the spec. When omitted, the URL comes from the spec's `servers[0].url` (or whichever index the adapter is configured to read).
+Base URL prepended to every request URL in the generated client. Use it to point at a different environment (staging, production) than the spec. When omitted, the URL comes from the spec's `servers[0].url` (or whichever index the adapter reads).
 
 |           |          |
 | --------: | :------- |
@@ -995,17 +665,19 @@ export default defineConfig({
 
 :::
 
+### operations
+
+Emits an `operations.ts` file that re-exports every generated function grouped by HTTP method. Use it to build meta-tooling such as route registries or API explorers on top of the generated code.
+
+|           |           |
+| --------: | :-------- |
+|     Type: | `boolean` |
+| Required: | `false`   |
+|  Default: | `false`   |
+
 ### include
 
-Restricts generation to operations that match at least one entry in the list. Anything else is skipped. Each entry filters by one of:
-
-- `tag`: the operation's first tag in the OpenAPI spec.
-- `operationId`: the operation's `operationId`.
-- `path`: the URL pattern, such as `'/pet/{petId}'`.
-- `method`: the HTTP method, such as `'get'` or `'post'`.
-- `contentType`: the media type of the request body.
-
-`pattern` accepts either a string (exact match) or a `RegExp` for fuzzy matches.
+Generates only the operations that match at least one entry in the list. Everything else is skipped. Each entry filters by one of `tag` (the operation's first tag), `operationId`, `path` (the URL path, such as `'/pet/{petId}'`), `method` (such as `'get'` or `'post'`), or `contentType` (the request body media type). `pattern` accepts a string (exact match) or a `RegExp` for fuzzy matches.
 
 |           |                  |
 | --------: | :--------------- |
@@ -1014,7 +686,7 @@ Restricts generation to operations that match at least one entry in the list. An
 
 ```typescript [Type definition]
 export type Include = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType'
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
   pattern: string | RegExp
 }
 ```
@@ -1023,13 +695,13 @@ export type Include = {
 
 ```typescript twoslash [Only the pet tag]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginClient } from '@kubb/plugin-client'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginClient({
       include: [{ type: 'tag', pattern: 'pet' }],
     }),
   ],
@@ -1038,13 +710,13 @@ export default defineConfig({
 
 ```typescript twoslash [Only GET operations under /pet]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginClient } from '@kubb/plugin-client'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginClient({
       include: [
         { type: 'method', pattern: 'GET' },
         { type: 'path', pattern: /^\/pet/ },
@@ -1058,7 +730,7 @@ export default defineConfig({
 
 ### exclude
 
-Skips any operation that matches at least one entry in the list, the opposite of `include`. Entries take the same `type` (`tag`, `operationId`, `path`, `method`, `contentType`) and `pattern` (string or `RegExp`) as `include`. When both are set, `exclude` wins.
+Skips any operation that matches at least one entry in the list. It is the opposite of `include`. Entries use the same `type` (`tag`, `operationId`, `path`, `method`, `contentType`) and `pattern` (string or `RegExp`). When both are set, `exclude` wins.
 
 |           |                  |
 | --------: | :--------------- |
@@ -1067,7 +739,7 @@ Skips any operation that matches at least one entry in the list, the opposite of
 
 ```typescript [Type definition]
 export type Exclude = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType'
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
   pattern: string | RegExp
 }
 ```
@@ -1076,13 +748,13 @@ export type Exclude = {
 
 ```typescript twoslash [Skip everything under the store tag]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginClient } from '@kubb/plugin-client'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginClient({
       exclude: [{ type: 'tag', pattern: 'store' }],
     }),
   ],
@@ -1091,13 +763,13 @@ export default defineConfig({
 
 ```typescript twoslash [Skip a specific operation and all delete methods]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginClient } from '@kubb/plugin-client'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginClient({
       exclude: [
         { type: 'operationId', pattern: 'deletePet' },
         { type: 'method', pattern: 'DELETE' },
@@ -1111,7 +783,7 @@ export default defineConfig({
 
 ### override
 
-Applies a different set of plugin options to operations that match a pattern, for the few endpoints that need their own settings. Each entry takes the same `type` and `pattern` as `include`/`exclude`, plus an `options` object (any plugin-client option, such as `client`, `dataReturnType`, or `paramsCasing`). Entries evaluate top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
+Applies different plugin options to operations that match a pattern. Use it for the few endpoints that need special treatment. Each entry takes the same `type` and `pattern` as `include` and `exclude`, plus an `options` object that accepts any plugin-client option such as `client`, `dataReturnType`, or `paramsCasing`. Entries run top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
 
 |           |                   |
 | --------: | :---------------- |
@@ -1120,9 +792,9 @@ Applies a different set of plugin options to operations that match a pattern, fo
 
 ```typescript [Type definition]
 export type Override = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType'
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
   pattern: string | RegExp
-  options: PluginOptions
+  options: Omit<Partial<Options>, 'override'>
 }
 ```
 
@@ -1152,21 +824,9 @@ export default defineConfig({
 
 :::
 
-### generators
-
-Adds custom generators that run alongside the built-in ones, each emitting extra files or post-processing existing ones using the plugin's AST and options. Use it for output the plugin does not produce out of the box, such as a custom client wrapper, an extra index, or a metadata file. See [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
-
-|           |                                  |
-| --------: | :------------------------------- |
-|     Type: | `Array<Generator<PluginClient>>` |
-| Required: | `false`                          |
-
-> [!WARNING]
-> Generators are an experimental, low-level API. The signature may change between minor releases.
-
 ### resolver
 
-Overrides naming and path resolution for the generated client. Only the methods you supply replace the defaults. Everything else falls back to the built-in resolver. Inside each method, `this` is bound to the full resolver, so you can call `this.default(name)` to delegate to the original implementation.
+Changes how the plugin names generated files and symbols. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change. Anything you omit falls back to the default. Inside a method, `this` is the full resolver, so you can call `this.default(name)` to reuse the built-in name.
 
 |           |                                                      |
 | --------: | :--------------------------------------------------- |
@@ -1192,14 +852,26 @@ export default defineConfig({
 })
 ```
 
+### generators
+
+Adds custom generators that run next to the built-in ones. Each generator can emit extra files or post-process existing ones using the plugin's AST and options. Use it for output the plugin does not produce, such as a custom client wrapper or a metadata file. See [Creating plugins](/docs/5.x/guides/creating-plugins).
+
+|           |                                  |
+| --------: | :------------------------------- |
+|     Type: | `Array<Generator<PluginClient>>` |
+| Required: | `false`                          |
+
+> [!WARNING]
+> Generators are an experimental, low-level API. The signature may change between minor releases.
+
 ### macros
 
-A list of [macros](/docs/5.x/concepts/macros) applied to operation nodes before code is printed, for rewriting operation IDs, tags, or descriptions across the entire client.
+Rewrites operation nodes before they are printed to source. Use it to rename operation IDs, tags, or descriptions across the whole client. Each [macro](/docs/5.x/concepts/macros) callback receives the node and a context object. Return a new node to replace it, or `null`/`undefined` to leave it as is.
 
-|           |                 |
-| --------: | :-------------- |
-|     Type: | `Array<Macro>`  |
-| Required: | `false`         |
+|           |                |
+| --------: | :------------- |
+|     Type: | `Array<Macro>` |
+| Required: | `false`        |
 
 ```typescript twoslash [Prefix every operationId with "api_"]
 import { defineConfig } from 'kubb'
@@ -1236,3 +908,7 @@ This plugin requires the following plugins to be installed:
 <<< @/snippets/plugins/plugin-client/kubb.config.ts [kubb.config.ts]
 
 :::
+
+## See Also
+
+- [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-client/CHANGELOG.md)

@@ -38,7 +38,7 @@ resources:
 
 # @kubb/plugin-ts
 
-`@kubb/plugin-ts` turns your OpenAPI schema into TypeScript `type` aliases and `interface` declarations. Every other Kubb plugin builds on it: clients, query hooks, mocks, and validators all reference the names it produces, so every request payload, response, path parameter, and enum becomes a compile-time check.
+`@kubb/plugin-ts` turns your OpenAPI schemas into TypeScript types and interfaces. Most other Kubb plugins build on it. Clients, query hooks, mocks, and validators reuse the names it generates. That way every request, response, parameter, and enum is checked at compile time.
 
 **See also**
 
@@ -81,7 +81,7 @@ Where the generated `.ts` files are written and how they are exported.
 
 #### output.path
 
-Folder where the plugin writes its generated code, resolved against the global `output.path` set on `defineConfig`. To put everything in one file instead, set `output.mode: 'file'` and point `path` at a target file including its extension (for example `'types.ts'`).
+Folder where the plugin writes its files. It is resolved against the global `output.path` on `defineConfig`. To write everything to one file instead, set `output.mode: 'file'` and give `path` a file name with its extension, such as `'types.ts'`.
 
 |           |           |
 | --------: | :-------- |
@@ -238,7 +238,7 @@ src/gen/types/
 
 #### output.banner
 
-Text prepended to every generated file, for license headers, lint disables, or `@ts-nocheck` directives. Pass a string for a static banner, or a function that builds it from each file's `RootNode` (the AST root holding the path, schema, and operation context).
+Text added to the top of every generated file. Use it for license headers, lint disables, or a `@ts-nocheck` directive. Pass a string for a fixed banner, or a function that builds one from each file's `RootNode` (the AST root with the path, schema, and operation context).
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -296,7 +296,7 @@ export default defineConfig({
 
 #### output.footer
 
-Text appended to every generated file. Mirrors `banner`, for closing comments, re-enabling lint rules, or marker lines. Pass a string or a function that receives the file's `RootNode` and returns the footer text.
+Text added to the bottom of every generated file. It works like `banner` but for closing comments, such as re-enabling a lint rule. Pass a string or a function that receives the file's `RootNode` and returns the text.
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -328,7 +328,7 @@ export default defineConfig({
 
 ### group
 
-Splits generated files into subfolders by the operation's first tag, so each tag gets its own directory under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`.
+Splits generated files into subfolders by the operation's tag or URL path. Each group gets its own directory under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`.
 
 |           |         |
 | --------: | :------ |
@@ -377,12 +377,15 @@ Pass `group.name` to customize the folder name. For example, a `name` function t
 
 Property used to assign each operation to a group. Required whenever `group` is set.
 
-Today only `'tag'` is supported. Kubb reads the first tag on the operation (`operation.getTags().at(0)?.name`) and uses it as the group key. Operations without a tag go in a default group.
+- `'tag'` uses the operation's first tag (`operation.getTags().at(0)?.name`).
+- `'path'` uses the first segment of the operation's URL, such as `pet` for `/pet/{petId}`.
 
-|           |         |
-| --------: | :------ |
-|     Type: | `'tag'` |
-| Required: | `true`  |
+Operations with no tag go in a default group.
+
+|           |                   |
+| --------: | :---------------- |
+|     Type: | `'tag' \| 'path'` |
+| Required: | `true`            |
 
 > [!NOTE]
 > `Required: true*` is conditional. It only applies when the parent `group` option is used, and `group` itself stays optional.
@@ -596,7 +599,7 @@ Casing applied to enum key names. By default the key is the raw value from the s
 
 Whether object schemas are emitted as `type` aliases or `interface` declarations.
 
-`type` is the safer default for generated code: declarations are closed, intersections work cleanly, and unions are fine. Pick `interface` when consumers need to use declaration merging (rare for generated code).
+`type` is the safer default for generated code. Type aliases are closed, intersections work cleanly, and unions are fine. Pick `interface` only when consumers need declaration merging, which is rare for generated code.
 
 For more background, see [Type vs Interface](https://www.totaltypescript.com/type-vs-interface-which-should-you-use).
 
@@ -710,7 +713,7 @@ export type Pet = {
 
 ### paramsCasing
 
-Renames properties inside `PathParams`, `QueryParams`, and `HeaderParams` types when your OpenAPI parameters use snake_case or kebab-case but you want camelCase in TypeScript. Response and request body types are not touched.
+Renames the properties inside `PathParams`, `QueryParams`, and `HeaderParams` to camelCase. Use it when your OpenAPI parameters are snake_case or kebab-case but you want camelCase in TypeScript. Response and request body types are left untouched.
 
 |           |               |
 | --------: | :------------ |
@@ -755,7 +758,7 @@ export type FindPetsByStatusHeaderParams = {
 
 ### resolver
 
-Overrides how the plugin builds names and paths for generated files and symbols, to add prefixes or suffixes or swap the casing strategy without forking the plugin. Override only the methods you want to change; anything you omit (or that returns `null`/`undefined`) falls back to the default resolver. Inside each method, `this` is bound to the full resolver, so you can call `this.default(name, 'function')` to delegate to the built-in implementation.
+Changes how the plugin names generated files and symbols. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change. Anything you omit, or that returns `null` or `undefined`, falls back to the default. Inside a method, `this` is the full resolver, so you can call `this.default(name, 'function')` to reuse the built-in name.
 
 |           |                                              |
 | --------: | :------------------------------------------- |
@@ -798,7 +801,7 @@ Each plugin ships with a default resolver:
 
 ### include
 
-Restricts generation to operations and schemas that match at least one entry in the list. Anything else is skipped. Each entry filters by one of:
+Generates only the operations and schemas that match at least one entry in the list. Everything else is skipped. Each entry filters by one of:
 
 - `tag`: the operation's first tag in the OpenAPI spec.
 - `operationId`: the operation's `operationId`.
@@ -860,7 +863,7 @@ export default defineConfig({
 
 ### exclude
 
-Skips any operation or schema that matches at least one entry in the list, the opposite of `include`. Entries take the same `type` (`tag`, `operationId`, `path`, `method`, `contentType`, `schemaName`) and `pattern` (string or `RegExp`) as `include`. When both are set, `exclude` wins.
+Skips any operation or schema that matches at least one entry in the list. It is the opposite of `include`. Entries use the same `type` (`tag`, `operationId`, `path`, `method`, `contentType`, `schemaName`) and `pattern` (string or `RegExp`). When both are set, `exclude` wins.
 
 |           |                  |
 | --------: | :--------------- |
@@ -913,7 +916,7 @@ export default defineConfig({
 
 ### override
 
-Applies a different set of plugin options to operations that match a pattern, for the handful of endpoints that need different treatment. Each entry takes the same `type` and `pattern` as `include`/`exclude`, plus an `options` object (any plugin option except `override` itself, so the rules cannot nest). Entries evaluate top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
+Applies different plugin options to operations that match a pattern. Use it for the few endpoints that need special treatment. Each entry takes the same `type` and `pattern` as `include` and `exclude`, plus an `options` object. That object accepts any plugin option except `override`, so rules cannot nest. Entries run top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
 
 |           |                   |
 | --------: | :---------------- |
@@ -956,7 +959,7 @@ export default defineConfig({
 
 ### generators
 
-Adds custom generators that run alongside the built-in ones, each emitting extra files or post-processing existing ones using the plugin's AST and options. Use it for output the plugin does not produce, such as a custom client wrapper, an extra index, or a metadata file. See [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
+Adds custom generators that run next to the built-in ones. Each generator can emit extra files or post-process existing ones using the plugin's AST and options. Use it for output the plugin does not produce, such as a custom client wrapper or a metadata file. See [Creating plugins](/docs/5.x/guides/creating-plugins).
 
 |           |                              |
 | --------: | :--------------------------- |
@@ -968,7 +971,7 @@ Adds custom generators that run alongside the built-in ones, each emitting extra
 
 ### macros
 
-Rewrite AST nodes before they are printed to source code, to rename operation IDs, drop descriptions, or change schema metadata without forking the generator. Each [macro](/docs/5.x/concepts/macros) callback (e.g. `schema`, `operation`) receives the node and a context object. Return a new node to replace it, or `undefined` to leave it untouched. Callbacks you omit keep the default behavior, and macros run in order so a later one sees the output of an earlier one.
+Rewrites AST nodes before they are printed to source. Use it to rename operation IDs, drop descriptions, or change schema metadata without forking the generator. Each [macro](/docs/5.x/concepts/macros) callback (such as `schema` or `operation`) receives the node and a context object. Return a new node to replace it, or `undefined` to leave it as is. Callbacks you omit keep their default behavior. Macros run in order, so a later one sees the output of an earlier one.
 
 |           |                 |
 | --------: | :-------------- |
@@ -1028,9 +1031,9 @@ export default defineConfig({
 
 ### printer
 
-Replaces the TypeScript node handler for a specific schema type (e.g. `'integer'`, `'date'`, `'string'`). Each handler builds a TypeScript AST node for that schema type.
+Replaces the TypeScript node handler for a specific schema type, such as `'integer'`, `'date'`, or `'string'`. Each handler builds a TypeScript AST node for that type.
 
-Use `this.transform` to recurse into nested schema nodes and `this.options` to read printer options.
+Use `this.transform` to recurse into nested nodes, and `this.options` to read printer options.
 
 |           |                              |
 | --------: | :--------------------------- |

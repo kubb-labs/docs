@@ -39,9 +39,16 @@ resources:
 
 # @kubb/plugin-redoc
 
-Generate a static HTML documentation page for your OpenAPI spec using [Redoc](https://redocly.com/). The page is self-contained, so you can drop it on any static host or open it locally.
+`@kubb/plugin-redoc` turns your OpenAPI spec into a static HTML documentation page with [Redoc](https://redocly.com/). The page is self-contained. Drop it on any static host or open it locally.
 
-Kubb regenerates the file on every build, so your docs stay in step with the spec your code was generated from.
+Kubb rebuilds the file on every run. Your docs stay in step with the spec your code was generated from.
+
+This plugin reads the OpenAPI adapter. Kubb uses `adapterOas()` by default, so it works out of the box. You set `adapter` yourself only if you replaced that default with another adapter.
+
+**See also**
+
+- [Redoc](https://redocly.com/redoc)
+- [adapterOas](/adapters/adapter-oas)
 
 ## Installation
 
@@ -69,7 +76,7 @@ yarn add -D @kubb/plugin-redoc@beta
 
 ### output
 
-Sets where the generated Redoc HTML file lands. The path resolves against the global `output.path` you set on `defineConfig`.
+Where the generated Redoc HTML file is written. The path is resolved against the global `output.path` on `defineConfig`.
 
 |           |                         |
 | --------: | :---------------------- |
@@ -79,7 +86,7 @@ Sets where the generated Redoc HTML file lands. The path resolves against the gl
 
 #### output.path
 
-File path of the generated HTML, resolved relative to the global `output.path`. Unlike most plugins, this points at a single file rather than a directory.
+File path of the generated HTML, resolved against the global `output.path`. Unlike most plugins, this points at a single file, not a directory.
 
 End the path with a `.html` extension. If you leave the extension off, Kubb still writes the file and uses the path as the plugin output name.
 
@@ -110,6 +117,29 @@ export default defineConfig({
 src/
 └── gen/
     └── docs.html
+```
+
+:::
+
+## Example
+
+::: code-group
+
+```typescript twoslash [kubb.config.ts]
+import { defineConfig } from 'kubb'
+import { adapterOas } from '@kubb/adapter-oas'
+import { pluginRedoc } from '@kubb/plugin-redoc'
+
+export default defineConfig({
+  input: { path: './petStore.yaml' },
+  output: { path: './src/gen' },
+  adapter: adapterOas(),
+  plugins: [
+    pluginRedoc({
+      output: { path: 'docs.html' },
+    }),
+  ],
+})
 ```
 
 :::
