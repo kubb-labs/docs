@@ -44,7 +44,7 @@ Call sites that previously needed `as` casts or `'id' in res` checks compile dir
 
 ```ts
 const pet = await mutateAsync({ data: { name: 'Rex' } })
-pet.id // typed as Pet.id — no narrowing required
+pet.id // typed as Pet.id, no narrowing required
 ```
 
 The change applies to `queryFn`, `queryOptions`, and the hook generics in one pass. No config flag toggles the old behavior. If your client returns non-`2xx` bodies as resolved data instead of throwing, wrap it to throw so TanStack Query's `error` / `onError` path fires. The previous typing was silently broken at runtime.

@@ -7,7 +7,7 @@ outline: [2, 3, 4]
 
 # Migration Guide: v4 → v5
 
-Kubb v5 introduces a layered architecture that splits responsibilities between [adapters](/docs/5.x/concepts/adapters), [plugins](/docs/5.x/concepts/plugins), [parsers](/docs/5.x/concepts/parsers), and [storage](/docs/5.x/concepts/storage). This guide lists every user-facing breaking change with the matching v5 syntax. Each section gives a short rationale, a before/after diff, and a link to the reference.
+Kubb v5 splits responsibilities across [adapters](/docs/5.x/concepts/adapters), [plugins](/docs/5.x/concepts/plugins), [parsers](/docs/5.x/concepts/parsers), and [storage](/docs/5.x/concepts/storage), so upgrading is more than a version bump. This page walks through the changes that touch every project: the new import path, the core config, the shared plugin API, and the package moves. Anything specific to one plugin or adapter lives on its [per-extension page](#per-extension-changes), with a before/after diff and a link to the reference.
 
 > [!TIP]
 > Start with the [Upgrade prompt](#upgrade-prompt) to migrate most configurations automatically, then walk through this page to verify the result.
@@ -91,8 +91,8 @@ v5 no longer infers a single file from an `output.path` that ends in `.ts`.
 For every plugin whose `output.path` points at a file (ends in `.ts`), add
 `mode: 'file'` to its `output` and keep the extension in the path:
   - output: { path: 'models.ts' } → output: { path: 'models.ts', mode: 'file' }
-The extension is required — do not drop it. Leave folder paths unchanged;
-they default to `mode: 'directory'`. `output.mode` only accepts
+The extension is required, do not drop it. Leave folder paths unchanged.
+They default to `mode: 'directory'`. `output.mode` only accepts
 `'directory'` or `'file'`.
 
 Now migrate the following kubb.config.ts:
