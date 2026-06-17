@@ -287,7 +287,7 @@ Lower-level helpers for parsers that turn the AST into source code:
 
 | Export          | Purpose                                |
 | --------------- | -------------------------------------- |
-| `definePrinter` | Typed helper for creating a `Printer`. |
+| `createPrinter` | Typed helper for creating a `Printer`. |
 
 See [Concepts: Parsers](/docs/5.x/concepts/parsers) for how parsers consume printers.
 
