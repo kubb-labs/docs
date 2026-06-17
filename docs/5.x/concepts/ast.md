@@ -285,10 +285,9 @@ A macro is a named, composable transform built on `transform`. Macros rewrite no
 
 Lower-level helpers for parsers that turn the AST into source code:
 
-| Export                 | Purpose                                             |
-| ---------------------- | --------------------------------------------------- |
-| `definePrinter`        | Typed helper for creating a `Printer`.              |
-| `createPrinterFactory` | Build a factory that produces printers for plugins. |
+| Export          | Purpose                                |
+| --------------- | -------------------------------------- |
+| `createPrinter` | Typed helper for creating a `Printer`. |
 
 See [Concepts: Parsers](/docs/5.x/concepts/parsers) for how parsers consume printers.
 
