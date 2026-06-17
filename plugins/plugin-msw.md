@@ -6,6 +6,38 @@ description: Generate MSW request handlers from OpenAPI so you can mock the
 outline: 2
 kind: plugin
 id: plugin-msw
+name: MSW
+category: mocks
+type: official
+npmPackage: "@kubb/plugin-msw"
+repo: https://github.com/kubb-labs/plugins
+docsPath: /plugins/plugin-msw
+featured: false
+icon:
+  light: https://kubb.dev/feature/msw.svg
+maintainers:
+  - name: Stijn Van Hulle
+    github: stijnvanhulle
+compatibility:
+  kubb: ">=5.0.0"
+  node: ">=22"
+tags:
+  - msw
+  - mock-service-worker
+  - api-mocking
+  - mocks
+  - testing
+  - codegen
+  - openapi
+dependencies:
+  - plugin-ts
+  - plugin-faker
+resources:
+  documentation: https://kubb.dev/plugins/plugin-msw
+  repository: https://github.com/kubb-labs/plugins
+  issues: https://github.com/kubb-labs/plugins/issues
+  changelog: https://github.com/kubb-labs/plugins/blob/main/packages/plugin-msw/CHANGELOG.md
+  codesandbox: https://codesandbox.io/p/github/kubb-labs/plugins/main/examples/msw
 ---
 
 # @kubb/plugin-msw

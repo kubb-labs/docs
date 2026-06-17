@@ -5,6 +5,35 @@ description: Generate SWR hooks (useSWR, useSWRMutation) from OpenAPI specificat
 outline: 2
 kind: plugin
 id: plugin-swr
+name: SWR
+category: framework
+type: official
+npmPackage: "@kubb/plugin-swr"
+repo: https://github.com/kubb-labs/plugins
+docsPath: /plugins/plugin-swr
+featured: true
+maintainers:
+  - name: Stijn Van Hulle
+    github: stijnvanhulle
+compatibility:
+  kubb: ">=5.0.0"
+  node: ">=22"
+tags:
+  - swr
+  - react
+  - hooks
+  - data-fetching
+  - codegen
+  - openapi
+dependencies:
+  - plugin-ts
+  - plugin-client
+resources:
+  documentation: https://kubb.dev/plugins/plugin-swr
+  repository: https://github.com/kubb-labs/plugins
+  issues: https://github.com/kubb-labs/plugins/issues
+  changelog: https://github.com/kubb-labs/plugins/blob/main/packages/plugin-swr/CHANGELOG.md
+  codesandbox: https://codesandbox.io/p/github/kubb-labs/plugins/main/examples/swr
 ---
 
 > [!TIP]

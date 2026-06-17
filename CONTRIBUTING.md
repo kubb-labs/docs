@@ -12,12 +12,14 @@ Please read our [Code of Conduct](./CODE_OF_CONDUCT.md) before participating.
 ```
 docs/
 ├── docs/5.x/**            # Guides, concepts, API reference, integrations
-├── plugins/*.md           # One page per plugin
-├── adapters/*.md          # One page per adapter
-├── parsers/*.md           # One page per parser
+├── plugins/*.md           # One page per plugin (metadata in frontmatter)
+├── adapters/*.md          # One page per adapter (metadata in frontmatter)
+├── parsers/*.md           # One page per parser (metadata in frontmatter)
 ├── blog/*.md              # Blog posts
 └── snippets/**            # Code snippets included via <<< @/snippets/...
 ```
+
+Each plugin, adapter, and parser is a single markdown file. Its frontmatter carries the registry metadata (`name`, `category`, `type`, `npmPackage`, `repo`, `docsPath`, `featured`, `icon`, `maintainers`, `compatibility`, `tags`, `dependencies`, `resources`) that the kubb.dev fetch pipeline turns into the plugin, adapter, and parser cards and detail headers. The folder a page lives in sets its kind, and `id` matches the file name. The pipeline validates the frontmatter against `apps/kubb.dev/public/schemas/extension.json` in kubb-labs/platform.
 
 Do NOT edit:
 - `docs/5.x/changelog.md` — auto-synced from kubb-labs/kubb by `.github/workflows/sync-changelog.yml` after each release. To update manually, trigger that workflow with `workflow_dispatch`.

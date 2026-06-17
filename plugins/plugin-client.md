@@ -6,6 +6,36 @@ description: Generate type-safe HTTP clients (axios or fetch) from OpenAPI, one
 outline: 2
 kind: plugin
 id: plugin-client
+name: Client
+category: client
+type: official
+npmPackage: "@kubb/plugin-client"
+repo: https://github.com/kubb-labs/plugins
+docsPath: /plugins/plugin-client
+featured: true
+icon:
+  light: https://kubb.dev/feature/axios.svg
+maintainers:
+  - name: Stijn Van Hulle
+    github: stijnvanhulle
+compatibility:
+  kubb: ">=5.0.0"
+  node: ">=22"
+tags:
+  - api-client
+  - axios
+  - fetch
+  - http-client
+  - codegen
+  - openapi
+dependencies:
+  - plugin-ts
+resources:
+  documentation: https://kubb.dev/plugins/plugin-client
+  repository: https://github.com/kubb-labs/plugins
+  issues: https://github.com/kubb-labs/plugins/issues
+  changelog: https://github.com/kubb-labs/plugins/blob/main/packages/plugin-client/CHANGELOG.md
+  codesandbox: https://codesandbox.io/p/github/kubb-labs/plugins/main/examples/client
 ---
 
 # @kubb/plugin-client

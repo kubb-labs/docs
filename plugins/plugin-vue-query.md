@@ -6,6 +6,38 @@ description: Generate TanStack Query composables for Vue (useQuery, useMutation,
 outline: 2
 kind: plugin
 id: plugin-vue-query
+name: Vue Query
+category: framework
+type: official
+npmPackage: "@kubb/plugin-vue-query"
+repo: https://github.com/kubb-labs/plugins
+docsPath: /plugins/plugin-vue-query
+featured: false
+icon:
+  light: https://kubb.dev/feature/tanstack.svg
+maintainers:
+  - name: Stijn Van Hulle
+    github: stijnvanhulle
+compatibility:
+  kubb: ">=5.0.0"
+  node: ">=22"
+tags:
+  - vue-query
+  - tanstack-query
+  - vue
+  - composables
+  - data-fetching
+  - codegen
+  - openapi
+dependencies:
+  - plugin-ts
+  - plugin-client
+resources:
+  documentation: https://kubb.dev/plugins/plugin-vue-query
+  repository: https://github.com/kubb-labs/plugins
+  issues: https://github.com/kubb-labs/plugins/issues
+  changelog: https://github.com/kubb-labs/plugins/blob/main/packages/plugin-vue-query/CHANGELOG.md
+  codesandbox: https://codesandbox.io/p/github/kubb-labs/plugins/main/examples/vue-query
 ---
 
 > [!TIP]

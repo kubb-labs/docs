@@ -6,6 +6,29 @@ description: Generates `index.ts` re-export files for every plugin output and
 outline: 2
 kind: plugin
 id: plugin-barrel
+name: Barrel
+category: output
+type: official
+npmPackage: "@kubb/plugin-barrel"
+repo: https://github.com/kubb-labs/kubb
+docsPath: /plugins/plugin-barrel
+featured: true
+maintainers:
+  - name: Stijn Van Hulle
+    github: stijnvanhulle
+compatibility:
+  kubb: ">=5.0.0"
+  node: ">=22"
+tags:
+  - barrel
+  - index
+  - exports
+  - output
+resources:
+  documentation: https://kubb.dev/plugins/plugin-barrel
+  repository: https://github.com/kubb-labs/kubb
+  issues: https://github.com/kubb-labs/kubb/issues
+  changelog: https://github.com/kubb-labs/kubb/blob/main/packages/plugin-barrel/CHANGELOG.md
 ---
 
 > [!TIP]

@@ -6,6 +6,35 @@ description: Generate Zod v4 schemas from OpenAPI for runtime validation that
 outline: 2
 kind: plugin
 id: plugin-zod
+name: Zod
+category: validation
+type: official
+npmPackage: "@kubb/plugin-zod"
+repo: https://github.com/kubb-labs/plugins
+docsPath: /plugins/plugin-zod
+featured: true
+icon:
+  light: https://kubb.dev/feature/zod.svg
+maintainers:
+  - name: Stijn Van Hulle
+    github: stijnvanhulle
+compatibility:
+  kubb: ">=5.0.0"
+  node: ">=22"
+tags:
+  - zod
+  - validation
+  - schema
+  - runtime-validation
+  - codegen
+  - openapi
+dependencies: []
+resources:
+  documentation: https://kubb.dev/plugins/plugin-zod
+  repository: https://github.com/kubb-labs/plugins
+  issues: https://github.com/kubb-labs/plugins/issues
+  changelog: https://github.com/kubb-labs/plugins/blob/main/packages/plugin-zod/CHANGELOG.md
+  codesandbox: https://codesandbox.io/p/github/kubb-labs/plugins/main/examples/zod
 ---
 
 # @kubb/plugin-zod

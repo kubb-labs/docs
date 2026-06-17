@@ -6,6 +6,37 @@ description: Generate Faker.js mock-data factories from OpenAPI for tests,
 outline: 2
 kind: plugin
 id: plugin-faker
+name: Faker
+category: mocks
+type: official
+npmPackage: "@kubb/plugin-faker"
+repo: https://github.com/kubb-labs/plugins
+docsPath: /plugins/plugin-faker
+featured: false
+icon:
+  light: https://kubb.dev/feature/faker.svg
+maintainers:
+  - name: Stijn Van Hulle
+    github: stijnvanhulle
+compatibility:
+  kubb: ">=5.0.0"
+  node: ">=22"
+tags:
+  - faker
+  - mock-data
+  - mocks
+  - fixtures
+  - testing
+  - codegen
+  - openapi
+dependencies:
+  - plugin-ts
+resources:
+  documentation: https://kubb.dev/plugins/plugin-faker
+  repository: https://github.com/kubb-labs/plugins
+  issues: https://github.com/kubb-labs/plugins/issues
+  changelog: https://github.com/kubb-labs/plugins/blob/main/packages/plugin-faker/CHANGELOG.md
+  codesandbox: https://codesandbox.io/p/github/kubb-labs/plugins/main/examples/faker
 ---
 
 # @kubb/plugin-faker

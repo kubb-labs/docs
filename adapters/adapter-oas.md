@@ -7,6 +7,32 @@ description: Parse and convert OpenAPI 2.0, 3.0, and 3.1 specifications into
 outline: 2
 kind: adapter
 id: adapter-oas
+name: OpenAPI
+category: openapi
+type: official
+npmPackage: "@kubb/adapter-oas"
+repo: https://github.com/kubb-labs/kubb
+docsPath: /adapters/adapter-oas
+featured: true
+icon:
+  light: https://kubb.dev/feature/openapi.svg
+maintainers:
+  - name: Stijn Van Hulle
+    github: stijnvanhulle
+compatibility:
+  kubb: ">=5.0.0"
+  node: ">=22"
+tags:
+  - openapi
+  - swagger
+  - api-spec
+  - parser
+  - converter
+resources:
+  documentation: https://kubb.dev/adapters/adapter-oas
+  repository: https://github.com/kubb-labs/kubb
+  issues: https://github.com/kubb-labs/kubb/issues
+  changelog: https://github.com/kubb-labs/kubb/blob/main/packages/adapter-oas/CHANGELOG.md
 ---
 
 The OpenAPI adapter sits between your spec and every Kubb plugin. It reads the file at `input.path`, validates it, and converts each schema and operation into Kubb's universal AST that downstream plugins consume.

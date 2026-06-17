@@ -6,6 +6,35 @@ description: Render your OpenAPI spec as a single-file HTML page using Redoc,
 outline: 2
 kind: plugin
 id: plugin-redoc
+name: Redoc
+category: documentation
+type: official
+npmPackage: "@kubb/plugin-redoc"
+repo: https://github.com/kubb-labs/plugins
+docsPath: /plugins/plugin-redoc
+featured: false
+icon:
+  light: https://kubb.dev/feature/openapi.svg
+maintainers:
+  - name: Stijn Van Hulle
+    github: stijnvanhulle
+compatibility:
+  kubb: ">=5.0.0"
+  node: ">=22"
+tags:
+  - redoc
+  - api-docs
+  - documentation
+  - interactive-docs
+  - codegen
+  - openapi
+dependencies: []
+resources:
+  documentation: https://kubb.dev/plugins/plugin-redoc
+  repository: https://github.com/kubb-labs/plugins
+  issues: https://github.com/kubb-labs/plugins/issues
+  changelog: https://github.com/kubb-labs/plugins/blob/main/packages/plugin-redoc/CHANGELOG.md
+  codesandbox: https://codesandbox.io/p/github/kubb-labs/plugins/main/examples/simple-single
 ---
 
 # @kubb/plugin-redoc
