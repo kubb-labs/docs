@@ -560,7 +560,6 @@ Each extension documents its own configuration changes on its own page. Open the
 - [`@kubb/plugin-swr`](/docs/5.x/migration-guide/plugin-swr)
 - [`@kubb/plugin-cypress`](/docs/5.x/migration-guide/plugin-cypress)
 - [`@kubb/plugin-mcp`](/docs/5.x/migration-guide/plugin-mcp)
-- [`@kubb/parser-ts`](/docs/5.x/migration-guide/parser-ts)
 
 The adapter page also covers the schema options that moved off the plugins. Each plugin page lists that extension's generated-output changes.
 
