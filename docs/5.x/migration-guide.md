@@ -190,7 +190,7 @@ The following plugins have no v5 equivalent. Remove them from your config and un
 | `@kubb/plugin-svelte-query` |
 
 > [!NOTE]
-> `@kubb/plugin-swr` was unavailable during the early v5 betas but is supported again in v5. See [@kubb/plugin-swr](#kubb-plugin-swr) below.
+> `@kubb/plugin-swr` was unavailable during the early v5 betas but is supported again in v5. See [Migration: @kubb/plugin-swr](/docs/5.x/migration-guide/plugin-swr).
 
 ### New packages in v5
 
@@ -437,78 +437,6 @@ kubb generate --reporter file
 
 The `kubb:debug` hook and the `createDebugger` helper are removed alongside the flag. See [`kubb generate`](/docs/5.x/api/commands/generate) for the full flag list and [Diagnostics](/docs/5.x/reference/diagnostics) for the structured problem model the reporters render.
 
-## Options moved to `adapterOas`
-
-Schema-level options that v4 repeated on every plugin now live on [`adapterOas`](/adapters/adapter-oas) and apply globally. Remove them from each plugin and set them once on the adapter.
-
-| Option            | Removed from                              | v5 location                       |
-| ----------------- | ----------------------------------------- | --------------------------------- |
-| `dateType`        | `plugin-ts`, `plugin-faker`, `plugin-zod` | `adapterOas({ dateType })`        |
-| `integerType`     | `plugin-ts`, `plugin-zod`, `plugin-faker` | `adapterOas({ integerType })`     |
-| `unknownType`     | `plugin-ts`, `plugin-zod`, `plugin-faker` | `adapterOas({ unknownType })`     |
-| `emptySchemaType` | `plugin-ts`, `plugin-zod`, `plugin-faker` | `adapterOas({ emptySchemaType })` |
-| `enumSuffix`      | `plugin-ts`                               | `adapterOas({ enumSuffix })`      |
-| `contentType`     | `plugin-ts`, `plugin-msw`                 | `adapterOas({ contentType })`     |
-
-> [!IMPORTANT]
-> The default value of `integerType` changed from `'number'` to `'bigint'`. OpenAPI `int64` fields now map to `bigint` by default. To keep the previous behavior, set `integerType: 'number'` explicitly on `adapterOas`.
-
-::: code-group
-
-```typescript [v4 kubb.config.ts]
-import { defineConfig } from '@kubb/core'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginZod } from '@kubb/plugin-zod'
-import { pluginFaker } from '@kubb/plugin-faker'
-
-export default defineConfig({
-  input: { path: './petstore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      dateType: 'date',
-      integerType: 'number',
-      unknownType: 'unknown',
-      emptySchemaType: 'unknown',
-      enumSuffix: 'enum',
-    }),
-    pluginZod({
-      dateType: 'date',
-      integerType: 'number',
-      unknownType: 'unknown',
-    }),
-    pluginFaker({
-      dateType: 'date',
-      integerType: 'number',
-      unknownType: 'unknown',
-    }),
-  ],
-})
-```
-
-```typescript twoslash [v5 kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { adapterOas } from '@kubb/adapter-oas'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginZod } from '@kubb/plugin-zod'
-import { pluginFaker } from '@kubb/plugin-faker'
-
-export default defineConfig({
-  input: { path: './petstore.yaml' },
-  output: { path: './src/gen' },
-  adapter: adapterOas({
-    dateType: 'date',
-    integerType: 'number',
-    unknownType: 'unknown',
-    emptySchemaType: 'unknown',
-    enumSuffix: 'enum',
-  }),
-  plugins: [pluginTs(), pluginZod(), pluginFaker()],
-})
-```
-
-:::
-
 ## Shared plugin API
 
 These changes apply to every plugin that defined `transformers` in v4.
@@ -618,156 +546,24 @@ uploadFile(petId, data, { contentType: 'multipart/form-data' })
 
 Single-content-type operations are unchanged.
 
-## @kubb/plugin-ts
+## Per-extension changes
 
-See the full reference in [`@kubb/plugin-ts`](/plugins/plugin-ts).
+Each extension keeps its configuration changes on its own page. Open the one you use.
 
-### Removed: `mapper`
+- [`@kubb/adapter-oas`](/docs/5.x/migration-guide/adapter-oas)
+- [`@kubb/plugin-ts`](/docs/5.x/migration-guide/plugin-ts)
+- [`@kubb/plugin-zod`](/docs/5.x/migration-guide/plugin-zod)
+- [`@kubb/plugin-faker`](/docs/5.x/migration-guide/plugin-faker)
+- [`@kubb/plugin-client`](/docs/5.x/migration-guide/plugin-client)
+- [`@kubb/plugin-react-query`](/docs/5.x/migration-guide/plugin-react-query)
+- [`@kubb/plugin-vue-query`](/docs/5.x/migration-guide/plugin-vue-query)
+- [`@kubb/plugin-msw`](/docs/5.x/migration-guide/plugin-msw)
+- [`@kubb/plugin-swr`](/docs/5.x/migration-guide/plugin-swr)
+- [`@kubb/plugin-cypress`](/docs/5.x/migration-guide/plugin-cypress)
+- [`@kubb/plugin-mcp`](/docs/5.x/migration-guide/plugin-mcp)
+- [`@kubb/parser-ts`](/docs/5.x/migration-guide/parser-ts)
 
-```typescript [v4 kubb.config.ts]
-pluginTs({ mapper: { status: 'string' } })
-```
-
-Use [`printer.nodes`](/plugins/plugin-ts#printer) to override specific schema-type renderers, or [`macros`](/plugins/plugin-ts#macros) to rewrite AST nodes before printing.
-
-### Moved to `adapterOas`
-
-`dateType`, `integerType`, `unknownType`, `emptySchemaType`, `enumSuffix`, and `contentType` moved to [`adapterOas`](/adapters/adapter-oas). See [Options moved to adapterOas](#options-moved-to-adapteroas).
-
-## @kubb/plugin-zod
-
-See the full reference in [`@kubb/plugin-zod`](/plugins/plugin-zod).
-
-### Zod v3 no longer supported
-
-The `version` option (`'3' | '4'`) is removed. v5 always generates [Zod v4](https://zod.dev) schemas.
-
-Upgrade your `zod` dependency:
-
-::: code-group
-
-```shell [bun]
-bun add zod@^4
-```
-
-```shell [pnpm]
-pnpm add zod@^4
-```
-
-```shell [npm]
-npm install zod@^4
-```
-
-```shell [yarn]
-yarn add zod@^4
-```
-
-:::
-
-### Removed: `mapper`
-
-Use [`macros`](/plugins/plugin-zod#macros) or [`printer`](/plugins/plugin-zod#printer) instead.
-
-### Moved to `adapterOas`
-
-`dateType`, `integerType`, `unknownType`, and `emptySchemaType` moved to [`adapterOas`](/adapters/adapter-oas). See [Options moved to adapterOas](#options-moved-to-adapteroas).
-
-### New: `mini`
-
-Generate [Zod Mini](https://zod.dev/packages/mini)'s functional syntax for better tree-shaking. When `mini: true`, `importPath` defaults to `'zod/mini'`.
-
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginZod } from '@kubb/plugin-zod'
-
-export default defineConfig({
-  input: { path: './petstore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [pluginZod({ mini: true })],
-})
-```
-
-### Changed: inferred type names end with `Type`
-
-With `inferred: true`, the `z.infer<typeof schema>` alias now carries a `SchemaType` suffix. `petSchema` exports `PetSchemaType` instead of `PetSchema`.
-
-Before, the schema value and its inferred type differed only by casing (`petSchema` and `PetSchema`). An all-uppercase name such as `SUV`, `URL`, or `API` produced the same identifier for both, so the barrel re-exported it twice and failed to compile with `TS2300: Duplicate identifier`. The `Type` suffix keeps the value and type distinct regardless of casing.
-
-```typescript [zod/petSchema.ts]
-export const petSchema = z.object({
-  name: z.string(),
-  status: z.enum(['available', 'pending', 'sold']).optional(),
-})
-
-export type PetSchemaType = z.infer<typeof petSchema> // [!code ++]
-export type PetSchema = z.infer<typeof petSchema> // [!code --]
-```
-
-Update any imports that referenced the old name:
-
-```typescript
-import type { PetSchemaType } from './gen/zod/petSchema.ts' // [!code ++]
-import type { PetSchema } from './gen/zod/petSchema.ts' // [!code --]
-```
-
-## @kubb/plugin-faker
-
-See the full reference in [`@kubb/plugin-faker`](/plugins/plugin-faker).
-
-`dateType`, `integerType`, `unknownType`, and `emptySchemaType` moved to [`adapterOas`](/adapters/adapter-oas). The `transformers.name` → [`resolver.resolveName`](#transformersname-resolver) pattern applies. All other options are unchanged.
-
-## @kubb/plugin-client
-
-See the full reference in [`@kubb/plugin-client`](/plugins/plugin-client).
-
-`transformers.name` is replaced by [`resolver.resolveName`](#transformersname-resolver). The `wrapper` option is renamed to `sdk`.
-
-Class clients (`clientType: 'class'`, `clientType: 'staticClass'`, and `sdk`) now name each tag class with a `Client` suffix. A `pet` tag generates `class PetClient` instead of `class Pet`. The old name collided with the schema model of the same name, so the barrel re-exported both and `tsc` failed with `TS2300: Duplicate identifier`. The suffix keeps the class and model apart.
-
-```ts
-// Before
-export class Pet { /* ... */ }
-
-// After
-export class PetClient { /* ... */ }
-```
-
-To keep the previous names, override `resolveGroupName` on the `resolver` option. `this` is bound to the full resolver, so `this.resolveClassName` restores the old behavior.
-
-```ts
-pluginClient({
-  clientType: 'class',
-  resolver: {
-    resolveGroupName(name) {
-      return this.resolveClassName(name)
-    },
-  },
-})
-```
-
-All other options are unchanged.
-
-## @kubb/plugin-react-query and @kubb/plugin-vue-query
-
-See [`@kubb/plugin-react-query`](/plugins/plugin-react-query) and [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query).
-
-`transformers.name` is replaced by [`resolver.resolveName`](#transformersname-resolver). The `client` sub-object for HTTP client configuration is unchanged. All other options are unchanged.
-
-## @kubb/plugin-msw
-
-See the full reference in [`@kubb/plugin-msw`](/plugins/plugin-msw).
-
-`transformers.name` is replaced by [`resolver.resolveName`](#transformersname-resolver). The `contentType` option moved to [`adapterOas`](/adapters/adapter-oas). All other options are unchanged.
-
-## @kubb/plugin-swr
-
-See the full reference in [`@kubb/plugin-swr`](/plugins/plugin-swr).
-
-`@kubb/plugin-swr` is supported again in v5 and follows the same conventions as the React Query and Vue Query plugins: `transformers.name` is replaced by [`resolver.resolveName`](#transformersname-resolver), and the `client` sub-object is unchanged. Since SWR has no `enabled` option, the param-presence guard folds into the null-key gate (`useSWR(shouldFetch && !!(petId) ? queryKey : null, ...)`), so passing `undefined` disables the request.
-
-## Removed plugins: Solid Query, Svelte Query
-
-`@kubb/plugin-solid-query` and `@kubb/plugin-svelte-query` have no v5 equivalents. Remove them from your config and uninstall the packages.
+The adapter page also covers the schema options that moved off the plugins. The generated-output changes for every plugin stay together in [Generated output changes per plugin](#generated-output-changes-per-plugin) below.
 
 ## Complete before/after example
 
