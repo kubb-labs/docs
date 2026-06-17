@@ -11,4 +11,18 @@ The plugin options are unchanged. `transformers.name` is replaced by [`resolver.
 
 ## Generated output
 
-HTTP method constants are uppercased and imports follow the new `*Data` / `*Response` naming. See [Generated output changes: @kubb/plugin-cypress](/docs/5.x/migration-guide#kubb-plugin-cypress).
+- HTTP method constants are uppercased (`'post'` → `'POST'`).
+- Imports follow the new `*Data` / `*Response` naming.
+
+```diff
+- import type { AddPetMutationRequest, AddPetMutationResponse } from '../../models/AddPet.ts'
+- export function addPet(data: AddPetMutationRequest): Cypress.Chainable<AddPetMutationResponse> {
+-   return cy.request<AddPetMutationResponse>({
+-     method: 'post',
+-     url: 'http://localhost:3000/pet',
++ import type { AddPetData, AddPetResponse } from '../../models.ts'
++ export function addPet(data: AddPetData): Cypress.Chainable<AddPetResponse> {
++   return cy.request<AddPetResponse>({
++     method: 'POST',
++     url: `http://localhost:3000/pet`,
+```

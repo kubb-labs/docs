@@ -1,6 +1,6 @@
 ---
 title: 'Migration: @kubb/plugin-zod'
-description: Configuration changes for @kubb/plugin-zod when migrating from Kubb v4 to v5.
+description: Configuration and generated-output changes for @kubb/plugin-zod when migrating from Kubb v4 to v5.
 ---
 
 # Migration: `@kubb/plugin-zod`
@@ -85,4 +85,42 @@ import type { PetSchema } from './gen/zod/petSchema.ts' // [!code --]
 
 ## Generated output
 
-The generated Zod also changed: chained syntax instead of functional wrappers, and self-referencing getters only for true cycles. See [Generated output changes: @kubb/plugin-zod](/docs/5.x/migration-guide#kubb-plugin-zod).
+### Chained syntax instead of functional wrappers
+
+v5 prefers the chained Zod 4 syntax. `.optional()` always sits at the end of the chain, before `.describe()`.
+
+::: code-group
+
+```typescript [v4]
+id: z.optional(z.int()),
+shipDate: z.optional(z.iso.datetime()),
+status: z.optional(z.enum(['placed', 'approved']).describe('Order Status')),
+```
+
+```typescript [v5]
+id: z.int().optional(),
+shipDate: z.iso.datetime().optional(),
+status: z.enum(['placed', 'approved']).optional().describe('Order Status'),
+```
+
+:::
+
+The functional form (`z.optional(...)`) is now reserved for `mini: true` output, which lives in its own configured `output.path`.
+
+### Self-referencing getters only for true cycles
+
+v4 wrapped almost every nested ref in a getter. v5 only does so when the schema is genuinely circular (a schema that references itself or its parent).
+
+```diff
+- get category() {
+-   return categorySchema.optional()
+- },
+- get tags() {
+-   return z.array(tagSchema).optional()
+- },
++ category: categorySchema.optional(),
++ tags: z.array(tagSchema).optional(),
+  get parent() {
+    return z.array(petSchema).optional()
+  },
+```
