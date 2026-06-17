@@ -55,7 +55,6 @@ built-in logic as a fallback.
 
 ## 6. plugin-ts specific
 - Remove `mapper` (use printer or macros instead).
-- Remove `UNSTABLE_NAMING` (v5 always uses the new naming convention).
 
 ## 7. plugin-zod specific
 - Remove `version` (always Zod v4 in v5).
@@ -598,7 +597,6 @@ export default defineConfig({
       integerType: 'number', // → adapterOas
       unknownType: 'unknown', // → adapterOas
       enumSuffix: 'enum', // → adapterOas
-      UNSTABLE_NAMING: true, // removed (no replacement)
       mapper: {}, // removed (use printer or macros)
       transformers: {
         name: (name) => `Api${name}`,
