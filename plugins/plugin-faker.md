@@ -365,41 +365,6 @@ export default defineConfig({
 
 :::
 
-#### output.override
-
-Allows the plugin to overwrite hand-written files that share a name with a generated file.
-
-- `false` (default): Kubb skips a file if it already exists and is not marked as generated. This protects manual edits.
-- `true`: Kubb overwrites any file at the target path, including hand-written ones.
-
-|           |           |
-| --------: | :-------- |
-|     Type: | `boolean` |
-| Required: | `false`   |
-|  Default: | `false`   |
-
-> [!WARNING]
-> Enable this only when you are sure the target folder contains nothing you need to keep. Local edits are lost on the next generation.
-
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { override: true },
-    }),
-  ],
-})
-```
-
-:::
-
 ### group
 
 Splits the generated files into subfolders by each operation's tag or path, so related mocks end up in the same directory. Without `group`, every file lands in the plugin's `output.path` folder. With `group`, each file goes under `{output.path}/{groupName}/`, where `groupName` comes from the operation's first tag or first path segment.

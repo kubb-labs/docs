@@ -322,41 +322,6 @@ export default defineConfig({
 
 :::
 
-#### output.override
-
-Lets the plugin overwrite hand-written files that share a name with a generated file.
-
-- `false` (default): skips a file that already exists and is not marked as generated, protecting manual edits.
-- `true`: overwrites any file at the target path, including hand-written ones.
-
-|           |           |
-| --------: | :-------- |
-|     Type: | `boolean` |
-| Required: | `false`   |
-|  Default: | `false`   |
-
-> [!WARNING]
-> Enable this only when you are sure the target folder contains nothing you need to keep. Local edits are lost on the next generation.
-
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { override: true },
-    }),
-  ],
-})
-```
-
-:::
-
 ### group
 
 Splits generated files into subfolders by the operation's first tag, so each tag gets its own directory under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`.
@@ -430,7 +395,7 @@ Function that builds the folder/identifier name from a group key (the operation'
 
 ### importPath
 
-Path or module specifier of a custom client module. Generated code imports its HTTP runtime from here instead of `@kubb/plugin-client/clients/{client}`. Use this to inject auth headers, attach interceptors, or wrap a different HTTP library such as ky or ofetch. Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work. Setting `importPath` takes priority over `client` and turns off `bundle`, since the runtime now comes from your module.
+Path or module specifier of a custom client module. By default the selected `client` is bundled into `.kubb/client.ts` and generated code imports it from there. Set `importPath` to import the HTTP runtime from your own module instead. Use this to inject auth headers, attach interceptors, or wrap a different HTTP library such as ky or ofetch. Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work. Setting `importPath` takes priority over `client`, since the runtime now comes from your module.
 
 |           |          |
 | --------: | :------- |
@@ -503,10 +468,7 @@ export default defineConfig({
 
 #### Default behavior
 
-Without `importPath`:
-
-- `bundle: false` (default): generated code imports from `@kubb/plugin-client/clients/{axios|fetch}`.
-- `bundle: true`: Kubb writes `.kubb/client.ts` and generated code imports from there.
+Without `importPath`, the selected `client` (`axios` or `fetch`) is bundled into `.kubb/client.ts` and generated code imports it from there. The consuming app does not need `@kubb/plugin-client` installed at runtime.
 
 #### Required exports
 
@@ -1002,40 +964,6 @@ const user = await api.user.getUserByName({ username: 'john' })
 
 :::
 
-### bundle
-
-Copies the HTTP client runtime into the generated output, so the consuming app does not need `@kubb/plugin-client` installed at runtime.
-
-- `false` (default): generated files import from `@kubb/plugin-client/clients/{client}`. Smaller diff, but the package must be a runtime dependency.
-- `true`: Kubb writes a `.kubb/client.ts` with the client implementation and generated code imports from there, so the project no longer pulls `@kubb/plugin-client` at runtime.
-- Setting `importPath` overrides both behaviors and uses your custom client instead, so `bundle` has no effect.
-
-|           |           |
-| --------: | :-------- |
-|     Type: | `boolean` |
-| Required: | `false`   |
-|  Default: | `false`   |
-
-::: code-group
-
-```typescript [Bundle the runtime]
-import { defineConfig } from 'kubb'
-import { pluginClient } from '@kubb/plugin-client'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginClient({
-      client: 'fetch',
-      bundle: true,
-    }),
-  ],
-})
-```
-
-:::
-
 ### baseURL
 
 Base URL prepended to every request URL in the generated client, for pointing at a different environment (staging, production) than the spec. When omitted, the URL comes from the spec's `servers[0].url` (or whichever index the adapter is configured to read).
@@ -1180,7 +1108,7 @@ export default defineConfig({
 
 ### override
 
-Applies a different set of plugin options to operations that match a pattern, for the few endpoints that need their own settings. Each entry takes the same `type` and `pattern` as `include`/`exclude`, plus an `options` object (any plugin-client option, such as `bundle`, `client`, or `dataReturnType`). Entries evaluate top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
+Applies a different set of plugin options to operations that match a pattern, for the few endpoints that need their own settings. Each entry takes the same `type` and `pattern` as `include`/`exclude`, plus an `options` object (any plugin-client option, such as `client`, `dataReturnType`, or `paramsCasing`). Entries evaluate top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
 
 |           |                   |
 | --------: | :---------------- |
@@ -1197,7 +1125,7 @@ export type Override = {
 
 ::: code-group
 
-```typescript [Bundle the runtime only for the user tag]
+```typescript [Return the full response only for the user tag]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 
@@ -1211,7 +1139,7 @@ export default defineConfig({
         {
           type: 'tag',
           pattern: 'user',
-          options: { bundle: true },
+          options: { dataReturnType: 'full' },
         },
       ],
     }),

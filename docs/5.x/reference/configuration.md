@@ -375,20 +375,6 @@ Text appended to the end of every file a plugin generates. Mirror of [`output.ba
 |     Type: | `string \| ((meta: BannerMeta) => string)` |
 | Required: | `false`                                |
 
-#### `output.override`
-
-Controls whether Kubb overwrites files that already exist on disk at the output path.
-
-|           |           |
-| --------: | :-------- |
-|     Type: | `boolean` |
-| Required: | `false`   |
-|  Default: | `false`   |
-
-When `false` (the default), Kubb skips any file that already exists, keeping manual edits or files written by other tools. Set it to `true` to always write generated files regardless of what is on disk.
-
-Set this at the root level and every plugin inherits the same behavior. Each plugin also has its own `output.override`, which wins over the root value for that plugin.
-
 ### `plugins`
 
 Array of Kubb plugins. Plugins may declare dependencies, and Kubb throws an error at startup if any are missing.

@@ -327,41 +327,6 @@ export default defineConfig({
 
 :::
 
-#### output.override
-
-Lets the plugin overwrite hand-written files that share a name with a generated file.
-
-- `false` (default): skips a file that already exists and is not marked as generated, protecting manual edits.
-- `true`: overwrites any file at the target path, including hand-written ones.
-
-|           |           |
-| --------: | :-------- |
-|     Type: | `boolean` |
-| Required: | `false`   |
-|  Default: | `false`   |
-
-> [!WARNING]
-> Enable this only when you are sure the target folder contains nothing you need to keep. Local edits are lost on the next generation.
-
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { override: true },
-    }),
-  ],
-})
-```
-
-:::
-
 ### group
 
 Splits generated files into subfolders by the operation's first tag, so each tag gets its own directory under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`.
@@ -440,7 +405,7 @@ HTTP client used inside every generated hook. Mirrors a subset of `pluginClient`
 
 |           |                                                                          |
 | --------: | :----------------------------------------------------------------------- |
-|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, bundle?, paramsCasing? }` |
+|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, paramsCasing? }` |
 | Required: | `false`                                                                                 |
 
 #### client.importPath
@@ -523,20 +488,6 @@ Style of the HTTP client that this plugin imports from `@kubb/plugin-client`.
 
 > [!WARNING]
 > Query plugins (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, `@kubb/plugin-svelte-query`, `@kubb/plugin-solid-query`) work only with `clientType: 'function'`. If you set `clientType: 'class'` here, the plugin falls back to generating its own inline function-based client instead of importing from `@kubb/plugin-client`.
-
-#### client.bundle
-
-Copies the HTTP client runtime into the generated output, so the consuming app does not need `@kubb/plugin-client` at runtime.
-
-- `false` (default) makes generated files import from `@kubb/plugin-client/clients/{client}`. Smaller diff, but the package must be a runtime dependency.
-- `true` makes Kubb write a `.kubb/client.ts` with the client implementation and generated code imports from there, so the project no longer pulls `@kubb/plugin-client` at runtime.
-- Setting `client.importPath` overrides both behaviors and uses your custom client instead.
-
-|           |           |
-| --------: | :-------- |
-|     Type: | `boolean` |
-| Required: | `false`   |
-|  Default: | `false`   |
 
 ### paramsType
 

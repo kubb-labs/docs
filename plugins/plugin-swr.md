@@ -196,11 +196,11 @@ Organize `output.mode: 'directory'` output into per-tag or per-path subdirectori
 
 ### client
 
-Configure how the generated hooks call the HTTP client. Set the client kind, the shape of the returned data, the base URL, whether to bundle the client, the import path, and parameter casing.
+Configure how the generated hooks call the HTTP client. Set the client kind, the shape of the returned data, the base URL, the import path, and parameter casing.
 
 |           |                                                                                         |
 | --------: | :-------------------------------------------------------------------------------------- |
-|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, bundle?, paramsCasing? }` |
+|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, paramsCasing? }` |
 | Required: | `false`                                                                                 |
 
 ### paramsType

@@ -32,6 +32,17 @@ pluginClient({
 })
 ```
 
+The `bundle` option is removed. The selected `client` is now always bundled into `.kubb/client.ts`, the behavior `bundle: true` used to opt into. Drop `bundle` from your config (and from the `client` sub-option of `plugin-react-query`, `plugin-vue-query`, `plugin-swr`, and `plugin-mcp`). To import the client from an external module instead of bundling it, set [`importPath`](/plugins/plugin-client#importpath).
+
+```diff
+  pluginClient({
+    client: 'fetch',
+-   bundle: true,
+  })
+```
+
+Projects that relied on the old default (`bundle: false`, which imported from `@kubb/plugin-client/clients/{client}`) now get a self-contained `.kubb/client.ts` and no longer need `@kubb/plugin-client` at runtime. To keep importing from the package, point `importPath` at it.
+
 All other options are unchanged.
 
 ## Generated output

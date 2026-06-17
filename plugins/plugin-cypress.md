@@ -385,43 +385,6 @@ export default defineConfig({
 
 :::
 
-#### output.override
-
-Lets the plugin overwrite hand-written files that share a name with a generated file.
-
-- `false` (default): Kubb skips a file if it already exists and is not marked as generated. This protects manual edits.
-- `true`: Kubb overwrites any file at the target path, including hand-written ones.
-
-|           |           |
-| --------: | :-------- |
-|     Type: | `boolean` |
-| Required: | `false`   |
-|  Default: | `false`   |
-
-> [!WARNING]
-> Enable this only when you are sure the target folder contains nothing you need to keep. Local edits are lost on the next generation.
-
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginCypress } from '@kubb/plugin-cypress'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginCypress({
-      output: { override: true },
-    }),
-  ],
-})
-```
-
-:::
-
 ### resolver
 
 Overrides how the plugin builds names and paths for generated files and symbols. Use it to add prefixes, suffixes, or swap the casing strategy without forking the plugin. Override only the methods you want to change. Anything you omit, or a method that returns `null` or `undefined`, falls back to the default resolver. Inside each method, `this` is bound to the full resolver, so you can call `this.default(name, 'function')` to delegate to the built-in implementation.

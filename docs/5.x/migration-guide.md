@@ -70,15 +70,23 @@ Replace every `barrelType` string with the `barrel` object:
   - output.barrelType: false        → output.barrel: false
 This applies at both the root output level and per-plugin output levels.
 
-## 9. Preserve everything else
-All other plugin options (output, group, include, exclude, override,
-generators, client, infinite, suspense, query, mutation,
+## 9. Remove the `bundle` and `output.override` options
+- Remove `bundle` from plugin-client and from the `client` sub-option of
+  plugin-react-query, plugin-vue-query, plugin-swr, and plugin-mcp. The client
+  is always bundled into `.kubb/client.ts` now. To import the client from an
+  external module instead, set `importPath`.
+- Remove `output.override` (the boolean) from every plugin's `output` and from
+  the root `output`. It no longer exists.
+
+## 10. Preserve everything else
+All other plugin options (output, group, include, exclude, override (the
+per-operation array), generators, client, infinite, suspense, query, mutation,
 paramsCasing, paramsType, pathParamsType, parser, dataReturnType,
-clientType, bundle, baseURL, urlType, operations, typed, inferred,
+clientType, baseURL, urlType, operations, typed, inferred,
 coercion, guidType, mini, wrapOutput, dateParser, regexGenerator,
 seed, handlers, etc.) are unchanged.
 
-## 10. New v5 defaults (informational, do not edit the config)
+## 11. New v5 defaults (informational, do not edit the config)
 
 With `group: { type: 'tag' }`, v5 names each tag folder after the plain
 camelCased tag instead of `${tag}Controller`. Do not add `group.name`
@@ -86,7 +94,7 @@ during migration. Mention to the user that
 `group: { type: 'tag', name: ({ group }) => `${group}Controller` }`
 restores the v4 folder layout.
 
-## 11. Single-file output now needs output.mode
+## 12. Single-file output now needs output.mode
 v5 no longer infers a single file from an `output.path` that ends in `.ts`.
 For every plugin whose `output.path` points at a file (ends in `.ts`), add
 `mode: 'file'` to its `output` and keep the extension in the path:
@@ -435,6 +443,34 @@ kubb generate --reporter file
 :::
 
 The `kubb:debug` hook and the `createDebugger` helper go away with the flag. See [`kubb generate`](/docs/5.x/api/commands/generate) for the full flag list and [Diagnostics](/docs/5.x/reference/diagnostics) for the structured problem model the reporters render.
+
+### `output.override` removed
+
+The `output.override` boolean is gone, both on the root `output` and on each plugin's `output`. It was meant to skip files that already existed, but the v5 write path never read it, so it had no effect. Remove it from your config.
+
+To keep certain files from being written, supply a custom [storage](/docs/5.x/concepts/storage) that no-ops `setItem` for the paths you want to protect. The storage owns every write, so this is the single place that decides what lands on disk:
+
+```typescript [kubb.config.ts]
+import { defineConfig } from 'kubb' // [!code --]
+import { defineConfig, fsStorage } from 'kubb' // [!code ++]
+
+const base = fsStorage() // [!code ++]
+const protectedPaths = ['src/gen/.kubb/client.ts'] // [!code ++]
+
+export default defineConfig({
+  input: { path: './petStore.yaml' },
+  output: { path: './src/gen', override: false }, // [!code --]
+  output: { path: './src/gen' }, // [!code ++]
+  storage: { // [!code ++]
+    ...base, // [!code ++]
+    async setItem(path, source) { // [!code ++]
+      if (protectedPaths.some((p) => path.endsWith(p))) return // [!code ++]
+      return base.setItem(path, source) // [!code ++]
+    }, // [!code ++]
+  }, // [!code ++]
+  plugins: [],
+})
+```
 
 ## Shared plugin API
 

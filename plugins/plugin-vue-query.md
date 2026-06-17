@@ -383,43 +383,6 @@ export default defineConfig({
 
 :::
 
-#### output.override
-
-Lets the plugin overwrite hand-written files that share a name with a generated file.
-
-- `false` (default): Kubb skips a file if it already exists and is not marked as generated. This protects manual edits.
-- `true`: Kubb overwrites any file at the target path, including hand-written ones.
-
-|           |           |
-| --------: | :-------- |
-|     Type: | `boolean` |
-| Required: | `false`   |
-|  Default: | `false`   |
-
-> [!WARNING]
-> Enable this only when you are sure the target folder contains nothing you need to keep. Local edits are lost on the next generation.
-
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginVueQuery } from '@kubb/plugin-vue-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginVueQuery({
-      output: { override: true },
-    }),
-  ],
-})
-```
-
-:::
-
 ### group
 
 Splits generated files into subfolders by the operation's tag, so each tag gets its own directory. Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files go under `{output.path}/{groupName}/`, where `groupName` derives from the operation's first tag.
@@ -501,7 +464,7 @@ Mirrors a subset of `pluginClient` options. Set these here when the Vue composab
 
 |           |                                                                                          |
 | --------: | :--------------------------------------------------------------------------------------- |
-|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, bundle?, paramsCasing? }`  |
+|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, paramsCasing? }`  |
 | Required: | `false`                                                                                  |
 
 #### client.client
@@ -692,41 +655,6 @@ Style of the HTTP client that this plugin imports from `@kubb/plugin-client`.
 
 > [!WARNING]
 > Query plugins (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, `@kubb/plugin-svelte-query`, `@kubb/plugin-solid-query`) work only with `clientType: 'function'`. If you set `clientType: 'class'` here, the plugin falls back to generating its own inline function-based client instead of importing from `@kubb/plugin-client`.
-
-#### client.bundle
-
-Copies the HTTP client runtime into the generated output, so the consuming app does not depend on `@kubb/plugin-client` at runtime.
-
-- `false` (default): generated files import from `@kubb/plugin-client/clients/{client}`. Smaller diff, but the package must be a runtime dependency.
-- `true`: Kubb writes a `.kubb/client.ts` file with the client implementation. Generated code imports from that local file and the project no longer pulls `@kubb/plugin-client` at runtime.
-- Setting `client.importPath` overrides both behaviors and uses your custom client instead.
-
-|           |           |
-| --------: | :-------- |
-|     Type: | `boolean` |
-| Required: | `false`   |
-|  Default: | `false`   |
-
-::: code-group
-
-```typescript [Bundle the runtime]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginVueQuery } from '@kubb/plugin-vue-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginVueQuery({
-      client: { client: 'fetch', bundle: true },
-    }),
-  ],
-})
-```
-
-:::
 
 #### client.paramsCasing
 
@@ -1462,7 +1390,7 @@ A list of [macros](/docs/5.x/concepts/macros) applied to operation nodes before 
 
 ## Dependencies
 
-This plugin depends on [`@kubb/plugin-ts`](/plugins/plugin-ts), so add it to the plugins list. The composables call an HTTP client from `@kubb/plugin-client`, which the plugin imports or bundles for you, so a separate `@kubb/plugin-client` entry is optional.
+This plugin depends on [`@kubb/plugin-ts`](/plugins/plugin-ts), so add it to the plugins list. The composables call an HTTP client from `@kubb/plugin-client`, which the plugin bundles into the output for you, so a separate `@kubb/plugin-client` entry is optional.
 
 Set `parser` to `'zod'` and the plugin also depends on [`@kubb/plugin-zod`](/plugins/plugin-zod), which then has to be in the plugins list.
 
