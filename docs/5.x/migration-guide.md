@@ -430,17 +430,10 @@ The `--debug` flag and the `debug` value of `--logLevel` are gone. v5 renders a 
 | `json`            | A stable machine-readable report on stdout, for CI.                     |
 | `file`            | A log written to `.kubb/kubb-<timestamp>.log`. This replaces `--debug`. |
 
-::: code-group
-
-```shell [v4]
-kubb generate --debug
+```shell
+kubb generate --debug # [!code --]
+kubb generate --reporter file # [!code ++]
 ```
-
-```shell [v5]
-kubb generate --reporter file
-```
-
-:::
 
 The `kubb:debug` hook and the `createDebugger` helper go away with the flag. See [`kubb generate`](/docs/5.x/api/commands/generate) for the full flag list and [Diagnostics](/docs/5.x/reference/diagnostics) for the structured problem model the reporters render.
 
