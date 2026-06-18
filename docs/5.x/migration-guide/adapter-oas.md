@@ -7,7 +7,7 @@ description: Configuration changes for @kubb/adapter-oas when migrating from Kub
 
 Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). See the full option reference in [`@kubb/adapter-oas`](/adapters/adapter-oas).
 
-v4 made you repeat the same schema-level options on every plugin. In v5 they live on [`adapterOas`](/adapters/adapter-oas) and apply globally. Remove them from each plugin and set them once on the adapter.
+v4 repeated the same schema-level options on every plugin. In v5 they live on [`adapterOas`](/adapters/adapter-oas) and apply once across all plugins. Remove them from each plugin and set them on the adapter.
 
 | Option            | Removed from                              | v5 location                       |
 | ----------------- | ----------------------------------------- | --------------------------------- |
@@ -19,7 +19,7 @@ v4 made you repeat the same schema-level options on every plugin. In v5 they liv
 | `contentType`     | `plugin-ts`, `plugin-msw`                 | `adapterOas({ contentType })`     |
 
 > [!IMPORTANT]
-> The default value of `integerType` changed from `'number'` to `'bigint'`. OpenAPI `int64` fields now map to `bigint` by default. To keep the previous behavior, set `integerType: 'number'` explicitly on `adapterOas`.
+> The default `integerType` changed from `'number'` to `'bigint'`. OpenAPI `int64` fields now map to `bigint`. Set `integerType: 'number'` on `adapterOas` to keep the old output.
 
 ::: code-group
 
@@ -77,4 +77,4 @@ export default defineConfig({
 
 :::
 
-`pluginOas()` no longer belongs in `plugins`. Its `validate`, `serverIndex`, `serverVariables`, `discriminator`, and `contentType` options move to the same top-level `adapter` key. See [`@kubb/plugin-oas` removed](/docs/5.x/migration-guide#kubb-plugin-oas-removed) on the main guide.
+`pluginOas()` no longer belongs in `plugins`. Its `validate`, `serverIndex`, `serverVariables`, `discriminator`, and `contentType` options move to the same `adapter` key. See [`@kubb/plugin-oas` removed](/docs/5.x/migration-guide#kubb-plugin-oas-removed) on the main guide.

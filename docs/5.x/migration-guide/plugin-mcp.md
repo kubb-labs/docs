@@ -7,11 +7,11 @@ description: Changes for @kubb/plugin-mcp when migrating from Kubb v4 to v5.
 
 Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). For the full option reference, see [`@kubb/plugin-mcp`](/plugins/plugin-mcp).
 
-The plugin options stay the same. [`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) takes over from `transformers.name`.
+The plugin options stay the same. [`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`.
 
 ## Generated output
 
-Handlers take the MCP `RequestHandlerExtra` object as a second argument and forward it to the underlying client. Update existing tools to thread it through.
+Handlers take the MCP `RequestHandlerExtra` object as a second argument and forward it to the client. Update existing tools to thread it through.
 
 ```typescript
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types' // [!code --]

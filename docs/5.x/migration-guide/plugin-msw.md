@@ -7,11 +7,11 @@ description: Configuration and generated-output changes for @kubb/plugin-msw whe
 
 Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). For the full option reference, see [`@kubb/plugin-msw`](/plugins/plugin-msw).
 
-[`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) takes over from `transformers.name`. The `contentType` option moved to [`adapterOas`](/adapters/adapter-oas), covered in [Migration: @kubb/adapter-oas](/docs/5.x/migration-guide/adapter-oas). Every other option stays the same.
+[`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`. The `contentType` option moved to [`adapterOas`](/adapters/adapter-oas), covered in [Migration: @kubb/adapter-oas](/docs/5.x/migration-guide/adapter-oas). Every other option stays the same.
 
 ## Generated output
 
-Handlers are now typed against the request body and headers, and they take an `HttpResponseResolver` callback in place of an inline MSW handler signature.
+Handlers are now typed against the request body and headers. They take an `HttpResponseResolver` callback in place of an inline MSW handler signature.
 
 ```typescript
 import type { HttpResponseResolver } from 'msw' // [!code ++]
