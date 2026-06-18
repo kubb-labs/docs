@@ -204,8 +204,8 @@ export default defineConfig({
 
 How `discriminator` fields on `oneOf`/`anyOf` schemas are interpreted.
 
-- `'strict'` (default): child schemas stay exactly as written. The discriminator narrows types at the call site, but child shapes are not modified.
-- `'inherit'`: Kubb propagates the discriminator property with its literal value into each child schema, so each branch's `type` field is precisely typed.
+- `'strict'` (default) keeps child schemas exactly as written. The discriminator narrows types at the call site, but child shapes stay the same.
+- `'inherit'` propagates the discriminator property with its literal value into each child schema, so each branch's `type` field is precisely typed.
 
 |           |                         |
 | --------: | :---------------------- |
@@ -280,7 +280,7 @@ export type Animal = Cat | Dog
 
 Collapses structurally identical schemas and enums into one shared definition.
 
-When the same enum or object shape appears in multiple places, Kubb hoists it into a single named schema and replaces each duplicate with a `$ref`. Equality is shape-only: `description` and `example` fields are ignored. Set to `false` to keep every occurrence inline and produce output identical to earlier versions.
+When the same enum or object shape appears in multiple places, Kubb hoists it into a single named schema and replaces each duplicate with a `$ref`. Equality is shape-only, so `description` and `example` fields are ignored. Set to `false` to keep every occurrence inline and produce output identical to earlier versions.
 
 |           |           |
 | --------: | :-------- |
@@ -308,11 +308,11 @@ export default defineConfig({
 
 How `format: date-time` schemas are represented downstream.
 
-- `false`: fall through to a plain `string` (no validation).
-- `'string'` (default): datetime string (`z.string().datetime()`, ISO 8601).
-- `'stringOffset'`: datetime string with timezone offset.
-- `'stringLocal'`: local datetime string (no timezone).
-- `'date'`: JavaScript `Date` object. Best for client code, though it needs JSON parsing to revive.
+- `false` falls through to a plain `string` with no validation.
+- `'string'` (default) emits an ISO 8601 datetime string.
+- `'stringOffset'` emits a datetime string with a timezone offset.
+- `'stringLocal'` emits a local datetime string with no timezone.
+- `'date'` emits a JavaScript `Date`. Best for client code, though JSON needs parsing to revive it.
 
 |           |                                                                  |
 | --------: | :--------------------------------------------------------------- |
@@ -340,8 +340,8 @@ type CreatedAt = Date
 
 How `type: integer` (and `format: int64`) maps to TypeScript.
 
-- `'bigint'` (default): exact for 64-bit IDs, but `JSON.stringify`/`JSON.parse` cannot round-trip it. Use it only when you also handle bigint serialization explicitly.
-- `'number'`: fits most JSON APIs, and loses precision above `Number.MAX_SAFE_INTEGER`.
+- `'bigint'` (default) is exact for 64-bit IDs, but `JSON.stringify` and `JSON.parse` cannot round-trip it. Use it only when you handle bigint serialization yourself.
+- `'number'` fits most JSON APIs. It loses precision above `Number.MAX_SAFE_INTEGER`.
 
 |           |                        |
 | --------: | :--------------------- |
