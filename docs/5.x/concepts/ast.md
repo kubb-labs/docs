@@ -291,7 +291,7 @@ Lower-level helpers for parsers that turn the AST into source code:
 
 See [Concepts: Parsers](/docs/5.x/concepts/parsers) for how parsers consume printers.
 
-`defineDialect` is the adapter seam for spec-specific schema behavior and dedupe. It keeps the shared converters generic, so an adapter supplies only the questions that differ between specs. See [Adapters](/docs/5.x/concepts/adapters#schema-dispatch-and-dialects).
+`defineDialect` is the adapter seam for spec-specific schema behavior. It keeps the shared converters generic, so an adapter supplies only the questions that differ between specs. See [Adapters](/docs/5.x/concepts/adapters#schema-dispatch-and-dialects).
 
 ## Examples
 
