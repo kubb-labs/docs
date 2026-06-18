@@ -276,6 +276,49 @@ export type Animal = Cat | Dog
 
 :::
 
+### enums
+
+Where inline enums live.
+
+- `'inline'` (default) keeps each enum on the property that declares it.
+- `'root'` lifts every inline enum to a reusable top-level schema named after its context (for example `PetStatusEnum`) and references it wherever it appears.
+
+|           |                      |
+| --------: | :------------------- |
+|     Type: | `'inline' \| 'root'` |
+| Required: | `false`              |
+|  Default: | `'inline'`           |
+
+::: code-group
+
+```yaml [OpenAPI spec]
+openapi: 3.0.3
+components:
+  schemas:
+    Pet:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [active, inactive]
+```
+
+```typescript ['inline' (default)]
+export type Pet = {
+  status?: 'active' | 'inactive'
+}
+```
+
+```typescript ['root']
+export type PetStatusEnum = 'active' | 'inactive'
+
+export type Pet = {
+  status?: PetStatusEnum
+}
+```
+
+:::
+
 ### dateType
 
 How `format: date-time` schemas are represented downstream.
@@ -442,6 +485,7 @@ export default defineConfig({
     serverIndex: 0,
     serverVariables: { env: 'prod' },
     discriminator: 'inherit',
+    enums: 'root',
     dateType: 'date',
     integerType: 'number',
     unknownType: 'unknown',
