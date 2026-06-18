@@ -61,17 +61,14 @@ yarn add -D @kubb/parser-md@beta
 
 :::
 
-## Options
+## Frontmatter
 
-### frontmatter
-
-Set `frontmatter` on `file.meta` inside a plugin to have the parser prepend a YAML frontmatter block. Any serializable key-value object works.
+The parser takes no options of its own. To add a YAML frontmatter block, set `frontmatter` on a file's `meta` inside a plugin. The parser then prepends it to the output. Any serializable key-value object works.
 
 |           |                                   |
 | --------: | :-------------------------------- |
 |     Type: | `Record<string, unknown> \| null` |
 | Required: | `false`                           |
-|  Default: | `undefined`                       |
 
 ```typescript [plugin example]
 ast.factory.createFile({

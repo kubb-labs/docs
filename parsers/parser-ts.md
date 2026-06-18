@@ -35,9 +35,9 @@ resources:
 ---
 
 > [!TIP]
-> `@kubb/parser-ts` is bundled with Kubb and used automatically when no `parsers` option is set. Install it explicitly only when combining it with other parsers or providing a fully custom parser list.
+> `@kubb/parser-ts` ships with Kubb and runs by default. Install it on its own only when you set a custom `parsers` list or add other parsers next to it.
 
-`@kubb/parser-ts` takes the `FileNode` staged by your plugins and prints it as TypeScript source with the official [TypeScript compiler](https://www.typescriptlang.org/). It resolves import paths, deduplicates declarations, prints JSDoc, and rewrites extensions based on `output.extension`.
+`@kubb/parser-ts` takes the `FileNode` your plugins stage and prints it as TypeScript source with the official [TypeScript compiler](https://www.typescriptlang.org/). It resolves import paths, writes the import and export statements, prints JSDoc, and rewrites import extensions based on `output.extension`.
 
 The package exports two parsers:
 
@@ -66,19 +66,13 @@ yarn add -D @kubb/parser-ts@beta
 
 :::
 
-## Options
+## Import extensions
 
-### extname
+The parser is a ready-made object. You add it to the `parsers` list, and it takes no options of its own. To change the extension written into generated imports, set `output.extension` on `defineConfig`. The parser reads that map and rewrites each import path.
 
-Controls which extension is written into the generated import specifiers. Set `.js` for ESM-compatible output, `.tsx` for React projects. Leave unset for the TypeScript default.
+For example, `output.extension: { '.ts': '.js' }` turns `import { Pet } from './Pet'` into `import { Pet } from './Pet.js'`. Node's ESM resolver expects that `.js` suffix.
 
-To rewrite extensions in the generated source (e.g. `./foo` → `./foo.js`), use `output.extension` in `defineConfig`, not this option.
-
-|           |                                                |
-| --------: | :--------------------------------------------- |
-|     Type: | `'.ts' \| '.js' \| '.tsx' \| '.jsx' \| string` |
-| Required: | `false`                                        |
-|  Default: | `'.ts'`                                        |
+::: code-group
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -93,6 +87,12 @@ export default defineConfig({
   plugins: [],
 })
 ```
+
+```typescript [Generated import]
+import type { Pet } from './Pet.js'
+```
+
+:::
 
 ## Example
 
