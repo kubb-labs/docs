@@ -60,6 +60,26 @@ export default defineConfig({
 })
 ```
 
+## New: `regexType`
+
+Pick how an OpenAPI `pattern` is emitted inside `.regex(...)`. The default `'literal'` keeps a regex literal, while `'constructor'` switches to the `RegExp` constructor. Use the constructor form when a regex literal trips up your build pipeline or when you need the pattern as a string.
+
+```typescript twoslash [kubb.config.ts]
+import { defineConfig } from 'kubb'
+import { pluginZod } from '@kubb/plugin-zod'
+
+export default defineConfig({
+  input: { path: './petstore.yaml' },
+  output: { path: './src/gen' },
+  plugins: [pluginZod({ regexType: 'constructor' })],
+})
+```
+
+```typescript [Generated output]
+slug: z.string().regex(/^[a-z]+$/), // [!code --]
+slug: z.string().regex(new RegExp('^[a-z]+$')), // [!code ++]
+```
+
 ## Changed: inferred type names end with `Type`
 
 With `inferred: true`, the `z.infer<typeof schema>` alias now carries a `SchemaType` suffix. `petSchema` exports `PetSchemaType` instead of `PetSchema`.
