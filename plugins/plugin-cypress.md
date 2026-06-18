@@ -911,5 +911,3 @@ describe('Pet API', () => {
 ## See Also
 
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-cypress/CHANGELOG.md)
-</content>
-</invoke>
