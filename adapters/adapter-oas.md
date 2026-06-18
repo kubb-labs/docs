@@ -276,34 +276,6 @@ export type Animal = Cat | Dog
 
 :::
 
-### dedupe
-
-Collapses structurally identical schemas and enums into one shared definition.
-
-When the same enum or object shape appears in multiple places, Kubb hoists it into a single named schema and replaces each duplicate with a `$ref`. Equality is shape-only, so `description` and `example` fields are ignored. Set to `false` to keep every occurrence inline and produce output identical to earlier versions.
-
-|           |           |
-| --------: | :-------- |
-|     Type: | `boolean` |
-| Required: | `false`   |
-|  Default: | `true`    |
-
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { adapterOas } from '@kubb/adapter-oas'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  adapter: adapterOas({ dedupe: false }),
-  plugins: [],
-})
-```
-
-:::
-
 ### dateType
 
 How `format: date-time` schemas are represented downstream.
@@ -470,7 +442,6 @@ export default defineConfig({
     serverIndex: 0,
     serverVariables: { env: 'prod' },
     discriminator: 'inherit',
-    dedupe: true,
     dateType: 'date',
     integerType: 'number',
     unknownType: 'unknown',
