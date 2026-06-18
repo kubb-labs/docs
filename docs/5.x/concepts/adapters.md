@@ -191,7 +191,7 @@ Key options:
 | ------------- | ------------------------------------------------------- | -------- | --------------------------------------------------------------------- |
 | `validate`    | `boolean`                                               | `true`   | Run OpenAPI schema validation before parsing.                         |
 | `dateType`    | `'date' \| 'string' \| 'stringOffset' \| 'stringLocal'` | `'date'` | How `format: date`/`date-time` schemas are emitted in TypeScript.     |
-| `serverIndex` | `number`                                                | `0`      | Which `servers[]` entry to use as the base URL for client generation. |
+| `server`      | `{ index?: number; variables?: Record<string, string> }` | —        | Which `servers[]` entry to use as the base URL, and its variable overrides. |
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -200,7 +200,7 @@ import { adapterOas } from '@kubb/adapter-oas'
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
-  adapter: adapterOas({ validate: true, dateType: 'date', serverIndex: 0 }),
+  adapter: adapterOas({ validate: true, dateType: 'date', server: { index: 0 } }),
 })
 ```
 
