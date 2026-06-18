@@ -84,7 +84,7 @@ Write a `kubb.config.ts` that sets up the [MCP](https://modelcontextprotocol.io)
 > [!IMPORTANT]
 > Set a `baseURL` so the generated client knows which host to call.
 
-```typescript [kubb.config.ts] twoslash
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'
@@ -112,7 +112,7 @@ export default defineConfig({
 
 ## Generate MCP files
 
-```shell
+```shell [Terminal]
 npx kubb@beta generate
 ```
 
@@ -120,7 +120,7 @@ npx kubb@beta generate
 
 The `src/mcp` folder holds the files that build an [MCP server](https://modelcontextprotocol.io) and connect [Claude](https://claude.ai/download) to your API.
 
-```
+```text [Resulting tree]
 .
 ├── src/
 │   └── mcp/
@@ -173,7 +173,7 @@ This config registers an [MCP](https://modelcontextprotocol.io) server named `"S
 
 It runs the TypeScript server (`server.ts`) through `tsx`, so [MCP](https://modelcontextprotocol.io) handles tool calls over standard input and output.
 
-```JSON [src/mcp/mcp.json]
+```json [src/mcp/mcp.json]
 {
   "mcpServers": {
     "Swagger PetStore - OpenAPI 3.0": {
@@ -248,7 +248,7 @@ Copy the content of `src/mcp/mcp.json` so [Claude](https://claude.ai) picks up y
 
 For example:
 
-```JSON [~/Library/Application Support/Claude/claude_desktop_config.json]
+```json [~/Library/Application Support/Claude/claude_desktop_config.json]
 {
   "mcpServers": {
     "Swagger PetStore - OpenAPI 3.0": {

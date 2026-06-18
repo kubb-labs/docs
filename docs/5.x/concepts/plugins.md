@@ -228,7 +228,7 @@ export const pluginConsumer = definePlugin(() => ({
 
 A [macro](/docs/5.x/concepts/macros) is a named, composable transform that rewrites nodes before they reach this plugin's generators. Whatever a macro returns replaces the original node for that plugin only, so other plugins keep seeing the untransformed AST.
 
-```ts
+```typescript [Type definition]
 type Plugin<TFactory> = {
   // ...
   macros?: Array<ast.Macro>

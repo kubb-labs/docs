@@ -35,7 +35,7 @@ yarn add -D @kubb/cli@beta
 
 ## Usage
 
-```text
+```text [Terminal]
 USAGE kubb [COMMAND] [OPTIONS]
 
 COMMANDS

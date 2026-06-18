@@ -18,7 +18,7 @@ Copy the prompt below, paste it into any LLM ([Claude](https://claude.ai), [Chat
 
 ::: details Expand upgrade prompt
 
-```text
+```text [Upgrade prompt]
 You are migrating a kubb.config.ts from Kubb v4 to v5.
 Apply every rule below in order, then output the complete updated file.
 
@@ -399,7 +399,7 @@ With `group: { type: 'tag' }`, every plugin now writes each tag to a folder name
 
 Your config stays the same. Only the output folders change:
 
-```text
+```text [Output folders]
 v4: src/gen/clients/petController/  →  v5: src/gen/clients/pet/
 ```
 
@@ -430,7 +430,7 @@ The `--debug` flag and the `debug` value of `--logLevel` are gone. v5 renders a 
 | `json`            | A stable machine-readable report on stdout, for CI.                     |
 | `file`            | A log written to `.kubb/kubb-<name>-<timestamp>.log`. This replaces `--debug`. |
 
-```shell
+```shell [Terminal]
 kubb generate --debug # [!code --]
 kubb generate --reporter file # [!code ++]
 ```
@@ -559,7 +559,7 @@ pluginTs({
 
 When an OpenAPI operation declares multiple content types for its `requestBody`, v5 generates one type per content type plus a union alias. v4 used only the first content type.
 
-```typescript
+```typescript [Generated output]
 // plugin-ts output for an operation with application/json + multipart/form-data
 export type UploadFileJsonData = { url: string }
 export type UploadFileFormData = { file: Blob }
@@ -568,7 +568,7 @@ export type UploadFileData = UploadFileJsonData | UploadFileFormData
 
 The generated client exposes `contentType` as a typed literal union, defaulting to the first declared content type:
 
-```typescript
+```typescript [Generated output]
 uploadFile(petId, data, { contentType: 'multipart/form-data' })
 ```
 

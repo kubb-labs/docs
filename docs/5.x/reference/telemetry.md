@@ -52,13 +52,13 @@ Kubb never sends:
 
 `DO_NOT_TRACK` is a [standard cross-tool opt-out convention](https://consoledonottrack.com/). Many developer tools support it.
 
-```sh
+```shell [Terminal]
 DO_NOT_TRACK=1 kubb generate
 ```
 
 Add it to your shell profile (`~/.bashrc`, `~/.zshrc`, etc.) to disable telemetry permanently:
 
-```sh
+```shell [Terminal]
 export DO_NOT_TRACK=1
 ```
 
@@ -66,13 +66,13 @@ export DO_NOT_TRACK=1
 
 Kubb-specific opt-out flag:
 
-```sh
+```shell [Terminal]
 KUBB_DISABLE_TELEMETRY=1 kubb generate
 ```
 
 Or permanently via your shell profile:
 
-```sh
+```shell [Terminal]
 export KUBB_DISABLE_TELEMETRY=1
 ```
 

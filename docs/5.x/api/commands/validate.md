@@ -9,7 +9,7 @@ outline: [2, 3]
 
 Run `kubb validate` to check that a Swagger/OpenAPI document is valid without running the pipeline. Use it to catch errors early in CI or before you commit a spec change.
 
-```terminal
+```shell [Terminal]
 command: kubb validate -i ./petStore.yaml
 output:
   - ✅ Validation success
@@ -18,7 +18,7 @@ output:
 > [!IMPORTANT]
 > `@kubb/adapter-oas` is an optional dependency. Install it before you run this command:
 >
-> ```shell
+> ```shell [Terminal]
 > npm i @kubb/adapter-oas@beta
 > ```
 
@@ -26,13 +26,13 @@ output:
 
 Validate a local OpenAPI file:
 
-```shell
+```shell [Terminal]
 kubb validate -i ./petStore.yaml
 ```
 
 Validate a remote document:
 
-```shell
+```shell [Terminal]
 kubb validate -i https://petstore3.swagger.io/api/v3/openapi.json
 ```
 

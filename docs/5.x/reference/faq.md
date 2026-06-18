@@ -47,7 +47,7 @@ The CLI and generated code run on Bun with no extra configuration. Deno isn't of
 
 Re-run `kubb generate`. Use the [`clean`](/docs/5.x/reference/configuration#output-clean) option to remove stale files before each run.
 
-```sh
+```shell [Terminal]
 npx kubb@beta generate
 ```
 
@@ -63,7 +63,7 @@ Yes. Each plugin exposes a `resolver` option to rename operations and types. It 
 
 Yes. Pass an array to `defineConfig`. Each entry has its own `input`, `output`, and `plugins`.
 
-```ts twoslash [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 
 export default defineConfig([

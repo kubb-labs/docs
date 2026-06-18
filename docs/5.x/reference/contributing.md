@@ -26,20 +26,20 @@ The monorepo at [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb) holds ever
 
 ### 1. Fork and clone
 
-```bash
+```shell [Terminal]
 gh repo fork kubb-labs/kubb --clone
 cd kubb
 ```
 
 ### 2. Install dependencies
 
-```bash
+```shell [Terminal]
 pnpm install
 ```
 
 ### 3. Create a branch
 
-```bash
+```shell [Terminal]
 git checkout -b feat/your-feature-name
 ```
 
@@ -47,13 +47,13 @@ git checkout -b feat/your-feature-name
 
 Run a single package in watch mode:
 
-```bash
+```shell [Terminal]
 pnpm -F @kubb/core dev
 ```
 
 Run the test suite:
 
-```bash
+```shell [Terminal]
 pnpm run test
 ```
 
@@ -77,7 +77,7 @@ pnpm run test
 
 Run these locally before pushing. CI runs the same commands.
 
-```bash
+```shell [Terminal]
 pnpm run typecheck
 pnpm run lint
 pnpm run test
@@ -102,7 +102,7 @@ Official plugins ship under `@kubb/plugin-*`. First, [open an issue](https://git
 
 Kubb uses [Vitest](https://vitest.dev/). Place each test file next to the source file it tests.
 
-```ts
+```typescript [resolverExample.test.ts]
 import { describe, expect, it } from 'vitest'
 import { resolverExample } from './resolverExample.ts'
 
@@ -116,7 +116,7 @@ describe('resolverExample', () => {
 
 Run tests for a single package:
 
-```bash
+```shell [Terminal]
 pnpm -F @kubb/core test
 ```
 
@@ -126,7 +126,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/): `feat:`, `f
 
 Add a [changeset](https://github.com/changesets/changesets) for any change that ships in a published package:
 
-```bash
+```shell [Terminal]
 pnpm run changeset
 ```
 

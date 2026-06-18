@@ -32,7 +32,7 @@ Each plugin runs against the AST and can fail on a specific schema or operation.
 
 `ctx.error` reports a `KUBB_PLUGIN_FAILED` and fails the build. For a structured diagnostic with a stable code and a source pointer, call `Diagnostics.report(...)` or throw a `DiagnosticError` instead.
 
-```typescript
+```typescript [plugin.ts]
 import { Diagnostics, type Diagnostic } from '@kubb/core'
 
 const diagnostic: Diagnostic = {
@@ -48,7 +48,7 @@ Diagnostics.report(diagnostic)
 
 ## Example output
 
-```txt
+```text [Terminal]
 [KUBB_PLUGIN_FAILED] @kubb/plugin-ts: Cannot generate type for operation getPetById.
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-plugin-failed
 ```

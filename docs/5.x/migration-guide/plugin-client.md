@@ -11,7 +11,7 @@ Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). See the full
 
 Class clients (`clientType: 'class'`, `clientType: 'staticClass'`, and `sdk`) now name each tag class with a `Client` suffix. A `pet` tag generates `class PetClient` instead of `class Pet`. The old name collided with the schema model of the same name, so the barrel re-exported both and `tsc` failed with `TS2300: Duplicate identifier`. The suffix keeps the class and the model apart.
 
-```ts
+```typescript [Generated output]
 // Before
 export class Pet { /* ... */ }
 
@@ -21,7 +21,7 @@ export class PetClient { /* ... */ }
 
 To keep the previous names, override `resolveGroupName` on the `resolver` option. `this` is bound to the full resolver, so `this.resolveClassName` restores the old behavior.
 
-```ts
+```typescript [v5 kubb.config.ts]
 pluginClient({
   clientType: 'class',
   resolver: {
@@ -34,7 +34,7 @@ pluginClient({
 
 The `bundle` option is removed. The selected `client` always bundles into `.kubb/client.ts`, the behavior `bundle: true` used to opt into. Drop `bundle` from your config, and from the `client` sub-option of `plugin-react-query`, `plugin-vue-query`, `plugin-swr`, and `plugin-mcp`. To import the client from an external module instead of bundling it, set [`importPath`](/plugins/plugin-client#importpath).
 
-```diff
+```diff [Diff]
   pluginClient({
     client: 'fetch',
 -   bundle: true,
@@ -63,7 +63,7 @@ The naming scheme drops the `Mutation` infix and groups status responses under `
 
 The single `AddPetMutation` aggregate is replaced by three explicit types:
 
-```typescript
+```typescript [Generated output]
 export type AddPetRequestConfig = {
   data?: AddPetData
   pathParams?: never
@@ -82,7 +82,7 @@ export type AddPetResponse = AddPetStatus200 | AddPetStatus405
 
 The same pattern for a GET operation:
 
-```typescript
+```typescript [Generated output]
 export type GetPetQueryParams = { limit?: number; offset?: number }
 export type GetPetRequestConfig = {
   data?: never
@@ -101,7 +101,7 @@ This naming pattern applies across all HTTP methods, and `plugin-react-query`, `
 
 The generic on the generated client function now references the union of `2xx` response status types (`AddPetStatus200`) instead of the full response alias (`AddPetResponse`). The returned `Promise` resolves to the success body only. Non-`2xx` responses surface through the client's error path.
 
-```diff
+```diff [Diff]
 - const res = await request<AddPetResponse, ResponseErrorConfig<AddPetStatus405>, AddPetData>({ ... })
 + const res = await request<AddPetStatus200, ResponseErrorConfig<AddPetStatus405>, AddPetData>({ ... })
 ```
@@ -116,13 +116,13 @@ The HTTP client runtime exports its request function as `client` for both the `a
 
 Generated code imports the runtime as a default import, so most projects need no changes. Rename the named export to `client` if you import the request function that way.
 
-```diff
+```diff [Diff]
 - import { fetch } from '@kubb/plugin-client/clients/fetch'
 + import { client } from '@kubb/plugin-client/clients/fetch'
 ```
 
 The default import can still bind to any local name.
 
-```typescript
+```typescript [Update imports]
 import client from '@kubb/plugin-client/clients/fetch'
 ```

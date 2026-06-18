@@ -20,7 +20,7 @@ The adapter turns your spec into the AST that plugins generate from. It has to b
 
 Set `adapter` in `kubb.config.ts`.
 
-```typescript twoslash
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { adapterOas } from '@kubb/adapter-oas'
 
@@ -34,7 +34,7 @@ export default defineConfig({
 
 ## Example output
 
-```txt
+```text [Terminal]
 [KUBB_ADAPTER_REQUIRED]: An adapter is required, but none is configured.
   fix: Set `adapter` in kubb.config.ts (for example `adapterOas()`).
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-adapter-required

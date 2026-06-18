@@ -9,7 +9,7 @@ outline: [2, 3]
 
 Run `kubb init` for an interactive setup wizard. Answer a few questions and Kubb creates a `package.json` if one is missing, installs your chosen plugins, and writes a ready-to-use `kubb.config.ts`.
 
-```terminal
+```shell [Terminal]
 command: npx kubb@beta init
 output:
   - ◆  Kubb Init
@@ -29,7 +29,7 @@ output:
 
 Run the command in the directory where your Kubb project lives:
 
-```shell
+```shell [Terminal]
 npx kubb@beta init
 ```
 
@@ -62,19 +62,19 @@ Each flag skips only its own prompt and works alongside `--yes`. Pass all three 
 
 Run with the defaults and no prompts:
 
-```shell
+```shell [Terminal]
 npx kubb@beta init --yes
 ```
 
 Run with no prompts and a specific spec, output directory, and plugins:
 
-```shell
+```shell [Terminal]
 npx kubb@beta init --input ./openapi.yaml --output ./src/gen --plugins plugin-ts,plugin-zod
 ```
 
 Pass a plugin selection but still prompt for the spec path:
 
-```shell
+```shell [Terminal]
 npx kubb@beta init --plugins plugin-ts,plugin-client,plugin-react-query
 ```
 

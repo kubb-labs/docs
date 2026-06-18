@@ -12,7 +12,7 @@ Level: info
 
 A newer Kubb version is published on npm than the one running.
 
-```txt
+```text [Terminal]
 [KUBB_UPDATE_AVAILABLE] Update available: v5.0.0 → v5.1.0. Run `npm install -g @kubb/cli` to update.
 ```
 
@@ -24,13 +24,13 @@ Before generating, the CLI checks npm for a newer release. When one exists, it r
 
 Update the `@kubb/*` packages to pick up the latest fixes.
 
-```shell
+```shell [Terminal]
 npm install -g @kubb/cli@beta
 ```
 
 Update the per-project plugins through your package manager as well, for example.
 
-```shell
+```shell [Terminal]
 npm install @kubb/adapter-oas@beta @kubb/plugin-ts@beta
 ```
 

@@ -73,11 +73,11 @@ export default defineConfig({
 > [!TIP]
 > Set `constCasing: 'pascalCase'` with `typeSuffix: ''` to emit a const and a type that share the schema's exact name. Most hand-written codebases use this convention, so existing annotations and value references keep working.
 >
-> ```typescript
+> ```typescript [v5 kubb.config.ts]
 > pluginTs({ enum: { type: 'asConst', constCasing: 'pascalCase', typeSuffix: '' } })
 > ```
 >
-> ```typescript
+> ```typescript [Generated output]
 > export const VehicleType = {
 >   Sedan: 'Sedan',
 >   SUV: 'SUV',
@@ -92,7 +92,7 @@ export default defineConfig({
 
 v5 emits a `const`-asserted object plus a `*Key` type union. This drops the runtime cost of a TypeScript `enum` and stays tree-shakeable.
 
-```typescript
+```typescript [Generated output]
 export enum ParamsStatusEnum { // [!code --]
 export enum orderParamsStatusEnum { // [!code ++]
   placed = 'placed',
@@ -110,7 +110,7 @@ Enum names are now operation-scoped (`orderParamsStatusEnum`, `customerParamsSta
 
 `adapterOas` defaults `integerType` to `'bigint'`, so OpenAPI fields with `format: int64` generate `bigint` instead of `number`.
 
-```diff
+```diff [Diff]
 - petId?: number
 + petId?: bigint
 ```
@@ -121,7 +121,7 @@ Set `integerType: 'number'` on `adapterOas` to restore the previous output.
 
 v5 writes the known TypeScript trick to keep IntelliSense suggestions.
 
-```diff
+```diff [Diff]
 - status?: 'accepted' | string
 + status?: 'accepted' | (string & {})
 ```
@@ -134,7 +134,7 @@ The format suffix drops off the `@type` tag (`@type integer | undefined, int64` 
 
 Fields shared by every variant of a `oneOf`/`anyOf` move into a common object:
 
-```diff
+```diff [Diff]
 - export type Pet =
 -   | { id?: number; name: string; status?: StatusEnum; ... }
 -   | { id?: number; name: string; status?: StatusEnum; ... }

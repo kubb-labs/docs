@@ -20,26 +20,26 @@ The fastest way to install the skills is the [`skills` CLI](https://www.skills.s
 your project root. It auto-detects your installed agents, including Claude Code, Cursor, Codex,
 Windsurf, and Cline:
 
-```shell
+```shell [Terminal]
 npx skills add kubb-labs/kubb
 ```
 
 Pick a single skill instead of the full set with the `--skill` flag:
 
-```shell
+```shell [Terminal]
 npx skills add kubb-labs/kubb --skill config
 ```
 
 Pass `-g` to install user-wide instead of per-project. Pass `-y` to skip the interactive picker:
 
-```shell
+```shell [Terminal]
 npx skills add kubb-labs/kubb -g -y
 ```
 
 Claude Code users can also install the skills through the plugin marketplace. This adds the slash
 commands and the agent at the same time:
 
-```shell
+```shell [Terminal]
 /plugin marketplace add kubb-labs/kubb
 /plugin install kubb@kubb
 ```

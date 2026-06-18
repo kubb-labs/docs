@@ -23,14 +23,14 @@ answer questions about Kubb without inventing outdated or missing details.
 Most chat interfaces let you attach a URL or paste text. Use the full file when you need complete
 documentation coverage:
 
-```
+```text [Prompt]
 Read https://kubb.dev/llms-full.txt and answer questions about Kubb.
 ```
 
 For models with a small context window, use the index file. Ask the assistant to fetch individual
 pages on demand:
 
-```
+```text [Prompt]
 Use https://kubb.dev/llms.txt to find relevant pages, then read them.
 ```
 

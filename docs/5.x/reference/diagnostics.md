@@ -10,7 +10,7 @@ outline: [2, 3]
 When a build fails, Kubb prints a diagnostic. It carries a stable code, the message, the location in
 your document, and a suggested fix. The CLI leads with the code and lists the details below it:
 
-```txt
+```text [Terminal]
 [KUBB_REF_NOT_FOUND] @kubb/plugin-zod: Could not find a definition for #/components/schemas/Pet.
   at: #/components/schemas/Pet
   fix: Add the schema under components.schemas, or fix the $ref.
@@ -102,7 +102,7 @@ summary and notices, not the diagnostic log.
 `kubb generate --reporter json` prints a stable report to stdout. CI can read diagnostics without
 scraping the terminal:
 
-```json
+```json [Report]
 {
   "name": "",
   "status": "failed",

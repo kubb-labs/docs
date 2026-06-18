@@ -21,7 +21,7 @@ A plugin was given options that cannot be honored together. The main case is `ou
 - Remove the `group` option when you want a single file.
 - Or switch to `output.mode: 'directory'` (the default, one file per operation or schema) and keep `group` to organize that output into subdirectories.
 
-```typescript twoslash
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 
@@ -43,7 +43,7 @@ export default defineConfig({
 
 ## Example output
 
-```txt
+```text [Terminal]
 [KUBB_INVALID_PLUGIN_OPTIONS] plugin-client: Plugin "plugin-client" sets `output.mode: 'file'` but also configures a `group` option.
   fix: A single-file output has nothing to group. Remove the `group` option, or use `output.mode: 'directory'` to organize files into subdirectories.
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-invalid-plugin-options

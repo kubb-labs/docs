@@ -30,7 +30,7 @@ When `output.lint` is set, Kubb runs the configured linter (oxlint, biome, or es
 
 ## Example output
 
-```txt
+```text [Terminal]
 [KUBB_LINT_FAILED]: linter failed
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-lint-failed
 ```

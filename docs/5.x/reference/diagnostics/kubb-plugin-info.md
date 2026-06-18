@@ -26,7 +26,7 @@ It is informational, so no action is required.
 
 ## Example output
 
-```txt
+```text [Terminal]
 [KUBB_PLUGIN_INFO] @kubb/plugin-client: Using fetch as the HTTP client.
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-plugin-info
 ```

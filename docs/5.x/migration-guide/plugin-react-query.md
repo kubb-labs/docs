@@ -15,7 +15,7 @@ Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). For the full
 
 The exported `*MutationKey` type alias is gone. Use the runtime helper when you need the key:
 
-```diff
+```diff [Diff]
 - export type CreateUserMutationKey = ReturnType<typeof createUserMutationKey>
 - export const createUserMutationKey = () => [{ url: '/user' }] as const
 + export const createUserMutationKey = () => [{ url: '/user' }] as const
@@ -26,7 +26,7 @@ The exported `*MutationKey` type alias is gone. Use the runtime helper when you 
 The `TData` generic on `useMutation`, `useQuery`, `useInfiniteQuery`, `useSuspenseQuery`, and their `*Options` helpers now points at the union of `2xx` response status types instead of the full response alias. That matches TanStack Query's contract, where `TData` is the resolved success value and errors flow through `TError`.
 
 
-```diff
+```diff [Diff]
   export function useAddPet<TContext>(
     options: {
       mutation?: MutationObserverOptions<
@@ -43,7 +43,7 @@ The `TData` generic on `useMutation`, `useQuery`, `useInfiniteQuery`, `useSuspen
 
 Call sites that previously needed `as` casts or `'id' in res` checks compile directly:
 
-```ts
+```typescript [Generated output]
 const pet = await mutateAsync({ data: { name: 'Rex' } })
 pet.id // typed as Pet.id, no narrowing required
 ```
@@ -56,7 +56,7 @@ The change covers `queryFn`, `queryOptions`, and the hook generics together. No 
 
 v5 makes those parameters optional in the generated `queryKey`, `queryOptions`, and hook signatures. The `queryFn` calls the client with a non-null assertion. The `enabled` guard stays the same.
 
-```diff
+```diff [Diff]
 - export function getPetByIdQueryOptions({ petId }: { petId: GetPetByIdPathPetId }, config: Partial<RequestConfig> & { client?: Client } = {}) {
 + export function getPetByIdQueryOptions({ petId }: { petId?: GetPetByIdPathPetId } = {}, config: Partial<RequestConfig> & { client?: Client } = {}) {
     const queryKey = getPetByIdQueryKey({ petId })
@@ -73,7 +73,7 @@ v5 makes those parameters optional in the generated `queryKey`, `queryOptions`, 
 
 You can now pass a value that is not ready yet, such as a route param or the result of a dependent query, and let the existing guard keep the query disabled until it resolves:
 
-```ts
+```typescript [Generated output]
 // type-checks in v5; the query stays disabled until petId is defined
 useGetPetById({ petId: route.params.petId })
 ```

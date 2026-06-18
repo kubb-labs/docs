@@ -513,7 +513,7 @@ The callback receives a `node` and the active `casing`. `node` is the operation'
 
 Build a key from the operation's first tag plus its path parameters. For a `GET /user/{username}` operation with the `user` tag, this generates:
 
-```typescript twoslash
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
@@ -532,7 +532,7 @@ export default defineConfig({
 })
 ```
 
-```typescript
+```typescript [Generated output]
 export const getUserByNameQueryKey = ({ username }: { username: GetUserByNamePathParams['username'] }) => ['user', username] as const
 ```
 
@@ -540,7 +540,7 @@ export const getUserByNameQueryKey = ({ username }: { username: GetUserByNamePat
 
 Prepend a fixed version segment in front of the path:
 
-```typescript twoslash
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
@@ -555,7 +555,7 @@ export default defineConfig({
 })
 ```
 
-```typescript
+```typescript [Generated output]
 export const findPetsByTagsQueryKey = (params?: FindPetsByTagsQueryParams) => ['v5', '/pet/findByTags'] as const
 ```
 

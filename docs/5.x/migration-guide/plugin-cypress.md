@@ -13,7 +13,7 @@ The plugin options stay the same. [`resolver.resolveName`](/docs/5.x/migration-g
 
 Two things change. HTTP method constants are now uppercase (`'post'` becomes `'POST'`), and imports follow the new `*Data` / `*Response` naming.
 
-```diff
+```diff [Diff]
 - import type { AddPetMutationRequest, AddPetMutationResponse } from '../../models/AddPet.ts'
 - export function addPet(data: AddPetMutationRequest): Cypress.Chainable<AddPetMutationResponse> {
 -   return cy.request<AddPetMutationResponse>({

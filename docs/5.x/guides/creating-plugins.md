@@ -75,7 +75,7 @@ export default defineConfig({
 
 Run the CLI to see it work:
 
-```bash
+```shell [Terminal]
 kubb generate
 ```
 
@@ -83,7 +83,7 @@ kubb generate
 
 Every official Kubb plugin uses the same layout, one folder per concern: `generators/`, `resolvers/`, `components/`, and `templates/`. The reference implementation is [`@kubb/plugin-client`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-client). Mirror it so other contributors find their way around:
 
-```
+```text [Resulting tree]
 kubb-plugin-example/
 ├── src/
 │   ├── index.ts              # Public exports (factory, generators, resolvers, types)
@@ -107,7 +107,7 @@ kubb-plugin-example/
 
 Scaffold the directories:
 
-```bash
+```shell [Terminal]
 mkdir kubb-plugin-example && cd kubb-plugin-example
 npm init -y
 npm install --save-peer @kubb/core@beta @kubb/ast@beta
@@ -142,7 +142,7 @@ export const pluginExampleName = 'plugin-example' satisfies Plugin['name']
 
 Four files form the skeleton. Read them in this order: types first, then the implementation, then the public entry point.
 
-```typescript twoslash
+```typescript twoslash [Plugin anatomy]
 // @filename: src/types.ts
 import type { PluginFactoryOptions } from '@kubb/core'
 
@@ -513,7 +513,7 @@ await kubb.build()
 
 Peer-depend on `@kubb/core` and `@kubb/ast` at v5 to keep the runtime out of your bundle. List them under `devDependencies` too, for local builds.
 
-```json
+```json [package.json]
 {
   "name": "kubb-plugin-example",
   "version": "1.0.0",
@@ -563,14 +563,14 @@ Before you publish, run through the checklist:
 
 See the [npm publishing docs](https://docs.npmjs.com/cli/v11/commands/npm-publish) for the full workflow:
 
-```bash
+```shell [Terminal]
 npm login
 npm publish --access public
 ```
 
 ### tsconfig.json
 
-```json
+```json [tsconfig.json]
 {
   "compilerOptions": {
     "target": "ES2022",
