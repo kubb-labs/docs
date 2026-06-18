@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # `kubb validate`
 
-Checks that your Swagger/OpenAPI document is valid without running the full code-generation pipeline. Use it to catch syntax errors early in CI or before committing a spec change.
+Run `kubb validate` to check that a Swagger/OpenAPI document is valid without running the pipeline. Use it to catch errors early in CI or before you commit a spec change.
 
 ```terminal
 command: kubb validate -i ./petStore.yaml
@@ -16,7 +16,7 @@ output:
 ```
 
 > [!IMPORTANT]
-> `@kubb/adapter-oas` is an optional peer dependency. Install it before running this command:
+> `@kubb/adapter-oas` is an optional dependency. Install it before you run this command:
 >
 > ```shell
 > npm i @kubb/adapter-oas@beta
@@ -43,7 +43,7 @@ kubb validate -i https://petstore3.swagger.io/api/v3/openapi.json
 | `--input=<path>`, `-i <path>` |         | `true`   | Path or URL to the Swagger/OpenAPI document to validate. |
 
 > [!TIP]
-> `kubb validate` exits with a non-zero status code on failure, so you can use it as a pre-commit hook or CI step to fail the build when the spec is invalid.
+> `kubb validate` exits with a non-zero status code when the spec is invalid. Use it as a pre-commit hook or CI step to fail the build.
 
 ## See also
 

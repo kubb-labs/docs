@@ -7,44 +7,44 @@ outline: [2, 3]
 
 # `kubb init`
 
-The interactive setup wizard. Answer a few questions and Kubb creates a `package.json` if one is missing, installs your chosen plugins, and writes a ready-to-use `kubb.config.ts`.
+Run `kubb init` for an interactive setup wizard. Answer a few questions and Kubb creates a `package.json` if one is missing, installs your chosen plugins, and writes a ready-to-use `kubb.config.ts`.
 
 ```terminal
 command: npx kubb@beta init
 output:
-  - ◆  Welcome to Kubb!
-  - ◇  Where is your OpenAPI spec?
+  - ◆  Kubb Init
+  - ◇  Detected package manager: pnpm
+  - ◇  Where is your OpenAPI specification located?
   - │  ./openapi.yaml
-  - ◇  Where should generated files go?
+  - ◇  Where should the generated files be output?
   - │  ./src/gen
-  - ◇  Which plugins do you want?
+  - ◇  Select plugins to use:
   - │  plugin-ts, plugin-client, plugin-zod
-  - ◇  Package manager?
-  - │  pnpm
-  - ◇  Installing dependencies…
+  - ◇  Installed 4 packages
   - ◇  Created kubb.config.ts
-  - ◇  All set — run `pnpm kubb generate` to start generating.
+  - ◇  All set! Run `npx kubb generate` to start generating.
 ```
 
 ## Usage
 
-Run the command in the directory where you want your Kubb project to live:
+Run the command in the directory where your Kubb project lives:
 
 ```shell
 npx kubb@beta init
 ```
 
-The wizard prompts for:
+The wizard prompts for three things:
 
-- The path to your OpenAPI/Swagger spec (local file or URL).
+- The path to your OpenAPI/Swagger spec, a local file or a URL.
 - The output directory for generated files.
-- Which [plugins](/plugins) to install (clients, hooks, validators, mocks, and more).
-- Your preferred package manager (`bun`, `pnpm`, `npm`, or `yarn`).
+- Which [plugins](/plugins) to install, such as clients, hooks, validators, and mocks.
+
+Kubb detects the package manager (`bun`, `pnpm`, `npm`, or `yarn`) from your project, so it does not prompt for one.
 
 When the wizard finishes, you have:
 
 - A `kubb.config.ts` wired up with the plugins you selected.
-- A `package.json` with `kubb` and the chosen plugins added as dev dependencies.
+- A `package.json` with `kubb` and the chosen plugins added as dependencies.
 - All selected dependencies installed.
 
 ## Options
@@ -52,21 +52,21 @@ When the wizard finishes, you have:
 | Option           | Default | Description                                                                                                                                                                                                                                                         |
 | ---------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `--yes`, `-y`    | `false` | Skip all prompts and use the default values.                                                                                                                                                                                                                        |
-| `--input`, `-i`  | —       | Path to the OpenAPI specification (local file or URL). Bypasses the spec path prompt.                                                                                                                                                                               |
-| `--output`, `-o` | —       | Output directory for generated files. Bypasses the output directory prompt.                                                                                                                                                                                         |
-| `--plugins`      | —       | Comma-separated list of plugins to install. Bypasses the plugin selection prompt. Valid values: `plugin-ts`, `plugin-client`, `plugin-react-query`, `plugin-vue-query`, `plugin-zod`, `plugin-faker`, `plugin-msw`, `plugin-cypress`, `plugin-mcp`, `plugin-redoc`. |
+| `--input`, `-i`  |         | Path to the OpenAPI specification (local file or URL). Bypasses the spec path prompt.                                                                                                                                                                               |
+| `--output`, `-o` |         | Output directory for generated files. Bypasses the output directory prompt.                                                                                                                                                                                         |
+| `--plugins`      |         | Comma-separated list of plugins to install. Bypasses the plugin selection prompt. Valid values: `plugin-ts`, `plugin-client`, `plugin-react-query`, `plugin-vue-query`, `plugin-zod`, `plugin-faker`, `plugin-msw`, `plugin-cypress`, `plugin-mcp`, `plugin-redoc`. |
 
-Each flag bypasses only its specific prompt and composes freely with `--yes`. Providing all three non-boolean flags runs the wizard completely non-interactively without needing `--yes`.
+Each flag skips only its own prompt and works alongside `--yes`. Pass all three value flags and the wizard runs without any prompts, no `--yes` needed.
 
 ## Examples
 
-Initialize non-interactively with the defaults:
+Run with the defaults and no prompts:
 
 ```shell
 npx kubb@beta init --yes
 ```
 
-Initialize fully non-interactively with a specific spec, output directory, and plugins:
+Run with no prompts and a specific spec, output directory, and plugins:
 
 ```shell
 npx kubb@beta init --input ./openapi.yaml --output ./src/gen --plugins plugin-ts,plugin-zod
@@ -79,7 +79,7 @@ npx kubb@beta init --plugins plugin-ts,plugin-client,plugin-react-query
 ```
 
 > [!TIP]
-> To wire things up by hand instead, see the [Installation](/docs/5.x/getting-started/installation) guide for a manual setup walkthrough.
+> Prefer to wire things up by hand? See the [Installation](/docs/5.x/getting-started/installation) guide for a manual walkthrough.
 
 ## See also
 

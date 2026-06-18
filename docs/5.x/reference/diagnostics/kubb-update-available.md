@@ -18,18 +18,17 @@ A newer Kubb version is published on npm than the one running.
 
 ## What happened
 
-Before generating, the CLI checks npm for a newer release. When one exists, it reports this notice.
-It is informational, so it never fails the build. The check is skipped when you are offline.
+Before generating, the CLI checks npm for a newer release. When one exists, it reports this notice. It is informational and never fails the build. The check is skipped when you are offline.
 
 ## How to fix it
 
-Update the `@kubb/*` packages to pick up the latest fixes:
+Update the `@kubb/*` packages to pick up the latest fixes.
 
 ```shell
 npm install -g @kubb/cli@beta
 ```
 
-Update the per-project plugins through your package manager as well, for example:
+Update the per-project plugins through your package manager as well, for example.
 
 ```shell
 npm install @kubb/adapter-oas@beta @kubb/plugin-ts@beta

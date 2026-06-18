@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Core API
 
-`@kubb/core` is the foundation of Kubb. It exports the primitives you need to embed Kubb in your own code, write a plugin, build a storage backend, or extend the generation pipeline.
+`@kubb/core` is the foundation of Kubb. It exports the primitives for embedding Kubb in your own code, writing a plugin, building a storage backend, or extending the generation pipeline.
 
 ::: code-group
 
@@ -30,7 +30,7 @@ yarn add -D @kubb/core@beta
 :::
 
 > [!TIP]
-> Most users do not install `@kubb/core` directly. The top-level [`kubb`](https://www.npmjs.com/package/kubb) package re-exports it with `adapterOas` and `parserTs` pre-installed. Use `@kubb/core` directly when embedding Kubb programmatically or writing a plugin.
+> Most users do not install `@kubb/core` directly. The top-level [`kubb`](https://www.npmjs.com/package/kubb) package re-exports it with `adapterOas` and the default parsers pre-installed. Use `@kubb/core` directly when embedding Kubb programmatically or writing a plugin.
 
 ```typescript twoslash
 import { defineConfig } from 'kubb'
@@ -64,7 +64,7 @@ import {
 
 ### `defineConfig`
 
-`defineConfig` is the primary way to add TypeScript type-checking to a `kubb.config.ts` file. It is exported from the `kubb` package (not `@kubb/core`) and automatically applies production-ready defaults: [`adapterOas`](/docs/5.x/concepts/adapters) as the adapter, `[parserTs, parserTsx, parserMd]` as parsers, and `[pluginBarrel()]` as a post-enforced plugin.
+`defineConfig` adds TypeScript type-checking to a `kubb.config.ts` file. It comes from the `kubb` package, not `@kubb/core`. It fills in defaults for any field you omit.
 
 ```typescript twoslash
 import { defineConfig } from 'kubb'
@@ -75,7 +75,7 @@ export default defineConfig({
 })
 ```
 
-The function form receives the [CLI options](/docs/5.x/api/commands/) at runtime, which lets you toggle behavior based on flags like `--watch`:
+It accepts a config object, an array of configs, a Promise, or a function. The function form receives the [CLI options](/docs/5.x/api/commands/) at runtime, so you can toggle behavior on flags like `--watch`:
 
 ```typescript twoslash
 import { defineConfig } from 'kubb'
@@ -86,11 +86,24 @@ export default defineConfig(({ watch }) => ({
 }))
 ```
 
+#### Defaults applied for omitted fields
+
+| Field            | Default                                  |
+| ---------------- | ---------------------------------------- |
+| `root`           | `process.cwd()`                          |
+| `adapter`        | [`adapterOas()`](/docs/5.x/concepts/adapters) |
+| `parsers`        | `[parserTs, parserTsx, parserMd]`        |
+| `reporters`      | `[cliReporter, jsonReporter, fileReporter]` |
+| `plugins`        | `pluginBarrel()` appended when not already present |
+| `output.barrel`  | `{ type: 'named' }`, only when `pluginBarrel` is in `plugins` |
+| `output.format`  | `false`                                  |
+| `output.lint`    | `false`                                  |
+
 > [!IMPORTANT]
 > `defineConfig` is only exported from the `kubb` package. The `@kubb/core` package exports the raw `UserConfig` type but does not provide a `defineConfig` with defaults.
 
 > [!TIP]
-> The `output.barrel` default of `{ type: 'named' }` applies only when `pluginBarrel` is present in `plugins`. Configs that omit it leave barrel generation untouched.
+> The `output.barrel` default of `{ type: 'named' }` applies only when `pluginBarrel` is present in `plugins`. A plugins list without `pluginBarrel` leaves barrel generation untouched.
 
 #### Related
 
@@ -102,11 +115,11 @@ export default defineConfig(({ watch }) => ({
 
 ### `createKubb`
 
-`createKubb` is the entry point for driving Kubb from your own code. It accepts a `UserConfig` and returns a `Kubb` instance. Calling `.build()` on the instance runs the full generation pipeline and returns a `BuildOutput` object.
+`createKubb` drives Kubb from your own code. It accepts a `UserConfig` and returns a `Kubb` instance. Calling `.build()` runs the full generation pipeline and returns a `BuildOutput`.
 
-Reach for `createKubb` when you need to orchestrate several builds, inspect diagnostics, or feed Kubb output into a larger toolchain. For a one-off build, chain the call directly: `await createKubb(config).build()`.
+Reach for `createKubb` when you orchestrate several builds, inspect diagnostics, or feed Kubb output into a larger toolchain. For a one-off build, chain the call: `await createKubb(config).build()`.
 
-`createKubb` takes a plain config object, the same shape `defineConfig` produces in `kubb.config.ts`. It is not a fluent builder by design: the config stays plain serializable data so Kubb can validate it against the shipped JSON schema.
+`createKubb` takes a plain config object, the same shape `defineConfig` produces in `kubb.config.ts`. It is not a fluent builder. The config stays plain serializable data so Kubb can validate it against the shipped JSON schema.
 
 ```typescript twoslash
 // @module: esnext
@@ -147,7 +160,7 @@ paths.forEach((path) => console.log(`  ${path}`))
 | `.setup()`     | `() => Promise<void>`          | Initializes the driver and storage. `build()` calls this automatically.                            |
 | `.build()`     | `() => Promise<BuildOutput>`   | Runs the full pipeline and throws a `BuildError` when any diagnostic is an error.                  |
 | `.safeBuild()` | `() => Promise<BuildOutput>`   | The canonical call. Runs the full pipeline and collects problems in `BuildOutput.diagnostics` instead of throwing. |
-| `.hooks`       | `AsyncEventEmitter<KubbHooks>` | Read-only. Shared event emitter; attach listeners before calling `build()`.                        |
+| `.hooks`       | `AsyncEventEmitter<KubbHooks>` | Read-only. Shared event emitter. Attach listeners before calling `build()`.                        |
 | `.config`      | `Config`                       | Read-only. Resolved config, available right after `createKubb` since it resolves in the constructor. |
 | `.storage`     | `Storage`                      | Read-only getter. Final source code keyed by absolute path. Available after `setup()`, throws before. |
 | `.driver`      | `KubbDriver`                 | Read-only getter. Available after `setup()`. Throws if accessed before `setup()`.                  |
@@ -161,10 +174,10 @@ paths.forEach((path) => console.log(`  ${path}`))
 | `driver`      | `KubbDriver`        | Plugin driver instance for advanced introspection                               |
 | `diagnostics` | `Array<Diagnostic>` | Problems collected during the build, plus a `performance` diagnostic per plugin |
 
-Each `Diagnostic` carries a `code`, a `severity` (`error`, `warning`, or `info`), a `message`, and the `plugin` that produced it. Failed-plugin diagnostics also keep the original error on `cause`, and `performance` diagnostics (`kind: 'performance'`) carry a `duration` in milliseconds. Use the `Diagnostics.isProblem`, `Diagnostics.isPerformance`, and `Diagnostics.isUpdate` guards to narrow by kind.
+Each `Diagnostic` carries a `code`, a `severity` (`error`, `warning`, or `info`), a `message`, and the `plugin` that produced it. Failed-plugin diagnostics keep the original error on `cause`. A `performance` diagnostic (`kind: 'performance'`) carries a `duration` in milliseconds. Use the `Diagnostics.isProblem`, `Diagnostics.isPerformance`, and `Diagnostics.isUpdate` guards to narrow by kind.
 
 > [!WARNING]
-> After `safeBuild()`, check `Diagnostics.hasError(diagnostics)` before processing files. Plugins can fail without `safeBuild()` throwing. `build()` throws a `BuildError` in that case instead.
+> After `safeBuild()`, check `Diagnostics.hasError(diagnostics)` before processing files. Plugins can fail without `safeBuild()` throwing. `build()` throws a `BuildError` in that case.
 
 #### Related
 
@@ -177,7 +190,7 @@ Plugins are the main extension point in Kubb. A plugin owns its file naming, its
 
 ### `definePlugin`
 
-`definePlugin` wraps a factory function and returns a typed `Plugin`. All lifecycle handlers live under a single `hooks` object, inspired by [Astro integrations](https://docs.astro.build/en/reference/integrations-reference/).
+`definePlugin` wraps a factory function and returns a typed `Plugin`. All lifecycle handlers live under one `hooks` object, inspired by [Astro integrations](https://docs.astro.build/en/reference/integrations-reference/).
 
 ```typescript twoslash
 import { definePlugin } from '@kubb/core'
@@ -227,7 +240,7 @@ export const pluginExample = definePlugin((options: { prefix?: string } = {}) =>
 
 `defineGenerator` declares a named generator unit consumed by a plugin. Generators walk the [AST](/docs/5.x/concepts/ast) and emit files. The core calls each method for the matching node type during the generation loop.
 
-Each generator method returns `TElement | Array<FileNode> | void`. Returning a renderer element (e.g., JSX from `@kubb/renderer-jsx`) requires declaring a `renderer` factory on the generator. Returning `Array<FileNode>` directly or calling `ctx.upsertFile()` manually and returning `void` works without a renderer.
+Each generator method returns `TElement | Array<FileNode> | void`. Returning a renderer element (for example JSX from `@kubb/renderer-jsx`) requires a `renderer` factory on the generator. Returning `Array<FileNode>` directly, or calling `ctx.upsertFile()` and returning `void`, works without a renderer.
 
 ```typescript twoslash
 import { ast, defineGenerator } from '@kubb/core'
@@ -254,9 +267,9 @@ const myGenerator = defineGenerator({
 
 | Method         | Input                                   | Output                                | When to use                                                      |
 | -------------- | --------------------------------------- | ------------------------------------- | ---------------------------------------------------------------- |
-| `schema()`     | `SchemaNode` (per data schema)          | `TElement \| Array<FileNode> \| void` | Generate types, validators, factories; called once per schema    |
-| `operation()`  | `OperationNode` (per API operation)     | `TElement \| Array<FileNode> \| void` | Generate hooks, clients, handlers; called once per operation     |
-| `operations()` | `Array<OperationNode>` (all operations) | `TElement \| Array<FileNode> \| void` | Generate index or barrel files; called once after all operations |
+| `schema()`     | `SchemaNode` (per data schema)          | `TElement \| Array<FileNode> \| void` | Generate types, validators, factories. Called once per schema    |
+| `operation()`  | `OperationNode` (per API operation)     | `TElement \| Array<FileNode> \| void` | Generate hooks, clients, handlers. Called once per operation     |
+| `operations()` | `Array<OperationNode>` (all operations) | `TElement \| Array<FileNode> \| void` | Generate index or barrel files. Called once after all operations |
 
 #### `GeneratorContext` properties (the `ctx` argument passed to each method)
 
@@ -268,7 +281,7 @@ const myGenerator = defineGenerator({
 | `ctx.plugin`          | `Plugin`                                            | The owning plugin descriptor                                         |
 | `ctx.resolver`        | `Resolver`                                          | Resolver for the current plugin                                      |
 | `ctx.driver`          | `KubbDriver`                                      | Plugin driver for cross-plugin access                                |
-| `ctx.hooks`           | `AsyncEventEmitter<KubbHooks>`                      | Event bus; subscribe to `KubbHooks` events                           |
+| `ctx.hooks`           | `AsyncEventEmitter<KubbHooks>`                      | Event bus for `KubbHooks` events                                     |
 | `ctx.adapter`         | `Adapter`                                           | The adapter that parsed the input spec                               |
 | `ctx.meta`            | `InputMeta`                                         | Document metadata from the adapter. Carries `title`, `version`, `baseURL`, and the pre-computed `circularNames` and `enumNames` arrays. |
 | `ctx.addFile()`       | `(...files: FileNode[]) => Promise<void>`           | Add files, skipping any that already exist                           |
@@ -290,9 +303,9 @@ const myGenerator = defineGenerator({
 
 ### `defineResolver` {#resolver}
 
-`defineResolver` creates a resolver that controls file naming and path resolution for a plugin. The builder is a zero-argument function; use `this` to call sibling resolver methods.
+`defineResolver` creates a resolver that controls file naming and path resolution for a plugin. The builder is a zero-argument function. Use `this` to call sibling resolver methods.
 
-The builder must return at least `{ name, pluginName }`. All other resolver methods (`default`, `resolveOptions`, `resolvePath`, `resolveFile`, `resolveBanner`, `resolveFooter`) receive built-in defaults and can be individually overridden.
+The builder must return at least `{ name, pluginName }`. The other resolver methods (`default`, `resolveOptions`, `resolvePath`, `resolveFile`, `resolveBanner`, `resolveFooter`) receive built-in defaults and can each be overridden.
 
 ```typescript twoslash
 import { defineResolver } from '@kubb/core'
@@ -334,7 +347,7 @@ export const resolver = defineResolver<MyPlugin>(() => ({
 
 `defineParser` creates a parser that converts generated file ASTs to formatted source strings. Each parser declares which file extensions it handles via `extNames`.
 
-The built-in parsers, [`@kubb/parser-ts`](/docs/5.x/concepts/parsers) and its TSX variant, handle TypeScript and TSX files. Implement `defineParser` to add support for other languages or custom output formats.
+The built-in parsers handle TypeScript, TSX, and markdown files: [`parserTs`, `parserTsx`](/docs/5.x/concepts/parsers), and `parserMd`. Implement `defineParser` to add other languages or custom output formats.
 
 #### Related
 
@@ -342,9 +355,9 @@ The built-in parsers, [`@kubb/parser-ts`](/docs/5.x/concepts/parsers) and its TS
 
 ### `createAdapter`
 
-`createAdapter` is the factory for building adapters that translate non-OpenAPI specs into Kubb's universal [AST](/docs/5.x/concepts/ast). The built-in [`@kubb/adapter-oas`](/docs/5.x/concepts/adapters) handles OpenAPI and Swagger documents.
+`createAdapter` builds adapters that translate non-OpenAPI specs into Kubb's universal [AST](/docs/5.x/concepts/ast). The built-in [`@kubb/adapter-oas`](/docs/5.x/concepts/adapters) handles OpenAPI and Swagger documents.
 
-Write a custom adapter when your source is something Kubb does not parse yet, such as a GraphQL schema, a gRPC definition, an AsyncAPI spec, or a domain-specific language of your own.
+Write a custom adapter when your source is something Kubb does not parse yet, such as a GraphQL schema, a gRPC definition, an AsyncAPI spec, or your own domain-specific language.
 
 > [!IMPORTANT]
 > Adapters must parse their input format to Kubb's `InputNode` structure. See [Adapter API](/docs/5.x/concepts/adapters) for complete documentation.
@@ -360,7 +373,7 @@ Storage backends decide where generated files are written. Kubb ships a filesyst
 
 ### `createStorage`
 
-`createStorage` takes a builder function `(options: TOptions) => Storage` and returns a factory `(options?: TOptions) => Storage`. Call the returned factory to instantiate the storage (optionally with options).
+`createStorage` takes a builder function `(options: TOptions) => Storage` and returns a factory `(options?: TOptions) => Storage`. Call the returned factory to instantiate the storage, optionally with options.
 
 ```typescript twoslash
 import { createStorage } from '@kubb/core'
@@ -430,21 +443,23 @@ export const memoryStorage = createStorage(() => {
 
 ### The file manager (`driver.fileManager`)
 
-The file manager is the high-level store for generated files within the build pipeline. The plugin driver creates and owns one instance, accessible via `driver.fileManager`. The class itself is internal and not exported from `@kubb/core`. Inside generators, prefer the context helpers `ctx.addFile()` and `ctx.upsertFile()` over accessing the file manager directly.
+The file manager is the high-level store for generated files within the build pipeline. The plugin driver creates and owns one instance, reachable via `driver.fileManager`. The class is internal and not exported from `@kubb/core`. Inside generators, prefer the context helpers `ctx.addFile()` and `ctx.upsertFile()` over reaching the file manager directly.
 
 #### Key members
 
-- `add()`: Add one or more files. When a file at the same path already exists, the new entry replaces it instead of merging.
-- `upsert()`: Add or merge files, concatenating sources, imports, and exports when an entry at the same path already exists.
-- `getByPath()`: Retrieve a file by its absolute path
-- `deleteByPath()`: Remove a file by its absolute path
-- `clear()`: Remove all files
-- `hooks`: An `AsyncEventEmitter` that emits `upsert` with the resolved `FileNode` every time a file lands through `add` or `upsert`. The build loop listens on it to drain newly written files into the file processor without scanning the whole cache.
-- `files`: Getter returning all stored files sorted by path length. The sort runs lazily on read, so high-volume `upsert` calls stay O(1).
+| Member           | Purpose                                                                                                                                  |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `add()`          | Add one or more files. An entry at the same path is replaced, not merged.                                                                |
+| `upsert()`       | Add or merge files, concatenating sources, imports, and exports when an entry at the same path exists.                                   |
+| `getByPath()`    | Retrieve a file by its absolute path.                                                                                                    |
+| `deleteByPath()` | Remove a file by its absolute path.                                                                                                      |
+| `clear()`        | Remove all files.                                                                                                                        |
+| `hooks`          | An `AsyncEventEmitter` that emits `upsert` with the resolved `FileNode` every time a file lands through `add` or `upsert`.               |
+| `files`          | Getter returning all stored files sorted by path length. The sort runs lazily on read, so high-volume `upsert` calls stay O(1).         |
 
 #### Streaming model
 
-The file manager does not expose a `stream()` method of its own. It streams through its `hooks`: every `addFile()` / `upsertFile()` call emits `upsert` with the resolved `FileNode`. The build driver subscribes to that event, so files flow directly into the file processor, get parsed one at a time, and land in `Storage` without buffering. The full cache is only iterated when a consumer reads `files`, for example inside a post-enforced plugin that listens on `kubb:plugins:end`.
+The file manager does not expose its own `stream()` method. It streams through its `hooks`. Every `addFile()` or `upsertFile()` call emits `upsert` with the resolved `FileNode`. The build driver subscribes to that event, so files flow into the file processor, get parsed one at a time, and land in `Storage` without buffering. The full cache is only iterated when a consumer reads `files`, for example inside a post-enforced plugin that listens on `kubb:plugins:end`.
 
 #### Related
 
@@ -452,15 +467,15 @@ The file manager does not expose a `stream()` method of its own. It streams thro
 
 ### The file processor
 
-The file processor is the lower-level pipeline that processes each `FileNode` before writing. It runs the registered parsers, falls back to joining raw source strings when no parser claims a file's extension, and writes the result to storage one file at a time. The build driver enqueues every file the file manager emits, so the whole flow is automatic. The class is internal and not exported from `@kubb/core`.
+The file processor is the lower-level pipeline that processes each `FileNode` before writing. It runs the registered parsers, falls back to joining raw source strings when no parser claims a file's extension, and writes the result to storage one file at a time. The build driver enqueues every file the file manager emits, so the flow is automatic. The class is internal and not exported from `@kubb/core`.
 
 #### Streaming
 
-Files stream through the processor as they arrive: the driver calls `enqueue(file)` for every `upsert` the file manager emits, and the processor parses and persists each one without buffering the full set. Progress surfaces through `start`, `update` (with `{ file, source, processed, total, percentage }`), and `end` events on the processor's `hooks` emitter, which the core re-emits on the main event bus for reporters.
+Files stream through the processor as they arrive. The driver calls `enqueue(file)` for every `upsert` the file manager emits, and the processor parses and persists each one without buffering the full set. Progress surfaces through `start`, `update` (with `{ file, source, processed, total, percentage }`), and `end` events on the processor's `hooks` emitter, which the core re-emits on the main event bus for reporters.
 
 ### `jsxRenderer` (via `@kubb/renderer-jsx`)
 
-For JSX-based rendering, import `jsxRenderer` directly from [`@kubb/renderer-jsx`](https://www.npmjs.com/package/@kubb/renderer-jsx). `@kubb/core` no longer re-exports a `createRenderer` factory.
+For JSX-based rendering, import `jsxRenderer` from [`@kubb/renderer-jsx`](https://www.npmjs.com/package/@kubb/renderer-jsx). `@kubb/core` no longer re-exports a `createRenderer` factory.
 
 `jsxRenderer` is a React-free recursive renderer. It walks the JSX components into `FileNode`s without a React reconciliation pass, and its `stream()` returns a synchronous `Generator<FileNode>` that skips a microtask per file. Components run as plain functions, so hooks and suspense are not available.
 
@@ -480,7 +495,7 @@ Set the renderer on a generator through its `renderer` field (`renderer: jsxRend
 
 ### `KubbDriver`
 
-`KubbDriver` orchestrates the entire generation pipeline. It executes plugins in dependency order, emits lifecycle events, owns the [file manager](#the-file-manager-driver-filemanager), and routes path/name resolution through each plugin's resolver.
+`KubbDriver` orchestrates the generation pipeline. It runs plugins in dependency order, emits lifecycle events, owns the [file manager](#the-file-manager-driver-filemanager), and routes path and name resolution through each plugin's resolver.
 
 Access the driver via `ctx.driver` inside generator context methods, or from the build result via `result.driver`.
 
@@ -506,9 +521,9 @@ Access the driver via `ctx.driver` inside generator context methods, or from the
 
 ### `AsyncEventEmitter`
 
-`AsyncEventEmitter` is the typed event emitter that drives every `KubbHooks` event. Listeners can be async, the emitter awaits them, and it propagates errors and filters events as it goes.
+`AsyncEventEmitter` is the typed event emitter that drives every `KubbHooks` event. Listeners can be async. The emitter awaits them, propagates errors, and filters events as it goes.
 
-`@kubb/core` re-exports `AsyncEventEmitter` from `@internals/utils`. Use it directly when you want to listen to events on a `Kubb` instance before calling `.build()`.
+`@kubb/core` re-exports `AsyncEventEmitter` from `@internals/utils`. Use it to listen to events on a `Kubb` instance before calling `.build()`.
 
 #### Related
 
@@ -527,7 +542,7 @@ Url.canParse('./petStore.yaml') // false
 
 ### Narrowing `config.input`
 
-`config.input` is either an `InputPath` (the `{ path: string }` form) or an `InputData` (the `{ data: ... }` form). Both types are exported from `@kubb/core`. Narrow between them with an [`in` check](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#the-in-operator-narrowing):
+`config.input` is either an `InputPath` (the `{ path: string }` form) or an `InputData` (the `{ data: string | unknown }` form). Both types are exported from `@kubb/core`. Narrow between them with an [`in` check](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#the-in-operator-narrowing):
 
 ```typescript twoslash
 import type { UserConfig } from '@kubb/core'
@@ -543,7 +558,7 @@ if ('path' in input) {
 
 ### `logLevel`
 
-`logLevel` is a constants object that enumerates the valid log level values. Pass one of these values to the `logLevel` field in your config or CLI flags.
+`logLevel` is a constants object that enumerates the valid log level values. Pass one of them to the `logLevel` CLI flag.
 
 | Level     | Usage              | Output                                  |
 | --------- | ------------------ | --------------------------------------- |
@@ -556,7 +571,7 @@ if ('path' in input) {
 
 ## Public types
 
-`@kubb/core` re-exports every public type from its `types.ts` barrel. Import them to type your own plugins, adapters, parsers, and build runners.
+`@kubb/core` re-exports its public types from the `types.ts` barrel. Import them to type your own plugins, adapters, parsers, and build runners.
 
 #### Configuration
 
@@ -566,9 +581,10 @@ if ('path' in input) {
 | `PossibleConfig`          | Every accepted form of a Kubb config (object, fn, array, sync/async) |
 | `CLIOptions`              | Flags passed to the CLI (`--config`, `--watch`, `--logLevel`)        |
 | `InputPath` / `InputData` | Two discriminants of `Config['input']`                               |
-| `Output`                  | Output configuration (path, clean, barrel)                           |
-| `Group`                   | Grouping strategy for generated files (`tag` or `path`)              |
-| `BarrelType`              | `'all' \| 'named' \| 'propagate'` for barrel file generation         |
+| `Output`                  | Per-plugin output configuration                                      |
+| `OutputMode`              | `'directory' \| 'file'`                                              |
+| `OutputOptions`           | Output plus a `group` strategy                                       |
+| `Group`                   | Grouping strategy for generated files                               |
 
 #### Plugins
 
@@ -602,7 +618,7 @@ if ('path' in input) {
 | `KubbFilesProcessingEndContext`    | `kubb:files:processing:end`    | `{ files: FileNode[] }`                                                    |
 | `KubbInfoContext`                 | `kubb:info`                   | `{ message: string, info?: string }`                                       |
 | `KubbErrorContext`                | `kubb:error`                  | `{ error: Error, meta?: Record<string, unknown> }`                         |
-| `KubbDiagnosticContext`           | `kubb:diagnostic`             | `{ diagnostic: Diagnostic }`                                               |
+| `KubbDiagnosticContext`           | `kubb:diagnostic`             | `{ diagnostic: ProblemDiagnostic \| UpdateDiagnostic }`                    |
 | `KubbSuccessContext`              | `kubb:success`                | `{ message: string, info?: string }`                                       |
 | `KubbWarnContext`                 | `kubb:warn`                   | `{ message: string, info?: string }`                                       |
 
@@ -612,7 +628,7 @@ if ('path' in input) {
 | ----------------------- | -------------------------------------------------------------- |
 | `Adapter`               | Final adapter object returned from `createAdapter`             |
 | `AdapterFactoryOptions` | Generic parameter pack for an adapter                          |
-| `AdapterSource`         | `{ type: 'path' }`, `{ type: 'data' }`, or `{ type: 'paths' }` |
+| `AdapterSource`         | `{ type: 'path'; path }` or `{ type: 'data'; data }`          |
 | `Parser`                | Final parser object returned from `defineParser`               |
 
 #### Resolvers
@@ -620,14 +636,13 @@ if ('path' in input) {
 | Type                    | Purpose                                                                        |
 | ----------------------- | ------------------------------------------------------------------------------ |
 | `Resolver`              | Base constraint for resolvers returned from `defineResolver`                   |
-| `ResolverContext`       | Shared context for path/file/name resolution                                   |
+| `ResolverContext`       | Shared context for path, file, and name resolution                             |
 | `ResolverPathParams`    | Parameters for `Resolver.resolvePath`                                          |
 | `ResolverFileParams`    | Parameters for `Resolver.resolveFile`                                          |
-| `ResolveNameParams`     | Parameters for customizing names by kind (`file`, `function`, `type`, `const`) |
-| `ResolveBannerContext`  | Context for banner/footer resolution (`output`, `config`, per-file `file`)     |
+| `ResolveBannerContext`  | Context for banner and footer resolution (`output`, `config`, per-file `file`) |
 | `ResolveBannerFile`     | Per-file context (`path`, `baseName`, `isBarrel`, `isAggregation`)             |
-| `BannerMeta`            | `InputMeta` extended with per-file fields, passed to a `banner`/`footer` function |
-| `ResolveOptionsContext` | Context for `resolveOptions` (include/exclude/override)                        |
+| `BannerMeta`            | `InputMeta` extended with per-file fields, passed to a `banner` or `footer` function |
+| `ResolveOptionsContext` | Context for `resolveOptions` (include, exclude, override)                      |
 
 #### Generators & files
 
@@ -635,17 +650,14 @@ if ('path' in input) {
 | ------------------ | ----------------------------------------------------------------------- |
 | `Generator`        | Generator object returned from `defineGenerator`                        |
 | `GeneratorContext` | Context passed to `schema()`, `operation()`, and `operations()` methods |
-| `FileMetaBase`     | Minimal `meta` shape for file nodes (`{ pluginName? }`)                 |
 
 #### Filters
 
-| Type              | Purpose                                                            |
-| ----------------- | ------------------------------------------------------------------ |
-| `PatternFilter`   | `{ type; pattern }` shape shared by include, exclude, and override |
-| `PatternOverride` | Filter plus partial option overrides                               |
-| `Include`         | Filter narrowing generation to matching nodes                      |
-| `Exclude`         | Filter preventing matching nodes from being generated              |
-| `Override`        | Filter pairing a match with per-node option overrides              |
+| Type       | Purpose                                                |
+| ---------- | ------------------------------------------------------ |
+| `Include`  | Filter narrowing generation to matching nodes          |
+| `Exclude`  | Filter preventing matching nodes from being generated  |
+| `Override` | Filter pairing a match with per-node option overrides  |
 
 #### Storage and rendering
 

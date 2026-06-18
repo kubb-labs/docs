@@ -7,8 +7,8 @@ outline: [2, 3]
 
 # Diagnostics
 
-When a build fails, Kubb prints a diagnostic: a stable code, the message, the location in your
-document, and a suggested fix. The CLI leads with the code and lists the details below it:
+When a build fails, Kubb prints a diagnostic. It carries a stable code, the message, the location in
+your document, and a suggested fix. The CLI leads with the code and lists the details below it:
 
 ```txt
 [KUBB_REF_NOT_FOUND] @kubb/plugin-zod: Could not find a definition for #/components/schemas/Pet.
@@ -17,10 +17,10 @@ document, and a suggested fix. The CLI leads with the code and lists the details
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-ref-not-found
 ```
 
-The location is a JSON pointer into the source document. OpenAPI is parsed into an object model, so
-Kubb points at the node (`#/components/schemas/Pet`) rather than a line and column.
+The location is a JSON pointer into the source document. Kubb parses OpenAPI into an object model, so
+it points at the node (`#/components/schemas/Pet`) rather than a line and column.
 
-Each code is stable, so you can search for it and link to its page. A run collects every diagnostic
+Each code is stable. You can search for it and link to its page. A run collects every diagnostic
 instead of stopping at the first, so one `kubb generate` surfaces every problem. The run fails only
 when at least one diagnostic has `error` severity. Warnings and info never fail the build.
 
@@ -62,7 +62,7 @@ The severity tints the `[CODE]` tag.
 ## Plugins
 
 These carry whatever a plugin reports through its generator context (`ctx.error`, `ctx.warn`,
-`ctx.info`), attributed to the plugin.
+`ctx.info`). Each one is attributed to the plugin that reported it.
 
 | Code | Severity | Summary |
 | --- | --- | --- |
@@ -72,8 +72,8 @@ These carry whatever a plugin reports through its generator context (`ctx.error`
 
 ## Output pipeline
 
-The formatter, linter, and post-generate hooks run after generation. A failure in any of them is
-reported as a diagnostic and fails the run.
+The formatter, linter, and post-generate hooks run after generation. A failure in any of them
+becomes a diagnostic and fails the run.
 
 | Code | Severity | Summary |
 | --- | --- | --- |
@@ -89,8 +89,8 @@ reported as a diagnostic and fails the run.
 
 ## Bookkeeping
 
-Not problems. These carry run metadata and never fail the build. The CLI uses them for the summary
-and notices, not the diagnostic log.
+These are not problems. They carry run metadata and never fail the build. The CLI uses them for the
+summary and notices, not the diagnostic log.
 
 | Code | Severity | Summary |
 | --- | --- | --- |
@@ -99,7 +99,7 @@ and notices, not the diagnostic log.
 
 ## Machine-readable output
 
-`kubb generate --reporter json` prints a stable report to stdout, so CI can read diagnostics without
+`kubb generate --reporter json` prints a stable report to stdout. CI can read diagnostics without
 scraping the terminal:
 
 ```json
@@ -125,20 +125,21 @@ scraping the terminal:
 }
 ```
 
-Each config emits one report. `counts` totals the `problem` diagnostics by severity, `timings` lists
-per-plugin durations slowest first, and `name` is the config name (empty when unnamed).
+Each config emits one report. `counts` totals the `problem` diagnostics by severity. `timings` lists
+per-plugin durations slowest first. `name` is the config name, empty when unnamed.
 
-The exit code is unchanged: non-zero on any error. See [`--reporter`](/docs/5.x/api/commands/generate#reporters)
+The exit code is unchanged. It is non-zero on any error. See [`--reporter`](/docs/5.x/api/commands/generate#reporters)
 for the other reporters.
 
 ## Reading a diagnostic in the terminal
 
-- The header shows the code in the severity color, then the plugin that emitted the diagnostic
-  (when known), then the message: `[CODE] plugin: message`.
-- `at:` holds the JSON pointer to the offending node. Config-level diagnostics such as
-  `KUBB_PLUGIN_NOT_FOUND` have no pointer, so they skip this line.
-- `fix:` is a suggested fix.
-- `see:` links to the page for that code.
+The header reads `[CODE] plugin: message`. It shows the code in the severity color, then the plugin
+that emitted the diagnostic when known, then the message.
 
-At `--logLevel silent` the diagnostic log is suppressed; the run still fails with a non-zero exit
+`at:` holds the JSON pointer to the offending node. Config-level diagnostics such as
+`KUBB_PLUGIN_NOT_FOUND` have no pointer, so they skip this line.
+
+`fix:` is a suggested fix. `see:` links to the page for that code.
+
+At `--logLevel silent` Kubb suppresses the diagnostic log. The run still fails with a non-zero exit
 code, so CI keeps working without the noise.

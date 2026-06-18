@@ -14,7 +14,7 @@ A schema's `format` is not one Kubb maps to a specific type, so it falls back to
 
 ## What happened
 
-While walking the named component schemas, the OpenAPI adapter found a `format` it has no specific mapping for. Generation continues with the base type (for example `string`), so this is a warning, not a failure. The adapter reports it on every run.
+While walking the named component schemas, the OpenAPI adapter found a `format` it has no specific mapping for. Generation continues with the base type, for example `string`. This is a warning, not a failure. The adapter reports it on every run.
 
 ## How to fix it
 
@@ -24,7 +24,7 @@ While walking the named component schemas, the OpenAPI adapter found a `format` 
 ## Common causes
 
 - A vendor-specific format such as `snowflake` or `money` that has no built-in mapping.
-- A typo in a standard format, like `date-tine` instead of `date-time`.
+- A typo in a standard format, such as `date-tine` instead of `date-time`.
 
 ## Example
 

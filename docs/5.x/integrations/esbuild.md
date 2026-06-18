@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # esbuild
 
-`unplugin-kubb/esbuild` runs Kubb as an [esbuild](https://esbuild.github.io/) plugin. Pass it to the `plugins` array in your build script.
+`unplugin-kubb/esbuild` runs Kubb as an [esbuild](https://esbuild.github.io/) plugin. Add it to the `plugins` array in your build script. Pass your Kubb config to the `config` option.
 
 ## Install
 

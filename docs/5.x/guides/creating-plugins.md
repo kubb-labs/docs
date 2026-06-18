@@ -12,20 +12,20 @@ A [plugin](/docs/5.x/concepts/plugins) teaches Kubb to generate something new. I
 This guide builds a `kubb-plugin-example` package from scratch and publishes it to npm.
 
 > [!TIP]
-> Before writing a plugin, check the [Plugins registry](/plugins) to see if an existing plugin already covers your use case.
+> Before writing a plugin, check the [Plugins registry](/plugins). An existing plugin may already cover your case.
 
 ## Prerequisites
 
-This guide assumes you have:
+You need:
 
 - Node.js 22 or higher and pnpm (or npm/yarn)
 - Working TypeScript knowledge
 - A Kubb project with a valid [configuration](/docs/5.x/reference/configuration)
-- Familiarity with the [plugin concepts](/docs/5.x/concepts/plugins) page
+- A read of the [plugin concepts](/docs/5.x/concepts/plugins) page
 
 ## Quick start
 
-A plugin is a factory function created with `definePlugin` from [`@kubb/core`](/docs/5.x/api/core). It returns an object with a `name` string and a `hooks` map.
+A plugin is a factory function built with `definePlugin` from [`@kubb/core`](/docs/5.x/api/core). It returns an object with a `name` string and a `hooks` map.
 
 The `kubb:plugin:setup` hook is where you wire generators and resolvers into the build.
 
@@ -73,7 +73,7 @@ export default defineConfig({
 })
 ```
 
-Run the CLI to see it in action:
+Run the CLI to see it work:
 
 ```bash
 kubb generate
@@ -81,7 +81,7 @@ kubb generate
 
 ## Project layout
 
-Every official Kubb plugin follows the same layout, a folder per concern: `generators/`, `resolvers/`, `components/`, and `templates/`. The reference implementation is [`@kubb/plugin-client`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-client). Mirror it so contributors can find their way around:
+Every official Kubb plugin uses the same layout, one folder per concern: `generators/`, `resolvers/`, `components/`, and `templates/`. The reference implementation is [`@kubb/plugin-client`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-client). Mirror it so other contributors find their way around:
 
 ```
 kubb-plugin-example/
@@ -103,7 +103,7 @@ kubb-plugin-example/
 ```
 
 > [!TIP]
-> In [`@kubb/plugin-client`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-client), `src/index.ts` re-exports each generator, resolver, and the plugin factory by name, and `src/plugin.ts` declares a `pluginClientName satisfies PluginClient['name']` constant that other plugins consume.
+> In [`@kubb/plugin-client`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-client), `src/index.ts` re-exports each generator, resolver, and the plugin factory by name. `src/plugin.ts` declares a `pluginClientName satisfies PluginClient['name']` constant that other plugins consume.
 
 Scaffold the directories:
 
@@ -117,7 +117,7 @@ mkdir -p src/generators src/resolvers mocks
 
 ## Naming conventions
 
-Match the package name and internal identifiers to Kubb conventions so the registry and other tooling can find them.
+Match the package name and internal identifiers to Kubb conventions so the registry and other tooling find them.
 
 | Surface                 | Pattern                                 | Example               |
 | ----------------------- | --------------------------------------- | --------------------- |
@@ -127,7 +127,7 @@ Match the package name and internal identifiers to Kubb conventions so the regis
 | Factory export          | `plugin<Name>` (camelCase)              | `pluginExample`       |
 | Name constant           | `plugin<Name>Name`                      | `pluginExampleName`   |
 
-Use `satisfies` to export a typed name constant so other plugins can reference it without typos:
+Use `satisfies` to export a typed name constant. Other plugins then reference it without typos:
 
 ```typescript twoslash [pluginExampleName.ts]
 import type { Plugin } from '@kubb/core'
@@ -140,7 +140,7 @@ export const pluginExampleName = 'plugin-example' satisfies Plugin['name']
 
 ## Plugin anatomy
 
-Four files form the skeleton, in reading order: types first, then the implementation, then the public entry point.
+Four files form the skeleton. Read them in this order: types first, then the implementation, then the public entry point.
 
 ```typescript twoslash
 // @filename: src/types.ts
@@ -260,27 +260,29 @@ export type { PluginExampleOptions, PluginExample } from './types'
 
 ## Generators
 
-A generator walks the [AST](/docs/5.x/concepts/ast) produced by the [adapter](/docs/5.x/concepts/adapters) and emits `FileNode`s. Register generators in the `kubb:plugin:setup` hook using `ctx.addGenerator`. Each generator may implement any combination of three handlers:
+A generator walks the [AST](/docs/5.x/concepts/ast) produced by the [adapter](/docs/5.x/concepts/adapters) and emits `FileNode`s. Register generators in `kubb:plugin:setup` with `ctx.addGenerator`. Each generator implements any combination of three handlers:
 
-| Handler      | Called for                                              | Return type                           |
-| ------------ | ------------------------------------------------------- | ------------------------------------- |
-| `schema`     | Each `SchemaNode` in the AST                            | `Array<FileNode>`, element, or `void` |
-| `operation`  | Each `OperationNode` in the AST                         | `Array<FileNode>`, element, or `void` |
-| `operations` | Once with all `OperationNode`s after the operation walk | `Array<FileNode>`, element, or `void` |
+| Handler      | Called for                                              | Return type                                       |
+| ------------ | ------------------------------------------------------- | ------------------------------------------------- |
+| `schema`     | Each `SchemaNode` in the AST                            | `Array<FileNode>`, an element, or `null`/`undefined` |
+| `operation`  | Each `OperationNode` in the AST                         | `Array<FileNode>`, an element, or `null`/`undefined` |
+| `operations` | Once with all `OperationNode`s after the operation walk | `Array<FileNode>`, an element, or `null`/`undefined` |
+
+Each handler can return a Promise of any of these.
 
 ### Emit roles
 
-A generator returns `Array<FileNode>` built with the `create*` factories from `@kubb/ast`. That is the default, and most plugins need nothing else. Three named roles cover the cases beyond it.
+Most generators return `Array<FileNode>` built with the `create*` factories from `@kubb/ast`. That is the default. Three named roles cover the cases beyond it.
 
-A printer renders one `SchemaNode` to a string, such as a TypeScript type or `z.object({ ... })`. A handler calls it and stages the result on a `FileNode`.
+A printer renders one `SchemaNode` to a string, such as a TypeScript type or a `z.object({ ... })`. A handler calls it and stages the result on a `FileNode`.
 
-A renderer turns JSX into `FileNode`s. Return an element instead of `Array<FileNode>` and set `renderer: jsxRenderer` on the generator, and `@kubb/renderer-jsx` walks the JSX into the same nodes the builder would produce. It is sugar over the builder, not a separate pipeline.
+A renderer turns JSX into `FileNode`s. Return an element instead of `Array<FileNode>`, set `renderer: jsxRenderer` on the generator, and `@kubb/renderer-jsx` walks the JSX into the same nodes the builder produces. It is sugar over the builder, not a second pipeline.
 
-A parser handles serialization, runs last, and belongs to the build driver. Once every plugin finishes, the matching [parser](/docs/5.x/concepts/parsers) writes each `FileNode` out as the final file string. Plugins never call it.
+A parser handles serialization and runs last. It belongs to the build driver. Once every plugin finishes, the matching [parser](/docs/5.x/concepts/parsers) writes each `FileNode` out as the final file string. Plugins never call it.
 
 ### src/generators/exampleGenerator.ts
 
-The `ctx` argument inside a handler is a `GeneratorContext` with helpers such as `addFile`, `upsertFile`, `getResolver`, `requirePlugin`, `warn`, `error`, `info`, and the resolved `config`, `root`, `adapter`, and document `meta` (an `InputMeta` with `title`, `version`, `baseURL`, `circularNames`, and `enumNames`).
+Inside a handler, `ctx` is a `GeneratorContext`. It carries helpers such as `addFile`, `upsertFile`, `getResolver`, `requirePlugin`, `warn`, `error`, and `info`, plus the resolved `config`, `root`, `adapter`, and document `meta`. The `meta` is an `InputMeta` with `title`, `version`, `baseURL`, `circularNames`, and `enumNames`.
 
 ```typescript twoslash [exampleGenerator.ts]
 import { ast, defineGenerator } from '@kubb/core'
@@ -311,11 +313,11 @@ const operationGenerator = defineGenerator({
 
 ## Resolvers
 
-A [resolver](/docs/5.x/api/core#resolver) controls how file names and output paths are computed for a plugin's files. Other plugins call `ctx.getResolver('plugin-example')` to reference those names without hard-coding paths.
+A [resolver](/docs/5.x/api/core#resolver) decides the file names and output paths for a plugin's files. Other plugins call `ctx.getResolver('plugin-example')` to reuse those names without hard-coding paths.
 
 ### src/resolvers/resolverExample.ts
 
-`defineResolver` fills in defaults for every resolver method. Provide `name` and `pluginName` in the builder, then override the methods where you need custom behavior. Returning `null` from `resolveOptions` excludes the node from generation, so return `null` only when you mean to filter a node out.
+`defineResolver` fills in defaults for every resolver method. Provide `name` and `pluginName` in the builder, then override the methods you want to change. Returning `null` from `resolveOptions` drops the node from generation, so return `null` only when you mean to filter a node out.
 
 ```typescript twoslash [resolvers.ts]
 import { defineResolver } from '@kubb/core'
@@ -395,11 +397,11 @@ export const pluginExample = definePlugin(() => ({
 }))
 ```
 
-Set `copy` to an absolute on-disk path and Kubb writes that file's content into the output unchanged, applying only `banner`/`footer` and skipping the language parser. This keeps a hand-authored template as a real `.ts` file (linted, type-checked, tested) and drops it into the generated folder without inlining its source as a string. The JSX renderer accepts the same field: `<File baseName="runtime.ts" path={…} copy={templatePath} />`.
+Set `copy` to an absolute on-disk path and Kubb writes that file's content into the output unchanged. It applies only `banner`/`footer` and skips the language parser. This keeps a hand-authored template as a real `.ts` file, linted, type-checked, and tested, and drops it into the generated folder without inlining its source as a string. The JSX renderer takes the same field: `<File baseName="runtime.ts" path={…} copy={templatePath} />`.
 
 ## Options
 
-Use `PluginFactoryOptions` to bind the plugin name, user-facing options, and resolved options together. This type flows through `definePlugin`, `defineGenerator`, and the resolver, keeping all three in sync.
+`PluginFactoryOptions` binds the plugin name, the user-facing options, and the resolved options together. The type flows through `definePlugin`, `defineGenerator`, and the resolver, keeping all three in sync.
 
 ```typescript twoslash [options.ts]
 import { definePlugin } from '@kubb/core'
@@ -434,7 +436,7 @@ export const pluginExample = definePlugin<PluginExample>((options) => {
 
 ## Testing
 
-Use `createKubb` from `@kubb/core` to run an in-process build and check that your generator emits the files you expect. Pair it with a small [OpenAPI](https://spec.openapis.org/oas/latest.html) fixture so tests stay fast and deterministic.
+Use `createKubb` from `@kubb/core` to run an in-process build and check that your generator emits the files you expect. Pair it with a small [OpenAPI](https://spec.openapis.org/oas/latest.html) fixture so tests stay fast and predictable.
 
 ```typescript twoslash [plugin.test.ts]
 // @errors: 2307
@@ -479,7 +481,7 @@ describe('pluginExample', () => {
 
 ### Observing lifecycle events
 
-Subscribe to `kubb.hooks` before calling `build()` to trace plugin activity or collect metrics. Each hook receives a single typed context object.
+Subscribe to `kubb.hooks` before you call `build()` to trace plugin activity or collect metrics. Each hook receives one typed context object.
 
 ```typescript twoslash [lifecycle.ts]
 import { createKubb, definePlugin } from '@kubb/core'
@@ -509,7 +511,7 @@ await kubb.build()
 
 ### Configure package.json
 
-Peer-depend on `@kubb/core` and `@kubb/ast` at v5 to keep the runtime out of your bundle, and list them under `devDependencies` for local builds.
+Peer-depend on `@kubb/core` and `@kubb/ast` at v5 to keep the runtime out of your bundle. List them under `devDependencies` too, for local builds.
 
 ```json
 {
@@ -551,15 +553,15 @@ Peer-depend on `@kubb/core` and `@kubb/ast` at v5 to keep the runtime out of you
 
 ### Publish to npm
 
-Before publishing, verify the checklist:
+Before you publish, run through the checklist:
 
 - Exported TypeScript types compile without errors
-- JSDoc comments on public APIs
-- README with installation and usage examples
+- Public APIs carry JSDoc comments
+- The README covers installation and usage
 - All tests pass
-- Version follows [Semantic Versioning](https://semver.org/)
+- The version follows [Semantic Versioning](https://semver.org/)
 
-See the [npm publishing docs](https://docs.npmjs.com/cli/v11/commands/npm-publish) for the full publish workflow:
+See the [npm publishing docs](https://docs.npmjs.com/cli/v11/commands/npm-publish) for the full workflow:
 
 ```bash
 npm login
@@ -588,11 +590,11 @@ npm publish --access public
 
 ## Examples
 
-The [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins) repository holds official plugins that follow these conventions. Browse the source to see how generators, resolvers, and options fit together in published packages.
+The [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins) repository holds the official plugins that follow these conventions. Read the source to see how generators, resolvers, and options fit together in published packages.
 
 ### Schema generator
 
-Generate code for each schema definition in the spec:
+Generate a file for each schema definition in the spec:
 
 ```typescript twoslash [schema-generator.ts]
 import { ast, defineGenerator } from '@kubb/core'
@@ -617,7 +619,7 @@ export const schemaGenerator = defineGenerator({
 
 ### Extending an existing plugin
 
-Declare `dependencies` when your plugin must run after another plugin so Kubb verifies the dependency at startup:
+Declare `dependencies` when your plugin must run after another. Kubb verifies the dependency at startup and throws when it is missing:
 
 ```typescript twoslash [plugin-with-dep.ts]
 import { ast, definePlugin, defineGenerator } from '@kubb/core'

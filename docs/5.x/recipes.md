@@ -11,7 +11,7 @@ Ready-made `kubb.config.ts` snippets for common setups. Copy one in, install the
 
 ## TypeScript only
 
-The smallest setup. Generates TypeScript types and interfaces from your OpenAPI spec.
+The smallest setup. It generates TypeScript types and interfaces from your OpenAPI spec.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -26,7 +26,7 @@ export default defineConfig({
 
 ## TypeScript + React Query
 
-Generates TypeScript types and [TanStack Query](https://tanstack.com/query) hooks for React.
+Generates types and [TanStack Query](https://tanstack.com/query) hooks for React.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -43,7 +43,7 @@ export default defineConfig({
 
 ## TypeScript + Vue Query
 
-Generates TypeScript types and [TanStack Query](https://tanstack.com/query) hooks for Vue.
+Generates types and [TanStack Query](https://tanstack.com/query) hooks for Vue.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -59,7 +59,7 @@ export default defineConfig({
 
 ## Zod schemas + MSW handlers
 
-Runtime validation with [Zod](https://zod.dev) and ready-to-import [MSW](https://mswjs.io) request handlers backed by [Faker.js](https://fakerjs.dev) mock data.
+Runtime validation with [Zod](https://zod.dev), plus [MSW](https://mswjs.io) request handlers backed by [Faker.js](https://fakerjs.dev) mock data.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -77,7 +77,7 @@ export default defineConfig({
 
 ## Faker + Zod for testing
 
-Generate [Faker.js](https://fakerjs.dev) data factories alongside [Zod](https://zod.dev) schemas for use in unit and integration tests.
+Generates [Faker.js](https://fakerjs.dev) data factories next to [Zod](https://zod.dev) schemas. Use them in unit and integration tests.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -94,7 +94,7 @@ export default defineConfig({
 
 ## Custom HTTP client
 
-Pass a custom client implementation via `importPath` instead of using the built-in [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) or [Axios](https://axios-http.com) presets.
+Point `importPath` at your own client instead of the built-in [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) or [Axios](https://axios-http.com) presets. Setting `importPath` overrides the bundled `client` preset.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -116,6 +116,8 @@ export default defineConfig({
 ## Multiple specifications
 
 Generate from several specs in one run. Pass an array to [`defineConfig`](./reference/configuration). Each entry runs on its own, with its own plugins and output directory.
+
+Set a `name` per entry so each one shows up in the CLI output.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -139,7 +141,7 @@ export default defineConfig([
 
 ## Conditional config (watch-aware)
 
-Pass a function to [`defineConfig`](./reference/configuration) to access CLI context. Use it to disable `clean` in watch mode so incremental runs are faster.
+Pass a function to [`defineConfig`](./reference/configuration) to read CLI context. Here it turns off `clean` in watch mode so incremental runs stay fast.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -155,11 +157,11 @@ export default defineConfig(({ watch }) => ({
 }))
 ```
 
-Run with `kubb generate --watch` to enable incremental regeneration on spec changes.
+Run `kubb generate --watch` to regenerate on spec changes.
 
 ## Format with Biome, lint with Oxlint
 
-Run [Biome](https://biomejs.dev) formatting and [Oxlint](https://oxc.rs/docs/guide/usage/linter) linting on generated files as part of each build.
+Format generated files with [Biome](https://biomejs.dev) and lint them with [Oxlint](https://oxc.rs/docs/guide/usage/linter) on every build. Set `format` and `lint` to `'auto'` to pick whichever tool is installed.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -179,7 +181,7 @@ export default defineConfig({
 
 ## Run a hook after generation
 
-Use [`hooks.done`](./reference/configuration#hooks) to run shell commands after generation completes, for example to format or validate the output.
+Use [`hooks.done`](./reference/configuration#hooks) to run shell commands once generation finishes. Pass a single command or an array to run them in sequence. Commands run relative to the project root.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -197,7 +199,7 @@ export default defineConfig({
 
 ## Monorepo with multiple outputs
 
-Generate different client libraries for separate packages or teams from a single config file.
+Generate a different client library per package or team from one config file.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -223,7 +225,7 @@ export default defineConfig([
 
 ## Environment-aware configuration
 
-Select input and output based on `NODE_ENV` so the same config works across development, staging, and production.
+Pick input and output from `NODE_ENV` so one config covers development, staging, and production.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -257,7 +259,7 @@ export default defineConfig({
 
 Drive Kubb from a script with [`createKubb`](./api/core#createkubb) from `@kubb/core`. This fits monorepo orchestration and custom build pipelines.
 
-Unlike `defineConfig`, `createKubb` injects no defaults. Provide `adapter`, `parsers`, and any plugins yourself.
+Unlike `defineConfig`, `createKubb` adds no defaults. Pass `adapter`, `parsers`, and your plugins yourself.
 
 ```typescript twoslash [generate.ts]
 import { createKubb, Diagnostics } from '@kubb/core'
@@ -287,11 +289,11 @@ if (Diagnostics.hasError(diagnostics)) {
 console.log(`Generated ${files.length} files`)
 ```
 
-Use `.build()` instead of `.safeBuild()` if you prefer exceptions over checking `diagnostics` in the result. See the [Core API](./api/core#createkubb) for the full `Kubb` instance API.
+Use `.build()` instead of `.safeBuild()` if you want it to throw on errors rather than return `diagnostics`. See the [Core API](./api/core#createkubb) for the full `Kubb` instance API.
 
 ## CI validation
 
-Validate the OpenAPI spec and fail the build on errors. Use [`hooks.done`](./reference/configuration#hooks) to run the [`kubb validate`](./api/commands/validate) command after generation.
+Validate the OpenAPI spec and fail the build on errors. Use [`hooks.done`](./reference/configuration#hooks) to run [`kubb validate`](./api/commands/validate) after generation.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'

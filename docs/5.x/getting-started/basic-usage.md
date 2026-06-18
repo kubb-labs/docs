@@ -9,7 +9,7 @@ outline: [2, 3]
 
 ## 1. Create the config
 
-`kubb.config.ts` drives everything Kubb does. A minimum config points at your spec and an output directory:
+`kubb.config.ts` drives everything Kubb does. A minimal config points at your spec and an output directory.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -24,7 +24,7 @@ export default defineConfig({
 
 ## 2. Pick your plugins
 
-Each output format is its own plugin. Add only the ones you need:
+Each output format is its own plugin. Add only the ones you need.
 
 ::: code-group
 
@@ -123,7 +123,7 @@ Kubb creates one folder per plugin under `output.path`. Re-run it after every sp
 
 ## 4. Use the generated code
 
-Import paths follow the `output.path` values you set for each plugin:
+Import paths follow the `output.path` values you set for each plugin.
 
 ::: code-group
 
@@ -171,4 +171,4 @@ server.listen()
 
 ## 5. Keep it in sync
 
-Run `npm run generate` whenever the spec changes and commit the output. If you would rather not run it by hand, [`unplugin-kubb`](../integrations/) generates as part of your build with [Vite](https://vite.dev), [Rollup](https://rollupjs.org), [Webpack](https://webpack.js.org), and others.
+Run `npm run generate` whenever the spec changes, then commit the output. To skip the manual step, [`unplugin-kubb`](../integrations/) generates during your build with [Vite](https://vite.dev), [Rollup](https://rollupjs.org), [Webpack](https://webpack.js.org), and others.

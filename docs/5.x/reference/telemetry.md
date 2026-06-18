@@ -7,14 +7,14 @@ outline: [2, 3]
 
 # Telemetry
 
-The Kubb CLI collects anonymous usage data so the team can see which plugins and features people use, and spot performance bottlenecks.
+The Kubb CLI collects anonymous usage data. This shows the team which plugins and features people use, and where the performance bottlenecks are.
 
 > [!IMPORTANT]
 > Telemetry is enabled by default. Disable it any time with the `DO_NOT_TRACK` or `KUBB_DISABLE_TELEMETRY` environment variable.
 
 ## What is collected
 
-The following anonymous data is sent after each CLI command:
+Each CLI command sends this anonymous data:
 
 | Field          | Description                                          | Example                                                                         |
 | -------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------- |
@@ -38,7 +38,7 @@ The following anonymous data is sent after each CLI command:
 
 ## What is not collected
 
-The following data is never sent:
+Kubb never sends:
 
 - OpenAPI specification contents
 - File paths or directory structures
@@ -50,7 +50,7 @@ The following data is never sent:
 
 ### `DO_NOT_TRACK` (recommended)
 
-`DO_NOT_TRACK` is a [standard cross-tool opt-out convention](https://consoledonottrack.com/) supported by many developer tools.
+`DO_NOT_TRACK` is a [standard cross-tool opt-out convention](https://consoledonottrack.com/). Many developer tools support it.
 
 ```sh
 DO_NOT_TRACK=1 kubb generate
@@ -80,4 +80,4 @@ Both environment variables accept `"1"` or `"true"` as values.
 
 ## Data transmission
 
-Telemetry is formatted as [OpenTelemetry OTLP](https://opentelemetry.io/docs/languages/sdk-configuration/otlp-exporter/) traces and sent to `https://otlp.kubb.dev/v1/traces` at the end of each command. The request only fires when you're online, times out after 5 seconds, and fails silently if anything goes wrong.
+Telemetry is formatted as [OpenTelemetry OTLP](https://opentelemetry.io/docs/languages/sdk-configuration/otlp-exporter/) traces. Kubb sends them to `https://otlp.kubb.dev/v1/traces` at the end of each command. The request fires only when you are online. It times out after 5 seconds and fails silently if anything goes wrong.

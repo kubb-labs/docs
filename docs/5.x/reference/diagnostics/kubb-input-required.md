@@ -14,23 +14,21 @@ An adapter is configured but no `input` was provided, so there is nothing to par
 
 ## What happened
 
-The adapter needs a source document. It reads one from `input.path` (a file or URL) or
-`input.data` (an inline spec). This diagnostic fires when neither is set, including the case where
-merging is asked for but no documents are passed.
+The adapter needs a source document. It reads one from `input.path` (a file or URL) or `input.data` (an inline spec). This diagnostic fires when neither is set. It also fires when merging is requested but no documents are passed.
 
 ## How to fix it
 
-- Set `input.path` to a file or URL:
+Set `input.path` to a file or URL.
 
-  ```typescript
-  input: { path: './petStore.yaml' }
-  ```
+```typescript
+input: { path: './petStore.yaml' }
+```
 
-- Or pass an inline spec with `input.data`:
+Or pass an inline spec with `input.data`.
 
-  ```typescript
-  input: { data: openapiObject }
-  ```
+```typescript
+input: { data: openapiObject }
+```
 
 ## Example
 

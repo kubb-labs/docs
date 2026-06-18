@@ -8,13 +8,13 @@ outline: deep
 
 # Swap in a Fetch client
 
-By default, `@kubb/plugin-client` ships the Axios client from `@kubb/plugin-client/templates/axios`, built on the Axios instance interface.
+`@kubb/plugin-client` bundles two runtimes. Set `client: 'axios'` (the default) or `client: 'fetch'`, and the plugin writes that client to `.kubb/client.ts`.
 
-Reach for [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) or [Ky](https://github.com/sindresorhus/ky) when you want your own client instead.
+To bring your own client, set `importPath` instead. The generated code imports the HTTP runtime from there, and nothing is bundled. Use this for [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch), [Ky](https://github.com/sindresorhus/ky), or any wrapper you maintain.
 
 ## Create `kubb.config.ts`
 
-Point `importPath` at a relative path, an import alias, or a library. It defaults to `@kubb/plugin-client/templates/axios`.
+Point `importPath` at a relative path, an import alias, or a package name. The plugin uses the value as-is.
 
 See [plugins/plugin-client](/plugins/plugin-client).
 
@@ -52,10 +52,10 @@ export default defineConfig(() => {
 
 ## Add `client.ts`
 
-Every HTTP request (POST, PUT, GET, PATCH, DELETE) resolves `importPath` and calls your default export. The request configuration follows the `RequestConfig` type, modeled on the Axios request interface.
+Every HTTP request (GET, PUT, PATCH, POST, DELETE) calls the default export from your `importPath`. Kubb passes a `RequestConfig`, modeled on the Axios request interface.
 
 > [!IMPORTANT]
-> The client must return an object in the shape of `ResponseConfig`, even if you change `dataReturnType` with `dataReturnType: 'data'`.
+> The client must return an object shaped like `ResponseConfig`. This holds even when `dataReturnType` is `'data'` and the generated function returns only `res.data`.
 
 ```typescript [client.ts]
 export type RequestConfig<TData = unknown> = {
@@ -94,7 +94,7 @@ export const client = async <TData, TError = unknown, TVariables = unknown>(conf
 }
 ```
 
-## View generated code
+## View the generated code
 
 ```typescript [src/gen/models.ts]
 import client from '../client.ts'

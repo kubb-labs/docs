@@ -14,12 +14,11 @@ A referenced schema or operation is marked `deprecated`.
 
 ## What happened
 
-The OpenAPI adapter found `deprecated: true` on a schema while walking the named component schemas. Kubb still generates it, and the notice is informational, so it never fails the build. The adapter reports it on every run.
+The OpenAPI adapter found `deprecated: true` on a schema while walking the named component schemas. Kubb still generates it. The notice is informational and never fails the build. The adapter reports it on every run.
 
 ## How to fix it
 
-- Migrate off the deprecated definition if the notice is unwanted.
-- Leave it in place if you still depend on it. The diagnostic is informational and changes nothing about the output.
+Migrate off the deprecated definition if the notice is unwanted. Leave it in place if you still depend on it. The diagnostic changes nothing about the output.
 
 ## Example
 

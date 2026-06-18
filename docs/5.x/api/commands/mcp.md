@@ -7,10 +7,10 @@ outline: [2, 3]
 
 # `kubb mcp`
 
-Starts a [Model Context Protocol](https://modelcontextprotocol.io/) server that lets LLM clients (Claude, Cursor, VS Code, and others) interact with your schemas and trigger generation.
+Run `kubb mcp` to start a [Model Context Protocol](https://modelcontextprotocol.io/) server. LLM clients such as Claude, Cursor, and VS Code can then read your schemas and trigger generation.
 
 > [!WARNING]
-> This feature is still under active development. Use it with caution and expect breaking changes.
+> This feature is under active development. Use it with caution and expect breaking changes.
 
 ```terminal
 command: kubb mcp
@@ -28,11 +28,11 @@ kubb mcp
 ```
 
 > [!TIP]
-> `@kubb/mcp` ships as a dependency of the `kubb` meta-package, so no extra install is needed when you already use `kubb`.
+> `@kubb/mcp` ships as a dependency of the `kubb` package, so you need no extra install when you already use `kubb`.
 
 ## Transport
 
-`kubb mcp` runs over stdio: the server reads from standard input and writes to standard output, matching the [Model Context Protocol](https://modelcontextprotocol.io/) transport used by Claude Desktop, Cursor, VS Code, and other editor integrations. The client launches the server as a subprocess, so no flags, port, or host are needed.
+`kubb mcp` runs over stdio. The server reads from standard input and writes to standard output, matching the [Model Context Protocol](https://modelcontextprotocol.io/) transport used by Claude Desktop, Cursor, VS Code, and other editor integrations. The client launches the server as a subprocess, so it needs no flags, port, or host.
 
 ## Tools
 
@@ -40,15 +40,15 @@ The MCP server exposes three tools to connected clients.
 
 | Tool       | Description                                                                                                                          |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `generate` | Runs the Kubb code-generation pipeline against a resolved `kubb.config.ts` and streams log messages back to the client.              |
-| `validate` | Validates an OpenAPI or Swagger document at a path or URL. Requires `@kubb/adapter-oas` to be installed in the project.              |
-| `init`     | Scaffolds a `kubb.config.ts` in the current directory without prompts. The tool does not install packages.                           |
+| `generate` | Runs the Kubb pipeline against a resolved `kubb.config.ts` and streams log messages back to the client.                              |
+| `validate` | Validates an OpenAPI or Swagger document at a path or URL. Needs `@kubb/adapter-oas` installed in the project.                       |
+| `init`     | Scaffolds a `kubb.config.ts` in the current directory without prompts. It does not install packages.                                |
 
 ### Structured diagnostics
 
 When `generate` or `validate` hits a problem, it returns structured [diagnostics](/docs/5.x/reference/diagnostics)
 instead of a single message string. Each diagnostic keeps its stable code, source pointer,
-suggested fix, and docs link, so an assistant can act on the exact problem. The tools return both a
+suggested fix, and docs link, so an assistant can act on the exact problem. The tools return a
 readable text block and a JSON payload:
 
 ```text

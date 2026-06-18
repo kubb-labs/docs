@@ -14,15 +14,12 @@ A plugin requires another plugin that is not in the config.
 
 ## What happened
 
-Some plugins build on others. The query and client generators, for example, need `@kubb/plugin-ts`
-for the types they emit. When a plugin declares a dependency that is not registered, Kubb cannot run
-it. OpenAPI parsing is no longer a plugin dependency in v5; the `adapter` reads the document, so you
-never list `@kubb/plugin-oas`.
+Some plugins build on others. The query and client generators, for example, need `@kubb/plugin-ts` for the types they emit. When a plugin declares a dependency that is not registered, Kubb cannot run it. OpenAPI parsing is no longer a plugin dependency in v5. The `adapter` reads the document, so you never list `@kubb/plugin-oas`.
 
 ## How to fix it
 
-- Add the required plugin to the `plugins` array (and install it if needed).
-- Order does not matter. Kubb sorts plugins so dependencies run first, so make sure the plugin is present.
+- Add the required plugin to the `plugins` array, and install it if needed.
+- Order does not matter. Kubb sorts plugins so dependencies run first. Just make sure the plugin is present.
 - Remove the plugin that depends on it if you do not need it.
 
 ## Common causes

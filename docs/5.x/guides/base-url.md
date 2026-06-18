@@ -8,11 +8,11 @@ outline: deep
 
 # Set your own baseURL
 
-You can set a `baseURL` in three ways: through a custom client, from the `serverIndex` in your OpenAPI spec, or with the `baseURL` config option.
+Set a `baseURL` in three ways. Put it on a custom client, read it from the servers list in your OpenAPI spec, or pass the `baseURL` option to the plugin.
 
 ## Use a custom client
 
-When you [define your own client](/docs/5.x/guides/fetch), set a baseURL on it and every HTTP call uses it.
+When you [define your own client](/docs/5.x/guides/fetch), set the baseURL on it. Every HTTP call then uses that client.
 
 ::: code-group
 
@@ -86,11 +86,11 @@ export default defineConfig({
 
 :::
 
-## Use serverIndex
+## Read it from the spec
 
-Reuse a server URL from your Swagger or OpenAPI spec by picking [which index](/adapters/adapter-oas) to read.
+When you set no `baseURL`, the client falls back to the server URL from your OpenAPI spec, usually the first entry in `servers`. See [adapter-oas](/adapters/adapter-oas).
 
-:::code-group
+::: code-group
 
 ```yaml [OpenAPI]
 openapi: 3.0.3
@@ -125,11 +125,11 @@ export default defineConfig({
 
 :::
 
-## Use baseURL
+## Use the baseURL option
 
-Set the baseURL in your config.
+Pass `baseURL` to the plugin. It prepends the URL to every request.
 
-:::code-group
+::: code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'

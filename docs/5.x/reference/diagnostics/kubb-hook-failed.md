@@ -10,20 +10,17 @@ outline: [2, 3]
 Code: `KUBB_HOOK_FAILED`
 Level: error
 
-A post-generate shell hook (`hooks.done`) exited with a non-zero status. Hooks run after
-generation, so the files are written, but the run is marked failed.
+A post-generate shell hook (`hooks.done`) exited with a non-zero status. Hooks run after generation. The files are written, but the run is marked failed.
 
 ## What happened
 
-`hooks.done` runs shell commands once generation finishes, for example a formatter or a `tsc`
-check. A command that exits non-zero shows up here, in the summary, and in `--reporter json`, and it
-fails the run. Earlier versions only logged a line and moved on.
+`hooks.done` runs shell commands once generation finishes, for example a formatter or a `tsc` check. A command that exits non-zero shows up here, in the summary, and in `--reporter json`. It fails the run. Earlier versions only logged a line and moved on.
 
 ## Common causes
 
 - The command is not installed or not on `PATH`.
-- A typo in the command.
-- The command does real work and genuinely failed (a type error caught by `tsc`, for example).
+- The command has a typo.
+- The command did real work and genuinely failed, such as a type error caught by `tsc`.
 
 ## How to fix it
 

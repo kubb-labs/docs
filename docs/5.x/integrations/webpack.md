@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # webpack
 
-`unplugin-kubb/webpack` runs Kubb during [webpack](https://webpack.js.org/) compilation. It works with both webpack 4 and webpack 5.
+`unplugin-kubb/webpack` runs Kubb during [webpack](https://webpack.js.org/) compilation. It requires webpack 5. Pass your Kubb config to the `config` option.
 
 ## Install
 

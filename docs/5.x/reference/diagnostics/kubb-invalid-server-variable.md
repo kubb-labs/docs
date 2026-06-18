@@ -14,8 +14,7 @@ A server variable resolves to a value that its `enum` does not allow.
 
 ## What happened
 
-OpenAPI server URLs can contain `{variable}` placeholders. When a variable declares an `enum`, the
-value Kubb resolves it to must be in that list. This diagnostic fires when the resolved value is not.
+OpenAPI server URLs can contain `{variable}` placeholders. When a variable declares an `enum`, the value Kubb resolves it to must be in that list. This diagnostic fires when the resolved value is not.
 
 ## How to fix it
 

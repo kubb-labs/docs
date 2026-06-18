@@ -7,7 +7,7 @@ outline: deep
 
 # Plugins
 
-Plugins are how you teach Kubb to generate something new. A plugin owns its file naming, its output folder, its lifecycle hooks, and the [generators](/docs/5.x/api/core#generator) that walk the [AST](/docs/5.x/concepts/ast) and emit `FileNode`s. Most of what you see in a generated `src/gen/` folder comes from a plugin.
+Plugins teach Kubb to generate something new. A plugin owns its file naming, its output folder, its lifecycle hooks, and the [generators](/docs/5.x/api/core#generator) that walk the [AST](/docs/5.x/concepts/ast) and emit `FileNode`s. Most of what you see in a generated `src/gen/` folder comes from a plugin.
 
 > [!TIP]
 > Need a TanStack Query client, a Zod schema set, or MSW handlers? Check the [Plugins](/plugins) registry first. Build a custom plugin only when no existing one fits.
@@ -59,7 +59,7 @@ export default defineConfig({
 
 ## Lifecycle events
 
-The `hooks` map can subscribe to any event in [`KubbHooks`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/types.ts). The full list, in the order they fire during a build:
+The `hooks` map can subscribe to any event in [`KubbHooks`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/types.ts). Here is the full list, in the order they fire during a build:
 
 | Phase       | Event                                                                    | Context                                                                                                    | When it fires                                                            |
 | ----------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
@@ -91,11 +91,11 @@ The `hooks` map can subscribe to any event in [`KubbHooks`](https://github.com/k
 | Diagnostics | `kubb:info` / `kubb:success` / `kubb:warn` / `kubb:error`                | corresponding `KubbInfoContext`, `KubbSuccessContext`, …                                                   | Logging events. Subscribe to forward into your own observability stack.  |
 
 > [!TIP]
-> Plugins with `enforce: 'post'` run after all normal plugins for any given event, making them ideal for cross-plugin concerns like barrel generation. See [`@kubb/plugin-barrel`](/plugins/plugin-barrel) for an example.
+> Plugins with `enforce: 'post'` run after all normal plugins for any given event, which suits cross-plugin concerns like barrel generation. See [`@kubb/plugin-barrel`](/plugins/plugin-barrel) for an example.
 
 ## The setup context
 
-`kubb:plugin:setup` receives a `KubbPluginSetupContext` that lets you wire the plugin into the build:
+`kubb:plugin:setup` receives a `KubbPluginSetupContext` that wires the plugin into the build:
 
 | Method / Property | Purpose                                                                                |
 | ----------------- | -------------------------------------------------------------------------------------- |
@@ -235,7 +235,7 @@ type Plugin<TFactory> = {
 }
 ```
 
-Use macros when you need to rename, filter, or rewrite nodes before generation, without forking the adapter or mutating shared state. Register them from `kubb:plugin:setup` with `ctx.addMacro` or `ctx.setMacros`:
+Use macros to rename, filter, or rewrite nodes before generation, without forking the adapter or mutating shared state. Register them from `kubb:plugin:setup` with `ctx.addMacro` or `ctx.setMacros`:
 
 ```typescript twoslash [macros.ts]
 import { ast, definePlugin } from '@kubb/core'
@@ -267,15 +267,11 @@ export const pluginRename = definePlugin(() => ({
 
 A few rules apply:
 
-- Each macro callback (`input`, `output`, `operation`, `schema`, `property`, `parameter`, `response`) is optional. Unhandled node types pass through unchanged.
-- Returning `undefined` keeps the original node. Returning a node of the same type replaces it.
-- Macros run per plugin and in order, so a later macro sees the output of an earlier one. To share a macro across plugins, export it and add it from each plugin's setup.
-- Macros run before resolver options are computed, so renamed `operationId`s and `SchemaNode.name`s flow into `resolveOptions`, `resolvePath`, and `resolveFile`.
-- Keep macros pure. Build a new node and return it rather than mutating the input, since the AST is shared by reference.
+Each macro callback (`input`, `output`, `operation`, `schema`, `property`, `parameter`, `response`) is optional, and unhandled node types pass through unchanged. Returning `undefined` keeps the original node, while returning a node of the same type replaces it. Macros run per plugin and in order, so a later macro sees the output of an earlier one. To share a macro across plugins, export it and add it from each plugin's setup. Macros run before resolver options are computed, so renamed `operationId`s and `SchemaNode.name`s flow into `resolveOptions`, `resolvePath`, and `resolveFile`. Keep macros pure: build a new node and return it rather than mutating the input, since the AST is shared by reference.
 
 ## Naming convention
 
-Kubb expects every plugin to follow the same naming pattern so other plugins, the CLI, and the documentation can find them by inference. The convention applies to four places at once:
+Kubb expects every plugin to follow the same naming pattern, so other plugins, the CLI, and the docs find them by inference. The convention applies to four places at once:
 
 | Surface                      | Pattern                                          | Example                                 |
 | ---------------------------- | ------------------------------------------------ | --------------------------------------- |
@@ -284,7 +280,7 @@ Kubb expects every plugin to follow the same naming pattern so other plugins, th
 | Factory export               | `plugin<Name>` (camelCase)                       | `pluginTs`, `pluginReactQuery`          |
 | `PluginFactoryOptions` alias | `Plugin<Name>` (PascalCase)                      | `PluginTs`, `PluginReactQuery`          |
 
-Export the runtime name as a constant so consumers can reference it without typos when declaring `dependencies`:
+Export the runtime name as a constant so consumers reference it without typos when declaring `dependencies`:
 
 ```typescript twoslash [naming.ts]
 import { definePlugin } from '@kubb/core'
@@ -301,7 +297,7 @@ export const pluginExample = definePlugin<PluginExample>((options) => ({
 ```
 
 > [!TIP]
-> Built-in plugins (`@kubb/plugin-ts`, `@kubb/plugin-zod`, `@kubb/plugin-client`, …) all follow this layout. Match it so users can swap your plugin in without rewiring imports.
+> Built-in plugins (`@kubb/plugin-ts`, `@kubb/plugin-zod`, `@kubb/plugin-client`, …) all follow this layout. Match it so users swap your plugin in without rewiring imports.
 
 ## Built-in plugins
 
@@ -324,7 +320,7 @@ The Kubb monorepo ships official plugins for the most common use cases. Browse t
 
 ### Inject a single file from setup
 
-Use `ctx.injectFile` from the `kubb:plugin:setup` hook when a plugin emits a fixed asset that doesn't depend on the input spec. Common cases include a README, a barrel file, or a pre-baked runtime helper.
+Use `ctx.injectFile` from `kubb:plugin:setup` when a plugin emits a fixed asset that does not depend on the input spec, such as a README, a barrel file, or a pre-baked runtime helper.
 
 ```typescript twoslash [inject.ts]
 import { definePlugin } from '@kubb/core'
@@ -363,7 +359,7 @@ export const pluginClientWrapper = definePlugin(() => ({
 
 ### Read sibling output in `kubb:plugin:end`
 
-The `kubb:plugin:end` hook runs after all generators in the plugin finished. Use it to emit aggregate files (barrels, manifests, type re-exports) from the files the plugin already produced.
+`kubb:plugin:end` runs after all generators in the plugin finish. Use it to emit aggregate files (barrels, manifests, type re-exports) from the files the plugin already produced.
 
 ```typescript twoslash [barrel.ts]
 import { definePlugin } from '@kubb/core'
@@ -381,9 +377,4 @@ export const pluginBarrel = definePlugin(() => ({
 
 ## Best practices
 
-- Split unrelated outputs into separate plugins so users can opt in or out.
-- Prefix the name with `plugin-` (or `@scope/plugin-`) and keep it stable; other plugins look it up by name.
-- Use `dependencies` instead of relying on declaration order. Order is fragile, and declared dependencies are explicit.
-- Generators should ask `ctx.getResolver(name)` rather than building paths inline.
-- Use closure state inside the factory or rely on the setup context. Plugins may run in parallel, so avoid global state.
-- Throw early in `kubb:plugin:setup` when required options are missing. The build aborts before any file is written.
+Split unrelated outputs into separate plugins so users opt in or out. Prefix the name with `plugin-` (or `@scope/plugin-`) and keep it stable, since other plugins look it up by name. Use `dependencies` instead of declaration order, which is fragile. Have generators ask `ctx.getResolver(name)` rather than building paths inline. Use closure state inside the factory or the setup context, and avoid global state, since plugins may run in parallel. Throw early in `kubb:plugin:setup` when required options are missing, so the build aborts before any file is written.
