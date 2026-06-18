@@ -157,7 +157,7 @@ Splits generated files into subfolders by the operation's tag or URL path. Each 
 
 ::: code-group
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginClient } from '@kubb/plugin-client'
@@ -226,7 +226,7 @@ HTTP client used by the generated code. To plug in your own client, use [`import
 
 ::: code-group
 
-```typescript twoslash [axios (default)]
+```typescript [axios (default)]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 
@@ -241,7 +241,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [fetch]
+```typescript [fetch]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 
@@ -313,7 +313,7 @@ export default client
 
 ::: code-group
 
-```typescript twoslash [Wire up a custom client]
+```typescript [Wire up a custom client]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 
@@ -408,7 +408,7 @@ Name of the generated SDK class. Used as the export name and the file name.
 
 ::: code-group
 
-```typescript twoslash [A composed PetStoreClient]
+```typescript [A composed PetStoreClient]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 import { pluginTs } from '@kubb/plugin-ts'
@@ -480,7 +480,7 @@ Runtime validator applied to request and response data using schemas from `@kubb
 
 ::: code-group
 
-```typescript twoslash [Validate responses]
+```typescript [Validate responses]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 import { pluginTs } from '@kubb/plugin-ts'
@@ -499,7 +499,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Validate request and response]
+```typescript [Validate request and response]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 import { pluginTs } from '@kubb/plugin-ts'
@@ -648,7 +648,7 @@ Base URL prepended to every request URL in the generated client. Use it to point
 
 ::: code-group
 
-```typescript twoslash [Override the spec's server URL]
+```typescript [Override the spec's server URL]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 
@@ -693,7 +693,7 @@ export type Include = {
 
 ::: code-group
 
-```typescript twoslash [Only the pet tag]
+```typescript [Only the pet tag]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 
@@ -708,7 +708,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Only GET operations under /pet]
+```typescript [Only GET operations under /pet]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 
@@ -746,7 +746,7 @@ export type Exclude = {
 
 ::: code-group
 
-```typescript twoslash [Skip everything under the store tag]
+```typescript [Skip everything under the store tag]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 
@@ -761,7 +761,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Skip a specific operation and all delete methods]
+```typescript [Skip a specific operation and all delete methods]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 
@@ -800,7 +800,7 @@ export type Override = {
 
 ::: code-group
 
-```typescript twoslash [Return the full response only for the user tag]
+```typescript [Return the full response only for the user tag]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 
@@ -833,7 +833,7 @@ Changes how the plugin names generated files and symbols. Use it to add a prefix
 |     Type: | `Partial<ResolverClient> & ThisType<ResolverClient>` |
 | Required: | `false`                                              |
 
-```typescript twoslash [Append "Client" to every name]
+```typescript [Append "Client" to every name]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 

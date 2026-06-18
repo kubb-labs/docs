@@ -57,7 +57,7 @@ Each bundler has its own entrypoint.
 
 Pass your Kubb config to the `config` option. It is a [`UserConfig`](/docs/5.x/reference/configuration) object with the same shape as `kubb.config.ts`.
 
-```typescript twoslash [vite.config.ts]
+```typescript [vite.config.ts]
 import kubb from 'unplugin-kubb/vite'
 import { defineConfig as defineViteConfig } from 'vite'
 import { defineConfig } from 'kubb'

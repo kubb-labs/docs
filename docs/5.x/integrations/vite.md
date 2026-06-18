@@ -33,7 +33,7 @@ yarn add -D unplugin-kubb@beta
 
 ## Configure
 
-```typescript twoslash [vite.config.ts]
+```typescript [vite.config.ts]
 import kubb from 'unplugin-kubb/vite'
 import { defineConfig as defineViteConfig } from 'vite'
 import { defineConfig } from 'kubb'

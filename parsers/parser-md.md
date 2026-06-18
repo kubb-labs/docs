@@ -85,7 +85,7 @@ ast.factory.createFile({
 
 ::: code-group
 
-```typescript twoslash [Standalone markdown]
+```typescript [Standalone markdown]
 import { defineConfig } from 'kubb'
 import { adapterOas } from '@kubb/adapter-oas'
 import { parserMd } from '@kubb/parser-md'

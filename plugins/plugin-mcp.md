@@ -102,7 +102,7 @@ Folder where the plugin writes its files. It is resolved against the global `out
 
 ::: code-group
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginMcp } from '@kubb/plugin-mcp'
 
@@ -196,7 +196,7 @@ Splits generated files into subfolders by the operation's first tag or first pat
 
 ::: code-group
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginMcp } from '@kubb/plugin-mcp'
 
@@ -389,7 +389,7 @@ export type Include = {
 
 ::: code-group
 
-```typescript twoslash [Only the pet tag]
+```typescript [Only the pet tag]
 import { defineConfig } from 'kubb'
 import { pluginMcp } from '@kubb/plugin-mcp'
 
@@ -404,7 +404,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Only GET operations under /pet]
+```typescript [Only GET operations under /pet]
 import { defineConfig } from 'kubb'
 import { pluginMcp } from '@kubb/plugin-mcp'
 
@@ -442,7 +442,7 @@ export type Exclude = {
 
 ::: code-group
 
-```typescript twoslash [Skip everything under the store tag]
+```typescript [Skip everything under the store tag]
 import { defineConfig } from 'kubb'
 import { pluginMcp } from '@kubb/plugin-mcp'
 
@@ -457,7 +457,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Skip a specific operation and all delete methods]
+```typescript [Skip a specific operation and all delete methods]
 import { defineConfig } from 'kubb'
 import { pluginMcp } from '@kubb/plugin-mcp'
 
@@ -496,7 +496,7 @@ export type Override = {
 
 ::: code-group
 
-```typescript twoslash [Send the admin tag to its own folder]
+```typescript [Send the admin tag to its own folder]
 import { defineConfig } from 'kubb'
 import { pluginMcp } from '@kubb/plugin-mcp'
 
@@ -532,7 +532,7 @@ Changes how the plugin names generated files and handlers. Use it to add a prefi
 > [!TIP]
 > Use `resolver` for naming and file-location tweaks. For changing the AST nodes themselves (e.g. stripping descriptions), use `macros` instead.
 
-```typescript twoslash [Prefix every handler name with "Mcp"]
+```typescript [Prefix every handler name with "Mcp"]
 import { defineConfig } from 'kubb'
 import { pluginMcp } from '@kubb/plugin-mcp'
 
@@ -577,7 +577,7 @@ Rewrites AST nodes before they are printed to source. Use it to rename operation
 
 ::: code-group
 
-```typescript twoslash [Strip descriptions before printing]
+```typescript [Strip descriptions before printing]
 import { defineConfig } from 'kubb'
 import { pluginMcp } from '@kubb/plugin-mcp'
 
@@ -599,7 +599,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Prefix every operationId]
+```typescript [Prefix every operationId]
 import { defineConfig } from 'kubb'
 import { pluginMcp } from '@kubb/plugin-mcp'
 

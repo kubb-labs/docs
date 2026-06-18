@@ -96,7 +96,7 @@ Folder where the plugin writes its files. It is resolved against the global `out
 
 ::: code-group
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -188,7 +188,7 @@ Splits generated files into subfolders by the operation's tag or URL path. Each 
 
 ::: code-group
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -277,7 +277,7 @@ Path or module specifier of a custom client module. Generated code imports its H
 
 ::: code-group
 
-```typescript twoslash [Wire up a custom client]
+```typescript [Wire up a custom client]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -414,7 +414,7 @@ Add `@kubb/plugin-zod` to the plugins list when either direction is set to `'zod
 
 ::: code-group
 
-```typescript twoslash [Validate responses with Zod]
+```typescript [Validate responses with Zod]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -433,7 +433,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Validate request and response]
+```typescript [Validate request and response]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -538,7 +538,7 @@ HTTP methods treated as queries. Operations using one of these generate a `useQu
 
 ::: code-group
 
-```typescript twoslash [Allow HEAD as a query method]
+```typescript [Allow HEAD as a query method]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -581,7 +581,7 @@ Builds the `queryKey` for each generated composable. Use it to add a version nam
 
 ::: code-group
 
-```typescript twoslash [Prepend a version prefix]
+```typescript [Prepend a version prefix]
 import { defineConfig } from 'kubb'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
@@ -600,7 +600,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Key from operationId]
+```typescript [Key from operationId]
 import { defineConfig } from 'kubb'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
@@ -638,7 +638,7 @@ HTTP methods treated as mutations. Operations using one of these generate a `use
 
 ::: code-group
 
-```typescript twoslash [Treat only POST and PUT as mutations]
+```typescript [Treat only POST and PUT as mutations]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -705,7 +705,7 @@ export type Include = {
 
 ::: code-group
 
-```typescript twoslash [Only the pet tag]
+```typescript [Only the pet tag]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -722,7 +722,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Only GET operations under /pet]
+```typescript [Only GET operations under /pet]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -762,7 +762,7 @@ export type Exclude = {
 
 ::: code-group
 
-```typescript twoslash [Skip everything under the store tag]
+```typescript [Skip everything under the store tag]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -800,7 +800,7 @@ export type Override = {
 
 ::: code-group
 
-```typescript twoslash [Use object params for the user tag only]
+```typescript [Use object params for the user tag only]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'

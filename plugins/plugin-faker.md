@@ -98,7 +98,7 @@ Folder where the plugin writes its files. It is resolved against the global `out
 
 ::: code-group
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -168,7 +168,7 @@ Text added to the top of every generated file. Use it for license headers, lint 
 
 ::: code-group
 
-```typescript twoslash [Static banner]
+```typescript [Static banner]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -186,7 +186,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Dynamic banner]
+```typescript [Dynamic banner]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -231,7 +231,7 @@ Splits generated files into subfolders by the operation's tag or path. Each grou
 
 ::: code-group
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -350,7 +350,7 @@ Maps a schema name to a custom Faker expression. Use it when the schema name doe
 |     Type: | `Record<string, string>` |
 | Required: | `false`                  |
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -408,7 +408,7 @@ Value passed to `faker.seed(...)`. Set it for deterministic output across runs, 
 
 ::: code-group
 
-```typescript twoslash [Deterministic seed]
+```typescript [Deterministic seed]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -460,7 +460,7 @@ export type Include = {
 
 ::: code-group
 
-```typescript twoslash [Only the pet tag]
+```typescript [Only the pet tag]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -475,7 +475,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Only GET operations under /pet]
+```typescript [Only GET operations under /pet]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -513,7 +513,7 @@ export type Exclude = {
 
 ::: code-group
 
-```typescript twoslash [Skip everything under the store tag]
+```typescript [Skip everything under the store tag]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -528,7 +528,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Skip a specific operation and all delete methods]
+```typescript [Skip a specific operation and all delete methods]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -567,7 +567,7 @@ export type Override = {
 
 ::: code-group
 
-```typescript twoslash [Use a different date parser for the user tag]
+```typescript [Use a different date parser for the user tag]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -603,7 +603,7 @@ Changes how the plugin names the generated factory helpers. Override only the me
 > [!TIP]
 > Use `resolver` for naming and file-location tweaks. For changing the AST nodes themselves (e.g. stripping descriptions), use `macros` instead.
 
-```typescript twoslash [Append "Mock" to every factory name]
+```typescript [Append "Mock" to every factory name]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -646,7 +646,7 @@ Rewrites AST nodes before they are printed to source. Use it to drop description
 > [!TIP]
 > Use `macros` to rewrite node properties before printing. For changing the names of generated symbols and files, use `resolver` instead.
 
-```typescript twoslash [Strip descriptions before printing]
+```typescript [Strip descriptions before printing]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -681,7 +681,7 @@ Use `this.transform` to recurse into nested nodes, and `this.options` to read pr
 
 ::: code-group
 
-```typescript twoslash [Use faker.number.float() for integers]
+```typescript [Use faker.number.float() for integers]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -702,7 +702,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Override date strings]
+```typescript [Override date strings]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
