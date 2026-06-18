@@ -36,12 +36,15 @@ resources:
   codesandbox: https://codesandbox.io/p/github/kubb-labs/plugins/main/examples/swr
 ---
 
-> [!TIP]
-> See [SWR](https://swr.vercel.app) for more information about SWR.
-
 # @kubb/plugin-swr
 
-Generate type-safe SWR hooks from your OpenAPI schema. The plugin emits `useSWR` hooks for queries and `useSWRMutation` hooks for writes.
+`@kubb/plugin-swr` turns your OpenAPI operations into SWR hooks. It emits a `useSWR` hook for each query and a `useSWRMutation` hook for each write. The hooks reuse the types from `@kubb/plugin-ts` and call the HTTP client from `@kubb/plugin-client`, so every request and response stays typed.
+
+This plugin needs both [`@kubb/plugin-ts`](/plugins/plugin-ts) and [`@kubb/plugin-client`](/plugins/plugin-client).
+
+**See also**
+
+- [SWR](https://swr.vercel.app)
 
 ## Installation
 
@@ -69,7 +72,7 @@ yarn add -D @kubb/plugin-swr@beta
 
 ### output
 
-Set where the plugin writes its files and how the output behaves.
+Where the generated hook files are written and how they are exported.
 
 |           |                                                |
 | --------: | :--------------------------------------------- |
@@ -79,9 +82,7 @@ Set where the plugin writes its files and how the output behaves.
 
 #### output.path
 
-Folder where the plugin writes its generated code. The path is resolved against the global `output.path` set on `defineConfig`.
-
-Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `'hooks'`). To put everything in one file, set `output.mode: 'file'` and point `path` at the target file including its extension (e.g. `'types.ts'`).
+Folder where the plugin writes its files. It is resolved against the global `output.path` on `defineConfig`. To write everything to one file instead, set `output.mode: 'file'` and give `path` a file name with its extension, such as `'hooks.ts'`.
 
 |           |           |
 | --------: | :-------- |
@@ -92,39 +93,12 @@ Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `
 > [!TIP]
 > `output.path` sets where files go, `output.mode` sets how many. Use `'directory'` (the default) for one file per operation, optionally grouped into subdirectories with the `group` option. Use `'file'` to write everything into a single file.
 
-::: code-group
-
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { path: './types' },
-    }),
-  ],
-})
-```
-
-```text [Resulting tree]
-src/
-└── gen/
-    └── types/
-        ├── Pet.ts
-        └── Store.ts
-```
-
-:::
-
 #### output.mode
 
 How the plugin consolidates its generated code into files.
 
-- `'directory'` writes one file per operation or schema under `output.path`. This is the default.
-- `'file'` writes everything into a single file. The `output.path` must include the file extension (e.g. `'types.ts'`, `'models.py'`).
+- `'directory'` (default) writes one file per operation under `output.path`.
+- `'file'` writes everything into a single file. The `output.path` must include the file extension (e.g. `'hooks.ts'`).
 
 |           |                         |
 | --------: | :---------------------- |
@@ -133,42 +107,7 @@ How the plugin consolidates its generated code into files.
 |  Default: | `'directory'`           |
 
 > [!TIP]
-> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group`, since a single-file output has nothing to group. Combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
-
-::: code-group
-
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginClient } from '@kubb/plugin-client'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { path: 'types.ts', mode: 'file' },
-    }),
-    pluginClient({
-      output: { path: 'clients', mode: 'directory' },
-      group: { type: 'tag' },
-    }),
-  ],
-})
-```
-
-```text [Resulting tree]
-src/
-└── gen/
-    ├── types.ts
-    └── clients/
-        ├── pet/
-        │   └── getPetById.ts
-        └── store/
-            └── getInventory.ts
-```
-
-:::
+> Pair `'directory'` with the `group` option to organize output into per-tag subdirectories. `mode: 'file'` forbids `group`. A single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 #### output.barrel
 
@@ -187,25 +126,113 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 
 ### group
 
-Organize `output.mode: 'directory'` output into per-tag or per-path subdirectories.
+Splits generated files into subfolders by the operation's tag or URL path. Each group gets its own directory under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`.
 
 |           |         |
 | --------: | :------ |
 |     Type: | `Group` |
 | Required: | `false` |
 
+> [!TIP]
+> `group` only applies to `output.mode: 'directory'` (the default). It is not valid with `output.mode: 'file'`.
+
 ### client
 
-Configure how the generated hooks call the HTTP client. Set the client kind, the shape of the returned data, the base URL, the import path, and parameter casing.
+Sets how the generated hooks talk to the HTTP client. Choose the bundled client or a custom module, the shape of the returned data, the base URL, and the parameter casing.
 
-|           |                                                                                         |
-| --------: | :-------------------------------------------------------------------------------------- |
+|           |                                                                               |
+| --------: | :---------------------------------------------------------------------------- |
 |     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, paramsCasing? }` |
-| Required: | `false`                                                                                 |
+| Required: | `false`                                                                       |
+
+When no `@kubb/plugin-client` is present and no `client.importPath` is set, the plugin injects its own client into `.kubb/client.ts`.
+
+#### client.client
+
+Which bundled HTTP client to emit into `.kubb/client.ts`. `'axios'` needs `axios` at runtime. `'fetch'` uses the global `fetch`. Cannot be combined with `client.importPath`.
+
+|           |                    |
+| --------: | :----------------- |
+|     Type: | `'axios' \| 'fetch'` |
+| Required: | `false`            |
+|  Default: | `'axios'`          |
+
+#### client.importPath
+
+Path to a custom client module. The generated hooks import their HTTP runtime from here instead of the bundled client. Accepts relative paths and bare module specifiers. The value is used as written. Cannot be combined with `client.client`.
+
+|           |          |
+| --------: | :------- |
+|     Type: | `string` |
+| Required: | `false`  |
+
+#### client.clientType
+
+Shape of the generated client. Only `'function'` works with this plugin.
+
+|           |                                          |
+| --------: | :--------------------------------------- |
+|     Type: | `'function' \| 'class' \| 'staticClass'` |
+| Required: | `false`                                  |
+|  Default: | `'function'`                             |
+
+#### client.dataReturnType
+
+Shape of the value each hook returns. `'data'` returns only the response body. `'full'` returns the full response as a discriminated union keyed by HTTP status code.
+
+|           |                  |
+| --------: | :--------------- |
+|     Type: | `'data' \| 'full'` |
+| Required: | `false`          |
+|  Default: | `'data'`         |
+
+#### client.baseURL
+
+Base URL prepended to every request. When omitted, the adapter's server URL is used (typically `servers[0].url`).
+
+|           |          |
+| --------: | :------- |
+|     Type: | `string` |
+| Required: | `false`  |
+
+#### client.paramsCasing
+
+Renames parameter properties (path, query, headers) in the generated hooks. The HTTP request still uses the original spec names. Set `'camelcase'` to rename to camelCase.
+
+|           |               |
+| --------: | :------------ |
+|     Type: | `'camelcase'` |
+| Required: | `false`       |
 
 ### paramsType
 
-Set how the generated hooks receive request parameters. `'inline'` spreads each parameter as its own argument. `'object'` groups them into a single argument.
+How the hooks receive request parameters. `'inline'` spreads each parameter as its own argument. `'object'` groups them into a single argument.
+
+|           |                        |
+| --------: | :--------------------- |
+|     Type: | `'object' \| 'inline'` |
+| Required: | `false`                |
+|  Default: | `'inline'`             |
+
+::: code-group
+
+```typescript ['inline' (default)]
+export function useGetPetById(petId?: GetPetByIdPathPetId, options = {}) {
+  // ...
+}
+```
+
+```typescript ['object']
+export function useGetPetById({ petId }: { petId?: GetPetByIdPathPetId } = {}, options = {}) {
+  // ...
+}
+```
+
+:::
+
+### pathParamsType
+
+How the hooks receive path parameters. `'inline'` spreads each path parameter as its own argument. `'object'` groups them into a single argument. When `paramsType` is `'object'`, path parameters default to `'object'` too.
 
 |           |                        |
 | --------: | :--------------------- |
@@ -215,26 +242,16 @@ Set how the generated hooks receive request parameters. `'inline'` spreads each 
 
 ### paramsCasing
 
-Apply a casing convention to parameter names. Set `'camelcase'` to rename parameters to camelCase. Leave it unset to keep the names from the OpenAPI document.
+Applies a casing convention to parameter names. Set `'camelcase'` to rename parameters to camelCase. Leave it unset to keep the names from the OpenAPI document.
 
 |           |               |
 | --------: | :------------ |
 |     Type: | `'camelcase'` |
 | Required: | `false`       |
 
-### pathParamsType
-
-Set how the generated hooks receive path parameters. `'inline'` spreads each path parameter as its own argument. `'object'` groups them into a single argument. When `paramsType` is `'object'`, path parameters default to `'object'` as well.
-
-|           |                        |
-| --------: | :--------------------- |
-|     Type: | `'object' \| 'inline'` |
-| Required: | `false`                |
-|  Default: | `'inline'`             |
-
 ### parser
 
-Validate the response body before the hook returns it. `false` skips validation and casts the response to the generated type. `'zod'` runs the response through the matching Zod schema from `@kubb/plugin-zod`, which adds that plugin as a dependency.
+Validates the response body before the hook returns it. `false` skips validation and casts the response to the generated type. `'zod'` runs the response through the matching Zod schema from `@kubb/plugin-zod`, which adds that plugin as a dependency.
 
 |           |                  |
 | --------: | :--------------- |
@@ -244,12 +261,12 @@ Validate the response body before the hook returns it. `false` skips validation 
 
 ### query
 
-Configure the generated `useSWR` hooks. Pass an object to change the HTTP methods or the import path. Pass `false` to skip query hook generation.
+Configures the generated `useSWR` hooks. Pass an object to change the HTTP methods or the import path. Pass `false` to skip query hook generation.
 
-|           |                        |
-| --------: | :--------------------- |
-|     Type: | `Partial<Query> \| false` |
-| Required: | `false`                |
+|           |                                           |
+| --------: | :---------------------------------------- |
+|     Type: | `Partial<Query> \| false`                 |
+| Required: | `false`                                   |
 |  Default: | `{ methods: ['get'], importPath: 'swr' }` |
 
 ```typescript [Query]
@@ -261,17 +278,17 @@ type Query = {
 
 #### query.methods
 
-List the HTTP methods that produce query hooks.
+HTTP methods that produce query hooks.
 
-|           |           |
-| --------: | :-------- |
+|           |                 |
+| --------: | :-------------- |
 |     Type: | `Array<string>` |
-| Required: | `false`   |
-|  Default: | `['get']` |
+| Required: | `false`         |
+|  Default: | `['get']`       |
 
 #### query.importPath
 
-Set the module that `useSWR` is imported from. The plugin emits `import useSWR from '${importPath}'`. The value accepts relative and absolute paths and is used as written. Relative paths resolve against the generated file.
+Module that `useSWR` is imported from. The plugin emits `import useSWR from '${importPath}'`. Accepts relative and absolute paths and is used as written. Relative paths resolve against the generated file.
 
 |           |          |
 | --------: | :------- |
@@ -279,23 +296,35 @@ Set the module that `useSWR` is imported from. The plugin emits `import useSWR f
 | Required: | `false`  |
 |  Default: | `'swr'`  |
 
+::: code-group
+
+```typescript ['swr' (default)]
+import useSWR from 'swr'
+```
+
+```typescript ['custom/swr']
+import useSWR from 'custom/swr'
+```
+
+:::
+
 ### queryKey
 
-Build the SWR key used by each query hook. Pass a function that receives the operation and its schemas and returns the key array. The plugin uses its built-in transformer when this is unset.
+Builds the SWR key for each query hook. Pass a function that receives the operation and its schemas and returns the key array. The plugin uses its built-in transformer when this is unset.
 
-|           |             |
-| --------: | :---------- |
+|           |               |
+| --------: | :------------ |
 |     Type: | `Transformer` |
-| Required: | `false`     |
+| Required: | `false`       |
 
 ### mutation
 
-Configure the generated `useSWRMutation` hooks. Pass an object to change the HTTP methods or the import path. Pass `false` to skip mutation hook generation.
+Configures the generated `useSWRMutation` hooks. Pass an object to change the HTTP methods or the import path. Pass `false` to skip mutation hook generation.
 
-|           |                           |
-| --------: | :------------------------ |
-|     Type: | `Partial<Mutation> \| false` |
-| Required: | `false`                   |
+|           |                                                                              |
+| --------: | :--------------------------------------------------------------------------- |
+|     Type: | `Partial<Mutation> \| false`                                                 |
+| Required: | `false`                                                                      |
 |  Default: | `{ methods: ['post', 'put', 'patch', 'delete'], importPath: 'swr/mutation' }` |
 
 ```typescript [Mutation]
@@ -307,7 +336,7 @@ type Mutation = {
 
 #### mutation.methods
 
-List the HTTP methods that produce mutation hooks.
+HTTP methods that produce mutation hooks.
 
 |           |                                      |
 | --------: | :----------------------------------- |
@@ -317,7 +346,7 @@ List the HTTP methods that produce mutation hooks.
 
 #### mutation.importPath
 
-Set the module that `useSWRMutation` is imported from. The plugin emits `import useSWRMutation from '${importPath}'`. The value accepts relative and absolute paths and is used as written. Relative paths resolve against the generated file.
+Module that `useSWRMutation` is imported from. The plugin emits `import useSWRMutation from '${importPath}'`. Accepts relative and absolute paths and is used as written. Relative paths resolve against the generated file.
 
 |           |                  |
 | --------: | :--------------- |
@@ -325,18 +354,30 @@ Set the module that `useSWRMutation` is imported from. The plugin emits `import 
 | Required: | `false`          |
 |  Default: | `'swr/mutation'` |
 
+::: code-group
+
+```typescript ['swr/mutation' (default)]
+import useSWRMutation from 'swr/mutation'
+```
+
+```typescript ['custom/mutation']
+import useSWRMutation from 'custom/mutation'
+```
+
+:::
+
 ### mutationKey
 
-Build the SWR key used by each mutation hook. Pass a function that receives the operation and its schemas and returns the key array. The plugin uses its built-in transformer when this is unset.
+Builds the SWR key for each mutation hook. Pass a function that receives the operation and its schemas and returns the key array. The plugin uses its built-in transformer when this is unset.
 
-|           |             |
-| --------: | :---------- |
+|           |               |
+| --------: | :------------ |
 |     Type: | `Transformer` |
-| Required: | `false`     |
+| Required: | `false`       |
 
 ### include
 
-Limit generation to the listed tags, operations, or paths.
+Generates only the operations that match at least one entry in the list. Everything else is skipped. Each entry filters by one of `tag`, `operationId`, `path`, `method`, `contentType`, or `schemaName`. The `pattern` is a string (exact match) or a `RegExp` (fuzzy match).
 
 |           |                  |
 | --------: | :--------------- |
@@ -345,7 +386,7 @@ Limit generation to the listed tags, operations, or paths.
 
 ### exclude
 
-Skip the listed tags, operations, or paths during generation.
+Skips any operation that matches at least one entry in the list. It is the opposite of `include`. Entries use the same `type` and `pattern`. When both are set, `exclude` wins.
 
 |           |                  |
 | --------: | :--------------- |
@@ -354,46 +395,39 @@ Skip the listed tags, operations, or paths during generation.
 
 ### override
 
-Apply different options to specific tags, operations, or paths.
+Applies different plugin options to operations that match a pattern. Each entry takes the same `type` and `pattern` as `include` and `exclude`, plus an `options` object. Rules cannot nest. Entries run top to bottom, and the first match merges onto the plugin defaults.
 
 |           |                   |
 | --------: | :---------------- |
 |     Type: | `Array<Override>` |
 | Required: | `false`           |
 
-### generators
-
-Add custom generators that run alongside the built-in query and mutation generators.
-
-|           |                               |
-| --------: | :---------------------------- |
-|     Type: | `Array<Generator<PluginSwr>>` |
-| Required: | `false`                       |
-
 ### resolver
 
-Override the naming for generated function names and types. Pass the methods you want to change. The plugin keeps its defaults for the rest.
+Changes how the plugin names generated functions and types. Override only the methods you want to change. Anything you omit falls back to the default. Inside a method, `this` is the full resolver, so you can call `this.default(name)` to reuse the built-in name.
 
 |           |                                                |
 | --------: | :--------------------------------------------- |
 |     Type: | `Partial<ResolverSwr> & ThisType<ResolverSwr>` |
 | Required: | `false`                                        |
 
+### generators
+
+Adds custom generators that run next to the built-in query and mutation generators. Each generator can emit extra files or post-process existing ones using the plugin's AST and options. See [Creating plugins](/docs/5.x/guides/creating-plugins).
+
+|           |                               |
+| --------: | :---------------------------- |
+|     Type: | `Array<Generator<PluginSwr>>` |
+| Required: | `false`                       |
+
 ### macros
 
-Pass a list of [macros](/docs/5.x/concepts/macros) that rewrite generated nodes before they are printed.
+Rewrites AST nodes before they are printed to source. Each [macro](/docs/5.x/concepts/macros) callback receives the node and a context object. Return a new node to replace it, or `undefined` to leave it as is. Macros run in order, so a later one sees the output of an earlier one.
 
-|           |                 |
-| --------: | :-------------- |
-|     Type: | `Array<Macro>`  |
-| Required: | `false`         |
-
-## Dependencies
-
-This plugin requires the following plugins to be installed:
-
-- [`@kubb/plugin-ts`](/plugins/plugin-ts)
-- [`@kubb/plugin-client`](/plugins/plugin-client)
+|           |                |
+| --------: | :------------- |
+|     Type: | `Array<Macro>` |
+| Required: | `false`        |
 
 ## Example
 
@@ -405,35 +439,23 @@ import { pluginTs } from '@kubb/plugin-ts'
 import { pluginSwr } from '@kubb/plugin-swr'
 
 export default defineConfig({
-  input: {
-    path: './petStore.yaml',
-  },
-  output: {
-    path: './src/gen',
-  },
+  input: { path: './petStore.yaml' },
+  output: { path: './src/gen' },
   plugins: [
     pluginTs(),
     pluginSwr({
-      output: {
-        path: './hooks',
-      },
-      group: {
-        type: 'tag',
-        name: ({ group }) => `${group}Hooks`,
-      },
-      client: {
-        dataReturnType: 'data',
-      },
-      mutation: {
-        methods: ['post', 'put', 'delete'],
-      },
-      query: {
-        methods: ['get'],
-        importPath: 'swr',
-      },
+      output: { path: './hooks' },
+      group: { type: 'tag', name: ({ group }) => `${group}Hooks` },
+      client: { dataReturnType: 'data' },
+      query: { methods: ['get'], importPath: 'swr' },
+      mutation: { methods: ['post', 'put', 'delete'] },
     }),
   ],
 })
 ```
 
 :::
+
+## See Also
+
+- [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-swr/CHANGELOG.md)

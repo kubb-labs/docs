@@ -41,7 +41,13 @@ resources:
 
 # @kubb/plugin-faker
 
-Generate a mock-data factory function for every schema in your OpenAPI spec with [Faker.js](https://fakerjs.dev/). Call `createPet()` to get a realistic `Pet` object for tests, Storybook stories, and local data without a running backend. Pair with `@kubb/plugin-msw` to mock entire endpoints, or use the factories directly in your test suite.
+`@kubb/plugin-faker` builds a mock-data factory for every schema in your OpenAPI spec with [Faker.js](https://fakerjs.dev/). Call `createPet()` to get a realistic `Pet` object. Use it in tests, Storybook stories, and local development without a backend. It depends on `@kubb/plugin-ts`, so add that plugin too.
+
+**See also**
+
+- [Faker.js](https://fakerjs.dev/)
+- [@kubb/plugin-ts](/plugins/plugin-ts)
+- [@kubb/plugin-msw](/plugins/plugin-msw)
 
 ## Installation
 
@@ -79,9 +85,7 @@ Where the generated mock factories are written and how they are exported.
 
 #### output.path
 
-Folder where the plugin writes its generated code. The path is resolved against the global `output.path` set on `defineConfig`.
-
-Use a folder to keep each generator's output separate (`'types'`, `'clients'`, `'hooks'`). To write everything into one file, set `output.mode: 'file'` and point `path` at the target file including its extension (e.g. `'types.ts'`).
+Folder where the plugin writes its files. It is resolved against the global `output.path` on `defineConfig`. To write everything to one file instead, set `output.mode: 'file'` and give `path` a file name with its extension, such as `'mocks.ts'`.
 
 |           |           |
 | --------: | :-------- |
@@ -96,14 +100,14 @@ Use a folder to keep each generator's output separate (`'types'`, `'clients'`, `
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginFaker } from '@kubb/plugin-faker'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
-      output: { path: './types' },
+    pluginFaker({
+      output: { path: './mocks' },
     }),
   ],
 })
@@ -112,9 +116,9 @@ export default defineConfig({
 ```text [Resulting tree]
 src/
 └── gen/
-    └── types/
-        ├── Pet.ts
-        └── Store.ts
+    └── mocks/
+        ├── createPet.ts
+        └── createStore.ts
 ```
 
 :::
@@ -123,8 +127,8 @@ src/
 
 How the plugin consolidates its generated code into files.
 
-- `'directory'` writes one file per operation or schema under `output.path`. This is the default.
-- `'file'` writes everything into a single file. The `output.path` must include the file extension (e.g. `'types.ts'`, `'models.py'`).
+- `'directory'` (default) writes one file per operation or schema under `output.path`.
+- `'file'` writes everything into a single file. The `output.path` must include the file extension (e.g. `'mocks.ts'`).
 
 |           |                         |
 | --------: | :---------------------- |
@@ -133,42 +137,7 @@ How the plugin consolidates its generated code into files.
 |  Default: | `'directory'`           |
 
 > [!TIP]
-> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group`, since a single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
-
-::: code-group
-
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginClient } from '@kubb/plugin-client'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { path: 'types.ts', mode: 'file' },
-    }),
-    pluginClient({
-      output: { path: 'clients', mode: 'directory' },
-      group: { type: 'tag' },
-    }),
-  ],
-})
-```
-
-```text [Resulting tree]
-src/
-└── gen/
-    ├── types.ts
-    └── clients/
-        ├── pet/
-        │   └── getPetById.ts
-        └── store/
-            └── getInventory.ts
-```
-
-:::
+> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group`. A single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 #### output.barrel
 
@@ -188,99 +157,9 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 > [!TIP]
 > Pick `'named'` when consumers care about which symbols they import (better tree-shaking, friendlier auto-import). Pick `'all'` when the file count is small and you want a one-line barrel.
 
-::: code-group
-
-```typescript twoslash ['named' (default)]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { path: 'types', barrel: { type: 'named' } },
-    }),
-  ],
-})
-```
-
-```typescript [src/gen/types/index.ts]
-export { Pet, PetStatus } from './Pet'
-export { Store } from './Store'
-```
-
-```typescript twoslash ['all']
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { path: 'types', barrel: { type: 'all' } },
-    }),
-  ],
-})
-```
-
-```typescript [src/gen/types/index.ts]
-export * from './Pet'
-export * from './Store'
-```
-
-```typescript twoslash [nested]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { path: 'types', barrel: { type: 'named', nested: true } },
-    }),
-  ],
-})
-```
-
-```text [Generated tree]
-src/gen/types/
-├── index.ts          # re-exports ./pet and ./store
-├── pet/
-│   ├── index.ts      # re-exports Pet, Store, ...
-│   └── Pet.ts
-└── store/
-    ├── index.ts
-    └── Store.ts
-```
-
-```typescript twoslash [false]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { path: 'types', barrel: false },
-    }),
-  ],
-})
-```
-
-```text [Result]
-# No index.ts is generated for this plugin.
-# Its files are also excluded from the root index.ts.
-```
-
-:::
-
 #### output.banner
 
-Text prepended to every generated file, for license headers, lint disables, or `@ts-nocheck` directives. Pass a string for a static banner, or a function that computes it from each file's `RootNode` (the AST root holding path, schema, and operation context).
+Text added to the top of every generated file. Use it for license headers, lint disables, or a `@ts-nocheck` directive. Pass a string for a fixed banner, or a function that builds one from each file's `RootNode` (the AST root with the path, schema, and operation context).
 
 |           |                                          |
 | --------: | :--------------------------------------- |
@@ -291,15 +170,15 @@ Text prepended to every generated file, for license headers, lint disables, or `
 
 ```typescript twoslash [Static banner]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginFaker } from '@kubb/plugin-faker'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginFaker({
       output: {
-        path: 'types',
+        path: 'mocks',
         banner: '/* eslint-disable */\n// @ts-nocheck',
       },
     }),
@@ -307,27 +186,18 @@ export default defineConfig({
 })
 ```
 
-```typescript [Generated file]
-/* eslint-disable */
-// @ts-nocheck
-export type Pet = {
-  id: number
-  name: string
-}
-```
-
 ```typescript twoslash [Dynamic banner]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginFaker } from '@kubb/plugin-faker'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
+    pluginFaker({
       output: {
-        path: 'types',
-        banner: (node) => `// Source: ${node.filePath}\n// Generated at ${new Date().toISOString()}`,
+        path: 'mocks',
+        banner: (node) => `// Source: ${node.filePath}`,
       },
     }),
   ],
@@ -338,39 +208,16 @@ export default defineConfig({
 
 #### output.footer
 
-Text appended to every generated file, the counterpart to `banner`, for closing comments, re-enabling lint rules, or marker lines. Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
+Text added to the bottom of every generated file. It works like `banner` but for closing comments, such as re-enabling a lint rule. Pass a string or a function that receives the file's `RootNode` and returns the text.
 
 |           |                                          |
 | --------: | :--------------------------------------- |
 |     Type: | `string \| ((node: RootNode) => string)` |
 | Required: | `false`                                  |
 
-::: code-group
-
-```typescript twoslash [Re-enable lint after a banner disable]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: {
-        path: 'types',
-        banner: '/* eslint-disable */',
-        footer: '/* eslint-enable */',
-      },
-    }),
-  ],
-})
-```
-
-:::
-
 ### group
 
-Splits the generated files into subfolders by each operation's tag or path, so related mocks end up in the same directory. Without `group`, every file lands in the plugin's `output.path` folder. With `group`, each file goes under `{output.path}/{groupName}/`, where `groupName` comes from the operation's first tag or first path segment.
+Splits generated files into subfolders by the operation's tag or path. Each group gets its own directory under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`.
 
 |           |         |
 | --------: | :------ |
@@ -380,7 +227,7 @@ Splits the generated files into subfolders by each operation's tag or path, so r
 > [!TIP]
 > Use `group` to mirror your API's domain structure (pet, store, user) in the generated code. Combine it with `output.barrel: { type: 'named', nested: true }` to get per-group barrel files.
 >
-> `group` only applies to `output.mode: 'directory'` (the default), where each group becomes a folder. It is not valid with `output.mode: 'file'`, since a single-file output has nothing to group.
+> `group` only applies to `output.mode: 'directory'` (the default). It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
 
 ::: code-group
 
@@ -406,45 +253,43 @@ With the configuration above, the generator emits one folder per tag, named afte
 ```text
 src/gen/
 ├── pet/
-│   ├── AddPet.ts
-│   └── GetPet.ts
+│   ├── createPet.ts
+│   └── getPet.ts
 └── store/
-    ├── CreateStore.ts
-    └── GetStoreById.ts
+    ├── createStore.ts
+    └── getStoreById.ts
 ```
 
-Pass `group.name` to customize the folder name, for example `name: ({ group }) => \`${group}Controller\`` to keep the pre-v5 `petController/` layout.
+Pass `group.name` to customize the folder name. For example, a `name` function that appends `Controller` to the group keeps the pre-v5 `petController/` layout.
 
 #### group.type
 
-Picks the property that assigns each operation to a group.
+Property used to assign each operation to a group. Required whenever `group` is set.
 
-- `'tag'` reads the operation's first tag (`operation.getTags().at(0)?.name`) and uses it as the group key. Operations without a tag fall into a default group.
+- `'tag'` reads the operation's first tag (`operation.getTags().at(0)?.name`). Operations without a tag fall into a default group.
 - `'path'` uses the first segment of the operation's URL.
 
-`group.type` is required whenever you set `group`, and `group` itself stays optional.
-
-|           |                  |
-| --------: | :--------------- |
+|           |                   |
+| --------: | :---------------- |
 |     Type: | `'tag' \| 'path'` |
-| Required: | `true`\*         |
+| Required: | `true`            |
 
 > [!NOTE]
-> `Required: true`\* is conditional. It applies only when you set the parent `group` option, which stays optional.
+> `Required: true*` is conditional. It only applies when the parent `group` option is used, and `group` itself stays optional.
 
 #### group.name
 
-Builds the folder name from a group key, which is the operation's first tag or first path segment.
+Function that turns a group key (the operation's first tag or first path segment) into a folder name.
 
-|           |                                       |
-| --------: | :------------------------------------ |
+|           |                                     |
+| --------: | :---------------------------------- |
 |     Type: | `(context: { group: string }) => string` |
-| Required: | `false`                               |
-|  Default: | camelCased tag or first path segment  |
+| Required: | `false`                             |
+|  Default: | camelCased tag, or first path segment for `path` groups |
 
 ### dateParser
 
-Library used to format `date`, `time`, and `datetime` fields represented as strings. Use a value other than `'faker'` when your project already has a date library and you want consistent formatting across mocks and runtime. The plugin auto-imports the default export of the library you choose.
+Library used to format `date`, `time`, and `datetime` fields that are represented as strings. Pick a value other than `'faker'` when your project already has a date library and you want consistent formatting. Kubb adds the import for you.
 
 |           |                                            |
 | --------: | :----------------------------------------- |
@@ -453,7 +298,7 @@ Library used to format `date`, `time`, and `datetime` fields represented as stri
 |  Default: | `'faker'`                                  |
 
 > [!TIP]
-> Any library exporting a default function works (`dayjs`, `moment`, `luxon`, ...). Kubb adds the import statement for you.
+> Any library exporting a default function works (`dayjs`, `moment`, `luxon`, ...).
 
 ::: code-group
 
@@ -471,9 +316,34 @@ moment(faker.date.anytime()).format('YYYY-MM-DD')
 
 :::
 
+### regexGenerator
+
+Library used to generate strings that satisfy a regex `pattern` keyword in the spec.
+
+- `'faker'` (default) uses `faker.helpers.fromRegExp`. No extra dependency.
+- `'randexp'` uses the `randexp` package. It supports a wider regex grammar, but adds a runtime dependency.
+
+|           |                        |
+| --------: | :--------------------- |
+|     Type: | `'faker' \| 'randexp'` |
+| Required: | `false`                |
+|  Default: | `'faker'`              |
+
+::: code-group
+
+```typescript ['faker' (default)]
+faker.helpers.fromRegExp('^[A-Z]+$')
+```
+
+```typescript ['randexp']
+new RandExp(/^[A-Z]+$/).gen()
+```
+
+:::
+
 ### mapper
 
-Maps OpenAPI schema names to specific Faker expressions, for when the schema name does not give Faker enough context to pick a sensible value (`'email'`, `'phone'`, `'avatarUrl'`). Keys are the case-sensitive schema name, values are the JavaScript expression that produces the mock value.
+Maps a schema name to a custom Faker expression. Use it when the schema name does not give Faker enough context to pick a sensible value (`'email'`, `'avatarUrl'`, `'phoneNumber'`). Keys are the case-sensitive schema name. Values are the JavaScript expression that produces the mock value.
 
 |           |                          |
 | --------: | :----------------------- |
@@ -498,46 +368,38 @@ export default defineConfig({
 })
 ```
 
-### paramsCasing
+### locale
 
-Renames properties inside the generated path/query/header mocks. Body mocks are unaffected.
+Faker locale code. It switches the named import to `fakerXX` from `@faker-js/faker`, so names, addresses, and phone numbers reflect the target region. The default `'en'` imports `fakerEN`.
 
-|           |               |
-| --------: | :------------ |
-|     Type: | `'camelcase'` |
-| Required: | `false`       |
+|           |          |
+| --------: | :------- |
+|     Type: | `string` |
+| Required: | `false`  |
+|  Default: | `'en'`   |
 
-> [!IMPORTANT]
-> Set the same `paramsCasing` here as on `@kubb/plugin-ts` so the generated mocks stay assignable to the generated types.
-
-### regexGenerator
-
-Library used to generate strings that satisfy a regex `pattern` keyword in the OpenAPI spec.
-
-- `'faker'` (default): `faker.helpers.fromRegExp(...)`. No extra dependency.
-- `'randexp'`: uses the `randexp` package, which supports a wider regex grammar (lookaheads, named groups) but adds a runtime dependency.
-
-|           |                        |
-| --------: | :--------------------- |
-|     Type: | `'faker' \| 'randexp'` |
-| Required: | `false`                |
-|  Default: | `'faker'`              |
+> [!TIP]
+> See [Faker.js localization](https://fakerjs.dev/api/localization.html) for the full list of locale codes.
 
 ::: code-group
 
-```typescript ['faker' (default)]
-faker.helpers.fromRegExp('^[A-Z]+$')
+```typescript ['en' (default)]
+import { fakerEN as faker } from '@faker-js/faker'
 ```
 
-```typescript ['randexp']
-new RandExp(/^[A-Z]+$/).gen()
+```typescript ['de']
+import { fakerDE as faker } from '@faker-js/faker'
+```
+
+```typescript ['de_AT']
+import { fakerDE_AT as faker } from '@faker-js/faker'
 ```
 
 :::
 
 ### seed
 
-Seed value passed to `faker.seed(...)`. Set it for deterministic output across runs, which helps with snapshot tests and reproducible local data.
+Value passed to `faker.seed(...)`. Set it for deterministic output across runs, which helps with snapshot tests and reproducible local data.
 
 |           |                      |
 | --------: | :------------------- |
@@ -559,42 +421,28 @@ export default defineConfig({
 
 :::
 
-### locale
+### paramsCasing
 
-Faker locale used for generated mock values. Switches the named import to `fakerXX` from `@faker-js/faker` so names, addresses, and phone numbers reflect the target region. The default `'en'` imports `fakerEN`.
+Renames the properties inside the generated path, query, and header mocks to camelCase. Body mocks are left untouched.
 
-|           |          |
-| --------: | :------- |
-|     Type: | `string` |
-| Required: | `false`  |
-|  Default: | `'en'`   |
+|           |               |
+| --------: | :------------ |
+|     Type: | `'camelcase'` |
+| Required: | `false`       |
 
-> [!TIP]
-> See [Faker.js localization](https://fakerjs.dev/api/localization.html) for the full list of locale codes.
-
-::: code-group
-
-```typescript ['de']
-import { fakerDE as faker } from '@faker-js/faker'
-```
-
-```typescript ['de_AT']
-import { fakerDE_AT as faker } from '@faker-js/faker'
-```
-
-:::
+> [!IMPORTANT]
+> Set the same `paramsCasing` here as on `@kubb/plugin-ts` so the generated mocks stay assignable to the generated types.
 
 ### include
 
-Restricts generation to operations that match at least one entry in the list. Anything not matched is skipped.
-
-Each entry filters by one of:
+Generates only the operations and schemas that match at least one entry in the list. Everything else is skipped. Each entry filters by one of:
 
 - `tag`: the operation's first tag in the OpenAPI spec.
 - `operationId`: the operation's `operationId`.
-- `path`: the URL pattern (`'/pet/{petId}'`).
-- `method`: HTTP method (`'get'`, `'post'`, ...).
-- `contentType`: the media type of the request body.
+- `path`: the URL path, such as `'/pet/{petId}'`.
+- `method`: the HTTP method, such as `'get'` or `'post'`.
+- `contentType`: the request or response media type, such as `'application/json'`.
+- `schemaName`: the component schema name under `#/components/schemas`.
 
 `pattern` accepts either a string (exact match) or a `RegExp` for fuzzy matches.
 
@@ -605,7 +453,7 @@ Each entry filters by one of:
 
 ```typescript [Type definition]
 export type Include = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType'
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
   pattern: string | RegExp
 }
 ```
@@ -649,17 +497,7 @@ export default defineConfig({
 
 ### exclude
 
-Skips any operation that matches at least one entry in the list. The opposite of `include`.
-
-Each entry filters by one of:
-
-- `tag`: the operation's first tag.
-- `operationId`: the operation's `operationId`.
-- `path`: the URL pattern (`'/pet/{petId}'`).
-- `method`: HTTP method (`'get'`, `'post'`, ...).
-- `contentType`: the media type of the request body.
-
-`pattern` accepts a plain string or a `RegExp`. When both `include` and `exclude` are set, `exclude` wins.
+Skips any operation or schema that matches at least one entry in the list. It is the opposite of `include`. Entries use the same `type` (`tag`, `operationId`, `path`, `method`, `contentType`, `schemaName`) and `pattern` (string or `RegExp`). When both are set, `exclude` wins.
 
 |           |                  |
 | --------: | :--------------- |
@@ -668,7 +506,7 @@ Each entry filters by one of:
 
 ```typescript [Type definition]
 export type Exclude = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType'
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
   pattern: string | RegExp
 }
 ```
@@ -712,7 +550,7 @@ export default defineConfig({
 
 ### override
 
-Applies a different set of plugin options to operations that match a pattern. Use this when most of your API follows the global config but a few endpoints need different treatment. Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations. Entries are evaluated top to bottom: the first match's `options` is merged onto the plugin defaults, and later entries do not stack.
+Applies different plugin options to operations that match a pattern. Use it for the few endpoints that need special treatment. Each entry takes the same `type` and `pattern` as `include` and `exclude`, plus an `options` object. That object accepts any plugin option except `override`, so rules cannot nest. Entries run top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
 
 |           |                   |
 | --------: | :---------------- |
@@ -721,9 +559,9 @@ Applies a different set of plugin options to operations that match a pattern. Us
 
 ```typescript [Type definition]
 export type Override = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType'
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
   pattern: string | RegExp
-  options: PluginOptions
+  options: Omit<Partial<Options>, 'override'>
 }
 ```
 
@@ -753,26 +591,17 @@ export default defineConfig({
 
 :::
 
-### generators
-
-Adds custom generators that run alongside the plugin's built-in ones. Each generator can emit extra files or post-process existing ones using the plugin's AST and options. Use this for output the plugin does not produce itself (a custom client wrapper, an extra index, a metadata file). See [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
-
-|           |                                 |
-| --------: | :------------------------------ |
-|     Type: | `Array<Generator<PluginFaker>>` |
-| Required: | `false`                         |
-
-> [!WARNING]
-> Generators are an experimental, low-level API. The signature may change between minor releases.
-
 ### resolver
 
-Customizes the names of the generated factory helpers. Set it to append `Mock` or `Factory` so the helpers do not clash with the imported types.
+Changes how the plugin names the generated factory helpers. Override only the methods you want to change. Anything you omit, or that returns `null` or `undefined`, falls back to the default. Inside a method, `this` is the full resolver, so you can call `this.default(name)` to reuse the built-in name. A common use is to append `Mock` or `Factory` so helpers do not clash with imported types.
 
-|           |                          |
-| --------: | :----------------------- |
-|     Type: | `Partial<ResolverFaker>` |
-| Required: | `false`                  |
+|           |                                                    |
+| --------: | :------------------------------------------------- |
+|     Type: | `Partial<ResolverFaker> & ThisType<ResolverFaker>` |
+| Required: | `false`                                            |
+
+> [!TIP]
+> Use `resolver` for naming and file-location tweaks. For changing the AST nodes themselves (e.g. stripping descriptions), use `macros` instead.
 
 ```typescript twoslash [Append "Mock" to every factory name]
 import { defineConfig } from 'kubb'
@@ -793,16 +622,31 @@ export default defineConfig({
 })
 ```
 
+### generators
+
+Adds custom generators that run next to the built-in ones. Each generator can emit extra files or post-process existing ones using the plugin's AST and options. Use it for output the plugin does not produce, such as a custom wrapper or a metadata file. See [Creating plugins](/docs/5.x/guides/creating-plugins).
+
+|           |                                 |
+| --------: | :------------------------------ |
+|     Type: | `Array<Generator<PluginFaker>>` |
+| Required: | `false`                         |
+
+> [!WARNING]
+> Generators are an experimental, low-level API. The signature may change between minor releases.
+
 ### macros
 
-A list of [macros](/docs/5.x/concepts/macros) applied to schema/operation nodes before code is printed. Use this to drop descriptions or rewrite metadata before the mock factory is built.
+Rewrites AST nodes before they are printed to source. Use it to drop descriptions or change schema metadata without forking the generator. Each [macro](/docs/5.x/concepts/macros) callback (such as `schema` or `operation`) receives the node and a context object. Return a new node to replace it, or `undefined` to leave it as is. Callbacks you omit keep their default behavior. Macros run in order, so a later one sees the output of an earlier one.
 
-|           |                 |
-| --------: | :-------------- |
-|     Type: | `Array<Macro>`  |
-| Required: | `false`         |
+|           |                |
+| --------: | :------------- |
+|     Type: | `Array<Macro>` |
+| Required: | `false`        |
 
-```typescript twoslash [Strip schema descriptions]
+> [!TIP]
+> Use `macros` to rewrite node properties before printing. For changing the names of generated symbols and files, use `resolver` instead.
+
+```typescript twoslash [Strip descriptions before printing]
 import { defineConfig } from 'kubb'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -826,9 +670,9 @@ export default defineConfig({
 
 ### printer
 
-Replaces the Faker handler for a specific schema type (e.g. `'integer'`, `'date'`, `'ref'`). Each handler returns the Faker expression as a string.
+Replaces the Faker handler for a specific schema type, such as `'integer'`, `'date'`, or `'ref'`. Each handler returns the Faker expression as a string.
 
-Use `this.transform` to recurse into nested schema nodes and `this.options` to read printer options.
+Use `this.transform` to recurse into nested nodes, and `this.options` to read printer options.
 
 |           |                                 |
 | --------: | :------------------------------ |
@@ -885,12 +729,6 @@ export default defineConfig({
 
 :::
 
-## Dependencies
-
-This plugin requires the following plugins to be installed:
-
-- [`@kubb/plugin-ts`](/plugins/plugin-ts)
-
 ## Example
 
 ::: code-group
@@ -917,3 +755,8 @@ export default defineConfig({
 ```
 
 :::
+
+## See Also
+
+- [@kubb/plugin-ts](/plugins/plugin-ts)
+- [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-faker/CHANGELOG.md)

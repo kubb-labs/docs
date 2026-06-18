@@ -40,14 +40,15 @@ resources:
   codesandbox: https://codesandbox.io/p/github/kubb-labs/plugins/main/examples/vue-query
 ---
 
-> [!TIP]
-> Reference: [TanStack Query for Vue](https://tanstack.com/query/latest/docs/framework/vue/overview) for cache, retries, and devtools.
-
 # @kubb/plugin-vue-query
 
-Generate one [TanStack Query](https://tanstack.com/query) composable per OpenAPI operation for Vue's Composition API. Queries become `useFooQuery` and optionally `useFooInfiniteQuery`, mutations become `useFooMutation`, each typed against the operation's request and response.
+`@kubb/plugin-vue-query` turns each OpenAPI operation into a [TanStack Query](https://tanstack.com/query) composable for Vue. Read operations become `useFooQuery` and optionally `useFooInfiniteQuery`. Write operations become `useFooMutation`. Every composable is typed. Query keys, input variables, response data, and error shape all come from the spec.
 
-Pairs with `@kubb/plugin-client` for the HTTP layer and `@kubb/plugin-ts` for types.
+It needs `@kubb/plugin-ts` for the types. The HTTP client comes from `@kubb/plugin-client`, which the plugin bundles into the output.
+
+**See also**
+
+- [TanStack Query for Vue](https://tanstack.com/query/latest/docs/framework/vue/overview)
 
 ## Installation
 
@@ -85,18 +86,13 @@ Where the generated composables are written and how they are exported.
 
 #### output.path
 
-Folder where the plugin writes its generated code. The path is resolved against the global `output.path` set on `defineConfig`.
-
-Use a folder to keep each generator's output isolated (`'types'`, `'clients'`, `'hooks'`). To write everything into one file, set `output.mode: 'file'` and point `path` at the target file including its extension (`'types.ts'`).
+Folder where the plugin writes its files. It is resolved against the global `output.path` on `defineConfig`. To write everything to one file instead, set `output.mode: 'file'` and give `path` a file name with its extension, such as `'hooks.ts'`.
 
 |           |           |
 | --------: | :-------- |
 |     Type: | `string`  |
 | Required: | `true`    |
 |  Default: | `'hooks'` |
-
-> [!TIP]
-> `output.path` sets where files go, `output.mode` sets how many. Use `'directory'` (the default) for one file per operation, optionally grouped into subdirectories with the `group` option. Use `'file'` to write everything into a single file.
 
 ::: code-group
 
@@ -129,10 +125,10 @@ src/
 
 #### output.mode
 
-How the plugin consolidates its generated code into files.
+How the plugin groups its code into files.
 
-- `'directory'` writes one file per operation or schema under `output.path`. This is the default.
-- `'file'` writes everything into a single file. The `output.path` must include the file extension (e.g. `'types.ts'`, `'models.py'`).
+- `'directory'` (default) writes one file per operation under `output.path`.
+- `'file'` writes everything into a single file. The `output.path` must include the file extension, such as `'hooks.ts'`.
 
 |           |                         |
 | --------: | :---------------------- |
@@ -141,39 +137,7 @@ How the plugin consolidates its generated code into files.
 |  Default: | `'directory'`           |
 
 > [!TIP]
-> Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group`. A single-file output has nothing to group, so combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
-
-::: code-group
-
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginVueQuery } from '@kubb/plugin-vue-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginVueQuery({
-      output: { path: 'hooks', mode: 'directory' },
-      group: { type: 'tag' },
-    }),
-  ],
-})
-```
-
-```text [Resulting tree]
-src/
-└── gen/
-    └── hooks/
-        ├── pet/
-        │   └── useGetPetByIdQuery.ts
-        └── store/
-            └── useGetInventoryQuery.ts
-```
-
-:::
+> Pair `'directory'` with the `group` option to split output into per-tag subdirectories. `mode: 'file'` forbids `group`. A single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 #### output.barrel
 
@@ -182,7 +146,7 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 - `{ type: 'named' }` re-exports each symbol by name. Best for tree-shaking and explicit imports.
 - `{ type: 'all' }` uses `export *`. Smaller barrel file, but exports everything.
 - `{ nested: true }` creates a barrel in every subdirectory, so callers can import from any depth.
-- `false` skips the barrel entirely. The plugin's files are also excluded from the root `index.ts`.
+- `false` skips the barrel. The plugin's files are also left out of the root `index.ts`.
 
 |           |                                                         |
 | --------: | :------------------------------------------------------ |
@@ -190,205 +154,27 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 | Required: | `false`                                                 |
 |  Default: | `{ type: 'named' }`                                     |
 
-> [!TIP]
-> Pick `'named'` when consumers care about which symbols they import (better tree-shaking, friendlier auto-import). Pick `'all'` when the file count is small and you want a one-line barrel.
-
-::: code-group
-
-```typescript twoslash ['named' (default)]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginVueQuery } from '@kubb/plugin-vue-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginVueQuery({
-      output: { path: 'hooks', barrel: { type: 'named' } },
-    }),
-  ],
-})
-```
-
-```typescript [src/gen/hooks/index.ts]
-export { useGetPetByIdQuery, getPetByIdQueryKey } from './useGetPetByIdQuery'
-export { useAddPetMutation } from './useAddPetMutation'
-```
-
-```typescript twoslash ['all']
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginVueQuery } from '@kubb/plugin-vue-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginVueQuery({
-      output: { path: 'hooks', barrel: { type: 'all' } },
-    }),
-  ],
-})
-```
-
-```typescript [src/gen/hooks/index.ts]
-export * from './useGetPetByIdQuery'
-export * from './useAddPetMutation'
-```
-
-```typescript twoslash [nested]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginVueQuery } from '@kubb/plugin-vue-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginVueQuery({
-      output: { path: 'hooks', barrel: { type: 'named', nested: true } },
-      group: { type: 'tag' },
-    }),
-  ],
-})
-```
-
-```text [Generated tree]
-src/gen/hooks/
-├── index.ts          # re-exports ./pet and ./store
-├── pet/
-│   ├── index.ts      # re-exports the pet composables
-│   └── useGetPetByIdQuery.ts
-└── store/
-    ├── index.ts
-    └── useGetInventoryQuery.ts
-```
-
-```typescript twoslash [false]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginVueQuery } from '@kubb/plugin-vue-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginVueQuery({
-      output: { path: 'hooks', barrel: false },
-    }),
-  ],
-})
-```
-
-```text [Result]
-# No index.ts is generated for this plugin.
-# Its files are also excluded from the root index.ts.
-```
-
-:::
-
 #### output.banner
 
-Text prepended to every generated file, for license headers, lint disables, or `@ts-nocheck` directives. Pass a string for a static banner, or a function that computes it from each file's `RootNode` (the AST root holding path, schema, and operation context).
+Text added to the top of every generated file. Use it for license headers, lint disables, or a `@ts-nocheck` directive. Pass a string for a fixed banner, or a function that builds one from each file's `RootNode`.
 
 |           |                                          |
 | --------: | :--------------------------------------- |
 |     Type: | `string \| ((node: RootNode) => string)` |
 | Required: | `false`                                  |
-
-::: code-group
-
-```typescript twoslash [Static banner]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginVueQuery } from '@kubb/plugin-vue-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginVueQuery({
-      output: {
-        path: 'hooks',
-        banner: '/* eslint-disable */\n// @ts-nocheck',
-      },
-    }),
-  ],
-})
-```
-
-```typescript [Generated file]
-/* eslint-disable */
-// @ts-nocheck
-import { useQuery } from '@tanstack/vue-query'
-// ... rest of the generated composable
-```
-
-```typescript twoslash [Dynamic banner]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginVueQuery } from '@kubb/plugin-vue-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginVueQuery({
-      output: {
-        path: 'hooks',
-        banner: (node) => `// Source: ${node.filePath}\n// Generated at ${new Date().toISOString()}`,
-      },
-    }),
-  ],
-})
-```
-
-:::
 
 #### output.footer
 
-Text appended to every generated file, the counterpart to `banner`, for closing comments, re-enabling lint rules, or marker lines. Pass a string for a static footer, or a function that receives the file's `RootNode` and returns the footer text.
+Text added to the bottom of every generated file. It works like `banner` but for closing comments, such as re-enabling a lint rule. Pass a string or a function that receives the file's `RootNode`.
 
 |           |                                          |
 | --------: | :--------------------------------------- |
 |     Type: | `string \| ((node: RootNode) => string)` |
 | Required: | `false`                                  |
 
-::: code-group
-
-```typescript twoslash [Re-enable lint after a banner disable]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginVueQuery } from '@kubb/plugin-vue-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginVueQuery({
-      output: {
-        path: 'hooks',
-        banner: '/* eslint-disable */',
-        footer: '/* eslint-enable */',
-      },
-    }),
-  ],
-})
-```
-
-:::
-
 ### group
 
-Splits generated files into subfolders by the operation's tag, so each tag gets its own directory. Without `group`, every file lands in the plugin's `output.path` folder. With `group`, files go under `{output.path}/{groupName}/`, where `groupName` derives from the operation's first tag.
+Splits generated files into subfolders by the operation's tag or URL path. Each group gets its own directory under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`.
 
 |           |         |
 | --------: | :------ |
@@ -398,7 +184,7 @@ Splits generated files into subfolders by the operation's tag, so each tag gets 
 > [!TIP]
 > Use `group` to mirror your API's domain structure (pet, store, user) in the generated code. Combine it with `output.barrel: { type: 'named', nested: true }` to get per-tag barrel files.
 >
-> `group` only applies to `output.mode: 'directory'` (the default), where each group becomes a folder. It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
+> `group` only applies to `output.mode: 'directory'` (the default). It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
 
 ::: code-group
 
@@ -419,11 +205,7 @@ export default defineConfig({
 })
 ```
 
-:::
-
-With the configuration above, the generator emits one folder per tag, named after the camelCased tag:
-
-```text
+```text [Resulting tree]
 src/gen/hooks/
 ├── pet/
 │   ├── useAddPetMutation.ts
@@ -433,25 +215,28 @@ src/gen/hooks/
     └── useGetInventoryQuery.ts
 ```
 
-Pass `group.name` to customize the folder name, for example `name: ({ group }) => \`${group}Controller\``to keep the pre-v5`petController/` layout.
+:::
 
 #### group.type
 
 Property used to assign each operation to a group. Required whenever `group` is set.
 
-Today only `'tag'` is supported. Kubb reads the first tag on the operation (`operation.getTags().at(0)?.name`) and uses it as the group key. Operations without a tag go into a default group.
+- `'tag'` uses the operation's first tag (`operation.getTags().at(0)?.name`).
+- `'path'` uses the first segment of the operation's URL, such as `pet` for `/pet/{petId}`.
 
-|           |         |
-| --------: | :------ |
-|     Type: | `'tag'` |
-| Required: | `true`  |
+Operations with no tag go in a default group.
+
+|           |                   |
+| --------: | :---------------- |
+|     Type: | `'tag' \| 'path'` |
+| Required: | `true`            |
 
 > [!NOTE]
 > `Required: true*` is conditional. It only applies when the parent `group` option is used, and `group` itself stays optional.
 
 #### group.name
 
-Function that builds the folder/identifier name from a group key (the operation's first tag).
+Function that turns a group key (the operation's first tag) into a folder name.
 
 |           |                                     |
 | --------: | :---------------------------------- |
@@ -461,14 +246,12 @@ Function that builds the folder/identifier name from a group key (the operation'
 
 ### client
 
-HTTP client used inside every generated composable. Each composable calls into this client to perform the request.
+HTTP client used inside every generated composable. Each composable calls this client to run the request. It mirrors a subset of `pluginClient` options. Set these when the Vue composables need different client behavior than the rest of your app.
 
-Mirrors a subset of `pluginClient` options. Set these here when the Vue composables need different client behavior than the rest of your app.
-
-|           |                                                                                          |
-| --------: | :--------------------------------------------------------------------------------------- |
-|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, paramsCasing? }`  |
-| Required: | `false`                                                                                  |
+|           |                                                                              |
+| --------: | :--------------------------------------------------------------------------- |
+|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, paramsCasing? }` |
+| Required: | `false`                                                                      |
 
 #### client.client
 
@@ -482,57 +265,15 @@ HTTP client that the generated composables call. `'axios'` imports from `@kubb/p
 
 #### client.importPath
 
-Path or module specifier of a custom client module. Generated code imports its HTTP runtime from here instead of `@kubb/plugin-client/clients/{client}`. Use it to inject auth headers, add interceptors, set the base URL at runtime, or wrap a different HTTP library (ky, ofetch, ...). Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work.
+Path or module specifier of a custom client module. Generated code imports its HTTP runtime from here instead of `@kubb/plugin-client/clients/{client}`. Use it to inject auth headers, add interceptors, set the base URL at runtime, or wrap another HTTP library. Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work.
 
 |           |          |
 | --------: | :------- |
 |     Type: | `string` |
 | Required: | `false`  |
 
-> [!TIP]
-> See the [custom client guide](https://kubb.dev/plugins/plugin-client#importpath) for a worked example.
-
 > [!IMPORTANT]
-> When used with query plugins (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`), generated hooks also import a `Client` type alias. Your module must export `Client`, `RequestConfig`, and `ResponseErrorConfig`, or TypeScript fails the import.
-
-```typescript [src/client.ts]
-import axios from 'axios'
-
-export type RequestConfig<TData = unknown> = {
-  url?: string
-  method: 'GET' | 'PUT' | 'PATCH' | 'POST' | 'DELETE'
-  params?: object
-  data?: TData | FormData
-  responseType?: 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream'
-  signal?: AbortSignal
-  headers?: HeadersInit
-}
-
-export type ResponseConfig<TData = unknown> = {
-  data: TData
-  status: number
-  statusText: string
-}
-
-export type ResponseErrorConfig<TError = unknown> = TError
-
-// Required when used with @kubb/plugin-react-query or @kubb/plugin-vue-query
-export type Client = <TData, _TError = unknown, TVariables = unknown>(config: RequestConfig<TVariables>) => Promise<ResponseConfig<TData>>
-
-const client: Client = async (config) => {
-  const response = await axios.request<TData>({
-    ...config,
-    headers: {
-      Authorization: `Bearer ${process.env.API_TOKEN}`,
-      ...config.headers,
-    },
-  })
-
-  return response
-}
-
-export default client
-```
+> Generated composables also import a `Client` type alias. Your module must export `Client`, `RequestConfig`, and `ResponseErrorConfig`, or TypeScript fails the import. See the [custom client guide](https://kubb.dev/plugins/plugin-client#importpath).
 
 ::: code-group
 
@@ -555,26 +296,12 @@ export default defineConfig({
 
 :::
 
-##### Required exports
-
-The module must match the shape of the built-in client: a default export of the `client` function, a `RequestConfig` type, and a `ResponseErrorConfig` type. With a query plugin (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`) it must also export a `Client` type alias.
-
-##### How generated files import it
-
-Generated code imports the client as a default import (bound to the local name `client`) and the runtime types as named type imports:
-
-```typescript
-import client from '${client.importPath}'
-import type { RequestConfig, ResponseErrorConfig } from '${client.importPath}'
-// ... rest of the generated file
-```
-
 #### client.dataReturnType
 
 Shape of the value returned from each generated client function.
 
 - `'data'` returns only the response body (`response.data`).
-- `'full'` returns a discriminated union keyed by HTTP status code. Each member is `{ status: N; data: StatusNType; statusText: string }`. Narrowing on `res.status` also narrows `res.data` to the matching response type.
+- `'full'` returns a discriminated union keyed by HTTP status code. Narrowing on `res.status` also narrows `res.data` to the matching response type.
 
 |           |                    |
 | --------: | :----------------- |
@@ -582,73 +309,21 @@ Shape of the value returned from each generated client function.
 | Required: | `false`            |
 |  Default: | `'data'`           |
 
-::: code-group
-
-```typescript ['data' (default)]
-export async function getPetById<TData>(petId: GetPetByIdPathParams): Promise<ResponseConfig<TData>['data']> {
-  // ...
-}
-```
-
-```typescript [usage.ts]
-const pet = await getPetById(1)
-//    ^? Pet
-```
-
-```typescript ['full']
-export async function addPet(data: AddPetData, config = {}) {
-  const res = await request<AddPetStatus200 | AddPetStatus405, ...>(...)
-  return res as
-    | { status: 200; data: AddPetStatus200; statusText: string }
-    | { status: 405; data: AddPetStatus405; statusText: string }
-}
-```
-
-```typescript [usage.ts]
-const res = await addPet(petData)
-if (res.status === 405) {
-  res.data // narrowed to AddPetStatus405
-}
-```
-
-:::
-
 #### client.baseURL
 
-Base URL prepended to every request URL in the generated client. When omitted, the URL comes from the spec's `servers[0].url` (or whichever index the adapter reads). Set it to point the client at a different environment (staging, production) than the spec.
+Base URL prepended to every request URL in the generated client. When omitted, the URL comes from the spec's `servers[0].url`. Set it to point the client at a different environment than the spec.
 
 |           |          |
 | --------: | :------- |
 |     Type: | `string` |
 | Required: | `false`  |
 
-::: code-group
-
-```typescript twoslash [Override the spec's server URL]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginVueQuery } from '@kubb/plugin-vue-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginVueQuery({
-      client: { baseURL: 'https://petstore.swagger.io/v2' },
-    }),
-  ],
-})
-```
-
-:::
-
 #### client.clientType
 
-Style of the HTTP client that this plugin imports from `@kubb/plugin-client`.
+Style of the HTTP client this plugin imports from `@kubb/plugin-client`.
 
-- `'function'`: imports the function client (`getPetById(...)`). Required for query plugins.
-- `'class'`: also generates a wrapper class on top, but only usable inside `@kubb/plugin-client`.
+- `'function'` imports the function client (`getPetById(...)`). Required for this plugin.
+- `'class'` also generates a wrapper class, but it only works inside `@kubb/plugin-client`.
 
 |           |                         |
 | --------: | :---------------------- |
@@ -657,7 +332,7 @@ Style of the HTTP client that this plugin imports from `@kubb/plugin-client`.
 |  Default: | `'function'`            |
 
 > [!WARNING]
-> Query plugins (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, `@kubb/plugin-svelte-query`, `@kubb/plugin-solid-query`) work only with `clientType: 'function'`. If you set `clientType: 'class'` here, the plugin falls back to generating its own inline function-based client instead of importing from `@kubb/plugin-client`.
+> Vue Query works only with `clientType: 'function'`. If you set `clientType: 'class'`, the plugin falls back to generating its own inline function client instead of importing from `@kubb/plugin-client`.
 
 #### client.paramsCasing
 
@@ -670,11 +345,10 @@ Casing applied to path, query, and header parameters inside the generated client
 
 ### paramsType
 
-How operation parameters (path, query, headers) are exposed in the generated function signature.
+How operation parameters (path, query, headers) appear in the generated function signature.
 
-- `'inline'` (default): each parameter is a separate positional argument. Compact for operations with one or two params.
-- `'object'`: every parameter is wrapped in a single object argument. Easier to read for operations with many params, and named at the call site.
-
+- `'inline'` (default) makes each parameter a separate positional argument. Compact for one or two params.
+- `'object'` wraps every parameter in a single object argument. Easier to read for many params, and named at the call site.
 
 |           |                        |
 | --------: | :--------------------- |
@@ -683,87 +357,16 @@ How operation parameters (path, query, headers) are exposed in the generated fun
 |  Default: | `'inline'`             |
 
 > [!TIP]
-> Setting `paramsType: 'object'` implicitly sets `pathParamsType: 'object'` as well, so call sites are consistent.
+> Setting `paramsType: 'object'` also sets `pathParamsType: 'object'`, so call sites stay consistent.
 
 ::: code-group
 
 ```typescript ['inline' (default)]
-export async function deletePet(petId: DeletePetPathParams['petId'], headers?: DeletePetHeaderParams, config: Partial<RequestConfig> = {}) {
-  // ...
-}
-```
-
-```typescript [Caller]
 await deletePet(42)
 ```
 
 ```typescript ['object']
-export async function deletePet(
-  {
-    petId,
-    headers,
-  }: {
-    petId: DeletePetPathParams['petId']
-    headers?: DeletePetHeaderParams
-  },
-  config: Partial<RequestConfig> = {},
-) {
-  // ...
-}
-```
-
-```typescript [Caller]
 await deletePet({ petId: 42, headers: { 'X-Api-Key': 'secret' } })
-```
-
-:::
-
-### paramsCasing
-
-Renames path, query, and header parameters in the generated client to the chosen casing. The HTTP request still uses the original names from the spec, and Kubb writes the mapping for you.
-
-- `'camelcase'`: turn `pet_id` and `X-Api-Key` into `petId` and `xApiKey` in your TypeScript code. The runtime URL still uses `/pet/{pet_id}` and the header is still sent as `X-Api-Key`.
-
-|           |               |
-| --------: | :------------ |
-|     Type: | `'camelcase'` |
-| Required: | `false`       |
-
-> [!TIP]
-> Callers write friendly camelCase names. The generated client maps them back to whatever the API expects (snake_case path params, kebab-case headers, ...).
-
-> [!IMPORTANT]
-> Set the same `paramsCasing` on every plugin that touches operation parameters (`@kubb/plugin-ts`, `@kubb/plugin-client`, `@kubb/plugin-react-query`, `@kubb/plugin-faker`, `@kubb/plugin-mcp`). Mismatched casing causes type errors between generated layers.
-
-::: code-group
-
-```typescript [With paramsCasing: 'camelcase']
-// Function takes camelCase parameters
-export async function deletePet(petId: DeletePetPathParams['petId'], headers?: DeletePetHeaderParams, config: Partial<RequestConfig> = {}) {
-  // ...mapped back to the original API name internally
-  const pet_id = petId
-
-  return client({
-    method: 'DELETE',
-    url: `/pet/${pet_id}`,
-    ...config,
-  })
-}
-```
-
-```typescript [Caller]
-await deletePet(42)
-```
-
-```typescript [Without paramsCasing]
-// Function parameters mirror the OpenAPI spec
-export async function deletePet(pet_id: DeletePetPathParams['pet_id'], headers?: DeletePetHeaderParams, config: Partial<RequestConfig> = {}) {
-  return client({
-    method: 'DELETE',
-    url: `/pet/${pet_id}`,
-    ...config,
-  })
-}
 ```
 
 :::
@@ -772,8 +375,8 @@ export async function deletePet(pet_id: DeletePetPathParams['pet_id'], headers?:
 
 How URL path parameters appear in the generated function signature. Affects only path params. Query and header params follow `paramsType`.
 
-- `'inline'` (default): each path param is a positional argument, as in `getPetById(petId)`.
-- `'object'`: path params are wrapped in a single object, as in `getPetById({ petId })`.
+- `'inline'` (default) makes each path param a positional argument, as in `getPetById(petId)`.
+- `'object'` wraps path params in a single object, as in `getPetById({ petId })`.
 
 |           |                        |
 | --------: | :--------------------- |
@@ -781,33 +384,27 @@ How URL path parameters appear in the generated function signature. Affects only
 | Required: | `false`                |
 |  Default: | `'inline'`             |
 
-::: code-group
+### paramsCasing
 
-```typescript ['inline' (default)]
-export async function getPetById(petId: GetPetByIdPathParams) {
-  // ...
-}
-```
+Renames path, query, and header parameters in the generated client to camelCase. The HTTP request still uses the original names from the spec, and Kubb writes the mapping for you. So `pet_id` and `X-Api-Key` become `petId` and `xApiKey` in your code, while the URL still sends `/pet/{pet_id}` and the `X-Api-Key` header.
 
-```typescript ['object']
-export async function getPetById({ petId }: GetPetByIdPathParams) {
-  // ...
-}
-```
+|           |               |
+| --------: | :------------ |
+|     Type: | `'camelcase'` |
+| Required: | `false`       |
 
-:::
+> [!IMPORTANT]
+> Set the same `paramsCasing` on every plugin that touches operation parameters (`@kubb/plugin-ts`, `@kubb/plugin-client`, `@kubb/plugin-vue-query`, `@kubb/plugin-faker`, `@kubb/plugin-mcp`). Mismatched casing breaks the generated type chain.
 
 ### parser
 
 Runtime validator applied to request and response data using schemas from `@kubb/plugin-zod`.
 
-- `false` (default): no validation. The client returns the response cast to the generated TypeScript type without parsing.
-- `'zod'`: validates response bodies only (backward-compatible shorthand).
-- `{ request?: 'zod', response?: 'zod' }`: opt in per direction. `request` validates the request body and query parameters before the call. `response` validates the response body after.
+- `false` (default) does no validation. The client returns the response cast to the generated type.
+- `'zod'` validates response bodies only.
+- `{ request?: 'zod', response?: 'zod' }` opts in per direction. `request` validates the request body and query parameters before the call. `response` validates the response body after.
 
-Requires `@kubb/plugin-zod` in the plugins list when either direction is set to `'zod'`.
-
-With `coercion` enabled in `@kubb/plugin-zod`, request-side parsing also normalizes types (`z.coerce.number()` converts a stringified number from a form field).
+Add `@kubb/plugin-zod` to the plugins list when either direction is set to `'zod'`.
 
 |           |                                                           |
 | --------: | :-------------------------------------------------------- |
@@ -836,7 +433,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Validate both request and response with Zod]
+```typescript twoslash [Validate request and response]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -861,28 +458,11 @@ export default defineConfig({
 
 Enables `useInfiniteQuery` composables for cursor- or page-based pagination. Pass an object to configure how the cursor is read from the response. Pass `false` (default) to skip.
 
-|           |                     |
-| --------: | :------------------ |
-|     Type: | `Infinite \| false` |
-| Required: | `false`             |
-|  Default: | `false`             |
-
-```typescript
-type Infinite =
-  | {
-      /** Query-param key used as the page cursor. Defaults to `'id'`. */
-      queryParam?: string
-      /** @deprecated Use `nextParam` and `previousParam` instead. */
-      cursorParam?: string | null
-      /** Path to the next-page cursor in the response. Dot or array form. */
-      nextParam?: string | string[] | null
-      /** Path to the previous-page cursor in the response. Dot or array form. */
-      previousParam?: string | string[] | null
-      /** Value of `pageParam` for the first page. Defaults to `0`. */
-      initialPageParam?: unknown
-    }
-  | false
-```
+|           |                            |
+| --------: | :------------------------- |
+|     Type: | `Partial<Infinite> \| false` |
+| Required: | `false`                    |
+|  Default: | `false`                    |
 
 #### infinite.queryParam
 
@@ -904,18 +484,6 @@ Initial value for `pageParam` on the first fetch.
 | Required: | `false`   |
 |  Default: | `0`       |
 
-#### infinite.cursorParam
-
-> [!WARNING]
-> `cursorParam` is deprecated. Use `nextParam` and `previousParam` for finer pagination control.
-
-Path to the cursor field on the response. Leave it unset when the cursor is not known.
-
-|           |                  |
-| --------: | :--------------- |
-|     Type: | `string \| null` |
-| Required: | `false`          |
-
 #### infinite.nextParam
 
 Path to the next-page cursor on the response. Supports dot notation (`'pagination.next.id'`) or array form (`['pagination', 'next', 'id']`).
@@ -924,152 +492,43 @@ Path to the next-page cursor on the response. Supports dot notation (`'paginatio
 | --------: | :--------------------------- |
 |     Type: | `string \| string[] \| null` |
 | Required: | `false`                      |
+|  Default: | `null`                       |
 
 #### infinite.previousParam
 
-Path to the previous-page cursor on the response. Supports dot notation (`'pagination.prev.id'`) or array form.
+Path to the previous-page cursor on the response. Supports dot notation or array form.
 
 |           |                              |
 | --------: | :--------------------------- |
 |     Type: | `string \| string[] \| null` |
 | Required: | `false`                      |
+|  Default: | `null`                       |
 
-### queryKey
+#### infinite.cursorParam
 
-Builds the `queryKey` for each generated composable. Use this to add a version namespace, swap to operation IDs, or shape keys to match an existing invalidation strategy.
+Path to the cursor field on the response. Leave it unset when the cursor is not known.
 
-The callback receives the OpenAPI `operation` and a `schemas` object containing `pathParams`, `queryParams`, `request`, and `response`.
-
-|           |                                                                             |
-| --------: | :-------------------------------------------------------------------------- |
-|     Type: | `(props: { operation: Operation; schemas: OperationSchemas }) => unknown[]` |
-| Required: | `false`                                                                     |
+|           |                  |
+| --------: | :--------------- |
+|     Type: | `string \| null` |
+| Required: | `false`          |
+|  Default: | `null`           |
 
 > [!WARNING]
-> String values are inlined verbatim into generated code. Wrap any literal string in `JSON.stringify(...)`.
-
-#### Keys from tags and path parameters
-
-Build a key from the operation's first tag plus its path parameters:
-
-```typescript twoslash
-import { defineConfig } from 'kubb'
-import { pluginVueQuery } from '@kubb/plugin-vue-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginVueQuery({
-      queryKey: ({ node }) => {
-        const tags = node.tags.map((tag) => JSON.stringify(tag))
-        const pathParams = node.parameters.filter((param) => param.in === 'path').map((param) => param.name)
-        return [...tags, ...pathParams]
-      },
-    }),
-  ],
-})
-```
-
-```typescript
-export const getUserByNameQueryKey = ({ username }: { username: GetUserByNamePathParams['username'] }) => ['user', username] as const
-```
-
-#### Extend the default transformer
-
-Prepend a version prefix to the default query key:
-
-```typescript twoslash
-import { defineConfig } from 'kubb'
-import { pluginVueQuery } from '@kubb/plugin-vue-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginVueQuery({
-      queryKey: ({ node }) => {
-        const hasQueryParams = node.parameters.some((param) => param.in === 'query')
-        const defaultKeys = [`{ url: ${JSON.stringify(node.path)} }`, hasQueryParams ? '...(params ? [params] : [])' : null].filter(Boolean)
-        return [JSON.stringify('v5'), ...defaultKeys]
-      },
-    }),
-  ],
-})
-```
-
-```typescript
-export const findPetsByTagsQueryKey = (params?: FindPetsByTagsQueryParams) => ['v5', { url: '/pet/findByTags' }, ...(params ? [params] : [])] as const
-```
-
-#### Key from operationId
-
-```typescript twoslash
-import { defineConfig } from 'kubb'
-import { pluginVueQuery } from '@kubb/plugin-vue-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginVueQuery({
-      queryKey: ({ node }) => [JSON.stringify(node.operationId)],
-    }),
-  ],
-})
-```
-
-#### Conditional keys based on params
-
-```typescript twoslash
-import { defineConfig } from 'kubb'
-import { pluginVueQuery } from '@kubb/plugin-vue-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginVueQuery({
-      queryKey: ({ node }) => {
-        const keys: unknown[] = [JSON.stringify(node.operationId)]
-
-        const pathParams = node.parameters.filter((param) => param.in === 'path')
-        if (pathParams.length) {
-          keys.push(...pathParams.map((param) => param.name))
-        }
-
-        if (node.parameters.some((param) => param.in === 'query')) {
-          keys.push('...(params ? [params] : [])')
-        }
-
-        return keys
-      },
-    }),
-  ],
-})
-```
+> `cursorParam` is deprecated. Use `nextParam` and `previousParam` for finer pagination control.
 
 ### query
 
 Configures the query composables. Pass `false` to skip composable generation and emit only `queryOptions(...)` helpers.
 
-|           |         |
-| --------: | :------ |
-|     Type: | `Query` |
-| Required: | `false` |
-
-```typescript
-type Query =
-  | {
-      methods: Array<HttpMethod>
-      importPath?: string
-    }
-  | false
-```
+|           |                         |
+| --------: | :---------------------- |
+|     Type: | `Partial<Query> \| false` |
+| Required: | `false`                 |
 
 #### query.methods
 
-HTTP methods treated as queries. Operations using one of these generate a `useQuery`-style hook (or `queryOptions` helper) instead of a mutation. Add methods such as `'head'` only when your API uses them for cache-friendly reads.
+HTTP methods treated as queries. Operations using one of these generate a `useQuery`-style composable (or `queryOptions` helper) instead of a mutation. Add a method such as `'head'` only when your API uses it for cache-friendly reads.
 
 |           |                     |
 | --------: | :------------------ |
@@ -1108,27 +567,68 @@ Module specifier used in the `import { useQuery } from '...'` statement at the t
 | Required: | `false`                 |
 |  Default: | `'@tanstack/vue-query'` |
 
+### queryKey
+
+Builds the `queryKey` for each generated composable. Use it to add a version namespace, swap to operation IDs, or shape keys to match an existing invalidation strategy. The callback receives the operation `node`.
+
+|           |                                                            |
+| --------: | :--------------------------------------------------------- |
+|     Type: | `(props: { node: OperationNode; casing }) => Array<unknown>` |
+| Required: | `false`                                                    |
+
+> [!WARNING]
+> String values are inlined verbatim into generated code. Wrap any literal string in `JSON.stringify(...)`.
+
+::: code-group
+
+```typescript twoslash [Prepend a version prefix]
+import { defineConfig } from 'kubb'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
+
+export default defineConfig({
+  input: { path: './petStore.yaml' },
+  output: { path: './src/gen' },
+  plugins: [
+    pluginVueQuery({
+      queryKey: ({ node }) => {
+        const hasQueryParams = node.parameters.some((param) => param.in === 'query')
+        const defaultKeys = [`{ url: ${JSON.stringify(node.path)} }`, hasQueryParams ? '...(params ? [params] : [])' : null].filter(Boolean)
+        return [JSON.stringify('v5'), ...defaultKeys]
+      },
+    }),
+  ],
+})
+```
+
+```typescript twoslash [Key from operationId]
+import { defineConfig } from 'kubb'
+import { pluginVueQuery } from '@kubb/plugin-vue-query'
+
+export default defineConfig({
+  input: { path: './petStore.yaml' },
+  output: { path: './src/gen' },
+  plugins: [
+    pluginVueQuery({
+      queryKey: ({ node }) => [JSON.stringify(node.operationId)],
+    }),
+  ],
+})
+```
+
+:::
+
 ### mutation
 
-Configures mutation composables. Set to `false` to skip mutation generation.
+Configures the mutation composables. Pass `false` to skip mutation generation.
 
-|           |            |
-| --------: | :--------- |
-|     Type: | `Mutation` |
-| Required: | `false`    |
-
-```typescript
-type Mutation =
-  | {
-      methods: Array<HttpMethod>
-      importPath?: string
-    }
-  | false
-```
+|           |                            |
+| --------: | :------------------------- |
+|     Type: | `Partial<Mutation> \| false` |
+| Required: | `false`                    |
 
 #### mutation.methods
 
-HTTP methods treated as mutations. Operations using one of these generate a `useMutation`-style hook instead of a query. Narrow the list if your API uses one of these methods for reads.
+HTTP methods treated as mutations. Operations using one of these generate a `useMutation`-style composable instead of a query. Narrow the list if your API uses one of these methods for reads.
 
 |           |                                      |
 | --------: | :----------------------------------- |
@@ -1169,27 +669,25 @@ Module specifier used in the `import { useMutation } from '...'` statement at th
 
 ### mutationKey
 
-Builds the `mutationKey` for each mutation composable. Useful when you batch invalidations or read mutation state via `useMutationState`.
+Builds the `mutationKey` for each mutation composable. Useful when you batch invalidations or read mutation state through `useMutationState`. The callback receives the operation `node`.
 
-|           |                                                                             |
-| --------: | :-------------------------------------------------------------------------- |
-|     Type: | `(props: { operation: Operation; schemas: OperationSchemas }) => unknown[]` |
-| Required: | `false`                                                                     |
+|           |                                                            |
+| --------: | :--------------------------------------------------------- |
+|     Type: | `(props: { node: OperationNode; casing }) => Array<unknown>` |
+| Required: | `false`                                                    |
 
 > [!WARNING]
 > String values are inlined verbatim into generated code. Wrap any literal string in `JSON.stringify(...)`.
 
 ### include
 
-Restricts generation to operations that match at least one entry in the list. Kubb skips anything not matched.
-
-Each entry filters by one of:
+Generates only the operations that match at least one entry in the list. Everything else is skipped. Each entry filters by one of:
 
 - `tag`: the operation's first tag in the OpenAPI spec.
 - `operationId`: the operation's `operationId`.
-- `path`: the URL pattern (`'/pet/{petId}'`).
-- `method`: HTTP method (`'get'`, `'post'`, ...).
-- `contentType`: the media type of the request body.
+- `path`: the URL path, such as `'/pet/{petId}'`.
+- `method`: the HTTP method, such as `'get'` or `'post'`.
+- `contentType`: the request or response media type.
 
 `pattern` accepts either a string (exact match) or a `RegExp` for fuzzy matches.
 
@@ -1200,7 +698,7 @@ Each entry filters by one of:
 
 ```typescript [Type definition]
 export type Include = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType'
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
   pattern: string | RegExp
 }
 ```
@@ -1248,17 +746,7 @@ export default defineConfig({
 
 ### exclude
 
-Skips any operation that matches at least one entry in the list. The opposite of `include`.
-
-Each entry filters by one of:
-
-- `tag`: the operation's first tag.
-- `operationId`: the operation's `operationId`.
-- `path`: the URL pattern (`'/pet/{petId}'`).
-- `method`: HTTP method (`'get'`, `'post'`, ...).
-- `contentType`: the media type of the request body.
-
-`pattern` accepts a plain string or a `RegExp`. When both `include` and `exclude` are set, `exclude` wins.
+Skips any operation that matches at least one entry in the list. It is the opposite of `include`. Entries use the same `type` (`tag`, `operationId`, `path`, `method`, `contentType`) and `pattern` (string or `RegExp`). When both are set, `exclude` wins.
 
 |           |                  |
 | --------: | :--------------- |
@@ -1267,7 +755,7 @@ Each entry filters by one of:
 
 ```typescript [Type definition]
 export type Exclude = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType'
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
   pattern: string | RegExp
 }
 ```
@@ -1291,35 +779,11 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Skip a specific operation and all delete methods]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginVueQuery } from '@kubb/plugin-vue-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginVueQuery({
-      exclude: [
-        { type: 'operationId', pattern: 'deletePet' },
-        { type: 'method', pattern: 'DELETE' },
-      ],
-    }),
-  ],
-})
-```
-
 :::
 
 ### override
 
-Applies a different set of plugin options to operations that match a pattern. Use this when most of your API should follow the global config, but a handful of endpoints need different treatment.
-
-Each entry has the same `type` and `pattern` shape as `include`/`exclude`, plus an `options` object that overrides the plugin's options for matched operations.
-
-Entries are evaluated top to bottom. The first matching entry's `options` is merged onto the plugin defaults, and later entries do not stack.
+Applies different plugin options to operations that match a pattern. Use it for the few endpoints that need special treatment. Each entry takes the same `type` and `pattern` as `include` and `exclude`, plus an `options` object. Entries run top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
 
 |           |                   |
 | --------: | :---------------- |
@@ -1328,9 +792,9 @@ Entries are evaluated top to bottom. The first matching entry's `options` is mer
 
 ```typescript [Type definition]
 export type Override = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType'
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
   pattern: string | RegExp
-  options: PluginOptions
+  options: Omit<Partial<Options>, 'override'>
 }
 ```
 
@@ -1362,9 +826,18 @@ export default defineConfig({
 
 :::
 
+### resolver
+
+Changes how the plugin names generated composables and files. Override only the methods you want to change. Anything you omit falls back to the default resolver. Inside a method, `this` is the full resolver.
+
+|           |                             |
+| --------: | :-------------------------- |
+|     Type: | `Partial<ResolverVueQuery>` |
+| Required: | `false`                     |
+
 ### generators
 
-Adds custom generators that run alongside the plugin's built-in ones. Each generator can emit extra files or post-process existing ones using the plugin's AST and options. Use this for output the plugin does not produce itself (a custom client wrapper, an extra index, a metadata file). See [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
+Adds custom generators that run next to the built-in ones. Each generator can emit extra files or post-process existing ones using the plugin's AST and options. Use it for output the plugin does not produce, such as a custom client wrapper or a metadata file. See [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
 
 |           |                                    |
 | --------: | :--------------------------------- |
@@ -1374,27 +847,18 @@ Adds custom generators that run alongside the plugin's built-in ones. Each gener
 > [!WARNING]
 > Generators are an experimental, low-level API. The signature may change between minor releases.
 
-### resolver
-
-Overrides naming and path resolution for the generated composables. Supply only the methods you want to change, and the rest fall back to the default resolver.
-
-|           |                             |
-| --------: | :-------------------------- |
-|     Type: | `Partial<ResolverVueQuery>` |
-| Required: | `false`                     |
-
 ### macros
 
-A list of [macros](/docs/5.x/concepts/macros) applied to operation nodes before code is printed. Use it to rewrite operation IDs, tags, or descriptions across the output.
+A list of [macros](/docs/5.x/concepts/macros) applied to each operation node before code is printed. Use it to rewrite operation IDs, tags, or descriptions across the output.
 
-|           |                 |
-| --------: | :-------------- |
-|     Type: | `Array<Macro>`  |
-| Required: | `false`         |
+|           |                |
+| --------: | :------------- |
+|     Type: | `Array<Macro>` |
+| Required: | `false`        |
 
 ## Dependencies
 
-This plugin depends on [`@kubb/plugin-ts`](/plugins/plugin-ts), so add it to the plugins list. The composables call an HTTP client from `@kubb/plugin-client`, which the plugin bundles into the output for you, so a separate `@kubb/plugin-client` entry is optional.
+This plugin depends on [`@kubb/plugin-ts`](/plugins/plugin-ts), so add it to the plugins list. The composables call an HTTP client from `@kubb/plugin-client`, which the plugin bundles into the output, so a separate `@kubb/plugin-client` entry is optional.
 
 Set `parser` to `'zod'` and the plugin also depends on [`@kubb/plugin-zod`](/plugins/plugin-zod), which then has to be in the plugins list.
 
@@ -1435,3 +899,7 @@ export default defineConfig({
 ```
 
 :::
+
+## See Also
+
+- [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-vue-query/CHANGELOG.md)
