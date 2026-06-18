@@ -268,30 +268,45 @@ export type Animal = Cat | Dog
 
 :::
 
-### dedupe
+### enums
 
-Collapses structurally identical schemas and enums into one shared definition.
+Where inline enums live.
 
-When the same enum or object shape appears in multiple places, Kubb hoists it into a single named schema and replaces each duplicate with a `$ref`. Equality is shape-only, so `description` and `example` fields are ignored. Set to `false` to keep every occurrence inline and produce output identical to earlier versions.
+- `'inline'` (default) keeps each enum on the property that declares it.
+- `'root'` lifts every inline enum to a reusable top-level schema named after its context (for example `PetStatusEnum`) and references it wherever it appears.
 
-|           |           |
-| --------: | :-------- |
-|     Type: | `boolean` |
-| Required: | `false`   |
-|  Default: | `true`    |
+|           |                      |
+| --------: | :------------------- |
+|     Type: | `'inline' \| 'root'` |
+| Required: | `false`              |
+|  Default: | `'inline'`           |
 
 ::: code-group
 
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { adapterOas } from '@kubb/adapter-oas'
+```yaml [OpenAPI spec]
+openapi: 3.0.3
+components:
+  schemas:
+    Pet:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [active, inactive]
+```
 
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  adapter: adapterOas({ dedupe: false }),
-  plugins: [],
-})
+```typescript ['inline' (default)]
+export type Pet = {
+  status?: 'active' | 'inactive'
+}
+```
+
+```typescript ['root']
+export type PetStatusEnum = 'active' | 'inactive'
+
+export type Pet = {
+  status?: PetStatusEnum
+}
 ```
 
 :::
@@ -461,7 +476,7 @@ export default defineConfig({
     validate: true,
     server: { index: 0, variables: { env: 'prod' } },
     discriminator: 'propagate',
-    dedupe: true,
+    enums: 'root',
     dateType: 'date',
     integerType: 'number',
     unknownType: 'unknown',
