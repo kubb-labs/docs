@@ -74,7 +74,7 @@ For example, `output.extension: { '.ts': '.js' }` turns `import { Pet } from './
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { adapterOas } from '@kubb/adapter-oas'
 import { parserTs } from '@kubb/parser-ts'
@@ -98,7 +98,7 @@ import type { Pet } from './Pet.js'
 
 ::: code-group
 
-```typescript [TypeScript (default)]
+```typescript twoslash [TypeScript (default)]
 import { defineConfig } from 'kubb'
 import { adapterOas } from '@kubb/adapter-oas'
 import { parserTs } from '@kubb/parser-ts'
@@ -112,7 +112,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [TSX (React)]
+```typescript twoslash [TSX (React)]
 import { defineConfig } from 'kubb'
 import { adapterOas } from '@kubb/adapter-oas'
 import { parserTsx } from '@kubb/parser-ts'

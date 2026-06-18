@@ -32,7 +32,7 @@ yarn add -D @kubb/core@beta
 > [!TIP]
 > Most users do not install `@kubb/core` directly. The top-level [`kubb`](https://www.npmjs.com/package/kubb) package re-exports it with `adapterOas` and the default parsers pre-installed. Use `@kubb/core` directly when embedding Kubb programmatically or writing a plugin.
 
-```typescript twoslash
+```typescript twoslash [imports.ts]
 import { defineConfig } from 'kubb'
 import {
   defineGenerator,
@@ -66,7 +66,7 @@ import {
 
 `defineConfig` adds TypeScript type-checking to a `kubb.config.ts` file. It comes from the `kubb` package, not `@kubb/core`. It fills in defaults for any field you omit.
 
-```typescript twoslash
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 
 export default defineConfig({
@@ -77,7 +77,7 @@ export default defineConfig({
 
 It accepts a config object, an array of configs, a Promise, or a function. The function form receives the [CLI options](/docs/5.x/api/commands/) at runtime, so you can toggle behavior on flags like `--watch`:
 
-```typescript twoslash
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 
 export default defineConfig(({ watch }) => ({
@@ -121,7 +121,7 @@ Reach for `createKubb` when you orchestrate several builds, inspect diagnostics,
 
 `createKubb` takes a plain config object, the same shape `defineConfig` produces in `kubb.config.ts`. It is not a fluent builder. The config stays plain serializable data so Kubb can validate it against the shipped JSON schema.
 
-```typescript twoslash
+```typescript twoslash [build.ts]
 // @module: esnext
 import { createKubb, Diagnostics } from '@kubb/core'
 import { pluginTs } from '@kubb/plugin-ts'
@@ -192,7 +192,7 @@ Plugins are the main extension point in Kubb. A plugin owns its file naming, its
 
 `definePlugin` wraps a factory function and returns a typed `Plugin`. All lifecycle handlers live under one `hooks` object, inspired by [Astro integrations](https://docs.astro.build/en/reference/integrations-reference/).
 
-```typescript twoslash
+```typescript twoslash [plugin-example.ts]
 import { definePlugin } from '@kubb/core'
 
 export const pluginExample = definePlugin((options: { prefix?: string } = {}) => ({
@@ -242,7 +242,7 @@ export const pluginExample = definePlugin((options: { prefix?: string } = {}) =>
 
 Each generator method returns `TElement | Array<FileNode> | void`. Returning a renderer element (for example JSX from `@kubb/renderer-jsx`) requires a `renderer` factory on the generator. Returning `Array<FileNode>` directly, or calling `ctx.upsertFile()` and returning `void`, works without a renderer.
 
-```typescript twoslash
+```typescript twoslash [my-generator.ts]
 import { ast, defineGenerator } from '@kubb/core'
 
 const myGenerator = defineGenerator({
@@ -307,7 +307,7 @@ const myGenerator = defineGenerator({
 
 The builder must return at least `{ name, pluginName }`. The other resolver methods (`default`, `resolveOptions`, `resolvePath`, `resolveFile`, `resolveBanner`, `resolveFooter`) receive built-in defaults and can each be overridden.
 
-```typescript twoslash
+```typescript twoslash [resolver.ts]
 import { defineResolver } from '@kubb/core'
 import type { PluginFactoryOptions, Resolver } from '@kubb/core'
 
@@ -375,7 +375,7 @@ Storage backends decide where generated files are written. Kubb ships a filesyst
 
 `createStorage` takes a builder function `(options: TOptions) => Storage` and returns a factory `(options?: TOptions) => Storage`. Call the returned factory to instantiate the storage, optionally with options.
 
-```typescript twoslash
+```typescript twoslash [memory-storage.ts]
 import { createStorage } from '@kubb/core'
 
 export const memoryStorage = createStorage(() => {
@@ -479,7 +479,7 @@ For JSX-based rendering, import `jsxRenderer` from [`@kubb/renderer-jsx`](https:
 
 `jsxRenderer` is a React-free recursive renderer. It walks the JSX components into `FileNode`s without a React reconciliation pass, and its `stream()` returns a synchronous `Generator<FileNode>` that skips a microtask per file. Components run as plain functions, so hooks and suspense are not available.
 
-```typescript twoslash
+```typescript twoslash [renderer.ts]
 import { jsxRenderer } from '@kubb/renderer-jsx'
 
 const renderer = jsxRenderer()
@@ -533,7 +533,7 @@ Access the driver via `ctx.driver` inside generator context methods, or from the
 
 `Url` is a helper class for working with OpenAPI path strings. Use `Url.canParse` to detect whether a given path string is a remote URL rather than a local file path.
 
-```typescript twoslash
+```typescript twoslash [url.ts]
 import { Url } from '@kubb/core'
 
 Url.canParse('https://petstore.swagger.io/v2/swagger.json') // true
@@ -544,7 +544,7 @@ Url.canParse('./petStore.yaml') // false
 
 `config.input` is either an `InputPath` (the `{ path: string }` form) or an `InputData` (the `{ data: string | unknown }` form). Both types are exported from `@kubb/core`. Narrow between them with an [`in` check](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#the-in-operator-narrowing):
 
-```typescript twoslash
+```typescript twoslash [narrow.ts]
 import type { UserConfig } from '@kubb/core'
 
 declare const input: NonNullable<UserConfig['input']>

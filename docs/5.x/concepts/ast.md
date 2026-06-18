@@ -29,7 +29,7 @@ const root: ast.InputNode = ast.factory.createInput({
 
 A single [`InputNode`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/nodes/root.ts#L47) sits at the top, holding reusable schemas and operations. Operations point at parameters, an optional request body, and responses. Each of those connects back to schemas.
 
-```text
+```text [Resulting tree]
 InputNode
 ├── schemas: SchemaNode[]            (named, reusable schemas)
 └── operations: OperationNode[]

@@ -170,7 +170,7 @@ How a plugin consolidates its code into files. Set it on a plugin's `output`, no
 
 `'directory'` writes one file per operation or schema under `output.path`. `'file'` writes everything into a single file, so `output.path` must include the extension (`'types.ts'`). Pair `'directory'` with `group` to split the output into per-tag or per-path subdirectories.
 
-```typescript twoslash
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginClient } from '@kubb/plugin-client'

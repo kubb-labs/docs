@@ -30,7 +30,7 @@ When `output.format` is set, Kubb runs the configured formatter (oxfmt, biome, o
 
 ## Example output
 
-```txt
+```text [Terminal]
 [KUBB_FORMAT_FAILED]: formatter failed
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-format-failed
 ```

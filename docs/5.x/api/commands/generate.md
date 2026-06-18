@@ -9,7 +9,7 @@ outline: [2, 3]
 
 Run `kubb generate` to read your [`kubb.config.ts`](/docs/5.x/reference/configuration) and run the code-generation pipeline. This is the default command. Run `kubb` with no arguments and it runs `kubb generate`.
 
-```terminal
+```shell [Terminal]
 command: kubb generate
 output:
   - ◆  Generation started
@@ -29,13 +29,13 @@ output:
 
 Generate from the input set in your config:
 
-```shell
+```shell [Terminal]
 kubb generate
 ```
 
 Pass an input file to override the config:
 
-```shell
+```shell [Terminal]
 kubb generate ./petStore.yaml
 ```
 
@@ -70,13 +70,13 @@ A reporter decides how a run is rendered. The config registers the available rep
 
 Write a log file:
 
-```shell
+```shell [Terminal]
 kubb generate --reporter file
 ```
 
 Print a JSON report for CI. The exit code is non-zero on any error:
 
-```shell
+```shell [Terminal]
 kubb generate --reporter json
 ```
 
@@ -84,19 +84,19 @@ kubb generate --reporter json
 
 Run with a custom config:
 
-```shell
+```shell [Terminal]
 kubb generate --config ./kubb.staging.ts
 ```
 
 Watch the spec and regenerate on every change:
 
-```shell
+```shell [Terminal]
 kubb generate --watch
 ```
 
 Run with verbose plugin timings:
 
-```shell
+```shell [Terminal]
 kubb generate --verbose
 ```
 

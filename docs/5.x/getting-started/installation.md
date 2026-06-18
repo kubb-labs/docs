@@ -16,13 +16,13 @@ outline: [2, 3]
 
 The `kubb init` wizard detects your package manager. It asks where your spec lives and where generated files should go. Then it installs the plugins you pick and writes a `kubb.config.ts`.
 
-```shell
+```shell [Terminal]
 npx kubb@beta init
 ```
 
 Then run:
 
-```shell
+```shell [Terminal]
 npx kubb@beta generate
 ```
 
@@ -127,7 +127,7 @@ Add a `generate` script to `package.json` so you run generation with one command
 
 ### 5. Generate
 
-```shell
+```shell [Terminal]
 npm run generate
 ```
 

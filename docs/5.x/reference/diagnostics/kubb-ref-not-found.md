@@ -31,7 +31,7 @@ Kubb resolves local references (`#/...`) against the document it parsed. This di
 
 ## Example
 
-```yaml
+```yaml [petStore.yaml]
 paths:
   /pets:
     get:
@@ -45,7 +45,7 @@ paths:
 
 ## Example output
 
-```txt
+```text [Terminal]
 [KUBB_REF_NOT_FOUND] @kubb/plugin-zod: Could not find a definition for #/components/schemas/Pet.
   at: #/components/schemas/Pet
   fix: Add the schema under components.schemas, or fix the $ref. Run `kubb validate` to check the spec.

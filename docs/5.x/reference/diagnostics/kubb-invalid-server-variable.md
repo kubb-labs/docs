@@ -30,7 +30,7 @@ OpenAPI server URLs can contain `{variable}` placeholders. When a variable decla
 
 ## Example
 
-```yaml
+```yaml [petStore.yaml]
 servers:
   - url: https://{env}.api.example.com
     variables:
@@ -41,7 +41,7 @@ servers:
 
 ## Example output
 
-```txt
+```text [Terminal]
 [KUBB_INVALID_SERVER_VARIABLE]: Invalid server variable value 'staging' for 'env' when resolving https://{env}.api.example.com. Valid values are: dev, prod.
   at: #/servers
   fix: Use one of the allowed enum values, or drop the enum on the 'env' server variable.

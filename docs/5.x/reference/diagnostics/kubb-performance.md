@@ -21,11 +21,11 @@ It surfaces in two places.
 - The run total `durationMs` in the [`--reporter json`](/docs/5.x/api/commands/generate#reporters) report is the sum of every `KUBB_PERFORMANCE` record.
 - The per-plugin timing bars in the end-of-run summary, shown with `--verbose`.
 
-```sh
+```shell [Terminal]
 kubb generate --verbose
 ```
 
-```sh
+```shell [Terminal]
  Plugins  3 passed (3)
    Files  12 generated
 Duration  81ms

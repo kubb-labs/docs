@@ -27,7 +27,7 @@ A post-generate shell hook (`hooks.done`) exited with a non-zero status. Hooks r
 - Run the command manually from the project root to see its output.
 - Confirm the binary is installed and the command is spelled correctly.
 
-```typescript twoslash
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 
 export default defineConfig({
@@ -41,7 +41,7 @@ export default defineConfig({
 
 ## Example output
 
-```txt
+```text [Terminal]
 [KUBB_HOOK_FAILED]: Post-generate hook failed
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-hook-failed
 ```

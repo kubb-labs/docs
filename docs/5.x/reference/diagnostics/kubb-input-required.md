@@ -20,19 +20,19 @@ The adapter needs a source document. It reads one from `input.path` (a file or U
 
 Set `input.path` to a file or URL.
 
-```typescript
+```typescript [kubb.config.ts]
 input: { path: './petStore.yaml' }
 ```
 
 Or pass an inline spec with `input.data`.
 
-```typescript
+```typescript [kubb.config.ts]
 input: { data: openapiObject }
 ```
 
 ## Example
 
-```typescript twoslash
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 
 export default defineConfig({
@@ -44,7 +44,7 @@ export default defineConfig({
 
 ## Example output
 
-```txt
+```text [Terminal]
 [KUBB_INPUT_REQUIRED] @kubb/adapter-oas: An adapter is configured without an input.
   fix: Provide `input.path` (a file or URL) or `input.data` (an inline spec) in your Kubb config.
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-input-required

@@ -69,7 +69,7 @@ Every adapter returned from `createAdapter` matches the `Adapter` interface from
 
 `AdapterSource` takes one of three shapes. Handle every form your users may pass:
 
-```typescript twoslash
+```typescript twoslash [AdapterSource]
 type AdapterSource = { type: 'path'; path: string } | { type: 'data'; data: string | unknown } | { type: 'paths'; paths: Array<string> }
 ```
 
@@ -272,7 +272,7 @@ export default defineConfig({
 
 Turning a spec's schema objects into [`SchemaNode`](/docs/5.x/concepts/ast)s is the heaviest part of an adapter. Most of that work is generic JSON Schema (`oneOf`/`anyOf`/`allOf`, `enum`, `const`, `type`, `format`, `items`, `properties`), so adapters follow one contract:
 
-```text
+```text [Conversion pipeline]
 context → [rule.match → rule.convert] → node
 ```
 

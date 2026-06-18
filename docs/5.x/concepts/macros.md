@@ -15,7 +15,7 @@ The engine (`defineMacro`, `composeMacros`, `applyMacros`, and the `Macro` type)
 
 A macro carries the per-kind callbacks of a [visitor](/docs/5.x/concepts/ast#visitors), plus a `name`, an optional `enforce` order, and an optional `when` gate.
 
-```ts
+```typescript [Type definition]
 type Macro = {
   name: string
   enforce?: 'pre' | 'post'

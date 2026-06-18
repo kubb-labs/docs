@@ -30,7 +30,7 @@ Kubb wraps every failure in a diagnostic. When the underlying error has no struc
 
 ## Example output
 
-```txt
+```text [Terminal]
 [KUBB_UNKNOWN]: Cannot read properties of undefined (reading 'name')
 ```
 

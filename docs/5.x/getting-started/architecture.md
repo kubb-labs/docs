@@ -66,7 +66,7 @@ See [Adapters](/docs/5.x/concepts/adapters) for the full list of options and det
 
 The AST is the intermediate representation between the [adapter](/docs/5.x/concepts/adapters) and the [plugins](/plugins). Every adapter produces an `InputNode`; every plugin consumes it. Plugins never read the raw spec, so the same plugin works with any adapter.
 
-```
+```text [Resulting tree]
 InputNode
 ├── schemas: SchemaNode[]            (named, reusable schemas)
 │   └── consumed by plugins          → FileNode (e.g. type aliases, enums)

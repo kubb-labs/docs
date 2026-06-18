@@ -22,14 +22,14 @@ build you start in the chat matches the one you run in a terminal.
 
 The Kubb repository is also a plugin marketplace. Add it, then install the plugin:
 
-```shell
+```shell [Terminal]
 /plugin marketplace add kubb-labs/kubb
 /plugin install kubb@kubb
 ```
 
 The commands run `npx kubb`, so install Kubb yourself. Install it in the project or globally:
 
-```shell
+```shell [Terminal]
 npm install -D kubb@beta
 ```
 
@@ -51,7 +51,7 @@ The commands mirror the Kubb CLI. They are namespaced under `kubb:`.
 
 A typical first run:
 
-```text
+```text [Terminal]
 /kubb:validate ./petStore.yaml
 /kubb:init ./petStore.yaml ./src/gen plugin-ts,plugin-zod,plugin-react-query
 /kubb:generate

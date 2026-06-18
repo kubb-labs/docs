@@ -410,7 +410,7 @@ export default defineConfig({
 
 With the configuration above, the generator emits one folder per tag, named after the camelCased tag:
 
-```text
+```text [Resulting tree]
 src/gen/
 ├── pet/
 │   ├── AddPet.ts

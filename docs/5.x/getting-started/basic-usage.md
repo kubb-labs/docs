@@ -102,7 +102,7 @@ See the [plugins catalogue](/plugins) for the full list.
 
 ## 3. Run generate
 
-```terminal
+```shell [Terminal]
 command: kubb generate
 output:
   - ◆  Generation started

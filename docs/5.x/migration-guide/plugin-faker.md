@@ -15,7 +15,7 @@ Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). See the full
 
 The `create` prefix stays (`createPet` is still `createPet`), matching the naming `plugin-msw` uses. The return type and internal structure change.
 
-```diff
+```diff [Diff]
 - export function createPet(data?: Partial<Pet>): Pet {
 -   return {
 -     ...{

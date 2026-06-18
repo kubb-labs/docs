@@ -23,7 +23,7 @@ generation, validates schemas, and inspects configuration without leaving the ch
 Run the server with one command. It communicates over stdio, the transport every major LLM
 client speaks:
 
-```shell
+```shell [Terminal]
 kubb mcp
 ```
 
@@ -33,7 +33,7 @@ kubb mcp
 
 Add this to your `claude_desktop_config.json`. On macOS it usually lives at `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
-```json
+```json [Claude Desktop]
 {
   "mcpServers": {
     "kubb": {
@@ -48,7 +48,7 @@ Add this to your `claude_desktop_config.json`. On macOS it usually lives at `~/L
 
 Open `Settings → MCP` and add a new server entry:
 
-```json
+```json [Cursor]
 {
   "mcpServers": {
     "kubb": {

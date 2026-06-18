@@ -13,7 +13,7 @@ Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). For the full
 
 Handlers are now typed against the request body and headers. They take an `HttpResponseResolver` callback in place of an inline MSW handler signature.
 
-```typescript
+```typescript [Generated output]
 import type { HttpResponseResolver } from 'msw' // [!code ++]
 import type { CreateUserData } from '../../../models/CreateUser.ts' // [!code ++]
 

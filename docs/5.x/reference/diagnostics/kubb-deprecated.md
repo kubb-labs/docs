@@ -22,7 +22,7 @@ Migrate off the deprecated definition if the notice is unwanted. Leave it in pla
 
 ## Example
 
-```yaml
+```yaml [petStore.yaml]
 components:
   schemas:
     Pet:
@@ -35,7 +35,7 @@ components:
 
 ## Example output
 
-```txt
+```text [Terminal]
 [KUBB_DEPRECATED] @kubb/adapter-oas: This schema is marked as deprecated.
   at: #/components/schemas/Pet
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-deprecated

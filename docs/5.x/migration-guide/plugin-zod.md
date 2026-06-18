@@ -78,7 +78,7 @@ export type PetSchema = z.infer<typeof petSchema> // [!code --]
 
 Update any imports that referenced the old name:
 
-```typescript
+```typescript [Update imports]
 import type { PetSchemaType } from './gen/zod/petSchema.ts' // [!code ++]
 import type { PetSchema } from './gen/zod/petSchema.ts' // [!code --]
 ```
@@ -89,7 +89,7 @@ import type { PetSchema } from './gen/zod/petSchema.ts' // [!code --]
 
 v5 prefers the chained Zod 4 syntax. `.optional()` sits at the end of the chain, right before `.describe()`.
 
-```typescript
+```typescript [Generated output]
 id: z.optional(z.int()), // [!code --]
 shipDate: z.optional(z.iso.datetime()), // [!code --]
 status: z.optional(z.enum(['placed', 'approved']).describe('Order Status')), // [!code --]
@@ -104,7 +104,7 @@ The functional form (`z.optional(...)`) is now reserved for `mini: true` output,
 
 v4 wrapped almost every nested ref in a getter. v5 does so only when the schema is truly circular, meaning it references itself or its parent.
 
-```diff
+```diff [Diff]
 - get category() {
 -   return categorySchema.optional()
 - },

@@ -12,7 +12,7 @@ Run `kubb mcp` to start a [Model Context Protocol](https://modelcontextprotocol.
 > [!WARNING]
 > This feature is under active development. Use it with caution and expect breaking changes.
 
-```terminal
+```shell [Terminal]
 command: kubb mcp
 output:
   - ⏳ Starting MCP server...
@@ -23,7 +23,7 @@ output:
 
 Start the MCP server over stdio, the transport every major LLM client speaks:
 
-```shell
+```shell [Terminal]
 kubb mcp
 ```
 
@@ -51,7 +51,7 @@ instead of a single message string. Each diagnostic keeps its stable code, sourc
 suggested fix, and docs link, so an assistant can act on the exact problem. The tools return a
 readable text block and a JSON payload:
 
-```text
+```text [Terminal]
 error @kubb/plugin-zod(KUBB_REF_NOT_FOUND): Could not find a definition for #/components/schemas/Pet.
   at #/components/schemas/Pet
   help: Add the schema under components.schemas, or fix the $ref.
@@ -65,7 +65,7 @@ diagnostic, the same code the CLI reports.
 
 Most MCP clients accept a JSON config with a `command` and `args`. To register the Kubb MCP server over stdio:
 
-```json
+```json [mcp.json]
 {
   "mcpServers": {
     "kubb": {

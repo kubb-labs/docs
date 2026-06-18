@@ -75,7 +75,7 @@ Validates the OpenAPI spec with `@readme/openapi-parser` before parsing. Set to 
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { adapterOas } from '@kubb/adapter-oas'
 
@@ -100,7 +100,7 @@ Defaults to the first JSON-compatible media type found in the spec (`application
 |     Type: | `'application/json' \| string` |
 | Required: | `false`                        |
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { adapterOas } from '@kubb/adapter-oas'
 
@@ -135,7 +135,7 @@ servers:
   - url: http://localhost:3000
 ```
 
-```typescript [Use the production server]
+```typescript twoslash [Use the production server]
 import { defineConfig } from 'kubb'
 import { adapterOas } from '@kubb/adapter-oas'
 
@@ -147,7 +147,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [Use the localhost server]
+```typescript twoslash [Use the localhost server]
 import { defineConfig } from 'kubb'
 import { adapterOas } from '@kubb/adapter-oas'
 
@@ -182,7 +182,7 @@ servers:
         enum: [dev, staging, prod]
 ```
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { adapterOas } from '@kubb/adapter-oas'
 
@@ -290,7 +290,7 @@ When the same enum or object shape appears in multiple places, Kubb hoists it in
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { adapterOas } from '@kubb/adapter-oas'
 
@@ -457,7 +457,7 @@ type StatusType = (typeof statusType)[keyof typeof statusType]
 
 ::: code-group
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'

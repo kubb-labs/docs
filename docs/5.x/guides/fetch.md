@@ -18,7 +18,7 @@ Point `importPath` at a relative path, an import alias, or a package name. The p
 
 See [plugins/plugin-client](/plugins/plugin-client).
 
-```typescript twoslash
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 import { adapterOas } from '@kubb/adapter-oas'

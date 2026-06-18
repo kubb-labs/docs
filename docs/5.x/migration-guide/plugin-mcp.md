@@ -13,7 +13,7 @@ The plugin options stay the same. [`resolver.resolveName`](/docs/5.x/migration-g
 
 Handlers take the MCP `RequestHandlerExtra` object as a second argument and forward it to the client. Update existing tools to thread it through.
 
-```typescript
+```typescript [Generated output]
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types' // [!code --]
 import type { CallToolResult, ServerNotification, ServerRequest } from '@modelcontextprotocol/sdk/types' // [!code ++]
 import type { RequestHandlerExtra } from '@modelcontextprotocol/sdk/shared/protocol' // [!code ++]
