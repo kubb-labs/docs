@@ -452,7 +452,7 @@ await kubb.build()
 > [!NOTE]
 > `adapterOas()` validates OpenAPI specs by default (`validate: true`). Pass `adapterOas({ validate: false })` to skip validation for faster startup or for non-conforming specs.
 
-See the [`@kubb/adapter-oas`](/adapters/adapter-oas) reference for every adapter option (`validate`, `contentType`, `serverIndex`, `serverVariables`, `discriminator`, `dateType`, `integerType`, `unknownType`, `emptySchemaType`, `enumSuffix`, …).
+See the [`@kubb/adapter-oas`](/adapters/adapter-oas) reference for every adapter option (`validate`, `contentType`, `server`, `discriminator`, `dateType`, `integerType`, `unknownType`, `emptySchemaType`, `enumSuffix`, …).
 
 ### `parsers`
 

@@ -112,16 +112,16 @@ export default defineConfig({
 })
 ```
 
-### serverIndex
+### server
 
-Index into the `servers` array from your OpenAPI spec, used to compute the base URL for plugins that need it (`@kubb/plugin-client`, `@kubb/plugin-msw`, ...).
+Selects which entry in the spec's `servers` array becomes the base URL, and supplies values for its `{variable}` placeholders. Plugins that need a base URL read it from here (`@kubb/plugin-client`, `@kubb/plugin-msw`, ...).
 
-Most projects pick `0` for the primary server. Use higher indices to point at staging or localhost when your spec defines multiple environments.
+`server.index` points at one of the spec's servers. Most projects pick `0` for the primary server, and use higher indices for staging or localhost. `server.variables` fills in any `{variable}` placeholders in the selected URL, falling back to each variable's `default` from the spec. Omit `server` to leave `baseURL` undefined.
 
-|           |          |
-| --------: | :------- |
-|     Type: | `number` |
-| Required: | `false`  |
+|           |                                                      |
+| --------: | :--------------------------------------------------- |
+|     Type: | `{ index?: number; variables?: Record<string, string> }` |
+| Required: | `false`                                             |
 
 > [!TIP]
 > Plugins read `baseURL` from this server unless they override it explicitly.
@@ -142,7 +142,7 @@ import { adapterOas } from '@kubb/adapter-oas'
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
-  adapter: adapterOas({ serverIndex: 0 }),
+  adapter: adapterOas({ server: { index: 0 } }),
   plugins: [],
 })
 ```
@@ -154,21 +154,14 @@ import { adapterOas } from '@kubb/adapter-oas'
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
-  adapter: adapterOas({ serverIndex: 1 }),
+  adapter: adapterOas({ server: { index: 1 } }),
   plugins: [],
 })
 ```
 
 :::
 
-### serverVariables
-
-Values substituted into `{variable}` placeholders in the selected server URL. Only used when `serverIndex` is set. Variables you do not provide use their `default` value from the spec.
-
-|           |                          |
-| --------: | :----------------------- |
-|     Type: | `Record<string, string>` |
-| Required: | `false`                  |
+Server variables substitute into `{variable}` placeholders in the selected URL.
 
 ::: code-group
 
@@ -190,8 +183,7 @@ export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   adapter: adapterOas({
-    serverIndex: 0,
-    serverVariables: { env: 'prod' },
+    server: { index: 0, variables: { env: 'prod' } },
   }),
   plugins: [],
 })
@@ -204,14 +196,14 @@ export default defineConfig({
 
 How `discriminator` fields on `oneOf`/`anyOf` schemas are interpreted.
 
-- `'strict'` (default) keeps child schemas exactly as written. The discriminator narrows types at the call site, but child shapes stay the same.
-- `'inherit'` propagates the discriminator property with its literal value into each child schema, so each branch's `type` field is precisely typed.
+- `'preserve'` (default) keeps child schemas exactly as written. The discriminator narrows types at the call site, but child shapes stay the same.
+- `'propagate'` pushes the discriminator property with its literal value into each child schema, so each branch's `type` field is precisely typed.
 
-|           |                         |
-| --------: | :---------------------- |
-|     Type: | `'strict' \| 'inherit'` |
-| Required: | `false`                 |
-|  Default: | `'strict'`              |
+|           |                             |
+| --------: | :-------------------------- |
+|     Type: | `'preserve' \| 'propagate'` |
+| Required: | `false`                     |
+|  Default: | `'preserve'`                |
 
 ::: code-group
 
@@ -246,7 +238,7 @@ components:
           type: string
 ```
 
-```typescript ['strict' (default)]
+```typescript ['preserve' (default)]
 export type Cat = {
   type: string
   indoor?: boolean
@@ -260,7 +252,7 @@ export type Dog = {
 export type Animal = Cat | Dog
 ```
 
-```typescript ['inherit']
+```typescript ['propagate']
 export type Cat = {
   type: 'cat'
   indoor?: boolean
@@ -467,9 +459,8 @@ export default defineConfig({
   output: { path: './src/gen' },
   adapter: adapterOas({
     validate: true,
-    serverIndex: 0,
-    serverVariables: { env: 'prod' },
-    discriminator: 'inherit',
+    server: { index: 0, variables: { env: 'prod' } },
+    discriminator: 'propagate',
     dedupe: true,
     dateType: 'date',
     integerType: 'number',
