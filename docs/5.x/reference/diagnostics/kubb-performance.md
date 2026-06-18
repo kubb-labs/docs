@@ -10,18 +10,15 @@ outline: [2, 3]
 Code: `KUBB_PERFORMANCE`
 Level: info
 
-Records a plugin's elapsed time. One is collected per plugin during a build.
+Records a plugin's elapsed time. Kubb collects one per plugin during a build.
 
 ## What happened
 
-This is bookkeeping, not a problem. Kubb attaches a `KUBB_PERFORMANCE` record to every plugin with
-the milliseconds it took to generate. It never fails the build and is not printed in the terminal as
-a diagnostic.
+This is bookkeeping, not a problem. Kubb attaches a `KUBB_PERFORMANCE` record to every plugin with the milliseconds it took to generate. It never fails the build. It is not printed in the terminal as a diagnostic.
 
-It surfaces in two places:
+It surfaces in two places.
 
-- The run total `durationMs` in the [`--reporter json`](/docs/5.x/api/commands/generate#reporters)
-  report is the sum of every `KUBB_PERFORMANCE` record.
+- The run total `durationMs` in the [`--reporter json`](/docs/5.x/api/commands/generate#reporters) report is the sum of every `KUBB_PERFORMANCE` record.
 - The per-plugin timing bars in the end-of-run summary, shown with `--verbose`.
 
 ```sh
@@ -39,13 +36,11 @@ Duration  81ms
           • @kubb/plugin-ts          ██ 18ms
 ```
 
-Because the total is the sum of plugin timings, it counts generation only. The config load, the
-formatter, the linter, and post-generate hooks are not included.
+The total is the sum of plugin timings, so it counts generation only. It leaves out the config load, the formatter, the linter, and post-generate hooks.
 
 ## How to fix it
 
-Nothing to fix. To find a slow plugin, run `kubb generate --verbose` and read the timing bars, then
-review that plugin's options or the schemas it generates.
+Nothing to fix. To find a slow plugin, run `kubb generate --verbose` and read the timing bars. Then review that plugin's options or the schemas it generates.
 
 ## See also
 

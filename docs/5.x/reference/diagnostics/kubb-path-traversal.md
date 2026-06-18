@@ -10,21 +10,16 @@ outline: [2, 3]
 Code: `KUBB_PATH_TRAVERSAL`
 Level: error
 
-A resolved output path escaped the output directory. Kubb refuses to write outside `output.path` so
-a crafted spec or a misconfigured `group.name` cannot drop files anywhere on disk.
+A resolved output path escaped the output directory. Kubb refuses to write outside `output.path`, so a crafted spec or a misconfigured `group.name` cannot drop files anywhere on disk.
 
 ## What happened
 
-Every generated file resolves to a path under `output.path`. This diagnostic fires when a resolved
-path lands outside that directory, which is treated as a path-traversal attempt rather than a
-warning.
+Every generated file resolves to a path under `output.path`. This diagnostic fires when a resolved path lands outside that directory. Kubb treats this as a path-traversal attempt rather than a warning.
 
 ## How to fix it
 
-- Keep generated paths within the output directory. Review the `group.name` function so it returns
-  a plain name, not a path.
-- Treat names coming from the spec as untrusted: strip or reject `..` and path separators before
-  using them in a file name.
+- Keep generated paths within the output directory. Review the `group.name` function so it returns a plain name, not a path.
+- Treat names coming from the spec as untrusted. Strip or reject `..` and path separators before using them in a file name.
 
 ## Common causes
 

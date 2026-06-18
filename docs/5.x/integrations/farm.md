@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Farm
 
-`unplugin-kubb/farm` runs Kubb as a [Farm](https://www.farmfe.org/) plugin. Farm is a Rust-based web build tool with a Vite-compatible plugin API.
+`unplugin-kubb/farm` runs Kubb as a [Farm](https://www.farmfe.org/) plugin. Farm is a Rust-based web build tool with a Vite-compatible plugin API. Pass your Kubb config to the `config` option.
 
 ## Install
 

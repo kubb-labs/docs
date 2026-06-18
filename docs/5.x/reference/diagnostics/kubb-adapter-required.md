@@ -10,17 +10,15 @@ outline: [2, 3]
 Code: `KUBB_ADAPTER_REQUIRED`
 Level: error
 
-An action needs an adapter but none is configured. Without one, Kubb has no way to read your input
-into the object model that plugins generate from.
+An action needs an adapter but none is configured.
 
 ## What happened
 
-The adapter turns your spec into the AST that plugins generate from, so it has to be set before any
-plugin runs. This diagnostic fires when the config has no `adapter`.
+The adapter turns your spec into the AST that plugins generate from. It has to be set before any plugin runs. This diagnostic fires when the config has no `adapter`.
 
 ## How to fix it
 
-Set `adapter` in `kubb.config.ts`:
+Set `adapter` in `kubb.config.ts`.
 
 ```typescript twoslash
 import { defineConfig } from 'kubb'

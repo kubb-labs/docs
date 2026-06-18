@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Nuxt
 
-`unplugin-kubb/nuxt` runs Kubb as a [Nuxt](https://nuxt.com/) module. It works with Nuxt 3 and Nuxt 4, registering Kubb as a Vite or webpack plugin depending on your Nuxt renderer.
+`unplugin-kubb/nuxt` runs Kubb as a [Nuxt](https://nuxt.com/) module. It works with Nuxt 3 and Nuxt 4. The module registers Kubb as both a Vite plugin and a webpack plugin, so Nuxt picks the right one for its active builder.
 
 ## Install
 
@@ -33,7 +33,7 @@ yarn add -D unplugin-kubb@beta
 
 ## Configure
 
-Pass your Kubb config as the second element in the module tuple. `defineNuxtConfig` is auto-imported by Nuxt and does not need an explicit import.
+Pass your Kubb config as the second element of the module tuple. Nuxt auto-imports `defineNuxtConfig`, so you do not import it.
 
 ```typescript [nuxt.config.ts]
 import { defineConfig } from 'kubb'
@@ -52,4 +52,4 @@ export default defineNuxtConfig({
 ```
 
 > [!NOTE]
-> Because the Nuxt module delegates to the Vite plugin under the hood, generation only runs during `nuxt build`. It does not run during `nuxt dev`. Run [`kubb generate`](/docs/5.x/api/commands/) before starting the dev server.
+> The Nuxt module delegates to the Vite plugin under the hood. Generation runs during `nuxt build` only, not during `nuxt dev`. Run [`kubb generate`](/docs/5.x/api/commands/) before you start the dev server.

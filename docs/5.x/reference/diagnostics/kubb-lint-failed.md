@@ -10,14 +10,11 @@ outline: [2, 3]
 Code: `KUBB_LINT_FAILED`
 Level: error
 
-The linter pass over the generated files failed. Linting runs after generation, so the files are
-written, but the run is marked failed.
+The linter pass over the generated files failed. Linting runs after generation. The files are written, but the run is marked failed.
 
 ## What happened
 
-When `output.lint` is set, Kubb runs the configured linter (oxlint, biome, or eslint) over the
-output directory. A non-zero exit from the linter shows up here, in the summary, and in
-`--reporter json`, and it fails the run. Earlier versions swallowed it.
+When `output.lint` is set, Kubb runs the configured linter (oxlint, biome, or eslint) over the output directory. A non-zero exit from the linter shows up here, in the summary, and in `--reporter json`. It fails the run. Earlier versions swallowed it.
 
 ## How to fix it
 
@@ -29,7 +26,7 @@ output directory. A non-zero exit from the linter shows up here, in the summary,
 
 - The linter is not installed in the project.
 - The linter config is invalid or points at a missing file.
-- Lint rules that flag the generated code as errors.
+- Lint rules flag the generated code as errors.
 
 ## Example output
 

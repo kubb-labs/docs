@@ -10,15 +10,11 @@ outline: [2, 3]
 Code: `KUBB_FORMAT_FAILED`
 Level: error
 
-The formatter pass over the generated files failed. Formatting runs after generation, so the files
-are written, but the run is marked failed.
+The formatter pass over the generated files failed. Formatting runs after generation. The files are written, but the run is marked failed.
 
 ## What happened
 
-When `output.format` is set, Kubb runs the configured formatter (oxfmt, biome, or prettier) over
-the output directory. A non-zero exit from the formatter shows up here, in the summary, and in
-`--reporter json`, and it fails the run. Earlier versions swallowed it, so a broken formatter config
-went unnoticed.
+When `output.format` is set, Kubb runs the configured formatter (oxfmt, biome, or prettier) over the output directory. A non-zero exit from the formatter shows up here, in the summary, and in `--reporter json`. It fails the run. Earlier versions swallowed it, so a broken formatter config went unnoticed.
 
 ## How to fix it
 
@@ -30,7 +26,7 @@ went unnoticed.
 
 - The formatter is not installed in the project.
 - The formatter config is invalid or points at a missing file.
-- Generated code the formatter rejects.
+- The formatter rejects the generated code.
 
 ## Example output
 

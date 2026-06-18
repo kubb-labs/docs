@@ -7,10 +7,10 @@ outline: deep
 
 # AST
 
-The `@kubb/ast` package defines Kubb's universal Abstract Syntax Tree. [Adapters](/docs/5.x/concepts/adapters) produce it from a specification (OpenAPI, AsyncAPI, JSON Schema, …), and [plugins](/docs/5.x/concepts/plugins) consume it to emit files. Because every plugin reads the same AST, the same plugin works against any spec a custom adapter can supply.
+The `@kubb/ast` package defines Kubb's universal Abstract Syntax Tree. [Adapters](/docs/5.x/concepts/adapters) produce it from a specification (OpenAPI, AsyncAPI, JSON Schema, and so on), and [plugins](/docs/5.x/concepts/plugins) consume it to emit files. Because every plugin reads the same AST, one plugin works against any spec a custom adapter supplies.
 
 > [!NOTE]
-> `@kubb/core` re-exports `@kubb/ast` as the `ast` namespace, with node constructors grouped under `ast.factory` the way TypeScript groups them under `ts.factory`. Most plugins do not need `@kubb/ast` as a direct dependency. Install it explicitly only for named imports without the `ast.` prefix, taking constructors from the `@kubb/ast/factory` subpath.
+> `@kubb/core` re-exports `@kubb/ast` as the `ast` namespace, with node constructors under `ast.factory` the way TypeScript groups them under `ts.factory`. Most plugins do not need `@kubb/ast` as a direct dependency. Install it only for named imports without the `ast.` prefix, taking constructors from the `@kubb/ast/factory` subpath.
 
 ## Quick start
 
@@ -27,7 +27,7 @@ const root: ast.InputNode = ast.factory.createInput({
 
 ## Tree shape
 
-A single [`InputNode`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/nodes/root.ts#L47) sits at the top, containing reusable schemas and operations. Operations point at parameters, an optional request body, and responses. Each of those connects back to schemas.
+A single [`InputNode`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/nodes/root.ts#L47) sits at the top, holding reusable schemas and operations. Operations point at parameters, an optional request body, and responses. Each of those connects back to schemas.
 
 ```text
 InputNode
@@ -44,17 +44,17 @@ SchemaNode (discriminated by `type`)
   Special:     ref | date | datetime | time | uuid | email | url | blob
 ```
 
-Request bodies and responses hold one `ContentNode` per content type (for example `application/json`), and each content node carries its own body schema. Every child slot in the tree is a node, so a single traversal table drives `walk`, `transform`, and `collect` across the whole tree.
+Request bodies and responses hold one `ContentNode` per content type (for example `application/json`), and each content node carries its own body schema. Every child slot is a node, so a single traversal table drives `walk`, `transform`, and `collect` across the whole tree.
 
 Every node carries a `kind` field as the discriminant, so `switch (node.kind)` narrows the type for you.
 
 > [!TIP]
-> The AST is spec-agnostic. Plugins never look at OpenAPI directly. They read the AST the [adapter](/docs/5.x/concepts/adapters) produces, which is why one plugin works for OpenAPI 2.0, 3.0, 3.1, and any custom adapter alike.
+> The AST is spec-agnostic. Plugins never look at OpenAPI directly. They read the AST the [adapter](/docs/5.x/concepts/adapters) produces, which is why one plugin works for OpenAPI 2.0, 3.0, 3.1, and any custom adapter.
 
-An `OperationNode` is a discriminated union keyed on `protocol`, so the model stays spec-neutral while keeping HTTP details fully typed. An `HttpOperationNode` (`protocol: 'http'`) guarantees a non-nullable `method` (an `HttpMethod`) and `path`. A `GenericOperationNode` describes a non-HTTP transport and omits both. `@kubb/adapter-oas` produces `HttpOperationNode`s, so OpenAPI output is unchanged.
+An `OperationNode` is a discriminated union keyed on `protocol`, so the model stays spec-neutral while keeping HTTP details typed. An `HttpOperationNode` (`protocol: 'http'`) guarantees a non-nullable `method` (an `HttpMethod`) and `path`. A `GenericOperationNode` describes a non-HTTP transport and omits both. `@kubb/adapter-oas` produces `HttpOperationNode`s, so OpenAPI output is unchanged.
 
 > [!TIP]
-> Narrow before you read transport details. Call `isHttpOperationNode(node)` (or check `node.protocol === 'http'`) to turn an `OperationNode` into an `HttpOperationNode`, after which `method` and `path` are guaranteed:
+> Narrow before you read transport details. Call `isHttpOperationNode(node)` (or check `node.protocol === 'http'`) to turn an `OperationNode` into an `HttpOperationNode`. After that, `method` and `path` are guaranteed:
 >
 > ```ts
 > import { ast } from '@kubb/core'
@@ -107,7 +107,7 @@ An `OperationNode` is a discriminated union keyed on `protocol`, so the model st
 
 ## Factory functions
 
-Factories return correctly defaulted, fully typed nodes. Use them in adapters and inside generator handlers. Never construct AST literals by hand.
+Factories return defaulted, fully typed nodes. Use them in adapters and inside generator handlers. Never build AST literals by hand.
 
 ```typescript twoslash [factories.ts]
 import { ast } from '@kubb/core'
@@ -156,7 +156,7 @@ await ast.walk(root, {
 })
 ```
 
-Reach for `walk` when you log, validate, collect statistics, or trigger a side effect per node.
+Use `walk` to log, validate, collect statistics, or trigger a side effect per node.
 
 ### `transform`: synchronous, returns a new tree
 
@@ -178,12 +178,12 @@ const enhanced = ast.transform(root, {
 })
 ```
 
-Reach for `transform` when you change AST structure, normalize inconsistencies, or annotate nodes.
+Use `transform` to change AST structure, normalize inconsistencies, or annotate nodes.
 
 > [!NOTE]
-> `transform` preserves identity (structural sharing). When a visitor leaves a node and all of its descendants unchanged, `transform` returns the original reference, so unchanged subtrees and their arrays are reused, not copied. Returning the same node is a no-op. Returning a new node replaces it and rebuilds only its ancestors. A no-op pass allocates nothing, and you can detect whether anything changed with `result === input`.
+> `transform` preserves identity through structural sharing. When a visitor leaves a node and all its descendants unchanged, `transform` returns the original reference, so unchanged subtrees and their arrays are reused, not copied. Returning the same node is a no-op. Returning a new node replaces it and rebuilds only its ancestors. A no-op pass allocates nothing, and you detect whether anything changed with `result === input`.
 
-To apply a change while keeping that guarantee, use the `update` factory instead of spreading by hand. It returns the same node when every field you pass already matches:
+To apply a change and keep that guarantee, use the `update` factory instead of spreading by hand. It returns the same node when every field you pass already matches:
 
 ```typescript twoslash [update.ts]
 import { ast } from '@kubb/core'
@@ -217,7 +217,7 @@ console.log(`POST operations: ${mutations.length}`)
 console.log(`Deprecated schemas: ${deprecated.length}`)
 ```
 
-Reach for `collect` when you find specific nodes, filter by a criterion, or build a list for later processing.
+Use `collect` to find specific nodes, filter by a criterion, or build a list for later processing.
 
 ## Guards and narrowing
 
@@ -249,7 +249,7 @@ await ast.walk(root, {
 
 ## Refs and naming helpers
 
-The ref and naming helpers live in the `@kubb/ast/utils` subpath, together with the other string and code-building utilities.
+The ref and naming helpers live in the `@kubb/ast/utils` subpath, alongside the other string and code-building utilities.
 
 | Helper              | Import from       | Purpose                                             |
 | ------------------- | ----------------- | --------------------------------------------------- |
@@ -291,7 +291,7 @@ Lower-level helpers for parsers that turn the AST into source code:
 
 See [Concepts: Parsers](/docs/5.x/concepts/parsers) for how parsers consume printers.
 
-`defineDialect` is the adapter seam for spec-specific schema behavior and dedupe. It keeps the shared converters generic so an adapter supplies only the questions that differ between specs. See [Adapters](/docs/5.x/concepts/adapters#schema-dispatch-and-dialects).
+`defineDialect` is the adapter seam for spec-specific schema behavior and dedupe. It keeps the shared converters generic, so an adapter supplies only the questions that differ between specs. See [Adapters](/docs/5.x/concepts/adapters#schema-dispatch-and-dialects).
 
 ## Examples
 

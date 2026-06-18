@@ -7,15 +7,14 @@ outline: deep
 
 # Parsers
 
-A parser turns a [`FileNode`](/docs/5.x/concepts/ast) into the source string that [storage](/docs/5.x/concepts/storage) writes to disk. Every parser registers the file extensions it handles, and the file processor in `@kubb/core` routes each emitted file to the matching parser.
+A parser turns a [`FileNode`](/docs/5.x/concepts/ast) into the source string that [storage](/docs/5.x/concepts/storage) writes to disk. Each parser registers the file extensions it handles, and the file processor in `@kubb/core` routes each emitted file to the matching parser.
 
-A parser has two distinct jobs:
+A parser has two jobs:
 
-- `print(...nodes)` is called by plugins to render language-specific AST nodes into a string before staging them on `FileNode.sources`.
-- `parse(file)` is called by the file processor after all plugins have run, to join the staged sources into the final output string.
+`print(...nodes)` is called by plugins to render language-specific AST nodes into a string before staging them on `FileNode.sources`. `parse(file)` is called by the file processor after all plugins have run, to join the staged sources into the final output string.
 
 > [!TIP]
-> For TypeScript and JavaScript output use the built-in [`@kubb/parser-ts`](/parsers/parser-ts). It is added by default when you import `defineConfig` from the top-level `kubb` package. Build a custom parser only when you target a different language, such as Python, Kotlin, or Rust.
+> For TypeScript and JavaScript output use the built-in [`@kubb/parser-ts`](/parsers/parser-ts). It is added by default when you import `defineConfig` from the `kubb` package. Build a custom parser only when you target a different language, such as Python, Kotlin, or Rust.
 
 ## Quick start
 
@@ -60,9 +59,9 @@ Every value returned from `defineParser` matches the `Parser` interface from [`@
 
 | Property   | Type                                                                      | Required | When called                                  | Purpose                                                                                                                                              |
 | ---------- | ------------------------------------------------------------------------- | -------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`     | `string`                                                                  | Yes      | —                                            | Unique parser identifier. Convention is `parser-<id>`.                                                                                               |
-| `extNames` | `Array<FileNode['extname']> \| undefined`                                 | Yes      | —                                            | File extensions this parser handles. Set to `undefined` to register a catch-all fallback.                                                            |
-| `parse`    | `(file: FileNode, options?: { extname?: FileNode['extname'] }) => string` | Yes      | By the file processor after all plugins have run | Serializes the file's staged sources into the final output string. Must return synchronously.                                                         |
+| `name`     | `string`                                                                  | Yes      |                                              | Unique parser identifier. Convention is `parser-<id>`.                                                                                               |
+| `extNames` | `Array<FileNode['extname']> \| undefined`                                 | Yes      |                                              | File extensions this parser handles. Set to `undefined` to register a catch-all fallback.                                                            |
+| `parse`    | `(file: FileNode, options?: { extname?: FileNode['extname'] }) => string` | Yes      | By the file processor after all plugins run  | Serializes the file's staged sources into the final output string. Must return synchronously.                                                         |
 | `print`    | `(...nodes: TNode[]) => string`                                           | Yes      | By plugins, before files are staged          | Renders compiler AST nodes to source text. The node type is parser-specific, for example `ts.Node` for `parserTs`. |
 
 > [!IMPORTANT]
@@ -74,15 +73,15 @@ Every value returned from `defineParser` matches the `Parser` interface from [`@
 > [!NOTE]
 > Formatting and linting (Prettier, Biome, oxlint) run after `parse()`. Keep `parse()` focused on producing syntactically valid output.
 
-When no parser matches a file's extension, the file processor falls back to joining the file's source strings directly.
+When no parser matches a file's extension, the file processor joins the file's source strings directly.
 
 ## Streaming
 
-The file processor is internal to `@kubb/core` and processes files one at a time. The build driver enqueues each file as plugins emit it, the processor runs it through `parse()`, and the result lands in storage without buffering the full set. Progress surfaces as `start`, `update` (with `{ file, source, processed, total, percentage }`), and `end` events on the main event bus, which the built-in reporters render. Memory stays flat regardless of build size because each file is pulled through the pipeline individually.
+The file processor is internal to `@kubb/core` and processes files one at a time. The build driver enqueues each file as plugins emit it, the processor runs it through `parse()`, and the result lands in storage without buffering the full set. Progress surfaces as `start`, `update` (with `{ file, source, processed, total, percentage }`), and `end` events on the main event bus, which the built-in reporters render. Memory stays flat regardless of build size because each file is pulled through the pipeline one at a time.
 
 ## Naming convention
 
-Parsers follow the same layout as [plugins](/docs/5.x/concepts/plugins) and [adapters](/docs/5.x/concepts/adapters):
+Parsers share the layout of [plugins](/docs/5.x/concepts/plugins) and [adapters](/docs/5.x/concepts/adapters):
 
 | Surface             | Pattern                                          | Example                          |
 | ------------------- | ------------------------------------------------ | -------------------------------- |
@@ -108,7 +107,7 @@ export const parserCustom = defineParser({
 ```
 
 > [!TIP]
-> Parsers compose by extension. `parserTs` (`.ts`, `.js`) and `parserTsx` (`.tsx`, `.jsx`) ship in the same [`@kubb/parser-ts`](/parsers/parser-ts) package and are registered side by side.
+> Parsers compose by extension. `parserTs` (`.ts`, `.js`) and `parserTsx` (`.tsx`, `.jsx`) ship in the same [`@kubb/parser-ts`](/parsers/parser-ts) package and register side by side.
 
 ## Built-in parsers
 
@@ -155,7 +154,7 @@ export default defineConfig({
 ```
 
 > [!TIP]
-> `defineConfig` from the top-level `kubb` package installs `parserTs` and `parserTsx` automatically. Set `parsers:` explicitly only when you add a custom parser or need to change the registration order.
+> `defineConfig` from the `kubb` package installs `parserTs`, `parserTsx`, and `parserMd` automatically. Set `parsers:` only when you add a custom parser or need to change the registration order.
 
 ## Creating a custom parser
 

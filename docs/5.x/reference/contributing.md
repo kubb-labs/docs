@@ -7,12 +7,12 @@ outline: [2, 3]
 
 # Contributing
 
-There are two main places to contribute:
+There are two places to contribute:
 
-1. [Kubb core](#kubb-core): the runtime, [AST](/docs/5.x/concepts/ast), [adapter](/docs/5.x/concepts/adapters), [parsers](/docs/5.x/concepts/parsers), and built-in plugins that live in [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb).
-2. [Kubb plugins](#kubb-plugins): community and official plugins listed in the registry at [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins).
+1. [Kubb core](#kubb-core): the runtime, [AST](/docs/5.x/concepts/ast), [adapter](/docs/5.x/concepts/adapters), [parsers](/docs/5.x/concepts/parsers), and built-in plugins in [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb).
+2. [Kubb plugins](#kubb-plugins): community and official plugins in the registry at [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins).
 
-Before you start, scan the open [issues](https://github.com/kubb-labs/kubb/issues) and [pull requests](https://github.com/kubb-labs/kubb/pulls) so you don't duplicate work, and say hello on [Discord](https://discord.gg/4dQjA6vrWX).
+First, check the open [issues](https://github.com/kubb-labs/kubb/issues) and [pull requests](https://github.com/kubb-labs/kubb/pulls) so you don't duplicate work. Say hello on [Discord](https://discord.gg/4dQjA6vrWX).
 
 ## Prerequisites
 
@@ -22,7 +22,7 @@ Before you start, scan the open [issues](https://github.com/kubb-labs/kubb/issue
 
 ## Kubb core
 
-The monorepo at [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb) holds everything that ships in the `kubb` and `@kubb/*` packages.
+The monorepo at [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb) holds everything in the `kubb` and `@kubb/*` packages.
 
 ### 1. Fork and clone
 
@@ -85,22 +85,22 @@ pnpm run test
 
 ## Kubb plugins
 
-You can contribute a plugin in two ways: build a community plugin in your own repository, or propose an official one in the core monorepo.
+Contribute a plugin in two ways. Build a community plugin in your own repository, or propose an official one in the core monorepo.
 
 ### Build a community plugin
 
 1. Follow the [Creating Your First Plugin](/docs/5.x/guides/creating-plugins) guide.
-2. Use [`@kubb/plugin-client`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-client) as the canonical layout.
-3. Publish your plugin to npm under the `kubb-plugin-*` or `@scope/plugin-*` naming convention.
-4. Submit it to the [community registry](https://github.com/kubb-labs/plugins) by adding a YAML entry under `plugins/`.
+2. Use [`@kubb/plugin-client`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-client) as the layout to copy.
+3. Publish to npm under the `kubb-plugin-*` or `@scope/plugin-*` naming convention.
+4. Submit it to the [community registry](https://github.com/kubb-labs/plugins). Add a YAML entry under `plugins/`.
 
 ### Propose an official plugin
 
-For plugins that should ship under `@kubb/plugin-*`, [open an issue](https://github.com/kubb-labs/plugins/issues/new/choose) on the [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins) repo first to discuss scope and naming. Once approved, scaffold the package under `packages/plugin-<name>/` following the structure of an existing plugin.
+Official plugins ship under `@kubb/plugin-*`. First, [open an issue](https://github.com/kubb-labs/plugins/issues/new/choose) on the [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins) repo to discuss scope and naming. Once approved, scaffold the package under `packages/plugin-<name>/`. Follow the structure of an existing plugin.
 
 ## Testing
 
-Kubb uses [Vitest](https://vitest.dev/). Place test files next to the source files they test:
+Kubb uses [Vitest](https://vitest.dev/). Place each test file next to the source file it tests.
 
 ```ts
 import { describe, expect, it } from 'vitest'
@@ -122,14 +122,15 @@ pnpm -F @kubb/core test
 
 ## Commits and changesets
 
-- Follow [Conventional Commits](https://www.conventionalcommits.org/): `feat:`, `fix:`, `docs:`, `chore:`.
-- Add a [changeset](https://github.com/changesets/changesets) for any change that ships in a published package:
+Follow [Conventional Commits](https://www.conventionalcommits.org/): `feat:`, `fix:`, `docs:`, `chore:`.
+
+Add a [changeset](https://github.com/changesets/changesets) for any change that ships in a published package:
 
 ```bash
 pnpm run changeset
 ```
 
-Skip the changeset only for changes that do not affect published code (CI, internal tests, docs).
+Skip the changeset only when the change does not affect published code, such as CI, internal tests, or docs.
 
 ## Opening a pull request
 

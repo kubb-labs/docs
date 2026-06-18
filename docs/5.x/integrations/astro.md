@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Astro
 
-`unplugin-kubb/astro` runs Kubb as an [Astro](https://astro.build/) integration. It hooks into Astro's Vite layer and runs generation during builds.
+`unplugin-kubb/astro` runs Kubb as an [Astro](https://astro.build/) integration. It hooks into Astro's Vite layer and generates during a build. Pass your Kubb config to the `config` option.
 
 ## Install
 
@@ -52,4 +52,4 @@ export default defineAstroConfig({
 ```
 
 > [!NOTE]
-> The Astro integration uses Vite under the hood with `apply: 'build'`, so generation runs during `astro build` only. Run [`kubb generate`](/docs/5.x/api/commands/) before starting the dev server.
+> The Astro integration uses Vite under the hood with `apply: 'build'`. Generation runs during `astro build` only. Run [`kubb generate`](/docs/5.x/api/commands/) before you start the dev server.

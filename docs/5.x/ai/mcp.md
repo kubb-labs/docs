@@ -7,17 +7,20 @@ outline: [2, 3]
 
 # MCP
 
-Kubb ships a [Model Context Protocol](https://modelcontextprotocol.io/) server that exposes code-generation tools to any MCP-capable client. Once connected, your editor or agent runs Kubb generation, validates schemas, and inspects configuration without leaving the chat.
+Kubb ships a [Model Context Protocol](https://modelcontextprotocol.io/) server. It exposes
+code-generation tools to any MCP-capable client. Once connected, your editor or agent runs Kubb
+generation, validates schemas, and inspects configuration without leaving the chat.
 
 > [!IMPORTANT]
-> The built-in MCP server requires Kubb v5 or higher.
+> The built-in MCP server needs Kubb v5 or higher.
 
 > [!NOTE]
-> This page covers consuming Kubb tooling inside your editor via MCP. If you want to generate an MCP server from your OpenAPI spec, see [`@kubb/plugin-mcp`](/plugins/plugin-mcp) instead.
+> This page covers using Kubb tooling inside your editor over MCP. To generate an MCP server from
+> your OpenAPI spec, see [`@kubb/plugin-mcp`](/plugins/plugin-mcp) instead.
 
 ## Starting the server
 
-Run the server with a single command. It communicates over stdio, the transport every major LLM
+Run the server with one command. It communicates over stdio, the transport every major LLM
 client speaks:
 
 ```shell
@@ -28,7 +31,7 @@ kubb mcp
 
 ### Claude Desktop
 
-Add the following to your `claude_desktop_config.json` (usually at `~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
+Add this to your `claude_desktop_config.json`. On macOS it usually lives at `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
 ```json
 {
@@ -58,7 +61,7 @@ Open `Settings → MCP` and add a new server entry:
 
 ### VS Code (GitHub Copilot)
 
-Add the following to your `.vscode/mcp.json` (workspace), or run `MCP: Open User Configuration` in the Command Palette for a global setup:
+Add this to your `.vscode/mcp.json` for the workspace. For a global setup, run `MCP: Open User Configuration` in the Command Palette:
 
 ```json [.vscode/mcp.json]
 {

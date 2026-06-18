@@ -7,14 +7,14 @@ outline: deep
 
 # Adapters
 
-An adapter is the single entry point that turns your input specification into the universal [AST](/docs/5.x/concepts/ast). Every [plugin](/docs/5.x/concepts/plugins) reads that AST, so the adapter is the only piece that knows about the input format.
+An adapter turns your input specification into the universal [AST](/docs/5.x/concepts/ast). Every [plugin](/docs/5.x/concepts/plugins) reads that AST, so the adapter is the only part that knows the input format.
 
 > [!TIP]
-> For OpenAPI 2.0, 3.0, and 3.1 use the official [`@kubb/adapter-oas`](/adapters/adapter-oas). Kubb selects it for you when you import `defineConfig` from the top-level `kubb` package. Write a custom adapter only when you target a different specification such as AsyncAPI, GraphQL, JSON Schema, or gRPC.
+> For OpenAPI 2.0, 3.0, and 3.1 use the official [`@kubb/adapter-oas`](/adapters/adapter-oas). Kubb picks it for you when you import `defineConfig` from the `kubb` package. Write a custom adapter only when you target a different specification such as AsyncAPI, GraphQL, JSON Schema, or gRPC.
 
 ## Quick start
 
-A minimal adapter declares its name and produces an empty [`InputNode`](/docs/5.x/concepts/ast). An empty AST makes plugins emit nothing, so fill `schemas` and `operations` from your spec next.
+A minimal adapter declares a name and returns an empty [`InputNode`](/docs/5.x/concepts/ast). An empty AST emits nothing, so fill `schemas` and `operations` from your spec next.
 
 ```typescript twoslash [adapterCustom.ts]
 import { ast, createAdapter } from '@kubb/core'
@@ -38,7 +38,7 @@ export const adapterCustom = createAdapter<AdapterCustom>((options) => ({
 }))
 ```
 
-Wire it into your config with `defineConfig` from `kubb` and pass your adapter explicitly:
+Wire it into your config with `defineConfig` from `kubb` and pass the adapter:
 
 ```typescript twoslash [kubb.config.ts]
 // @errors: 2307
@@ -60,25 +60,25 @@ Every adapter returned from `createAdapter` matches the `Adapter` interface from
 | Property     | Type                                                                                                  | Required | Purpose                                                                                                                                            |
 | ------------ | ----------------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `name`       | `string`                                                                                              | Yes      | Unique adapter identifier. Convention is `adapter-<id>`.                                                                                           |
-| `options`    | `TResolvedOptions`                                                                                    | Yes      | Adapter options after defaults have been applied.                                                                                                  |
-| `document`   | `TDocument \| null`                                                                                   | Yes      | The raw parsed source document, exposed for plugins that need direct access. `null` before `parse()`.                                              |
-| `parse`      | `(source: AdapterSource) => InputNode \| Promise<InputNode>`                                          | Yes      | Convert the spec into the [universal AST](/docs/5.x/concepts/ast). The returned `InputNode` is consumed directly by the build driver.              |
-| `getImports` | `(node: SchemaNode, resolve: (name: string) => { name: string; path: string }) => Array<ImportNode>` | Yes      | Track cross-references so plugins emit correct imports. `resolve` receives the collision-corrected schema name and must return the `{ name, path }` for the import. |
-| `validate`   | `(input: string, options?: { throwOnError?: boolean }) => Promise<void>`                              | Yes      | Validate the document at the given path or URL without running the full pipeline.                                                                  |
-| `stream`     | `(source: AdapterSource) => Promise<InputStreamNode>`                                                 | No       | Memory-efficient streaming variant of `parse()`. Returns `schemas` and `operations` as `AsyncIterable`s. The OAS adapter uses this code path for every spec.                                  |
+| `options`    | `TResolvedOptions`                                                                                    | Yes      | Adapter options after defaults are applied.                                                                                                  |
+| `document`   | `TDocument \| null`                                                                                   | Yes      | The raw parsed source document, for plugins that need direct access. `null` before `parse()`.                                              |
+| `parse`      | `(source: AdapterSource) => InputNode \| Promise<InputNode>`                                          | Yes      | Convert the spec into the [universal AST](/docs/5.x/concepts/ast). The build driver consumes the returned `InputNode` directly.              |
+| `getImports` | `(node: SchemaNode, resolve: (name: string) => { name: string; path: string }) => Array<ImportNode>` | Yes      | Track cross-references so plugins emit correct imports. `resolve` receives the collision-corrected schema name and returns the `{ name, path }` for the import. |
+| `validate`   | `(input: string, options?: { throwOnError?: boolean }) => Promise<void>`                              | Yes      | Validate the document at a path or URL without running the full pipeline.                                                                  |
+| `stream`     | `(source: AdapterSource) => Promise<InputStreamNode>`                                                 | No       | Streaming variant of `parse()`. Returns `schemas` and `operations` as `AsyncIterable`s. The OAS adapter uses this path for every spec.                                  |
 
-`AdapterSource` is one of three shapes. Handle every form your users may pass:
+`AdapterSource` takes one of three shapes. Handle every form your users may pass:
 
 ```typescript twoslash
 type AdapterSource = { type: 'path'; path: string } | { type: 'data'; data: string | unknown } | { type: 'paths'; paths: Array<string> }
 ```
 
 > [!IMPORTANT]
-> Throw from `parse()` with a clear, user-facing message when the input is invalid. The error is surfaced verbatim.
+> Throw from `parse()` with a clear, user-facing message when the input is invalid. Kubb surfaces the error verbatim.
 
 ## Streaming
 
-`stream()` returns an `InputStreamNode` whose `schemas` and `operations` are `AsyncIterable`s instead of arrays. Each `for await` loop produces a fresh parse pass over the cached in-memory document, so plugins iterate independently and the runtime never holds every node in memory at once.
+`stream()` returns an `InputStreamNode` whose `schemas` and `operations` are `AsyncIterable`s instead of arrays. Each `for await` loop runs a fresh parse pass over the cached document, so plugins iterate independently and the runtime never holds every node in memory at once.
 
 The build driver prefers `stream()` when an adapter implements it. For `parse()`-only adapters, the driver wraps the result in a reusable `AsyncIterable` so the rest of the pipeline stays stream-shaped.
 
@@ -101,7 +101,7 @@ export const adapterStream = createAdapter<AdapterStream>(() => ({
   options: {},
   document: null,
   async parse() {
-    throw new Error('Use stream() instead — adapter-stream does not support eager parsing.')
+    throw new Error('Use stream() instead. adapter-stream does not support eager parsing.')
   },
   async stream() {
     return ast.factory.createInput({
@@ -120,11 +120,11 @@ export const adapterStream = createAdapter<AdapterStream>(() => ({
 }))
 ```
 
-Assemble the result with `ast.factory.createInput({ stream: true, schemas, operations, meta })` (see [AST](/docs/5.x/concepts/ast)). The `meta` field is optional, but set it when you can. Plugins then read `title`, `version`, and `baseURL` before the first node is yielded.
+Build the result with `ast.factory.createInput({ stream: true, schemas, operations, meta })` (see [AST](/docs/5.x/concepts/ast)). The `meta` field is optional. Set it when you can, so plugins read `title`, `version`, and `baseURL` before the first node is yielded.
 
 ## Naming convention
 
-Adapters follow the same layout as plugins so [`getResolver`](/docs/5.x/api/core), the registry, and the documentation can find them by inference:
+Adapters share the layout of plugins, so [`getResolver`](/docs/5.x/api/core), the registry, and the docs find them by inference:
 
 | Surface                       | Pattern                                            | Example             |
 | ----------------------------- | -------------------------------------------------- | ------------------- |
@@ -134,7 +134,7 @@ Adapters follow the same layout as plugins so [`getResolver`](/docs/5.x/api/core
 | Name constant                 | `adapter<Name>Name`                                | `adapterOasName`    |
 | `AdapterFactoryOptions` alias | `Adapter<Name>` (PascalCase)                       | `AdapterOas`        |
 
-Export the runtime name as a `satisfies`-typed constant so consumers can reference it without typos:
+Export the runtime name as a `satisfies`-typed constant so consumers reference it without typos:
 
 ```typescript twoslash [naming.ts]
 import { ast, createAdapter } from '@kubb/core'
@@ -205,11 +205,11 @@ export default defineConfig({
 ```
 
 > [!NOTE]
-> `defineConfig` from the top-level `kubb` package automatically uses `adapterOas()` when `adapter` is omitted. Set `adapter:` explicitly only to configure `adapterOas` options or supply a different adapter.
+> `defineConfig` from the `kubb` package uses `adapterOas()` when you omit `adapter`. Set `adapter:` only to configure `adapterOas` options or supply a different adapter.
 
 ## Creating a custom adapter
 
-Use `createAdapter` with `AdapterFactoryOptions` to model your input format. The example below sketches a JSON Schema adapter that exposes the parsed document for plugins:
+Use `createAdapter` with `AdapterFactoryOptions` to model your input format. This JSON Schema adapter exposes the parsed document for plugins:
 
 ```typescript twoslash [adapterJsonSchema.ts]
 import { ast, createAdapter } from '@kubb/core'
@@ -276,7 +276,7 @@ Turning a spec's schema objects into [`SchemaNode`](/docs/5.x/concepts/ast)s is 
 context → [rule.match → rule.convert] → node
 ```
 
-The adapter derives a small context from each schema, then runs it through an ordered table of dispatch rules that map spec shapes onto AST nodes. Only a handful of decisions differ between specs. Those live behind a dialect, a single object the converter pipeline reads so it never hard-codes OpenAPI assumptions:
+The adapter derives a small context from each schema, then runs it through an ordered table of dispatch rules that map spec shapes onto AST nodes. Only a few decisions differ between specs. Those live behind a dialect, a single object the converter pipeline reads, so it never hard-codes OpenAPI assumptions:
 
 | Decision      | OpenAPI                                              | AsyncAPI (example)            |
 | ------------- | --------------------------------------------------- | ----------------------------- |
@@ -285,7 +285,7 @@ The adapter derives a small context from each schema, then runs it through an or
 | binary        | `contentMediaType: 'application/octet-stream'`      | `contentEncoding: 'binary'`   |
 | optionality   | a parent's `required` plus the schema's `nullable` set `optional` / `nullish` | same JSON Schema `required` + `null` |
 
-`@kubb/adapter-oas` ships the OpenAPI dialect as its default. A new adapter such as `@kubb/adapter-asyncapi` reuses the same converters and dispatch table and supplies only its own dialect, so the spec-specific surface stays small and you can test it by swapping that one object.
+`@kubb/adapter-oas` ships the OpenAPI dialect as its default. A new adapter such as `@kubb/adapter-asyncapi` reuses the same converters and dispatch table and supplies only its own dialect, so the spec-specific surface stays small. You test it by swapping that one object.
 
 ## Examples
 

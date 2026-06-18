@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Rspack
 
-`unplugin-kubb/rspack` runs Kubb during [Rspack](https://rspack.dev/) compilation. Rspack is a Rust-based bundler with webpack-compatible configuration.
+`unplugin-kubb/rspack` runs Kubb during [Rspack](https://rspack.dev/) compilation. Rspack is a Rust-based bundler with a webpack-compatible config. Pass your Kubb config to the `config` option.
 
 ## Install
 

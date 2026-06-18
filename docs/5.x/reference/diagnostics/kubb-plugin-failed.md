@@ -10,14 +10,11 @@ outline: [2, 3]
 Code: `KUBB_PLUGIN_FAILED`
 Level: error
 
-A plugin threw while generating, or reported an error through `ctx.error`. The diagnostic is
-attributed to the plugin and fails the run.
+A plugin threw while generating, or reported an error through `ctx.error`. The diagnostic is attributed to the plugin and fails the run.
 
 ## What happened
 
-Each plugin runs against the AST and can fail on a specific schema or operation. A thrown error or
-a `ctx.error(...)` call lands here, carrying the plugin name. When the plugin passed an `Error`, it
-is kept as the diagnostic `cause`, so the underlying stack is preserved.
+Each plugin runs against the AST and can fail on a specific schema or operation. A thrown error or a `ctx.error(...)` call lands here, carrying the plugin name. When the plugin passed an `Error`, Kubb keeps it as the diagnostic `cause`, so the underlying stack is preserved.
 
 ## Common causes
 
@@ -33,9 +30,7 @@ is kept as the diagnostic `cause`, so the underlying stack is preserved.
 
 ## For plugin authors
 
-`ctx.error` reports a `KUBB_PLUGIN_FAILED` and fails the build. For a structured diagnostic with a
-stable code and a source pointer, call `Diagnostics.report(...)` or throw a `DiagnosticError`
-instead:
+`ctx.error` reports a `KUBB_PLUGIN_FAILED` and fails the build. For a structured diagnostic with a stable code and a source pointer, call `Diagnostics.report(...)` or throw a `DiagnosticError` instead.
 
 ```typescript
 import { Diagnostics, type Diagnostic } from '@kubb/core'

@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Rollup
 
-`unplugin-kubb/rollup` runs Kubb as a [Rollup](https://rollupjs.org/) plugin. Generated files are written to disk in the `buildStart` hook, before the rest of the bundle runs.
+`unplugin-kubb/rollup` runs Kubb as a [Rollup](https://rollupjs.org/) plugin. It writes the generated files in the `buildStart` hook, before the rest of the bundle runs. Pass your Kubb config to the `config` option.
 
 ## Install
 

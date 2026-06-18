@@ -14,16 +14,12 @@ A `$ref` points at a definition that does not exist in the document.
 
 ## What happened
 
-Kubb resolves local references (`#/...`) against the document it parsed. This diagnostic fires when
-a reference points at a path that is not there, so the schema or operation it belongs to cannot be
-generated.
+Kubb resolves local references (`#/...`) against the document it parsed. This diagnostic fires when a reference points at a path that is not there. The schema or operation it belongs to cannot be generated.
 
 ## How to fix it
 
-- Add the missing definition under `components.schemas`, or correct the `$ref` to match an existing
-  one.
-- Run [`kubb validate`](/docs/5.x/api/commands/validate) to catch unresolved references before
-  generating.
+- Add the missing definition under `components.schemas`, or correct the `$ref` to match an existing one.
+- Run [`kubb validate`](/docs/5.x/api/commands/validate) to catch unresolved references before generating.
 - If the target lives in another file, bundle the document first so all references are local.
 
 ## Common causes

@@ -7,13 +7,13 @@ outline: [2, 3]
 
 # Integrations
 
-`unplugin-kubb` runs code generation as part of your build pipeline instead of as a separate `kubb generate` step. Pass it the same config you would write in `kubb.config.ts`.
+`unplugin-kubb` runs code generation inside your build. You skip the separate `kubb generate` step. Pass it the same config you write in `kubb.config.ts`.
 
 > [!NOTE]
-> `hooks.done` (for running formatters or linters after generation) only works with the [CLI](/docs/5.x/api/commands/), not with unplugin. Use `kubb generate` if you need post-generation callbacks.
+> `hooks.done` runs formatters and linters after generation. It works with the [CLI](/docs/5.x/api/commands/) only, not with unplugin. Use `kubb generate` when you need a post-generation callback.
 
 > [!IMPORTANT]
-> For Vite-based bundlers ([Vite](./vite), [Nuxt](./nuxt), [Astro](./astro)), generation only runs during builds. It does not run during dev server startup. Run [`kubb generate`](/docs/5.x/api/commands/) before starting the dev server.
+> Vite-based bundlers ([Vite](./vite), [Nuxt](./nuxt), [Astro](./astro)) generate during a build only. They skip generation on dev server startup. Run [`kubb generate`](/docs/5.x/api/commands/) before you start the dev server.
 
 ## Installation
 
@@ -39,7 +39,7 @@ yarn add -D unplugin-kubb@beta
 
 ## Pick your bundler
 
-Each bundler has its own entrypoint:
+Each bundler has its own entrypoint.
 
 | Bundler                               | Entrypoint               | Docs                   |
 | ------------------------------------- | ------------------------ | ---------------------- |
@@ -55,7 +55,7 @@ Each bundler has its own entrypoint:
 
 ## Options
 
-Pass your Kubb config to the `config` option, a [`UserConfig`](/docs/5.x/reference/configuration) object with the same shape as `kubb.config.ts`:
+Pass your Kubb config to the `config` option. It is a [`UserConfig`](/docs/5.x/reference/configuration) object with the same shape as `kubb.config.ts`.
 
 ```typescript twoslash [vite.config.ts]
 import kubb from 'unplugin-kubb/vite'

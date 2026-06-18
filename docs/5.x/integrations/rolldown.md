@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Rolldown
 
-`unplugin-kubb/rolldown` runs Kubb as a [Rolldown](https://rolldown.rs/) plugin. Rolldown is a Rust-based Rollup-compatible bundler.
+`unplugin-kubb/rolldown` runs Kubb as a [Rolldown](https://rolldown.rs/) plugin. Rolldown is a Rust-based, Rollup-compatible bundler. Pass your Kubb config to the `config` option.
 
 ## Install
 

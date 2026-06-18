@@ -14,7 +14,7 @@ outline: [2, 3]
 
 ## Quick start (recommended)
 
-The `kubb init` wizard detects your package manager, asks where your spec lives and where generated files should go, then installs the plugins you pick and writes a `kubb.config.ts`.
+The `kubb init` wizard detects your package manager. It asks where your spec lives and where generated files should go. Then it installs the plugins you pick and writes a `kubb.config.ts`.
 
 ```shell
 npx kubb@beta init
@@ -51,7 +51,7 @@ yarn add -D kubb@beta
 :::
 
 > [!NOTE]
-> The `kubb` package includes the CLI, the core runtime, the [OpenAPI adapter](/adapters/adapter-oas), and the [TypeScript parser](/parsers/parser-ts) by default. You only need to add plugins for the outputs you want.
+> The `kubb` package includes the CLI, the core runtime, the [OpenAPI adapter](/adapters/adapter-oas), and the TypeScript, TSX, and Markdown parsers by default. You only need to add plugins for the outputs you want.
 
 ### 2. Add plugins
 
@@ -94,7 +94,7 @@ See the [plugins](/plugins) page for a complete list.
 
 ### 3. Create `kubb.config.ts`
 
-The config points Kubb at your spec and your output directory. `defineConfig` wires up the OpenAPI adapter for you.
+The config points Kubb at your spec and your output directory. `defineConfig` wires up the OpenAPI adapter, the default parsers, and a barrel plugin for you.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -108,14 +108,14 @@ export default defineConfig({
 })
 ```
 
-Kubb looks for `kubb.config.ts` (recommended) in the project root and the `.config/` and `configs/` subdirectories. JavaScript variants (`.js`, `.mjs`, `.cjs`) and TypeScript `.mts`/`.cts` are also supported.
+Kubb looks for `kubb.config.ts` in the project root and the `.config/` and `configs/` subdirectories. JavaScript variants (`.js`, `.mjs`, `.cjs`) and TypeScript `.mts`/`.cts` also work.
 
 > [!TIP]
 > Use `--config <path>` to point Kubb at a config file in a custom location.
 
 ### 4. Add a script
 
-Add a `generate` script to `package.json` so you run generation with one command:
+Add a `generate` script to `package.json` so you run generation with one command.
 
 ```json [package.json]
 {
@@ -133,4 +133,4 @@ npm run generate
 
 Generated files appear under `output.path`. Re-run this command whenever your spec changes.
 
-Continue to [Basic Usage](./basic-usage) to write a full config with multiple plugins, or jump to [Configuration](../reference/configuration) for every available option. To run generation as part of your bundler, see [Integrations](/docs/5.x/integrations/).
+Continue to [Basic Usage](./basic-usage) to write a full config with multiple plugins. Jump to [Configuration](../reference/configuration) for every option. To run generation from your bundler, see [Integrations](/docs/5.x/integrations/).

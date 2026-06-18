@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # `kubb generate`
 
-Reads your [`kubb.config.ts`](/docs/5.x/reference/configuration) and runs the full code-generation pipeline. This is the default command. Running `kubb` without any arguments is equivalent to `kubb generate`.
+Run `kubb generate` to read your [`kubb.config.ts`](/docs/5.x/reference/configuration) and run the code-generation pipeline. This is the default command. Run `kubb` with no arguments and it runs `kubb generate`.
 
 ```terminal
 command: kubb generate
@@ -27,13 +27,13 @@ output:
 
 ## Usage
 
-Generate using the input defined in your config:
+Generate from the input set in your config:
 
 ```shell
 kubb generate
 ```
 
-Pass an input file to override the one in your config:
+Pass an input file to override the config:
 
 ```shell
 kubb generate ./petStore.yaml
@@ -47,32 +47,34 @@ kubb generate ./petStore.yaml
 
 ## Options
 
-| Option                                       | Default | Description                                                                                |
-| -------------------------------------------- | ------- | ----------------------------------------------------------------------------------------- |
-| `--config=<path>`, `-c <path>`               |         | Path to a specific config file (e.g. `./kubb.staging.ts`).                                 |
-| `--logLevel=<silent\|info\|verbose>`, `-l`   | `info`  | Set verbosity. Use `verbose` to see plugin timing breakdowns.                             |
-| `--silent`, `-s`                             | `false` | Shortcut for `--logLevel silent`. Suppresses all output.                                  |
-| `--verbose`, `-v`                            | `false` | Shortcut for `--logLevel verbose`. Useful for spotting slow plugins.                      |
-| `--reporter=<cli\|json\|file>`               | `cli`   | Selects which registered reporters to trigger by name, comma separated.                   |
-| `--watch`, `-w`                              | `false` | Re-run the generation pipeline whenever the input spec changes.                            |
+| Option                                       | Default | Description                                                                |
+| -------------------------------------------- | ------- | ------------------------------------------------------------------------- |
+| `--config=<path>`, `-c <path>`               |         | Path to a config file, such as `./kubb.staging.ts`.                       |
+| `--logLevel=<silent\|info\|verbose>`, `-l`   | `info`  | Set the verbosity. Use `verbose` to see plugin timings.                   |
+| `--silent`, `-s`                             | `false` | Force `logLevel` to `silent`. Suppresses output.                          |
+| `--verbose`, `-v`                            | `false` | Force `logLevel` to `verbose`. Shows slow plugins.                        |
+| `--reporter=<cli\|json\|file>`               |         | Pick which reporters to trigger, comma separated. Defaults to `cli`.      |
+| `--watch`, `-w`                              | `false` | Re-run the pipeline whenever the input spec changes.                      |
+
+`--reporter` takes no short flag.
 
 ## Reporters
 
-A reporter decides how a run is rendered. The config registers the available reporters with [`reporters`](/docs/5.x/reference/configuration), which defaults to the built-ins, and `--reporter` picks which ones to trigger by name (comma separated, like `--reporter cli,file`). Without the flag, the `cli` reporter runs. Three ship out of the box:
+A reporter decides how a run is rendered. The config registers the available reporters with [`reporters`](/docs/5.x/reference/configuration), and `--reporter` picks which ones to trigger by name (comma separated, like `--reporter cli,file`). Without the flag, the `cli` reporter runs. Three ship out of the box.
 
 | Reporter | Output                                                                          |
 | -------- | ------------------------------------------------------------------------------- |
-| `cli`    | The end-of-run summary in the terminal. This is the default.                    |
-| `json`   | A machine-readable report on stdout (`status`, `counts`, `timings`, `diagnostics`), for CI. |
-| `file`   | The run's diagnostics written to `.kubb/kubb-<name>-<timestamp>.log`.            |
+| `cli`    | The end-of-run summary in the terminal. This runs when you pass no flag.        |
+| `json`   | A machine-readable report on stdout (`status`, `counts`, `timings`, `diagnostics`) for CI. |
+| `file`   | The run's diagnostics, written to `.kubb/kubb-<name>-<timestamp>.log`.          |
 
-Write a log file without changing anything else:
+Write a log file:
 
 ```shell
 kubb generate --reporter file
 ```
 
-Print a JSON report for CI and keep the exit code (non-zero on any error):
+Print a JSON report for CI. The exit code is non-zero on any error:
 
 ```shell
 kubb generate --reporter json

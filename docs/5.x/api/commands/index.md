@@ -7,11 +7,11 @@ outline: [2, 3]
 
 # Commands
 
-The `kubb` CLI is your main interface to Kubb. It reads your [configuration](/docs/5.x/reference/configuration) and runs the generation pipeline. It also scaffolds new projects, validates specs, and starts a Model Context Protocol server for LLMs.
+The `kubb` CLI is the main way to run Kubb. It reads your [configuration](/docs/5.x/reference/configuration) and runs the generation pipeline. It also scaffolds projects, validates specs, and starts a Model Context Protocol server for LLM clients.
 
 ## Installation
 
-The CLI comes bundled with the `kubb` package, so after [installation](/docs/5.x/getting-started/installation) you are ready to go. To install it separately:
+The CLI ships with the `kubb` package. After [installation](/docs/5.x/getting-started/installation) it is ready to use. To install it on its own:
 
 ::: code-group
 
@@ -47,22 +47,22 @@ COMMANDS
 Use kubb <command> --help for more information about a command.
 ```
 
-Running `kubb` without arguments is equivalent to `kubb generate`. It reads your config and generates code.
+Run `kubb` with no command and it runs `kubb generate`. It reads your config and generates code.
 
 ## Available commands
 
 | Command                       | Description                                                       |
 | ----------------------------- | ----------------------------------------------------------------- |
-| [`kubb init`](./init)         | Bootstrap a new Kubb project with an interactive wizard.          |
-| [`kubb generate`](./generate) | Run the code-generation pipeline using your `kubb.config.ts`.     |
+| [`kubb init`](./init)         | Scaffold a new Kubb project with an interactive wizard.           |
+| [`kubb generate`](./generate) | Run the code-generation pipeline from your `kubb.config.ts`.      |
 | [`kubb validate`](./validate) | Validate a Swagger/OpenAPI document without running the pipeline. |
 | [`kubb mcp`](./mcp)           | Start a Model Context Protocol server for LLM clients.            |
 
 ## Environment variables
 
-The CLI reads the following shared environment variables.
+The CLI reads these shared environment variables.
 
-| Variable                 | Type      | Used by | Description                                                             |
-| ------------------------ | --------- | ------- | ----------------------------------------------------------------------- |
-| `KUBB_DISABLE_TELEMETRY` | `boolean` | all     | Disable anonymous usage telemetry. Set to `1` or `true` to opt out.     |
-| `DO_NOT_TRACK`           | `boolean` | all     | Standard opt-out convention. Set to `1` or `true` to disable telemetry. |
+| Variable                 | Type      | Used by | Description                                                          |
+| ------------------------ | --------- | ------- | -------------------------------------------------------------------- |
+| `KUBB_DISABLE_TELEMETRY` | `boolean` | all     | Turn off anonymous usage telemetry. Set it to `1` or `true`.         |
+| `DO_NOT_TRACK`           | `boolean` | all     | Standard opt-out convention. Set it to `1` or `true`.                |

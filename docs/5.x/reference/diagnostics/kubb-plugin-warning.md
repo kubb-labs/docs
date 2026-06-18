@@ -10,23 +10,19 @@ outline: [2, 3]
 Code: `KUBB_PLUGIN_WARNING`
 Level: warning
 
-A plugin reported a non-fatal warning through `ctx.warn`. It is collected and shown, but does not
-fail the run.
+A plugin reported a non-fatal warning through `ctx.warn`. Kubb collects and shows it, but it does not fail the run.
 
 ## What happened
 
-A plugin found something worth flagging but could still generate. The warning carries the plugin
-name and appears in the run summary and in `kubb generate --reporter json`.
+A plugin found something worth flagging but could still generate. The warning carries the plugin name and appears in the run summary and in `kubb generate --reporter json`.
 
 ## How to fix it
 
-Read the message and adjust the plugin options or the input if the warning is unwanted. Nothing is
-required to make the build pass, since a warning never fails a run.
+Read the message and adjust the plugin options or the input if the warning is unwanted. Nothing is required to make the build pass. A warning never fails a run.
 
 ## For plugin authors
 
-`ctx.warn(message)` reports a `KUBB_PLUGIN_WARNING`. For a stable code and a source pointer, build a
-`warning` diagnostic and call `Diagnostics.report(...)` instead.
+`ctx.warn(message)` reports a `KUBB_PLUGIN_WARNING`. For a stable code and a source pointer, build a `warning` diagnostic and call `Diagnostics.report(...)` instead.
 
 ## Example output
 

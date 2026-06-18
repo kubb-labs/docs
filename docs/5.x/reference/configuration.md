@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Configuration
 
-`kubb.config.ts` drives a Kubb run. The file default-exports a `defineConfig` call, which takes an object, a function that returns one, or an array of configs.
+`kubb.config.ts` drives a Kubb run. The file default-exports a `defineConfig` call. Pass it an object, a function that returns one, or an array of configs.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -20,11 +20,11 @@ export default defineConfig({
 ```
 
 > [!TIP]
-> `defineConfig` from the `kubb` package automatically includes the OpenAPI adapter and TypeScript parsers, so you don't need to import them separately.
+> `defineConfig` from the `kubb` package adds the OpenAPI adapter and the TypeScript parsers for you, so you don't import them yourself.
 
 ## Config formats
 
-`defineConfig` accepts an object, a function, or an array:
+`defineConfig` accepts an object, a function, or an array.
 
 ### Single config object
 
@@ -40,7 +40,7 @@ export default defineConfig({
 
 ### Config function
 
-Pass a function when you need the run context, such as `watch` or `logLevel`, to vary the config:
+Pass a function when the config depends on the run context, such as `watch` or `logLevel`:
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -52,16 +52,18 @@ export default defineConfig(({ watch, logLevel }) => ({
 }))
 ```
 
-Context parameters:
+The context carries four parameters:
 
-- `input` (`string`): positional input passed to `kubb generate <input>`. Overrides `config.input.path` when set.
-- `watch` (`boolean`): whether running in watch mode.
-- `logLevel` (`'silent' | 'info' | 'verbose'`): current log level.
-- `config` (`string`): path to the config file being used.
+|             | Type | Description |
+| ----------: | :--- | :---------- |
+|     `input` | `string` | Positional input from `kubb generate <input>`. Overrides `config.input.path` when set. |
+|     `watch` | `boolean` | `true` in watch mode. |
+|  `logLevel` | `'silent' \| 'info' \| 'verbose'` | Current log level. |
+|    `config` | `string` | Path to the config file in use. |
 
 ### Multiple configurations (array)
 
-Pass an array to generate from multiple specs in one command:
+Pass an array to generate from several specs in one command:
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -83,9 +85,9 @@ export default defineConfig([
 ])
 ```
 
-### Multiple configurations with function
+### Multiple configurations with a function
 
-Combine array and function formats:
+Combine the array and function forms:
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -120,7 +122,7 @@ A name for this config. The CLI prints it as `Generating <name>...`.
 
 ### `input`
 
-Where Kubb reads your spec from. Set either `path` or `data`, not both. Required when an adapter is configured. Omit it in plugin-only mode, when there is no `adapter`.
+Where Kubb reads your spec. Set either `path` or `data`, never both. Required when an adapter is configured. Omit it in plugin-only mode, when there is no `adapter`.
 
 #### `input.path`
 
@@ -133,7 +135,7 @@ Local path or URL to your OpenAPI document.
 
 #### `input.data`
 
-OpenAPI specification provided in-memory (string or parsed object). Useful for programmatic builds.
+OpenAPI spec held in memory, as a string or a parsed object. Use it for programmatic builds.
 
 |           |                     |
 | --------: | :------------------ |
@@ -141,7 +143,7 @@ OpenAPI specification provided in-memory (string or parsed object). Useful for p
 | Required: | `true`              |
 
 > [!NOTE]
-> When `input` is provided, exactly one of `input.path` or `input.data` must be set. `input` itself is optional when running without an adapter (plugin-only mode).
+> When `input` is set, exactly one of `input.path` or `input.data` must be present. `input` itself is optional in plugin-only mode.
 
 ### `output`
 
@@ -149,7 +151,7 @@ Controls where and how files are written.
 
 #### `output.path`
 
-Directory for generated files (absolute or relative to `root`).
+Directory for generated files, absolute or relative to `root`.
 
 |           |          |
 | --------: | :------- |
@@ -158,7 +160,7 @@ Directory for generated files (absolute or relative to `root`).
 
 #### `output.mode`
 
-How a plugin consolidates its generated code into files. Set this on a plugin's `output`, not on the root `output`.
+How a plugin consolidates its code into files. Set it on a plugin's `output`, not on the root `output`.
 
 |           |                          |
 | --------: | :----------------------- |
@@ -166,7 +168,7 @@ How a plugin consolidates its generated code into files. Set this on a plugin's 
 | Required: | `false`                  |
 |  Default: | `'directory'`            |
 
-`'directory'` writes one file per operation or schema under `output.path`. `'file'` writes everything into a single file, so `output.path` must include the file extension (e.g. `'types.ts'`). Pair `'directory'` with the `group` option to organize the output into per-tag or per-path subdirectories.
+`'directory'` writes one file per operation or schema under `output.path`. `'file'` writes everything into a single file, so `output.path` must include the extension (`'types.ts'`). Pair `'directory'` with `group` to split the output into per-tag or per-path subdirectories.
 
 ```typescript twoslash
 import { defineConfig } from 'kubb'
@@ -183,10 +185,10 @@ export default defineConfig({
 })
 ```
 
-This writes every type into `src/gen/types.ts` and one client file per operation, organized into a folder per tag (`src/gen/clients/pet/`, `src/gen/clients/store/`).
+This writes every type into `src/gen/types.ts` and one client file per operation, grouped by tag (`src/gen/clients/pet/`, `src/gen/clients/store/`).
 
 > [!TIP]
-> `mode: 'file'` forbids the `group` option, since a single file has nothing to group. Pairing them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
+> `mode: 'file'` forbids `group`, since a single file has nothing to group. Pairing them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 #### `output.clean`
 
@@ -199,7 +201,7 @@ Wipe `output.path` before regenerating.
 |  Default: | `false`   |
 
 > [!WARNING]
-> Only use `clean: true` with a dedicated output folder since the entire directory will be removed.
+> Only use `clean: true` with a dedicated output folder. Kubb removes the entire directory.
 
 #### `output.format`
 
@@ -211,7 +213,7 @@ Formatter to run on every generated file.
 | Required: | `false`                                               |
 |  Default: | `false`                                               |
 
-Use `'auto'` to detect the first available formatter ([oxfmt](https://oxc.rs) → [Biome](https://biomejs.dev) → [Prettier](https://prettier.io)), force one with `'prettier'`, `'biome'`, or `'oxfmt'`, or set `false` to skip formatting. Kubb uses your local `.prettierrc` or `biome.json`.
+`'auto'` detects the first formatter it finds ([oxfmt](https://oxc.rs) then [Biome](https://biomejs.dev) then [Prettier](https://prettier.io)). A named tool forces that one. `false` skips formatting. Kubb reads your local `.prettierrc` or `biome.json`.
 
 #### `output.lint`
 
@@ -223,20 +225,20 @@ Linter to run after generation.
 | Required: | `false`                                              |
 |  Default: | `false`                                              |
 
-Use `'auto'` to detect the first available linter ([oxlint](https://oxc.rs) → [Biome](https://biomejs.dev) → [ESLint](https://eslint.org)), force one with `'oxlint'`, `'biome'`, or `'eslint'`, or set `false` to skip linting.
+`'auto'` detects the first linter it finds ([oxlint](https://oxc.rs) then [Biome](https://biomejs.dev) then [ESLint](https://eslint.org)). A named tool forces that one. `false` skips linting.
 
 #### `output.extension`
 
-Override file extensions emitted by `import` / `export` statements.
+Rewrite the file extensions emitted in `import` and `export` statements. Keys are the source extension, values are the output. An empty string drops the extension.
 
-|           |                                              |
-| --------: | :------------------------------------------- |
-|     Type: | `Record<KubbFile.Extname, KubbFile.Extname>` |
-| Required: | `false`                                      |
-|  Default: | `{ '.ts': '.ts' }`                           |
+|           |                                                |
+| --------: | :--------------------------------------------- |
+|     Type: | `Record<KubbFile.Extname, KubbFile.Extname \| ''>` |
+| Required: | `false`                                        |
+|  Default: | `{ '.ts': '.ts' }`                             |
 
 > [!TIP]
-> Use `{ '.ts': '.js' }` for ESM compatibility when the consumer transpiles to JavaScript.
+> Use `{ '.ts': '.js' }` for ESM, when the consumer transpiles to JavaScript.
 
 #### `output.barrel`
 
@@ -250,9 +252,7 @@ Provided by [`@kubb/plugin-barrel`](/plugins/plugin-barrel).
 | Required: | `false`                                                 |
 |  Default: | `{ type: 'named' }`                                     |
 
-- `{ type: 'all' }`: generates `export * from '...'` for every file.
-- `{ type: 'named' }`: generates `export { … } from '...'` using each file's named exports.
-- `false`: disables the root barrel.
+`{ type: 'all' }` writes `export * from '...'` for every file. `{ type: 'named' }` writes `export { … } from '...'` using each file's named exports. `false` disables the root barrel.
 
 ::: code-group
 
@@ -276,10 +276,10 @@ export * from './operations/getPet'
 
 :::
 
-Individual plugins keep their own `output.barrel` for their sub-folder and can override the root setting. Setting `barrel: false` on a plugin disables that plugin's barrel and excludes its files from the root barrel. The `nested` flag only takes effect at the plugin level, where `{ nested: true }` writes a barrel in every subdirectory so callers can import from any depth. The root `output.barrel` ignores `nested`.
+Each plugin keeps its own `output.barrel` for its sub-folder and can override the root setting. Setting `barrel: false` on a plugin disables that plugin's barrel and drops its files from the root barrel. The `nested` flag works at the plugin level only, where `{ nested: true }` writes a barrel in every subdirectory so callers can import from any depth. The root `output.barrel` ignores `nested`.
 
 > [!NOTE]
-> The `{ type: 'named' }` default is only applied when `pluginBarrel` is present in `config.plugins`. Configs that omit `pluginBarrel` entirely leave barrel generation untouched.
+> The `{ type: 'named' }` default applies only when `pluginBarrel` is present in `config.plugins`. A config that omits `pluginBarrel` leaves barrel generation untouched.
 
 #### `output.defaultBanner`
 
@@ -291,9 +291,7 @@ Auto-generated banner injected at the top of each file.
 | Required: | `false`                       |
 |  Default: | `'simple'`                    |
 
-- `'simple'`: adds a short "Generated by Kubb" notice.
-- `'full'`: adds the notice plus `Source`, `Title`, `Description`, and `OpenAPI spec version` from the spec.
-- `false`: no banner.
+`'simple'` adds a short "Generated by Kubb" notice. `'full'` adds the notice plus `Source`, `Title`, `Description`, and `OpenAPI spec version` from the spec. `false` writes no banner.
 
 ::: code-group
 
@@ -323,15 +321,14 @@ Auto-generated banner injected at the top of each file.
 
 #### `output.banner`
 
-Text prepended to every file a plugin generates. Configure it on an individual plugin (the root `output` only exposes [`output.defaultBanner`](#output-defaultbanner)) to add license headers, lint-disable comments, or framework directives like `'use server'`.
+Text prepended to every file a plugin generates. Set it on an individual plugin. The root `output` exposes only [`output.defaultBanner`](#output-defaultbanner). Use it for license headers, lint-disable comments, or framework directives like `'use server'`.
 
 |           |                                        |
 | --------: | :------------------------------------- |
 |     Type: | `string \| ((meta: BannerMeta) => string)` |
 | Required: | `false`                                |
 
-- A string applies to every file the plugin generates, including barrel (`index.ts`) and group aggregation (`[dir]/[dir].ts`) re-export files.
-- A function runs once per file and receives a `BannerMeta`, so you can vary the banner per file or return an empty string to skip it.
+A string applies to every file the plugin generates, including barrel (`index.ts`) and group aggregation (`[dir]/[dir].ts`) re-export files. A function runs once per file and receives a `BannerMeta`, so you can vary the banner per file or return an empty string to skip it.
 
 `BannerMeta` extends the document `InputMeta` (`title`, `description`, `version`, …) with per-file context:
 
@@ -342,7 +339,7 @@ Text prepended to every file a plugin generates. Configure it on an individual p
 |   `isBarrel` | `boolean` | `true` for `index.ts` re-export barrels.                 |
 | `isAggregation` | `boolean` | `true` for group `[dir]/[dir].ts` aggregation files. |
 
-The function form fits Next.js Server Actions: add `'use server'` to source files, but skip it on re-export files, which only re-export symbols or return function references and break under the directive.
+The function form fits Next.js Server Actions. Add `'use server'` to source files, but skip it on re-export files, which only re-export symbols or return function references and break under the directive.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -364,11 +361,11 @@ export default defineConfig({
 ```
 
 > [!NOTE]
-> Barrel `index.ts` files stay banner-free by default. They only receive a banner when the plugin sets `output.banner`, at which point the function runs with `isBarrel: true`.
+> Barrel `index.ts` files stay banner-free by default. They get a banner only when the plugin sets `output.banner`, at which point the function runs with `isBarrel: true`.
 
 #### `output.footer`
 
-Text appended to the end of every file a plugin generates. Mirror of [`output.banner`](#output-banner), accepting the same `string \| ((meta: BannerMeta) => string)`.
+Text appended to the end of every file a plugin generates. Mirror of [`output.banner`](#output-banner), with the same `string \| ((meta: BannerMeta) => string)` type.
 
 |           |                                        |
 | --------: | :------------------------------------- |
@@ -377,7 +374,7 @@ Text appended to the end of every file a plugin generates. Mirror of [`output.ba
 
 ### `plugins`
 
-Array of Kubb plugins. Plugins may declare dependencies, and Kubb throws an error at startup if any are missing.
+Array of Kubb plugins. A plugin can declare dependencies, and Kubb throws at startup when one is missing.
 
 |           |                         |
 | --------: | :---------------------- |
@@ -401,11 +398,11 @@ export default defineConfig({
 
 ### `adapter`
 
-Adapter that converts your input into the universal AST. When using `defineConfig` from the `kubb` package, this defaults to `adapterOas()` from [`@kubb/adapter-oas`](/adapters/adapter-oas).
+Adapter that converts your input into the universal AST. With `defineConfig` from the `kubb` package this defaults to `adapterOas()` from [`@kubb/adapter-oas`](/adapters/adapter-oas).
 
-Omit `adapter` (and `input`) to run Kubb in plugin-only mode. Kubb skips spec parsing, but `kubb:plugin:setup` hooks still fire and `injectFile` still injects arbitrary files into the build. Reach for this when a code-generation script doesn't consume an OpenAPI spec at all.
+Omit `adapter` (and `input`) to run in plugin-only mode. Kubb skips spec parsing, but `kubb:plugin:setup` hooks still fire and `injectFile` still adds files to the build. Reach for this when a generation script doesn't consume an OpenAPI spec.
 
-See the [Adapter concept](/docs/5.x/concepts/adapters) for a deeper explanation.
+See the [Adapter concept](/docs/5.x/concepts/adapters) for the full picture.
 
 |           |                                       |
 | --------: | :------------------------------------ |
@@ -413,7 +410,7 @@ See the [Adapter concept](/docs/5.x/concepts/adapters) for a deeper explanation.
 | Required: | `false`                               |
 |  Default: | `adapterOas()` (included with `kubb`) |
 
-To customize the adapter, explicitly pass options:
+Pass options to customize the adapter:
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -426,7 +423,7 @@ export default defineConfig({
 })
 ```
 
-Plugin-only mode (no spec, no adapter):
+Plugin-only mode, with no spec and no adapter:
 
 ```typescript twoslash [kubb.config.ts (plugin-only)]
 import { createKubb, definePlugin, ast } from '@kubb/core'
@@ -453,15 +450,15 @@ await kubb.build()
 ```
 
 > [!NOTE]
-> `adapterOas()` validates OpenAPI specs by default (`validate: true`). Pass `adapterOas({ validate: false })` to skip validation for faster startup or to work with non-conforming specs.
+> `adapterOas()` validates OpenAPI specs by default (`validate: true`). Pass `adapterOas({ validate: false })` to skip validation for faster startup or for non-conforming specs.
 
 See the [`@kubb/adapter-oas`](/adapters/adapter-oas) reference for every adapter option (`validate`, `contentType`, `serverIndex`, `serverVariables`, `discriminator`, `dateType`, `integerType`, `unknownType`, `emptySchemaType`, `enumSuffix`, …).
 
 ### `parsers`
 
-Array of parsers that turn the in-memory file representation into source code. Each parser declares which file extensions it handles via `extNames`.
+Array of parsers that turn the in-memory file representation into source code. Each parser declares which file extensions it handles through `extNames`.
 
-See the [Parser concept](/docs/5.x/concepts/parsers) and [`@kubb/parser-ts`](/parsers/parser-ts) for details on the built-in parsers.
+See the [Parser concept](/docs/5.x/concepts/parsers) and [`@kubb/parser-ts`](/parsers/parser-ts) for the built-in parsers.
 
 |           |                                                |
 | --------: | :--------------------------------------------- |
@@ -469,7 +466,7 @@ See the [Parser concept](/docs/5.x/concepts/parsers) and [`@kubb/parser-ts`](/pa
 | Required: | `false`                                        |
 |  Default: | `[parserTs, parserTsx, parserMd]` (included with `kubb`) |
 
-To customize parsers, explicitly import them:
+Import parsers explicitly to override the default set:
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -486,9 +483,9 @@ Use `defineParser` from `@kubb/core` to write your own.
 
 ### `storage`
 
-Storage driver for persisting generated files. Defaults to `fsStorage()` (filesystem).
+Storage driver that persists generated files. Defaults to `fsStorage()` (filesystem).
 
-See the [Storage concept](/docs/5.x/concepts/storage) for built-in drivers and how to write a custom backend.
+See the [Storage concept](/docs/5.x/concepts/storage) for the built-in drivers and how to write a custom backend.
 
 |           |                                      |
 | --------: | :----------------------------------- |
@@ -496,7 +493,7 @@ See the [Storage concept](/docs/5.x/concepts/storage) for built-in drivers and h
 | Required: | `false`                              |
 |  Default: | `fsStorage()` (included with `kubb`) |
 
-Use `createStorage` from `@kubb/core` to plug in S3, Redis, an in-memory map or any other backend.
+Use `createStorage` from `@kubb/core` to plug in S3, Redis, an in-memory map, or any other backend.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -521,11 +518,11 @@ Project root, absolute or relative to the config file location.
 
 ### `hooks`
 
-Lifecycle hooks executed after generation finishes.
+Lifecycle hooks that run after generation finishes.
 
 #### `hooks.done`
 
-Shell command(s) to run when the build finishes, for example a formatter or a test run.
+Shell command or commands to run when the build finishes, such as a formatter or a test run. Commands run from the `root` directory, in sequence when you pass an array.
 
 |           |                           |
 | --------: | :------------------------ |
@@ -546,7 +543,7 @@ export default defineConfig({
 
 ### `reporters`
 
-The reporters available to the run, registered as instances. `defineConfig` registers the built-in `cli`, `json`, and `file` reporters by default, and the CLI [`--reporter`](/docs/5.x/api/commands/generate#reporters) flag selects which ones to trigger by name (`cli` when the flag is omitted). `cli` writes the end-of-run summary to the terminal, `json` writes a machine-readable report to stdout for CI, and `file` writes the run's diagnostics to `.kubb/kubb-<timestamp>.log`.
+Reporters available to the run, registered as instances. `defineConfig` registers the built-in `cli`, `json`, and `file` reporters by default. The CLI [`--reporter`](/docs/5.x/api/commands/generate#reporters) flag picks which ones fire by name, defaulting to `cli` when omitted. `cli` writes the end-of-run summary to the terminal. `json` writes a machine-readable report to stdout for CI. `file` writes the run's diagnostics to `.kubb/kubb-<name>-<timestamp>.log`.
 
 |           |                                             |
 | --------: | :------------------------------------------ |
@@ -554,7 +551,7 @@ The reporters available to the run, registered as instances. `defineConfig` regi
 |  Default: | `[cliReporter, jsonReporter, fileReporter]` |
 | Required: | `false`                                     |
 
-Register extra reporters (or your own, built with [`createReporter`](/docs/5.x/api/core)) by adding them to the array, then select them on the CLI with `--reporter <name>`.
+Add more reporters to the array, including your own built with [`createReporter`](/docs/5.x/api/core), then select them on the CLI with `--reporter <name>`.
 
 ```typescript twoslash [kubb.config.ts]
 import { cliReporter, jsonReporter } from '@kubb/core'

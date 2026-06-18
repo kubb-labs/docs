@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Vite
 
-`unplugin-kubb/vite` runs Kubb as a [Vite](https://vitejs.dev/) plugin. Add it to `vite.config.ts` and pass your Kubb config to the `config` option.
+`unplugin-kubb/vite` runs Kubb as a [Vite](https://vitejs.dev/) plugin. Add it to `vite.config.ts`. Pass your Kubb config to the `config` option.
 
 ## Install
 
