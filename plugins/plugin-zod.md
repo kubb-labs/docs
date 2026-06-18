@@ -673,6 +673,33 @@ z.guid()
 
 :::
 
+### regexType
+
+Controls how an OpenAPI `pattern` is written inside `.regex(...)`.
+
+- `'literal'` (default) emits a regex literal, such as `.regex(/^[a-z]+$/)`.
+- `'constructor'` emits the `RegExp` constructor, such as `.regex(new RegExp("^[a-z]+$"))`.
+
+Reach for `'constructor'` when a regex literal trips up your build pipeline or when you need the pattern as a plain string.
+
+|           |                            |
+| --------: | :------------------------- |
+|     Type: | `'literal' \| 'constructor'` |
+| Required: | `false`                    |
+|  Default: | `'literal'`                |
+
+::: code-group
+
+```typescript ['literal' (default)]
+z.string().regex(/^[a-z]+$/)
+```
+
+```typescript ['constructor']
+z.string().regex(new RegExp('^[a-z]+$'))
+```
+
+:::
+
 ### mini
 
 Switches code generation to [Zod Mini](https://zod.dev/packages/mini). Schemas use the functional API (`z.optional(z.string())`) instead of the chainable one (`z.string().optional()`). Bundlers can then tree-shake unused validators. Setting `mini: true` also defaults `importPath` to `'zod/mini'`.
