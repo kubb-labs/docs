@@ -101,7 +101,7 @@ Folder where the plugin writes its files. It is resolved against the global `out
 
 ::: code-group
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginMsw } from '@kubb/plugin-msw'
@@ -216,7 +216,7 @@ URL added in front of every handler's request URL. When omitted, the URL comes f
 
 ::: code-group
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginMsw } from '@kubb/plugin-msw'
@@ -294,7 +294,7 @@ Splits generated files into subfolders so related handlers share a directory. Wi
 
 ::: code-group
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginMsw } from '@kubb/plugin-msw'
@@ -376,7 +376,7 @@ export type Include = {
 
 ::: code-group
 
-```typescript twoslash [Only the pet tag]
+```typescript [Only the pet tag]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginMsw } from '@kubb/plugin-msw'
@@ -393,7 +393,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Only GET operations under /pet]
+```typescript [Only GET operations under /pet]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginMsw } from '@kubb/plugin-msw'
@@ -433,7 +433,7 @@ export type Exclude = {
 
 ::: code-group
 
-```typescript twoslash [Skip everything under the store tag]
+```typescript [Skip everything under the store tag]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginMsw } from '@kubb/plugin-msw'
@@ -450,7 +450,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Skip a specific operation and all delete methods]
+```typescript [Skip a specific operation and all delete methods]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginMsw } from '@kubb/plugin-msw'
@@ -491,7 +491,7 @@ export type Override = {
 
 ::: code-group
 
-```typescript twoslash [Use Faker data for the user tag only]
+```typescript [Use Faker data for the user tag only]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginFaker } from '@kubb/plugin-faker'
@@ -531,7 +531,7 @@ Changes how the plugin names generated files and symbols. Use it to add a prefix
 > [!TIP]
 > Use `resolver` for naming and file-location tweaks. For changing the AST nodes themselves (e.g. stripping descriptions), use `macros` instead.
 
-```typescript twoslash [Add a Mock prefix to every handler name]
+```typescript [Add a Mock prefix to every handler name]
 import { defineConfig } from 'kubb'
 import { pluginMsw } from '@kubb/plugin-msw'
 
@@ -588,7 +588,7 @@ Rewrites AST nodes before they are printed to source. Use it to rename operation
 
 ::: code-group
 
-```typescript twoslash [Prefix every operationId]
+```typescript [Prefix every operationId]
 import { defineConfig } from 'kubb'
 import { pluginMsw } from '@kubb/plugin-msw'
 

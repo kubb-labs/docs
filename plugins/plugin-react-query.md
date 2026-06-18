@@ -162,7 +162,7 @@ Splits generated files into subfolders by the operation's tag or URL path. Each 
 
 ::: code-group
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
@@ -371,7 +371,7 @@ Enables `useInfiniteQuery` hooks for cursor- or page-based pagination. Pass an o
 
 ::: code-group
 
-```typescript twoslash [Cursor pagination]
+```typescript [Cursor pagination]
 import { defineConfig } from 'kubb'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
@@ -468,7 +468,7 @@ HTTP methods treated as queries. Operations using one of these methods generate 
 
 ::: code-group
 
-```typescript twoslash [Allow HEAD as a query method]
+```typescript [Allow HEAD as a query method]
 import { defineConfig } from 'kubb'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
@@ -513,7 +513,7 @@ The callback receives a `node` and the active `casing`. `node` is the operation'
 
 Build a key from the operation's first tag plus its path parameters. For a `GET /user/{username}` operation with the `user` tag, this generates:
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
@@ -540,7 +540,7 @@ export const getUserByNameQueryKey = ({ username }: { username: GetUserByNamePat
 
 Prepend a fixed version segment in front of the path:
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
@@ -593,7 +593,7 @@ HTTP methods treated as mutations. Operations using one of these methods generat
 
 ::: code-group
 
-```typescript twoslash [Treat only POST and PUT as mutations]
+```typescript [Treat only POST and PUT as mutations]
 import { defineConfig } from 'kubb'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
@@ -717,7 +717,7 @@ export type Include = {
 
 ::: code-group
 
-```typescript twoslash [Only the pet tag]
+```typescript [Only the pet tag]
 import { defineConfig } from 'kubb'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
@@ -732,7 +732,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Only GET operations under /pet]
+```typescript [Only GET operations under /pet]
 import { defineConfig } from 'kubb'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
@@ -770,7 +770,7 @@ export type Exclude = {
 
 ::: code-group
 
-```typescript twoslash [Skip everything under the store tag]
+```typescript [Skip everything under the store tag]
 import { defineConfig } from 'kubb'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
@@ -785,7 +785,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Skip a specific operation and all delete methods]
+```typescript [Skip a specific operation and all delete methods]
 import { defineConfig } from 'kubb'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
@@ -824,7 +824,7 @@ export type Override = {
 
 ::: code-group
 
-```typescript twoslash [Skip query hooks for the user tag]
+```typescript [Skip query hooks for the user tag]
 import { defineConfig } from 'kubb'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
@@ -859,7 +859,7 @@ Changes how the plugin names generated files and symbols. Use it to add a prefix
 > [!TIP]
 > Use `resolver` for naming and file-location tweaks. To change the AST nodes themselves (e.g. stripping descriptions), use `macros` instead.
 
-```typescript twoslash [Add an Api prefix to every name]
+```typescript [Add an Api prefix to every name]
 import { defineConfig } from 'kubb'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
@@ -904,7 +904,7 @@ Rewrites AST nodes before they are printed to source. Use it to rename operation
 
 ::: code-group
 
-```typescript twoslash [Strip descriptions before printing]
+```typescript [Strip descriptions before printing]
 import { defineConfig } from 'kubb'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
@@ -926,7 +926,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Prefix every operationId]
+```typescript [Prefix every operationId]
 import { defineConfig } from 'kubb'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 

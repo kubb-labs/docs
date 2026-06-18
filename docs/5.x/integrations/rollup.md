@@ -33,7 +33,7 @@ yarn add -D unplugin-kubb@beta
 
 ## Configure
 
-```typescript twoslash [rollup.config.ts]
+```typescript [rollup.config.ts]
 import kubb from 'unplugin-kubb/rollup'
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'

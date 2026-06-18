@@ -100,7 +100,7 @@ Folder where the plugin writes its generated code, resolved against the global `
 
 ::: code-group
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -143,7 +143,7 @@ How the plugin consolidates its generated code into files.
 
 ::: code-group
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginClient } from '@kubb/plugin-client'
@@ -196,7 +196,7 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 
 ::: code-group
 
-```typescript twoslash ['named' (default)]
+```typescript ['named' (default)]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -253,7 +253,7 @@ Text prepended to every generated file, for license headers, lint disables, or `
 
 ::: code-group
 
-```typescript twoslash [Static banner]
+```typescript [Static banner]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -280,7 +280,7 @@ export type Pet = {
 }
 ```
 
-```typescript twoslash [Dynamic banner]
+```typescript [Dynamic banner]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -311,7 +311,7 @@ Text appended to every generated file. Mirrors `banner`, for closing comments, r
 
 ::: code-group
 
-```typescript twoslash [Re-enable lint after a banner disable]
+```typescript [Re-enable lint after a banner disable]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -344,7 +344,7 @@ Changes how the plugin names generated files and symbols. Use it to add a prefix
 > [!TIP]
 > Use `resolver` for naming and file-location tweaks. For changing the AST nodes themselves (e.g. stripping descriptions), use `macros` instead.
 
-```typescript twoslash [Add an Api prefix to every name]
+```typescript [Add an Api prefix to every name]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -391,7 +391,7 @@ Splits generated files into subfolders by the operation's tag or URL path. Each 
 
 ::: code-group
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -736,7 +736,7 @@ export type Include = {
 
 ::: code-group
 
-```typescript twoslash [Only the pet tag]
+```typescript [Only the pet tag]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -751,7 +751,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Only GET operations under /pet]
+```typescript [Only GET operations under /pet]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -789,7 +789,7 @@ export type Exclude = {
 
 ::: code-group
 
-```typescript twoslash [Skip everything under the store tag]
+```typescript [Skip everything under the store tag]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -804,7 +804,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Skip a specific operation and all delete methods]
+```typescript [Skip a specific operation and all delete methods]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -843,7 +843,7 @@ export type Override = {
 
 ::: code-group
 
-```typescript twoslash [Coerce input only for the user tag]
+```typescript [Coerce input only for the user tag]
 import { defineConfig } from 'kubb'
 import { pluginZod } from '@kubb/plugin-zod'
 
@@ -893,7 +893,7 @@ Rewrites AST nodes before they are printed to source. Use it to rename operation
 
 ::: code-group
 
-```typescript twoslash [Strip descriptions before printing]
+```typescript [Strip descriptions before printing]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -915,7 +915,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Prefix every operationId]
+```typescript [Prefix every operationId]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -952,7 +952,7 @@ When `mini: true`, overrides target the Zod Mini printer. Otherwise they target 
 
 ::: code-group
 
-```typescript twoslash [Use z.number() for integers]
+```typescript [Use z.number() for integers]
 import { defineConfig } from 'kubb'
 import { pluginZod } from '@kubb/plugin-zod'
 
@@ -973,7 +973,7 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [Use z.string().date() for date schemas]
+```typescript [Use z.string().date() for date schemas]
 import { defineConfig } from 'kubb'
 import { pluginZod } from '@kubb/plugin-zod'
 
@@ -1008,7 +1008,7 @@ Wraps the generated Zod schema string with extra calls before it is written to d
 > [!TIP]
 > Use this to round-trip OpenAPI metadata back into Zod, such as examples, descriptions, or `.openapi()` annotations for libraries that re-emit OpenAPI from Zod schemas.
 
-```typescript twoslash [Append .openapi() with metadata]
+```typescript [Append .openapi() with metadata]
 import { defineConfig } from 'kubb'
 import { pluginZod } from '@kubb/plugin-zod'
 
