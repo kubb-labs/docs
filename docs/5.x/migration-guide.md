@@ -28,10 +28,12 @@ Apply every rule below in order, then output the complete updated file.
 
 ## 2. Remove @kubb/plugin-oas from plugins[]
 - Remove pluginOas() from the plugins array entirely.
-- Move its options (validate, serverIndex, serverVariables, discriminator,
-  contentType) to a top-level `adapter` key using adapterOas() from
-  '@kubb/adapter-oas'. If no options were passed, omit the adapter key
-  (it defaults automatically when importing from `kubb`).
+- Move its options to a top-level `adapter` key using adapterOas() from
+  '@kubb/adapter-oas'. The old `serverIndex` and `serverVariables` become a
+  single `server: { index, variables }` object, and `discriminator` now takes
+  `'preserve'` (was `'strict'`) or `'propagate'` (was `'inherit'`). `validate`
+  and `contentType` carry over unchanged. If no options were passed, omit the
+  adapter key (it defaults automatically when importing from `kubb`).
 
 ## 3. Move per-plugin schema options to adapterOas
 Delete these from every plugin and set them once on adapterOas():
@@ -271,9 +273,8 @@ export default defineConfig({
   output: { path: './src/gen' },
   adapter: adapterOas({
     validate: true,
-    serverIndex: 0,
-    serverVariables: { env: 'prod' },
-    discriminator: 'inherit',
+    server: { index: 0, variables: { env: 'prod' } },
+    discriminator: 'propagate',
   }),
   plugins: [pluginTs()],
 })
@@ -673,8 +674,8 @@ export default defineConfig({
   storage: memoryStorage(),
   adapter: adapterOas({
     validate: true,
-    serverIndex: 0,
-    discriminator: 'inherit',
+    server: { index: 0 },
+    discriminator: 'propagate',
     dateType: 'date',
     integerType: 'number',
     unknownType: 'unknown',
