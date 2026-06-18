@@ -649,5 +649,3 @@ export default defineConfig({
 ## See Also
 
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-msw/CHANGELOG.md)
-</content>
-</invoke>

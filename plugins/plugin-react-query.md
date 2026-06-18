@@ -1000,5 +1000,3 @@ export default defineConfig({
 ## See Also
 
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-react-query/CHANGELOG.md)
-</content>
-</invoke>
