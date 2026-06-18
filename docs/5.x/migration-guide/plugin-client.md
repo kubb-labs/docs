@@ -7,7 +7,7 @@ description: Configuration and generated-output changes for @kubb/plugin-client 
 
 Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). See the full option reference in [`@kubb/plugin-client`](/plugins/plugin-client).
 
-[`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`, and the `wrapper` option is renamed to `sdk`.
+[`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`, and `wrapper` is renamed to `sdk`.
 
 Class clients (`clientType: 'class'`, `clientType: 'staticClass'`, and `sdk`) now name each tag class with a `Client` suffix. A `pet` tag generates `class PetClient` instead of `class Pet`. The old name collided with the schema model of the same name, so the barrel re-exported both and `tsc` failed with `TS2300: Duplicate identifier`. The suffix keeps the class and the model apart.
 
@@ -19,7 +19,7 @@ export class Pet { /* ... */ }
 export class PetClient { /* ... */ }
 ```
 
-To keep the previous names, override `resolveGroupName` on the `resolver` option. `this` is bound to the full resolver, so calling `this.resolveClassName` restores the old behavior.
+To keep the previous names, override `resolveGroupName` on the `resolver` option. `this` is bound to the full resolver, so `this.resolveClassName` restores the old behavior.
 
 ```ts
 pluginClient({
@@ -32,7 +32,7 @@ pluginClient({
 })
 ```
 
-The `bundle` option is removed. The selected `client` is now always bundled into `.kubb/client.ts`, the behavior `bundle: true` used to opt into. Drop `bundle` from your config (and from the `client` sub-option of `plugin-react-query`, `plugin-vue-query`, `plugin-swr`, and `plugin-mcp`). To import the client from an external module instead of bundling it, set [`importPath`](/plugins/plugin-client#importpath).
+The `bundle` option is removed. The selected `client` always bundles into `.kubb/client.ts`, the behavior `bundle: true` used to opt into. Drop `bundle` from your config, and from the `client` sub-option of `plugin-react-query`, `plugin-vue-query`, `plugin-swr`, and `plugin-mcp`. To import the client from an external module instead of bundling it, set [`importPath`](/plugins/plugin-client#importpath).
 
 ```diff
   pluginClient({
@@ -49,7 +49,7 @@ All other options are unchanged.
 
 ### Operation type names
 
-The naming scheme drops the `Mutation` infix and unifies status responses under `Status<code>`.
+The naming scheme drops the `Mutation` infix and groups status responses under `Status<code>`.
 
 | v4 type                      | v5 type               |
 | ---------------------------- | --------------------- |
@@ -80,7 +80,7 @@ export type AddPetResponses = {
 export type AddPetResponse = AddPetStatus200 | AddPetStatus405
 ```
 
-Here is the same pattern for a GET operation:
+The same pattern for a GET operation:
 
 ```typescript
 export type GetPetQueryParams = { limit?: number; offset?: number }
@@ -99,7 +99,7 @@ This naming pattern applies across all HTTP methods, and `plugin-react-query`, `
 
 ### Client return type narrows to 2xx responses
 
-The generic on the generated client function now references the union of `2xx` response status types (`AddPetStatus200`) instead of the full response alias (`AddPetResponse`). The returned `Promise` resolves to the success body only, and non-`2xx` responses surface through the client's error path.
+The generic on the generated client function now references the union of `2xx` response status types (`AddPetStatus200`) instead of the full response alias (`AddPetResponse`). The returned `Promise` resolves to the success body only. Non-`2xx` responses surface through the client's error path.
 
 ```diff
 - const res = await request<AddPetResponse, ResponseErrorConfig<AddPetStatus405>, AddPetData>({ ... })
@@ -108,13 +108,13 @@ The generic on the generated client function now references the union of `2xx` r
 
 `AddPetResponse`, `AddPetResponses`, and the per-status `AddPetStatus<code>` aliases are still emitted by `plugin-ts`. Only the generic threaded into the client changes.
 
-This matches the default behavior of axios, ky, and Kubb's bundled fetch client, which all throw on non-`2xx`. If you pass raw native `fetch` without a throwing wrapper, narrow with a type guard at the call site or wrap the client to throw on error responses. The previous union type only masked the same runtime mismatch.
+This matches the default behavior of axios, ky, and Kubb's bundled fetch client, which all throw on non-`2xx`. If you pass raw native `fetch` without a throwing wrapper, narrow with a type guard at the call site or wrap the client to throw on error responses. The previous union type masked the same runtime mismatch.
 
 ### Bundled client runtime exports `client`
 
 The HTTP client runtime exports its request function as `client` for both the `axios` and `fetch` adapters, whether bundled into `.kubb/client.ts` or imported from `@kubb/plugin-client/clients/{axios,fetch}`. When bundled it lands at `.kubb/client.ts` and the root barrel re-exports that `client`. In v4, `@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, and `@kubb/plugin-mcp` emitted `.kubb/fetch.ts`.
 
-Generated code imports the runtime as a default import, so most projects need no changes. If you import the request function as a named export, rename it to `client`.
+Generated code imports the runtime as a default import, so most projects need no changes. Rename the named export to `client` if you import the request function that way.
 
 ```diff
 - import { fetch } from '@kubb/plugin-client/clients/fetch'

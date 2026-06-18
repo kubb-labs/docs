@@ -428,7 +428,7 @@ The `--debug` flag and the `debug` value of `--logLevel` are gone. v5 renders a 
 | ----------------- | ----------------------------------------------------------------------- |
 | `cli` _(default)_ | The end-of-run summary in the terminal.                                 |
 | `json`            | A stable machine-readable report on stdout, for CI.                     |
-| `file`            | A log written to `.kubb/kubb-<timestamp>.log`. This replaces `--debug`. |
+| `file`            | A log written to `.kubb/kubb-<name>-<timestamp>.log`. This replaces `--debug`. |
 
 ```shell
 kubb generate --debug # [!code --]
