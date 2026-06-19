@@ -852,18 +852,6 @@ export default defineConfig({
 })
 ```
 
-### generators
-
-Adds custom generators that run next to the built-in ones. Each generator can emit extra files or post-process existing ones using the plugin's AST and options. Use it for output the plugin does not produce, such as a custom client wrapper or a metadata file. See [Creating plugins](/docs/5.x/guides/creating-plugins).
-
-|           |                                  |
-| --------: | :------------------------------- |
-|     Type: | `Array<Generator<PluginClient>>` |
-| Required: | `false`                          |
-
-> [!WARNING]
-> Generators are an experimental, low-level API. The signature may change between minor releases.
-
 ### macros
 
 Rewrites operation nodes before they are printed to source. Use it to rename operation IDs, tags, or descriptions across the whole client. Each [macro](/docs/5.x/concepts/macros) callback receives the node and a context object. Return a new node to replace it, or `null`/`undefined` to leave it as is.

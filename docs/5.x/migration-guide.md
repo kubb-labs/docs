@@ -82,7 +82,7 @@ This applies at both the root output level and per-plugin output levels.
 
 ## 10. Preserve everything else
 All other plugin options (output, group, include, exclude, override (the
-per-operation array), generators, client, infinite, suspense, query, mutation,
+per-operation array), client, infinite, suspense, query, mutation,
 paramsCasing, paramsType, pathParamsType, parser, dataReturnType,
 clientType, baseURL, urlType, operations, typed, inferred,
 coercion, guidType, mini, wrapOutput, dateParser, regexGenerator,
@@ -104,6 +104,10 @@ For every plugin whose `output.path` points at a file (ends in `.ts`), add
 The extension is required, do not drop it. Leave folder paths unchanged.
 They default to `mode: 'directory'`. `output.mode` only accepts
 `'directory'` or `'file'`.
+
+## 13. Remove the `generators` option
+Remove `generators` from every plugin. Plugins no longer accept custom
+generators as an option. To add custom output, build your own plugin.
 
 Now migrate the following kubb.config.ts:
 ```
@@ -555,6 +559,10 @@ pluginTs({
   },
 })
 ```
+
+### `generators` removed
+
+The `generators` plugin option is gone. It accepted an array of custom `Generator` objects that ran next to the built-in ones. To add custom output, build your own plugin. See [Creating plugins](/docs/5.x/guides/creating-plugins).
 
 ## Multiple content types
 

@@ -623,18 +623,6 @@ export default defineConfig({
 
 :::
 
-### generators
-
-Adds custom generators that run next to the built-in ones. Each generator can emit extra files or post-process existing ones using the plugin's AST and options. Use it for output the plugin does not produce, such as a custom client wrapper or a metadata file. See [Creating plugins](/docs/5.x/guides/creating-plugins).
-
-|           |                               |
-| --------: | :---------------------------- |
-|     Type: | `Array<Generator<PluginMcp>>` |
-| Required: | `false`                       |
-
-> [!WARNING]
-> Generators are an experimental, low-level API. The signature may change between minor releases.
-
 ## Dependencies
 
 This plugin needs two other plugins. Kubb runs them before `plugin-mcp` so the handlers can import the generated types and Zod schemas.
