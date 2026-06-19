@@ -775,18 +775,6 @@ Changes how the plugin names generated composables and files. Override only the 
 |     Type: | `Partial<ResolverVueQuery>` |
 | Required: | `false`                     |
 
-### generators
-
-Adds custom generators that run next to the built-in ones. Each generator can emit extra files or post-process existing ones using the plugin's AST and options. Use it for output the plugin does not produce, such as a custom client wrapper or a metadata file. See [Creating plugins](https://kubb.dev/docs/5.x/guides/creating-plugins).
-
-|           |                                    |
-| --------: | :--------------------------------- |
-|     Type: | `Array<Generator<PluginVueQuery>>` |
-| Required: | `false`                            |
-
-> [!WARNING]
-> Generators are an experimental, low-level API. The signature may change between minor releases.
-
 ### macros
 
 A list of [macros](/docs/5.x/concepts/macros) applied to each operation node before code is printed. Use it to rewrite operation IDs, tags, or descriptions across the output.

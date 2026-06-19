@@ -874,18 +874,6 @@ export default defineConfig({
 
 :::
 
-### generators
-
-Adds custom generators that run next to the built-in ones. Each generator can emit extra files or post-process existing ones using the plugin's AST and options. Use it for output the plugin does not produce, such as a custom client wrapper or a metadata file. See [Creating plugins](/docs/5.x/guides/creating-plugins).
-
-|           |                               |
-| --------: | :---------------------------- |
-|     Type: | `Array<Generator<PluginZod>>` |
-| Required: | `false`                       |
-
-> [!WARNING]
-> Generators are an experimental, low-level API. The signature may change between minor releases.
-
 ### macros
 
 Rewrites AST nodes before they are printed to source. Use it to rename operation IDs, drop descriptions, or change schema metadata without forking the generator. Each [macro](/docs/5.x/concepts/macros) callback (such as `schema` or `operation`) receives the node and a context object. Return a new node to replace it, or `undefined` to leave it as is. Callbacks you omit keep their default behavior. Macros run in order, so a later one sees the output of an earlier one.
