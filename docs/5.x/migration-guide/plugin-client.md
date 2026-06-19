@@ -65,10 +65,10 @@ The single `AddPetMutation` aggregate is replaced by three explicit types:
 
 ```typescript [Generated output]
 export type AddPetRequestConfig = {
-  data?: AddPetData
-  pathParams?: never
-  queryParams?: never
-  headerParams?: never
+  body: AddPetData
+  path?: never
+  query?: never
+  headers?: never
   url: '/pet'
 }
 
@@ -85,10 +85,10 @@ The same pattern for a GET operation:
 ```typescript [Generated output]
 export type GetPetQueryParams = { limit?: number; offset?: number }
 export type GetPetRequestConfig = {
-  data?: never
-  pathParams?: { petId: string }
-  queryParams?: GetPetQueryParams
-  headerParams?: never
+  body?: never
+  path?: { petId: string }
+  query?: GetPetQueryParams
+  headers?: never
   url: '/pet/{petId}'
 }
 export type GetPetResponses = { '200': Pet; '404': ErrorResponse }
