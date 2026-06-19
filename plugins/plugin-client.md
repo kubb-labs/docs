@@ -536,9 +536,13 @@ Controls whether the URL builder helpers (`get<Operation>Url`) are exported alon
 | Required: | `false`             |
 |  Default: | `false`             |
 
+The helper takes the operation's `path` group, typed from its `RequestConfig`, and reads each path param off it.
+
 ```typescript [Generated URL helper]
-export function getGetPetByIdUrl(petId: GetPetByIdPathParams['petId']) {
-  return `/pet/${petId}` as const
+export function getGetPetByIdUrl(path: GetPetByIdRequestConfig['path']) {
+  const res = { method: 'GET', url: `/pet/${path.petId}` as const }
+
+  return res
 }
 ```
 

@@ -76,6 +76,24 @@ export async function getPet({ path, query }: Omit<GetPetRequestConfig, 'url'>, 
 
 All other options are unchanged.
 
+### Exported URL helpers take the grouped `path`
+
+With `urlType: 'export'`, the `get<Operation>Url` helper moves from a positional path parameter to the operation's `path` group, typed from its `RequestConfig`. Pass `path` instead of the bare value.
+
+::: code-group
+
+```typescript [Call site]
+getGetPetByIdUrl('pet_1') // [!code --]
+getGetPetByIdUrl({ petId: 'pet_1' }) // [!code ++]
+```
+
+```typescript [Generated output]
+export function getGetPetByIdUrl(petId: GetPetByIdPathParams['petId']) {} // [!code --]
+export function getGetPetByIdUrl(path: GetPetByIdRequestConfig['path']) {} // [!code ++]
+```
+
+:::
+
 ## Runtime `RequestConfig`: `params` → `query`, `data` → `body`
 
 The runtime `RequestConfig` type in the axios and fetch clients renames two fields to match the grouped call shape. `params` becomes `query` and `data` becomes `body`. Inside the client these map to axios's native `params` and `data`, so the wire behavior is identical. Anyone importing the runtime `RequestConfig` type or calling the low-level `client({ ... })` directly has to rename those fields.
