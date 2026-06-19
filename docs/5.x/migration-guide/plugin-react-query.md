@@ -21,7 +21,7 @@ These three options are gone, including `client.paramsCasing`. Each hook now tak
   })
 ```
 
-Update the call sites. Query params move into `query`, and path params move into `path`. When an operation has required path params, `path` is required too.
+Update the call sites. Query params move into `query`, and path params move into `path`. When an operation has a required parameter in a group, that group (`path`, `query`, or `headers`) is required too, so an incomplete call fails to compile.
 
 ::: code-group
 
@@ -82,33 +82,31 @@ pet.id // typed as Pet.id, no narrowing required
 
 The change covers `queryFn`, `queryOptions`, and the hook generics together. No config flag brings back the old behavior. If your client returns non-`2xx` bodies as resolved data instead of throwing, wrap it to throw so TanStack Query's `error` / `onError` path fires. The previous typing was silently broken at runtime.
 
-### `enabled`-guarded params are now optional
+### No auto `enabled` guard
 
-`*QueryOptions` and `*InfiniteQueryOptions` emit an `enabled` guard built from the required path and query parameters (`enabled: !!path?.petId` in React Query, `enabled: () => !!toValue(path?.petId)` in Vue Query). In v4 those parameters stayed required in the generated type, so a caller could never pass `undefined` to reach the disabled state the guard already covers. The type contradicted the runtime.
+v4 emitted an `enabled` guard built from the required path and query parameters (`enabled: !!path?.petId` in React Query, `enabled: () => !!toValue(path?.petId)` in Vue Query). The guard turned truthy the moment a caller passed the parameters, so it never reached a state the signature did not already show, and it could not narrow the types.
 
-v5 makes those parameters optional in the generated `queryKey`, `queryOptions`, and hook signatures. The `queryFn` calls the client with a non-null assertion. The `enabled` guard stays the same.
+v5 drops the guard. The grouped `path`, `query`, and `headers` options are required in the generated `queryKey`, `queryOptions`, and hook signatures whenever the operation marks a parameter in that group required, and no `enabled` option is generated. The query key types only the groups it reads, so a required `headers` parameter never forces `headers` onto the key.
 
 ```diff [Diff]
-- export function getPetByIdQueryOptions({ path }: { path: { petId: GetPetByIdPathPetId } }, config: Partial<RequestConfig> & { client?: Client } = {}) {
-+ export function getPetByIdQueryOptions({ path }: { path?: { petId?: GetPetByIdPathPetId } } = {}, config: Partial<RequestConfig> & { client?: Client } = {}) {
+  export function getPetByIdQueryOptions({ path }: Omit<GetPetByIdRequestConfig, 'url'>, config: Partial<RequestConfig> & { client?: Client } = {}) {
     const queryKey = getPetByIdQueryKey({ path })
     return queryOptions<GetPetByIdStatus200, ResponseErrorConfig<GetPetByIdStatus400 | GetPetByIdStatus404>, GetPetByIdStatus200, typeof queryKey>({
-      enabled: !!path?.petId,
+-     enabled: !!path?.petId,
       queryKey,
       queryFn: async ({ signal }) => {
--       return getPetById({ path }, { ...config, signal: config.signal ?? signal })
-+       return getPetById({ path: { petId: path?.petId! } }, { ...config, signal: config.signal ?? signal })
+        return getPetById({ path }, { ...config, signal: config.signal ?? signal })
       },
     })
   }
 ```
 
-You can now pass a value that is not ready yet, such as a route param or the result of a dependent query, and let the existing guard keep the query disabled until it resolves:
+Conditional and dependent queries move to TanStack Query's own `enabled` (or `skipToken`), passed through the hook options:
 
 ```typescript [Generated output]
-// type-checks in v5; the query stays disabled until petId is defined
-useGetPetById({ path: { petId: route.params.petId } })
+// keep the query disabled until petId resolves
+useGetPetById({ path: { petId } }, { query: { enabled: !!petId } })
 ```
 
 > [!NOTE]
-> This is a type-only change. The `?` and `!` are erased at compile time, so the emitted JavaScript (including the `enabled` guard) matches v4. Suspense hooks cannot be disabled, so their parameters stay required.
+> Suspense hooks already ran unconditionally and never carried an `enabled` guard, so they are unchanged.

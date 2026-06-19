@@ -21,7 +21,7 @@ These three options are gone, including `client.paramsCasing`. Each composable n
   })
 ```
 
-Update the call sites. Query params move into `query`, and path params move into `path`. When an operation has required path params, `path` is required too.
+Update the call sites. Query params move into `query`, and path params move into `path`. When an operation has a required parameter in a group, that group (`path`, `query`, or `headers`) is required too, so an incomplete call fails to compile.
 
 ::: code-group
 
@@ -43,4 +43,4 @@ The first argument is typed `Omit<XxxRequestConfig, 'url'>`, the `RequestConfig`
 
 ## Generated output
 
-The generated output changes match React Query. The `*MutationKey` type alias is gone, `TData` narrows to 2xx responses, and `enabled`-guarded params become optional. Vue Query writes the guard as `enabled: () => !!toValue(petId)`. See [Generated output: @kubb/plugin-react-query](/docs/5.x/migration-guide/plugin-react-query#generated-output).
+The generated output changes match React Query. The `*MutationKey` type alias is gone, `TData` narrows to 2xx responses, required params are enforced in the type, and the auto `enabled` guard is dropped. The client call still unwraps each grouped option with `toValue()` so refs and getters resolve. See [Generated output: @kubb/plugin-react-query](/docs/5.x/migration-guide/plugin-react-query#generated-output).

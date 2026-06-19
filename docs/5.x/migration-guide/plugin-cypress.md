@@ -21,7 +21,7 @@ These three options are gone. Each request helper now takes a single grouped opt
   })
 ```
 
-The helper signature changes from positional arguments to one object. The first argument is typed `Omit<XxxRequestConfig, 'url'>`, the `RequestConfig` type `@kubb/plugin-ts` generates. When an operation has required path params, `path` is required too. The trailing `options` argument is unchanged.
+The helper signature changes from positional arguments to one object. The first argument is typed `Omit<XxxRequestConfig, 'url'>`, the `RequestConfig` type `@kubb/plugin-ts` generates. When an operation has a required parameter in a group, that group (`path`, `query`, or `headers`) is required too. The trailing `options` argument is unchanged.
 
 ::: code-group
 

@@ -55,7 +55,7 @@ These three options are gone. Every generated function now takes a single groupe
   })
 ```
 
-The call signature changes from positional arguments to one object. The first argument is typed `Omit<GetPetRequestConfig, 'url'>`, the `RequestConfig` type `@kubb/plugin-ts` generates. When an operation has required path params, `path` is required too. The trailing `config` argument is unchanged.
+The call signature changes from positional arguments to one object. The first argument is typed `Omit<GetPetRequestConfig, 'url'>`, the `RequestConfig` type `@kubb/plugin-ts` generates. When an operation has a required parameter in a group, that group (`path`, `query`, or `headers`) is required too. The trailing `config` argument is unchanged.
 
 ::: code-group
 

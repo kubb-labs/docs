@@ -24,10 +24,10 @@ We keep this comparison accurate and fair. If you use one of these tools and thi
 | ---------------------------------------------------------- | :---------------: | :---: | :---------------- | :--------------: |
 | [OpenAPI 2.0, 3.0, 3.1 input](/adapters/adapter-oas)       |        ✅         |  ✅   | ✅                |        ✅        |
 | [TypeScript types](/plugins/plugin-ts)                     |        ✅         |  ✅   | ✅                |        ✅        |
-| [HTTP client (Axios, Fetch)](/plugins/plugin-client)       |        ✅         |  ✅   | ✅                | 🔶<sup>3</sup>  |
-| [React Query hooks](/plugins/plugin-react-query)           |  ✅<sup>1</sup>   |  ✅   | ✅<sup>1</sup>    |       🛑        |
-| [Vue Query composables](/plugins/plugin-vue-query)         |  ✅<sup>1</sup>   |  ✅   | ✅<sup>1</sup>    |       🛑        |
-| [Zod validation schemas](/plugins/plugin-zod)              |        ✅         |  ✅   | ✅<sup>2</sup>    |       🛑        |
+| [HTTP client (Axios, Fetch)](/plugins/plugin-client)       |        ✅         |  ✅   | ✅                | 🔶<sup>2</sup>  |
+| [React Query hooks](/plugins/plugin-react-query)           |        ✅         |  ✅   | ✅                |       🛑        |
+| [Vue Query composables](/plugins/plugin-vue-query)         |        ✅         |  ✅   | ✅                |       🛑        |
+| [Zod validation schemas](/plugins/plugin-zod)              |        ✅         |  ✅   | ✅<sup>1</sup>    |       🛑        |
 | [MSW request handlers](/plugins/plugin-msw)                |        ✅         |  ✅   | 🛑                |       🛑        |
 | [Faker.js mock data](/plugins/plugin-faker)                |        ✅         |  🛑   | 🛑                |       🛑        |
 | [Cypress E2E tests](/plugins/plugin-cypress)               |        ✅         |  🛑   | 🛑                |       🛑        |
@@ -37,9 +37,8 @@ We keep this comparison accurate and fair. If you use one of these tools and thi
 
 **Notes**
 
-1. **React Query and Vue Query parameter handling.** Kubb types the path and query parameters guarded by `enabled` as optional and emits the `enabled` guard, so you can pass a value that is not ready yet (a route parameter or the result of a dependent query) and the query stays disabled until it resolves. HeyAPI keeps those parameters required and does not emit an `enabled` guard, leaving conditional fetching to you.
-2. HeyAPI also generates Valibot schemas in addition to Zod.
-3. openapi-typescript generates types only. Its companion `openapi-fetch` runtime provides the typed client, so a client is not generated per operation. Note that `openapi-fetch` is in [feature-freeze and is largely considered deprecated](https://github.com/openapi-ts/openapi-typescript/discussions/2559).
+1. HeyAPI also generates Valibot schemas in addition to Zod.
+2. openapi-typescript generates types only. Its companion `openapi-fetch` runtime provides the typed client, so a client is not generated per operation. Note that `openapi-fetch` is in [feature-freeze and is largely considered deprecated](https://github.com/openapi-ts/openapi-typescript/discussions/2559).
 
 ## What sets Kubb apart
 

@@ -9,7 +9,7 @@ Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). For the full
 
 `@kubb/plugin-swr` follows the same conventions as the React Query and Vue Query plugins. [`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`.
 
-SWR has no `enabled` option, so the param-presence guard folds into the null-key gate (`useSWR(shouldFetch && !!path?.petId ? queryKey : null, ...)`). Passing `undefined` disables the request.
+SWR has no `enabled` option. v5 drops the param-presence guard, so the hook keys off `shouldFetch` alone (`useSWR(shouldFetch ? queryKey : null, ...)`). Set `shouldFetch` to `false` to disable the request.
 
 ## Removed: `paramsType`, `pathParamsType`, `paramsCasing`
 
@@ -23,7 +23,7 @@ These three options are gone, including `client.paramsCasing`. Each hook now tak
   })
 ```
 
-Update the call sites. Query params move into `query`, and path params move into `path`. When an operation has required path params, `path` is required too.
+Update the call sites. Query params move into `query`, and path params move into `path`. When an operation has a required parameter in a group, that group (`path`, `query`, or `headers`) is required too, so an incomplete call fails to compile.
 
 ::: code-group
 

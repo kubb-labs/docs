@@ -31,7 +31,7 @@ export type GetPetHeaderParams = { xApiKey?: string } // was { 'X-Api-Key'?: str
 
 ## Changed: `RequestConfig` groups request input
 
-The generated `*RequestConfig` type now groups every request input under `{ path, query, body, headers }` so the client, query, and Cypress plugins all share one call shape. Each key holds the matching `*PathParams`, `*QueryParams`, `*Data`, or `*HeaderParams` type, or `never` when the operation has none. `path` is required when the operation has required path params, and the unused keys are typed `never` so passing them is a compile error.
+The generated `*RequestConfig` type now groups every request input under `{ path, query, body, headers }` so the client, query, and Cypress plugins all share one call shape. Each key holds the matching `*PathParams`, `*QueryParams`, `*Data`, or `*HeaderParams` type, or `never` when the operation has none. The `path`, `query`, and `headers` keys are required when the operation has a required parameter in that group, and the unused keys are typed `never` so passing them is a compile error.
 
 ::: code-group
 
