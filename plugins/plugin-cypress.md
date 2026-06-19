@@ -262,11 +262,11 @@ export default defineConfig({
 ```typescript [Generated file]
 /* eslint-disable */
 // @ts-nocheck
-export function getPetById(petId: GetPetByIdPathPetId, options: Partial<Cypress.RequestOptions> = {}): Cypress.Chainable<GetPetByIdResponse> {
+export function getPetById({ path }: Omit<GetPetByIdRequestConfig, 'url'>, options: Partial<Cypress.RequestOptions> = {}): Cypress.Chainable<GetPetByIdResponse> {
   return cy
     .request<GetPetByIdResponse>({
       method: 'GET',
-      url: `/pet/${petId}`,
+      url: `/pet/${path.petId}`,
       ...options,
     })
     .then((res) => res.body)
@@ -326,14 +326,14 @@ What each helper resolves to.
 
 ```typescript ['data' (default)]
 // Cypress.Chainable<ShowPetByIdResponse>
-showPetById(1).then((pet) => {
+showPetById({ path: { petId: 1 } }).then((pet) => {
   expect(pet.id).to.eq(1)
 })
 ```
 
 ```typescript ['full']
 // Cypress.Chainable<Cypress.Response<ShowPetByIdResponse>>
-showPetById(1).then((response) => {
+showPetById({ path: { petId: 1 } }).then((response) => {
   expect(response.status).to.eq(200)
   expect(response.body.id).to.eq(1)
 })
@@ -775,7 +775,7 @@ import { getPetById } from '../gen/cypress/petRequests'
 
 describe('Pet API', () => {
   it('returns the pet by id', () => {
-    getPetById(1).then((response) => {
+    getPetById({ path: { petId: 1 } }).then((response) => {
       expect(response.status).to.eq(200)
       expect(response.body.id).to.eq(1)
     })

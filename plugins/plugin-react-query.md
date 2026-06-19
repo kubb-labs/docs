@@ -243,12 +243,12 @@ Shape of the value returned from each generated client function.
 ::: code-group
 
 ```typescript ['data' (default)]
-const pet = await getPetById(1)
+const pet = await getPetById({ path: { petId: 1 } })
 //    ^? Pet
 ```
 
 ```typescript ['full']
-const res = await addPet(petData)
+const res = await addPet({ body: petData })
 if (res.status === 405) {
   res.data // narrowed to AddPetStatus405
 }
@@ -494,7 +494,7 @@ export default defineConfig({
 ```
 
 ```typescript [Generated output]
-export const findPetsByTagsQueryKey = (params?: FindPetsByTagsQueryParams) => ['v5', '/pet/findByTags'] as const
+export const findPetsByTagsQueryKey = ({ query }: Omit<FindPetsByTagsRequestConfig, 'url'> = {}) => ['v5', '/pet/findByTags'] as const
 ```
 
 ### suspense

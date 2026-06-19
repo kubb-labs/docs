@@ -11,7 +11,7 @@ Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). For the full
 
 ## Removed: `paramsType`, `pathParamsType`, `paramsCasing`
 
-These three options are gone, including `client.paramsCasing`. Each hook now takes its parameters as a single grouped options object with camelCase property names. Query and header params move under a `params` key, and path params become named properties.
+These three options are gone, including `client.paramsCasing`. Each hook now takes its parameters as a single grouped options object shaped as `{ path, query, body, headers }`, with camelCase property names. This matches the shape `@kubb/plugin-fetch` already used. Query params move under `query`, path params under `path`, the request body under `body`, and header params under `headers`.
 
 ```diff [Diff]
   pluginReactQuery({
@@ -21,17 +21,25 @@ These three options are gone, including `client.paramsCasing`. Each hook now tak
   })
 ```
 
-Update the call sites. Query params move into `params`, and path params become an object:
+Update the call sites. Query params move into `query`, and path params move into `path`. When an operation has required path params, `path` is required too.
 
-```typescript [Generated output]
-// Before
-useFindPetsByStatus({ status: 'available' })
-useUpdatePet(2)
+::: code-group
 
-// After
-useFindPetsByStatus({ params: { status: 'available' } })
-useUpdatePet({ petId: 2 })
+```typescript [v4 call site]
+useFindPets({ status: 'available' })
+useGetPet(petId)
+useUpdatePet().mutate({ petId, data: pet })
 ```
+
+```typescript [v5 call site]
+useFindPets({ query: { status: 'available' } })
+useGetPet({ path: { petId } })
+useUpdatePet().mutate({ path: { petId }, body: pet })
+```
+
+:::
+
+The first argument is typed `Omit<XxxRequestConfig, 'url'>`, the `RequestConfig` type `@kubb/plugin-ts` generates. The trailing `config` argument is unchanged.
 
 ## Generated output
 
@@ -68,7 +76,7 @@ The `TData` generic on `useMutation`, `useQuery`, `useInfiniteQuery`, `useSuspen
 Call sites that previously needed `as` casts or `'id' in res` checks compile directly:
 
 ```typescript [Generated output]
-const pet = await mutateAsync({ data: { name: 'Rex' } })
+const pet = await mutateAsync({ body: { name: 'Rex' } })
 pet.id // typed as Pet.id, no narrowing required
 ```
 
@@ -76,20 +84,20 @@ The change covers `queryFn`, `queryOptions`, and the hook generics together. No 
 
 ### `enabled`-guarded params are now optional
 
-`*QueryOptions` and `*InfiniteQueryOptions` emit an `enabled` guard built from the required path and query parameters (`enabled: !!petId` in React Query, `enabled: () => !!toValue(petId)` in Vue Query). In v4 those parameters stayed required in the generated type, so a caller could never pass `undefined` to reach the disabled state the guard already covers. The type contradicted the runtime.
+`*QueryOptions` and `*InfiniteQueryOptions` emit an `enabled` guard built from the required path and query parameters (`enabled: !!path?.petId` in React Query, `enabled: () => !!toValue(path?.petId)` in Vue Query). In v4 those parameters stayed required in the generated type, so a caller could never pass `undefined` to reach the disabled state the guard already covers. The type contradicted the runtime.
 
 v5 makes those parameters optional in the generated `queryKey`, `queryOptions`, and hook signatures. The `queryFn` calls the client with a non-null assertion. The `enabled` guard stays the same.
 
 ```diff [Diff]
-- export function getPetByIdQueryOptions({ petId }: { petId: GetPetByIdPathPetId }, config: Partial<RequestConfig> & { client?: Client } = {}) {
-+ export function getPetByIdQueryOptions({ petId }: { petId?: GetPetByIdPathPetId } = {}, config: Partial<RequestConfig> & { client?: Client } = {}) {
-    const queryKey = getPetByIdQueryKey({ petId })
+- export function getPetByIdQueryOptions({ path }: { path: { petId: GetPetByIdPathPetId } }, config: Partial<RequestConfig> & { client?: Client } = {}) {
++ export function getPetByIdQueryOptions({ path }: { path?: { petId?: GetPetByIdPathPetId } } = {}, config: Partial<RequestConfig> & { client?: Client } = {}) {
+    const queryKey = getPetByIdQueryKey({ path })
     return queryOptions<GetPetByIdStatus200, ResponseErrorConfig<GetPetByIdStatus400 | GetPetByIdStatus404>, GetPetByIdStatus200, typeof queryKey>({
-      enabled: !!petId,
+      enabled: !!path?.petId,
       queryKey,
       queryFn: async ({ signal }) => {
--       return getPetById({ petId }, { ...config, signal: config.signal ?? signal })
-+       return getPetById({ petId: petId! }, { ...config, signal: config.signal ?? signal })
+-       return getPetById({ path }, { ...config, signal: config.signal ?? signal })
++       return getPetById({ path: { petId: path?.petId! } }, { ...config, signal: config.signal ?? signal })
       },
     })
   }
@@ -99,7 +107,7 @@ You can now pass a value that is not ready yet, such as a route param or the res
 
 ```typescript [Generated output]
 // type-checks in v5; the query stays disabled until petId is defined
-useGetPetById({ petId: route.params.petId })
+useGetPetById({ path: { petId: route.params.petId } })
 ```
 
 > [!NOTE]

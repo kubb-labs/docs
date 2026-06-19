@@ -280,8 +280,8 @@ import axios from 'axios'
 export type RequestConfig<TData = unknown> = {
   url?: string
   method: 'GET' | 'PUT' | 'PATCH' | 'POST' | 'DELETE'
-  params?: object
-  data?: TData | FormData
+  query?: object
+  body?: TData | FormData
   responseType?: 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream'
   signal?: AbortSignal
   headers?: HeadersInit
@@ -298,9 +298,11 @@ export type ResponseErrorConfig<TError = unknown> = TError
 // Required with @kubb/plugin-react-query or @kubb/plugin-vue-query
 export type Client = <TData, _TError = unknown, TVariables = unknown>(config: RequestConfig<TVariables>) => Promise<ResponseConfig<TData>>
 
-const client: Client = async (config) => {
+const client: Client = async ({ query, body, ...config }) => {
   const response = await axios.request<TData>({
     ...config,
+    params: query,
+    data: body,
     headers: {
       Authorization: `Bearer ${process.env.API_TOKEN}`,
       ...config.headers,
@@ -350,10 +352,10 @@ Shape of the generated client code.
 ::: code-group
 
 ```typescript ['function' (default)]
-export async function getPetById(petId: GetPetByIdPathParams['petId'], config: Partial<RequestConfig> = {}) {
+export async function getPetById({ path }: Omit<GetPetByIdRequestConfig, 'url'>, config: Partial<RequestConfig> = {}) {
   const res = await client<GetPetByIdQueryResponse>({
     method: 'GET',
-    url: `/pet/${petId}`,
+    url: `/pet/${path.petId}`,
     ...config,
   })
   return res.data
@@ -368,9 +370,9 @@ export class PetClient {
     this.#config = config
   }
 
-  async getPetById({ petId }: { petId: GetPetByIdPathParams['petId'] }, config: Partial<RequestConfig> = {}) {
+  async getPetById({ path }: Omit<GetPetByIdRequestConfig, 'url'>, config: Partial<RequestConfig> = {}) {
     const { client: request = client, ...requestConfig } = mergeConfig(this.#config, config)
-    const res = await request<GetPetByIdQueryResponse>({ method: 'GET', url: `/pet/${petId}`, ...requestConfig })
+    const res = await request<GetPetByIdQueryResponse>({ method: 'GET', url: `/pet/${path.petId}`, ...requestConfig })
     return res.data
   }
 }
@@ -380,9 +382,9 @@ export class PetClient {
 export class PetClient {
   static #config: Partial<RequestConfig> & { client?: Client } = {}
 
-  static async getPetById({ petId }: { petId: GetPetByIdPathParams['petId'] }, config: Partial<RequestConfig> = {}) {
+  static async getPetById({ path }: Omit<GetPetByIdRequestConfig, 'url'>, config: Partial<RequestConfig> = {}) {
     const { client: request = client, ...requestConfig } = mergeConfig(this.#config, config)
-    const res = await request<GetPetByIdQueryResponse>({ method: 'GET', url: `/pet/${petId}`, ...requestConfig })
+    const res = await request<GetPetByIdQueryResponse>({ method: 'GET', url: `/pet/${path.petId}`, ...requestConfig })
     return res.data
   }
 }
@@ -434,8 +436,8 @@ import { PetStoreClient } from './gen/clients/PetStoreClient'
 
 const api = new PetStoreClient({ baseURL: 'https://petstore.swagger.io/v2' })
 
-const pets = await api.pet.findPetsByTags({ tags: ['available'] })
-const user = await api.user.getUserByName({ username: 'john' })
+const pets = await api.pet.findPetsByTags({ query: { tags: ['available'] } })
+const user = await api.user.getUserByName({ path: { username: 'john' } })
 ```
 
 :::
@@ -455,12 +457,12 @@ Shape of the value returned from each generated client function.
 ::: code-group
 
 ```typescript ['data' (default)]
-const pet = await getPetById(1)
+const pet = await getPetById({ path: { petId: 1 } })
 //    ^? Pet
 ```
 
 ```typescript ['full']
-const res = await getPetById(1)
+const res = await getPetById({ path: { petId: 1 } })
 if (res.status === 200) {
   res.data // narrowed to the 200 response type
 }

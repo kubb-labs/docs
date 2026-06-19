@@ -29,6 +29,34 @@ export type GetPetPathParams = { petId: string } // was { pet_id: string }
 export type GetPetHeaderParams = { xApiKey?: string } // was { 'X-Api-Key'?: string }
 ```
 
+## Changed: `RequestConfig` groups request input
+
+The generated `*RequestConfig` type now groups every request input under `{ path, query, body, headers }` so the client, query, and Cypress plugins all share one call shape. Each key holds the matching `*PathParams`, `*QueryParams`, `*Data`, or `*HeaderParams` type, or `never` when the operation has none. `path` is required when the operation has required path params, and the unused keys are typed `never` so passing them is a compile error.
+
+::: code-group
+
+```typescript [Generated output]
+export type GetPetRequestConfig = {
+  path: { petId: string } // required: the operation has a required path param
+  query?: GetPetQueryParams
+  body?: never
+  headers?: never
+  url: '/pet/{petId}'
+}
+
+export type AddPetRequestConfig = {
+  path?: never
+  query?: never
+  body: AddPetData
+  headers?: never
+  url: '/pet'
+}
+```
+
+:::
+
+The grouped object is what every generated client function, hook, and Cypress helper takes as its first argument, typed `Omit<XxxRequestConfig, 'url'>`. See the [plugin-client](/docs/5.x/migration-guide/plugin-client), [plugin-react-query](/docs/5.x/migration-guide/plugin-react-query), and [plugin-cypress](/docs/5.x/migration-guide/plugin-cypress) pages for the call-site changes.
+
 ## Renamed: `transformers.name`
 
 [`resolver.resolveTypeName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`.

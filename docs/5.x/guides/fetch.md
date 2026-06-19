@@ -61,8 +61,8 @@ Every HTTP request (GET, PUT, PATCH, POST, DELETE) calls the default export from
 export type RequestConfig<TData = unknown> = {
   url?: string
   method: 'GET' | 'PUT' | 'PATCH' | 'POST' | 'DELETE'
-  params?: object
-  data?: TData | FormData
+  query?: object
+  body?: TData | FormData
   responseType?: 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream'
   signal?: AbortSignal
   headers?: HeadersInit
@@ -79,7 +79,7 @@ export type Client = <TData, _TError = unknown, TVariables = unknown>(config: Re
 export const client = async <TData, TError = unknown, TVariables = unknown>(config: RequestConfig<TVariables>): Promise<ResponseConfig<TData>> => {
   const response = await fetch('https://example.org/post', {
     method: config.method.toUpperCase(),
-    body: JSON.stringify(config.data),
+    body: JSON.stringify(config.body),
     signal: config.signal,
     headers: config.headers,
   })
@@ -99,7 +99,7 @@ export const client = async <TData, TError = unknown, TVariables = unknown>(conf
 ```typescript [src/gen/models.ts]
 import client from '../client.ts'
 import type { ResponseConfig } from '../client.ts'
-import type { GetPetByIdQueryResponse, GetPetByIdPathParams } from './models.ts'
+import type { GetPetByIdQueryResponse, GetPetByIdRequestConfig } from './models.ts'
 
 /**
  * @description Returns a single pet
@@ -107,10 +107,10 @@ import type { GetPetByIdQueryResponse, GetPetByIdPathParams } from './models.ts'
  * @link /pet/:petId
  */
 export async function getPetById(
-  petId: GetPetByIdPathParams['petId'],
+  { path }: Omit<GetPetByIdRequestConfig, 'url'>,
   options: Partial<Parameters<typeof client>[0]> = {},
 ): Promise<ResponseConfig<GetPetByIdQueryResponse>['data']> {
-  const res = await client<GetPetByIdQueryResponse>({ method: 'get', url: `/pet/${petId}`, ...options })
+  const res = await client<GetPetByIdQueryResponse>({ method: 'get', url: `/pet/${path.petId}`, ...options })
   return res.data
 }
 ```

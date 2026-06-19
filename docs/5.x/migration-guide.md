@@ -578,7 +578,7 @@ export type UploadFileData = UploadFileJsonData | UploadFileFormData
 The generated client exposes `contentType` as a typed literal union, defaulting to the first declared content type:
 
 ```typescript [Generated output]
-uploadFile(petId, data, { contentType: 'multipart/form-data' })
+uploadFile({ path: { petId }, body }, { contentType: 'multipart/form-data' })
 ```
 
 Single-content-type operations are unchanged.

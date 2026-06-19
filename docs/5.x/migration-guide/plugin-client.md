@@ -55,19 +55,55 @@ These three options are gone. Every generated function now takes a single groupe
   })
 ```
 
-The call signature changes from positional arguments to one object:
+The call signature changes from positional arguments to one object. The first argument is typed `Omit<GetPetRequestConfig, 'url'>`, the `RequestConfig` type `@kubb/plugin-ts` generates. When an operation has required path params, `path` is required too. The trailing `config` argument is unchanged.
 
-```typescript [Generated output]
-// Before (paramsType: 'inline')
-export async function getPet(petId: string, params?: GetPetQueryParams, config = {}) {}
-await getPet('pet_1', { status: 'available' })
+::: code-group
 
-// After
-export async function getPet({ path, query, headers, body }: GetPetRequestConfig, config = {}) {}
-await getPet({ path: { petId: 'pet_1' }, query: { status: 'available' } })
+```typescript [Call site]
+await getPet('pet_1', { status: 'available' }) // [!code --]
+await getPet({ path: { petId: 'pet_1' }, query: { status: 'available' } }) // [!code ++]
+
+await addPet(pet) // [!code --]
+await addPet({ body: pet }) // [!code ++]
 ```
 
+```typescript [Generated output]
+export async function getPet(petId: string, params?: GetPetQueryParams, config = {}) {} // [!code --]
+export async function getPet({ path, query }: Omit<GetPetRequestConfig, 'url'>, config = {}) {} // [!code ++]
+```
+
+:::
+
 All other options are unchanged.
+
+## Runtime `RequestConfig`: `params` → `query`, `data` → `body`
+
+The runtime `RequestConfig` type in the axios and fetch clients renames two fields to match the grouped call shape. `params` becomes `query` and `data` becomes `body`. Inside the client these map to axios's native `params` and `data`, so the wire behavior is identical. Anyone importing the runtime `RequestConfig` type or calling the low-level `client({ ... })` directly has to rename those fields.
+
+::: code-group
+
+```typescript [Call site]
+await client({ method: 'POST', url: '/pet', params: { dryRun: true }, data: pet }) // [!code --]
+await client({ method: 'POST', url: '/pet', query: { dryRun: true }, body: pet }) // [!code ++]
+```
+
+```typescript [Generated output]
+export type RequestConfig<TData = unknown> = {
+  url?: string
+  method: 'GET' | 'PUT' | 'PATCH' | 'POST' | 'DELETE'
+  params?: object // [!code --]
+  data?: TData | FormData // [!code --]
+  query?: object // [!code ++]
+  body?: TData | FormData // [!code ++]
+  responseType?: 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream'
+  signal?: AbortSignal
+  headers?: HeadersInit
+}
+```
+
+:::
+
+A custom client passed through `importPath` reads these fields. Map `query` to your transport's query-string option and `body` to its request body. The [custom client guide](/docs/5.x/guides/base-url) shows the axios mapping.
 
 ## Generated output
 
