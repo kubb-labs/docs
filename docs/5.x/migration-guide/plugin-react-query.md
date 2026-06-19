@@ -84,9 +84,9 @@ The change covers `queryFn`, `queryOptions`, and the hook generics together. No 
 
 ### No auto `enabled` guard
 
-v4 emitted an `enabled` guard built from the required path and query parameters (`enabled: !!path?.petId` in React Query, `enabled: () => !!toValue(path?.petId)` in Vue Query). The guard turned truthy the moment a caller passed the parameters, so it never reached a state the signature did not already show, and it could not narrow the types.
+v4 generated an `enabled` guard from the required path and query parameters: `enabled: !!path?.petId` in React Query, `enabled: () => !!toValue(path?.petId)` in Vue Query. Those parameters were already required, so `!!path.petId` was always `true`. The guard disabled nothing. It read like a safety net and did no work.
 
-v5 drops the guard. The grouped `path`, `query`, and `headers` options are required in the generated `queryKey`, `queryOptions`, and hook signatures whenever the operation marks a parameter in that group required, and no `enabled` option is generated. The query key types only the groups it reads, so a required `headers` parameter never forces `headers` onto the key.
+v5 removes it. The `path`, `query`, and `headers` groups are required in the generated `queryKey`, `queryOptions`, and hook signatures whenever the operation has a required parameter in that group, and nothing emits `enabled` for you. The query key types only the groups it reads, so a required `headers` parameter never leaks onto the key.
 
 ```diff [Diff]
   export function getPetByIdQueryOptions({ path }: Omit<GetPetByIdRequestConfig, 'url'>, config: Partial<RequestConfig> & { client?: Client } = {}) {
@@ -101,7 +101,7 @@ v5 drops the guard. The grouped `path`, `query`, and `headers` options are requi
   }
 ```
 
-Conditional and dependent queries move to TanStack Query's own `enabled` (or `skipToken`), passed through the hook options:
+To defer or disable a query, set TanStack Query's own `enabled` (or pass `skipToken`) through the hook options:
 
 ```typescript [Generated output]
 // keep the query disabled until petId resolves
@@ -109,4 +109,4 @@ useGetPetById({ path: { petId } }, { query: { enabled: !!petId } })
 ```
 
 > [!NOTE]
-> Suspense hooks already ran unconditionally and never carried an `enabled` guard, so they are unchanged.
+> Suspense hooks always run, so they never had an `enabled` guard and are unchanged.
