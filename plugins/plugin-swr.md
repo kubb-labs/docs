@@ -411,15 +411,6 @@ Changes how the plugin names generated functions and types. Override only the me
 |     Type: | `Partial<ResolverSwr> & ThisType<ResolverSwr>` |
 | Required: | `false`                                        |
 
-### generators
-
-Adds custom generators that run next to the built-in query and mutation generators. Each generator can emit extra files or post-process existing ones using the plugin's AST and options. See [Creating plugins](/docs/5.x/guides/creating-plugins).
-
-|           |                               |
-| --------: | :---------------------------- |
-|     Type: | `Array<Generator<PluginSwr>>` |
-| Required: | `false`                       |
-
 ### macros
 
 Rewrites AST nodes before they are printed to source. Each [macro](/docs/5.x/concepts/macros) callback receives the node and a context object. Return a new node to replace it, or `undefined` to leave it as is. Macros run in order, so a later one sees the output of an earlier one.
