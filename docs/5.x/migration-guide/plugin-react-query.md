@@ -7,7 +7,31 @@ description: Configuration and generated-output changes for @kubb/plugin-react-q
 
 Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). For the full option reference, see [`@kubb/plugin-react-query`](/plugins/plugin-react-query).
 
-[`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`. The `client` sub-object stays the same, as do all other options.
+[`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`.
+
+## Removed: `paramsType`, `pathParamsType`, `paramsCasing`
+
+These three options are gone, including `client.paramsCasing`. Each hook now takes its parameters as a single grouped options object with camelCase property names. Query and header params move under a `params` key, and path params become named properties.
+
+```diff [Diff]
+  pluginReactQuery({
+-   paramsType: 'object',
+-   pathParamsType: 'object',
+-   paramsCasing: 'camelcase',
+  })
+```
+
+Update the call sites. Query params move into `params`, and path params become an object:
+
+```typescript [Generated output]
+// Before
+useFindPetsByStatus({ status: 'available' })
+useUpdatePet(2)
+
+// After
+useFindPetsByStatus({ params: { status: 'available' } })
+useUpdatePet({ petId: 2 })
+```
 
 ## Generated output
 

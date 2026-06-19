@@ -15,6 +15,20 @@ pluginTs({ mapper: { status: 'string' } })
 
 Use [`printer.nodes`](/plugins/plugin-ts#printer) to override a schema-type renderer, or [`macros`](/plugins/plugin-ts#macros) to rewrite AST nodes before printing.
 
+## Removed: `paramsCasing`
+
+```typescript [v4 kubb.config.ts]
+pluginTs({ paramsCasing: 'camelcase' })
+```
+
+Parameter properties inside the generated `PathParams`, `QueryParams`, `HeaderParams`, and `RequestConfig` types are now always camelCase. In v4 they defaulted to the original spec names, and `paramsCasing: 'camelcase'` opted into the new behavior. v5 makes camelCase the only option, so drop the setting.
+
+```typescript [Generated output]
+// OpenAPI spec uses: pet_id, X-Api-Key
+export type GetPetPathParams = { petId: string } // was { pet_id: string }
+export type GetPetHeaderParams = { xApiKey?: string } // was { 'X-Api-Key'?: string }
+```
+
 ## Renamed: `transformers.name`
 
 [`resolver.resolveTypeName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`.

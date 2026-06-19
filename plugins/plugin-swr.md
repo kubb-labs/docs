@@ -42,6 +42,8 @@ resources:
 
 This plugin needs both [`@kubb/plugin-ts`](/plugins/plugin-ts) and [`@kubb/plugin-client`](/plugins/plugin-client).
 
+Each hook takes its parameters as a single grouped options object shaped as `{ body, path, query, headers }`, with camelCase property names. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
+
 **See also**
 
 - [SWR](https://swr.vercel.app)
@@ -142,7 +144,7 @@ Sets how the generated hooks talk to the HTTP client. Choose the bundled client 
 
 |           |                                                                               |
 | --------: | :---------------------------------------------------------------------------- |
-|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, paramsCasing? }` |
+|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL? }` |
 | Required: | `false`                                                                       |
 
 When no `@kubb/plugin-client` is present and no `client.importPath` is set, the plugin injects its own client into `.kubb/client.ts`.
@@ -194,60 +196,6 @@ Base URL prepended to every request. When omitted, the adapter's server URL is u
 | --------: | :------- |
 |     Type: | `string` |
 | Required: | `false`  |
-
-#### client.paramsCasing
-
-Renames parameter properties (path, query, headers) in the generated hooks. The HTTP request still uses the original spec names. Set `'camelcase'` to rename to camelCase.
-
-|           |               |
-| --------: | :------------ |
-|     Type: | `'camelcase'` |
-| Required: | `false`       |
-
-### paramsType
-
-How the hooks receive request parameters. `'inline'` spreads each parameter as its own argument. `'object'` groups them into a single argument.
-
-|           |                        |
-| --------: | :--------------------- |
-|     Type: | `'object' \| 'inline'` |
-| Required: | `false`                |
-|  Default: | `'inline'`             |
-
-::: code-group
-
-```typescript ['inline' (default)]
-export function useGetPetById(petId?: GetPetByIdPathPetId, options = {}) {
-  // ...
-}
-```
-
-```typescript ['object']
-export function useGetPetById({ petId }: { petId?: GetPetByIdPathPetId } = {}, options = {}) {
-  // ...
-}
-```
-
-:::
-
-### pathParamsType
-
-How the hooks receive path parameters. `'inline'` spreads each path parameter as its own argument. `'object'` groups them into a single argument. When `paramsType` is `'object'`, path parameters default to `'object'` too.
-
-|           |                        |
-| --------: | :--------------------- |
-|     Type: | `'object' \| 'inline'` |
-| Required: | `false`                |
-|  Default: | `'inline'`             |
-
-### paramsCasing
-
-Applies a casing convention to parameter names. Set `'camelcase'` to rename parameters to camelCase. Leave it unset to keep the names from the OpenAPI document.
-
-|           |               |
-| --------: | :------------ |
-|     Type: | `'camelcase'` |
-| Required: | `false`       |
 
 ### parser
 

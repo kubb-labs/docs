@@ -421,18 +421,6 @@ export default defineConfig({
 
 :::
 
-### paramsCasing
-
-Renames the properties inside the generated path, query, and header mocks to camelCase. Body mocks are left untouched.
-
-|           |               |
-| --------: | :------------ |
-|     Type: | `'camelcase'` |
-| Required: | `false`       |
-
-> [!IMPORTANT]
-> Set the same `paramsCasing` here as on `@kubb/plugin-ts` so the generated mocks stay assignable to the generated types.
-
 ### include
 
 Generates only the operations and schemas that match at least one entry in the list. Everything else is skipped. Each entry filters by one of:
@@ -748,7 +736,6 @@ export default defineConfig({
     pluginFaker({
       output: { path: './mocks' },
       seed: [100],
-      paramsCasing: 'camelcase',
     }),
   ],
 })

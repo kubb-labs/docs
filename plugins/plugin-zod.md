@@ -628,26 +628,6 @@ export const paths = {
 
 :::
 
-### paramsCasing
-
-Renames the properties inside the path, query, and header schemas to camelCase. Body schemas stay untouched. Set the same value on `@kubb/plugin-ts` so the Zod schemas stay assignable to the generated types.
-
-|           |               |
-| --------: | :------------ |
-|     Type: | `'camelcase'` |
-| Required: | `false`       |
-
-```typescript [paramsCasing: 'camelcase']
-// OpenAPI spec uses: pet_id, X-Api-Key
-export const getPetPathParamsSchema = z.object({
-  petId: z.string(),
-})
-
-export const getPetHeaderParamsSchema = z.object({
-  xApiKey: z.string().optional(),
-})
-```
-
 ### guidType
 
 Validator used for OpenAPI properties with `format: uuid`.

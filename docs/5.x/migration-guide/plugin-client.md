@@ -43,6 +43,30 @@ The `bundle` option is removed. The selected `client` always bundles into `.kubb
 
 Projects that relied on the old default (`bundle: false`, which imported from `@kubb/plugin-client/clients/{client}`) now get a self-contained `.kubb/client.ts` and no longer need `@kubb/plugin-client` at runtime. To keep importing from the package, point `importPath` at it.
 
+## Removed: `paramsType`, `pathParamsType`, `paramsCasing`
+
+These three options are gone. Every generated function now takes a single grouped options object shaped as `{ body, path, query, headers }` with camelCase property names, the same shape `@kubb/plugin-fetch` already used. There is no inline variant and no casing switch. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
+
+```diff [Diff]
+  pluginClient({
+-   paramsType: 'object',
+-   pathParamsType: 'object',
+-   paramsCasing: 'camelcase',
+  })
+```
+
+The call signature changes from positional arguments to one object:
+
+```typescript [Generated output]
+// Before (paramsType: 'inline')
+export async function getPet(petId: string, params?: GetPetQueryParams, config = {}) {}
+await getPet('pet_1', { status: 'available' })
+
+// After
+export async function getPet({ path, query, headers, body }: GetPetRequestConfig, config = {}) {}
+await getPet({ path: { petId: 'pet_1' }, query: { status: 'available' } })
+```
+
 All other options are unchanged.
 
 ## Generated output

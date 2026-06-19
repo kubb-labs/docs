@@ -7,7 +7,15 @@ description: Changes for @kubb/plugin-mcp when migrating from Kubb v4 to v5.
 
 Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). For the full option reference, see [`@kubb/plugin-mcp`](/plugins/plugin-mcp).
 
-The plugin options stay the same. [`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`.
+[`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`.
+
+## Removed: `paramsCasing`
+
+```typescript [v4 kubb.config.ts]
+pluginMcp({ paramsCasing: 'camelcase' })
+```
+
+Parameter properties in the generated handlers are now always camelCase, including the `client.paramsCasing` sub-option, so drop both. The HTTP layer still uses the original spec names, and Kubb writes the mapping for you.
 
 ## Generated output
 

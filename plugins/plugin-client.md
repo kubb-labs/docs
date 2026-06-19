@@ -42,6 +42,8 @@ resources:
 
 `@kubb/plugin-client` generates one HTTP client function per operation in your OpenAPI spec. Each function types its path params, query params, body, and response. You call the API like any other typed function.
 
+Every generated function takes a single grouped options object shaped as `{ body, path, query, headers }`, with camelCase property names. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
+
 The plugin ships with `axios` and `fetch` runtimes. To bring your own client for auth, retries, or a custom base URL, point `importPath` at your module.
 
 **See also**
@@ -520,105 +522,6 @@ export default defineConfig({
 
 :::
 
-### paramsType
-
-How operation parameters (path, query, headers) appear in the generated function signature.
-
-`'inline'` (the default) makes each parameter a separate positional argument. It stays compact for operations with one or two params. `'object'` wraps every parameter in a single object argument. It reads better for operations with many params and names each one at the call site.
-
-|           |                        |
-| --------: | :--------------------- |
-|     Type: | `'object' \| 'inline'` |
-| Required: | `false`                |
-|  Default: | `'inline'`             |
-
-> [!TIP]
-> Setting `paramsType: 'object'` also sets `pathParamsType: 'object'`, so call sites stay consistent.
-
-::: code-group
-
-```typescript ['inline' (default)]
-export async function deletePet(petId: DeletePetPathParams['petId'], headers?: DeletePetHeaderParams, config: Partial<RequestConfig> = {}) {
-  // ...
-}
-
-await deletePet(42, { 'X-Api-Key': 'secret' })
-```
-
-```typescript ['object']
-export async function deletePet(
-  { petId, headers }: { petId: DeletePetPathParams['petId']; headers?: DeletePetHeaderParams },
-  config: Partial<RequestConfig> = {},
-) {
-  // ...
-}
-
-await deletePet({ petId: 42, headers: { 'X-Api-Key': 'secret' } })
-```
-
-:::
-
-### pathParamsType
-
-How URL path parameters appear in the generated function signature. This affects only path params. Query and header params follow `paramsType`. It has no effect when `paramsType` is `'object'`, since path params already live inside the single object.
-
-`'inline'` (the default) makes each path param a positional argument, as in `getPetById(petId)`. `'object'` wraps the path params in a single object, as in `getPetById({ petId })`.
-
-|           |                        |
-| --------: | :--------------------- |
-|     Type: | `'object' \| 'inline'` |
-| Required: | `false`                |
-|  Default: | `'inline'`             |
-
-::: code-group
-
-```typescript ['inline' (default)]
-export async function getPetById(petId: GetPetByIdPathParams['petId']) {
-  // ...
-}
-```
-
-```typescript ['object']
-export async function getPetById({ petId }: GetPetByIdPathParams) {
-  // ...
-}
-```
-
-:::
-
-### paramsCasing
-
-Renames path, query, and header parameters in the generated client to the chosen casing. The HTTP request still uses the original names from the spec, and Kubb writes the mapping for you.
-
-`'camelcase'` turns `pet_id` and `X-Api-Key` into `petId` and `xApiKey` in your TypeScript code. The runtime URL still uses `/pet/{pet_id}` and the header is still sent as `X-Api-Key`.
-
-|           |               |
-| --------: | :------------ |
-|     Type: | `'camelcase'` |
-| Required: | `false`       |
-
-> [!IMPORTANT]
-> Set the same `paramsCasing` on every plugin that touches operation parameters (`@kubb/plugin-ts`, `@kubb/plugin-client`, `@kubb/plugin-react-query`, `@kubb/plugin-faker`, `@kubb/plugin-mcp`). Mismatched casing causes type errors between generated layers.
-
-::: code-group
-
-```typescript [With paramsCasing: 'camelcase']
-// Function takes camelCase params, mapped back to the spec name internally
-export async function deletePet(petId: DeletePetPathParams['petId'], config: Partial<RequestConfig> = {}) {
-  const pet_id = petId
-  return client({ method: 'DELETE', url: `/pet/${pet_id}`, ...config })
-}
-```
-
-```typescript [Without paramsCasing]
-// Function params mirror the spec
-export async function deletePet(pet_id: DeletePetPathParams['pet_id'], config: Partial<RequestConfig> = {}) {
-  return client({ method: 'DELETE', url: `/pet/${pet_id}`, ...config })
-}
-```
-
-:::
-
 ### urlType
 
 Controls whether the URL builder helpers (`get<Operation>Url`) are exported alongside each client function.
@@ -783,7 +686,7 @@ export default defineConfig({
 
 ### override
 
-Applies different plugin options to operations that match a pattern. Use it for the few endpoints that need special treatment. Each entry takes the same `type` and `pattern` as `include` and `exclude`, plus an `options` object that accepts any plugin-client option such as `client`, `dataReturnType`, or `paramsCasing`. Entries run top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
+Applies different plugin options to operations that match a pattern. Use it for the few endpoints that need special treatment. Each entry takes the same `type` and `pattern` as `include` and `exclude`, plus an `options` object that accepts any plugin-client option such as `client` or `dataReturnType`. Entries run top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
 
 |           |                   |
 | --------: | :---------------- |

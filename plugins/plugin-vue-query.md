@@ -46,6 +46,8 @@ resources:
 
 It needs `@kubb/plugin-ts` for the types. The HTTP client comes from `@kubb/plugin-client`, which the plugin bundles into the output.
 
+Each composable takes its parameters as a single grouped options object shaped as `{ body, path, query, headers }`, with camelCase property names. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
+
 **See also**
 
 - [TanStack Query for Vue](https://tanstack.com/query/latest/docs/framework/vue/overview)
@@ -250,7 +252,7 @@ HTTP client used inside every generated composable. Each composable calls this c
 
 |           |                                                                              |
 | --------: | :--------------------------------------------------------------------------- |
-|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, paramsCasing? }` |
+|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL? }` |
 | Required: | `false`                                                                      |
 
 #### client.client
@@ -333,68 +335,6 @@ Style of the HTTP client this plugin imports from `@kubb/plugin-client`.
 
 > [!WARNING]
 > Vue Query works only with `clientType: 'function'`. If you set `clientType: 'class'`, the plugin falls back to generating its own inline function client instead of importing from `@kubb/plugin-client`.
-
-#### client.paramsCasing
-
-Casing applied to path, query, and header parameters inside the generated client. Match it to the top-level `paramsCasing` so the composable and the client agree on parameter names.
-
-|           |               |
-| --------: | :------------ |
-|     Type: | `'camelcase'` |
-| Required: | `false`       |
-
-### paramsType
-
-How operation parameters (path, query, headers) appear in the generated function signature.
-
-- `'inline'` (default) makes each parameter a separate positional argument. Compact for one or two params.
-- `'object'` wraps every parameter in a single object argument. Easier to read for many params, and named at the call site.
-
-|           |                        |
-| --------: | :--------------------- |
-|     Type: | `'object' \| 'inline'` |
-| Required: | `false`                |
-|  Default: | `'inline'`             |
-
-> [!TIP]
-> Setting `paramsType: 'object'` also sets `pathParamsType: 'object'`, so call sites stay consistent.
-
-::: code-group
-
-```typescript ['inline' (default)]
-await deletePet(42)
-```
-
-```typescript ['object']
-await deletePet({ petId: 42, headers: { 'X-Api-Key': 'secret' } })
-```
-
-:::
-
-### pathParamsType
-
-How URL path parameters appear in the generated function signature. Affects only path params. Query and header params follow `paramsType`.
-
-- `'inline'` (default) makes each path param a positional argument, as in `getPetById(petId)`.
-- `'object'` wraps path params in a single object, as in `getPetById({ petId })`.
-
-|           |                        |
-| --------: | :--------------------- |
-|     Type: | `'object' \| 'inline'` |
-| Required: | `false`                |
-|  Default: | `'inline'`             |
-
-### paramsCasing
-
-Renames path, query, and header parameters in the generated client to camelCase. The HTTP request still uses the original names from the spec, and Kubb writes the mapping for you. So `pet_id` and `X-Api-Key` become `petId` and `xApiKey` in your code, while the URL still sends `/pet/{pet_id}` and the `X-Api-Key` header.
-
-|           |               |
-| --------: | :------------ |
-|     Type: | `'camelcase'` |
-| Required: | `false`       |
-
-> [!IMPORTANT]
-> Set the same `paramsCasing` on every plugin that touches operation parameters (`@kubb/plugin-ts`, `@kubb/plugin-client`, `@kubb/plugin-vue-query`, `@kubb/plugin-faker`, `@kubb/plugin-mcp`). Mismatched casing breaks the generated type chain.
 
 ### parser
 
@@ -800,7 +740,7 @@ export type Override = {
 
 ::: code-group
 
-```typescript [Use object params for the user tag only]
+```typescript [Return full responses for the user tag only]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -811,12 +751,12 @@ export default defineConfig({
   plugins: [
     pluginTs(),
     pluginVueQuery({
-      paramsType: 'inline',
+      client: { dataReturnType: 'data' },
       override: [
         {
           type: 'tag',
           pattern: 'user',
-          options: { paramsType: 'object' },
+          options: { client: { dataReturnType: 'full' } },
         },
       ],
     }),

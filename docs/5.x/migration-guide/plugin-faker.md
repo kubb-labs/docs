@@ -7,7 +7,15 @@ description: Configuration and generated-output changes for @kubb/plugin-faker w
 
 Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). See the full option reference in [`@kubb/plugin-faker`](/plugins/plugin-faker).
 
-`dateType`, `integerType`, `unknownType`, and `emptySchemaType` moved to [`adapterOas`](/adapters/adapter-oas). See [Migration: @kubb/adapter-oas](/docs/5.x/migration-guide/adapter-oas). [`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`. Every other option stays the same.
+`dateType`, `integerType`, `unknownType`, and `emptySchemaType` moved to [`adapterOas`](/adapters/adapter-oas). See [Migration: @kubb/adapter-oas](/docs/5.x/migration-guide/adapter-oas). [`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`.
+
+## Removed: `paramsCasing`
+
+```typescript [v4 kubb.config.ts]
+pluginFaker({ paramsCasing: 'camelcase' })
+```
+
+Properties inside the generated path, query, and header mocks are now always camelCase, so drop the option. This keeps the mocks assignable to the types from `@kubb/plugin-ts`, which also camelCases parameters.
 
 ## Generated output
 

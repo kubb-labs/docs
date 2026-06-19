@@ -257,7 +257,7 @@ HTTP client each handler uses to call the underlying API. It mirrors a subset of
 
 |           |                                                                              |
 | --------: | :--------------------------------------------------------------------------- |
-|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, paramsCasing? }` |
+|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL? }` |
 | Required: | `false`                                                                      |
 
 #### client.client
@@ -313,54 +313,6 @@ Base URL prepended to every request URL in the generated client. When omitted, t
 | --------: | :------- |
 |     Type: | `string` |
 | Required: | `false`  |
-
-#### client.paramsCasing
-
-Renames parameter properties passed to the underlying client. Mirrors `pluginClient`'s `paramsCasing` option.
-
-|           |               |
-| --------: | :------------ |
-|     Type: | `'camelcase'` |
-| Required: | `false`       |
-
-### paramsCasing
-
-Renames parameter properties in the generated handlers to camelCase. The HTTP layer still uses the original spec names, and Kubb writes the mapping for you.
-
-|           |               |
-| --------: | :------------ |
-|     Type: | `'camelcase'` |
-| Required: | `false`       |
-
-> [!IMPORTANT]
-> Set the same `paramsCasing` here as on `@kubb/plugin-ts` so the handlers' parameter types line up with the generated request types.
-
-::: code-group
-
-```typescript [With paramsCasing: 'camelcase']
-// Handler signature uses camelCase
-export async function findPetsByStatusHandler({ stepId }: { stepId: FindPetsByStatusPathParams['stepId'] }): Promise<CallToolResult> {
-  const step_id = stepId
-
-  const res = await fetch({
-    method: 'GET',
-    url: `/pet/findByStatus/${step_id}`,
-  })
-  // ...
-}
-```
-
-```typescript [Without paramsCasing]
-export async function findPetsByStatusHandler({ step_id }: { step_id: FindPetsByStatusPathParams['step_id'] }): Promise<CallToolResult> {
-  const res = await fetch({
-    method: 'GET',
-    url: `/pet/findByStatus/${step_id}`,
-  })
-  // ...
-}
-```
-
-:::
 
 ### include
 
