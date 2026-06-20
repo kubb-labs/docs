@@ -7,7 +7,39 @@ description: Configuration and generated-output changes for @kubb/plugin-react-q
 
 Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). For the full option reference, see [`@kubb/plugin-react-query`](/plugins/plugin-react-query).
 
-[`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`. The `client` sub-object stays the same, as do all other options.
+[`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`.
+
+## Removed: `paramsType`, `pathParamsType`, `paramsCasing`
+
+These three options are gone, including `client.paramsCasing`. Each hook now takes its parameters as a single grouped options object shaped as `{ path, query, body, headers }`, with camelCase property names. This matches the shape `@kubb/plugin-fetch` already used. Query params move under `query`, path params under `path`, the request body under `body`, and header params under `headers`.
+
+```diff [Diff]
+  pluginReactQuery({
+-   paramsType: 'object',
+-   pathParamsType: 'object',
+-   paramsCasing: 'camelcase',
+  })
+```
+
+Update the call sites. Query params move into `query`, and path params move into `path`. When an operation has a required parameter in a group, that group (`path`, `query`, or `headers`) is required too, so an incomplete call fails to compile.
+
+::: code-group
+
+```typescript [v4 call site]
+useFindPets({ status: 'available' })
+useGetPet(petId)
+useUpdatePet().mutate({ petId, data: pet })
+```
+
+```typescript [v5 call site]
+useFindPets({ query: { status: 'available' } })
+useGetPet({ path: { petId } })
+useUpdatePet().mutate({ path: { petId }, body: pet })
+```
+
+:::
+
+The first argument is typed `Omit<XxxRequestConfig, 'url'>`, the `RequestConfig` type `@kubb/plugin-ts` generates. The trailing `config` argument is unchanged.
 
 ## Generated output
 
@@ -44,39 +76,37 @@ The `TData` generic on `useMutation`, `useQuery`, `useInfiniteQuery`, `useSuspen
 Call sites that previously needed `as` casts or `'id' in res` checks compile directly:
 
 ```typescript [Generated output]
-const pet = await mutateAsync({ data: { name: 'Rex' } })
+const pet = await mutateAsync({ body: { name: 'Rex' } })
 pet.id // typed as Pet.id, no narrowing required
 ```
 
 The change covers `queryFn`, `queryOptions`, and the hook generics together. No config flag brings back the old behavior. If your client returns non-`2xx` bodies as resolved data instead of throwing, wrap it to throw so TanStack Query's `error` / `onError` path fires. The previous typing was silently broken at runtime.
 
-### `enabled`-guarded params are now optional
+### No auto `enabled` guard
 
-`*QueryOptions` and `*InfiniteQueryOptions` emit an `enabled` guard built from the required path and query parameters (`enabled: !!petId` in React Query, `enabled: () => !!toValue(petId)` in Vue Query). In v4 those parameters stayed required in the generated type, so a caller could never pass `undefined` to reach the disabled state the guard already covers. The type contradicted the runtime.
+v4 generated an `enabled` guard from the required path and query parameters: `enabled: !!path?.petId` in React Query, `enabled: () => !!toValue(path?.petId)` in Vue Query. Those parameters were already required, so `!!path.petId` was always `true`. The guard disabled nothing. It read like a safety net and did no work.
 
-v5 makes those parameters optional in the generated `queryKey`, `queryOptions`, and hook signatures. The `queryFn` calls the client with a non-null assertion. The `enabled` guard stays the same.
+v5 removes it. The `path`, `query`, and `headers` groups are required in the generated `queryKey`, `queryOptions`, and hook signatures whenever the operation has a required parameter in that group, and nothing emits `enabled` for you. The query key types only the groups it reads, so a required `headers` parameter never leaks onto the key.
 
 ```diff [Diff]
-- export function getPetByIdQueryOptions({ petId }: { petId: GetPetByIdPathPetId }, config: Partial<RequestConfig> & { client?: Client } = {}) {
-+ export function getPetByIdQueryOptions({ petId }: { petId?: GetPetByIdPathPetId } = {}, config: Partial<RequestConfig> & { client?: Client } = {}) {
-    const queryKey = getPetByIdQueryKey({ petId })
+  export function getPetByIdQueryOptions({ path }: Omit<GetPetByIdRequestConfig, 'url'>, config: Partial<RequestConfig> & { client?: Client } = {}) {
+    const queryKey = getPetByIdQueryKey({ path })
     return queryOptions<GetPetByIdStatus200, ResponseErrorConfig<GetPetByIdStatus400 | GetPetByIdStatus404>, GetPetByIdStatus200, typeof queryKey>({
-      enabled: !!petId,
+-     enabled: !!path?.petId,
       queryKey,
       queryFn: async ({ signal }) => {
--       return getPetById({ petId }, { ...config, signal: config.signal ?? signal })
-+       return getPetById({ petId: petId! }, { ...config, signal: config.signal ?? signal })
+        return getPetById({ path }, { ...config, signal: config.signal ?? signal })
       },
     })
   }
 ```
 
-You can now pass a value that is not ready yet, such as a route param or the result of a dependent query, and let the existing guard keep the query disabled until it resolves:
+To defer or disable a query, set TanStack Query's own `enabled` (or pass `skipToken`) through the hook options:
 
 ```typescript [Generated output]
-// type-checks in v5; the query stays disabled until petId is defined
-useGetPetById({ petId: route.params.petId })
+// keep the query disabled until petId resolves
+useGetPetById({ path: { petId } }, { query: { enabled: !!petId } })
 ```
 
 > [!NOTE]
-> This is a type-only change. The `?` and `!` are erased at compile time, so the emitted JavaScript (including the `enabled` guard) matches v4. Suspense hooks cannot be disabled, so their parameters stay required.
+> Suspense hooks always run, so they never had an `enabled` guard and are unchanged.

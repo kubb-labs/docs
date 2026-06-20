@@ -46,6 +46,8 @@ resources:
 
 It needs `@kubb/plugin-ts` for the types and `@kubb/plugin-client` for the HTTP layer.
 
+Each hook takes its parameters as a single grouped options object shaped as `{ body, path, query, headers }`, with camelCase property names. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
+
 **See also**
 
 - [TanStack Query](https://tanstack.com/query)
@@ -210,7 +212,7 @@ HTTP client used inside every generated hook. It mirrors a subset of `pluginClie
 
 |           |                                                                                |
 | --------: | :----------------------------------------------------------------------------- |
-|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL?, paramsCasing? }` |
+|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL? }` |
 | Required: | `false`                                                                        |
 
 #### client.importPath
@@ -241,12 +243,12 @@ Shape of the value returned from each generated client function.
 ::: code-group
 
 ```typescript ['data' (default)]
-const pet = await getPetById(1)
+const pet = await getPetById({ path: { petId: 1 } })
 //    ^? Pet
 ```
 
 ```typescript ['full']
-const res = await addPet(petData)
+const res = await addPet({ body: petData })
 if (res.status === 405) {
   res.data // narrowed to AddPetStatus405
 }
@@ -278,70 +280,6 @@ Style of the HTTP client this plugin imports from `@kubb/plugin-client`.
 
 > [!WARNING]
 > Query plugins (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, `@kubb/plugin-svelte-query`, `@kubb/plugin-solid-query`) work only with `clientType: 'function'`. Set `clientType: 'class'` here and the plugin falls back to its own inline function-based client instead of importing from `@kubb/plugin-client`.
-
-#### client.paramsCasing
-
-Renames parameters in the generated client to the chosen casing. Use it alongside the top-level `paramsCasing`. See [`paramsCasing`](#paramscasing).
-
-|           |               |
-| --------: | :------------ |
-|     Type: | `'camelcase'` |
-| Required: | `false`       |
-
-### paramsType
-
-How operation parameters (path, query, headers) appear in the generated hook signature.
-
-- `'inline'` (default) makes each parameter a separate positional argument. Compact for one or two params.
-- `'object'` wraps every parameter in a single object argument. Easier to read for many params, and the arguments are named at the call site.
-
-|           |                        |
-| --------: | :--------------------- |
-|     Type: | `'object' \| 'inline'` |
-| Required: | `false`                |
-|  Default: | `'inline'`             |
-
-> [!TIP]
-> Setting `paramsType: 'object'` also sets `pathParamsType: 'object'`, so call sites stay consistent.
-
-::: code-group
-
-```typescript ['inline' (default)]
-await deletePet(42)
-```
-
-```typescript ['object']
-await deletePet({ petId: 42, headers: { 'X-Api-Key': 'secret' } })
-```
-
-:::
-
-### pathParamsType
-
-How URL path parameters appear in the generated function signature. It affects only path params. Query and header params follow `paramsType`.
-
-- `'inline'` (default) makes each path param a positional argument: `getPetById(petId)`.
-- `'object'` wraps path params in a single object: `getPetById({ petId })`.
-
-|           |                        |
-| --------: | :--------------------- |
-|     Type: | `'object' \| 'inline'` |
-| Required: | `false`                |
-|  Default: | `'inline'`             |
-
-### paramsCasing
-
-Renames path, query, and header parameters in the generated code to the chosen casing. The HTTP request still uses the original names from the spec, and Kubb writes the mapping.
-
-- `'camelcase'` turns `pet_id` and `X-Api-Key` into `petId` and `xApiKey` in your TypeScript code. The runtime URL still uses `/pet/{pet_id}`, and the header is still sent as `X-Api-Key`.
-
-|           |               |
-| --------: | :------------ |
-|     Type: | `'camelcase'` |
-| Required: | `false`       |
-
-> [!IMPORTANT]
-> Set the same `paramsCasing` on every plugin that touches parameters (`@kubb/plugin-ts`, `@kubb/plugin-client`, `@kubb/plugin-react-query`, `@kubb/plugin-faker`, `@kubb/plugin-mcp`). Mismatched casing breaks the generated type chain.
 
 ### parser
 
@@ -499,7 +437,7 @@ Module used in the `import { useQuery } from '...'` statement at the top of ever
 
 Builds the `queryKey` for each generated hook. Use it to add a version namespace, key off the operation ID, or match an existing `queryClient.invalidateQueries` strategy.
 
-The callback receives a `node` and the active `casing`. `node` is the operation's AST node, exposing `operationId`, `tags`, `method`, `path`, `parameters`, and `requestBody`. `casing` is `'camelcase'` when `paramsCasing` is set, otherwise `undefined`. Return the array of values that make up the key.
+The callback receives a `node` and the active `casing`. `node` is the operation's AST node, exposing `operationId`, `tags`, `method`, `path`, `parameters`, and `requestBody`. `casing` is `'camelcase'`, matching the parameter names in the generated code. Return the array of values that make up the key.
 
 |           |                                                                       |
 | --------: | :-------------------------------------------------------------------- |
@@ -556,7 +494,7 @@ export default defineConfig({
 ```
 
 ```typescript [Generated output]
-export const findPetsByTagsQueryKey = (params?: FindPetsByTagsQueryParams) => ['v5', '/pet/findByTags'] as const
+export const findPetsByTagsQueryKey = ({ query }: Omit<FindPetsByTagsRequestConfig, 'url'> = {}) => ['v5', '/pet/findByTags'] as const
 ```
 
 ### suspense

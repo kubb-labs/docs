@@ -711,51 +711,6 @@ export type Pet = {
 
 :::
 
-### paramsCasing
-
-Renames the properties inside `PathParams`, `QueryParams`, and `HeaderParams` to camelCase. Use it when your OpenAPI parameters are snake_case or kebab-case but you want camelCase in TypeScript. Response and request body types are left untouched.
-
-|           |               |
-| --------: | :------------ |
-|     Type: | `'camelcase'` |
-| Required: | `false`       |
-
-> [!IMPORTANT]
-> Every plugin that references parameters must use the same `paramsCasing` value: `@kubb/plugin-client`, `@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, `@kubb/plugin-faker`, and `@kubb/plugin-mcp`. Mismatched casing breaks the generated type chain.
-
-::: code-group
-
-```typescript [Without paramsCasing]
-// OpenAPI spec: step_id, bool_param, X-Custom-Header
-export type FindPetsByStatusPathParams = {
-  step_id: string
-}
-
-export type FindPetsByStatusQueryParams = {
-  bool_param?: boolean
-}
-
-export type FindPetsByStatusHeaderParams = {
-  'X-Custom-Header'?: string
-}
-```
-
-```typescript [With paramsCasing: 'camelcase']
-export type FindPetsByStatusPathParams = {
-  stepId: string
-}
-
-export type FindPetsByStatusQueryParams = {
-  boolParam?: boolean
-}
-
-export type FindPetsByStatusHeaderParams = {
-  xCustomHeader?: string
-}
-```
-
-:::
-
 ### resolver
 
 Changes how the plugin names generated files and symbols. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change. Anything you omit, or that returns `null` or `undefined`, falls back to the default. Inside a method, `this` is the full resolver, so you can call `this.default(name, 'function')` to reuse the built-in name.
@@ -1094,7 +1049,6 @@ export default defineConfig({
       group: { type: 'tag' },
       enum: { type: 'asConst' },
       optionalType: 'questionTokenAndUndefined',
-      paramsCasing: 'camelcase',
     }),
   ],
 })

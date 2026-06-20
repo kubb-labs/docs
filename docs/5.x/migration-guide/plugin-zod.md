@@ -37,6 +37,19 @@ yarn add zod@^4
 
 Use [`macros`](/plugins/plugin-zod#macros) or [`printer`](/plugins/plugin-zod#printer) instead.
 
+## Removed: `paramsCasing`
+
+```typescript [v4 kubb.config.ts]
+pluginZod({ paramsCasing: 'camelcase' })
+```
+
+Properties inside the generated path, query, and header schemas are now always camelCase, so drop the option. The request still uses the original spec names, and Kubb writes the mapping for you.
+
+```typescript [Generated output]
+// OpenAPI spec uses: pet_id
+export const getPetPathParamsSchema = z.object({ petId: z.string() }) // was { pet_id: z.string() }
+```
+
 ## Renamed: `transformers.name`
 
 [`resolver.resolveSchemaName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`.

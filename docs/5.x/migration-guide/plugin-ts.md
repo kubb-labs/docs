@@ -15,6 +15,48 @@ pluginTs({ mapper: { status: 'string' } })
 
 Use [`printer.nodes`](/plugins/plugin-ts#printer) to override a schema-type renderer, or [`macros`](/plugins/plugin-ts#macros) to rewrite AST nodes before printing.
 
+## Removed: `paramsCasing`
+
+```typescript [v4 kubb.config.ts]
+pluginTs({ paramsCasing: 'camelcase' })
+```
+
+Parameter properties inside the generated `PathParams`, `QueryParams`, `HeaderParams`, and `RequestConfig` types are now always camelCase. In v4 they defaulted to the original spec names, and `paramsCasing: 'camelcase'` opted into the new behavior. v5 makes camelCase the only option, so drop the setting.
+
+```typescript [Generated output]
+// OpenAPI spec uses: pet_id, X-Api-Key
+export type GetPetPathParams = { petId: string } // was { pet_id: string }
+export type GetPetHeaderParams = { xApiKey?: string } // was { 'X-Api-Key'?: string }
+```
+
+## Changed: `RequestConfig` groups request input
+
+The generated `*RequestConfig` type now groups every request input under `{ path, query, body, headers }` so the client, query, and Cypress plugins all share one call shape. Each key holds the matching `*PathParams`, `*QueryParams`, `*Data`, or `*HeaderParams` type, or `never` when the operation has none. The `path`, `query`, and `headers` keys are required when the operation has a required parameter in that group, and the unused keys are typed `never` so passing them is a compile error.
+
+::: code-group
+
+```typescript [Generated output]
+export type GetPetRequestConfig = {
+  path: { petId: string } // required: the operation has a required path param
+  query?: GetPetQueryParams
+  body?: never
+  headers?: never
+  url: '/pet/{petId}'
+}
+
+export type AddPetRequestConfig = {
+  path?: never
+  query?: never
+  body: AddPetData
+  headers?: never
+  url: '/pet'
+}
+```
+
+:::
+
+The grouped object is what every generated client function, hook, and Cypress helper takes as its first argument, typed `Omit<XxxRequestConfig, 'url'>`. See the [plugin-client](/docs/5.x/migration-guide/plugin-client), [plugin-react-query](/docs/5.x/migration-guide/plugin-react-query), and [plugin-cypress](/docs/5.x/migration-guide/plugin-cypress) pages for the call-site changes.
+
 ## Renamed: `transformers.name`
 
 [`resolver.resolveTypeName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`.

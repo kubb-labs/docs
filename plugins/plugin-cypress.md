@@ -44,6 +44,8 @@ resources:
 
 It builds on [`@kubb/plugin-ts`](/plugins/plugin-ts), so add that plugin too.
 
+Each helper takes its parameters as a single grouped options object shaped as `{ body, path, query, headers }`, with camelCase property names. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
+
 **See also**
 
 - [Cypress](https://www.cypress.io/)
@@ -260,11 +262,11 @@ export default defineConfig({
 ```typescript [Generated file]
 /* eslint-disable */
 // @ts-nocheck
-export function getPetById(petId: GetPetByIdPathPetId, options: Partial<Cypress.RequestOptions> = {}): Cypress.Chainable<GetPetByIdResponse> {
+export function getPetById({ path }: Omit<GetPetByIdRequestConfig, 'url'>, options: Partial<Cypress.RequestOptions> = {}): Cypress.Chainable<GetPetByIdResponse> {
   return cy
     .request<GetPetByIdResponse>({
       method: 'GET',
-      url: `/pet/${petId}`,
+      url: `/pet/${path.petId}`,
       ...options,
     })
     .then((res) => res.body)
@@ -324,142 +326,17 @@ What each helper resolves to.
 
 ```typescript ['data' (default)]
 // Cypress.Chainable<ShowPetByIdResponse>
-showPetById(1).then((pet) => {
+showPetById({ path: { petId: 1 } }).then((pet) => {
   expect(pet.id).to.eq(1)
 })
 ```
 
 ```typescript ['full']
 // Cypress.Chainable<Cypress.Response<ShowPetByIdResponse>>
-showPetById(1).then((response) => {
+showPetById({ path: { petId: 1 } }).then((response) => {
   expect(response.status).to.eq(200)
   expect(response.body.id).to.eq(1)
 })
-```
-
-:::
-
-### paramsType
-
-How operation parameters (path, query, headers) appear in the generated function signature.
-
-- `'inline'` (default) gives each parameter its own positional argument. Compact for one or two params.
-- `'object'` wraps every parameter in a single object argument. Reads better for many params and names each one at the call site.
-
-|           |                        |
-| --------: | :--------------------- |
-|     Type: | `'object' \| 'inline'` |
-| Required: | `false`                |
-|  Default: | `'inline'`             |
-
-> [!TIP]
-> Setting `paramsType: 'object'` also sets `pathParamsType: 'object'`, so call sites stay consistent.
-
-::: code-group
-
-```typescript ['inline' (default)]
-export function updatePet(
-  petId: UpdatePetPathPetId,
-  data?: UpdatePetData,
-  params?: { status?: UpdatePetQueryStatus },
-  options: Partial<Cypress.RequestOptions> = {},
-): Cypress.Chainable<UpdatePetResponse> {
-  // ...
-}
-
-updatePet(42, { name: 'Fido' }, { status: 'available' })
-```
-
-```typescript ['object']
-export function updatePet(
-  { petId, data, params }: { petId: UpdatePetPathPetId; data?: UpdatePetData; params?: { status?: UpdatePetQueryStatus } },
-  options: Partial<Cypress.RequestOptions> = {},
-): Cypress.Chainable<UpdatePetResponse> {
-  // ...
-}
-
-updatePet({ petId: 42, data: { name: 'Fido' }, params: { status: 'available' } })
-```
-
-:::
-
-### pathParamsType
-
-How URL path parameters appear in the generated function signature. Affects only path params. Query params follow `paramsType`. This option has no effect when `paramsType` is `'object'`.
-
-- `'inline'` (default) gives each path param its own argument, as in `showPetById(petId)`.
-- `'object'` wraps path params in a single object, as in `showPetById({ petId })`.
-
-|           |                        |
-| --------: | :--------------------- |
-|     Type: | `'object' \| 'inline'` |
-| Required: | `false`                |
-|  Default: | `'inline'`             |
-
-::: code-group
-
-```typescript ['inline' (default)]
-export function showPetById(
-  petId: ShowPetByIdPathPetId,
-  params?: { limit?: ShowPetByIdQueryLimit },
-  options: Partial<Cypress.RequestOptions> = {},
-): Cypress.Chainable<ShowPetByIdResponse> {
-  // ...
-}
-```
-
-```typescript ['object']
-export function showPetById(
-  { petId }: { petId: ShowPetByIdPathPetId },
-  params?: { limit?: ShowPetByIdQueryLimit },
-  options: Partial<Cypress.RequestOptions> = {},
-): Cypress.Chainable<ShowPetByIdResponse> {
-  // ...
-}
-```
-
-:::
-
-### paramsCasing
-
-Renames the path, query, and header parameters in the generated helpers to camelCase. The request still sends the original names from the spec, since Kubb maps them back. So `'camelcase'` turns `page_size` into `pageSize` in your TypeScript code, while the request `qs` still sends `page_size`.
-
-|           |               |
-| --------: | :------------ |
-|     Type: | `'camelcase'` |
-| Required: | `false`       |
-
-> [!IMPORTANT]
-> Set the same `paramsCasing` on `@kubb/plugin-ts`. The Cypress helpers reuse the types that `@kubb/plugin-ts` generates, so mismatched casing produces type errors between the two layers.
-
-::: code-group
-
-```typescript [With paramsCasing: 'camelcase']
-// The argument is camelCase, the request maps it back to page_size
-export function getPets(params?: { pageSize?: GetPetsQueryPageSize }, options: Partial<Cypress.RequestOptions> = {}): Cypress.Chainable<GetPetsResponse> {
-  return cy
-    .request<GetPetsResponse>({
-      method: 'GET',
-      url: `/pets`,
-      qs: params ? { page_size: params.pageSize } : undefined,
-      ...options,
-    })
-    .then((res) => res.body)
-}
-```
-
-```typescript [Without paramsCasing]
-// The argument mirrors the spec name
-export function getPets(params?: { page_size?: GetPetsQueryPageSize }, options: Partial<Cypress.RequestOptions> = {}): Cypress.Chainable<GetPetsResponse> {
-  return cy
-    .request<GetPetsResponse>({
-      method: 'GET',
-      url: `/pets`,
-      qs: params,
-      ...options,
-    })
-    .then((res) => res.body)
-}
 ```
 
 :::
@@ -886,7 +763,7 @@ import { getPetById } from '../gen/cypress/petRequests'
 
 describe('Pet API', () => {
   it('returns the pet by id', () => {
-    getPetById(1).then((response) => {
+    getPetById({ path: { petId: 1 } }).then((response) => {
       expect(response.status).to.eq(200)
       expect(response.body.id).to.eq(1)
     })

@@ -42,6 +42,8 @@ resources:
 
 `@kubb/plugin-client` generates one HTTP client function per operation in your OpenAPI spec. Each function types its path params, query params, body, and response. You call the API like any other typed function.
 
+Every generated function takes a single grouped options object shaped as `{ body, path, query, headers }`, with camelCase property names. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
+
 The plugin ships with `axios` and `fetch` runtimes. To bring your own client for auth, retries, or a custom base URL, point `importPath` at your module.
 
 **See also**
@@ -278,8 +280,8 @@ import axios from 'axios'
 export type RequestConfig<TData = unknown> = {
   url?: string
   method: 'GET' | 'PUT' | 'PATCH' | 'POST' | 'DELETE'
-  params?: object
-  data?: TData | FormData
+  query?: object
+  body?: TData | FormData
   responseType?: 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream'
   signal?: AbortSignal
   headers?: HeadersInit
@@ -296,9 +298,11 @@ export type ResponseErrorConfig<TError = unknown> = TError
 // Required with @kubb/plugin-react-query or @kubb/plugin-vue-query
 export type Client = <TData, _TError = unknown, TVariables = unknown>(config: RequestConfig<TVariables>) => Promise<ResponseConfig<TData>>
 
-const client: Client = async (config) => {
+const client: Client = async ({ query, body, ...config }) => {
   const response = await axios.request<TData>({
     ...config,
+    params: query,
+    data: body,
     headers: {
       Authorization: `Bearer ${process.env.API_TOKEN}`,
       ...config.headers,
@@ -348,10 +352,10 @@ Shape of the generated client code.
 ::: code-group
 
 ```typescript ['function' (default)]
-export async function getPetById(petId: GetPetByIdPathParams['petId'], config: Partial<RequestConfig> = {}) {
+export async function getPetById({ path }: Omit<GetPetByIdRequestConfig, 'url'>, config: Partial<RequestConfig> = {}) {
   const res = await client<GetPetByIdQueryResponse>({
     method: 'GET',
-    url: `/pet/${petId}`,
+    url: `/pet/${path.petId}`,
     ...config,
   })
   return res.data
@@ -366,9 +370,9 @@ export class PetClient {
     this.#config = config
   }
 
-  async getPetById({ petId }: { petId: GetPetByIdPathParams['petId'] }, config: Partial<RequestConfig> = {}) {
+  async getPetById({ path }: Omit<GetPetByIdRequestConfig, 'url'>, config: Partial<RequestConfig> = {}) {
     const { client: request = client, ...requestConfig } = mergeConfig(this.#config, config)
-    const res = await request<GetPetByIdQueryResponse>({ method: 'GET', url: `/pet/${petId}`, ...requestConfig })
+    const res = await request<GetPetByIdQueryResponse>({ method: 'GET', url: `/pet/${path.petId}`, ...requestConfig })
     return res.data
   }
 }
@@ -378,9 +382,9 @@ export class PetClient {
 export class PetClient {
   static #config: Partial<RequestConfig> & { client?: Client } = {}
 
-  static async getPetById({ petId }: { petId: GetPetByIdPathParams['petId'] }, config: Partial<RequestConfig> = {}) {
+  static async getPetById({ path }: Omit<GetPetByIdRequestConfig, 'url'>, config: Partial<RequestConfig> = {}) {
     const { client: request = client, ...requestConfig } = mergeConfig(this.#config, config)
-    const res = await request<GetPetByIdQueryResponse>({ method: 'GET', url: `/pet/${petId}`, ...requestConfig })
+    const res = await request<GetPetByIdQueryResponse>({ method: 'GET', url: `/pet/${path.petId}`, ...requestConfig })
     return res.data
   }
 }
@@ -432,8 +436,8 @@ import { PetStoreClient } from './gen/clients/PetStoreClient'
 
 const api = new PetStoreClient({ baseURL: 'https://petstore.swagger.io/v2' })
 
-const pets = await api.pet.findPetsByTags({ tags: ['available'] })
-const user = await api.user.getUserByName({ username: 'john' })
+const pets = await api.pet.findPetsByTags({ query: { tags: ['available'] } })
+const user = await api.user.getUserByName({ path: { username: 'john' } })
 ```
 
 :::
@@ -453,12 +457,12 @@ Shape of the value returned from each generated client function.
 ::: code-group
 
 ```typescript ['data' (default)]
-const pet = await getPetById(1)
+const pet = await getPetById({ path: { petId: 1 } })
 //    ^? Pet
 ```
 
 ```typescript ['full']
-const res = await getPetById(1)
+const res = await getPetById({ path: { petId: 1 } })
 if (res.status === 200) {
   res.data // narrowed to the 200 response type
 }
@@ -520,105 +524,6 @@ export default defineConfig({
 
 :::
 
-### paramsType
-
-How operation parameters (path, query, headers) appear in the generated function signature.
-
-`'inline'` (the default) makes each parameter a separate positional argument. It stays compact for operations with one or two params. `'object'` wraps every parameter in a single object argument. It reads better for operations with many params and names each one at the call site.
-
-|           |                        |
-| --------: | :--------------------- |
-|     Type: | `'object' \| 'inline'` |
-| Required: | `false`                |
-|  Default: | `'inline'`             |
-
-> [!TIP]
-> Setting `paramsType: 'object'` also sets `pathParamsType: 'object'`, so call sites stay consistent.
-
-::: code-group
-
-```typescript ['inline' (default)]
-export async function deletePet(petId: DeletePetPathParams['petId'], headers?: DeletePetHeaderParams, config: Partial<RequestConfig> = {}) {
-  // ...
-}
-
-await deletePet(42, { 'X-Api-Key': 'secret' })
-```
-
-```typescript ['object']
-export async function deletePet(
-  { petId, headers }: { petId: DeletePetPathParams['petId']; headers?: DeletePetHeaderParams },
-  config: Partial<RequestConfig> = {},
-) {
-  // ...
-}
-
-await deletePet({ petId: 42, headers: { 'X-Api-Key': 'secret' } })
-```
-
-:::
-
-### pathParamsType
-
-How URL path parameters appear in the generated function signature. This affects only path params. Query and header params follow `paramsType`. It has no effect when `paramsType` is `'object'`, since path params already live inside the single object.
-
-`'inline'` (the default) makes each path param a positional argument, as in `getPetById(petId)`. `'object'` wraps the path params in a single object, as in `getPetById({ petId })`.
-
-|           |                        |
-| --------: | :--------------------- |
-|     Type: | `'object' \| 'inline'` |
-| Required: | `false`                |
-|  Default: | `'inline'`             |
-
-::: code-group
-
-```typescript ['inline' (default)]
-export async function getPetById(petId: GetPetByIdPathParams['petId']) {
-  // ...
-}
-```
-
-```typescript ['object']
-export async function getPetById({ petId }: GetPetByIdPathParams) {
-  // ...
-}
-```
-
-:::
-
-### paramsCasing
-
-Renames path, query, and header parameters in the generated client to the chosen casing. The HTTP request still uses the original names from the spec, and Kubb writes the mapping for you.
-
-`'camelcase'` turns `pet_id` and `X-Api-Key` into `petId` and `xApiKey` in your TypeScript code. The runtime URL still uses `/pet/{pet_id}` and the header is still sent as `X-Api-Key`.
-
-|           |               |
-| --------: | :------------ |
-|     Type: | `'camelcase'` |
-| Required: | `false`       |
-
-> [!IMPORTANT]
-> Set the same `paramsCasing` on every plugin that touches operation parameters (`@kubb/plugin-ts`, `@kubb/plugin-client`, `@kubb/plugin-react-query`, `@kubb/plugin-faker`, `@kubb/plugin-mcp`). Mismatched casing causes type errors between generated layers.
-
-::: code-group
-
-```typescript [With paramsCasing: 'camelcase']
-// Function takes camelCase params, mapped back to the spec name internally
-export async function deletePet(petId: DeletePetPathParams['petId'], config: Partial<RequestConfig> = {}) {
-  const pet_id = petId
-  return client({ method: 'DELETE', url: `/pet/${pet_id}`, ...config })
-}
-```
-
-```typescript [Without paramsCasing]
-// Function params mirror the spec
-export async function deletePet(pet_id: DeletePetPathParams['pet_id'], config: Partial<RequestConfig> = {}) {
-  return client({ method: 'DELETE', url: `/pet/${pet_id}`, ...config })
-}
-```
-
-:::
-
 ### urlType
 
 Controls whether the URL builder helpers (`get<Operation>Url`) are exported alongside each client function.
@@ -631,9 +536,13 @@ Controls whether the URL builder helpers (`get<Operation>Url`) are exported alon
 | Required: | `false`             |
 |  Default: | `false`             |
 
+The helper takes the operation's `path` group, typed from its `RequestConfig`, and reads each path param off it.
+
 ```typescript [Generated URL helper]
-export function getGetPetByIdUrl(petId: GetPetByIdPathParams['petId']) {
-  return `/pet/${petId}` as const
+export function getGetPetByIdUrl(path: GetPetByIdRequestConfig['path']) {
+  const res = { method: 'GET', url: `/pet/${path.petId}` as const }
+
+  return res
 }
 ```
 
@@ -783,7 +692,7 @@ export default defineConfig({
 
 ### override
 
-Applies different plugin options to operations that match a pattern. Use it for the few endpoints that need special treatment. Each entry takes the same `type` and `pattern` as `include` and `exclude`, plus an `options` object that accepts any plugin-client option such as `client`, `dataReturnType`, or `paramsCasing`. Entries run top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
+Applies different plugin options to operations that match a pattern. Use it for the few endpoints that need special treatment. Each entry takes the same `type` and `pattern` as `include` and `exclude`, plus an `options` object that accepts any plugin-client option such as `client` or `dataReturnType`. Entries run top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
 
 |           |                   |
 | --------: | :---------------- |

@@ -80,15 +80,23 @@ This applies at both the root output level and per-plugin output levels.
 - Remove `output.override` (the boolean) from every plugin's `output` and from
   the root `output`. It no longer exists.
 
-## 10. Preserve everything else
+## 10. Remove paramsType, pathParamsType, and paramsCasing
+- Remove `paramsType` and `pathParamsType` from plugin-client,
+  plugin-react-query, plugin-vue-query, plugin-swr, and plugin-cypress.
+- Remove `paramsCasing` from every plugin (including the `client` sub-option of
+  the query and mcp plugins). Generated functions now always take one grouped
+  options object `{ body, path, query, headers }` with camelCase parameter
+  names, and the wire-name mapping is automatic.
+
+## 11. Preserve everything else
 All other plugin options (output, group, include, exclude, override (the
 per-operation array), client, infinite, suspense, query, mutation,
-paramsCasing, paramsType, pathParamsType, parser, dataReturnType,
+parser, dataReturnType,
 clientType, baseURL, urlType, operations, typed, inferred,
 coercion, guidType, mini, wrapOutput, dateParser, regexGenerator,
 seed, handlers, etc.) are unchanged.
 
-## 11. New v5 defaults (informational, do not edit the config)
+## 12. New v5 defaults (informational, do not edit the config)
 
 With `group: { type: 'tag' }`, v5 names each tag folder after the plain
 camelCased tag instead of `${tag}Controller`. Do not add `group.name`
@@ -96,7 +104,7 @@ during migration. Mention to the user that
 `group: { type: 'tag', name: ({ group }) => `${group}Controller` }`
 restores the v4 folder layout.
 
-## 12. Single-file output now needs output.mode
+## 13. Single-file output now needs output.mode
 v5 no longer infers a single file from an `output.path` that ends in `.ts`.
 For every plugin whose `output.path` points at a file (ends in `.ts`), add
 `mode: 'file'` to its `output` and keep the extension in the path:
@@ -578,7 +586,7 @@ export type UploadFileData = UploadFileJsonData | UploadFileFormData
 The generated client exposes `contentType` as a typed literal union, defaulting to the first declared content type:
 
 ```typescript [Generated output]
-uploadFile(petId, data, { contentType: 'multipart/form-data' })
+uploadFile({ path: { petId }, body }, { contentType: 'multipart/form-data' })
 ```
 
 Single-content-type operations are unchanged.
