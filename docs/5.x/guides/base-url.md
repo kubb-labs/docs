@@ -8,89 +8,7 @@ outline: deep
 
 # Set your own baseURL
 
-Set a `baseURL` in three ways. Put it on a custom client, read it from the servers list in your OpenAPI spec, or pass the `baseURL` option to the plugin.
-
-## Use a custom client
-
-When you [define your own client](/docs/5.x/guides/fetch), set the baseURL on it. Every HTTP call then uses that client.
-
-::: code-group
-
-```typescript [client.ts]
-import axios from 'axios'
-
-import type { AxiosError, AxiosHeaders, AxiosRequestConfig, AxiosResponse } from 'axios'
-
-declare const AXIOS_BASE: string
-declare const AXIOS_HEADERS: string
-
-/**
- * Subset of AxiosRequestConfig
- */
-export type RequestConfig<TData = unknown> = {
-  url?: string
-  method: 'GET' | 'PUT' | 'PATCH' | 'POST' | 'DELETE'
-  query?: unknown
-  body?: TData
-  responseType?: 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream'
-  signal?: AbortSignal
-  headers?: AxiosRequestConfig['headers']
-}
-/**
- * Subset of AxiosResponse
- */
-export type ResponseConfig<TData = unknown> = {
-  data: TData
-  status: number
-  statusText: string
-  headers?: AxiosResponse['headers']
-}
-
-export const axiosInstance = axios.create({
-  baseURL: 'https://localhost:8080/api/v1', // [!code ++]
-})
-
-export type Client = <TData, _TError = unknown, TVariables = unknown>(config: RequestConfig<TVariables>) => Promise<ResponseConfig<TData>>
-
-export const client = async <TData, TError = unknown, TVariables = unknown>({
-  query,
-  body,
-  ...config
-}: RequestConfig<TVariables>): Promise<ResponseConfig<TData>> => {
-  const promise = axiosInstance
-    .request<TVariables, ResponseConfig<TData>>({ ...config, params: query, data: body })
-    .catch((e: AxiosError<TError>) => {
-      throw e
-    })
-
-  return promise
-}
-```
-
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginClient } from '@kubb/plugin-client'
-import { adapterOas } from '@kubb/adapter-oas'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: {
-    path: './petStore.yaml',
-  },
-  output: {
-    path: './src/gen',
-  },
-  adapter: adapterOas(),
-  plugins: [
-    pluginTs(),
-    pluginClient({
-      importPath: '../../client.ts', // [!code ++]
-    }),
-  ],
-})
-```
-
-:::
+Set a `baseURL` in two ways. Read it from the servers list in your OpenAPI spec, or pass the `baseURL` option to the client plugin.
 
 ## Read it from the spec
 
@@ -115,7 +33,7 @@ servers:
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { adapterOas } from '@kubb/adapter-oas'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({
   input: {
@@ -125,7 +43,7 @@ export default defineConfig({
     path: './src/gen',
   },
   adapter: adapterOas(),
-  plugins: [pluginClient()],
+  plugins: [pluginAxios()],
 })
 ```
 
@@ -140,7 +58,7 @@ Pass `baseURL` to the plugin. It prepends the URL to every request.
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { adapterOas } from '@kubb/adapter-oas'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginAxios } from '@kubb/plugin-axios'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
 export default defineConfig({
@@ -152,13 +70,11 @@ export default defineConfig({
   },
   adapter: adapterOas(),
   plugins: [
-    pluginClient({
+    pluginAxios({
       baseURL: 'https://localhost:8080/api/v1', // [!code ++]
     }),
     pluginReactQuery({
-      client: {
-        baseURL: 'https://localhost:8080/api/v1', // [!code ++]
-      },
+      client: 'axios',
     }),
   ],
 })

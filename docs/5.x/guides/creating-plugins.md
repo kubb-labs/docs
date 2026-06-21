@@ -81,7 +81,7 @@ kubb generate
 
 ## Project layout
 
-Every official Kubb plugin uses the same layout, one folder per concern: `generators/`, `resolvers/`, `components/`, and `templates/`. The reference implementation is [`@kubb/plugin-client`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-client). Mirror it so other contributors find their way around:
+Every official Kubb plugin uses the same layout, one folder per concern: `generators/`, `resolvers/`, `components/`, and `templates/`. The reference implementation is [`@kubb/plugin-axios`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-axios). Mirror it so other contributors find their way around:
 
 ```text [Resulting tree]
 kubb-plugin-example/
@@ -103,7 +103,7 @@ kubb-plugin-example/
 ```
 
 > [!TIP]
-> In [`@kubb/plugin-client`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-client), `src/index.ts` re-exports each generator, resolver, and the plugin factory by name. `src/plugin.ts` declares a `pluginClientName satisfies PluginClient['name']` constant that other plugins consume.
+> In [`@kubb/plugin-axios`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-axios), `src/index.ts` re-exports each generator, resolver, and the plugin factory by name. `src/plugin.ts` declares a `pluginAxiosName satisfies PluginAxios['name']` constant that other plugins consume.
 
 Scaffold the directories:
 

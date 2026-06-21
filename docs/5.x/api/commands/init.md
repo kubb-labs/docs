@@ -19,7 +19,7 @@ output:
   - ◇  Where should the generated files be output?
   - │  ./src/gen
   - ◇  Select plugins to use:
-  - │  plugin-ts, plugin-client, plugin-zod
+  - │  plugin-ts, plugin-axios, plugin-zod
   - ◇  Installed 4 packages
   - ◇  Created kubb.config.ts
   - ◇  All set! Run `npx kubb generate` to start generating.
@@ -54,7 +54,7 @@ When the wizard finishes, you have:
 | `--yes`, `-y`    | `false` | Skip all prompts and use the default values.                                                                                                                                                                                                                        |
 | `--input`, `-i`  |         | Path to the OpenAPI specification (local file or URL). Bypasses the spec path prompt.                                                                                                                                                                               |
 | `--output`, `-o` |         | Output directory for generated files. Bypasses the output directory prompt.                                                                                                                                                                                         |
-| `--plugins`      |         | Comma-separated list of plugins to install. Bypasses the plugin selection prompt. Valid values: `plugin-ts`, `plugin-client`, `plugin-react-query`, `plugin-vue-query`, `plugin-zod`, `plugin-faker`, `plugin-msw`, `plugin-cypress`, `plugin-mcp`, `plugin-redoc`. |
+| `--plugins`      |         | Comma-separated list of plugins to install. Bypasses the plugin selection prompt. Valid values: `plugin-ts`, `plugin-axios`, `plugin-fetch`, `plugin-react-query`, `plugin-vue-query`, `plugin-zod`, `plugin-faker`, `plugin-msw`, `plugin-cypress`, `plugin-mcp`, `plugin-redoc`. |
 
 Each flag skips only its own prompt and works alongside `--yes`. Pass all three value flags and the wizard runs without any prompts, no `--yes` needed.
 
@@ -75,7 +75,7 @@ npx kubb@beta init --input ./openapi.yaml --output ./src/gen --plugins plugin-ts
 Pass a plugin selection but still prompt for the spec path:
 
 ```shell [Terminal]
-npx kubb@beta init --plugins plugin-ts,plugin-client,plugin-react-query
+npx kubb@beta init --plugins plugin-ts,plugin-axios,plugin-react-query
 ```
 
 > [!TIP]

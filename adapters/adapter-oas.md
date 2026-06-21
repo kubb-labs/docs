@@ -114,7 +114,7 @@ export default defineConfig({
 
 ### server
 
-Selects which entry in the spec's `servers` array becomes the base URL, and supplies values for its `{variable}` placeholders. Plugins that need a base URL read it from here (`@kubb/plugin-client`, `@kubb/plugin-msw`, ...).
+Selects which entry in the spec's `servers` array becomes the base URL, and supplies values for its `{variable}` placeholders. Plugins that need a base URL read it from here (`@kubb/plugin-axios`, `@kubb/plugin-fetch`, `@kubb/plugin-msw`, ...).
 
 `server.index` points at one of the spec's servers. Most projects pick `0` for the primary server, and use higher indices for staging or localhost. `server.variables` fills in any `{variable}` placeholders in the selected URL, falling back to each variable's `default` from the spec. Omit `server` to leave `baseURL` undefined.
 

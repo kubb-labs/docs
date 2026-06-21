@@ -41,7 +41,7 @@ resources:
 
 `@kubb/plugin-zod` turns your OpenAPI schemas into [Zod](https://zod.dev/) v4 schemas. Use them to validate API responses at runtime, build form schemas, or feed router libraries that take Zod (`tRPC`, `Hono`, `Elysia`).
 
-Pair it with `@kubb/plugin-client` and set the client's `parser: 'zod'` to validate every response.
+Pair it with a client plugin (`@kubb/plugin-axios` or `@kubb/plugin-fetch`) and set the client's `parser: 'zod'` to validate every response.
 
 **See also**
 
@@ -146,7 +146,7 @@ How the plugin consolidates its generated code into files.
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
@@ -155,7 +155,7 @@ export default defineConfig({
     pluginTs({
       output: { path: 'types.ts', mode: 'file' },
     }),
-    pluginClient({
+    pluginAxios({
       output: { path: 'clients', mode: 'directory' },
       group: { type: 'tag' },
     }),
@@ -373,7 +373,8 @@ Each plugin ships with a default resolver:
 | `@kubb/plugin-cypress` | `resolverCypress` |
 | `@kubb/plugin-msw`     | `resolverMsw`     |
 | `@kubb/plugin-mcp`     | `resolverMcp`     |
-| `@kubb/plugin-client`  | `resolverClient`  |
+| `@kubb/plugin-axios`   | `resolverClient`  |
+| `@kubb/plugin-fetch`   | `resolverClient`  |
 
 ### group
 

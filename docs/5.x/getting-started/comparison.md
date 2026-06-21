@@ -24,7 +24,7 @@ We keep this comparison accurate and fair. If you use one of these tools and thi
 | ---------------------------------------------------------- | :---------------: | :---: | :---------------- | :--------------: |
 | [OpenAPI 2.0, 3.0, 3.1 input](/adapters/adapter-oas)       |        ✅         |  ✅   | ✅                |        ✅        |
 | [TypeScript types](/plugins/plugin-ts)                     |        ✅         |  ✅   | ✅                |        ✅        |
-| [HTTP client (Axios, Fetch)](/plugins/plugin-client)       |        ✅         |  ✅   | ✅                | 🔶<sup>2</sup>  |
+| [HTTP client (Axios, Fetch)](/plugins/plugin-axios)        |        ✅         |  ✅   | ✅                | 🔶<sup>2</sup>  |
 | [React Query hooks](/plugins/plugin-react-query)           |        ✅         |  ✅   | ✅                |       🛑        |
 | [Vue Query composables](/plugins/plugin-vue-query)         |        ✅         |  ✅   | ✅                |       🛑        |
 | [Zod validation schemas](/plugins/plugin-zod)              |        ✅         |  ✅   | ✅<sup>1</sup>    |       🛑        |

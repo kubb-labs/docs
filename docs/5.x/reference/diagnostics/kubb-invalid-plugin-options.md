@@ -23,13 +23,13 @@ A plugin was given options that cannot be honored together. The main case is `ou
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginClient({
+    pluginAxios({
       output: { path: 'clients', mode: 'directory' },
       group: { type: 'tag' },
     }),
@@ -44,7 +44,7 @@ export default defineConfig({
 ## Example output
 
 ```text [Terminal]
-[KUBB_INVALID_PLUGIN_OPTIONS] plugin-client: Plugin "plugin-client" sets `output.mode: 'file'` but also configures a `group` option.
+[KUBB_INVALID_PLUGIN_OPTIONS] plugin-axios: Plugin "plugin-axios" sets `output.mode: 'file'` but also configures a `group` option.
   fix: A single-file output has nothing to group. Remove the `group` option, or use `output.mode: 'directory'` to organize files into subdirectories.
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-invalid-plugin-options
 ```

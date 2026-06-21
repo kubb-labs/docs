@@ -297,7 +297,7 @@ export const pluginExample = definePlugin<PluginExample>((options) => ({
 ```
 
 > [!TIP]
-> Built-in plugins (`@kubb/plugin-ts`, `@kubb/plugin-zod`, `@kubb/plugin-client`, …) all follow this layout. Match it so users swap your plugin in without rewiring imports.
+> Built-in plugins (`@kubb/plugin-ts`, `@kubb/plugin-zod`, `@kubb/plugin-axios`, …) all follow this layout. Match it so users swap your plugin in without rewiring imports.
 
 ## Built-in plugins
 
@@ -307,7 +307,8 @@ The Kubb monorepo ships official plugins for the most common use cases. Browse t
 | --------------------------------------------------------- | -------------------------------- |
 | [`@kubb/plugin-ts`](/plugins/plugin-ts)                   | TypeScript types from your spec. |
 | [`@kubb/plugin-zod`](/plugins/plugin-zod)                 | Zod schemas.                     |
-| [`@kubb/plugin-client`](/plugins/plugin-client)           | Type-safe HTTP client functions. |
+| [`@kubb/plugin-axios`](/plugins/plugin-axios)             | Type-safe axios client functions. |
+| [`@kubb/plugin-fetch`](/plugins/plugin-fetch)             | Type-safe Fetch client functions. |
 | [`@kubb/plugin-react-query`](/plugins/plugin-react-query) | React Query (TanStack) hooks.    |
 | [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query)     | Vue Query (TanStack) hooks.      |
 | [`@kubb/plugin-msw`](/plugins/plugin-msw)                 | MSW request handlers.            |
@@ -346,12 +347,12 @@ Use `dependencies` to guarantee a sibling plugin runs first. Order in the `plugi
 ```typescript twoslash [depends.ts]
 import { definePlugin } from '@kubb/core'
 
-export const pluginClientWrapper = definePlugin(() => ({
-  name: 'plugin-client-wrapper',
+export const pluginAxiosWrapper = definePlugin(() => ({
+  name: 'plugin-axios-wrapper',
   dependencies: ['plugin-ts'],
   hooks: {
     'kubb:plugin:setup'() {
-      console.log('Starting plugin-client-wrapper after plugin-ts')
+      console.log('Starting plugin-axios-wrapper after plugin-ts')
     },
   },
 }))

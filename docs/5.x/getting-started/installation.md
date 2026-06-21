@@ -60,19 +60,19 @@ Each output format is its own package. Install only what you need.
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-ts@beta @kubb/plugin-client@beta @kubb/plugin-react-query@beta
+bun add -d @kubb/plugin-ts@beta @kubb/plugin-axios@beta @kubb/plugin-react-query@beta
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-ts@beta @kubb/plugin-client@beta @kubb/plugin-react-query@beta
+pnpm add -D @kubb/plugin-ts@beta @kubb/plugin-axios@beta @kubb/plugin-react-query@beta
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/plugin-ts@beta @kubb/plugin-client@beta @kubb/plugin-react-query@beta
+npm install --save-dev @kubb/plugin-ts@beta @kubb/plugin-axios@beta @kubb/plugin-react-query@beta
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-ts@beta @kubb/plugin-client@beta @kubb/plugin-react-query@beta
+yarn add -D @kubb/plugin-ts@beta @kubb/plugin-axios@beta @kubb/plugin-react-query@beta
 ```
 
 :::
@@ -80,7 +80,8 @@ yarn add -D @kubb/plugin-ts@beta @kubb/plugin-client@beta @kubb/plugin-react-que
 | Package                                                   | Generates                                                                                                                             |
 | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | [`@kubb/plugin-ts`](/plugins/plugin-ts)                   | [TypeScript](https://www.typescriptlang.org/) types and interfaces                                                                    |
-| [`@kubb/plugin-client`](/plugins/plugin-client)           | HTTP client functions ([Axios](https://axios-http.com/), [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API), custom) |
+| [`@kubb/plugin-axios`](/plugins/plugin-axios)             | [Axios](https://axios-http.com/) HTTP client functions                                                                               |
+| [`@kubb/plugin-fetch`](/plugins/plugin-fetch)             | [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) HTTP client functions                                           |
 | [`@kubb/plugin-react-query`](/plugins/plugin-react-query) | [TanStack Query](https://tanstack.com/query) hooks for React                                                                          |
 | [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query)     | [TanStack Query](https://tanstack.com/query) hooks for Vue                                                                            |
 | [`@kubb/plugin-zod`](/plugins/plugin-zod)                 | [Zod](https://zod.dev/) schemas for runtime validation                                                                                |

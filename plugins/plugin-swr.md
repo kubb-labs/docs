@@ -27,7 +27,7 @@ tags:
   - openapi
 dependencies:
   - plugin-ts
-  - plugin-client
+  - plugin-axios
 resources:
   documentation: https://kubb.dev/plugins/plugin-swr
   repository: https://github.com/kubb-labs/plugins
@@ -38,9 +38,9 @@ resources:
 
 # @kubb/plugin-swr
 
-`@kubb/plugin-swr` turns your OpenAPI operations into SWR hooks. It emits a `useSWR` hook for each query and a `useSWRMutation` hook for each write. The hooks reuse the types from `@kubb/plugin-ts` and call the HTTP client from `@kubb/plugin-client`, so every request and response stays typed.
+`@kubb/plugin-swr` turns your OpenAPI operations into SWR hooks. It emits a `useSWR` hook for each query and a `useSWRMutation` hook for each write. The hooks reuse the types from `@kubb/plugin-ts` and call the HTTP client from a registered client plugin, so every request and response stays typed.
 
-This plugin needs both [`@kubb/plugin-ts`](/plugins/plugin-ts) and [`@kubb/plugin-client`](/plugins/plugin-client).
+This plugin needs [`@kubb/plugin-ts`](/plugins/plugin-ts) and a client plugin ([`@kubb/plugin-axios`](/plugins/plugin-axios) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch)).
 
 Each hook takes its parameters as a single grouped options object shaped as `{ body, path, query, headers }`, with camelCase property names. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
 
@@ -140,62 +140,12 @@ Splits generated files into subfolders by the operation's tag or URL path. Each 
 
 ### client
 
-Sets how the generated hooks talk to the HTTP client. Choose the bundled client or a custom module, the shape of the returned data, the base URL, and the parameter casing.
+Selects which registered client plugin the generated hooks call. Set `'axios'` to use `@kubb/plugin-axios` or `'fetch'` to use `@kubb/plugin-fetch`. When omitted, the plugin auto-detects whichever client plugin is registered in the same config. Register `@kubb/plugin-axios` or `@kubb/plugin-fetch`, since the generated code calls its functions.
 
-|           |                                                                               |
-| --------: | :---------------------------------------------------------------------------- |
-|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL? }` |
-| Required: | `false`                                                                       |
-
-When no `@kubb/plugin-client` is present and no `client.importPath` is set, the plugin injects its own client into `.kubb/client.ts`.
-
-#### client.client
-
-Which bundled HTTP client to emit into `.kubb/client.ts`. `'axios'` needs `axios` at runtime. `'fetch'` uses the global `fetch`. Cannot be combined with `client.importPath`.
-
-|           |                    |
-| --------: | :----------------- |
+|           |                      |
+| --------: | :------------------- |
 |     Type: | `'axios' \| 'fetch'` |
-| Required: | `false`            |
-|  Default: | `'axios'`          |
-
-#### client.importPath
-
-Path to a custom client module. The generated hooks import their HTTP runtime from here instead of the bundled client. Accepts relative paths and bare module specifiers. The value is used as written. Cannot be combined with `client.client`.
-
-|           |          |
-| --------: | :------- |
-|     Type: | `string` |
-| Required: | `false`  |
-
-#### client.clientType
-
-Shape of the generated client. Only `'function'` works with this plugin.
-
-|           |                                          |
-| --------: | :--------------------------------------- |
-|     Type: | `'function' \| 'class' \| 'staticClass'` |
-| Required: | `false`                                  |
-|  Default: | `'function'`                             |
-
-#### client.dataReturnType
-
-Shape of the value each hook returns. `'data'` returns only the response body. `'full'` returns the full response as a discriminated union keyed by HTTP status code.
-
-|           |                  |
-| --------: | :--------------- |
-|     Type: | `'data' \| 'full'` |
-| Required: | `false`          |
-|  Default: | `'data'`         |
-
-#### client.baseURL
-
-Base URL prepended to every request. When omitted, the adapter's server URL is used (typically `servers[0].url`).
-
-|           |          |
-| --------: | :------- |
-|     Type: | `string` |
-| Required: | `false`  |
+| Required: | `false`              |
 
 ### parser
 

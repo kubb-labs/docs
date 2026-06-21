@@ -16,7 +16,7 @@ The default adapter reads [OpenAPI](https://www.openapis.org/) 2.0, 3.0, and 3.1
 | Feature                                             | Description                                                                                                                        |
 | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | [TypeScript types](/plugins/plugin-ts)              | Type-safe interfaces and types from your schemas                                                                                   |
-| [API clients](/plugins/plugin-client)               | Type-safe HTTP clients for [Axios](https://axios-http.com/) or [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) |
+| [API clients](/plugins/plugin-axios)                | Type-safe HTTP clients for [Axios](https://axios-http.com/) or [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) |
 | [React Query hooks](/plugins/plugin-react-query)    | `useQuery` and `useMutation` hooks for [React Query](https://tanstack.com/query)                                                   |
 | [Vue Query composables](/plugins/plugin-vue-query)  | The same hooks, for [Vue Query](https://tanstack.com/query)                                                                        |
 | [Zod schemas](/plugins/plugin-zod)                  | Runtime validation schemas via [Zod](https://zod.dev/)                                                                             |

@@ -55,7 +55,7 @@ export type AddPetRequestConfig = {
 
 :::
 
-The grouped object is what every generated client function, hook, and Cypress helper takes as its first argument, typed `Omit<XxxRequestConfig, 'url'>`. See the [plugin-client](/docs/5.x/migration-guide/plugin-client), [plugin-react-query](/docs/5.x/migration-guide/plugin-react-query), and [plugin-cypress](/docs/5.x/migration-guide/plugin-cypress) pages for the call-site changes.
+The grouped object is what every generated client function, hook, and Cypress helper takes as its first argument, typed `Omit<XxxRequestConfig, 'url'>`. See the [client plugin removal note](/docs/5.x/migration-guide/plugin-client), [plugin-react-query](/docs/5.x/migration-guide/plugin-react-query), and [plugin-cypress](/docs/5.x/migration-guide/plugin-cypress) pages for the call-site changes.
 
 ## Renamed: `transformers.name`
 

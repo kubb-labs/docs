@@ -125,12 +125,12 @@ Reach for `createKubb` when you orchestrate several builds, inspect diagnostics,
 // @module: esnext
 import { createKubb, Diagnostics } from '@kubb/core'
 import { pluginTs } from '@kubb/plugin-ts'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginAxios } from '@kubb/plugin-axios'
 
 const kubb = createKubb({
   input: { path: './petStore.yaml' },
   output: { path: './gen' },
-  plugins: [pluginTs(), pluginClient()],
+  plugins: [pluginTs(), pluginAxios()],
 })
 
 const { files, storage, driver, diagnostics } = await kubb.safeBuild()

@@ -173,14 +173,14 @@ How a plugin consolidates its code into files. Set it on a plugin's `output`, no
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({
   input: { path: './petstore.yaml' },
   output: { path: './src/gen' },
   plugins: [
     pluginTs({ output: { path: 'types.ts', mode: 'file' } }),
-    pluginClient({ output: { path: 'clients', mode: 'directory' }, group: { type: 'tag' } }),
+    pluginAxios({ output: { path: 'clients', mode: 'directory' }, group: { type: 'tag' } }),
   ],
 })
 ```
@@ -343,13 +343,13 @@ The function form fits Next.js Server Actions. Add `'use server'` to source file
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginClient({
+    pluginAxios({
       output: {
         path: './clients',
         banner: (meta) => (meta.isBarrel || meta.isAggregation ? '' : "'use server'"),
