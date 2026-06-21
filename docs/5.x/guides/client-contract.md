@@ -49,7 +49,7 @@ A thrown failure is a `ResponseError` (exported as `ResponseError`, with the `Re
 
 ## The bundled runtime
 
-The runtime is always written to `.kubb/client.ts` in the output. There is no `bundle` option and nothing to install for the contract itself (axios needs `axios` at runtime; fetch uses the global `fetch`).
+The runtime is always written to `.kubb/client.ts` in the output. There is no `bundle` option and nothing to install for the contract itself (axios needs `axios` at runtime, and fetch uses the global `fetch`).
 
 The module exports a ready-to-use `client` plus a `createClient` factory. Configure the shared instance with `client.setConfig(...)`, or build an isolated one with `client.createClient(...)`.
 
@@ -76,4 +76,4 @@ Set `parser: 'zod'` to validate responses with schemas from `@kubb/plugin-zod`. 
 
 ## Choosing axios or fetch
 
-Both plugins expose the same options and emit the same contract. Pick `@kubb/plugin-axios` when you already depend on axios or want its interceptors and instance config; pick `@kubb/plugin-fetch` for a zero-dependency client on the platform `fetch`. Register exactly one so the query and mcp plugins auto-detect it, or set `client: 'axios' | 'fetch'` on those plugins to choose when both are present.
+Both plugins expose the same options and emit the same contract. Pick `@kubb/plugin-axios` when you already depend on axios or want its interceptors and instance config. Pick `@kubb/plugin-fetch` for a zero-dependency client on the platform `fetch`. Register exactly one so the query and mcp plugins auto-detect it, or set `client: 'axios' | 'fetch'` on those plugins to choose when both are present.
