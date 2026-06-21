@@ -89,15 +89,31 @@ This applies at both the root output level and per-plugin output levels.
   options object `{ body, path, query, headers }` with camelCase parameter
   names, and the wire-name mapping is automatic.
 
-## 11. Preserve everything else
+## 11. Remove dataReturnType and adopt the RequestResult contract
+- Remove `dataReturnType` from every plugin. It no longer exists.
+- The client plugins (`@kubb/plugin-axios`, `@kubb/plugin-fetch`) return a
+  `RequestResult` of `{ data, error, request, response }`, with `throwOnError`
+  defaulting to `true`. A `dataReturnType: 'data'` call becomes a destructure:
+  `const { data } = await getPet({ path: { petId: 1 } })`. A `dataReturnType: 'full'`
+  call becomes `throwOnError: false`, then read `error` and `response.status` off
+  the result.
+- On plugin-cypress, drop `dataReturnType`. Every helper now yields the response
+  body, typed `Cypress.Chainable<T>`.
+- plugin-mcp handlers read `res.data`, so no config change is needed beyond
+  removing the option.
+- Also remove `clientType`, `urlType`, and the custom-client `importPath`: the
+  query and mcp plugins now select a registered client plugin through
+  `client: 'axios' | 'fetch'`, and the standalone client lives in
+  `@kubb/plugin-axios` / `@kubb/plugin-fetch`.
+
+## 12. Preserve everything else
 All other plugin options (output, group, include, exclude, override (the
 per-operation array), client, infinite, suspense, query, mutation,
-parser, dataReturnType,
-clientType, baseURL, urlType, operations, typed, inferred,
+parser, baseURL, operations, typed, inferred,
 coercion, guidType, mini, wrapOutput, dateParser, regexGenerator,
 seed, handlers, etc.) are unchanged.
 
-## 12. New v5 defaults (informational, do not edit the config)
+## 13. New v5 defaults (informational, do not edit the config)
 
 With `group: { type: 'tag' }`, v5 names each tag folder after the plain
 camelCased tag instead of `${tag}Controller`. Do not add `group.name`
@@ -105,7 +121,7 @@ during migration. Mention to the user that
 `group: { type: 'tag', name: ({ group }) => `${group}Controller` }`
 restores the v4 folder layout.
 
-## 13. Single-file output now needs output.mode
+## 14. Single-file output now needs output.mode
 v5 no longer infers a single file from an `output.path` that ends in `.ts`.
 For every plugin whose `output.path` points at a file (ends in `.ts`), add
 `mode: 'file'` to its `output` and keep the extension in the path:
@@ -114,7 +130,7 @@ The extension is required, do not drop it. Leave folder paths unchanged.
 They default to `mode: 'directory'`. `output.mode` only accepts
 `'directory'` or `'file'`.
 
-## 13. Remove the `generators` option
+## 15. Remove the `generators` option
 Remove `generators` from every plugin. Plugins no longer accept custom
 generators as an option. To add custom output, build your own plugin.
 

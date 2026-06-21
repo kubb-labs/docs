@@ -43,6 +43,8 @@ resources:
 
 It builds on `@kubb/plugin-ts` for the types, so add that to your config. The client uses the runtime's built-in `fetch`, so there is no extra HTTP dependency to install.
 
+Each generated function takes one grouped options object (`{ path, query, headers, body }`) and returns a `RequestResult` of `{ data, error, request, response }`. `throwOnError` defaults to `true`, so a resolved call means the request succeeded and `data` is set. Pass `throwOnError: false` per call to get the discriminated `{ data?, error? }` form and read `error` and `response.status` yourself. The runtime is always bundled into `.kubb/client.ts`, so there is no `bundle` option.
+
 **See also**
 
 - [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
