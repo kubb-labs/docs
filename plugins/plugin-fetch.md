@@ -49,6 +49,7 @@ Each generated function takes one grouped options object (`{ path, query, header
 
 - [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
 - [`@kubb/plugin-ts`](/plugins/plugin-ts)
+- [Client contract](/docs/5.x/guides/client-contract)
 
 ## Installation
 

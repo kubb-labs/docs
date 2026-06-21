@@ -49,6 +49,7 @@ Each generated function takes one grouped options object (`{ path, query, header
 
 - [axios](https://axios-http.com/)
 - [`@kubb/plugin-ts`](/plugins/plugin-ts)
+- [Client contract](/docs/5.x/guides/client-contract)
 
 ## Installation
 
