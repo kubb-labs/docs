@@ -14,7 +14,7 @@ repo: https://github.com/kubb-labs/plugins
 docsPath: /plugins/plugin-fetch
 featured: true
 icon:
-  light: https://kubb.dev/feature/axios.svg
+  light: https://kubb.dev/feature/javascript.svg
 maintainers:
   - name: Stijn Van Hulle
     github: stijnvanhulle
