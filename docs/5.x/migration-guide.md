@@ -629,7 +629,7 @@ const pet = await getPet(1)
 ```
 
 ```typescript [v5]
-const { data } = await getPet(1)
+const { data } = await getPet({ path: { petId: 1 } })
 //      ^? Pet
 ```
 
@@ -649,7 +649,7 @@ if (res.status === 200) {
 ```
 
 ```typescript [v5]
-const { data, error, response } = await getPet(1, { throwOnError: false })
+const { data, error, response } = await getPet({ path: { petId: 1 }, throwOnError: false })
 if (error) {
   console.error(response.status)
 } else {
