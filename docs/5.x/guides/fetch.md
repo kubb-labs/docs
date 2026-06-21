@@ -55,7 +55,7 @@ export default defineConfig(() => {
 Every HTTP request (GET, PUT, PATCH, POST, DELETE) calls the default export from your `importPath`. Kubb passes a `RequestConfig`, modeled on the Axios request interface.
 
 > [!IMPORTANT]
-> The client must return an object shaped like `ResponseConfig`. This holds even when `dataReturnType` is `'data'` and the generated function returns only `res.data`.
+> The client must return an object shaped like `ResponseConfig`. The generated function wraps that into a `RequestResult` of `{ data, error, request, response }`, so destructure `const { data } = await getPet(1)` on success. Pass `throwOnError: false` to handle `error` and `response.status` yourself instead of throwing.
 
 ```typescript [client.ts]
 export type RequestConfig<TData = unknown> = {

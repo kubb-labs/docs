@@ -42,6 +42,8 @@ resources:
 
 `@kubb/plugin-cypress` turns your OpenAPI operations into typed `cy.request()` wrappers. You get one helper per operation. Each helper types its path params, body, query, and response, so a broken API call fails at compile time instead of in the test runner. Use them in `before` and `beforeEach` hooks to seed data, in custom commands, or in API-only tests.
 
+Every helper yields the response body, typed as `Cypress.Chainable<T>`. Chain `.then()` to assert against the parsed body. To reach `status` or `headers`, call `cy.request()` directly.
+
 It builds on [`@kubb/plugin-ts`](/plugins/plugin-ts), so add that plugin too.
 
 Each helper takes its parameters as a single grouped options object shaped as `{ body, path, query, headers }`, with camelCase property names. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
@@ -309,38 +311,6 @@ export default defineConfig({
 
 :::
 
-### dataReturnType
-
-What each helper resolves to.
-
-- `'data'` (default) resolves to the response body only.
-- `'full'` resolves to the full Cypress response object, so you can read `status`, `headers`, and `body`.
-
-|           |                    |
-| --------: | :----------------- |
-|     Type: | `'data' \| 'full'` |
-| Required: | `false`            |
-|  Default: | `'data'`           |
-
-::: code-group
-
-```typescript ['data' (default)]
-// Cypress.Chainable<ShowPetByIdResponse>
-showPetById({ path: { petId: 1 } }).then((pet) => {
-  expect(pet.id).to.eq(1)
-})
-```
-
-```typescript ['full']
-// Cypress.Chainable<Cypress.Response<ShowPetByIdResponse>>
-showPetById({ path: { petId: 1 } }).then((response) => {
-  expect(response.status).to.eq(200)
-  expect(response.body.id).to.eq(1)
-})
-```
-
-:::
-
 ### baseURL
 
 Base URL added in front of every request URL. When omitted, the URL comes from the adapter's server URL (typically `servers[0].url`). Set it to point the helpers at a different environment (staging, production) than the spec.
@@ -587,7 +557,7 @@ export type Override = {
 
 ::: code-group
 
-```typescript [Return the full response for the user tag]
+```typescript [Point the user tag at a different host]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
@@ -598,12 +568,12 @@ export default defineConfig({
   plugins: [
     pluginTs(),
     pluginCypress({
-      dataReturnType: 'data',
+      baseURL: 'https://petstore.swagger.io/v2',
       override: [
         {
           type: 'tag',
           pattern: 'user',
-          options: { dataReturnType: 'full' },
+          options: { baseURL: 'https://users.petstore.swagger.io/v2' },
         },
       ],
     }),
@@ -748,7 +718,6 @@ export default defineConfig({
         barrel: { type: 'named' },
         banner: '/* eslint-disable */',
       },
-      dataReturnType: 'full',
       group: {
         type: 'tag',
         name: ({ group }) => `${group}Requests`,
@@ -763,9 +732,8 @@ import { getPetById } from '../gen/cypress/petRequests'
 
 describe('Pet API', () => {
   it('returns the pet by id', () => {
-    getPetById({ path: { petId: 1 } }).then((response) => {
-      expect(response.status).to.eq(200)
-      expect(response.body.id).to.eq(1)
+    getPetById({ path: { petId: 1 } }).then((pet) => {
+      expect(pet.id).to.eq(1)
     })
   })
 })

@@ -140,62 +140,18 @@ Splits generated files into subfolders by the operation's tag or URL path. Each 
 
 ### client
 
-Sets how the generated hooks talk to the HTTP client. Choose the bundled client or a custom module, the shape of the returned data, the base URL, and the parameter casing.
+Picks which client runtime the generated hooks call. Each hook returns a [`RequestResult`](/plugins/plugin-client) of `{ data, error, request, response }`, so the hook reads `data` on success and surfaces `error` on failure.
 
-|           |                                                                               |
-| --------: | :---------------------------------------------------------------------------- |
-|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL? }` |
-| Required: | `false`                                                                       |
+- `'fetch'` routes every hook through the `<operation>` functions from `@kubb/plugin-fetch` (or `@kubb/plugin-client` configured with the fetch runtime).
+- `'axios'` does the same against `@kubb/plugin-axios`.
+- `'legacy'` keeps the v4 inline client that returns the response body directly. Reach for it when you are not ready to adopt the contract.
 
-When no `@kubb/plugin-client` is present and no `client.importPath` is set, the plugin injects its own client into `.kubb/client.ts`.
+Leave `client` unset to auto-detect a single registered contract client plugin. With none registered, the plugin emits its own inline contract client. When you name `'fetch'` or `'axios'` and the matching client plugin is not registered, the build stops with a setup diagnostic.
 
-#### client.client
-
-Which bundled HTTP client to emit into `.kubb/client.ts`. `'axios'` needs `axios` at runtime. `'fetch'` uses the global `fetch`. Cannot be combined with `client.importPath`.
-
-|           |                    |
-| --------: | :----------------- |
-|     Type: | `'axios' \| 'fetch'` |
-| Required: | `false`            |
-|  Default: | `'axios'`          |
-
-#### client.importPath
-
-Path to a custom client module. The generated hooks import their HTTP runtime from here instead of the bundled client. Accepts relative paths and bare module specifiers. The value is used as written. Cannot be combined with `client.client`.
-
-|           |          |
-| --------: | :------- |
-|     Type: | `string` |
-| Required: | `false`  |
-
-#### client.clientType
-
-Shape of the generated client. Only `'function'` works with this plugin.
-
-|           |                                          |
-| --------: | :--------------------------------------- |
-|     Type: | `'function' \| 'class' \| 'staticClass'` |
-| Required: | `false`                                  |
-|  Default: | `'function'`                             |
-
-#### client.dataReturnType
-
-Shape of the value each hook returns. `'data'` returns only the response body. `'full'` returns the full response as a discriminated union keyed by HTTP status code.
-
-|           |                  |
-| --------: | :--------------- |
-|     Type: | `'data' \| 'full'` |
-| Required: | `false`          |
-|  Default: | `'data'`         |
-
-#### client.baseURL
-
-Base URL prepended to every request. When omitted, the adapter's server URL is used (typically `servers[0].url`).
-
-|           |          |
-| --------: | :------- |
-|     Type: | `string` |
-| Required: | `false`  |
+|           |                                  |
+| --------: | :------------------------------- |
+|     Type: | `'fetch' \| 'axios' \| 'legacy'` |
+| Required: | `false`                          |
 
 ### parser
 
@@ -375,6 +331,7 @@ Rewrites AST nodes before they are printed to source. Each [macro](/docs/5.x/con
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginFetch } from '@kubb/plugin-fetch'
 import { pluginSwr } from '@kubb/plugin-swr'
 
 export default defineConfig({
@@ -382,10 +339,11 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs(),
+    pluginFetch(),
     pluginSwr({
       output: { path: './hooks' },
       group: { type: 'tag', name: ({ group }) => `${group}Hooks` },
-      client: { dataReturnType: 'data' },
+      client: 'fetch',
       query: { methods: ['get'], importPath: 'swr' },
       mutation: { methods: ['post', 'put', 'delete'] },
     }),

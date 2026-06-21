@@ -25,7 +25,6 @@ export default defineConfig({
       operations: true,
       parser: false,
       exclude: [{ type: 'tag', pattern: 'store' }],
-      dataReturnType: 'full',
       client: 'axios',
     }),
   ],

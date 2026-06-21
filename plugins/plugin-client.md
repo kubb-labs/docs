@@ -44,6 +44,8 @@ resources:
 
 Every generated function takes a single grouped options object shaped as `{ body, path, query, headers }`, with camelCase property names. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
 
+Each function returns a `RequestResult<Responses, ThrowOnError>` of `{ data, error, request, response }`. `throwOnError` defaults to `true`, so a resolved call means the request succeeded and `data` is defined. Pass `throwOnError: false` to get the discriminated `{ data?, error? }` form and read `error` and `response.status` yourself.
+
 The plugin ships with `axios` and `fetch` runtimes. To bring your own client for auth, retries, or a custom base URL, point `importPath` at your module.
 
 **See also**
@@ -442,34 +444,6 @@ const user = await api.user.getUserByName({ path: { username: 'john' } })
 
 :::
 
-### dataReturnType
-
-Shape of the value returned from each generated client function.
-
-`'data'` (the default) returns only the response body (`response.data`). `'full'` returns a discriminated union keyed by HTTP status code. Each member is `{ status: N; data: StatusNType; statusText: string }`, so narrowing on `res.status` also narrows `res.data` to the matching response type.
-
-|           |                    |
-| --------: | :----------------- |
-|     Type: | `'data' \| 'full'` |
-| Required: | `false`            |
-|  Default: | `'data'`           |
-
-::: code-group
-
-```typescript ['data' (default)]
-const pet = await getPetById({ path: { petId: 1 } })
-//    ^? Pet
-```
-
-```typescript ['full']
-const res = await getPetById({ path: { petId: 1 } })
-if (res.status === 200) {
-  res.data // narrowed to the 200 response type
-}
-```
-
-:::
-
 ### parser
 
 Runtime validator applied to request and response data using schemas from `@kubb/plugin-zod`. Requires `@kubb/plugin-zod` in the plugins list when either direction is set to `'zod'`.
@@ -692,7 +666,7 @@ export default defineConfig({
 
 ### override
 
-Applies different plugin options to operations that match a pattern. Use it for the few endpoints that need special treatment. Each entry takes the same `type` and `pattern` as `include` and `exclude`, plus an `options` object that accepts any plugin-client option such as `client` or `dataReturnType`. Entries run top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
+Applies different plugin options to operations that match a pattern. Use it for the few endpoints that need special treatment. Each entry takes the same `type` and `pattern` as `include` and `exclude`, plus an `options` object that accepts any plugin-client option such as `client` or `parser`. Entries run top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
 
 |           |                   |
 | --------: | :---------------- |
@@ -709,7 +683,7 @@ export type Override = {
 
 ::: code-group
 
-```typescript [Return the full response only for the user tag]
+```typescript [Point the user tag at a different host]
 import { defineConfig } from 'kubb'
 import { pluginClient } from '@kubb/plugin-client'
 
@@ -723,7 +697,7 @@ export default defineConfig({
         {
           type: 'tag',
           pattern: 'user',
-          options: { dataReturnType: 'full' },
+          options: { baseURL: 'https://users.petstore.swagger.io/v2' },
         },
       ],
     }),

@@ -88,15 +88,37 @@ This applies at both the root output level and per-plugin output levels.
   options object `{ body, path, query, headers }` with camelCase parameter
   names, and the wire-name mapping is automatic.
 
-## 11. Preserve everything else
+## 11. Remove dataReturnType and migrate to the RequestResult contract
+- Remove `dataReturnType` from plugin-client, plugin-cypress, plugin-mcp, and
+  from the `client` sub-option of plugin-react-query, plugin-vue-query, and
+  plugin-swr. The option no longer exists.
+- The client plugins now return a `RequestResult` of
+  `{ data, error, request, response }`. A `dataReturnType: 'data'` call becomes
+  a destructure: `const { data } = await getPet(1)`. A `dataReturnType: 'full'`
+  call becomes `throwOnError: false`, then read `error` and `response.status`
+  off the result.
+- On plugin-cypress, drop `dataReturnType`. Every helper now yields the response
+  body, typed `Cypress.Chainable<T>`. The old `'full'` `Cypress.Response`
+  variant is gone.
+
+## 12. Replace the query-plugin client object with a string
+- On plugin-react-query, plugin-vue-query, and plugin-swr, `client` is now a
+  single string: `'fetch'`, `'axios'`, or `'legacy'`.
+- Use `'fetch'` or `'axios'` with the matching client plugin (`@kubb/plugin-fetch`,
+  `@kubb/plugin-axios`, or `@kubb/plugin-client`) registered. The hooks then call
+  the generated `<operation>` functions through the contract.
+- Use `'legacy'` to keep the previous inline data-returning client.
+- The object form (`client: { importPath, dataReturnType }`) is removed. There is
+  no `client.importPath` or `client.dataReturnType` on the query plugins anymore.
+
+## 13. Preserve everything else
 All other plugin options (output, group, include, exclude, override (the
-per-operation array), client, infinite, suspense, query, mutation,
-parser, dataReturnType,
-clientType, baseURL, urlType, operations, typed, inferred,
+per-operation array), infinite, suspense, query, mutation,
+parser, clientType, baseURL, urlType, operations, typed, inferred,
 coercion, guidType, mini, wrapOutput, dateParser, regexGenerator,
 seed, handlers, etc.) are unchanged.
 
-## 12. New v5 defaults (informational, do not edit the config)
+## 14. New v5 defaults (informational, do not edit the config)
 
 With `group: { type: 'tag' }`, v5 names each tag folder after the plain
 camelCased tag instead of `${tag}Controller`. Do not add `group.name`
@@ -104,7 +126,7 @@ during migration. Mention to the user that
 `group: { type: 'tag', name: ({ group }) => `${group}Controller` }`
 restores the v4 folder layout.
 
-## 13. Single-file output now needs output.mode
+## 15. Single-file output now needs output.mode
 v5 no longer infers a single file from an `output.path` that ends in `.ts`.
 For every plugin whose `output.path` points at a file (ends in `.ts`), add
 `mode: 'file'` to its `output` and keep the extension in the path:
@@ -113,7 +135,7 @@ The extension is required, do not drop it. Leave folder paths unchanged.
 They default to `mode: 'directory'`. `output.mode` only accepts
 `'directory'` or `'file'`.
 
-## 13. Remove the `generators` option
+## 16. Remove the `generators` option
 Remove `generators` from every plugin. Plugins no longer accept custom
 generators as an option. To add custom output, build your own plugin.
 
@@ -591,6 +613,121 @@ uploadFile({ path: { petId }, body }, { contentType: 'multipart/form-data' })
 
 Single-content-type operations are unchanged.
 
+## The `RequestResult` contract
+
+`@kubb/plugin-client` now returns the same `RequestResult` that `@kubb/plugin-fetch` and `@kubb/plugin-axios` already used. Each generated operation takes one grouped `options` argument and resolves to `RequestResult<Responses, ThrowOnError>`, a `{ data, error, request, response }` object. `throwOnError` defaults to `true`, so a resolved call means the request succeeded and `data` is defined. The `dataReturnType` option is gone from every plugin.
+
+### `dataReturnType: 'data'` becomes a destructure
+
+The old default returned the response body. Read `data` off the result instead. Fetch users now get the throw-on-error behavior that axios users already had.
+
+::: code-group
+
+```typescript [v4]
+const pet = await getPet(1)
+//    ^? Pet
+```
+
+```typescript [v5]
+const { data } = await getPet(1)
+//      ^? Pet
+```
+
+:::
+
+### `dataReturnType: 'full'` becomes `throwOnError: false`
+
+Pass `throwOnError: false` to switch a single call to the discriminated `{ data?, error? }` form, then branch on `error` and read `response.status`.
+
+::: code-group
+
+```typescript [v4]
+const res = await getPet(1)
+if (res.status === 200) {
+  res.data // the 200 response type
+}
+```
+
+```typescript [v5]
+const { data, error, response } = await getPet(1, { throwOnError: false })
+if (error) {
+  console.error(response.status)
+} else {
+  data // the success response type
+}
+```
+
+:::
+
+### Query plugins take a string `client`
+
+On `@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, and `@kubb/plugin-swr`, the `client` object is gone. `client` is now `'fetch'`, `'axios'`, or `'legacy'`. The `'fetch'` and `'axios'` values route the hooks through the `<operation>` functions from the matching client plugin, so register `@kubb/plugin-fetch` or `@kubb/plugin-axios` (or `@kubb/plugin-client`) alongside the query plugin. `'legacy'` keeps the previous inline client that returns the response body. Leave `client` unset and a single registered contract client plugin is detected automatically.
+
+::: code-group
+
+```typescript [v4 kubb.config.ts]
+import { defineConfig } from '@kubb/core'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginReactQuery } from '@kubb/plugin-react-query'
+
+export default defineConfig({
+  input: { path: './petstore.yaml' },
+  output: { path: './src/gen' },
+  plugins: [
+    pluginTs(),
+    pluginReactQuery({
+      client: { dataReturnType: 'full' },
+    }),
+  ],
+})
+```
+
+```typescript [v5 kubb.config.ts]
+import { defineConfig } from 'kubb'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginFetch } from '@kubb/plugin-fetch'
+import { pluginReactQuery } from '@kubb/plugin-react-query'
+
+export default defineConfig({
+  input: { path: './petstore.yaml' },
+  output: { path: './src/gen' },
+  plugins: [
+    pluginTs(),
+    pluginFetch(),
+    pluginReactQuery({
+      client: 'fetch',
+    }),
+  ],
+})
+```
+
+:::
+
+### Cypress helpers yield the response body
+
+`@kubb/plugin-cypress` drops `dataReturnType`. Every helper now yields the response body, typed `Cypress.Chainable<T>`. The `'full'` variant that returned the whole `Cypress.Response` is gone, so assert against the body in `.then()`.
+
+::: code-group
+
+```typescript [v4]
+getPetById({ path: { petId: 1 } }).then((response) => {
+  expect(response.status).to.eq(200)
+  expect(response.body.id).to.eq(1)
+})
+```
+
+```typescript [v5]
+getPetById({ path: { petId: 1 } }).then((pet) => {
+  expect(pet.id).to.eq(1)
+})
+```
+
+:::
+
+### MCP handlers read `res.data`
+
+`@kubb/plugin-mcp` drops `dataReturnType` too. Each generated handler calls the contract client and reads `res.data` before returning the tool result, so no config change is needed beyond removing the option.
+
 ## Per-extension changes
 
 Each extension documents its own configuration changes on its own page. Open the one you use.
@@ -715,7 +852,7 @@ export default defineConfig({
     }),
     pluginReactQuery({
       output: { path: 'hooks' },
-      client: { importPath: './src/client.ts' },
+      client: 'axios',
     }),
     pluginFaker({
       output: { path: 'mocks' },

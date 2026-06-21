@@ -253,12 +253,12 @@ Function that builds the folder name from the group key. The default depends on 
 
 ### client
 
-HTTP client each handler uses to call the underlying API. It mirrors a subset of `pluginClient` options.
+HTTP client each handler uses to call the underlying API. It mirrors a subset of `pluginClient` options. Each handler reads `res.data` off the [`RequestResult`](/plugins/plugin-client) the client returns.
 
-|           |                                                                              |
-| --------: | :--------------------------------------------------------------------------- |
-|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL? }` |
-| Required: | `false`                                                                      |
+|           |                                                                |
+| --------: | :------------------------------------------------------------- |
+|     Type: | `ClientImportPath & { clientType?, baseURL? }` |
+| Required: | `false`                                                        |
 
 #### client.client
 
@@ -291,19 +291,6 @@ Shape of the underlying client the handlers call into. Mirrors `pluginClient`'s 
 |     Type: | `'function' \| 'class' \| 'staticClass'` |
 | Required: | `false`                                  |
 |  Default: | `'function'`                             |
-
-#### client.dataReturnType
-
-Shape of the value returned from each generated client function.
-
-- `'data'` (default) returns only the response body (`response.data`).
-- `'full'` returns a discriminated union keyed by HTTP status code. Each member is `{ status: N; data: StatusNType; statusText: string }`. Narrowing on `res.status` also narrows `res.data` to the matching response type.
-
-|           |                    |
-| --------: | :----------------- |
-|     Type: | `'data' \| 'full'` |
-| Required: | `false`            |
-|  Default: | `'data'`           |
 
 #### client.baseURL
 

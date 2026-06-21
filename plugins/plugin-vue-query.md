@@ -248,40 +248,25 @@ Function that turns a group key (the operation's first tag) into a folder name.
 
 ### client
 
-HTTP client used inside every generated composable. Each composable calls this client to run the request. It mirrors a subset of `pluginClient` options. Set these when the Vue composables need different client behavior than the rest of your app.
+Picks which client runtime the generated composables call. Each composable returns a [`RequestResult`](/plugins/plugin-client) of `{ data, error, request, response }`, so the query reads `data` on success and surfaces `error` on failure.
 
-|           |                                                                              |
-| --------: | :--------------------------------------------------------------------------- |
-|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL? }` |
-| Required: | `false`                                                                      |
+- `'fetch'` routes every composable through the `<operation>` functions from `@kubb/plugin-fetch` (or `@kubb/plugin-client` configured with the fetch runtime).
+- `'axios'` does the same against `@kubb/plugin-axios`.
+- `'legacy'` keeps the v4 inline client that returns the response body directly. Reach for it when you are not ready to adopt the contract.
 
-#### client.client
+Leave `client` unset to auto-detect a single registered contract client plugin. With none registered, the plugin emits its own inline contract client. When you name `'fetch'` or `'axios'` and the matching client plugin is not registered, the build stops with a setup diagnostic.
 
-HTTP client that the generated composables call. `'axios'` imports from `@kubb/plugin-client/clients/axios` and needs `axios` at runtime. `'fetch'` imports from `@kubb/plugin-client/clients/fetch` and uses the global `fetch`. Set `client.importPath` to point at a custom module instead, which ignores `client.client`.
-
-|           |                      |
-| --------: | :------------------- |
-|     Type: | `'axios' \| 'fetch'` |
-| Required: | `false`              |
-|  Default: | `'axios'`            |
-
-#### client.importPath
-
-Path or module specifier of a custom client module. Generated code imports its HTTP runtime from here instead of `@kubb/plugin-client/clients/{client}`. Use it to inject auth headers, add interceptors, set the base URL at runtime, or wrap another HTTP library. Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work.
-
-|           |          |
-| --------: | :------- |
-|     Type: | `string` |
-| Required: | `false`  |
-
-> [!IMPORTANT]
-> Generated composables also import a `Client` type alias. Your module must export `Client`, `RequestConfig`, and `ResponseErrorConfig`, or TypeScript fails the import. See the [custom client guide](https://kubb.dev/plugins/plugin-client#importpath).
+|           |                                  |
+| --------: | :------------------------------- |
+|     Type: | `'fetch' \| 'axios' \| 'legacy'` |
+| Required: | `false`                          |
 
 ::: code-group
 
-```typescript [Wire up a custom client]
+```typescript [Route composables through the fetch client]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginFetch } from '@kubb/plugin-fetch'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
@@ -289,52 +274,15 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs(),
+    pluginFetch(),
     pluginVueQuery({
-      client: { importPath: './src/client.ts' },
+      client: 'fetch',
     }),
   ],
 })
 ```
 
 :::
-
-#### client.dataReturnType
-
-Shape of the value returned from each generated client function.
-
-- `'data'` returns only the response body (`response.data`).
-- `'full'` returns a discriminated union keyed by HTTP status code. Narrowing on `res.status` also narrows `res.data` to the matching response type.
-
-|           |                    |
-| --------: | :----------------- |
-|     Type: | `'data' \| 'full'` |
-| Required: | `false`            |
-|  Default: | `'data'`           |
-
-#### client.baseURL
-
-Base URL prepended to every request URL in the generated client. When omitted, the URL comes from the spec's `servers[0].url`. Set it to point the client at a different environment than the spec.
-
-|           |          |
-| --------: | :------- |
-|     Type: | `string` |
-| Required: | `false`  |
-
-#### client.clientType
-
-Style of the HTTP client this plugin imports from `@kubb/plugin-client`.
-
-- `'function'` imports the function client (`getPetById(...)`). Required for this plugin.
-- `'class'` also generates a wrapper class, but it only works inside `@kubb/plugin-client`.
-
-|           |                         |
-| --------: | :---------------------- |
-|     Type: | `'function' \| 'class'` |
-| Required: | `false`                 |
-|  Default: | `'function'`            |
-
-> [!WARNING]
-> Vue Query works only with `clientType: 'function'`. If you set `clientType: 'class'`, the plugin falls back to generating its own inline function client instead of importing from `@kubb/plugin-client`.
 
 ### parser
 
@@ -740,7 +688,7 @@ export type Override = {
 
 ::: code-group
 
-```typescript [Return full responses for the user tag only]
+```typescript [Skip query composables for the user tag]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
@@ -751,12 +699,11 @@ export default defineConfig({
   plugins: [
     pluginTs(),
     pluginVueQuery({
-      client: { dataReturnType: 'data' },
       override: [
         {
           type: 'tag',
           pattern: 'user',
-          options: { client: { dataReturnType: 'full' } },
+          options: { query: false },
         },
       ],
     }),
@@ -797,6 +744,7 @@ Set `parser` to `'zod'` and the plugin also depends on [`@kubb/plugin-zod`](/plu
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginFetch } from '@kubb/plugin-fetch'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
@@ -804,13 +752,14 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs(),
+    pluginFetch(),
     pluginVueQuery({
       output: { path: './hooks' },
       group: {
         type: 'tag',
         name: ({ group }) => `${group}Hooks`,
       },
-      client: { dataReturnType: 'full' },
+      client: 'fetch',
       mutation: { methods: ['post', 'put', 'delete'] },
       infinite: {
         queryParam: 'next_page',
