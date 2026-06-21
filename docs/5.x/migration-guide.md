@@ -114,7 +114,7 @@ This applies at both the root output level and per-plugin output levels.
 ## 13. Preserve everything else
 All other plugin options (output, group, include, exclude, override (the
 per-operation array), infinite, suspense, query, mutation,
-parser, clientType, baseURL, urlType, operations, typed, inferred,
+parser, clientType, baseURL, operations, typed, inferred,
 coercion, guidType, mini, wrapOutput, dateParser, regexGenerator,
 seed, handlers, etc.) are unchanged.
 

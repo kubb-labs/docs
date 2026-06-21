@@ -76,23 +76,9 @@ export async function getPet({ path, query }: Omit<GetPetRequestConfig, 'url'>, 
 
 All other options are unchanged.
 
-### Exported URL helpers take the grouped `path`
+### `urlType` and the URL helpers are removed
 
-With `urlType: 'export'`, the `get<Operation>Url` helper moves from a positional path parameter to the operation's `path` group, typed from its `RequestConfig`. Pass `path` instead of the bare value.
-
-::: code-group
-
-```typescript [Call site]
-getGetPetByIdUrl('pet_1') // [!code --]
-getGetPetByIdUrl({ petId: 'pet_1' }) // [!code ++]
-```
-
-```typescript [Generated output]
-export function getGetPetByIdUrl(petId: GetPetByIdPathParams['petId']) {} // [!code --]
-export function getGetPetByIdUrl(path: GetPetByIdRequestConfig['path']) {} // [!code ++]
-```
-
-:::
+The `urlType` option is gone, so the client no longer exports `get<Operation>Url` helpers. If you called one to build a request URL, read the path off the operation's `RequestConfig` and assemble it yourself, or call the generated function, which builds the URL internally.
 
 ## Runtime `RequestConfig`: `params` → `query`, `data` → `body`
 

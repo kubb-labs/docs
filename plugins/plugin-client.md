@@ -498,28 +498,6 @@ export default defineConfig({
 
 :::
 
-### urlType
-
-Controls whether the URL builder helpers (`get<Operation>Url`) are exported alongside each client function.
-
-`'export'` exposes them through the barrel, so you can call the API through a different transport such as `navigator.sendBeacon` or a server action. `false` (the default) keeps them private to the generated module.
-
-|           |                     |
-| --------: | :------------------ |
-|     Type: | `'export' \| false` |
-| Required: | `false`             |
-|  Default: | `false`             |
-
-The helper takes the operation's `path` group, typed from its `RequestConfig`, and reads each path param off it.
-
-```typescript [Generated URL helper]
-export function getGetPetByIdUrl(path: GetPetByIdRequestConfig['path']) {
-  const res = { method: 'GET', url: `/pet/${path.petId}` as const }
-
-  return res
-}
-```
-
 ### baseURL
 
 Base URL prepended to every request URL in the generated client. Use it to point at a different environment (staging, production) than the spec. When omitted, the URL comes from the spec's `servers[0].url` (or whichever index the adapter reads).
