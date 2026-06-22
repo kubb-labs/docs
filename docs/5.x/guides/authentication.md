@@ -96,9 +96,20 @@ const { data } = await getPetById({ path: { petId: 1 }, client: tenant })
 
 Pass `auth` on a single call to override the client for that one request, handy for a one-off token refresh. An explicit `headers` value you set on a call always wins over the resolved token.
 
-## Beyond the scheme mapping
+## Use an interceptor instead
 
-The mapping covers what an OpenAPI security scheme can describe. To sign a request or refresh a token after a `401`, add a request interceptor on the client. The interceptor sees the final request before it goes out, so it can set any header the mapping does not reach.
+The scheme mapping covers what an OpenAPI security scheme can describe. For anything it does not, a request interceptor is the alternative. It runs on every call and sees the final request before it is sent, so it can set or rewrite any header without touching the spec.
+
+```typescript
+import { client } from './gen/clients/.kubb/client'
+
+client.interceptors.request.use((request) => {
+  request.headers.Authorization = `Bearer ${getToken()}`
+  return request
+})
+```
+
+Reach for this to sign a request or attach a credential the spec does not declare. To refresh a token after a `401`, read the new token from a response or error interceptor and let the request interceptor pick it up on the next call. For a standard bearer, basic, or apiKey scheme, the `auth` resolver stays the simpler path.
 
 ## See also
 
