@@ -27,9 +27,10 @@ We keep this comparison accurate and fair. If you use one of these tools and thi
 | [HTTP client (Axios, Fetch)](/plugins/plugin-axios)        |        ✅         |  ✅   | ✅                | 🔶<sup>2</sup>  |
 | [React Query hooks](/plugins/plugin-react-query)           |        ✅         |  ✅   | ✅                |       🛑        |
 | [Vue Query composables](/plugins/plugin-vue-query)         |        ✅         |  ✅   | ✅                |       🛑        |
+| [SWR hooks](/plugins/plugin-swr)                           |        ✅         |  ✅   | 🛑<sup>3</sup>    | 🟡<sup>4</sup>  |
 | [Zod validation schemas](/plugins/plugin-zod)              |        ✅         |  ✅   | ✅<sup>1</sup>    |       🛑        |
 | [MSW request handlers](/plugins/plugin-msw)                |        ✅         |  ✅   | 🛑                |       🛑        |
-| [Faker.js mock data](/plugins/plugin-faker)                |        ✅         |  🛑   | 🛑                |       🛑        |
+| [Faker.js mock data](/plugins/plugin-faker)                |        ✅         | 🔶<sup>5</sup> | 🛑           |       🛑        |
 | [Cypress E2E tests](/plugins/plugin-cypress)               |        ✅         |  🛑   | 🛑                |       🛑        |
 | [MCP server](/plugins/plugin-mcp)                          |        ✅         |  🛑   | 🛑                |       🛑        |
 | [Redoc API documentation](/plugins/plugin-redoc)           |        ✅         |  🛑   | 🛑                |       🛑        |
@@ -39,6 +40,9 @@ We keep this comparison accurate and fair. If you use one of these tools and thi
 
 1. HeyAPI also generates Valibot schemas in addition to Zod.
 2. openapi-typescript generates types only. Its companion `openapi-fetch` runtime provides the typed client, so a client is not generated per operation. Note that `openapi-fetch` is in [feature-freeze and is largely considered deprecated](https://github.com/openapi-ts/openapi-typescript/discussions/2559).
+3. HeyAPI lists SWR as a [roadmap proposal](https://github.com/hey-api/openapi-ts/issues/1479) that has not started yet.
+4. openapi-typescript relies on the community [`swr-openapi`](https://github.com/htunnicliff/swr-openapi) package, maintained outside the core project.
+5. orval does not emit a standalone Faker output, but it populates its MSW request handlers with `faker`-generated mock data.
 
 ## What sets Kubb apart
 
