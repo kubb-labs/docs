@@ -104,7 +104,10 @@ This applies at both the root output level and per-plugin output levels.
 - Also remove `clientType`, `urlType`, and the custom-client `importPath`: the
   query and mcp plugins now select a registered client plugin through
   `client: 'axios' | 'fetch'`, and the standalone client lives in
-  `@kubb/plugin-axios` / `@kubb/plugin-fetch`.
+  `@kubb/plugin-axios` / `@kubb/plugin-fetch`. The `get<Operation>Url` helpers
+  that `urlType: 'export'` produced are gone; [rebuild them with a custom
+  plugin](/docs/5.x/migration-guide/plugin-client#rebuild-the-url-helpers-with-a-custom-plugin)
+  if you need them.
 
 ## 12. Preserve everything else
 All other plugin options (output, group, include, exclude, override (the
