@@ -1,20 +1,20 @@
 ---
 layout: doc
 
-title: Authentication - resolve auth from your OpenAPI spec
-description: Kubb reads the security schemes from your OpenAPI spec and attaches them to every generated call. You supply the token through a single auth resolver on the client config, and the runtime places it as a bearer, basic, or apiKey credential.
+title: Authentication in Kubb - resolve auth from your OpenAPI spec
+description: Add authentication to the client Kubb generates. Resolve bearer, basic, and apiKey credentials from your OpenAPI security schemes with one auth callback.
 outline: deep
 ---
 
 # Authentication
 
-The client plugins read the security schemes from your OpenAPI spec and attach them to every generated call. You supply the token once through an `auth` resolver on the client config, and the runtime places it on the request for you. There is no per-endpoint header wiring and no extra plugin option to set.
+Kubb reads the security schemes from your spec and attaches them to every generated call. You give the client one `auth` resolver, and the runtime adds the token to each request that needs it. Configure nothing and the calls stay unauthenticated, so generated code does nothing until you opt in.
 
-This applies to every slim client runtime: [`@kubb/plugin-fetch`](/plugins/plugin-fetch) and [`@kubb/plugin-axios`](/plugins/plugin-axios). They share the same `auth` contract, so the setup below is identical whichever one you generate.
+The setup is the same for [`@kubb/plugin-fetch`](/plugins/plugin-fetch) and [`@kubb/plugin-axios`](/plugins/plugin-axios).
 
-## How it works
+## Set the auth resolver
 
-Each operation in the spec declares which security schemes it needs, either on the operation itself or through the document's global `security`. Kubb resolves those against `components.securitySchemes` and emits a `security` array on the generated call:
+Every generated function already carries the operation's security, derived from the spec:
 
 ```typescript
 export function addPet<ThrowOnError extends boolean = true>(
@@ -31,26 +31,21 @@ export function addPet<ThrowOnError extends boolean = true>(
 }
 ```
 
-Before the request goes out, the runtime walks that `security` array in order, calls your `auth` resolver for each entry until one returns a token, and places the token on the request. When you do not configure `auth`, the metadata is ignored and nothing changes, so generated code stays inert until you opt in.
-
-## Configure the resolver
-
-Set `auth` on the client config with `setConfig`. The resolver is either a static token or a function that returns one, and the function can be async:
+Give the client an `auth` resolver and every guarded call picks up the token:
 
 ```typescript
 import { client } from './gen/clients/.kubb/client'
 
 client.setConfig({
-  baseURL: 'https://petstore.swagger.io/v2',
   auth: () => localStorage.getItem('token') ?? undefined,
 })
 ```
 
-Return `undefined` to skip a scheme. The runtime then moves on to the next entry in the `security` array, so an operation that accepts more than one scheme falls through to the first credential you can provide.
+The resolver is a token string or a function that returns one, and the function can be async. Return `undefined` to skip a scheme. When an operation accepts more than one scheme, the runtime tries each in turn until one hands back a token.
 
-## Scheme mapping
+## How tokens map to schemes
 
-The resolver receives the resolved scheme as an `Auth` object, so one resolver can serve every operation and decide what to return per scheme:
+The resolver receives the resolved scheme, so one function can serve every operation:
 
 ```typescript
 type Auth = {
@@ -61,58 +56,49 @@ type Auth = {
 }
 ```
 
-The runtime places the returned token based on the scheme:
+Where the token lands depends on the scheme:
 
-| Scheme in the spec | `Auth` object                              | Where the token goes              |
-| ------------------ | ------------------------------------------ | --------------------------------- |
-| `http` bearer      | `{ type: 'http', scheme: 'bearer' }`       | `Authorization: Bearer <token>`   |
-| `http` basic       | `{ type: 'http', scheme: 'basic' }`        | `Authorization: Basic <token>`    |
-| `apiKey` header    | `{ type: 'apiKey', name, in: 'header' }`   | request header named `name`       |
-| `apiKey` query     | `{ type: 'apiKey', name, in: 'query' }`    | query parameter named `name`      |
-| `apiKey` cookie    | `{ type: 'apiKey', name, in: 'cookie' }`   | `Cookie` header                   |
-| `oauth2`           | `{ type: 'oauth2' }`                       | `Authorization: Bearer <token>`   |
-| `openIdConnect`    | `{ type: 'openIdConnect' }`                | `Authorization: Bearer <token>`   |
+| Scheme in the spec | `Auth` object                            | Where the token goes            |
+| ------------------ | ---------------------------------------- | ------------------------------- |
+| `http` bearer      | `{ type: 'http', scheme: 'bearer' }`     | `Authorization: Bearer <token>` |
+| `http` basic       | `{ type: 'http', scheme: 'basic' }`      | `Authorization: Basic <token>`  |
+| `apiKey` header    | `{ type: 'apiKey', name, in: 'header' }` | request header named `name`     |
+| `apiKey` query     | `{ type: 'apiKey', name, in: 'query' }`  | query parameter named `name`    |
+| `apiKey` cookie    | `{ type: 'apiKey', name, in: 'cookie' }` | `Cookie` header                 |
+| `oauth2`           | `{ type: 'oauth2' }`                     | `Authorization: Bearer <token>` |
+| `openIdConnect`    | `{ type: 'openIdConnect' }`              | `Authorization: Bearer <token>` |
 
 > [!NOTE]
 > For basic auth, return the raw `username:password` string. The runtime base64-encodes it and writes the `Basic` prefix, so you never build the header yourself.
 
-A spec that mixes schemes resolves through the same function. Branch on the `Auth` object to return the right credential:
+When a spec mixes schemes, read the `Auth` object and return the matching credential:
 
 ```typescript
 client.setConfig({
-  auth: (auth) => {
-    if (auth.type === 'apiKey') return apiKey
-    return accessToken
-  },
+  auth: (auth) => (auth.type === 'apiKey' ? apiKey : accessToken),
 })
 ```
 
-## Per-instance and per-call
+## A client per environment
 
-`createClient` builds an isolated instance with its own `auth`, which suits multi-tenant apps where each tenant carries a different token:
+`createClient` builds an isolated client with its own `auth`, which fits a multi-tenant app where each tenant carries a different token:
 
 ```typescript
 import { createClient } from './gen/clients/.kubb/client'
 
 const tenant = createClient({
-  baseURL: tenant.apiUrl,
-  auth: () => tenant.token,
+  baseURL: 'https://tenant.example.com',
+  auth: () => tenantToken,
 })
 
 const { data } = await getPetById({ path: { petId: 1 }, client: tenant })
 ```
 
-A per-call `auth` overrides the client config for a single request, which is useful for a one-off token refresh:
-
-```typescript
-const { data } = await addPet({ body: { name: 'Odie' }, auth: () => freshToken })
-```
-
-Explicit `headers` you pass on a call still win over the resolved value, so you can always set the header yourself when you need to.
+Pass `auth` on a single call to override the client for that one request, handy for a one-off token refresh. An explicit `headers` value you set on a call always wins over the resolved token.
 
 ## Beyond the scheme mapping
 
-The mapping covers the schemes OpenAPI can express. For anything outside it, such as signing a request or refreshing a token on a `401`, use a request interceptor on the client. The interceptor sees the final request before it is sent, so it can add or rewrite any header the scheme mapping does not reach.
+The mapping covers what an OpenAPI security scheme can describe. To sign a request or refresh a token after a `401`, add a request interceptor on the client. The interceptor sees the final request before it goes out, so it can set any header the mapping does not reach.
 
 ## See also
 
