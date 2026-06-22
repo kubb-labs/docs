@@ -31,13 +31,13 @@ Generates types and [TanStack Query](https://tanstack.com/query) hooks for React
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginAxios } from '@kubb/plugin-axios'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen', clean: true },
-  plugins: [pluginTs(), pluginClient(), pluginReactQuery()],
+  plugins: [pluginTs(), pluginAxios(), pluginReactQuery()],
 })
 ```
 
@@ -92,24 +92,19 @@ export default defineConfig({
 })
 ```
 
-## Custom HTTP client
+## Pick the HTTP client
 
-Point `importPath` at your own client instead of the built-in [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) or [Axios](https://axios-http.com) presets. Setting `importPath` overrides the bundled `client` preset.
+Choose [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) or [Axios](https://axios-http.com) by registering the matching plugin. Swap `pluginFetch` for `pluginAxios` to use the global `fetch` instead.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen', clean: true },
-  plugins: [
-    pluginTs(),
-    pluginClient({
-      importPath: './my-client.ts',
-    }),
-  ],
+  plugins: [pluginTs(), pluginAxios()],
 })
 ```
 
@@ -204,7 +199,7 @@ Generate a different client library per package or team from one config file.
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginAxios } from '@kubb/plugin-axios'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
 export default defineConfig([
@@ -212,13 +207,13 @@ export default defineConfig([
     name: 'public-api',
     input: { path: './specs/public.yaml' },
     output: { path: './packages/public-api/src/gen' },
-    plugins: [pluginTs(), pluginClient(), pluginReactQuery()],
+    plugins: [pluginTs(), pluginAxios(), pluginReactQuery()],
   },
   {
     name: 'admin-api',
     input: { path: './specs/admin.yaml' },
     output: { path: './packages/admin-api/src/gen' },
-    plugins: [pluginTs(), pluginClient()],
+    plugins: [pluginTs(), pluginAxios()],
   },
 ])
 ```
@@ -230,7 +225,7 @@ Pick input and output from `NODE_ENV` so one config covers development, staging,
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginAxios } from '@kubb/plugin-axios'
 
 const env = process.env['NODE_ENV'] ?? 'development'
 
@@ -251,7 +246,7 @@ const envConfig = {
 
 export default defineConfig({
   ...envConfig[env as keyof typeof envConfig],
-  plugins: [pluginTs(), pluginClient()],
+  plugins: [pluginTs(), pluginAxios()],
 })
 ```
 

@@ -31,7 +31,7 @@ tags:
   - openapi
 dependencies:
   - plugin-ts
-  - plugin-client
+  - plugin-axios
 resources:
   documentation: https://kubb.dev/plugins/plugin-react-query
   repository: https://github.com/kubb-labs/plugins
@@ -44,7 +44,7 @@ resources:
 
 `@kubb/plugin-react-query` turns each OpenAPI operation into a [TanStack Query](https://tanstack.com/query) hook for React. Read operations become `useFooQuery`, `useFooSuspenseQuery`, or `useFooInfiniteQuery`. Write operations become `useFooMutation`. Every hook is typed. Query keys, input variables, response data, and error shape all come from the spec.
 
-It needs `@kubb/plugin-ts` for the types and `@kubb/plugin-client` for the HTTP layer.
+It needs `@kubb/plugin-ts` for the types and a client plugin (`@kubb/plugin-axios` or `@kubb/plugin-fetch`) for the HTTP layer.
 
 Each hook takes its parameters as a single grouped options object shaped as `{ body, path, query, headers }`, with camelCase property names. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
 
@@ -208,78 +208,12 @@ Function that builds the folder name from a group key. For `tag` groups the defa
 
 ### client
 
-HTTP client used inside every generated hook. It mirrors a subset of `pluginClient` options. Set these when the hooks need different client behavior than the rest of your app, such as a different base URL or full response objects.
+Selects which registered client plugin the generated hooks call. Set `'axios'` to use `@kubb/plugin-axios` or `'fetch'` to use `@kubb/plugin-fetch`. When omitted, the plugin auto-detects whichever client plugin is registered in the same config. Register `@kubb/plugin-axios` or `@kubb/plugin-fetch`, since the generated code calls its functions.
 
-|           |                                                                                |
-| --------: | :----------------------------------------------------------------------------- |
-|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL? }` |
-| Required: | `false`                                                                        |
-
-#### client.importPath
-
-Path or module specifier of a custom client module. Generated code imports its HTTP runtime from here instead of `@kubb/plugin-client/clients/{client}`. Use it to inject auth headers, add interceptors, change the base URL at runtime, or wrap a different HTTP library (ky, ofetch). Relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) both work. See the [custom client guide](https://kubb.dev/plugins/plugin-client#importpath) for the module shape.
-
-|           |          |
-| --------: | :------- |
-|     Type: | `string` |
-| Required: | `false`  |
-
-> [!IMPORTANT]
-> Generated hooks also import a `Client` type alias. Your module must export `Client`, `RequestConfig`, and `ResponseErrorConfig`, or TypeScript fails the import.
-
-#### client.dataReturnType
-
-Shape of the value returned from each generated client function.
-
-- `'data'` returns only the response body (`response.data`).
-- `'full'` returns a discriminated union keyed by HTTP status code. Each member is `{ status: N; data: StatusNType; statusText: string }`. Narrowing on `res.status` narrows `res.data` to the matching response type.
-
-|           |                    |
-| --------: | :----------------- |
-|     Type: | `'data' \| 'full'` |
-| Required: | `false`            |
-|  Default: | `'data'`           |
-
-::: code-group
-
-```typescript ['data' (default)]
-const pet = await getPetById({ path: { petId: 1 } })
-//    ^? Pet
-```
-
-```typescript ['full']
-const res = await addPet({ body: petData })
-if (res.status === 405) {
-  res.data // narrowed to AddPetStatus405
-}
-```
-
-:::
-
-#### client.baseURL
-
-Base URL prepended to every request in the generated client. Use it to point at a different environment (staging, production) than the spec. When omitted, the URL comes from the spec's `servers[0].url`.
-
-|           |          |
-| --------: | :------- |
-|     Type: | `string` |
-| Required: | `false`  |
-
-#### client.clientType
-
-Style of the HTTP client this plugin imports from `@kubb/plugin-client`.
-
-- `'function'` imports the function client (`getPetById(...)`). Required for query plugins.
-- `'class'` generates a wrapper class on top, usable only inside `@kubb/plugin-client`.
-
-|           |                         |
-| --------: | :---------------------- |
-|     Type: | `'function' \| 'class'` |
-| Required: | `false`                 |
-|  Default: | `'function'`            |
-
-> [!WARNING]
-> Query plugins (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, `@kubb/plugin-svelte-query`, `@kubb/plugin-solid-query`) work only with `clientType: 'function'`. Set `clientType: 'class'` here and the plugin falls back to its own inline function-based client instead of importing from `@kubb/plugin-client`.
+|           |                      |
+| --------: | :------------------- |
+|     Type: | `'axios' \| 'fetch'` |
+| Required: | `false`              |
 
 ### parser
 
@@ -881,7 +815,7 @@ export default defineConfig({
 This plugin needs these plugins in your config:
 
 - [`@kubb/plugin-ts`](/plugins/plugin-ts)
-- [`@kubb/plugin-client`](/plugins/plugin-client)
+- A client plugin: [`@kubb/plugin-axios`](/plugins/plugin-axios) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch)
 
 ## Example
 

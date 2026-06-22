@@ -128,12 +128,12 @@ Plugins walk the [AST](/docs/5.x/concepts/ast) and emit `FileNode`s. They run in
 // @noErrors
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
-  plugins: [pluginTs(), pluginClient({ importPath: '@/lib/axios' })],
+  plugins: [pluginTs(), pluginAxios()],
 })
 ```
 
@@ -142,7 +142,8 @@ export default defineConfig({
 | Package                                         | Generates                                                                                                                               |
 | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | [`@kubb/plugin-ts`](/plugins/plugin-ts)         | TypeScript types and interfaces                                                                                                         |
-| [`@kubb/plugin-client`](/plugins/plugin-client) | HTTP client functions ([Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API), [Axios](https://axios-http.com), or custom) |
+| [`@kubb/plugin-axios`](/plugins/plugin-axios)   | [Axios](https://axios-http.com) HTTP client functions                                                                                   |
+| [`@kubb/plugin-fetch`](/plugins/plugin-fetch)   | [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) HTTP client functions                                              |
 
 ### Data-fetching hooks
 

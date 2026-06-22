@@ -42,32 +42,32 @@ export default defineConfig({
 ```typescript twoslash [Types + HTTP client]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen', clean: true },
-  plugins: [pluginTs({ output: { path: 'models' } }), pluginClient({ output: { path: 'clients' } })],
+  plugins: [pluginTs({ output: { path: 'models' } }), pluginAxios({ output: { path: 'clients' } })],
 })
 ```
 
 ```typescript twoslash [+ React Query hooks]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginAxios } from '@kubb/plugin-axios'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen', clean: true },
-  plugins: [pluginTs({ output: { path: 'models' } }), pluginClient({ output: { path: 'clients' } }), pluginReactQuery({ output: { path: 'hooks' } })],
+  plugins: [pluginTs({ output: { path: 'models' } }), pluginAxios({ output: { path: 'clients' } }), pluginReactQuery({ output: { path: 'hooks' } })],
 })
 ```
 
 ```typescript twoslash [+ Zod + MSW]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginAxios } from '@kubb/plugin-axios'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 import { pluginZod } from '@kubb/plugin-zod'
 import { pluginMsw } from '@kubb/plugin-msw'
@@ -77,7 +77,7 @@ export default defineConfig({
   output: { path: './src/gen', clean: true },
   plugins: [
     pluginTs({ output: { path: 'models' } }),
-    pluginClient({ output: { path: 'clients' } }),
+    pluginAxios({ output: { path: 'clients' } }),
     pluginReactQuery({ output: { path: 'hooks' } }),
     pluginZod({ output: { path: 'schemas' } }),
     pluginMsw({ output: { path: 'mocks' } }),
@@ -90,13 +90,13 @@ export default defineConfig({
 | Plugin                                            | Package                    | Generates                                          |
 | ------------------------------------------------- | -------------------------- | -------------------------------------------------- |
 | [`pluginTs`](/plugins/plugin-ts)                  | `@kubb/plugin-ts`          | TypeScript types and interfaces                    |
-| [`pluginClient`](/plugins/plugin-client)          | `@kubb/plugin-client`      | Fetch-based HTTP client functions                  |
+| [`pluginAxios`](/plugins/plugin-axios)            | `@kubb/plugin-axios`       | Axios-based HTTP client functions                  |
 | [`pluginReactQuery`](/plugins/plugin-react-query) | `@kubb/plugin-react-query` | [TanStack Query](https://tanstack.com/query) hooks |
 | [`pluginZod`](/plugins/plugin-zod)                | `@kubb/plugin-zod`         | [Zod](https://zod.dev) validation schemas          |
 | [`pluginMsw`](/plugins/plugin-msw)                | `@kubb/plugin-msw`         | [MSW](https://mswjs.io) request handlers           |
 
 > [!NOTE]
-> `pluginClient`, `pluginReactQuery`, and `pluginMsw` each require `pluginTs` in the same config.
+> `pluginAxios`, `pluginReactQuery`, and `pluginMsw` each require `pluginTs` in the same config.
 
 See the [plugins catalogue](/plugins) for the full list.
 
@@ -107,7 +107,7 @@ command: kubb generate
 output:
   - ◆  Generation started
   - ◇  @kubb/plugin-ts          completed in 98ms
-  - ◇  @kubb/plugin-client      completed in 77ms
+  - ◇  @kubb/plugin-axios       completed in 77ms
   - ◇  @kubb/plugin-react-query completed in 201ms
   - ◇  @kubb/plugin-zod         completed in 134ms
   - ◇  @kubb/plugin-msw         completed in 63ms

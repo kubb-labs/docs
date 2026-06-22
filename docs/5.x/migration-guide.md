@@ -73,30 +73,47 @@ Replace every `barrelType` string with the `barrel` object:
 This applies at both the root output level and per-plugin output levels.
 
 ## 9. Remove the `bundle` and `output.override` options
-- Remove `bundle` from plugin-client and from the `client` sub-option of
-  plugin-react-query, plugin-vue-query, plugin-swr, and plugin-mcp. The client
-  is always bundled into `.kubb/client.ts` now. To import the client from an
-  external module instead, set `importPath`.
+- Remove `bundle` from the client plugin (`plugin-axios` or `plugin-fetch`) and
+  from the `client` sub-option of plugin-react-query, plugin-vue-query,
+  plugin-swr, and plugin-mcp. The client is always bundled into `.kubb/client.ts`
+  now.
 - Remove `output.override` (the boolean) from every plugin's `output` and from
   the root `output`. It no longer exists.
 
 ## 10. Remove paramsType, pathParamsType, and paramsCasing
-- Remove `paramsType` and `pathParamsType` from plugin-client,
-  plugin-react-query, plugin-vue-query, plugin-swr, and plugin-cypress.
+- Remove `paramsType` and `pathParamsType` from the client plugin
+  (`plugin-axios` or `plugin-fetch`), plugin-react-query, plugin-vue-query,
+  plugin-swr, and plugin-cypress.
 - Remove `paramsCasing` from every plugin (including the `client` sub-option of
   the query and mcp plugins). Generated functions now always take one grouped
   options object `{ body, path, query, headers }` with camelCase parameter
   names, and the wire-name mapping is automatic.
 
-## 11. Preserve everything else
+## 11. Remove dataReturnType and adopt the RequestResult contract
+- Remove `dataReturnType` from every plugin. It no longer exists.
+- The client plugins (`@kubb/plugin-axios`, `@kubb/plugin-fetch`) return a
+  `RequestResult` of `{ data, error, request, response }`, with `throwOnError`
+  defaulting to `true`. A `dataReturnType: 'data'` call becomes a destructure:
+  `const { data } = await getPet({ path: { petId: 1 } })`. A `dataReturnType: 'full'`
+  call becomes `throwOnError: false`, then read `error` and `response.status` off
+  the result.
+- On plugin-cypress, drop `dataReturnType`. Every helper now yields the response
+  body, typed `Cypress.Chainable<T>`.
+- plugin-mcp handlers read `res.data`, so no config change is needed beyond
+  removing the option.
+- Also remove `clientType`, `urlType`, and the custom-client `importPath`: the
+  query and mcp plugins now select a registered client plugin through
+  `client: 'axios' | 'fetch'`, and the standalone client lives in
+  `@kubb/plugin-axios` / `@kubb/plugin-fetch`.
+
+## 12. Preserve everything else
 All other plugin options (output, group, include, exclude, override (the
 per-operation array), client, infinite, suspense, query, mutation,
-parser, dataReturnType,
-clientType, baseURL, urlType, operations, typed, inferred,
+parser, baseURL, operations, typed, inferred,
 coercion, guidType, mini, wrapOutput, dateParser, regexGenerator,
 seed, handlers, etc.) are unchanged.
 
-## 12. New v5 defaults (informational, do not edit the config)
+## 13. New v5 defaults (informational, do not edit the config)
 
 With `group: { type: 'tag' }`, v5 names each tag folder after the plain
 camelCased tag instead of `${tag}Controller`. Do not add `group.name`
@@ -104,7 +121,7 @@ during migration. Mention to the user that
 `group: { type: 'tag', name: ({ group }) => `${group}Controller` }`
 restores the v4 folder layout.
 
-## 13. Single-file output now needs output.mode
+## 14. Single-file output now needs output.mode
 v5 no longer infers a single file from an `output.path` that ends in `.ts`.
 For every plugin whose `output.path` points at a file (ends in `.ts`), add
 `mode: 'file'` to its `output` and keep the extension in the path:
@@ -113,7 +130,7 @@ The extension is required, do not drop it. Leave folder paths unchanged.
 They default to `mode: 'directory'`. `output.mode` only accepts
 `'directory'` or `'file'`.
 
-## 13. Remove the `generators` option
+## 15. Remove the `generators` option
 Remove `generators` from every plugin. Plugins no longer accept custom
 generators as an option. To add custom output, build your own plugin.
 
@@ -134,24 +151,24 @@ v5 generates code faster than v4. The benchmarks compare `@kubb/core@4.37.8` wit
 | Plugins                                                       | v4 mean   | v5 mean  | Speedup   |
 | ------------------------------------------------------------- | --------- | -------- | --------- |
 | `plugin-ts`                                                   | 130.53 ms | 66.03 ms | **+98%**  |
-| `plugin-ts` + `plugin-client`                                 | 198.64 ms | 76.77 ms | **+159%** |
-| `plugin-ts` + `plugin-client` + `plugin-zod` + `plugin-faker` | 331.90 ms | 99.07 ms | **+235%** |
+| `plugin-ts` + `plugin-axios`                                  | 198.64 ms | 76.77 ms | **+159%** |
+| `plugin-ts` + `plugin-axios` + `plugin-zod` + `plugin-faker`  | 331.90 ms | 99.07 ms | **+235%** |
 
 **`twitter.json`**, 80 operations, 374 KB
 
 | Plugins                                                       | v4 mean  | v5 mean | Speedup   |
 | ------------------------------------------------------------- | -------- | ------- | --------- |
 | `plugin-ts`                                                   | 1,486 ms | 375 ms  | **+296%** |
-| `plugin-ts` + `plugin-client`                                 | 1,743 ms | 401 ms  | **+335%** |
-| `plugin-ts` + `plugin-client` + `plugin-zod` + `plugin-faker` | 2,997 ms | 711 ms  | **+322%** |
+| `plugin-ts` + `plugin-axios`                                  | 1,743 ms | 401 ms  | **+335%** |
+| `plugin-ts` + `plugin-axios` + `plugin-zod` + `plugin-faker`  | 2,997 ms | 711 ms  | **+322%** |
 
 **`openai.yaml`**, 242 operations, 2.7 MB ([openai/openai-openapi](https://github.com/openai/openai-openapi))
 
 | Plugins                                                       | v4 mean   | v5 mean  | Speedup   |
 | ------------------------------------------------------------- | --------- | -------- | --------- |
 | `plugin-ts`                                                   | 6,033 ms  | 1,450 ms | **+316%** |
-| `plugin-ts` + `plugin-client`                                 | 7,662 ms  | 1,544 ms | **+396%** |
-| `plugin-ts` + `plugin-client` + `plugin-zod` + `plugin-faker` | 14,943 ms | 2,461 ms | **+507%** |
+| `plugin-ts` + `plugin-axios`                                  | 7,662 ms  | 1,544 ms | **+396%** |
+| `plugin-ts` + `plugin-axios` + `plugin-zod` + `plugin-faker`  | 14,943 ms | 2,461 ms | **+507%** |
 
 The gap widens on bigger specs. In v4, every plugin bootstrapped its own `pluginOas` instance, so parsing ran once per plugin. In v5, `adapterOas` parses the spec once and shares the result across all plugins.
 
@@ -172,28 +189,28 @@ In v4, every plugin lived in [`kubb-labs/kubb`](https://github.com/kubb-labs/kub
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-client@beta \
+bun add -d @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta \
             @kubb/plugin-react-query@beta @kubb/plugin-vue-query@beta @kubb/plugin-swr@beta \
             @kubb/plugin-faker@beta @kubb/plugin-msw@beta \
             @kubb/plugin-mcp@beta @kubb/plugin-cypress@beta @kubb/plugin-redoc@beta
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-client@beta \
+pnpm add -D @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta \
             @kubb/plugin-react-query@beta @kubb/plugin-vue-query@beta @kubb/plugin-swr@beta \
             @kubb/plugin-faker@beta @kubb/plugin-msw@beta \
             @kubb/plugin-mcp@beta @kubb/plugin-cypress@beta @kubb/plugin-redoc@beta
 ```
 
 ```shell [npm]
-npm install -D @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-client@beta \
+npm install -D @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta \
                @kubb/plugin-react-query@beta @kubb/plugin-vue-query@beta @kubb/plugin-swr@beta \
                @kubb/plugin-faker@beta @kubb/plugin-msw@beta \
                @kubb/plugin-mcp@beta @kubb/plugin-cypress@beta @kubb/plugin-redoc@beta
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-client@beta \
+yarn add -D @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta \
             @kubb/plugin-react-query@beta @kubb/plugin-vue-query@beta @kubb/plugin-swr@beta \
             @kubb/plugin-faker@beta @kubb/plugin-msw@beta \
             @kubb/plugin-mcp@beta @kubb/plugin-cypress@beta @kubb/plugin-redoc@beta
@@ -420,13 +437,13 @@ To keep the v4 layout, set `group.name` on the plugin:
 
 ```typescript [v5 kubb.config.ts]
 import { defineConfig } from 'kubb'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({
   input: { path: './petstore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginClient({
+    pluginAxios({
       group: { type: 'tag', name: ({ group }) => `${group}Controller` },
     }),
   ],
@@ -490,7 +507,7 @@ Typed [resolver](/docs/5.x/concepts/plugins#resolvers) methods replace the singl
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
 | [`@kubb/plugin-ts`](/plugins/plugin-ts)                                                                                                                                                                                                                                                                                                                   | `resolveTypeName(name)`   |
 | [`@kubb/plugin-zod`](/plugins/plugin-zod)                                                                                                                                                                                                                                                                                                                 | `resolveSchemaName(name)` |
-| [`@kubb/plugin-client`](/plugins/plugin-client), [`@kubb/plugin-react-query`](/plugins/plugin-react-query), [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query), [`@kubb/plugin-msw`](/plugins/plugin-msw), [`@kubb/plugin-faker`](/plugins/plugin-faker), [`@kubb/plugin-cypress`](/plugins/plugin-cypress), [`@kubb/plugin-mcp`](/plugins/plugin-mcp) | `resolveName(name)`       |
+| [`@kubb/plugin-axios`](/plugins/plugin-axios), [`@kubb/plugin-fetch`](/plugins/plugin-fetch), [`@kubb/plugin-react-query`](/plugins/plugin-react-query), [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query), [`@kubb/plugin-msw`](/plugins/plugin-msw), [`@kubb/plugin-faker`](/plugins/plugin-faker), [`@kubb/plugin-cypress`](/plugins/plugin-cypress), [`@kubb/plugin-mcp`](/plugins/plugin-mcp) | `resolveName(name)`       |
 
 Inside a resolver method, `this` is bound to the full resolver, so `this.default(name, 'function')` falls back to the built-in logic.
 
@@ -599,7 +616,7 @@ Each extension documents its own configuration changes on its own page. Open the
 - [`@kubb/plugin-ts`](/docs/5.x/migration-guide/plugin-ts)
 - [`@kubb/plugin-zod`](/docs/5.x/migration-guide/plugin-zod)
 - [`@kubb/plugin-faker`](/docs/5.x/migration-guide/plugin-faker)
-- [`@kubb/plugin-client`](/docs/5.x/migration-guide/plugin-client)
+- [`@kubb/plugin-client` removed](/docs/5.x/migration-guide/plugin-client): migrate to `@kubb/plugin-axios` or `@kubb/plugin-fetch`
 - [`@kubb/plugin-react-query`](/docs/5.x/migration-guide/plugin-react-query)
 - [`@kubb/plugin-vue-query`](/docs/5.x/migration-guide/plugin-vue-query)
 - [`@kubb/plugin-msw`](/docs/5.x/migration-guide/plugin-msw)
@@ -618,7 +635,7 @@ import { defineConfig, memoryStorage } from '@kubb/core'
 import { pluginOas } from '@kubb/plugin-oas'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginAxios } from '@kubb/plugin-axios'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -654,13 +671,12 @@ export default defineConfig({
       integerType: 'number', // → adapterOas
       mapper: {}, // removed
     }),
-    pluginClient({
+    pluginAxios({
       output: { path: 'clients' },
-      client: 'axios',
     }),
     pluginReactQuery({
       output: { path: 'hooks' },
-      client: { importPath: './src/client.ts' },
+      client: 'axios',
     }),
     pluginFaker({
       output: { path: 'mocks' },
@@ -677,7 +693,7 @@ import { memoryStorage } from '@kubb/core'
 import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginAxios } from '@kubb/plugin-axios'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -709,13 +725,12 @@ export default defineConfig({
     pluginZod({
       output: { path: 'zod' },
     }),
-    pluginClient({
+    pluginAxios({
       output: { path: 'clients' },
-      client: 'axios',
     }),
     pluginReactQuery({
       output: { path: 'hooks' },
-      client: { importPath: './src/client.ts' },
+      client: 'axios',
     }),
     pluginFaker({
       output: { path: 'mocks' },

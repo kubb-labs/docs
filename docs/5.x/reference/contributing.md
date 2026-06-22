@@ -90,7 +90,7 @@ Contribute a plugin in two ways. Build a community plugin in your own repository
 ### Build a community plugin
 
 1. Follow the [Creating Your First Plugin](/docs/5.x/guides/creating-plugins) guide.
-2. Use [`@kubb/plugin-client`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-client) as the layout to copy.
+2. Use [`@kubb/plugin-axios`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-axios) as the layout to copy.
 3. Publish to npm under the `kubb-plugin-*` or `@scope/plugin-*` naming convention.
 4. Submit it to the [community registry](https://github.com/kubb-labs/plugins). Add a YAML entry under `plugins/`.
 

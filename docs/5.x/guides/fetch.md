@@ -8,19 +8,17 @@ outline: deep
 
 # Swap in a Fetch client
 
-`@kubb/plugin-client` bundles two runtimes. Set `client: 'axios'` (the default) or `client: 'fetch'`, and the plugin writes that client to `.kubb/client.ts`.
+`@kubb/plugin-fetch` generates one HTTP client function per operation on top of the global [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch). It needs no extra runtime dependency. Register `@kubb/plugin-axios` instead when you want axios.
 
-To bring your own client, set `importPath` instead. The generated code imports the HTTP runtime from there, and nothing is bundled. Use this for [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch), [Ky](https://github.com/sindresorhus/ky), or any wrapper you maintain.
+See [plugins/plugin-fetch](/plugins/plugin-fetch).
 
 ## Create `kubb.config.ts`
 
-Point `importPath` at a relative path, an import alias, or a package name. The plugin uses the value as-is.
-
-See [plugins/plugin-client](/plugins/plugin-client).
+Add `pluginFetch` to the plugins list. It reads its types from `@kubb/plugin-ts`, so register that too.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginFetch } from '@kubb/plugin-fetch'
 import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -39,66 +37,23 @@ export default defineConfig(() => {
       pluginTs({
         output: { path: 'models.ts' },
       }),
-      pluginClient({
+      pluginFetch({
         output: {
           path: '.',
         },
-        importPath: '../client.ts', // [!code ++]
+        baseURL: 'https://petstore.swagger.io/v2',
       }),
     ],
   }
 })
 ```
 
-## Add `client.ts`
-
-Every HTTP request (GET, PUT, PATCH, POST, DELETE) calls the default export from your `importPath`. Kubb passes a `RequestConfig`, modeled on the Axios request interface.
-
-> [!IMPORTANT]
-> The client must return an object shaped like `ResponseConfig`. This holds even when `dataReturnType` is `'data'` and the generated function returns only `res.data`.
-
-```typescript [client.ts]
-export type RequestConfig<TData = unknown> = {
-  url?: string
-  method: 'GET' | 'PUT' | 'PATCH' | 'POST' | 'DELETE'
-  query?: object
-  body?: TData | FormData
-  responseType?: 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream'
-  signal?: AbortSignal
-  headers?: HeadersInit
-}
-
-export type ResponseConfig<TData = unknown> = {
-  data: TData
-  status: number
-  statusText: string
-}
-
-export type Client = <TData, _TError = unknown, TVariables = unknown>(config: RequestConfig<TVariables>) => Promise<ResponseConfig<TData>>
-
-export const client = async <TData, TError = unknown, TVariables = unknown>(config: RequestConfig<TVariables>): Promise<ResponseConfig<TData>> => {
-  const response = await fetch('https://example.org/post', {
-    method: config.method.toUpperCase(),
-    body: JSON.stringify(config.body),
-    signal: config.signal,
-    headers: config.headers,
-  })
-
-  const data = await response.json()
-
-  return {
-    data,
-    status: response.status,
-    statusText: response.statusText,
-  }
-}
-```
-
 ## View the generated code
 
+Every operation becomes a typed function. Each function takes the grouped options object and returns the success response body.
+
 ```typescript [src/gen/models.ts]
-import client from '../client.ts'
-import type { ResponseConfig } from '../client.ts'
+import client from './client.ts'
 import type { GetPetByIdQueryResponse, GetPetByIdRequestConfig } from './models.ts'
 
 /**
@@ -108,9 +63,9 @@ import type { GetPetByIdQueryResponse, GetPetByIdRequestConfig } from './models.
  */
 export async function getPetById(
   { path }: Omit<GetPetByIdRequestConfig, 'url'>,
-  options: Partial<Parameters<typeof client>[0]> = {},
-): Promise<ResponseConfig<GetPetByIdQueryResponse>['data']> {
-  const res = await client<GetPetByIdQueryResponse>({ method: 'get', url: `/pet/${path.petId}`, ...options })
+  config: Partial<Parameters<typeof client>[0]> = {},
+): Promise<GetPetByIdQueryResponse> {
+  const res = await client<GetPetByIdQueryResponse>({ method: 'GET', url: `/pet/${path.petId}`, ...config })
   return res.data
 }
 ```

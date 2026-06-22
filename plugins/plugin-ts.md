@@ -140,7 +140,7 @@ How the plugin consolidates its generated code into files.
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
@@ -149,7 +149,7 @@ export default defineConfig({
     pluginTs({
       output: { path: 'types.ts', mode: 'file' },
     }),
-    pluginClient({
+    pluginAxios({
       output: { path: 'clients', mode: 'directory' },
       group: { type: 'tag' },
     }),
@@ -752,7 +752,8 @@ Each plugin ships with a default resolver:
 | `@kubb/plugin-cypress` | `resolverCypress` |
 | `@kubb/plugin-msw`     | `resolverMsw`     |
 | `@kubb/plugin-mcp`     | `resolverMcp`     |
-| `@kubb/plugin-client`  | `resolverClient`  |
+| `@kubb/plugin-axios`   | `resolverClient`  |
+| `@kubb/plugin-fetch`   | `resolverClient`  |
 
 ### include
 

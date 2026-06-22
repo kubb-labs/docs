@@ -31,7 +31,7 @@ tags:
   - openapi
 dependencies:
   - plugin-ts
-  - plugin-client
+  - plugin-axios
 resources:
   documentation: https://kubb.dev/plugins/plugin-vue-query
   repository: https://github.com/kubb-labs/plugins
@@ -44,7 +44,7 @@ resources:
 
 `@kubb/plugin-vue-query` turns each OpenAPI operation into a [TanStack Query](https://tanstack.com/query) composable for Vue. Read operations become `useFooQuery` and optionally `useFooInfiniteQuery`. Write operations become `useFooMutation`. Every composable is typed. Query keys, input variables, response data, and error shape all come from the spec.
 
-It needs `@kubb/plugin-ts` for the types. The HTTP client comes from `@kubb/plugin-client`, which the plugin bundles into the output.
+It needs `@kubb/plugin-ts` for the types. The HTTP client comes from a registered client plugin (`@kubb/plugin-axios` or `@kubb/plugin-fetch`).
 
 Each composable takes its parameters as a single grouped options object shaped as `{ body, path, query, headers }`, with camelCase property names. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
 
@@ -248,93 +248,12 @@ Function that turns a group key (the operation's first tag) into a folder name.
 
 ### client
 
-HTTP client used inside every generated composable. Each composable calls this client to run the request. It mirrors a subset of `pluginClient` options. Set these when the Vue composables need different client behavior than the rest of your app.
-
-|           |                                                                              |
-| --------: | :--------------------------------------------------------------------------- |
-|     Type: | `ClientImportPath & { clientType?, dataReturnType?, baseURL? }` |
-| Required: | `false`                                                                      |
-
-#### client.client
-
-HTTP client that the generated composables call. `'axios'` imports from `@kubb/plugin-client/clients/axios` and needs `axios` at runtime. `'fetch'` imports from `@kubb/plugin-client/clients/fetch` and uses the global `fetch`. Set `client.importPath` to point at a custom module instead, which ignores `client.client`.
+Selects which registered client plugin the generated composables call. Set `'axios'` to use `@kubb/plugin-axios` or `'fetch'` to use `@kubb/plugin-fetch`. When omitted, the plugin auto-detects whichever client plugin is registered in the same config. Register `@kubb/plugin-axios` or `@kubb/plugin-fetch`, since the generated code calls its functions.
 
 |           |                      |
 | --------: | :------------------- |
 |     Type: | `'axios' \| 'fetch'` |
 | Required: | `false`              |
-|  Default: | `'axios'`            |
-
-#### client.importPath
-
-Path or module specifier of a custom client module. Generated code imports its HTTP runtime from here instead of `@kubb/plugin-client/clients/{client}`. Use it to inject auth headers, add interceptors, set the base URL at runtime, or wrap another HTTP library. Both relative paths (`./src/client.ts`) and bare specifiers (`@my-org/api-client`) work.
-
-|           |          |
-| --------: | :------- |
-|     Type: | `string` |
-| Required: | `false`  |
-
-> [!IMPORTANT]
-> Generated composables also import a `Client` type alias. Your module must export `Client`, `RequestConfig`, and `ResponseErrorConfig`, or TypeScript fails the import. See the [custom client guide](https://kubb.dev/plugins/plugin-client#importpath).
-
-::: code-group
-
-```typescript [Wire up a custom client]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginVueQuery } from '@kubb/plugin-vue-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginVueQuery({
-      client: { importPath: './src/client.ts' },
-    }),
-  ],
-})
-```
-
-:::
-
-#### client.dataReturnType
-
-Shape of the value returned from each generated client function.
-
-- `'data'` returns only the response body (`response.data`).
-- `'full'` returns a discriminated union keyed by HTTP status code. Narrowing on `res.status` also narrows `res.data` to the matching response type.
-
-|           |                    |
-| --------: | :----------------- |
-|     Type: | `'data' \| 'full'` |
-| Required: | `false`            |
-|  Default: | `'data'`           |
-
-#### client.baseURL
-
-Base URL prepended to every request URL in the generated client. When omitted, the URL comes from the spec's `servers[0].url`. Set it to point the client at a different environment than the spec.
-
-|           |          |
-| --------: | :------- |
-|     Type: | `string` |
-| Required: | `false`  |
-
-#### client.clientType
-
-Style of the HTTP client this plugin imports from `@kubb/plugin-client`.
-
-- `'function'` imports the function client (`getPetById(...)`). Required for this plugin.
-- `'class'` also generates a wrapper class, but it only works inside `@kubb/plugin-client`.
-
-|           |                         |
-| --------: | :---------------------- |
-|     Type: | `'function' \| 'class'` |
-| Required: | `false`                 |
-|  Default: | `'function'`            |
-
-> [!WARNING]
-> Vue Query works only with `clientType: 'function'`. If you set `clientType: 'class'`, the plugin falls back to generating its own inline function client instead of importing from `@kubb/plugin-client`.
 
 ### parser
 
@@ -786,7 +705,7 @@ A list of [macros](/docs/5.x/concepts/macros) applied to each operation node bef
 
 ## Dependencies
 
-This plugin depends on [`@kubb/plugin-ts`](/plugins/plugin-ts), so add it to the plugins list. The composables call an HTTP client from `@kubb/plugin-client`, which the plugin bundles into the output, so a separate `@kubb/plugin-client` entry is optional.
+This plugin depends on [`@kubb/plugin-ts`](/plugins/plugin-ts), so add it to the plugins list. The composables call an HTTP client from a registered client plugin, so add [`@kubb/plugin-axios`](/plugins/plugin-axios) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch) too.
 
 Set `parser` to `'zod'` and the plugin also depends on [`@kubb/plugin-zod`](/plugins/plugin-zod), which then has to be in the plugins list.
 

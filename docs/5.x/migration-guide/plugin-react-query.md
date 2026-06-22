@@ -43,7 +43,7 @@ The first argument is typed `Omit<XxxRequestConfig, 'url'>`, the `RequestConfig`
 
 ## Generated output
 
-[`@kubb/plugin-vue-query`](/docs/5.x/migration-guide/plugin-vue-query) shares these changes. Both plugins also pick up the renames from `plugin-client` (`*Data`, `*Response`, `*Status<code>`).
+[`@kubb/plugin-vue-query`](/docs/5.x/migration-guide/plugin-vue-query) shares these changes. Both plugins also pick up the renames from the client plugin (`*Data`, `*Response`, `*Status<code>`).
 
 The exported `*MutationKey` type alias is gone. Use the runtime helper when you need the key:
 

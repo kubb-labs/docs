@@ -560,7 +560,8 @@ The default resolver names every handler with a `Handler` suffix and always name
 | `@kubb/plugin-cypress` | `resolverCypress` |
 | `@kubb/plugin-msw`     | `resolverMsw`     |
 | `@kubb/plugin-mcp`     | `resolverMcp`     |
-| `@kubb/plugin-client`  | `resolverClient`  |
+| `@kubb/plugin-axios`   | `resolverClient`  |
+| `@kubb/plugin-fetch`   | `resolverClient`  |
 
 ### macros
 

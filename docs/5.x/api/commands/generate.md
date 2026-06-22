@@ -16,7 +16,7 @@ output:
   - ◇  @kubb/plugin-ts          completed in 98ms
   - ◇  @kubb/plugin-zod         completed in 134ms
   - ◇  @kubb/plugin-react-query completed in 201ms
-  - ◇  @kubb/plugin-client      completed in 77ms
+  - ◇  @kubb/plugin-axios       completed in 77ms
   - ◇  Generation completed
   -
   -  Plugins  4 passed (4)
