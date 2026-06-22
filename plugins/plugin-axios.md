@@ -562,7 +562,7 @@ client.setConfig({
 })
 ```
 
-See the [authentication guide](/docs/5.x/concepts/authentication) for the full scheme mapping, per-instance clients, and per-call overrides.
+See the [authentication guide](/docs/5.x/guides/authentication) for the full scheme mapping, per-instance clients, and per-call overrides.
 
 ## Dependencies
 

@@ -1,5 +1,6 @@
 ---
 layout: doc
+
 title: Authentication - resolve auth from your OpenAPI spec
 description: Kubb reads the security schemes from your OpenAPI spec and attaches them to every generated call. You supply the token through a single auth resolver on the client config, and the runtime places it as a bearer, basic, or apiKey credential.
 outline: deep
