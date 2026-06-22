@@ -550,6 +550,20 @@ export default defineConfig({
 
 :::
 
+## Authentication
+
+The generated functions carry the security schemes from your spec, so you configure credentials in one place. Set an `auth` resolver on the client config and the runtime attaches a bearer, basic, or apiKey token to every guarded call.
+
+```typescript
+import { client } from './gen/clients/.kubb/client'
+
+client.setConfig({
+  auth: () => localStorage.getItem('token') ?? undefined,
+})
+```
+
+See the [authentication guide](/docs/5.x/concepts/authentication) for the full scheme mapping, per-instance clients, and per-call overrides.
+
 ## Dependencies
 
 This plugin needs `@kubb/plugin-ts` in your config. Kubb runs it before `plugin-axios` so the functions can import the generated types.
