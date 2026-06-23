@@ -7,6 +7,8 @@ description: Configuration changes for @kubb/adapter-oas when migrating from Kub
 
 Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). See the full option reference in [`@kubb/adapter-oas`](/adapters/adapter-oas).
 
+`@kubb/plugin-oas` is gone. When you import `defineConfig` from `kubb`, the OpenAPI adapter is applied for you, so most projects never name it. Set `adapter: adapterOas({ ... })` only when you want to change its options.
+
 v4 repeated the same schema-level options on every plugin. In v5 they live on [`adapterOas`](/adapters/adapter-oas) and apply once across all plugins. Remove them from each plugin and set them on the adapter.
 
 | Option            | Removed from                              | v5 location                       |
@@ -77,25 +79,66 @@ export default defineConfig({
 
 :::
 
-`pluginOas()` no longer belongs in `plugins`. Its `validate`, `discriminator`, and `contentType` options move to the same `adapter` key, and the old `serverIndex` and `serverVariables` become a single `server: { index, variables }` object. See [`@kubb/plugin-oas` removed](/docs/5.x/migration-guide#kubb-plugin-oas-removed) on the main guide.
+`pluginOas()` no longer belongs in `plugins`. Its `validate`, `discriminator`, and `contentType` options move to the same `adapter` key, and the old `serverIndex` and `serverVariables` become a single `server: { index, variables }` object. See [`@kubb/plugin-oas` removed](/docs/5.x/migration-guide#kubb-plugin-oas-removed) on the main guide. `validate` still defaults to `true`.
 
-The `discriminator` values are also renamed. Use `'preserve'` in place of `'strict'`, and `'propagate'` in place of `'inherit'`.
+The `discriminator` values are also renamed. Use `'preserve'` in place of `'strict'`, and `'propagate'` in place of `'inherit'`. The default is `'preserve'`, so drop the option unless you want the old `'inherit'` behavior.
 
 ::: code-group
 
-```typescript [v4 server + discriminator]
-pluginOas({
-  serverIndex: 0,
-  serverVariables: { env: 'prod' },
-  discriminator: 'inherit',
+```typescript [v4 kubb.config.ts]
+import { defineConfig } from '@kubb/core'
+import { pluginOas } from '@kubb/plugin-oas'
+import { pluginTs } from '@kubb/plugin-ts'
+
+export default defineConfig({
+  input: { path: './petstore.yaml' },
+  output: { path: './src/gen' },
+  plugins: [
+    pluginOas({
+      validate: true,
+      serverIndex: 0,
+      serverVariables: { env: 'prod' },
+      discriminator: 'inherit',
+    }),
+    pluginTs(),
+  ],
 })
 ```
 
-```typescript [v5 server + discriminator]
-adapterOas({
-  server: { index: 0, variables: { env: 'prod' } },
-  discriminator: 'propagate',
+```typescript twoslash [v5 kubb.config.ts]
+import { defineConfig } from 'kubb'
+import { adapterOas } from '@kubb/adapter-oas'
+import { pluginTs } from '@kubb/plugin-ts'
+
+export default defineConfig({
+  input: { path: './petstore.yaml' },
+  output: { path: './src/gen' },
+  adapter: adapterOas({
+    validate: true,
+    server: { index: 0, variables: { env: 'prod' } },
+    discriminator: 'propagate',
+  }),
+  plugins: [pluginTs()],
 })
 ```
 
 :::
+
+## New `enums` option
+
+v5 adds `enums` to `adapterOas` to control where inline enums live. The default `'inline'` keeps each enum on the property that declares it, which matches v4 output, so you can ignore this option unless you want the new behavior. Set `enums: 'root'` to lift every inline enum to a reusable top-level schema named after its context, such as `PetStatusEnum`, and reference it everywhere it appears.
+
+```typescript twoslash [v5 kubb.config.ts]
+import { defineConfig } from 'kubb'
+import { adapterOas } from '@kubb/adapter-oas'
+import { pluginTs } from '@kubb/plugin-ts'
+
+export default defineConfig({
+  input: { path: './petstore.yaml' },
+  output: { path: './src/gen' },
+  adapter: adapterOas({
+    enums: 'root',
+  }),
+  plugins: [pluginTs()],
+})
+```

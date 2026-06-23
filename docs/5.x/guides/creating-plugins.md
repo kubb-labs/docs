@@ -438,10 +438,14 @@ export const pluginExample = definePlugin<PluginExample>((options) => {
 
 Use `createKubb` from `@kubb/core` to run an in-process build and check that your generator emits the files you expect. Pair it with a small [OpenAPI](https://spec.openapis.org/oas/latest.html) fixture so tests stay fast and predictable.
 
+`@kubb/core` does not apply the default adapter or parsers, so pass `adapter: adapterOas()` and the parsers your generator emits. (The `kubb` package's `defineConfig` is what wires those up automatically.) Without an adapter, Kubb runs in plugin-only mode and the `operation` and `schema` handlers never fire.
+
 ```typescript twoslash [plugin.test.ts]
 // @errors: 2307
 import { describe, it, expect } from 'vitest'
 import { ast, createKubb, definePlugin, defineGenerator } from '@kubb/core'
+import { adapterOas } from '@kubb/adapter-oas'
+import { parserTs } from '@kubb/parser-ts'
 
 const pluginExample = definePlugin(() => ({
   name: 'plugin-example',
@@ -470,6 +474,8 @@ describe('pluginExample', () => {
     const kubb = createKubb({
       input: { path: './test/fixtures/petStore.yaml' },
       output: { path: './dist/test' },
+      adapter: adapterOas(),
+      parsers: [parserTs],
       plugins: [pluginExample()],
     })
 
@@ -485,10 +491,12 @@ Subscribe to `kubb.hooks` before you call `build()` to trace plugin activity or 
 
 ```typescript twoslash [lifecycle.ts]
 import { createKubb, definePlugin } from '@kubb/core'
+import { adapterOas } from '@kubb/adapter-oas'
 
 const kubb = createKubb({
   input: { path: './petStore.yaml' },
   output: { path: './gen' },
+  adapter: adapterOas(),
   plugins: [definePlugin(() => ({ name: 'plugin-example', hooks: {} }))()],
 })
 

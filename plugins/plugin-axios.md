@@ -45,19 +45,14 @@ It builds on `@kubb/plugin-ts` for the types, so add that to your config. Axios 
 
 Each generated function takes one grouped options object (`{ path, query, headers, body }`) and returns a `RequestResult` of `{ data, error, request, response }`. `throwOnError` defaults to `true`, so a resolved call means the request succeeded and `data` is set. Pass `throwOnError: false` per call to get the discriminated `{ data?, error? }` form and read `error` and `response.status` yourself. The runtime is always bundled into `.kubb/client.ts`, so there is no `bundle` option.
 
-The bundled `client` also exposes a `buildUrl` method. It returns the final URL for an operation from the base URL, the interpolated path params, and the serialized query, without sending the request. This helps when you build cache keys, prefetch data, or render links:
+The bundled `client` also exposes a `getUrl` method. It returns the final URL for an operation from the base URL, the interpolated path params, and the serialized query, without sending the request. This helps when you build cache keys, prefetch data, or render links:
 
 ```ts
 import { client } from './.kubb/client'
 
-const url = client.buildUrl({ url: '/pet/{petId}', path: { petId: 1 }, query: { status: ['available'] } })
+const url = client.getUrl({ url: '/pet/{petId}', path: { petId: 1 }, query: { status: ['available'] } })
 // '/pet/1?status=available'
 ```
-
-**See also**
-
-- [axios](https://axios-http.com/)
-- [`@kubb/plugin-ts`](/plugins/plugin-ts)
 
 ## Installation
 
@@ -85,7 +80,7 @@ yarn add -D @kubb/plugin-axios@beta
 
 ### output
 
-Where the generated functions are written and how they are exported.
+Where the plugin writes the generated functions and how it exports them.
 
 |           |                                                  |
 | --------: | :----------------------------------------------- |
@@ -95,7 +90,7 @@ Where the generated functions are written and how they are exported.
 
 #### output.path
 
-Folder where the plugin writes its files. It is resolved against the global `output.path` on `defineConfig`. To write everything to one file instead, set `output.mode: 'file'` and give `path` a file name with its extension, such as `'clients.ts'`.
+Folder where the plugin writes its files, resolved against the global `output.path` on `defineConfig`. To write everything to one file instead, set `output.mode: 'file'` and give `path` a file name with its extension, such as `'clients.ts'`.
 
 |           |             |
 | --------: | :---------- |
@@ -106,39 +101,9 @@ Folder where the plugin writes its files. It is resolved against the global `out
 > [!TIP]
 > `output.path` sets where files go, `output.mode` sets how many. Use `'directory'` (the default) for one file per operation, optionally grouped into subdirectories with the `group` option. Use `'file'` to write everything into a single file.
 
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginAxios } from '@kubb/plugin-axios'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginAxios({
-      output: { path: './clients' },
-    }),
-  ],
-})
-```
-
-```text [Resulting tree]
-src/
-└── gen/
-    └── clients/
-        ├── addPet.ts
-        └── getPetById.ts
-```
-
-:::
-
 #### output.mode
 
-How the plugin consolidates its generated code into files.
-
-- `'directory'` (default) writes one file per operation under `output.path`.
-- `'file'` writes everything into a single file. The `output.path` must include the file extension (e.g. `'clients.ts'`).
+How the plugin consolidates its generated code into files. `'directory'` (the default) writes one file per operation under `output.path`. `'file'` writes everything into a single file, so `output.path` must include the file extension, such as `'clients.ts'`.
 
 |           |                         |
 | --------: | :---------------------- |
@@ -151,21 +116,13 @@ How the plugin consolidates its generated code into files.
 
 #### output.barrel
 
-Controls how the generated `index.ts` (barrel) file re-exports the plugin's output.
-
-- `{ type: 'named' }` re-exports each symbol by name. Best for tree-shaking and explicit imports.
-- `{ type: 'all' }` uses `export *`. Smaller barrel file, but exports everything.
-- `{ nested: true }` creates a barrel in every subdirectory, so callers can import from any depth.
-- `false` skips the barrel entirely. The plugin's files are also excluded from the root `index.ts`.
+How the generated `index.ts` barrel file re-exports the plugin's output. `{ type: 'named' }` re-exports each symbol by name, which is best for tree-shaking and explicit imports. `{ type: 'all' }` uses `export *` for a smaller barrel that exports everything. Add `nested: true` to create a barrel in every subdirectory, so callers can import from any depth. Set `false` to skip the barrel entirely, which also excludes the plugin's files from the root `index.ts`.
 
 |           |                                                         |
 | --------: | :------------------------------------------------------ |
 |     Type: | `{ type: 'named' \| 'all', nested?: boolean } \| false` |
 | Required: | `false`                                                 |
 |  Default: | `{ type: 'named' }`                                     |
-
-> [!TIP]
-> Pick `'named'` when consumers care about which symbols they import (better tree-shaking, friendlier auto-import). Pick `'all'` when the file count is small and you want a one-line barrel.
 
 #### output.banner
 
@@ -200,45 +157,9 @@ Splits generated files into subfolders by the operation's first tag or first pat
 >
 > `group` only applies to `output.mode: 'directory'` (the default). It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
 
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginAxios } from '@kubb/plugin-axios'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginAxios({
-      group: { type: 'tag' },
-    }),
-  ],
-})
-```
-
-:::
-
-With the configuration above, the generator emits one folder per tag, named after the camelCased tag:
-
-```text [Resulting tree]
-src/gen/
-├── pet/
-│   ├── addPet.ts
-│   └── getPetById.ts
-└── store/
-    ├── getInventory.ts
-    └── placeOrder.ts
-```
-
-Pass `group.name` to customize the folder name. For example, a `name` function that appends `Controller` to the group keeps the pre-v5 `petController/` layout.
-
 #### group.type
 
-Property used to assign each operation to a group. Required whenever `group` is set.
-
-- `'tag'` reads the first tag on the operation (`operation.getTags().at(0)?.name`). Operations without a tag go in a default group.
-- `'path'` reads the first segment of the operation's URL.
+Property used to assign each operation to a group, required whenever `group` is set. `'tag'` reads the first tag on the operation (`operation.getTags().at(0)?.name`), and operations without a tag go in a default group. `'path'` reads the first segment of the operation's URL.
 
 |           |                   |
 | --------: | :---------------- |
@@ -265,6 +186,7 @@ Skips any operation that matches at least one entry in the list. It is the oppos
 | --------: | :--------------- |
 |     Type: | `Array<Exclude>` |
 | Required: | `false`          |
+|  Default: | `[]`             |
 
 ```typescript [Type definition]
 export type Exclude = {
@@ -273,28 +195,9 @@ export type Exclude = {
 }
 ```
 
-::: code-group
-
-```typescript [Skip everything under the store tag]
-import { defineConfig } from 'kubb'
-import { pluginAxios } from '@kubb/plugin-axios'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginAxios({
-      exclude: [{ type: 'tag', pattern: 'store' }],
-    }),
-  ],
-})
-```
-
-:::
-
 ### include
 
-Generates only the operations that match at least one entry in the list. Everything else is skipped. Entries use the same `type` (`tag`, `operationId`, `path`, `method`, `contentType`, `schemaName`) and `pattern` (string or `RegExp`) as `exclude`.
+Generates only the operations that match at least one entry in the list, and skips everything else. Entries use the same `type` (`tag`, `operationId`, `path`, `method`, `contentType`, `schemaName`) and `pattern` (string or `RegExp`) as `exclude`.
 
 |           |                  |
 | --------: | :--------------- |
@@ -308,25 +211,6 @@ export type Include = {
 }
 ```
 
-::: code-group
-
-```typescript [Only the pet tag]
-import { defineConfig } from 'kubb'
-import { pluginAxios } from '@kubb/plugin-axios'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginAxios({
-      include: [{ type: 'tag', pattern: 'pet' }],
-    }),
-  ],
-})
-```
-
-:::
-
 ### override
 
 Applies different plugin options to operations that match a pattern. Use it for the few endpoints that need special treatment. Each entry takes the same `type` and `pattern` as `include` and `exclude`, plus an `options` object. Entries run top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
@@ -335,6 +219,7 @@ Applies different plugin options to operations that match a pattern. Use it for 
 | --------: | :---------------- |
 |     Type: | `Array<Override>` |
 | Required: | `false`           |
+|  Default: | `[]`              |
 
 ```typescript [Type definition]
 export type Override = {
@@ -344,35 +229,9 @@ export type Override = {
 }
 ```
 
-::: code-group
-
-```typescript [Send the admin tag to its own folder]
-import { defineConfig } from 'kubb'
-import { pluginAxios } from '@kubb/plugin-axios'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginAxios({
-      output: { path: './clients' },
-      override: [
-        {
-          type: 'tag',
-          pattern: 'admin',
-          options: { output: { path: './clients/admin' } },
-        },
-      ],
-    }),
-  ],
-})
-```
-
-:::
-
 ### baseURL
 
-Base URL prepended to every request the functions make. When omitted, the URL comes from the adapter's server URL (`servers[0].url` in the spec). Set it to point the client at a different environment (staging, production) than the spec.
+Base URL prepended to every request the functions make. When omitted, the URL comes from the adapter's server URL (`servers[0].url` in the spec). Set it to point the client at a different environment, such as staging or production, than the spec.
 
 |           |          |
 | --------: | :------- |
@@ -381,11 +240,7 @@ Base URL prepended to every request the functions make. When omitted, the URL co
 
 ### parser
 
-Runtime validator applied to request and response data using schemas from `@kubb/plugin-zod`.
-
-- `false` (default) does no validation. The client returns the response cast to the generated type.
-- `'zod'` validates response bodies only.
-- `{ request?: 'zod', response?: 'zod' }` opts in per direction. `request` validates the request body before the call. `response` validates the response body after.
+Runtime validator applied to request and response bodies using schemas from `@kubb/plugin-zod`. `false` (the default) does no validation and returns the response cast to the generated type. `'zod'` validates success response bodies only. The `{ request?: 'zod', response?: 'zod' }` object form opts in per direction, where `request` validates the request body before the call and `response` validates the response body after.
 
 Add `@kubb/plugin-zod` to the plugins list when either direction is `'zod'`.
 
@@ -395,78 +250,128 @@ Add `@kubb/plugin-zod` to the plugins list when either direction is `'zod'`.
 | Required: | `false`                                                   |
 |  Default: | `false`                                                   |
 
-### sdk
-
-Generates a class-based SDK instead of standalone functions. Leave `sdk` unset to keep the per-operation functions, which is what the query plugins consume.
-
-- `mode: 'tag'` (default) emits one instance class per tag.
-- `mode: 'tag'` with `name` emits a composed root class that instantiates every tag client from one config.
-- `mode: 'flat'` emits a single class named by `name` with every operation as a direct method.
-
-|           |                                       |
-| --------: | :------------------------------------ |
-|     Type: | `{ mode?: 'tag' \| 'flat'; name?: string }` |
-| Required: | `false`                               |
+The value changes what the generated function does with the response:
 
 ::: code-group
 
-```typescript [Standalone functions (sdk unset)]
-import { defineConfig } from 'kubb'
-import { pluginAxios } from '@kubb/plugin-axios'
+```typescript [false]
+export function getPetById<ThrowOnError extends boolean = true>(
+  options: Options<GetPetByIdRequestConfig, ThrowOnError>,
+): Promise<RequestResult<GetPetByIdResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [pluginAxios()],
-})
+  return request({
+    method: 'GET',
+    url: '/pet/{petId}',
+    ...config,
+  }) as Promise<RequestResult<GetPetByIdResponses, ThrowOnError>>
+}
 ```
 
-```typescript [One class per tag]
-import { defineConfig } from 'kubb'
-import { pluginAxios } from '@kubb/plugin-axios'
+```typescript ['zod']
+export function getPetById<ThrowOnError extends boolean = true>(
+  options: Options<GetPetByIdRequestConfig, ThrowOnError>,
+): Promise<RequestResult<GetPetByIdResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginAxios({
-      sdk: {},
-    }),
-  ],
-})
+  const result = await request({
+    method: 'GET',
+    url: '/pet/{petId}',
+    ...config,
+  })
+
+  result.data = getPetByIdQueryResponseSchema.parse(result.data)
+  return result as RequestResult<GetPetByIdResponses, ThrowOnError>
+}
 ```
 
-```typescript [Composed root class]
-import { defineConfig } from 'kubb'
-import { pluginAxios } from '@kubb/plugin-axios'
+```typescript [{ request, response }]
+export function addPet<ThrowOnError extends boolean = true>(
+  options: Options<AddPetRequestConfig, ThrowOnError>,
+): Promise<RequestResult<AddPetResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginAxios({
-      sdk: { name: 'petStore' },
-    }),
-  ],
-})
-```
+  config.data = addPetMutationRequestSchema.parse(config.data)
 
-```typescript [Single flat class]
-import { defineConfig } from 'kubb'
-import { pluginAxios } from '@kubb/plugin-axios'
+  const result = await request({
+    method: 'POST',
+    url: '/pet',
+    ...config,
+  })
 
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginAxios({
-      sdk: { name: 'petStore', mode: 'flat' },
-    }),
-  ],
-})
+  result.data = addPetMutationResponseSchema.parse(result.data)
+  return result as RequestResult<AddPetResponses, ThrowOnError>
+}
 ```
 
 :::
+
+### sdk
+
+Generates a class-based SDK instead of standalone functions. Each tag client is an instance class whose constructor takes a client config and builds its own client, so every environment is a separate instance. Leave `sdk` unset to keep the per-operation functions, which is what the query plugins consume.
+
+|           |                                             |
+| --------: | :------------------------------------------ |
+|     Type: | `{ mode?: 'tag' \| 'flat'; name?: string }` |
+| Required: | `false`                                     |
+
+The `sdk.mode` value changes the shape the plugin emits:
+
+::: code-group
+
+```typescript ['tag']
+export class PetClient {
+  private readonly client: ClientInstance
+
+  constructor(config: ClientConfig = {}) {
+    this.client = createClient(config)
+  }
+
+  public getPetById<ThrowOnError extends boolean = true>(
+    options: Options<GetPetByIdRequestConfig, ThrowOnError>,
+  ): Promise<RequestResult<GetPetByIdResponses, ThrowOnError>> {
+    const { client: request = this.client, ...config } = options
+
+    return request({ method: 'GET', url: '/pet/{petId}', ...config }) as Promise<RequestResult<GetPetByIdResponses, ThrowOnError>>
+  }
+}
+
+// const api = new PetClient({ baseURL: 'https://petstore.swagger.io/v2' })
+// await api.getPetById({ path: { petId: 1 } })
+```
+
+```typescript ['flat']
+export class PetStore {
+  private readonly client: ClientInstance
+
+  constructor(config: ClientConfig = {}) {
+    this.client = createClient(config)
+  }
+
+  public getPetById<ThrowOnError extends boolean = true>(
+    options: Options<GetPetByIdRequestConfig, ThrowOnError>,
+  ): Promise<RequestResult<GetPetByIdResponses, ThrowOnError>> {
+    const { client: request = this.client, ...config } = options
+
+    return request({ method: 'GET', url: '/pet/{petId}', ...config }) as Promise<RequestResult<GetPetByIdResponses, ThrowOnError>>
+  }
+
+  public placeOrder<ThrowOnError extends boolean = true>(
+    options: Options<PlaceOrderRequestConfig, ThrowOnError>,
+  ): Promise<RequestResult<PlaceOrderResponses, ThrowOnError>> {
+    const { client: request = this.client, ...config } = options
+
+    return request({ method: 'POST', url: '/store/order', ...config }) as Promise<RequestResult<PlaceOrderResponses, ThrowOnError>>
+  }
+}
+
+// const api = new PetStore({ baseURL: 'https://petstore.swagger.io/v2' })
+// await api.getPetById({ path: { petId: 1 } })
+```
+
+:::
+
+`mode: 'tag'` (the default) emits one class per tag, such as `PetClient` and `StoreClient`. Set `sdk.name` alongside it to also emit a composed root class that instantiates every tag client from one shared config, reached as `new PetStore(config).pet.getPetById(...)`. `mode: 'flat'` emits a single class named by `sdk.name` with every operation as a direct method. Omitting `sdk` keeps the standalone per-operation functions.
 
 ### resolver
 
@@ -478,30 +383,11 @@ Changes how the plugin names generated files and functions. Use it to add a pref
 | Required: | `false`                                              |
 
 > [!TIP]
-> Use `resolver` for naming and file-location tweaks. To change the AST nodes themselves (e.g. stripping descriptions), use `macros` instead.
-
-```typescript [Prefix every function name with "Api"]
-import { defineConfig } from 'kubb'
-import { pluginAxios } from '@kubb/plugin-axios'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginAxios({
-      resolver: {
-        resolveName(name) {
-          return `Api${this.default(name, 'function')}`
-        },
-      },
-    }),
-  ],
-})
-```
+> Use `resolver` for naming and file-location tweaks. To change the AST nodes themselves, such as stripping descriptions, use `macros` instead.
 
 ### macros
 
-Rewrites AST nodes before they are printed to source. Use it to rename operation IDs, drop descriptions, or change schema metadata without forking the generator. Each [macro](/docs/5.x/concepts/macros) callback (such as `schema` or `operation`) receives the node and a context object. Return a new node to replace it, or `undefined` to leave it as is. Callbacks you omit keep their default behavior. Macros run in order, so a later one sees the output of an earlier one.
+Rewrites AST nodes before the plugin prints them to source. Use it to rename operation IDs, drop descriptions, or change schema metadata without forking the generator. Each [macro](/docs/5.x/concepts/macros) callback, such as `schema` or `operation`, receives the node and a context object. Return a new node to replace it, or `undefined` to leave it as is. Callbacks you omit keep their default behavior. Macros run in order, so a later one sees the output of an earlier one.
 
 |           |                |
 | --------: | :------------- |
@@ -511,73 +397,12 @@ Rewrites AST nodes before they are printed to source. Use it to rename operation
 > [!TIP]
 > Use `macros` to rewrite node properties before printing. To change the names of generated symbols and files, use `resolver` instead.
 
-::: code-group
-
-```typescript [Strip descriptions before printing]
-import { defineConfig } from 'kubb'
-import { pluginAxios } from '@kubb/plugin-axios'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginAxios({
-      macros: [
-        {
-          name: 'strip-descriptions',
-          schema(node) {
-            return { ...node, description: undefined }
-          },
-        },
-      ],
-    }),
-  ],
-})
-```
-
-```typescript [Prefix every operationId]
-import { defineConfig } from 'kubb'
-import { pluginAxios } from '@kubb/plugin-axios'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginAxios({
-      macros: [
-        {
-          name: 'prefix-operation-id',
-          operation(node) {
-            return { ...node, operationId: `api_${node.operationId}` }
-          },
-        },
-      ],
-    }),
-  ],
-})
-```
-
-:::
-
-## Authentication
-
-The generated functions carry the security schemes from your spec, so you configure credentials in one place. Set an `auth` resolver on the client config and the runtime attaches a bearer, basic, or apiKey token to every guarded call.
-
-```typescript
-import { client } from './gen/clients/.kubb/client'
-
-client.setConfig({
-  auth: () => localStorage.getItem('token') ?? undefined,
-})
-```
-
-See the [authentication guide](/docs/5.x/guides/authentication) for the full scheme mapping, per-instance clients, and per-call overrides.
-
 ## Dependencies
 
-This plugin needs `@kubb/plugin-ts` in your config. Kubb runs it before `plugin-axios` so the functions can import the generated types.
+This plugin needs `@kubb/plugin-ts` in your config. Kubb runs it before `plugin-axios` so the functions can import the generated types. When `parser` is set to `'zod'`, also add `@kubb/plugin-zod`.
 
 - [`@kubb/plugin-ts`](/plugins/plugin-ts)
+- [`@kubb/plugin-zod`](/plugins/plugin-zod)
 
 ## Example
 
@@ -607,7 +432,9 @@ export default defineConfig({
 
 :::
 
-## See Also
+## See also
 
 - [axios](https://axios-http.com/)
+- [`@kubb/plugin-ts`](/plugins/plugin-ts)
+- [Authentication guide](/docs/5.x/guides/authentication)
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-axios/CHANGELOG.md)

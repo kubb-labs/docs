@@ -40,16 +40,9 @@ resources:
 
 # @kubb/plugin-cypress
 
-`@kubb/plugin-cypress` turns your OpenAPI operations into typed `cy.request()` wrappers. You get one helper per operation. Each helper types its path params, body, query, and response, so a broken API call fails at compile time instead of in the test runner. Use them in `before` and `beforeEach` hooks to seed data, in custom commands, or in API-only tests.
+`@kubb/plugin-cypress` turns your OpenAPI operations into typed `cy.request()` wrappers, one helper per operation. Each helper types its path params, body, query, and response, so a broken API call fails at compile time instead of in the test runner. Use the helpers in `before` and `beforeEach` hooks to seed data, in custom commands, or in API-only tests.
 
-It builds on [`@kubb/plugin-ts`](/plugins/plugin-ts), so add that plugin too.
-
-Each helper takes its parameters as a single grouped options object shaped as `{ body, path, query, headers }`, with camelCase property names. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
-
-**See also**
-
-- [Cypress](https://www.cypress.io/)
-- [cy.request()](https://docs.cypress.io/api/commands/request)
+Each helper takes its parameters as a single grouped options object shaped as `{ body, path, query, headers }`, with camelCase property names. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you. A helper resolves to the response body and its return type is `Cypress.Chainable<{Operation}Response>`.
 
 ## Installation
 
@@ -98,35 +91,6 @@ Folder where the plugin writes its files. It is resolved against the global `out
 > [!TIP]
 > `output.path` sets where files go, `output.mode` sets how many. Use `'directory'` (the default) for one file per operation, optionally grouped into subdirectories with the `group` option. Use `'file'` to write everything into a single file.
 
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginCypress } from '@kubb/plugin-cypress'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginCypress({
-      output: { path: './cypress' },
-    }),
-  ],
-})
-```
-
-```text [Resulting tree]
-src/
-└── gen/
-    └── cypress/
-        ├── getPetById.ts
-        └── getInventory.ts
-```
-
-:::
-
 #### output.mode
 
 How the plugin consolidates its generated code into files.
@@ -142,41 +106,6 @@ How the plugin consolidates its generated code into files.
 
 > [!TIP]
 > Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group`. A single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
-
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginCypress } from '@kubb/plugin-cypress'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { path: 'types.ts', mode: 'file' },
-    }),
-    pluginCypress({
-      output: { path: 'cypress', mode: 'directory' },
-      group: { type: 'tag' },
-    }),
-  ],
-})
-```
-
-```text [Resulting tree]
-src/
-└── gen/
-    ├── types.ts
-    └── cypress/
-        ├── pet/
-        │   └── getPetById.ts
-        └── store/
-            └── getInventory.ts
-```
-
-:::
 
 #### output.barrel
 
@@ -196,38 +125,6 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 > [!TIP]
 > Pick `'named'` when consumers care about which symbols they import (better tree-shaking, friendlier auto-import). Pick `'all'` when the file count is small and you want a one-line barrel.
 
-::: code-group
-
-```typescript ['named' (default)]
-export { getPetById } from './getPetById'
-export { getInventory } from './getInventory'
-```
-
-```typescript ['all']
-export * from './getPetById'
-export * from './getInventory'
-```
-
-```text [nested → generated tree]
-// output: { barrel: { type: 'named', nested: true } }
-src/gen/cypress/
-├── index.ts          # re-exports ./pet and ./store
-├── pet/
-│   ├── index.ts      # re-exports getPetById, ...
-│   └── getPetById.ts
-└── store/
-    ├── index.ts
-    └── getInventory.ts
-```
-
-```text [false → result]
-// output: { barrel: false }
-# No index.ts is generated for this plugin.
-# Its files are also excluded from the root index.ts.
-```
-
-:::
-
 #### output.banner
 
 Text added to the top of every generated file. Use it for license headers, lint disables, or a `@ts-nocheck` directive. Pass a string for a fixed banner, or a function that builds one from each file's `RootNode` (the AST root with the path, schema, and operation context).
@@ -236,44 +133,6 @@ Text added to the top of every generated file. Use it for license headers, lint 
 | --------: | :--------------------------------------- |
 |     Type: | `string \| ((node: RootNode) => string)` |
 | Required: | `false`                                  |
-
-::: code-group
-
-```typescript [Static banner]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginCypress } from '@kubb/plugin-cypress'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginCypress({
-      output: {
-        path: 'cypress',
-        banner: '/* eslint-disable */\n// @ts-nocheck',
-      },
-    }),
-  ],
-})
-```
-
-```typescript [Generated file]
-/* eslint-disable */
-// @ts-nocheck
-export function getPetById({ path }: Omit<GetPetByIdRequestConfig, 'url'>, options: Partial<Cypress.RequestOptions> = {}): Cypress.Chainable<GetPetByIdResponse> {
-  return cy
-    .request<GetPetByIdResponse>({
-      method: 'GET',
-      url: `/pet/${path.petId}`,
-      ...options,
-    })
-    .then((res) => res.body)
-}
-```
-
-:::
 
 #### output.footer
 
@@ -284,92 +143,14 @@ Text added to the bottom of every generated file. It works like `banner` but for
 |     Type: | `string \| ((node: RootNode) => string)` |
 | Required: | `false`                                  |
 
-::: code-group
-
-```typescript [Re-enable lint after a banner disable]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginCypress } from '@kubb/plugin-cypress'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginCypress({
-      output: {
-        path: 'cypress',
-        banner: '/* eslint-disable */',
-        footer: '/* eslint-enable */',
-      },
-    }),
-  ],
-})
-```
-
-:::
-
-### dataReturnType
-
-What each helper resolves to.
-
-- `'data'` (default) resolves to the response body only.
-- `'full'` resolves to the full Cypress response object, so you can read `status`, `headers`, and `body`.
-
-|           |                    |
-| --------: | :----------------- |
-|     Type: | `'data' \| 'full'` |
-| Required: | `false`            |
-|  Default: | `'data'`           |
-
-::: code-group
-
-```typescript ['data' (default)]
-// Cypress.Chainable<ShowPetByIdResponse>
-showPetById({ path: { petId: 1 } }).then((pet) => {
-  expect(pet.id).to.eq(1)
-})
-```
-
-```typescript ['full']
-// Cypress.Chainable<Cypress.Response<ShowPetByIdResponse>>
-showPetById({ path: { petId: 1 } }).then((response) => {
-  expect(response.status).to.eq(200)
-  expect(response.body.id).to.eq(1)
-})
-```
-
-:::
-
 ### baseURL
 
-Base URL added in front of every request URL. When omitted, the URL comes from the adapter's server URL (typically `servers[0].url`). Set it to point the helpers at a different environment (staging, production) than the spec.
+URL added in front of every request URL. When omitted, the URL comes from the adapter's server URL, usually the spec's `servers[0].url`. Set it to point the helpers at a different environment, such as staging or production.
 
 |           |          |
 | --------: | :------- |
 |     Type: | `string` |
 | Required: | `false`  |
-
-::: code-group
-
-```typescript [Override the spec's server URL]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginCypress } from '@kubb/plugin-cypress'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginCypress({
-      baseURL: 'https://petstore.swagger.io/v2',
-    }),
-  ],
-})
-```
-
-:::
 
 ### group
 
@@ -385,28 +166,7 @@ Splits generated files into subfolders by the operation's first tag or first pat
 >
 > `group` only applies to `output.mode: 'directory'` (the default). It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
 
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginCypress } from '@kubb/plugin-cypress'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginCypress({
-      group: { type: 'tag' },
-    }),
-  ],
-})
-```
-
-:::
-
-With the configuration above, the generator emits one folder per tag, named after the camelCased tag:
+With `group: { type: 'tag' }`, the generator emits one folder per tag, named after the camelCased tag:
 
 ```text [Resulting tree]
 src/gen/
@@ -418,7 +178,7 @@ src/gen/
     └── getStoreById.ts
 ```
 
-Pass `group.name` to customize the folder name. For example, `name: ({ group }) => \`${group}Controller\`` keeps the pre-v5 `petController/` layout.
+Pass `group.name` to customize the folder name. For example, ``name: ({ group }) => `${group}Controller` `` keeps the pre-v5 `petController/` layout.
 
 #### group.type
 
@@ -441,7 +201,7 @@ Function that builds the folder name from the group key (the operation's first t
 
 |           |                                           |
 | --------: | :---------------------------------------- |
-|     Type: | `(context: { group: string }) => string` |
+|     Type: | `(context: { group: string }) => string`  |
 | Required: | `false`                                   |
 |  Default: | camelCased tag, or first path segment for `path` groups |
 
@@ -470,47 +230,6 @@ export type Include = {
 }
 ```
 
-::: code-group
-
-```typescript [Only the pet tag]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginCypress } from '@kubb/plugin-cypress'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginCypress({
-      include: [{ type: 'tag', pattern: 'pet' }],
-    }),
-  ],
-})
-```
-
-```typescript [Only GET operations under /pet]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginCypress } from '@kubb/plugin-cypress'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginCypress({
-      include: [
-        { type: 'method', pattern: 'GET' },
-        { type: 'path', pattern: /^\/pet/ },
-      ],
-    }),
-  ],
-})
-```
-
-:::
-
 ### exclude
 
 Skips any operation that matches at least one entry in the list. It is the opposite of `include`. Entries use the same `type` (`tag`, `operationId`, `path`, `method`, `contentType`, `schemaName`) and `pattern` (string or `RegExp`). When both are set, `exclude` wins.
@@ -526,47 +245,6 @@ export type Exclude = {
   pattern: string | RegExp
 }
 ```
-
-::: code-group
-
-```typescript [Skip everything under the store tag]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginCypress } from '@kubb/plugin-cypress'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginCypress({
-      exclude: [{ type: 'tag', pattern: 'store' }],
-    }),
-  ],
-})
-```
-
-```typescript [Skip a specific operation and all delete methods]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginCypress } from '@kubb/plugin-cypress'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginCypress({
-      exclude: [
-        { type: 'operationId', pattern: 'deletePet' },
-        { type: 'method', pattern: 'DELETE' },
-      ],
-    }),
-  ],
-})
-```
-
-:::
 
 ### override
 
@@ -585,34 +263,6 @@ export type Override = {
 }
 ```
 
-::: code-group
-
-```typescript [Return the full response for the user tag]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginCypress } from '@kubb/plugin-cypress'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginCypress({
-      dataReturnType: 'data',
-      override: [
-        {
-          type: 'tag',
-          pattern: 'user',
-          options: { dataReturnType: 'full' },
-        },
-      ],
-    }),
-  ],
-})
-```
-
-:::
-
 ### resolver
 
 Changes how the plugin names generated files and symbols. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change. Anything you omit, or that returns `null` or `undefined`, falls back to the default. Inside a method, `this` is the full resolver, so you can call `this.default(name, 'function')` to reuse the built-in name.
@@ -623,41 +273,7 @@ Changes how the plugin names generated files and symbols. Use it to add a prefix
 | Required: | `false`                                                |
 
 > [!TIP]
-> Use `resolver` for naming and file-location tweaks. For changing the AST nodes themselves (e.g. stripping descriptions), use `macros` instead.
-
-```typescript [Add an Api prefix to every name]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginCypress } from '@kubb/plugin-cypress'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginCypress({
-      resolver: {
-        resolveName(name) {
-          return `Api${this.default(name, 'function')}`
-        },
-      },
-    }),
-  ],
-})
-```
-
-Each plugin ships with a default resolver:
-
-| Plugin                 | Default resolver  |
-| ---------------------- | ----------------- |
-| `@kubb/plugin-ts`      | `resolverTs`      |
-| `@kubb/plugin-zod`     | `resolverZod`     |
-| `@kubb/plugin-faker`   | `resolverFaker`   |
-| `@kubb/plugin-cypress` | `resolverCypress` |
-| `@kubb/plugin-msw`     | `resolverMsw`     |
-| `@kubb/plugin-mcp`     | `resolverMcp`     |
-| `@kubb/plugin-axios`   | `resolverClient`  |
-| `@kubb/plugin-fetch`   | `resolverClient`  |
+> Use `resolver` for naming and file-location tweaks. To change the AST nodes themselves, such as stripping descriptions, use `macros` instead.
 
 ### macros
 
@@ -669,65 +285,11 @@ Rewrites AST nodes before they are printed to source. Use it to rename operation
 | Required: | `false`        |
 
 > [!TIP]
-> Use `macros` to rewrite node properties before printing. For changing the names of generated symbols and files, use `resolver` instead.
-
-::: code-group
-
-```typescript [Strip descriptions before printing]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginCypress } from '@kubb/plugin-cypress'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginCypress({
-      macros: [
-        {
-          name: 'strip-descriptions',
-          schema(node) {
-            return { ...node, description: undefined }
-          },
-        },
-      ],
-    }),
-  ],
-})
-```
-
-```typescript [Prefix every operationId]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginCypress } from '@kubb/plugin-cypress'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginCypress({
-      macros: [
-        {
-          name: 'prefix-operation-id',
-          operation(node) {
-            return { ...node, operationId: `api_${node.operationId}` }
-          },
-        },
-      ],
-    }),
-  ],
-})
-```
-
-:::
+> Use `macros` to rewrite node properties before printing. To change the names of generated symbols and files, use `resolver` instead.
 
 ## Dependencies
 
-This plugin needs the following plugin installed:
-
-- [`@kubb/plugin-ts`](/plugins/plugin-ts)
+This plugin depends on [`@kubb/plugin-ts`](/plugins/plugin-ts) for the request, parameter, and response types it imports. Keep `pluginTs()` in the plugins array.
 
 ## Example
 
@@ -749,7 +311,6 @@ export default defineConfig({
         barrel: { type: 'named' },
         banner: '/* eslint-disable */',
       },
-      dataReturnType: 'full',
       group: {
         type: 'tag',
         name: ({ group }) => `${group}Requests`,
@@ -764,9 +325,8 @@ import { getPetById } from '../gen/cypress/petRequests'
 
 describe('Pet API', () => {
   it('returns the pet by id', () => {
-    getPetById({ path: { petId: 1 } }).then((response) => {
-      expect(response.status).to.eq(200)
-      expect(response.body.id).to.eq(1)
+    getPetById({ path: { petId: 1 } }).then((pet) => {
+      expect(pet.id).to.eq(1)
     })
   })
 })
@@ -774,6 +334,9 @@ describe('Pet API', () => {
 
 :::
 
-## See Also
+## See also
 
+- [Cypress](https://www.cypress.io/)
+- [cy.request()](https://docs.cypress.io/api/commands/request)
+- [@kubb/plugin-ts](/plugins/plugin-ts)
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-cypress/CHANGELOG.md)

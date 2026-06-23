@@ -125,9 +125,7 @@ The `@kubb/ast/factory` subpath also provides constructors for source files and 
 | `createFile`, `createSource`, `createText`                          | Build `FileNode`s emitted by generators.                 |
 | `createImport`, `createExport`                                      | Emit `import` / `export` statements.                     |
 | `createConst`, `createFunction`, `createArrowFunction`, `createJsx` | Emit TypeScript declarations and JSX.                    |
-| `createFunctionParameter`, `createFunctionParameters`               | Build typed function parameter lists.                    |
 | `createParameter`                                                   | Describe operation parameters.                           |
-| `createTypeLiteral`, `createIndexedAccessType`, `createObjectBindingPattern` | Build inline object types, indexed access types, and destructuring bindings for parameter signatures. |
 | `createProperty`, `createType`                                      | Compose object properties and TypeScript types.          |
 | `createResponse`, `createRequestBody`, `createContent`, `createOutput` | Model responses, request bodies, content entries, and generator outputs. |
 | `createBreak`                                                       | Emit line breaks between nodes.                          |

@@ -7,7 +7,7 @@ description: Configuration and generated-output changes for @kubb/plugin-msw whe
 
 Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). For the full option reference, see [`@kubb/plugin-msw`](/plugins/plugin-msw).
 
-[`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`. The `contentType` option moved to [`adapterOas`](/adapters/adapter-oas), covered in [Migration: @kubb/adapter-oas](/docs/5.x/migration-guide/adapter-oas). Every other option stays the same.
+[`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`. The `contentType` option moved to [`adapterOas`](/adapters/adapter-oas), covered in [Migration: @kubb/adapter-oas](/docs/5.x/migration-guide/adapter-oas), and the `generators` option is [gone](/docs/5.x/migration-guide#generators-removed). The `parser` (`'data' | 'faker'`, default `'data'`), `handlers`, and `baseURL` options carry over unchanged.
 
 ## Generated output
 

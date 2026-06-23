@@ -68,7 +68,7 @@ yarn add -D @kubb/parser-ts@beta
 
 ## Import extensions
 
-The parser is a ready-made object. You add it to the `parsers` list, and it takes no options of its own. To change the extension written into generated imports, set `output.extension` on `defineConfig`. The parser reads that map and rewrites each import path.
+The parser takes no options of its own. You add it to the `parsers` list as-is. To change the extension written into generated imports, set `output.extension` on `defineConfig`. The parser reads that map and rewrites each import path.
 
 For example, `output.extension: { '.ts': '.js' }` turns `import { Pet } from './Pet'` into `import { Pet } from './Pet.js'`. Node's ESM resolver expects that `.js` suffix.
 
