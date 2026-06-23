@@ -455,16 +455,25 @@ Coercion changes what the schema accepts at `parse`:
 ::: code-group
 
 ```typescript [coercion: true]
-import { quantitySchema } from './src/gen/zod/quantitySchema'
+import { querySchema } from './src/gen/zod/querySchema'
 
-quantitySchema.parse('42') // 42, the string is coerced to a number
+// strings, numbers, and dates are coerced
+querySchema.parse({ count: '5', date: '2024-01-01' }) // { count: 5, date: Date }
 ```
 
 ```typescript [coercion: false (default)]
-import { quantitySchema } from './src/gen/zod/quantitySchema'
+import { querySchema } from './src/gen/zod/querySchema'
 
-quantitySchema.parse('42') // throws a ZodError, a number is required
-quantitySchema.parse(42) // 42
+querySchema.parse({ count: '5', date: '2024-01-01' }) // throws a ZodError, nothing is coerced
+querySchema.parse({ count: 5, date: new Date() }) // ok
+```
+
+```typescript [Coerce numbers only]
+import { querySchema } from './src/gen/zod/querySchema'
+
+// only numbers are coerced, so the date must already be a Date
+querySchema.parse({ count: '5', date: new Date() }) // { count: 5, date: Date }
+querySchema.parse({ count: '5', date: '2024-01-01' }) // throws, the date is not coerced
 ```
 
 :::
