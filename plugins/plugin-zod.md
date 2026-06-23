@@ -478,59 +478,6 @@ querySchema.parse({ count: '5', date: '2024-01-01' }) // throws, the date is not
 
 :::
 
-### operations
-
-Emits an `operations.ts` file. It groups the schemas per operation: request body, path/query/header params, each response status, and errors. The map is keyed by `operationId`, and a `paths` map links each URL and method back to it. Use it when you wire Kubb output into a server framework that takes one set of Zod schemas per route.
-
-|           |           |
-| --------: | :-------- |
-|     Type: | `boolean` |
-| Required: | `false`   |
-|  Default: | `false`   |
-
-::: code-group
-
-```typescript [operations: true → operations.ts]
-export const operations = {
-  getPetById: {
-    request: undefined,
-    parameters: {
-      path: getPetByIdPathParamsSchema,
-      query: undefined,
-      header: undefined,
-    },
-    responses: {
-      200: getPetById200Schema,
-    },
-    errors: {},
-  },
-} as const
-
-export const paths = {
-  '/pet/{petId}': {
-    get: operations['getPetById'],
-  },
-} as const
-```
-
-```typescript [operations: false (default)]
-// No operations.ts is generated.
-```
-
-:::
-
-With `operations: true`, reach a route's schemas through the map and validate with them:
-
-```typescript
-import { operations, paths } from './src/gen/zod/operations'
-
-const params = operations['getPetById'].parameters.path.parse({ petId: '1' })
-const pet = operations['getPetById'].responses[200].parse(data)
-
-// or reach the same entry by URL and method
-const getPet = paths['/pet/{petId}'].get
-```
-
 ### guidType
 
 Validator used for OpenAPI properties with `format: uuid`.
