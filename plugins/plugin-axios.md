@@ -369,7 +369,7 @@ export class PetStore {
 
 `mode: 'tag'` (the default) emits one class per tag, such as `PetClient` and `StoreClient`. Set `sdk.name` alongside it to also emit a composed root class that instantiates every tag client from one shared config, reached as `new PetStore(config).pet.getPetById(...)`. `mode: 'flat'` emits a single class named by `sdk.name` with every operation as a direct method. Omitting `sdk` keeps the standalone per-operation functions.
 
-Using the generated SDK works the same across modes. Construct a class with a client config (`baseURL`, `headers`, and the other `ClientConfig` fields), then call a method with the grouped options object (`{ path, query, headers, body }`) and read `data` off the result. The per-tag `PetClient` and `StoreClient` are identical with or without `sdk.name`; the name only adds a root that wires them together:
+Using the generated SDK works the same across modes. Construct a class with a client config (`baseURL`, `headers`, and the other `ClientConfig` fields), then call a method with the grouped options object (`{ path, query, headers, body }`) and read `data` off the result. The per-tag `PetClient` and `StoreClient` are identical with or without `sdk.name`. The name only adds a root that wires them together:
 
 ::: code-group
 
