@@ -216,17 +216,17 @@ export const pluginExample = definePlugin((options: { prefix?: string } = {}) =>
 
 #### `KubbPluginSetupContext` methods (passed to `kubb:plugin:setup`)
 
-| Method           | Signature                               | Purpose                                                         |
-| ---------------- | --------------------------------------- | --------------------------------------------------------------- |
-| `addGenerator`   | `(generator: Generator) => void`        | Register a generator for this plugin                            |
-| `setResolver`    | `(resolver: Partial<Resolver>) => void` | Set or partially override the file naming resolver              |
-| `addMacro`       | `(macro: Macro) => void`                | Add a macro that rewrites AST nodes before generators           |
-| `setMacros`      | `(macros: Array<Macro>) => void`        | Replace this plugin's macros with a new list                    |
-| `setOptions`     | `(options: ResolvedOptions) => void`    | Set the resolved options used by generators                     |
-| `injectFile`     | `(file: UserFileNode) => void`          | Inject a raw file into the build output, bypassing generation   |
-| `updateConfig`   | `(config: Partial<Config>) => void`     | Merge a partial config update into the current build config     |
-| `config`         | `Config`                                | The resolved build configuration at setup time                  |
-| `options`        | `TOptions`                              | The plugin's own options as passed by the user                  |
+| Method           | Signature                                                       | Purpose                                                       |
+| ---------------- | --------------------------------------------------------------- | ------------------------------------------------------------- |
+| `addGenerator`   | `(...generators: Array<Generator \| Array<Generator>>) => void` | Register one or more generators for this plugin               |
+| `setResolver`    | `(resolver: Partial<Resolver>) => void`                         | Set or partially override the file naming resolver            |
+| `addMacro`       | `(macro: Macro) => void`                                        | Add a macro that rewrites AST nodes before generators         |
+| `setMacros`      | `(macros: Array<Macro>) => void`                                | Replace this plugin's macros with a new list                  |
+| `setOptions`     | `(options: ResolvedOptions) => void`                            | Set the resolved options used by generators                   |
+| `injectFile`     | `(file: UserFileNode) => void`                                  | Inject a raw file into the build output, bypassing generation |
+| `updateConfig`   | `(config: Partial<Config>) => void`                             | Merge a partial config update into the current build config   |
+| `config`         | `Config`                                                        | The resolved build configuration at setup time                |
+| `options`        | `TOptions`                                                      | The plugin's own options as passed by the user                |
 
 > [!IMPORTANT]
 > Plugin names should follow the convention `plugin-<feature>` (e.g., `plugin-react-query`, `plugin-zod`). See [Creating plugins](/docs/5.x/guides/creating-plugins) for naming conventions.

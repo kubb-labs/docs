@@ -342,7 +342,7 @@ export const resolverExample = defineResolver<PluginExample>(() => ({
 
 | Method / Property | Purpose                                                                           |
 | ----------------- | --------------------------------------------------------------------------------- |
-| `addGenerator`    | Register a [`Generator`](/docs/5.x/concepts/plugins#generators) for the AST walk. |
+| `addGenerator`    | Register one or more [`Generator`](/docs/5.x/concepts/plugins#generators)s for the AST walk. Pass them as separate arguments or as arrays. |
 | `setResolver`     | Set or override the resolver (file naming and paths).                             |
 | `addMacro`        | Add a [macro](/docs/5.x/concepts/macros) that rewrites AST nodes before generators. |
 | `setMacros`       | Replace this plugin's macros with a new list.                                     |
