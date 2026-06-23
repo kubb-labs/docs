@@ -40,11 +40,6 @@ resources:
 
 `@kubb/plugin-ts` turns your OpenAPI schemas into TypeScript types and interfaces. Most other Kubb plugins build on it. Clients, query hooks, mocks, and validators reuse the names it generates. That way every request, response, parameter, and enum is checked at compile time.
 
-**See also**
-
-- [TypeScript](https://www.typescriptlang.org/)
-- [TypeScript Compiler API](https://github.com/microsoft/TypeScript/wiki/Using-the-Compiler-API)
-
 ## Installation
 
 ::: code-group
@@ -92,33 +87,6 @@ Folder where the plugin writes its files. It is resolved against the global `out
 > [!TIP]
 > `output.path` sets where files go, `output.mode` sets how many. Use `'directory'` (the default) for one file per operation, optionally grouped into subdirectories with the `group` option. Use `'file'` to write everything into a single file.
 
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { path: './types' },
-    }),
-  ],
-})
-```
-
-```text [Resulting tree]
-src/
-└── gen/
-    └── types/
-        ├── Pet.ts
-        └── Store.ts
-```
-
-:::
-
 #### output.mode
 
 How the plugin consolidates its generated code into files.
@@ -134,41 +102,6 @@ How the plugin consolidates its generated code into files.
 
 > [!TIP]
 > Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group`. A single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
-
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginAxios } from '@kubb/plugin-axios'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { path: 'types.ts', mode: 'file' },
-    }),
-    pluginAxios({
-      output: { path: 'clients', mode: 'directory' },
-      group: { type: 'tag' },
-    }),
-  ],
-})
-```
-
-```text [Resulting tree]
-src/
-└── gen/
-    ├── types.ts
-    └── clients/
-        ├── pet/
-        │   └── getPetById.ts
-        └── store/
-            └── getInventory.ts
-```
-
-:::
 
 #### output.barrel
 
@@ -191,33 +124,18 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 ::: code-group
 
 ```typescript ['named' (default)]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { path: 'types', barrel: { type: 'named' } },
-    }),
-  ],
-})
-```
-
-```typescript [src/gen/types/index.ts]
+// src/gen/types/index.ts
 export { Pet, PetStatus } from './Pet'
 export { Store } from './Store'
 ```
 
-```typescript ['all' → src/gen/types/index.ts]
-// output: { barrel: { type: 'all' } }
+```typescript ['all']
+// src/gen/types/index.ts
 export * from './Pet'
 export * from './Store'
 ```
 
-```text [nested → generated tree]
-// output: { barrel: { type: 'named', nested: true } }
+```text [nested]
 src/gen/types/
 ├── index.ts          # re-exports ./pet and ./store
 ├── pet/
@@ -228,8 +146,7 @@ src/gen/types/
     └── Store.ts
 ```
 
-```text [false → result]
-// output: { barrel: false }
+```text [false]
 # No index.ts is generated for this plugin.
 # Its files are also excluded from the root index.ts.
 ```
@@ -245,27 +162,9 @@ Text added to the top of every generated file. Use it for license headers, lint 
 |     Type: | `string \| ((node: RootNode) => string)` |
 | Required: | `false`                                  |
 
-::: code-group
+A static `banner: '/* eslint-disable */\n// @ts-nocheck'` lands at the top of each generated file:
 
-```typescript [Static banner]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: {
-        path: 'types',
-        banner: '/* eslint-disable */\n// @ts-nocheck',
-      },
-    }),
-  ],
-})
-```
-
-```typescript [Generated file]
+```typescript
 /* eslint-disable */
 // @ts-nocheck
 export type Pet = {
@@ -274,57 +173,16 @@ export type Pet = {
 }
 ```
 
-```typescript [Dynamic banner]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: {
-        path: 'types',
-        banner: (meta) => `// Source: ${meta.filePath}\n// Generated at ${new Date().toISOString()}`,
-      },
-    }),
-  ],
-})
-```
-
-:::
+A function banner builds the text from the file's `RootNode`, such as `banner: (node) => \`// Source: ${node.filePath}\``.
 
 #### output.footer
 
-Text added to the bottom of every generated file. It works like `banner` but for closing comments, such as re-enabling a lint rule. Pass a string or a function that receives the file's `RootNode` and returns the text.
+Text added to the bottom of every generated file. It works like `banner` but for closing comments, such as re-enabling a lint rule. Pass a string or a function that receives the file's `RootNode` and returns the text. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a lint disable to the generated file.
 
 |           |                                          |
 | --------: | :--------------------------------------- |
 |     Type: | `string \| ((node: RootNode) => string)` |
 | Required: | `false`                                  |
-
-::: code-group
-
-```typescript [Re-enable lint after a banner disable]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: {
-        path: 'types',
-        banner: '/* eslint-disable */',
-        footer: '/* eslint-enable */',
-      },
-    }),
-  ],
-})
-```
-
-:::
 
 ### group
 
@@ -340,26 +198,7 @@ Splits generated files into subfolders by the operation's tag or URL path. Each 
 >
 > `group` only applies to `output.mode: 'directory'` (the default). It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
 
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      group: { type: 'tag' },
-    }),
-  ],
-})
-```
-
-:::
-
-With the configuration above, the generator emits one folder per tag, named after the camelCased tag:
+With `group: { type: 'tag' }`, the generator emits one folder per tag, named after the camelCased tag:
 
 ```text [Resulting tree]
 src/gen/
@@ -416,12 +255,13 @@ How OpenAPI enums are represented in the generated TypeScript, and how their nam
 > Set `constCasing: 'pascalCase'` together with `typeSuffix: ''` to emit a const and a type that share the schema's exact name. This is the convention most hand-written codebases use, so migrating an existing project keeps every annotation and value reference intact.
 >
 > ```typescript
-> export const VehicleType = {
->   Sedan: 'Sedan',
->   SUV: 'SUV',
+> export const PetStatus = {
+>   available: 'available',
+>   pending: 'pending',
+>   sold: 'sold',
 > } as const
 >
-> export type VehicleType = (typeof VehicleType)[keyof typeof VehicleType]
+> export type PetStatus = (typeof PetStatus)[keyof typeof PetStatus]
 > ```
 
 #### enum.type
@@ -431,7 +271,7 @@ How OpenAPI enums are represented in the generated TypeScript.
 - `'asConst'` (default) generates an `as const` object plus a key/value type. It is tree-shakeable and adds no enum runtime.
 - `'enum'` generates a regular TypeScript `enum`, which produces JavaScript runtime code.
 - `'constEnum'` generates a `const enum`. It inlines at compile time and is not compatible with `--isolatedModules`.
-- `'literal'` generates a plain union type (`'dog' | 'cat'`) with no runtime value.
+- `'literal'` generates a plain union type (`'available' | 'pending' | 'sold'`) with no runtime value.
 - `'inlineLiteral'` inlines the union at every usage site instead of giving it a name.
 
 |           |                                                                      |
@@ -442,51 +282,51 @@ How OpenAPI enums are represented in the generated TypeScript.
 
 ::: code-group
 
+```typescript ['asConst' (default)]
+export const petStatus = {
+  available: 'available',
+  pending: 'pending',
+  sold: 'sold',
+} as const
+
+export type PetStatusKey = (typeof petStatus)[keyof typeof petStatus]
+```
+
 ```typescript ['enum']
-enum PetType {
-  Dog = 'dog',
-  Cat = 'cat',
+export enum PetStatus {
+  available = 'available',
+  pending = 'pending',
+  sold = 'sold',
 }
 ```
 
-```typescript ['asConst' (default)]
-export const petType = {
-  Dog: 'dog',
-  Cat: 'cat',
-} as const
-
-export type PetTypeKey = (typeof petType)[keyof typeof petType]
-```
-
 ```typescript ['constEnum']
-const enum PetType {
-  Dog = 'dog',
-  Cat = 'cat',
+export const enum PetStatus {
+  available = 'available',
+  pending = 'pending',
+  sold = 'sold',
 }
 ```
 
 ```typescript ['literal']
-export type PetType = 'dog' | 'cat'
+export type PetStatus = 'available' | 'pending' | 'sold'
 ```
 
 ```typescript ['inlineLiteral']
-// No separate enum type. Values are inlined wherever PetType would have been used
-export interface Pet {
-  status?: 'available' | 'pending' | 'sold'
-}
+export type PetStatus = 'available' | 'pending' | 'sold'
 ```
 
 :::
 
 > [!TIP]
-> `'inlineLiteral'` produces the cleanest output for small enums. The values appear directly where they are used instead of via a named alias.
+> `'inlineLiteral'` keeps the union out of a named alias. The values appear directly at each usage site, such as `status?: 'available' | 'pending' | 'sold'` on the owning type.
 
 #### enum.constCasing
 
 Casing of the generated const variable when `type` is `'asConst'`.
 
-- `'camelCase'` names the const `petType`.
-- `'pascalCase'` names the const `PetType`, matching the schema name.
+- `'camelCase'` names the const `petStatus`.
+- `'pascalCase'` names the const `PetStatus`, matching the schema name.
 
 |           |                               |
 | --------: | :---------------------------- |
@@ -497,21 +337,23 @@ Casing of the generated const variable when `type` is `'asConst'`.
 ::: code-group
 
 ```typescript ['camelCase' (default)]
-export const petType = {
-  Dog: 'dog',
-  Cat: 'cat',
+export const petStatus = {
+  available: 'available',
+  pending: 'pending',
+  sold: 'sold',
 } as const
 
-export type PetTypeKey = (typeof petType)[keyof typeof petType]
+export type PetStatusKey = (typeof petStatus)[keyof typeof petStatus]
 ```
 
 ```typescript ['pascalCase']
-export const PetType = {
-  Dog: 'dog',
-  Cat: 'cat',
+export const PetStatus = {
+  available: 'available',
+  pending: 'pending',
+  sold: 'sold',
 } as const
 
-export type PetTypeKey = (typeof PetType)[keyof typeof PetType]
+export type PetStatusKey = (typeof PetStatus)[keyof typeof PetStatus]
 ```
 
 :::
@@ -520,7 +362,7 @@ export type PetTypeKey = (typeof PetType)[keyof typeof PetType]
 
 Suffix appended to the type alias generated for enums when `type` is `'asConst'`.
 
-The const object name (e.g. `petType`) is unaffected, so only the companion type alias is renamed. Set it to `''` to drop the suffix, which (with `constCasing: 'pascalCase'`) merges the const and type under one name.
+The const object name (e.g. `petStatus`) is unaffected, so only the companion type alias is renamed. Set it to `''` to drop the suffix, which (with `constCasing: 'pascalCase'`) merges the const and type under one name.
 
 |           |          |
 | --------: | :------- |
@@ -531,30 +373,33 @@ The const object name (e.g. `petType`) is unaffected, so only the companion type
 ::: code-group
 
 ```typescript ['Key' (default)]
-export const petType = {
-  Dog: 'dog',
-  Cat: 'cat',
+export const petStatus = {
+  available: 'available',
+  pending: 'pending',
+  sold: 'sold',
 } as const
 
-export type PetTypeKey = (typeof petType)[keyof typeof petType]
+export type PetStatusKey = (typeof petStatus)[keyof typeof petStatus]
 ```
 
 ```typescript ['Value']
-export const petType = {
-  Dog: 'dog',
-  Cat: 'cat',
+export const petStatus = {
+  available: 'available',
+  pending: 'pending',
+  sold: 'sold',
 } as const
 
-export type PetTypeValue = (typeof petType)[keyof typeof petType]
+export type PetStatusValue = (typeof petStatus)[keyof typeof petStatus]
 ```
 
 ```typescript ['' (no suffix)]
-export const petType = {
-  Dog: 'dog',
-  Cat: 'cat',
+export const petStatus = {
+  available: 'available',
+  pending: 'pending',
+  sold: 'sold',
 } as const
 
-export type PetType = (typeof petType)[keyof typeof petType]
+export type PetStatus = (typeof petStatus)[keyof typeof petStatus]
 ```
 
 :::
@@ -723,24 +568,7 @@ Changes how the plugin names generated files and symbols. Use it to add a prefix
 > [!TIP]
 > Use `resolver` for naming and file-location tweaks. For changing the AST nodes themselves (e.g. stripping descriptions), use `macros` instead.
 
-```typescript [Add an Api prefix to every name]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      resolver: {
-        resolveTypeName(name) {
-          return `Api${this.default(name, 'function')}`
-        },
-      },
-    }),
-  ],
-})
-```
+For example, `resolver: { resolveTypeName(name) { return \`Api${this.default(name, 'function')}\` } }` prefixes every generated type name with `Api`.
 
 Each plugin ships with a default resolver:
 
@@ -780,42 +608,7 @@ export type Include = {
 }
 ```
 
-::: code-group
-
-```typescript [Only the pet tag]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      include: [{ type: 'tag', pattern: 'pet' }],
-    }),
-  ],
-})
-```
-
-```typescript [Only GET operations under /pet]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      include: [
-        { type: 'method', pattern: 'GET' },
-        { type: 'path', pattern: /^\/pet/ },
-      ],
-    }),
-  ],
-})
-```
-
-:::
+Pass `include: [{ type: 'tag', pattern: 'pet' }]` to keep only the `pet` tag. Stack entries to narrow further, such as `{ type: 'method', pattern: 'GET' }` with `{ type: 'path', pattern: /^\/pet/ }` for GET operations under `/pet`.
 
 ### exclude
 
@@ -833,42 +626,7 @@ export type Exclude = {
 }
 ```
 
-::: code-group
-
-```typescript [Skip everything under the store tag]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      exclude: [{ type: 'tag', pattern: 'store' }],
-    }),
-  ],
-})
-```
-
-```typescript [Skip a specific operation and all delete methods]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      exclude: [
-        { type: 'operationId', pattern: 'deletePet' },
-        { type: 'method', pattern: 'DELETE' },
-      ],
-    }),
-  ],
-})
-```
-
-:::
+Pass `exclude: [{ type: 'tag', pattern: 'store' }]` to drop the `store` tag, or stack `{ type: 'operationId', pattern: 'deletePet' }` with `{ type: 'method', pattern: 'DELETE' }` to skip one operation and every DELETE.
 
 ### override
 
@@ -887,31 +645,7 @@ export type Override = {
 }
 ```
 
-::: code-group
-
-```typescript [Use a different enum style for the user tag]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      enum: { type: 'asConst' },
-      override: [
-        {
-          type: 'tag',
-          pattern: 'user',
-          options: { enum: { type: 'literal', constCasing: 'camelCase', typeSuffix: 'Key', keyCasing: 'none' } },
-        },
-      ],
-    }),
-  ],
-})
-```
-
-:::
+For example, `override: [{ type: 'tag', pattern: 'user', options: { enum: { type: 'literal' } } }]` switches the `user` tag to literal enums while the rest of the spec keeps the plugin default.
 
 ### macros
 
@@ -925,53 +659,28 @@ Rewrites AST nodes before they are printed to source. Use it to rename operation
 > [!TIP]
 > Use `macros` to rewrite node properties before printing. For changing the names of generated symbols and files, use `resolver` instead.
 
-::: code-group
+Each entry names the macro and supplies one callback per node kind:
 
-```typescript [Strip descriptions before printing]
-import { defineConfig } from 'kubb'
+```typescript [A macros array]
 import { pluginTs } from '@kubb/plugin-ts'
 
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      macros: [
-        {
-          name: 'strip-descriptions',
-          schema(node) {
-            return { ...node, description: undefined }
-          },
-        },
-      ],
-    }),
+pluginTs({
+  macros: [
+    {
+      name: 'strip-descriptions',
+      schema(node) {
+        return { ...node, description: undefined }
+      },
+    },
+    {
+      name: 'prefix-operation-id',
+      operation(node) {
+        return { ...node, operationId: `api_${node.operationId}` }
+      },
+    },
   ],
 })
 ```
-
-```typescript [Prefix every operationId]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      macros: [
-        {
-          name: 'prefix-operation-id',
-          operation(node) {
-            return { ...node, operationId: `api_${node.operationId}` }
-          },
-        },
-      ],
-    }),
-  ],
-})
-```
-
-:::
 
 ### printer
 
@@ -984,53 +693,27 @@ Use `this.transform` to recurse into nested nodes, and `this.options` to read pr
 |     Type: | `{ nodes?: PrinterTsNodes }` |
 | Required: | `false`                      |
 
-::: code-group
-
-```typescript [Use the JavaScript Date object for date schemas]
+```typescript [Map date schemas to the Date object]
 import ts from 'typescript'
-import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      printer: {
-        nodes: {
-          date() {
-            return ts.factory.createTypeReferenceNode('Date', [])
-          },
-        },
+pluginTs({
+  printer: {
+    nodes: {
+      date() {
+        return ts.factory.createTypeReferenceNode('Date', [])
       },
-    }),
-  ],
+      integer() {
+        return ts.factory.createKeywordTypeNode(ts.SyntaxKind.BigIntKeyword)
+      },
+    },
+  },
 })
 ```
 
-```typescript [Use bigint for integers]
-import ts from 'typescript'
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+## Dependencies
 
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      printer: {
-        nodes: {
-          integer() {
-            return ts.factory.createKeywordTypeNode(ts.SyntaxKind.BigIntKeyword)
-          },
-        },
-      },
-    }),
-  ],
-})
-```
-
-:::
+`@kubb/plugin-ts` has no plugin dependencies. It reads the OpenAPI spec through `@kubb/adapter-oas` and produces the type names every other plugin reuses, so add it whenever a client, query, mock, or validator plugin needs typed output.
 
 ## Example
 
@@ -1059,4 +742,6 @@ export default defineConfig({
 
 ## See Also
 
+- [TypeScript](https://www.typescriptlang.org/)
+- [TypeScript Compiler API](https://github.com/microsoft/TypeScript/wiki/Using-the-Compiler-API)
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-ts/CHANGELOG.md)

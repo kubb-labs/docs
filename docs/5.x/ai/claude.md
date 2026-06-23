@@ -1,15 +1,15 @@
 ---
 layout: doc
 title: Claude - AI
-description: The Kubb Claude Code plugin adds slash commands, a config skill and an agent that run Kubb code generation from inside Claude Code.
+description: The Kubb Claude Code plugin adds slash commands and an agent that run Kubb code generation from inside Claude Code.
 outline: [2, 3]
 ---
 
 # Claude Code plugin
 
-Kubb ships a [Claude Code](https://code.claude.com) plugin. It adds slash commands, a config
-skill, and an agent that generate code from an OpenAPI spec. The commands run the `kubb` CLI. A
-build you start in the chat matches the one you run in a terminal.
+Kubb ships a [Claude Code](https://code.claude.com) plugin. It adds slash commands and an agent
+that generate code from an OpenAPI spec. The commands run the `kubb` CLI. A build you start in the
+chat matches the one you run in a terminal.
 
 > [!IMPORTANT]
 > The plugin needs Kubb v5 or higher. It targets the v5 CLI and the built-in MCP server.
@@ -57,10 +57,7 @@ A typical first run:
 /kubb:generate
 ```
 
-## Skill and agent
-
-The plugin ships a `config` skill. It teaches Claude how to author a `kubb.config.ts` and pick
-the right `@kubb/plugin-*` packages. See [Skills](/docs/5.x/ai/skills) for what it covers.
+## Agent
 
 The `kubb-expert` agent handles "add Kubb to my project" from start to finish. It validates the
 spec, picks plugins, scaffolds the config, and runs generation.
@@ -72,6 +69,5 @@ typing a command, and Claude calls the server directly. See [MCP](/docs/5.x/ai/m
 
 ## See also
 
-- [Skills](/docs/5.x/ai/skills): the Kubb AI coding skills
 - [MCP](/docs/5.x/ai/mcp): connect AI editors directly to Kubb's MCP server
 - [Claude MCP guide](/docs/5.x/guides/claude-mcp-plugin): generate an MCP server from your spec

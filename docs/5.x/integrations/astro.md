@@ -52,4 +52,4 @@ export default defineAstroConfig({
 ```
 
 > [!NOTE]
-> The Astro integration uses Vite under the hood with `apply: 'build'`. Generation runs during `astro build` only. Run [`kubb generate`](/docs/5.x/api/commands/) before you start the dev server.
+> The Astro integration runs through Vite with `apply: 'build'`. Generation runs during `astro build` only. Run [`kubb generate`](/docs/5.x/api/commands/) before you start the dev server.

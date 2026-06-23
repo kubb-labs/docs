@@ -37,6 +37,18 @@ export function showPetById({ path, query }: Omit<ShowPetByIdRequestConfig, 'url
 
 :::
 
+## Removed: `dataReturnType`
+
+`dataReturnType` is gone. Every helper now yields the response body, typed `Cypress.Chainable<T>`, so the `'data'` and `'full'` choice no longer applies.
+
+```diff [Diff]
+  pluginCypress({
+-   dataReturnType: 'data',
+  })
+```
+
+`baseURL` stays the same, and `exclude`, `include`, and `override` keep their v4 shape. Cypress has no `parser` option, unlike the client plugins.
+
 ## Generated output
 
 Two things change. HTTP method constants are now uppercase (`'post'` becomes `'POST'`), and imports follow the new `*Data` / `*Response` naming.

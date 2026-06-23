@@ -42,15 +42,9 @@ resources:
 
 # @kubb/plugin-msw
 
-`@kubb/plugin-msw` turns your OpenAPI spec into [MSW](https://mswjs.io/) request handlers. Drop them into a test setup or a service worker to mock the API. Each handler matches the spec's path, method, status, and response body. It builds on `@kubb/plugin-ts`, so keep `pluginTs()` in the plugins array.
+`@kubb/plugin-msw` turns your OpenAPI spec into [MSW](https://mswjs.io/) request handlers. Drop them into a test setup or a service worker to mock the API. Each handler matches the spec's path, method, status, and response body.
 
-By default a handler returns an empty typed payload you fill in from tests. Set `parser: 'faker'` to return generated data instead.
-
-**See also**
-
-- [MSW](https://mswjs.io/)
-- [@kubb/plugin-ts](/plugins/plugin-ts)
-- [@kubb/plugin-faker](/plugins/plugin-faker)
+By default a handler returns an empty typed payload you fill in from tests. Set `parser: 'faker'` to return generated data from `@kubb/plugin-faker` instead.
 
 ## Installation
 
@@ -98,35 +92,6 @@ Folder where the plugin writes its files. It is resolved against the global `out
 
 > [!TIP]
 > `output.path` sets where files go, `output.mode` sets how many. Use `'directory'` (the default) for one file per operation, optionally grouped into subdirectories with the `group` option. Use `'file'` to write everything into a single file.
-
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginMsw } from '@kubb/plugin-msw'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginMsw({
-      output: { path: './handlers' },
-    }),
-  ],
-})
-```
-
-```text [Resulting tree]
-src/
-└── gen/
-    └── handlers/
-        ├── listPets.ts
-        └── createPets.ts
-```
-
-:::
 
 #### output.mode
 
@@ -177,9 +142,18 @@ Text added to the bottom of every generated file. It works like `banner` but for
 |     Type: | `string \| ((node: RootNode) => string)` |
 | Required: | `false`                                  |
 
+### baseURL
+
+URL added in front of every handler's request URL. When omitted, the URL comes from the adapter's server URL, usually the spec's `servers[0].url`. Set it to point at a different environment than the spec.
+
+|           |          |
+| --------: | :------- |
+|     Type: | `string` |
+| Required: | `false`  |
+
 ### handlers
 
-Emits a `handlers.ts` file that re-exports every generated handler in one array. Spread it into your MSW `setupServer(...handlers)` or `setupWorker(...handlers)` call.
+Emits a `handlers.ts` file that re-exports every generated handler grouped by HTTP method. Spread it into your MSW `setupServer(...handlers)` or `setupWorker(...handlers)` call.
 
 |           |           |
 | --------: | :-------- |
@@ -205,41 +179,11 @@ export const server = setupServer(...handlers)
 
 :::
 
-### baseURL
-
-URL added in front of every handler's request URL. When omitted, the URL comes from the adapter's server URL, usually the spec's `servers[0].url`. Set it to point at a different environment than the spec.
-
-|           |          |
-| --------: | :------- |
-|     Type: | `string` |
-| Required: | `false`  |
-
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginMsw } from '@kubb/plugin-msw'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginMsw({
-      baseURL: 'https://petstore.swagger.io/v2',
-    }),
-  ],
-})
-```
-
-:::
-
 ### parser
 
 Source of the response body each handler returns.
 
-- `'data'` (default) returns an empty typed payload from `@kubb/plugin-ts`. You fill it in from tests.
+- `'data'` (default) returns a typed empty or example payload from `@kubb/plugin-ts`. You fill it in from tests.
 - `'faker'` returns a value built by `@kubb/plugin-faker`. Add `pluginFaker()` to the plugins array. The plugin depends on Faker only when you choose this value.
 
 |           |                     |
@@ -248,13 +192,13 @@ Source of the response body each handler returns.
 | Required: | `false`             |
 |  Default: | `'data'`            |
 
+The handler body changes with the parser. With `'data'` the caller passes the payload, while `'faker'` falls back to a generated mock:
+
 ::: code-group
 
 ```typescript ['data' (default)]
-export function listPets(data?: ListPetsQueryResponse | ((info: ...) => Response | Promise<Response>)) {
-  return http.get(`/pets`, function handler(info) {
-    if (typeof data === 'function') return data(info)
-
+export function listPets(data?: ListPetsQueryResponse) {
+  return http.get('/pets', function handler(info) {
     return new Response(JSON.stringify(data), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
@@ -264,11 +208,9 @@ export function listPets(data?: ListPetsQueryResponse | ((info: ...) => Response
 ```
 
 ```typescript ['faker']
-export function listPets(data?: ListPetsQueryResponse | ((info: ...) => Response | Promise<Response>)) {
+export function listPets(data?: ListPetsQueryResponse) {
   return http.get('/pets', function handler(info) {
-    if (typeof data === 'function') return data(info)
-
-    return new Response(JSON.stringify(data || listPetsQueryResponse(data)), {
+    return new Response(JSON.stringify(data || listPetsQueryResponse()), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     })
@@ -292,28 +234,7 @@ Splits generated files into subfolders so related handlers share a directory. Wi
 >
 > `group` only applies to `output.mode: 'directory'` (the default). It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
 
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginMsw } from '@kubb/plugin-msw'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginMsw({
-      group: { type: 'tag' },
-    }),
-  ],
-})
-```
-
-:::
-
-With the configuration above, the generator emits one folder per tag, named after the camelCased tag:
+With `group: { type: 'tag' }`, the generator emits one folder per tag, named after the camelCased tag:
 
 ```text [Resulting tree]
 src/gen/
@@ -338,7 +259,7 @@ Property used to assign each operation to a group. Required whenever `group` is 
 | Required: | `true`            |
 
 > [!NOTE]
-> `Required: true*` is conditional. It only applies when the parent `group` option is used, and `group` itself stays optional.
+> `Required: true` is conditional. It only applies when the parent `group` option is used, and `group` itself stays optional.
 
 #### group.name
 
@@ -374,47 +295,6 @@ export type Include = {
 }
 ```
 
-::: code-group
-
-```typescript [Only the pet tag]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginMsw } from '@kubb/plugin-msw'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginMsw({
-      include: [{ type: 'tag', pattern: 'pet' }],
-    }),
-  ],
-})
-```
-
-```typescript [Only GET operations under /pet]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginMsw } from '@kubb/plugin-msw'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginMsw({
-      include: [
-        { type: 'method', pattern: 'GET' },
-        { type: 'path', pattern: /^\/pet/ },
-      ],
-    }),
-  ],
-})
-```
-
-:::
-
 ### exclude
 
 Skips any operation that matches at least one entry in the list. It is the opposite of `include`. Entries use the same `type` (`tag`, `operationId`, `path`, `method`, `contentType`, `schemaName`) and `pattern` (string or `RegExp`). When both are set, `exclude` wins.
@@ -430,47 +310,6 @@ export type Exclude = {
   pattern: string | RegExp
 }
 ```
-
-::: code-group
-
-```typescript [Skip everything under the store tag]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginMsw } from '@kubb/plugin-msw'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginMsw({
-      exclude: [{ type: 'tag', pattern: 'store' }],
-    }),
-  ],
-})
-```
-
-```typescript [Skip a specific operation and all delete methods]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginMsw } from '@kubb/plugin-msw'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginMsw({
-      exclude: [
-        { type: 'operationId', pattern: 'deletePet' },
-        { type: 'method', pattern: 'DELETE' },
-      ],
-    }),
-  ],
-})
-```
-
-:::
 
 ### override
 
@@ -489,36 +328,6 @@ export type Override = {
 }
 ```
 
-::: code-group
-
-```typescript [Use Faker data for the user tag only]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginFaker } from '@kubb/plugin-faker'
-import { pluginMsw } from '@kubb/plugin-msw'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs(),
-    pluginFaker(),
-    pluginMsw({
-      parser: 'data',
-      override: [
-        {
-          type: 'tag',
-          pattern: 'user',
-          options: { parser: 'faker' },
-        },
-      ],
-    }),
-  ],
-})
-```
-
-:::
-
 ### resolver
 
 Changes how the plugin names generated files and symbols. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change. Anything you omit, or that returns `null` or `undefined`, falls back to the default. Inside a method, `this` is the full resolver, so you can call `this.default(name, 'function')` to reuse the built-in name.
@@ -529,26 +338,7 @@ Changes how the plugin names generated files and symbols. Use it to add a prefix
 | Required: | `false`                                        |
 
 > [!TIP]
-> Use `resolver` for naming and file-location tweaks. For changing the AST nodes themselves (e.g. stripping descriptions), use `macros` instead.
-
-```typescript [Add a Mock prefix to every handler name]
-import { defineConfig } from 'kubb'
-import { pluginMsw } from '@kubb/plugin-msw'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginMsw({
-      resolver: {
-        resolveName(name) {
-          return `Mock${this.default(name, 'function')}`
-        },
-      },
-    }),
-  ],
-})
-```
+> Use `resolver` for naming and file-location tweaks. To change the AST nodes themselves, such as stripping descriptions, use `macros` instead.
 
 The default resolver names every handler with a `Handler` suffix and always names the aggregate export `handlers`. Each plugin ships with a default resolver:
 
@@ -573,33 +363,7 @@ Rewrites AST nodes before they are printed to source. Use it to rename operation
 | Required: | `false`        |
 
 > [!TIP]
-> Use `macros` to rewrite node properties before printing. For changing the names of generated symbols and files, use `resolver` instead.
-
-::: code-group
-
-```typescript [Prefix every operationId]
-import { defineConfig } from 'kubb'
-import { pluginMsw } from '@kubb/plugin-msw'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginMsw({
-      macros: [
-        {
-          name: 'prefix-operation-id',
-          operation(node) {
-            return { ...node, operationId: `api_${node.operationId}` }
-          },
-        },
-      ],
-    }),
-  ],
-})
-```
-
-:::
+> Use `macros` to rewrite node properties before printing. To change the names of generated symbols and files, use `resolver` instead.
 
 ## Dependencies
 
@@ -635,6 +399,9 @@ export default defineConfig({
 
 :::
 
-## See Also
+## See also
 
+- [MSW](https://mswjs.io/)
+- [@kubb/plugin-ts](/plugins/plugin-ts)
+- [@kubb/plugin-faker](/plugins/plugin-faker)
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-msw/CHANGELOG.md)

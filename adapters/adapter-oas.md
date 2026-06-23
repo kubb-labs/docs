@@ -73,22 +73,6 @@ Validates the OpenAPI spec with `@readme/openapi-parser` before parsing. Set to 
 | Required: | `false`   |
 |  Default: | `true`    |
 
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { adapterOas } from '@kubb/adapter-oas'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  adapter: adapterOas({ validate: false }),
-  plugins: [],
-})
-```
-
-:::
-
 ### contentType
 
 Preferred media type when extracting request and response schemas. Operations with multiple media types fall back to this one.
@@ -99,18 +83,6 @@ Defaults to the first JSON-compatible media type found in the spec (`application
 | --------: | :----------------------------- |
 |     Type: | `'application/json' \| string` |
 | Required: | `false`                        |
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { adapterOas } from '@kubb/adapter-oas'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  adapter: adapterOas({ contentType: 'application/vnd.api+json' }),
-  plugins: [],
-})
-```
 
 ### server
 
@@ -126,71 +98,7 @@ Selects which entry in the spec's `servers` array becomes the base URL, and supp
 > [!TIP]
 > Plugins read `baseURL` from this server unless they override it explicitly.
 
-::: code-group
-
-```yaml [OpenAPI spec]
-openapi: 3.0.3
-servers:
-  - url: http://petstore.swagger.io/api
-  - url: http://localhost:3000
-```
-
-```typescript [Use the production server]
-import { defineConfig } from 'kubb'
-import { adapterOas } from '@kubb/adapter-oas'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  adapter: adapterOas({ server: { index: 0 } }),
-  plugins: [],
-})
-```
-
-```typescript [Use the localhost server]
-import { defineConfig } from 'kubb'
-import { adapterOas } from '@kubb/adapter-oas'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  adapter: adapterOas({ server: { index: 1 } }),
-  plugins: [],
-})
-```
-
-:::
-
-Server variables substitute into `{variable}` placeholders in the selected URL.
-
-::: code-group
-
-```yaml [OpenAPI spec]
-openapi: 3.0.3
-servers:
-  - url: https://api.{env}.example.com
-    variables:
-      env:
-        default: dev
-        enum: [dev, staging, prod]
-```
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { adapterOas } from '@kubb/adapter-oas'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  adapter: adapterOas({
-    server: { index: 0, variables: { env: 'prod' } },
-  }),
-  plugins: [],
-})
-// baseURL becomes: https://api.prod.example.com
-```
-
-:::
+Server variables substitute into the `{variable}` placeholders in the selected URL. With a spec server of `https://api.{env}.example.com`, setting `server: { index: 0, variables: { env: 'prod' } }` resolves `baseURL` to `https://api.prod.example.com`.
 
 ### discriminator
 

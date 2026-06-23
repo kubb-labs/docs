@@ -96,7 +96,7 @@ export default defineConfig({
 | [`pluginMsw`](/plugins/plugin-msw)                | `@kubb/plugin-msw`         | [MSW](https://mswjs.io) request handlers           |
 
 > [!NOTE]
-> `pluginAxios`, `pluginReactQuery`, and `pluginMsw` each require `pluginTs` in the same config.
+> `pluginAxios`, `pluginReactQuery`, and `pluginMsw` each require `pluginTs` in the same config. `pluginReactQuery` also calls a registered client plugin, so add `pluginAxios` or `pluginFetch` alongside it.
 
 See the [plugins catalogue](/plugins) for the full list.
 
@@ -140,14 +140,14 @@ const pet: Pet = { id: 1, name: 'Cat' }
 ```typescript [HTTP client]
 import { getPetById } from './gen/clients/getPetById'
 
-const pet = await getPetById({ pathParams: { petId: 1 } })
+const { data: pet } = await getPetById({ path: { petId: 1 } })
 ```
 
 ```typescript [React Query]
 import { useGetPetById } from './gen/hooks/useGetPetById'
 
 function Pet({ id }: { id: number }) {
-  const { data, isLoading } = useGetPetById({ pathParams: { petId: id } })
+  const { data, isLoading } = useGetPetById({ path: { petId: id } })
   if (isLoading) return null
   return <span>{data?.name}</span>
 }

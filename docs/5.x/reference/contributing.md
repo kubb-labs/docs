@@ -17,7 +17,7 @@ First, check the open [issues](https://github.com/kubb-labs/kubb/issues) and [pu
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/en/download) 22 or later.
-- [pnpm](https://pnpm.io/installation) 10 or later.
+- [pnpm](https://pnpm.io/installation) 11 or later.
 - [Git](https://git-scm.com/) and, optionally, the [GitHub CLI](https://cli.github.com/).
 
 ## Kubb core
@@ -63,14 +63,14 @@ pnpm run test
 | ----------------------------- | ----------------------------------------------------------------------- |
 | `packages/core/`              | Plugin runtime, build loop, `definePlugin`/`createKubb` API.            |
 | `packages/ast/`               | Universal AST and visitor utilities.                                    |
-| `packages/adapter-oas/`       | OpenAPI adapter that produces the AST.                                  |
-| `packages/parser-ts/`         | Parser that turns `FileNode` AST into TypeScript source.                |
+| `packages/adapter-oas/`       | OpenAPI adapter that parses an OAS 2.0/3.x spec into the AST.           |
+| `packages/parser-ts/`         | Parser that turns the AST into TypeScript and TSX source.               |
+| `packages/parser-md/`         | Parser that turns the AST into Markdown source.                         |
 | `packages/plugin-barrel/`     | Barrel file plugin (`enforce: 'post'`).                                 |
-| `packages/middleware-barrel/` | Deprecated shim that re-exports `@kubb/plugin-barrel`.                  |
 | `packages/renderer-jsx/`      | JSX renderer used by plugins that emit components.                      |
 | `packages/cli/`               | The `kubb` CLI entry point.                                             |
 | `packages/mcp/`               | MCP server runtime.                                                     |
-| `packages/unplugin-kubb/`     | Bundler integrations (Vite, webpack, Rollup, Nuxt, Astro).              |
+| `packages/unplugin-kubb/`     | Bundler integrations (Vite, webpack, Rollup, Rspack, esbuild, Nuxt, Astro). |
 | `packages/kubb/`              | The meta package that re-exports `defineConfig` with sensible defaults. |
 
 ### Quality gates

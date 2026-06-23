@@ -65,12 +65,12 @@ Every adapter returned from `createAdapter` matches the `Adapter` interface from
 | `parse`      | `(source: AdapterSource) => InputNode \| Promise<InputNode>`                                          | Yes      | Convert the spec into the [universal AST](/docs/5.x/concepts/ast). The build driver consumes the returned `InputNode` directly.              |
 | `getImports` | `(node: SchemaNode, resolve: (name: string) => { name: string; path: string }) => Array<ImportNode>` | Yes      | Track cross-references so plugins emit correct imports. `resolve` receives the collision-corrected schema name and returns the `{ name, path }` for the import. |
 | `validate`   | `(input: string, options?: { throwOnError?: boolean }) => Promise<void>`                              | Yes      | Validate the document at a path or URL without running the full pipeline.                                                                  |
-| `stream`     | `(source: AdapterSource) => Promise<InputStreamNode>`                                                 | No       | Streaming variant of `parse()`. Returns `schemas` and `operations` as `AsyncIterable`s. The OAS adapter uses this path for every spec.                                  |
+| `stream`     | `(source: AdapterSource) => Promise<InputNode<true>>`                                                 | No       | Streaming variant of `parse()`. Returns `schemas` and `operations` as `AsyncIterable`s. The OAS adapter uses this path for every spec.                                  |
 
-`AdapterSource` takes one of three shapes. Handle every form your users may pass:
+`AdapterSource` takes one of two shapes. Handle every form your users may pass:
 
 ```typescript twoslash [AdapterSource]
-type AdapterSource = { type: 'path'; path: string } | { type: 'data'; data: string | unknown } | { type: 'paths'; paths: Array<string> }
+type AdapterSource = { type: 'path'; path: string } | { type: 'data'; data: string | unknown }
 ```
 
 > [!IMPORTANT]
@@ -78,7 +78,7 @@ type AdapterSource = { type: 'path'; path: string } | { type: 'data'; data: stri
 
 ## Streaming
 
-`stream()` returns an `InputStreamNode` whose `schemas` and `operations` are `AsyncIterable`s instead of arrays. Each `for await` loop runs a fresh parse pass over the cached document, so plugins iterate independently and the runtime never holds every node in memory at once.
+`stream()` returns an `InputNode<true>` whose `schemas` and `operations` are `AsyncIterable`s instead of arrays. Each `for await` loop runs a fresh parse pass over the cached document, so plugins iterate independently and the runtime never holds every node in memory at once.
 
 The build driver prefers `stream()` when an adapter implements it. For `parse()`-only adapters, the driver wraps the result in a reusable `AsyncIterable` so the rest of the pipeline stays stream-shaped.
 
@@ -190,8 +190,8 @@ Key options:
 | Option        | Type                                                    | Default  | Purpose                                                               |
 | ------------- | ------------------------------------------------------- | -------- | --------------------------------------------------------------------- |
 | `validate`    | `boolean`                                               | `true`   | Run OpenAPI schema validation before parsing.                         |
-| `dateType`    | `'date' \| 'string' \| 'stringOffset' \| 'stringLocal'` | `'date'` | How `format: date`/`date-time` schemas are emitted in TypeScript.     |
-| `server`      | `{ index?: number; variables?: Record<string, string> }` | —        | Which `servers[]` entry to use as the base URL, and its variable overrides. |
+| `dateType`    | `false \| 'string' \| 'stringOffset' \| 'stringLocal' \| 'date'` | `'string'` | How `format: date`/`date-time` schemas are emitted in TypeScript.     |
+| `server`      | `{ index?: number; variables?: Record<string, string> }` | none     | Which `servers[]` entry to use as the base URL, and its variable overrides. |
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -281,7 +281,7 @@ The adapter derives a small context from each schema, then runs it through an or
 | Decision      | OpenAPI                                              | AsyncAPI (example)            |
 | ------------- | --------------------------------------------------- | ----------------------------- |
 | nullable      | `nullable: true`, `x-nullable`, or `type: ['…','null']` | `type: ['…', 'null']`         |
-| discriminator | a `discriminator` object with a `mapping`           | no discriminator object       |
+| discriminator | a structured `discriminator` object (not the Swagger 2 string form) | no discriminator object       |
 | binary        | `contentMediaType: 'application/octet-stream'`      | `contentEncoding: 'binary'`   |
 | optionality   | a parent's `required` plus the schema's `nullable` set `optional` / `nullish` | same JSON Schema `required` + `null` |
 
