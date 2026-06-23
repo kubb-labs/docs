@@ -206,6 +206,14 @@ import useSWR from 'custom/swr'
 
 :::
 
+You call the generated hook the same way no matter the import path. Only the `useSWR` import inside the hook changes:
+
+```typescript
+import { useFindPetsByStatus } from './src/gen/hooks/useFindPetsByStatus'
+
+const { data, error, isLoading } = useFindPetsByStatus()
+```
+
 ### queryKey
 
 Builds the SWR key for each query hook. The callback receives the operation `node` and the active `casing`, and returns the key array. The plugin uses its built-in transformer when this is unset.
@@ -261,6 +269,14 @@ import useSWRMutation from 'custom/mutation'
 ```
 
 :::
+
+You call the generated hook the same way no matter the import path. Only the `useSWRMutation` import inside the hook changes:
+
+```typescript
+import { useAddPet } from './src/gen/hooks/useAddPet'
+
+const { trigger } = useAddPet()
+```
 
 ### mutationKey
 

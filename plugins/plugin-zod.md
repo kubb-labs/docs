@@ -300,6 +300,14 @@ import { z } from '@acme/zod'
 
 :::
 
+You consume the schema the same way no matter where `z` comes from. The import line only changes inside the generated files:
+
+```typescript
+import { petSchema } from './src/gen/zod/petSchema'
+
+const pet = petSchema.parse(data)
+```
+
 > [!NOTE]
 > The `'zod'` and `'zod/mini'` modules import the `z` namespace (`import * as z`). A custom module imports the named `z` export (`import { z }`), so re-export `z` from there.
 
@@ -340,6 +348,14 @@ export const petSchema = z.object({
 
 :::
 
+You consume the schema the same way whether or not it is typed. `typed` only adds the compile-time `ToZod<Pet>` check on the schema declaration:
+
+```typescript
+import { petSchema } from './src/gen/zod/petSchema'
+
+const pet = petSchema.parse(data)
+```
+
 ### inferred
 
 Exports a `z.infer<typeof schema>` type alias next to every generated schema. The Zod schema becomes the single source of truth, so you do not import types from `@kubb/plugin-ts`. The alias is the PascalCased schema name with a `SchemaType` suffix (`petSchema` becomes `PetSchemaType`). The value and its inferred type never share a name, even for all-uppercase names like `SUV` or `URL`.
@@ -368,6 +384,26 @@ import * as z from 'zod'
 export const petSchema = z.object({
   name: z.string(),
 })
+```
+
+:::
+
+Where the type comes from depends on the value:
+
+::: code-group
+
+```typescript [inferred: true]
+import { petSchema, type PetSchemaType } from './src/gen/zod/petSchema'
+
+const pet: PetSchemaType = petSchema.parse(data)
+```
+
+```typescript [inferred: false (default)]
+import * as z from 'zod'
+import { petSchema } from './src/gen/zod/petSchema'
+
+type Pet = z.infer<typeof petSchema>
+const pet: Pet = petSchema.parse(data)
 ```
 
 :::
@@ -414,6 +450,34 @@ z.coerce.number()
 
 :::
 
+Coercion changes what the schema accepts at `parse`:
+
+::: code-group
+
+```typescript [coercion: true]
+import { querySchema } from './src/gen/zod/querySchema'
+
+// strings, numbers, and dates are coerced
+querySchema.parse({ count: '5', date: '2024-01-01' }) // { count: 5, date: Date }
+```
+
+```typescript [coercion: false (default)]
+import { querySchema } from './src/gen/zod/querySchema'
+
+querySchema.parse({ count: '5', date: '2024-01-01' }) // throws a ZodError, nothing is coerced
+querySchema.parse({ count: 5, date: new Date() }) // ok
+```
+
+```typescript [Coerce numbers only]
+import { querySchema } from './src/gen/zod/querySchema'
+
+// only numbers are coerced, so the date must already be a Date
+querySchema.parse({ count: '5', date: new Date() }) // { count: 5, date: Date }
+querySchema.parse({ count: '5', date: '2024-01-01' }) // throws, the date is not coerced
+```
+
+:::
+
 ### operations
 
 Emits an `operations.ts` file. It groups the schemas per operation: request body, path/query/header params, each response status, and errors. The map is keyed by `operationId`, and a `paths` map links each URL and method back to it. Use it when you wire Kubb output into a server framework that takes one set of Zod schemas per route.
@@ -455,6 +519,18 @@ export const paths = {
 
 :::
 
+With `operations: true`, reach a route's schemas through the map and validate with them:
+
+```typescript
+import { operations, paths } from './src/gen/zod/operations'
+
+const params = operations['getPetById'].parameters.path.parse({ petId: '1' })
+const pet = operations['getPetById'].responses[200].parse(data)
+
+// or reach the same entry by URL and method
+const getPet = paths['/pet/{petId}'].get
+```
+
 ### guidType
 
 Validator used for OpenAPI properties with `format: uuid`.
@@ -479,6 +555,14 @@ z.guid()
 ```
 
 :::
+
+You consume the schema the same way for both values. Only the accepted format changes, with `'uuid'` stricter than `'guid'`:
+
+```typescript
+import { idSchema } from './src/gen/zod/idSchema'
+
+const id = idSchema.parse('123e4567-e89b-12d3-a456-426614174000')
+```
 
 ### regexType
 
@@ -506,6 +590,14 @@ z.string().regex(new RegExp('^[a-z]+$'))
 ```
 
 :::
+
+Both forms validate identically at runtime, so you consume the schema the same way:
+
+```typescript
+import { slugSchema } from './src/gen/zod/slugSchema'
+
+const slug = slugSchema.parse('abc')
+```
 
 ### mini
 
@@ -542,6 +634,14 @@ z.array(z.string()).min(1).max(10)
 ```
 
 :::
+
+You consume the schema the same way in either mode. Zod Mini only changes how the generated code builds the schema:
+
+```typescript
+import { petSchema } from './src/gen/zod/petSchema'
+
+const pet = petSchema.parse(data)
+```
 
 ### include
 

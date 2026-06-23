@@ -223,6 +223,14 @@ moment(faker.date.anytime()).format('YYYY-MM-DD')
 
 :::
 
+You call the factory the same way for every parser. Only the format of the generated date field changes:
+
+```typescript
+import { createPet } from './src/gen/mocks/createPet'
+
+const pet = createPet()
+```
+
 ### regexGenerator
 
 Library used to generate strings that satisfy a regex `pattern` keyword in the spec.
@@ -247,6 +255,14 @@ new RandExp(/^[A-Z]+$/).gen()
 ```
 
 :::
+
+You call the factory the same way for both libraries. Only the source of the generated pattern string changes:
+
+```typescript
+import { createPet } from './src/gen/mocks/createPet'
+
+const pet = createPet()
+```
 
 ### mapper
 
@@ -286,6 +302,14 @@ import { fakerDE_AT as faker } from '@faker-js/faker'
 ```
 
 :::
+
+You call the factory the same way for every locale. Only the generated values change, so names and addresses reflect the region:
+
+```typescript
+import { createPet } from './src/gen/mocks/createPet'
+
+const pet = createPet()
+```
 
 ### seed
 

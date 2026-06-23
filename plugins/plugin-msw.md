@@ -220,6 +220,28 @@ export function listPets(data?: ListPetsQueryResponse) {
 
 :::
 
+How you register the handler in a test depends on the value:
+
+::: code-group
+
+```typescript ['data' (default)]
+import { setupServer } from 'msw/node'
+import { listPets } from './src/gen/mocks/listPets'
+
+// you pass the response payload yourself
+const server = setupServer(listPets([{ name: 'Fluffy' }]))
+```
+
+```typescript ['faker']
+import { setupServer } from 'msw/node'
+import { listPets } from './src/gen/mocks/listPets'
+
+// no payload needed, the handler returns generated mock data
+const server = setupServer(listPets())
+```
+
+:::
+
 ### group
 
 Splits generated files into subfolders so related handlers share a directory. Without `group`, every file lands directly in `output.path`. With `group`, files go under `{output.path}/{groupName}/`.
