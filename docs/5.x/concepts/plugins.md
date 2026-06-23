@@ -99,7 +99,7 @@ The `hooks` map can subscribe to any event in [`KubbHooks`](https://github.com/k
 
 | Method / Property | Purpose                                                                                |
 | ----------------- | -------------------------------------------------------------------------------------- |
-| `addGenerator`    | Register one or more [`Generator`](/docs/5.x/api/core#generator)s that walk the AST. Pass them as separate arguments or as arrays. |
+| `addGenerator`    | Register one or more [`Generator`](/docs/5.x/api/core#generator)s that walk the AST. Pass them as separate arguments, or spread an existing list. |
 | `setResolver`     | Set or override the [resolver](/docs/5.x/api/core#resolver) (file naming + paths).     |
 | `addMacro`        | Add a [macro](/docs/5.x/concepts/macros) that rewrites AST nodes before generators.   |
 | `setMacros`       | Replace this plugin's [macros](/docs/5.x/concepts/macros) with a new list.             |
