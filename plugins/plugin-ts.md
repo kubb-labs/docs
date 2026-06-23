@@ -322,22 +322,33 @@ How you consume the enum depends on the representation:
 
 ::: code-group
 
-```typescript ['asConst']
+```typescript ['asConst' (default)]
 import { petStatus, type PetStatusKey } from './src/gen/types/PetStatus'
 
 const status: PetStatusKey = petStatus.available // 'available'
 ```
 
-```typescript ['enum' / 'constEnum']
+```typescript ['enum']
 import { PetStatus } from './src/gen/types/PetStatus'
 
 const status: PetStatus = PetStatus.available
 ```
 
-```typescript ['literal' / 'inlineLiteral']
+```typescript ['constEnum']
+import { PetStatus } from './src/gen/types/PetStatus'
+
+const status: PetStatus = PetStatus.available
+```
+
+```typescript ['literal']
 import type { PetStatus } from './src/gen/types/PetStatus'
 
 const status: PetStatus = 'available'
+```
+
+```typescript ['inlineLiteral']
+// inlined on the owning type, with no separate alias to import
+const status: 'available' | 'pending' | 'sold' = 'available'
 ```
 
 :::
@@ -385,9 +396,9 @@ export type PetStatusKey = (typeof PetStatus)[keyof typeof PetStatus]
 The const and its companion type are consumed the same way regardless of casing. Only the imported const name changes, here from `petStatus` to `PetStatus`:
 
 ```typescript
-import { PetStatus, type PetStatusKey } from './src/gen/types/PetStatus'
+import { petStatus, type PetStatusKey } from './src/gen/types/PetStatus'
 
-const status: PetStatusKey = PetStatus.available // 'available'
+const status: PetStatusKey = petStatus.available // 'available'
 ```
 
 #### enum.typeSuffix

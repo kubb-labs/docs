@@ -390,7 +390,7 @@ const config = { baseURL: 'https://petstore.swagger.io/v2' }
 const pet = new PetClient(config)
 const store = new StoreClient(config)
 
-const { data: foundPet } = await pet.getPetById({ path: { petId: 1 } })
+const { data } = await pet.getPetById({ path: { petId: 1 } })
 await store.placeOrder({ body: { petId: 1, quantity: 1 } })
 ```
 
@@ -401,7 +401,7 @@ import { PetStore } from './src/gen/clients/petStore'
 
 const api = new PetStore({ baseURL: 'https://petstore.swagger.io/v2' })
 
-const { data: foundPet } = await api.pet.getPetById({ path: { petId: 1 } })
+const { data } = await api.pet.getPetById({ path: { petId: 1 } })
 await api.store.placeOrder({ body: { petId: 1, quantity: 1 } })
 ```
 
@@ -410,7 +410,7 @@ import { PetStore } from './src/gen/clients/petStore'
 
 const api = new PetStore({ baseURL: 'https://petstore.swagger.io/v2' })
 
-const { data: foundPet } = await api.getPetById({ path: { petId: 1 } })
+const { data } = await api.getPetById({ path: { petId: 1 } })
 await api.placeOrder({ body: { petId: 1, quantity: 1 } })
 ```
 
