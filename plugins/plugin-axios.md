@@ -45,6 +45,15 @@ It builds on `@kubb/plugin-ts` for the types, so add that to your config. Axios 
 
 Each generated function takes one grouped options object (`{ path, query, headers, body }`) and returns a `RequestResult` of `{ data, error, request, response }`. `throwOnError` defaults to `true`, so a resolved call means the request succeeded and `data` is set. Pass `throwOnError: false` per call to get the discriminated `{ data?, error? }` form and read `error` and `response.status` yourself. The runtime is always bundled into `.kubb/client.ts`, so there is no `bundle` option.
 
+The bundled `client` also exposes a `buildUrl` method. It returns the final URL for an operation from the base URL, the interpolated path params, and the serialized query, without sending the request. This helps when you build cache keys, prefetch data, or render links:
+
+```ts
+import { client } from './.kubb/client'
+
+const url = client.buildUrl({ url: '/pet/{petId}', path: { petId: 1 }, query: { status: ['available'] } })
+// '/pet/1?status=available'
+```
+
 **See also**
 
 - [axios](https://axios-http.com/)
