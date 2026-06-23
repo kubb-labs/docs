@@ -54,6 +54,8 @@ const url = client.getUrl({ url: '/pet/{petId}', path: { petId: 1 }, query: { st
 // '/pet/1?status=available'
 ```
 
+To authenticate requests, give the client one `auth` resolver and the runtime adds the credential to every call its security schemes guard. The [authentication guide](/docs/5.x/guides/authentication) walks through bearer, basic, and apiKey setups.
+
 ## Installation
 
 ::: code-group
@@ -478,5 +480,4 @@ export default defineConfig({
 
 - [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
 - [`@kubb/plugin-ts`](/plugins/plugin-ts)
-- [Authentication guide](/docs/5.x/guides/authentication)
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-fetch/CHANGELOG.md)

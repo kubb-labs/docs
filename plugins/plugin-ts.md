@@ -318,6 +318,30 @@ export type PetStatus = 'available' | 'pending' | 'sold'
 
 :::
 
+How you consume the enum depends on the representation:
+
+::: code-group
+
+```typescript ['asConst']
+import { petStatus, type PetStatusKey } from './src/gen/types/PetStatus'
+
+const status: PetStatusKey = petStatus.available // 'available'
+```
+
+```typescript ['enum' / 'constEnum']
+import { PetStatus } from './src/gen/types/PetStatus'
+
+const status: PetStatus = PetStatus.available
+```
+
+```typescript ['literal' / 'inlineLiteral']
+import type { PetStatus } from './src/gen/types/PetStatus'
+
+const status: PetStatus = 'available'
+```
+
+:::
+
 > [!TIP]
 > `'inlineLiteral'` keeps the union out of a named alias. The values appear directly at each usage site, such as `status?: 'available' | 'pending' | 'sold'` on the owning type.
 
