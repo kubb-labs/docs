@@ -335,9 +335,6 @@ export class PetClient {
     return request({ method: 'GET', url: '/pet/{petId}', ...config }) as Promise<RequestResult<GetPetByIdResponses, ThrowOnError>>
   }
 }
-
-// const api = new PetClient({ baseURL: 'https://petstore.swagger.io/v2' })
-// await api.getPetById({ path: { petId: 1 } })
 ```
 
 ```typescript ['flat']
@@ -364,14 +361,59 @@ export class PetStore {
     return request({ method: 'POST', url: '/store/order', ...config }) as Promise<RequestResult<PlaceOrderResponses, ThrowOnError>>
   }
 }
-
-// const api = new PetStore({ baseURL: 'https://petstore.swagger.io/v2' })
-// await api.getPetById({ path: { petId: 1 } })
 ```
 
 :::
 
 `mode: 'tag'` (the default) emits one class per tag, such as `PetClient` and `StoreClient`. Set `sdk.name` alongside it to also emit a composed root class that instantiates every tag client from one shared config, reached as `new PetStore(config).pet.getPetById(...)`. `mode: 'flat'` emits a single class named by `sdk.name` with every operation as a direct method. Omitting `sdk` keeps the standalone per-operation functions.
+
+Using the generated SDK works the same across modes. Construct the class once with a client config (`baseURL`, `headers`, and the other `ClientConfig` fields), then call a method with the grouped options object (`{ path, query, headers, body }`) and read `data` off the result:
+
+::: code-group
+
+```typescript ['tag']
+import { PetClient } from './src/gen/clients/petClient'
+import { StoreClient } from './src/gen/clients/storeClient'
+
+const config = { baseURL: 'https://petstore.swagger.io/v2' }
+const pet = new PetClient(config)
+const store = new StoreClient(config)
+
+const { data: foundPet } = await pet.getPetById({ path: { petId: 1 } })
+await store.placeOrder({ body: { petId: 1, quantity: 1 } })
+```
+
+```typescript ['tag' + sdk.name]
+import { PetStore } from './src/gen/clients/petStore'
+
+const api = new PetStore({ baseURL: 'https://petstore.swagger.io/v2' })
+
+const { data: foundPet } = await api.pet.getPetById({ path: { petId: 1 } })
+await api.store.placeOrder({ body: { petId: 1, quantity: 1 } })
+```
+
+```typescript ['flat']
+import { PetStore } from './src/gen/clients/petStore'
+
+const api = new PetStore({ baseURL: 'https://petstore.swagger.io/v2' })
+
+const { data: foundPet } = await api.getPetById({ path: { petId: 1 } })
+await api.placeOrder({ body: { petId: 1, quantity: 1 } })
+```
+
+:::
+
+Each call resolves to `{ data, error, request, response }`. Because `throwOnError` defaults to `true`, a resolved call means the request succeeded and `data` is set. Pass `throwOnError: false` on a call to get the discriminated `{ data?, error? }` form and read `error` and `response.status` yourself:
+
+```typescript
+const { data, error, response } = await pet.getPetById({ path: { petId: 1 }, throwOnError: false })
+
+if (error) {
+  console.error(response.status, error)
+} else {
+  console.log(data)
+}
+```
 
 ### resolver
 
