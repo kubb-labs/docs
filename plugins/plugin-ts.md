@@ -382,6 +382,14 @@ export type PetStatusKey = (typeof PetStatus)[keyof typeof PetStatus]
 
 :::
 
+The const and its companion type are consumed the same way regardless of casing. Only the imported const name changes, here from `petStatus` to `PetStatus`:
+
+```typescript
+import { PetStatus, type PetStatusKey } from './src/gen/types/PetStatus'
+
+const status: PetStatusKey = PetStatus.available // 'available'
+```
+
 #### enum.typeSuffix
 
 Suffix appended to the type alias generated for enums when `type` is `'asConst'`.
@@ -427,6 +435,14 @@ export type PetStatus = (typeof petStatus)[keyof typeof petStatus]
 ```
 
 :::
+
+The const and its companion type are consumed the same way regardless of suffix. Only the type-alias name changes, here from `PetStatusKey` to `PetStatusValue`:
+
+```typescript
+import { petStatus, type PetStatusValue } from './src/gen/types/PetStatus'
+
+const status: PetStatusValue = petStatus.available // 'available'
+```
 
 #### enum.keyCasing
 
@@ -494,6 +510,14 @@ export interface Pet {
 
 :::
 
+A `type` alias and an `interface` are consumed the same way. Both annotate a value the same:
+
+```typescript
+import type { Pet } from './src/gen/types/Pet'
+
+const pet: Pet = { name: 'Fluffy' }
+```
+
 ### unknownType
 
 |           |         |
@@ -551,6 +575,33 @@ export type Pet = {
 
 :::
 
+Each value changes what an assignment may do with the optional property:
+
+::: code-group
+
+```typescript ['questionToken' (default)]
+import type { Pet } from './src/gen/types/Pet'
+
+const a: Pet = {} // ok, `type` may be missing
+const b: Pet = { type: 'dog' } // ok
+```
+
+```typescript ['undefined']
+import type { Pet } from './src/gen/types/Pet'
+
+const a: Pet = { type: undefined } // ok, `type` must be present
+const b: Pet = {} // error, `type` is required
+```
+
+```typescript ['questionTokenAndUndefined']
+import type { Pet } from './src/gen/types/Pet'
+
+const a: Pet = {} // ok, may be missing
+const b: Pet = { type: undefined } // ok, may be explicitly undefined
+```
+
+:::
+
 ### arrayType
 
 Syntax used for array types in generated code.
@@ -579,6 +630,15 @@ export type Pet = {
 ```
 
 :::
+
+Both array styles are consumed the same way. `Pet['tags']` is iterable either way:
+
+```typescript
+import type { Pet } from './src/gen/types/Pet'
+
+const pet: Pet = { tags: ['cute', 'small'] }
+pet.tags.forEach((tag) => console.log(tag))
+```
 
 ### resolver
 

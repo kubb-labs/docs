@@ -308,6 +308,15 @@ export function addPet<ThrowOnError extends boolean = true>(
 
 :::
 
+You call the generated function the same way for every value. With `'zod'` the response is validated and a `ZodError` throws on invalid data, and the `{ request }` form validates the request body before the call:
+
+```typescript
+import { addPet } from './src/gen/clients/addPet'
+
+// throws a ZodError when the request body or response fails its schema
+const { data } = await addPet({ body: { name: 'Fluffy' } })
+```
+
 ### sdk
 
 Generates a class-based SDK instead of standalone functions. Each tag client is an instance class whose constructor takes a client config and builds its own client, so every environment is a separate instance. Leave `sdk` unset to keep the per-operation functions, which is what the query plugins consume.

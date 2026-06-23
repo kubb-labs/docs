@@ -219,6 +219,25 @@ export function useGetPetsInfiniteQuery(/* ... */) {
 
 :::
 
+Which composable you call depends on the value:
+
+::: code-group
+
+```typescript [infinite: false (default)]
+import { useGetPetsQuery } from './src/gen/hooks/useGetPetsQuery'
+
+const { data } = useGetPetsQuery()
+```
+
+```typescript [infinite: {}]
+import { useGetPetsInfiniteQuery } from './src/gen/hooks/useGetPetsInfiniteQuery'
+
+const { data, fetchNextPage, hasNextPage } = useGetPetsInfiniteQuery()
+// data.pages holds each fetched page
+```
+
+:::
+
 #### infinite.queryParam
 
 Name of the query parameter that holds the page cursor.
@@ -327,6 +346,16 @@ export const getUserByNameQueryKey = () => ['getUserByName'] as const
 ```
 
 :::
+
+You call the composable the same way, but the key shape changes how you invalidate it:
+
+```typescript
+import { useQueryClient } from '@tanstack/vue-query'
+import { getUserByNameQueryKey } from './src/gen/hooks/useGetUserByNameQuery'
+
+const queryClient = useQueryClient()
+queryClient.invalidateQueries({ queryKey: getUserByNameQueryKey() })
+```
 
 ### mutation
 

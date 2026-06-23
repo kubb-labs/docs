@@ -217,6 +217,25 @@ export function useGetPetsInfiniteQuery(/* ... */) {
 
 :::
 
+Which hook you call depends on the value:
+
+::: code-group
+
+```typescript [infinite: false (default)]
+import { useGetPetsQuery } from './src/gen/hooks/useGetPetsQuery'
+
+const { data } = useGetPetsQuery()
+```
+
+```typescript [infinite: {}]
+import { useGetPetsInfiniteQuery } from './src/gen/hooks/useGetPetsInfiniteQuery'
+
+const { data, fetchNextPage, hasNextPage } = useGetPetsInfiniteQuery()
+// data.pages holds each fetched page
+```
+
+:::
+
 #### infinite.queryParam
 
 Name of the query parameter that holds the page cursor. Kubb passes `pageParam` into this query key.
@@ -300,6 +319,25 @@ export function useGetPetsSuspenseQuery(/* ... */) {
 export function useGetPetsQuery(/* ... */) {
   return useQuery({ queryKey, queryFn })
 }
+```
+
+:::
+
+Which hook you reach for depends on the value:
+
+::: code-group
+
+```typescript [suspense: {} (default)]
+import { useGetPetsSuspenseQuery } from './src/gen/hooks/useGetPetsSuspenseQuery'
+
+// inside a <Suspense> boundary, data is already resolved with no isLoading flag
+const { data } = useGetPetsSuspenseQuery()
+```
+
+```typescript [suspense: false]
+import { useGetPetsQuery } from './src/gen/hooks/useGetPetsQuery'
+
+const { data, isLoading, error } = useGetPetsQuery()
 ```
 
 :::
