@@ -131,9 +131,6 @@ The `@kubb/ast/factory` subpath also provides constructors for source files and 
 | `createBreak`                                                       | Emit line breaks between nodes.                          |
 | `update`                                                            | Apply an identity-preserving shallow update to any node. |
 
-> [!NOTE]
-> Constructors for function signatures (`createFunctionParameter`, `createFunctionParameters`, `createTypeLiteral`, `createIndexedAccessType`, `createObjectBindingPattern`) live in [`@kubb/plugin-ts`](/plugins/plugin-ts), not `@kubb/ast`. Import them from there when a generator emits typed functions.
-
 ## Visitors
 
 Three visitor functions cover the common traversal patterns. Visitor objects use lowercase, kind-style keys (`input`, `operation`, `schema`, `property`, `parameter`, `response`). To rewrite nodes inside a plugin, reach for [macros](/docs/5.x/concepts/macros). They add names, ordering, and composition on top of `transform`.
