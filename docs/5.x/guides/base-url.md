@@ -12,7 +12,7 @@ Set a `baseURL` in two ways. Read it from the servers list in your OpenAPI spec,
 
 ## Read it from the spec
 
-When you set no `baseURL`, the client falls back to the server URL from your OpenAPI spec, usually the first entry in `servers`. See [adapter-oas](/adapters/adapter-oas).
+When you set no `baseURL` on the client plugin, the client falls back to the server URL the [OpenAPI adapter](/adapters/adapter-oas) resolves. The adapter resolves one only when you point its `server.index` at an entry in the spec's `servers` array, so set `adapter: adapterOas({ server: { index: 0 } })` to use the first entry. Add `variables` to fill in any `{variable}` placeholders in the chosen URL. Leave `server` unset and the spec contributes no `baseURL`.
 
 ::: code-group
 
@@ -42,22 +42,23 @@ export default defineConfig({
   output: {
     path: './src/gen',
   },
-  adapter: adapterOas(),
+  adapter: adapterOas({ server: { index: 0 } }), // [!code ++]
   plugins: [pluginAxios()],
 })
 ```
 
 :::
 
+`defineConfig` applies `adapterOas()` for you, so you set `adapter` only to change an adapter option. Here it sets `server.index` so the adapter resolves `http://petstore.swagger.io/api` from the spec.
+
 ## Use the baseURL option
 
-Pass `baseURL` to the plugin. It prepends the URL to every request.
+Pass `baseURL` to the client plugin. It prepends the URL to every request.
 
 ::: code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
-import { adapterOas } from '@kubb/adapter-oas'
 import { pluginAxios } from '@kubb/plugin-axios'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
@@ -68,7 +69,6 @@ export default defineConfig({
   output: {
     path: './src/gen',
   },
-  adapter: adapterOas(),
   plugins: [
     pluginAxios({
       baseURL: 'https://localhost:8080/api/v1', // [!code ++]

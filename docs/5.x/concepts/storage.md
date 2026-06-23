@@ -22,7 +22,7 @@ Every driver implements the `Storage` interface exported from [`@kubb/core`](htt
 | `removeItem` | `(key: string) => Promise<void>`                | Removes the entry for `key`                        |
 | `getKeys`    | `(base?: string) => Promise<Array<string>>`     | Lists all keys, optionally filtered by prefix      |
 | `clear`      | `(base?: string) => Promise<void>`              | Removes all entries, optionally scoped to a prefix |
-| `dispose`    | `() => Promise<void>` (optional)                | Teardown hook called after the build completes     |
+| `dispose`    | `() => Promise<void>` (optional)                | Optional teardown hook for the backend to flush buffers or close connections |
 
 Keys are root-relative paths, for example `src/gen/api/getPets.ts`.
 
@@ -43,7 +43,7 @@ export default defineConfig({
 })
 ```
 
-Keys resolve against the configured `root` (defaults to `process.cwd()`). The driver skips writes when file content is already identical and creates missing parent directories. Calling `clear()` without a `base` argument is a no-op. Pass a path prefix to remove a specific subtree.
+Keys resolve against `process.cwd()`, so root-relative paths land in the right place without extra setup. The driver skips writes when file content is already identical and creates missing parent directories. Calling `clear()` without a `base` argument is a no-op. Pass a path prefix to remove a specific subtree.
 
 ### `memoryStorage`
 

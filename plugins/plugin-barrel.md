@@ -31,6 +31,8 @@ resources:
   changelog: https://github.com/kubb-labs/kubb/blob/main/packages/plugin-barrel/CHANGELOG.md
 ---
 
+# @kubb/plugin-barrel
+
 > [!TIP]
 > `plugin-barrel` ships with Kubb and runs by default. Install it on its own only when you want to tune barrel behavior.
 
@@ -118,17 +120,6 @@ Writes an `index.ts` in every subdirectory instead of one flat root barrel. Each
 |     Type: | `boolean` |
 | Required: | `false`   |
 |  Default: | `false`   |
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [pluginTs({ output: { path: 'api', barrel: { type: 'named', nested: true } } })],
-})
-```
 
 ## Example
 

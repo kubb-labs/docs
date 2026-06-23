@@ -38,4 +38,3 @@ Use https://kubb.dev/llms.txt to find relevant pages, then read them.
 
 - [llms.txt standard](https://llmstxt.org/): specification for LLM-friendly documentation
 - [MCP](/docs/5.x/ai/mcp): connect AI editors directly to Kubb's MCP server
-- [Skills](/docs/5.x/ai/skills): AI coding skills for working with Kubb

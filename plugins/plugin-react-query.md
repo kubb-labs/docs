@@ -42,15 +42,11 @@ resources:
 
 # @kubb/plugin-react-query
 
-`@kubb/plugin-react-query` turns each OpenAPI operation into a [TanStack Query](https://tanstack.com/query) hook for React. Read operations become `useFooQuery`, `useFooSuspenseQuery`, or `useFooInfiniteQuery`. Write operations become `useFooMutation`. Every hook is typed. Query keys, input variables, response data, and error shape all come from the spec.
+`@kubb/plugin-react-query` turns each OpenAPI operation into a [TanStack Query](https://tanstack.com/query) hook for React. Read operations become `useFooQuery`, `useFooSuspenseQuery`, or `useFooInfiniteQuery`. Write operations become `useFooMutation`. Every hook is typed: query keys, input variables, response data, and error shape all come from the spec.
 
-It needs `@kubb/plugin-ts` for the types and a client plugin (`@kubb/plugin-axios` or `@kubb/plugin-fetch`) for the HTTP layer.
+The hooks call an HTTP client, so a client plugin must be registered. Add `@kubb/plugin-ts` for the types and either `@kubb/plugin-axios` or `@kubb/plugin-fetch` for the client. Generation errors out when no client plugin is present.
 
 Each hook takes its parameters as a single grouped options object shaped as `{ body, path, query, headers }`, with camelCase property names. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
-
-**See also**
-
-- [TanStack Query](https://tanstack.com/query)
 
 ## Installation
 
@@ -96,15 +92,12 @@ Folder where the plugin writes its files. It is resolved against the global `out
 | Required: | `true`    |
 |  Default: | `'hooks'` |
 
-> [!TIP]
-> `output.path` sets where files go, `output.mode` sets how many. Use `'directory'` (the default) for one file per operation, optionally grouped into subdirectories with the `group` option. Use `'file'` to write everything into a single file.
-
 #### output.mode
 
 How the plugin consolidates its generated code into files.
 
 - `'directory'` (default) writes one file per operation under `output.path`.
-- `'file'` writes everything into a single file. The `output.path` must include the file extension (e.g. `'hooks.ts'`).
+- `'file'` writes everything into a single file. The `output.path` must include the file extension, such as `'hooks.ts'`.
 
 |           |                         |
 | --------: | :---------------------- |
@@ -162,25 +155,6 @@ Splits generated files into subfolders by the operation's tag or URL path. Each 
 >
 > `group` only applies to `output.mode: 'directory'` (the default). It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
 
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginReactQuery } from '@kubb/plugin-react-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginReactQuery({
-      group: { type: 'tag' },
-    }),
-  ],
-})
-```
-
-:::
-
 #### group.type
 
 Property used to assign each operation to a group. Required whenever `group` is set.
@@ -200,67 +174,45 @@ Property used to assign each operation to a group. Required whenever `group` is 
 
 Function that builds the folder name from a group key. For `tag` groups the default camelCases the tag. For `path` groups it takes the first path segment.
 
-|           |                                           |
-| --------: | :---------------------------------------- |
-|     Type: | `(context: { group: string }) => string`  |
-| Required: | `false`                                   |
-|  Default: | `(ctx) => camelCase(ctx.group)`           |
+|           |                                          |
+| --------: | :--------------------------------------- |
+|     Type: | `(context: { group: string }) => string` |
+| Required: | `false`                                  |
+|  Default: | `(ctx) => camelCase(ctx.group)`          |
 
 ### client
 
-Selects which registered client plugin the generated hooks call. Set `'axios'` to use `@kubb/plugin-axios` or `'fetch'` to use `@kubb/plugin-fetch`. When omitted, the plugin auto-detects whichever client plugin is registered in the same config. Register `@kubb/plugin-axios` or `@kubb/plugin-fetch`, since the generated code calls its functions.
+Selects which registered client plugin the generated hooks call. Set `'axios'` to use `@kubb/plugin-axios` or `'fetch'` to use `@kubb/plugin-fetch`. When omitted, the plugin auto-detects the single client plugin in the config, so you only need this option to disambiguate when several client plugins are registered. A client plugin must be registered, since the hooks call its functions.
 
 |           |                      |
 | --------: | :------------------- |
 |     Type: | `'axios' \| 'fetch'` |
 | Required: | `false`              |
 
-### parser
-
-Runtime validator applied to request and response data using schemas from `@kubb/plugin-zod`.
-
-- `false` (default) does no validation. The client returns the response cast to the generated type.
-- `'zod'` validates response bodies only.
-- `{ request?: 'zod', response?: 'zod' }` opts in per direction. `request` validates the request body and query parameters before the call. `response` validates the response body after.
-
-Add `@kubb/plugin-zod` to the plugins list when either direction is `'zod'`.
-
-|           |                                                           |
-| --------: | :-------------------------------------------------------- |
-|     Type: | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` |
-| Required: | `false`                                                   |
-|  Default: | `false`                                                   |
-
 ### infinite
 
 Enables `useInfiniteQuery` hooks for cursor- or page-based pagination. Pass an object to configure how the cursor is read from the response. Pass `false` (default) to skip infinite query generation.
 
-|           |                     |
-| --------: | :------------------ |
-|     Type: | `Infinite \| false` |
-| Required: | `false`             |
-|  Default: | `false`             |
+|           |                              |
+| --------: | :--------------------------- |
+|     Type: | `Partial<Infinite> \| false` |
+| Required: | `false`                      |
+|  Default: | `false`                      |
+
+With `infinite: false` (the default), a `GET /pets` operation generates `useGetPetsQuery` backed by `useQuery`. Setting `infinite: {}` adds an extra `useGetPetsInfiniteQuery` hook backed by `useInfiniteQuery`:
 
 ::: code-group
 
-```typescript [Cursor pagination]
-import { defineConfig } from 'kubb'
-import { pluginReactQuery } from '@kubb/plugin-react-query'
+```typescript [infinite: false (default)]
+export function useGetPetsQuery(/* ... */) {
+  return useQuery({ queryKey, queryFn })
+}
+```
 
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginReactQuery({
-      infinite: {
-        queryParam: 'cursor',
-        initialPageParam: null,
-        nextParam: 'pagination.next.cursor',
-        previousParam: 'pagination.prev.cursor',
-      },
-    }),
-  ],
-})
+```typescript [infinite: {}]
+export function useGetPetsInfiniteQuery(/* ... */) {
+  return useInfiniteQuery({ queryKey, queryFn, initialPageParam, getNextPageParam })
+}
 ```
 
 :::
@@ -285,19 +237,6 @@ Initial value for `pageParam` on the first fetch.
 | Required: | `false`   |
 |  Default: | `0`       |
 
-#### infinite.cursorParam
-
-> [!WARNING]
-> `cursorParam` is deprecated. Use `nextParam` and `previousParam` for finer pagination control.
-
-Path to the cursor field on the response. Leave it `null` when the cursor is not known.
-
-|           |                  |
-| --------: | :--------------- |
-|     Type: | `string \| null` |
-| Required: | `false`          |
-|  Default: | `null`           |
-
 #### infinite.nextParam
 
 Path to the next-page cursor on the response. Supports dot notation (`'pagination.next.id'`) or array form (`['pagination', 'next', 'id']`).
@@ -318,44 +257,72 @@ Path to the previous-page cursor on the response. Supports dot notation (`'pagin
 | Required: | `false`                      |
 |  Default: | `null`                       |
 
+#### infinite.cursorParam
+
+> [!WARNING]
+> `cursorParam` is deprecated. Use `nextParam` and `previousParam` for finer pagination control.
+
+Path to the cursor field on the response. Leave it `null` when the cursor is not known.
+
+|           |                  |
+| --------: | :--------------- |
+|     Type: | `string \| null` |
+| Required: | `false`          |
+|  Default: | `null`           |
+
+### suspense
+
+Adds `useSuspenseQuery` hooks alongside the regular `useQuery` ones. The plugin generates these by default. Set `suspense` to `false` to skip them.
+
+Suspense queries throw promises while loading and need a `<Suspense>` boundary in the React tree. TanStack Query v5+ only.
+
+|           |                            |
+| --------: | :------------------------- |
+|     Type: | `Partial<object> \| false` |
+| Required: | `false`                    |
+|  Default: | `{}`                       |
+
+With `suspense` enabled (the default), a `GET /pets` operation generates both a regular and a suspense hook. Set `suspense: false` to drop the suspense variant:
+
+::: code-group
+
+```typescript [suspense: {} (default)]
+export function useGetPetsQuery(/* ... */) {
+  return useQuery({ queryKey, queryFn })
+}
+
+export function useGetPetsSuspenseQuery(/* ... */) {
+  return useSuspenseQuery({ queryKey, queryFn })
+}
+```
+
+```typescript [suspense: false]
+export function useGetPetsQuery(/* ... */) {
+  return useQuery({ queryKey, queryFn })
+}
+```
+
+:::
+
 ### query
 
 Configures the query hooks. The plugin generates them by default. Pass `false` to skip the hooks and emit only `queryOptions(...)` helpers, so you can call `useQuery` yourself in app code.
 
-|           |         |
-| --------: | :------ |
-|     Type: | `Query` |
-| Required: | `false` |
-|  Default: | `{}`    |
+|           |                           |
+| --------: | :------------------------ |
+|     Type: | `Partial<Query> \| false` |
+| Required: | `false`                   |
+|  Default: | `{}`                      |
 
 #### query.methods
 
 HTTP methods treated as queries. Operations using one of these methods generate a `useQuery`-style hook (or a `queryOptions` helper) instead of a mutation.
 
-|           |                     |
-| --------: | :------------------ |
-|     Type: | `Array<HttpMethod>` |
-| Required: | `false`             |
-|  Default: | `['get']`           |
-
-::: code-group
-
-```typescript [Allow HEAD as a query method]
-import { defineConfig } from 'kubb'
-import { pluginReactQuery } from '@kubb/plugin-react-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginReactQuery({
-      query: { methods: ['get', 'head'] },
-    }),
-  ],
-})
-```
-
-:::
+|           |                 |
+| --------: | :-------------- |
+|     Type: | `Array<string>` |
+| Required: | `false`         |
+|  Default: | `['get']`       |
 
 #### query.importPath
 
@@ -369,9 +336,7 @@ Module used in the `import { useQuery } from '...'` statement at the top of ever
 
 ### queryKey
 
-Builds the `queryKey` for each generated hook. Use it to add a version namespace, key off the operation ID, or match an existing `queryClient.invalidateQueries` strategy.
-
-The callback receives a `node` and the active `casing`. `node` is the operation's AST node, exposing `operationId`, `tags`, `method`, `path`, `parameters`, and `requestBody`. `casing` is `'camelcase'`, matching the parameter names in the generated code. Return the array of values that make up the key.
+Builds the `queryKey` for each generated hook. Use it to add a version namespace, key off the operation ID, or match an existing `queryClient.invalidateQueries` strategy. The callback receives the operation `node` and the active `casing`, and returns the array of values that make up the key.
 
 |           |                                                                       |
 | --------: | :-------------------------------------------------------------------- |
@@ -381,77 +346,33 @@ The callback receives a `node` and the active `casing`. `node` is the operation'
 > [!WARNING]
 > String values are inlined verbatim into generated code. Wrap any string you want emitted as a literal in `JSON.stringify(...)`.
 
-#### Keys from tags and path parameters
+A key built from the operation's first tag plus its path parameters changes the generated `queryKey` helper:
 
-Build a key from the operation's first tag plus its path parameters. For a `GET /user/{username}` operation with the `user` tag, this generates:
+::: code-group
 
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginReactQuery } from '@kubb/plugin-react-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginReactQuery({
-      queryKey: ({ node }) => {
-        const tags = node.tags.map((tag) => JSON.stringify(tag))
-        const pathParams = node.parameters.filter((param) => param.in === 'path').map((param) => param.name)
-        return [...tags, ...pathParams]
-      },
-    }),
-  ],
-})
+```typescript [queryKey builder]
+queryKey: ({ node }) => {
+  const tags = node.tags.map((tag) => JSON.stringify(tag))
+  const pathParams = node.parameters.filter((param) => param.in === 'path').map((param) => param.name)
+  return [...tags, ...pathParams]
+}
 ```
 
 ```typescript [Generated output]
 export const getUserByNameQueryKey = ({ username }: { username: GetUserByNamePathParams['username'] }) => ['user', username] as const
 ```
 
-#### Add a version prefix
-
-Prepend a fixed version segment in front of the path:
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginReactQuery } from '@kubb/plugin-react-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginReactQuery({
-      queryKey: ({ node }) => [JSON.stringify('v5'), JSON.stringify(node.path)],
-    }),
-  ],
-})
-```
-
-```typescript [Generated output]
-export const findPetsByTagsQueryKey = ({ query }: Omit<FindPetsByTagsRequestConfig, 'url'> = {}) => ['v5', '/pet/findByTags'] as const
-```
-
-### suspense
-
-Adds `useSuspenseQuery` hooks alongside the regular `useQuery` ones. The plugin generates these by default. Set `suspense` to `false` to skip them.
-
-Suspense queries throw promises while loading and need a `<Suspense>` boundary in the React tree. TanStack Query v5+ only.
-
-|           |                   |
-| --------: | :---------------- |
-|     Type: | `object \| false` |
-| Required: | `false`           |
-|  Default: | `{}`              |
+:::
 
 ### mutation
 
 Configures the mutation hooks. The plugin generates them by default. Set to `false` to skip mutation generation.
 
-|           |            |
-| --------: | :--------- |
-|     Type: | `Mutation` |
-| Required: | `false`    |
-|  Default: | `{}`       |
+|           |                              |
+| --------: | :--------------------------- |
+|     Type: | `Partial<Mutation> \| false` |
+| Required: | `false`                      |
+|  Default: | `{}`                         |
 
 #### mutation.methods
 
@@ -459,28 +380,9 @@ HTTP methods treated as mutations. Operations using one of these methods generat
 
 |           |                                      |
 | --------: | :----------------------------------- |
-|     Type: | `Array<HttpMethod>`                  |
+|     Type: | `Array<string>`                      |
 | Required: | `false`                              |
 |  Default: | `['post', 'put', 'patch', 'delete']` |
-
-::: code-group
-
-```typescript [Treat only POST and PUT as mutations]
-import { defineConfig } from 'kubb'
-import { pluginReactQuery } from '@kubb/plugin-react-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginReactQuery({
-      mutation: { methods: ['post', 'put'] },
-    }),
-  ],
-})
-```
-
-:::
 
 #### mutation.importPath
 
@@ -506,43 +408,12 @@ Builds the `mutationKey` for each mutation hook. Use it when you batch invalidat
 
 ### customOptions
 
-Routes every generated hook through your own function that returns extra options (`onSuccess`, `onError`, `select`). Use it to centralize cache invalidation, error toasts, or analytics instead of repeating them at every call site. The plugin also emits a `HookOptions` type so your wrapper stays in sync with the generated hooks.
+Routes every generated hook through your own function that returns extra options, such as `onSuccess`, `onError`, or `select`. Use it to centralize cache invalidation, error toasts, or analytics instead of repeating them at every call site. The plugin also emits a `HookOptions` type so your wrapper stays in sync with the generated hooks.
 
 |           |                 |
 | --------: | :-------------- |
 |     Type: | `CustomOptions` |
 | Required: | `false`         |
-
-#### Centralized cache invalidation
-
-```typescript [src/useCustomHookOptions.ts]
-import { useQueryClient, type QueryClient } from '@tanstack/react-query'
-import type { HookOptions } from '../gen/hookOptions'
-import { getUserByNameQueryKey } from '../gen/hooks/user/useGetUserByNameHook'
-
-function getCustomHookOptions({ queryClient }: { queryClient: QueryClient }): Partial<HookOptions> {
-  return {
-    useUpdatePetHook: {
-      onSuccess: () => {
-        void queryClient.invalidateQueries({ queryKey: ['pet'] })
-      },
-    },
-    useUpdateUserHook: {
-      onSuccess: (_data, variables) => {
-        void queryClient.invalidateQueries({
-          queryKey: getUserByNameQueryKey({ username: variables.username }),
-        })
-      },
-    },
-  }
-}
-
-export function useCustomHookOptions<T extends keyof HookOptions>({ hookName }: { hookName: T; operationId: string }): HookOptions[T] {
-  const queryClient = useQueryClient()
-  const customOptions = getCustomHookOptions({ queryClient })
-  return customOptions[hookName] ?? {}
-}
-```
 
 #### customOptions.importPath
 
@@ -563,17 +434,25 @@ Exported function name of your custom-options hook. Generated code imports it as
 | Required: | `false`                  |
 |  Default: | `'useCustomHookOptions'` |
 
+### parser
+
+Runtime validator applied to request and response data using schemas from `@kubb/plugin-zod`.
+
+- `false` (default) does no validation. The client returns the response cast to the generated type.
+- `'zod'` validates response bodies only.
+- `{ request?: 'zod', response?: 'zod' }` opts in per direction. `request` validates the request body and query parameters before the call. `response` validates the response body after.
+
+Add `@kubb/plugin-zod` to the plugins list when either direction is `'zod'`.
+
+|           |                                                           |
+| --------: | :-------------------------------------------------------- |
+|     Type: | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` |
+| Required: | `false`                                                   |
+|  Default: | `false`                                                   |
+
 ### include
 
-Generates only the operations that match at least one entry in the list. Everything else is skipped. Each entry filters by one of:
-
-- `tag`: the operation's first tag in the OpenAPI spec.
-- `operationId`: the operation's `operationId`.
-- `path`: the URL path, such as `'/pet/{petId}'`.
-- `method`: the HTTP method, such as `'get'` or `'post'`.
-- `contentType`: the media type of the request body.
-
-`pattern` accepts either a string (exact match) or a `RegExp` for fuzzy matches.
+Generates only the operations that match at least one entry in the list. Everything else is skipped. Each entry filters by `tag`, `operationId`, `path`, `method`, `contentType`, or `schemaName`. The `pattern` is a string (exact match) or a `RegExp` (fuzzy match).
 
 |           |                  |
 | --------: | :--------------- |
@@ -587,46 +466,9 @@ export type Include = {
 }
 ```
 
-::: code-group
-
-```typescript [Only the pet tag]
-import { defineConfig } from 'kubb'
-import { pluginReactQuery } from '@kubb/plugin-react-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginReactQuery({
-      include: [{ type: 'tag', pattern: 'pet' }],
-    }),
-  ],
-})
-```
-
-```typescript [Only GET operations under /pet]
-import { defineConfig } from 'kubb'
-import { pluginReactQuery } from '@kubb/plugin-react-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginReactQuery({
-      include: [
-        { type: 'method', pattern: 'GET' },
-        { type: 'path', pattern: /^\/pet/ },
-      ],
-    }),
-  ],
-})
-```
-
-:::
-
 ### exclude
 
-Skips any operation that matches at least one entry in the list. It is the opposite of `include`. Entries use the same `type` (`tag`, `operationId`, `path`, `method`, `contentType`) and `pattern` (string or `RegExp`). When both are set, `exclude` wins.
+Skips any operation that matches at least one entry in the list. It is the opposite of `include`. Entries use the same `type` and `pattern`. When both are set, `exclude` wins.
 
 |           |                  |
 | --------: | :--------------- |
@@ -639,43 +481,6 @@ export type Exclude = {
   pattern: string | RegExp
 }
 ```
-
-::: code-group
-
-```typescript [Skip everything under the store tag]
-import { defineConfig } from 'kubb'
-import { pluginReactQuery } from '@kubb/plugin-react-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginReactQuery({
-      exclude: [{ type: 'tag', pattern: 'store' }],
-    }),
-  ],
-})
-```
-
-```typescript [Skip a specific operation and all delete methods]
-import { defineConfig } from 'kubb'
-import { pluginReactQuery } from '@kubb/plugin-react-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginReactQuery({
-      exclude: [
-        { type: 'operationId', pattern: 'deletePet' },
-        { type: 'method', pattern: 'DELETE' },
-      ],
-    }),
-  ],
-})
-```
-
-:::
 
 ### override
 
@@ -694,31 +499,6 @@ export type Override = {
 }
 ```
 
-::: code-group
-
-```typescript [Skip query hooks for the user tag]
-import { defineConfig } from 'kubb'
-import { pluginReactQuery } from '@kubb/plugin-react-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginReactQuery({
-      override: [
-        {
-          type: 'tag',
-          pattern: 'user',
-          options: { query: false },
-        },
-      ],
-    }),
-  ],
-})
-```
-
-:::
-
 ### resolver
 
 Changes how the plugin names generated files and symbols. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change. Anything you omit, or that returns `null` or `undefined`, falls back to the default. Inside a method, `this` is the full resolver, so you can call `this.default(name, 'function')` to reuse the built-in name.
@@ -729,30 +509,11 @@ Changes how the plugin names generated files and symbols. Use it to add a prefix
 | Required: | `false`                                                      |
 
 > [!TIP]
-> Use `resolver` for naming and file-location tweaks. To change the AST nodes themselves (e.g. stripping descriptions), use `macros` instead.
-
-```typescript [Add an Api prefix to every name]
-import { defineConfig } from 'kubb'
-import { pluginReactQuery } from '@kubb/plugin-react-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginReactQuery({
-      resolver: {
-        resolveName(name) {
-          return `Api${this.default(name, 'function')}`
-        },
-      },
-    }),
-  ],
-})
-```
+> Use `resolver` for naming and file-location tweaks. To change the AST nodes themselves, such as stripping descriptions, use `macros` instead.
 
 ### macros
 
-Rewrites AST nodes before they are printed to source. Use it to rename operation IDs, drop descriptions, or change schema metadata without forking the generator. Each [macro](/docs/5.x/concepts/macros) callback (such as `schema` or `operation`) receives the node and a context object. Return a new node to replace it, or `undefined` to leave it as is. Callbacks you omit keep their default behavior. Macros run in order, so a later one sees the output of an earlier one.
+Rewrites AST nodes before they are printed to source. Use it to rename operation IDs, drop descriptions, or change schema metadata without forking the generator. Each [macro](/docs/5.x/concepts/macros) callback (such as `schema` or `operation`) receives the node and a context object. Return a new node to replace it, or `undefined` to leave it as is. Macros run in order, so a later one sees the output of an earlier one.
 
 |           |                |
 | --------: | :------------- |
@@ -762,60 +523,14 @@ Rewrites AST nodes before they are printed to source. Use it to rename operation
 > [!TIP]
 > Use `macros` to rewrite node properties before printing. To change the names of generated symbols and files, use `resolver` instead.
 
-::: code-group
-
-```typescript [Strip descriptions before printing]
-import { defineConfig } from 'kubb'
-import { pluginReactQuery } from '@kubb/plugin-react-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginReactQuery({
-      macros: [
-        {
-          name: 'strip-descriptions',
-          schema(node) {
-            return { ...node, description: undefined }
-          },
-        },
-      ],
-    }),
-  ],
-})
-```
-
-```typescript [Prefix every operationId]
-import { defineConfig } from 'kubb'
-import { pluginReactQuery } from '@kubb/plugin-react-query'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginReactQuery({
-      macros: [
-        {
-          name: 'prefix-operation-id',
-          operation(node) {
-            return { ...node, operationId: `api_${node.operationId}` }
-          },
-        },
-      ],
-    }),
-  ],
-})
-```
-
-:::
-
 ## Dependencies
 
 This plugin needs these plugins in your config:
 
-- [`@kubb/plugin-ts`](/plugins/plugin-ts)
-- A client plugin: [`@kubb/plugin-axios`](/plugins/plugin-axios) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch)
+- [`@kubb/plugin-ts`](/plugins/plugin-ts) for the types.
+- A client plugin, [`@kubb/plugin-axios`](/plugins/plugin-axios) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch), for the HTTP layer. The hooks call its functions, so generation errors out when no client plugin is registered.
+
+Set `parser` to `'zod'` and the plugin also depends on [`@kubb/plugin-zod`](/plugins/plugin-zod), which then has to be in the plugins list.
 
 ## Example
 
@@ -824,6 +539,7 @@ This plugin needs these plugins in your config:
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginFetch } from '@kubb/plugin-fetch'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
 export default defineConfig({
@@ -831,13 +547,14 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs(),
+    pluginFetch(),
     pluginReactQuery({
       output: { path: './hooks' },
       group: {
         type: 'tag',
         name: ({ group }) => `${group}Hooks`,
       },
-      client: { dataReturnType: 'full' },
+      client: 'fetch',
       mutation: { methods: ['post', 'put', 'delete'] },
       infinite: {
         queryParam: 'next_page',
@@ -859,4 +576,5 @@ export default defineConfig({
 
 ## See Also
 
+- [TanStack Query](https://tanstack.com/query)
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-react-query/CHANGELOG.md)

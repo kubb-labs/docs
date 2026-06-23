@@ -43,11 +43,6 @@ resources:
 
 Pair it with a client plugin (`@kubb/plugin-axios` or `@kubb/plugin-fetch`) and set the client's `parser: 'zod'` to validate every response.
 
-**See also**
-
-- [Zod](https://zod.dev/)
-- [Zod Mini](https://zod.dev/packages/mini)
-
 ## Installation
 
 ::: code-group
@@ -98,33 +93,6 @@ Folder where the plugin writes its generated code, resolved against the global `
 > [!TIP]
 > `output.path` sets where files go. `output.mode` sets how many. Use `'directory'` (the default) for one file per operation, optionally grouped into subdirectories with the `group` option. Use `'file'` to write everything into a single file.
 
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { path: './types' },
-    }),
-  ],
-})
-```
-
-```text [Resulting tree]
-src/
-└── gen/
-    └── types/
-        ├── Pet.ts
-        └── Store.ts
-```
-
-:::
-
 #### output.mode
 
 How the plugin consolidates its generated code into files.
@@ -140,41 +108,6 @@ How the plugin consolidates its generated code into files.
 
 > [!TIP]
 > Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group`, since a single-file output has nothing to group. Combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
-
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginAxios } from '@kubb/plugin-axios'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { path: 'types.ts', mode: 'file' },
-    }),
-    pluginAxios({
-      output: { path: 'clients', mode: 'directory' },
-      group: { type: 'tag' },
-    }),
-  ],
-})
-```
-
-```text [Resulting tree]
-src/
-└── gen/
-    ├── types.ts
-    └── clients/
-        ├── pet/
-        │   └── getPetById.ts
-        └── store/
-            └── getInventory.ts
-```
-
-:::
 
 #### output.barrel
 
@@ -197,45 +130,29 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 ::: code-group
 
 ```typescript ['named' (default)]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: { path: 'types', barrel: { type: 'named' } },
-    }),
-  ],
-})
+// src/gen/zod/index.ts
+export { petSchema, petStatusSchema } from './petSchema'
+export { storeSchema } from './storeSchema'
 ```
 
-```typescript [src/gen/types/index.ts]
-export { Pet, PetStatus } from './Pet'
-export { Store } from './Store'
+```typescript ['all']
+// src/gen/zod/index.ts
+export * from './petSchema'
+export * from './storeSchema'
 ```
 
-```typescript ['all' → src/gen/types/index.ts]
-// output: { barrel: { type: 'all' } }
-export * from './Pet'
-export * from './Store'
-```
-
-```text [nested → generated tree]
-// output: { barrel: { type: 'named', nested: true } }
-src/gen/types/
-├── index.ts          # re-exports ./pet and ./store
+```text [nested]
+src/gen/zod/
+├── index.ts             # re-exports ./pet and ./store
 ├── pet/
-│   ├── index.ts      # re-exports Pet, Store, ...
-│   └── Pet.ts
+│   ├── index.ts         # re-exports petSchema, ...
+│   └── petSchema.ts
 └── store/
     ├── index.ts
-    └── Store.ts
+    └── storeSchema.ts
 ```
 
-```text [false → result]
-// output: { barrel: false }
+```text [false]
 # No index.ts is generated for this plugin.
 # Its files are also excluded from the root index.ts.
 ```
@@ -251,86 +168,28 @@ Text prepended to every generated file, for license headers, lint disables, or `
 |     Type: | `string \| ((node: RootNode) => string)` |
 | Required: | `false`                                  |
 
-::: code-group
+A static `banner: '/* eslint-disable */\n// @ts-nocheck'` lands at the top of each generated file:
 
-```typescript [Static banner]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: {
-        path: 'types',
-        banner: '/* eslint-disable */\n// @ts-nocheck',
-      },
-    }),
-  ],
-})
-```
-
-```typescript [Generated file]
+```typescript
 /* eslint-disable */
 // @ts-nocheck
-export type Pet = {
-  id: number
-  name: string
-}
-```
+import * as z from 'zod'
 
-```typescript [Dynamic banner]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: {
-        path: 'types',
-        banner: (node) => `// Source: ${node.filePath}\n// Generated at ${new Date().toISOString()}`,
-      },
-    }),
-  ],
+export const petSchema = z.object({
+  name: z.string(),
 })
 ```
 
-:::
+A function banner builds the text from the file's `RootNode`, such as `banner: (node) => \`// Source: ${node.filePath}\``.
 
 #### output.footer
 
-Text appended to every generated file. Mirrors `banner`, for closing comments, re-enabling lint rules, or marker lines. Pass a string or a function that receives the file's `RootNode` and returns the footer text.
+Text appended to every generated file. Mirrors `banner`, for closing comments, re-enabling lint rules, or marker lines. Pass a string or a function that receives the file's `RootNode` and returns the footer text. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a lint disable to the generated file.
 
 |           |                                          |
 | --------: | :--------------------------------------- |
 |     Type: | `string \| ((node: RootNode) => string)` |
 | Required: | `false`                                  |
-
-::: code-group
-
-```typescript [Re-enable lint after a banner disable]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      output: {
-        path: 'types',
-        banner: '/* eslint-disable */',
-        footer: '/* eslint-enable */',
-      },
-    }),
-  ],
-})
-```
-
-:::
 
 ### resolver
 
@@ -344,24 +203,7 @@ Changes how the plugin names generated files and symbols. Use it to add a prefix
 > [!TIP]
 > Use `resolver` for naming and file-location tweaks. For changing the AST nodes themselves (e.g. stripping descriptions), use `macros` instead.
 
-```typescript [Add an Api prefix to every name]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      resolver: {
-        resolveTypeName(name) {
-          return `Api${this.default(name, 'function')}`
-        },
-      },
-    }),
-  ],
-})
-```
+For example, `resolver: { resolveSchemaName(name) { return \`${this.default(name, 'function')}Validator\` } }` renames every generated schema from `petSchema` to `petValidator`.
 
 Each plugin ships with a default resolver:
 
@@ -390,35 +232,16 @@ Splits generated files into subfolders by the operation's tag or URL path. Each 
 >
 > `group` only applies to `output.mode: 'directory'` (the default). It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
 
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      group: { type: 'tag' },
-    }),
-  ],
-})
-```
-
-:::
-
-With the configuration above, the generator emits one folder per tag, named after the camelCased tag:
+With `group: { type: 'tag' }`, the generator emits one folder per tag, named after the camelCased tag:
 
 ```text [Resulting tree]
 src/gen/
 ├── pet/
-│   ├── AddPet.ts
-│   └── GetPet.ts
+│   ├── addPetSchema.ts
+│   └── getPetSchema.ts
 └── store/
-    ├── CreateStore.ts
-    └── GetStoreById.ts
+    ├── createStoreSchema.ts
+    └── getStoreByIdSchema.ts
 ```
 
 Pass `group.name` to customize the folder name. For example, a `name` function that appends `Controller` to the group keeps the pre-v5 `petController/` layout.
@@ -463,19 +286,22 @@ Module specifier for the `import { z } from '...'` statement at the top of every
 ::: code-group
 
 ```typescript ['zod' (default)]
-import { z } from 'zod'
+import * as z from 'zod'
 ```
 
 ```typescript ['zod/mini']
-import { z } from 'zod/mini'
+import * as z from 'zod/mini'
 ```
 
 ```typescript [Your own module]
-// importPath: '../lib/zod'
-import { z } from '../lib/zod'
+// importPath: '@acme/zod'
+import { z } from '@acme/zod'
 ```
 
 :::
+
+> [!NOTE]
+> The `'zod'` and `'zod/mini'` modules import the `z` namespace (`import * as z`). A custom module imports the named `z` export (`import { z }`), so re-export `z` from there.
 
 ### typed
 
@@ -493,7 +319,7 @@ Ties each Zod schema to its TypeScript type from `@kubb/plugin-ts`. With `typed:
 ::: code-group
 
 ```typescript [typed: true]
-import { z } from 'zod'
+import * as z from 'zod'
 import type { ToZod } from '@kubb/plugin-zod'
 import type { Pet } from '../ts/Pet'
 
@@ -504,7 +330,7 @@ export const petSchema: ToZod<Pet> = z.object({
 ```
 
 ```typescript [typed: false (default)]
-import { z } from 'zod'
+import * as z from 'zod'
 
 export const petSchema = z.object({
   name: z.string(),
@@ -527,7 +353,7 @@ Exports a `z.infer<typeof schema>` type alias next to every generated schema. Th
 ::: code-group
 
 ```typescript [inferred: true]
-import { z } from 'zod'
+import * as z from 'zod'
 
 export const petSchema = z.object({
   name: z.string(),
@@ -537,7 +363,7 @@ export type PetSchemaType = z.infer<typeof petSchema>
 ```
 
 ```typescript [inferred: false (default)]
-import { z } from 'zod'
+import * as z from 'zod'
 
 export const petSchema = z.object({
   name: z.string(),
@@ -700,7 +526,7 @@ Switches code generation to [Zod Mini](https://zod.dev/packages/mini). Schemas u
 ::: code-group
 
 ```typescript [mini: true]
-import { z } from 'zod/mini'
+import * as z from 'zod/mini'
 
 z.optional(z.string())
 z.nullable(z.number())
@@ -708,7 +534,7 @@ z.array(z.string()).check(z.minLength(1), z.maxLength(10))
 ```
 
 ```typescript [mini: false (default)]
-import { z } from 'zod'
+import * as z from 'zod'
 
 z.string().optional()
 z.number().nullable()
@@ -742,42 +568,7 @@ export type Include = {
 }
 ```
 
-::: code-group
-
-```typescript [Only the pet tag]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      include: [{ type: 'tag', pattern: 'pet' }],
-    }),
-  ],
-})
-```
-
-```typescript [Only GET operations under /pet]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      include: [
-        { type: 'method', pattern: 'GET' },
-        { type: 'path', pattern: /^\/pet/ },
-      ],
-    }),
-  ],
-})
-```
-
-:::
+Pass `include: [{ type: 'tag', pattern: 'pet' }]` to keep only the `pet` tag. Stack entries to narrow further, such as `{ type: 'method', pattern: 'GET' }` with `{ type: 'path', pattern: /^\/pet/ }` for GET operations under `/pet`.
 
 ### exclude
 
@@ -795,42 +586,7 @@ export type Exclude = {
 }
 ```
 
-::: code-group
-
-```typescript [Skip everything under the store tag]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      exclude: [{ type: 'tag', pattern: 'store' }],
-    }),
-  ],
-})
-```
-
-```typescript [Skip a specific operation and all delete methods]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      exclude: [
-        { type: 'operationId', pattern: 'deletePet' },
-        { type: 'method', pattern: 'DELETE' },
-      ],
-    }),
-  ],
-})
-```
-
-:::
+Pass `exclude: [{ type: 'tag', pattern: 'store' }]` to drop the `store` tag, or stack `{ type: 'operationId', pattern: 'deletePet' }` with `{ type: 'method', pattern: 'DELETE' }` to skip one operation and every DELETE.
 
 ### override
 
@@ -849,31 +605,7 @@ export type Override = {
 }
 ```
 
-::: code-group
-
-```typescript [Coerce input only for the user tag]
-import { defineConfig } from 'kubb'
-import { pluginZod } from '@kubb/plugin-zod'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginZod({
-      coercion: false,
-      override: [
-        {
-          type: 'tag',
-          pattern: 'user',
-          options: { coercion: true },
-        },
-      ],
-    }),
-  ],
-})
-```
-
-:::
+For example, `override: [{ type: 'tag', pattern: 'user', options: { coercion: true } }]` coerces input only for the `user` tag while the rest of the spec validates strictly.
 
 ### macros
 
@@ -887,53 +619,28 @@ Rewrites AST nodes before they are printed to source. Use it to rename operation
 > [!TIP]
 > Use `macros` to rewrite node properties before printing. For changing the names of generated symbols and files, use `resolver` instead.
 
-::: code-group
+Each entry names the macro and supplies one callback per node kind:
 
-```typescript [Strip descriptions before printing]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
+```typescript [A macros array]
+import { pluginZod } from '@kubb/plugin-zod'
 
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      macros: [
-        {
-          name: 'strip-descriptions',
-          schema(node) {
-            return { ...node, description: undefined }
-          },
-        },
-      ],
-    }),
+pluginZod({
+  macros: [
+    {
+      name: 'strip-descriptions',
+      schema(node) {
+        return { ...node, description: undefined }
+      },
+    },
+    {
+      name: 'prefix-operation-id',
+      operation(node) {
+        return { ...node, operationId: `api_${node.operationId}` }
+      },
+    },
   ],
 })
 ```
-
-```typescript [Prefix every operationId]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginTs({
-      macros: [
-        {
-          name: 'prefix-operation-id',
-          operation(node) {
-            return { ...node, operationId: `api_${node.operationId}` }
-          },
-        },
-      ],
-    }),
-  ],
-})
-```
-
-:::
 
 ### printer
 
@@ -946,51 +653,22 @@ When `mini: true`, overrides target the Zod Mini printer. Otherwise they target 
 |     Type: | `{ nodes?: PrinterZodNodes \| PrinterZodMiniNodes }` |
 | Required: | `false`                                              |
 
-::: code-group
-
-```typescript [Use z.number() for integers]
-import { defineConfig } from 'kubb'
+```typescript [Map integers and dates to other Zod expressions]
 import { pluginZod } from '@kubb/plugin-zod'
 
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginZod({
-      printer: {
-        nodes: {
-          integer() {
-            return 'z.number()'
-          },
-        },
+pluginZod({
+  printer: {
+    nodes: {
+      integer() {
+        return 'z.number()'
       },
-    }),
-  ],
+      date() {
+        return 'z.string().date()'
+      },
+    },
+  },
 })
 ```
-
-```typescript [Use z.string().date() for date schemas]
-import { defineConfig } from 'kubb'
-import { pluginZod } from '@kubb/plugin-zod'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginZod({
-      printer: {
-        nodes: {
-          date() {
-            return 'z.string().date()'
-          },
-        },
-      },
-    }),
-  ],
-})
-```
-
-:::
 
 ### wrapOutput
 
@@ -1005,31 +683,22 @@ Wraps the generated Zod schema string with extra calls before it is written to d
 > Use this to round-trip OpenAPI metadata back into Zod, such as examples, descriptions, or `.openapi()` annotations for libraries that re-emit OpenAPI from Zod schemas.
 
 ```typescript [Append .openapi() with metadata]
-import { defineConfig } from 'kubb'
 import { pluginZod } from '@kubb/plugin-zod'
 
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [
-    pluginZod({
-      wrapOutput: ({ output, schema }) => {
-        const metadata: Record<string, unknown> = {}
+pluginZod({
+  wrapOutput: ({ output, schema }) => {
+    if (!schema.examples?.length) {
+      return undefined
+    }
 
-        if (schema.examples?.length) {
-          // Pull example metadata off the SchemaNode here
-        }
-
-        if (Object.keys(metadata).length > 0) {
-          return `${output}.openapi(${JSON.stringify(metadata)})`
-        }
-
-        return undefined
-      },
-    }),
-  ],
+    return `${output}.openapi(${JSON.stringify({ examples: schema.examples })})`
+  },
 })
 ```
+
+## Dependencies
+
+`@kubb/plugin-zod` pairs with `@kubb/plugin-ts`. Add `pluginTs` to the plugins list when `typed: true`, since the generated schemas reference the TypeScript types it produces. Without `typed`, the schemas stand alone, and `inferred: true` exports their `z.infer` types so you do not need `pluginTs` at all.
 
 ## Example
 
@@ -1059,4 +728,6 @@ export default defineConfig({
 
 ## See Also
 
+- [Zod](https://zod.dev/)
+- [Zod Mini](https://zod.dev/packages/mini)
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-zod/CHANGELOG.md)

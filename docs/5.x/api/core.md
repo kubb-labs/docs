@@ -475,7 +475,7 @@ Files stream through the processor as they arrive. The driver calls `enqueue(fil
 
 ### `jsxRenderer` (via `@kubb/renderer-jsx`)
 
-For JSX-based rendering, import `jsxRenderer` from [`@kubb/renderer-jsx`](https://www.npmjs.com/package/@kubb/renderer-jsx). `@kubb/core` no longer re-exports a `createRenderer` factory.
+For JSX-based rendering, import `jsxRenderer` from [`@kubb/renderer-jsx`](https://www.npmjs.com/package/@kubb/renderer-jsx). `@kubb/core` does not ship `jsxRenderer` itself. It exports `createRenderer`, the helper for building your own renderer factory.
 
 `jsxRenderer` is a React-free recursive renderer. It walks the JSX components into `FileNode`s without a React reconciliation pass, and its `stream()` returns a synchronous `Generator<FileNode>` that skips a microtask per file. Components run as plain functions, so hooks and suspense are not available.
 

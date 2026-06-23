@@ -51,28 +51,25 @@ First, install [Claude desktop](https://claude.ai/download) and work through the
 
 Then install Kubb with the [MCP plugin](/plugins/plugin-mcp).
 
-> [!IMPORTANT]
-> Requires Kubb `v3.10.0` or higher.
-
 > [!TIP]
-> The MCP plugin works with the [OAS adapter](/adapters/adapter-oas), [TypeScript](/plugins/plugin-ts), and [Zod](/plugins/plugin-zod) plugins to generate every file it needs.
+> The MCP plugin builds on the [OpenAPI adapter](/adapters/adapter-oas), the [TypeScript](/plugins/plugin-ts) and [Zod](/plugins/plugin-zod) plugins, and a client plugin ([axios](/plugins/plugin-axios) or [fetch](/plugins/plugin-fetch)) to generate every file it needs.
 
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-mcp@beta @kubb/adapter-oas@beta @kubb/plugin-ts@beta @kubb/plugin-zod@beta
+bun add -d kubb@beta @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta @kubb/plugin-mcp@beta
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-mcp@beta @kubb/adapter-oas@beta @kubb/plugin-ts@beta @kubb/plugin-zod@beta
+pnpm add -D kubb@beta @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta @kubb/plugin-mcp@beta
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/plugin-mcp@beta @kubb/adapter-oas@beta @kubb/plugin-ts@beta @kubb/plugin-zod@beta
+npm install --save-dev kubb@beta @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta @kubb/plugin-mcp@beta
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-mcp@beta @kubb/adapter-oas@beta @kubb/plugin-ts@beta @kubb/plugin-zod@beta
+yarn add -D kubb@beta @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta @kubb/plugin-mcp@beta
 ```
 
 :::
@@ -81,15 +78,17 @@ yarn add -D @kubb/plugin-mcp@beta @kubb/adapter-oas@beta @kubb/plugin-ts@beta @k
 
 Write a `kubb.config.ts` that sets up the [MCP](https://modelcontextprotocol.io) server.
 
+`pluginMcp` depends on [`pluginTs`](/plugins/plugin-ts) and [`pluginZod`](/plugins/plugin-zod), and each handler calls a registered client plugin. Add [`pluginAxios`](/plugins/plugin-axios) or [`pluginFetch`](/plugins/plugin-fetch), and `pluginMcp` detects it.
+
 > [!IMPORTANT]
-> Set a `baseURL` so the generated client knows which host to call.
+> Set the `baseURL` on the client plugin so the generated handlers know which host to call.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
-import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'
-import { pluginMcp } from '@kubb/plugin-mcp'
 import { pluginZod } from '@kubb/plugin-zod'
+import { pluginAxios } from '@kubb/plugin-axios'
+import { pluginMcp } from '@kubb/plugin-mcp'
 
 export default defineConfig({
   input: {
@@ -98,14 +97,13 @@ export default defineConfig({
   output: {
     path: './src/gen',
   },
-  adapter: adapterOas(),
   plugins: [
     pluginTs(),
-    pluginMcp({
-      client: {
-        baseURL: 'https://petstore.swagger.io/v2', // [!code ++]
-      },
+    pluginZod(),
+    pluginAxios({
+      baseURL: 'https://petstore.swagger.io/v2', // [!code ++]
     }),
+    pluginMcp(),
   ],
 })
 ```
@@ -123,18 +121,22 @@ The `src/mcp` folder holds the files that build an [MCP server](https://modelcon
 ```text [Resulting tree]
 .
 ├── src/
-│   └── mcp/
-│   │   ├── addPet.ts
-│   │   └── getPet.ts
-│   │   └── mcp.json
-│   │   └── server.ts
-│   └── zod/
-│   │   ├── addPetSchema.ts
-│   │   └── getPetSchema.ts
-│   └── models/
-│   │   ├── AddPet.ts
-│   │   └── GetPet.ts
-│   └── index.ts
+│   └── gen/
+│   │   ├── mcp/
+│   │   │   ├── addPet.ts
+│   │   │   ├── getPetById.ts
+│   │   │   ├── mcp.json
+│   │   │   └── server.ts
+│   │   ├── clients/
+│   │   │   ├── addPet.ts
+│   │   │   └── getPetById.ts
+│   │   ├── zod/
+│   │   │   ├── addPetSchema.ts
+│   │   │   └── getPetByIdSchema.ts
+│   │   ├── models/
+│   │   │   ├── AddPet.ts
+│   │   │   └── GetPetById.ts
+│   │   └── index.ts
 ├── petStore.yaml
 ├── kubb.config.ts
 └── package.json
@@ -142,20 +144,20 @@ The `src/mcp` folder holds the files that build an [MCP server](https://modelcon
 
 ### src/mcp/addPet.ts
 
-The `addPetHandler` function takes pet data and sends a POST request to the Swagger PetStore API. It returns the response as a JSON text message that [MCP](https://modelcontextprotocol.io) uses in conversations.
+The `addPetHandler` function takes the pet body and calls the generated `addPet` client function. It returns the response as a JSON text message that [MCP](https://modelcontextprotocol.io) uses in conversations.
 
 ```typescript [src/mcp/addPet.ts]
-import client from '@kubb/plugin-axios/client'
-import type { AddPetMutationRequest, AddPetMutationResponse, AddPet405 } from '../models/AddPet'
-import type { CallToolResult } from '@modelcontextprotocol/sdk/types'
+import type { AddPetRequestConfig } from '../models/ts/AddPet'
+import type { RequestHandlerExtra } from '@modelcontextprotocol/sdk/shared/protocol'
+import type { CallToolResult, ServerNotification, ServerRequest } from '@modelcontextprotocol/sdk/types'
+import { addPet } from '../clients/addPet'
 
-export async function addPetHandler({ data }: { data: AddPetMutationRequest }): Promise<Promise<CallToolResult>> {
-  const res = await client<AddPetMutationResponse, ResponseErrorConfig<AddPet405>, AddPetMutationRequest>({
-    method: 'POST',
-    url: '/pet',
-    baseURL: 'https://petstore.swagger.io/v2',
-    data,
-  })
+export async function addPetHandler(
+  { body }: AddPetRequestConfig,
+  request: RequestHandlerExtra<ServerRequest, ServerNotification>,
+): Promise<Promise<CallToolResult>> {
+  const res = await addPet({ body })
+
   return {
     content: [
       {
@@ -163,6 +165,7 @@ export async function addPetHandler({ data }: { data: AddPetMutationRequest }): 
         text: JSON.stringify(res.data),
       },
     ],
+    structuredContent: { data: res.data },
   }
 }
 ```
@@ -191,9 +194,9 @@ It runs the TypeScript server (`server.ts`) through `tsx`, so [MCP](https://mode
 
 This code starts an [MCP](https://modelcontextprotocol.io) server for the Swagger PetStore API in four steps:
 
-1. Import the MCP SDK classes and the `addPetHandler` function.
+1. Import the MCP SDK classes, each operation handler, and the Zod input schemas.
 2. Create an MCP server named `"Swagger PetStore - OpenAPI 3.0"`.
-3. Register the `addPet` tool. It calls `addPetHandler` with pet data validated against `addPetMutationRequestSchema`, generated by the Zod plugin.
+3. Register the `addPet` tool. It validates the input against `addPetDataSchema` from the Zod plugin, then calls `addPetHandler`.
 4. Connect the server to a `stdio` transport so it talks over standard input and output.
 
 ```typescript [src/mcp/server.ts]
@@ -201,18 +204,33 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio'
 
 import { addPetHandler } from './addPet'
-import { addPetMutationRequestSchema } from '../zod/addPetSchema'
+import { addPetDataSchema, addPetStatus200Schema } from '../zod/addPetSchema'
 
-export const server = new McpServer({
-  name: 'Swagger PetStore - OpenAPI 3.0',
-  version: '3.0.3',
-})
+export function getServer() {
+  const server = new McpServer({
+    name: 'Swagger PetStore - OpenAPI 3.0',
+    version: '1.0.11',
+  })
 
-server.tool('addPet', 'Add a new pet to the store', { data: addPetMutationRequestSchema }, async ({ data }) => {
-  return addPetHandler({ data })
-})
+  server.registerTool(
+    'addPet',
+    {
+      title: 'Add a new pet to the store',
+      description: 'Add a new pet to the store',
+      outputSchema: { data: addPetStatus200Schema },
+      inputSchema: { body: addPetDataSchema },
+    },
+    async ({ body }, request) => {
+      return addPetHandler({ body }, request)
+    },
+  )
 
-async function startServer() {
+  return server
+}
+
+export const server = getServer()
+
+export async function startServer() {
   try {
     const transport = new StdioServerTransport()
     await server.connect(transport)
