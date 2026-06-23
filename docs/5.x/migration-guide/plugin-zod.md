@@ -137,7 +137,10 @@ export const pluginZodOperations = definePlugin(() => ({
 
             const imports = transformed.flatMap(({ node, data }) => {
               const names = [data.request, ...Object.values(data.responses), ...Object.values(data.parameters)].filter(Boolean) as Array<string>
-              const opFile = resolver.resolveFile({ name: node.operationId, extname: '.ts', tag: node.tags[0] ?? 'default', path: node.path }, { root: gctx.root, output, group })
+              const opFile = resolver.resolveFile(
+                { name: node.operationId, extname: '.ts', tag: node.tags[0] ?? 'default', path: node.path },
+                { root: gctx.root, output, group },
+              )
 
               return ast.factory.createImport({ name: names, path: opFile.path, root: operationsFile.path })
             })
@@ -155,10 +158,30 @@ export const pluginZodOperations = definePlugin(() => ({
                 path: operationsFile.path,
                 imports: [ast.factory.createImport({ name: ['z'], path: importPath, isTypeOnly: true }), ...imports],
                 sources: [
-                  ast.factory.createSource({ name: 'OperationSchema', isExportable: true, isIndexable: true, nodes: [ast.factory.createText(`export type OperationSchema = ${operationSchemaType}`)] }),
-                  ast.factory.createSource({ name: 'OperationsMap', isExportable: true, isIndexable: true, nodes: [ast.factory.createText('export type OperationsMap = Record<string, OperationSchema>')] }),
-                  ast.factory.createSource({ name: 'operations', isExportable: true, isIndexable: true, nodes: [ast.factory.createText(`export const operations = ${renderObject(operations, '')} as const`)] }),
-                  ast.factory.createSource({ name: 'paths', isExportable: true, isIndexable: true, nodes: [ast.factory.createText(`export const paths = ${renderObject(paths, '')} as const`)] }),
+                  ast.factory.createSource({
+                    name: 'OperationSchema',
+                    isExportable: true,
+                    isIndexable: true,
+                    nodes: [ast.factory.createText(`export type OperationSchema = ${operationSchemaType}`)],
+                  }),
+                  ast.factory.createSource({
+                    name: 'OperationsMap',
+                    isExportable: true,
+                    isIndexable: true,
+                    nodes: [ast.factory.createText('export type OperationsMap = Record<string, OperationSchema>')],
+                  }),
+                  ast.factory.createSource({
+                    name: 'operations',
+                    isExportable: true,
+                    isIndexable: true,
+                    nodes: [ast.factory.createText(`export const operations = ${renderObject(operations, '')} as const`)],
+                  }),
+                  ast.factory.createSource({
+                    name: 'paths',
+                    isExportable: true,
+                    isIndexable: true,
+                    nodes: [ast.factory.createText(`export const paths = ${renderObject(paths, '')} as const`)],
+                  }),
                 ],
               }),
             ]
