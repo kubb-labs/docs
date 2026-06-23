@@ -127,10 +127,10 @@ export const pluginZodOperations = definePlugin(() => ({
           name: 'zod-operations',
           operations(nodes, gctx) {
             const resolver = gctx.getResolver(pluginZodName)
-            const zod = gctx.requirePlugin(pluginZodName)
-            const output = zod.options.output ?? { path: 'zod' }
-            const group = zod.options.group ?? undefined
-            const importPath = zod.options.importPath ?? 'zod'
+            const zodOptions = gctx.requirePlugin(pluginZodName).options ?? {}
+            const output = zodOptions.output ?? { path: 'zod' }
+            const group = zodOptions.group ?? undefined
+            const importPath = zodOptions.importPath ?? 'zod'
 
             const operationsFile = resolver.resolveFile({ name: 'operations', extname: '.ts' }, { root: gctx.root, output, group })
             const transformed = nodes.filter(ast.isHttpOperationNode).map((node) => ({ node, data: buildSchemaNames(node, resolver) }))
