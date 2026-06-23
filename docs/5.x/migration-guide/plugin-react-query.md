@@ -7,7 +7,49 @@ description: Configuration and generated-output changes for @kubb/plugin-react-q
 
 Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). For the full option reference, see [`@kubb/plugin-react-query`](/plugins/plugin-react-query).
 
-[`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`.
+[`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`. The v4 `transformers` object held only `name`, so that is the whole rename. To rewrite generated nodes before printing, use the new [`macros`](/plugins/plugin-react-query#macros) option.
+
+## `client` is a selector, not an object
+
+In v4 the `client` option carried the whole client config, including `dataReturnType`, `clientType`, `baseURL`, `bundle`, and the custom `importPath`. v5 drops the object form. The hooks no longer emit their own client. They call a registered client plugin instead, so you register [`@kubb/plugin-axios`](/plugins/plugin-axios) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch) and point `client` at it with the string `'axios'` or `'fetch'`. When exactly one client plugin is registered, leave `client` off and the plugin picks it up. Set the string only to disambiguate when both are registered.
+
+::: code-group
+
+```typescript [v4 kubb.config.ts]
+import { defineConfig } from '@kubb/core'
+import { pluginReactQuery } from '@kubb/plugin-react-query'
+
+export default defineConfig({
+  plugins: [
+    pluginReactQuery({
+      client: { client: 'axios', dataReturnType: 'data', baseURL: 'https://api.example.com' },
+    }),
+  ],
+})
+```
+
+```typescript [v5 kubb.config.ts]
+import { defineConfig } from 'kubb'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginAxios } from '@kubb/plugin-axios'
+import { pluginReactQuery } from '@kubb/plugin-react-query'
+
+export default defineConfig({
+  plugins: [
+    pluginTs(),
+    pluginAxios({ baseURL: 'https://api.example.com' }),
+    pluginReactQuery({ client: 'axios' }),
+  ],
+})
+```
+
+:::
+
+`dataReturnType` has no replacement on the query plugin. The client plugin returns the response body, so the hooks read `res.data`. Move `baseURL` to the client plugin, and see [Migration: @kubb/plugin-client removed](/docs/5.x/migration-guide/plugin-client) for the `clientType`, `bundle`, and `importPath` options that went with it.
+
+## Removed: `generators`
+
+The `generators` option is gone. Plugins no longer accept extra generators inline. Move custom output into your own plugin. See [Creating plugins](/docs/5.x/guides/creating-plugins).
 
 ## Removed: `paramsType`, `pathParamsType`, `paramsCasing`
 

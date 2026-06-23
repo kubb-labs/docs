@@ -37,41 +37,13 @@ yarn add zod@^4
 
 Use [`macros`](/plugins/plugin-zod#macros) or [`printer`](/plugins/plugin-zod#printer) instead.
 
-## Removed: `paramsCasing`
-
-```typescript [v4 kubb.config.ts]
-pluginZod({ paramsCasing: 'camelcase' })
-```
-
-Properties inside the generated path, query, and header schemas are now always camelCase, so drop the option. The request still uses the original spec names, and Kubb writes the mapping for you.
-
-```typescript [Generated output]
-// OpenAPI spec uses: pet_id
-export const getPetPathParamsSchema = z.object({ petId: z.string() }) // was { pet_id: z.string() }
-```
-
 ## Renamed: `transformers.name`
 
-[`resolver.resolveSchemaName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`.
+[`resolver.resolveSchemaName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`. The v4 `transformers.schema` callback maps to [`macros`](/docs/5.x/migration-guide#transformersschema-macros).
 
 ## Moved to `adapterOas`
 
 `dateType`, `integerType`, `unknownType`, and `emptySchemaType` moved to [`adapterOas`](/adapters/adapter-oas). See [Migration: @kubb/adapter-oas](/docs/5.x/migration-guide/adapter-oas).
-
-## New: `mini`
-
-Generate the functional syntax of [Zod Mini](https://zod.dev/packages/mini) for better tree-shaking. When `mini: true`, `importPath` defaults to `'zod/mini'`.
-
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { pluginZod } from '@kubb/plugin-zod'
-
-export default defineConfig({
-  input: { path: './petstore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [pluginZod({ mini: true })],
-})
-```
 
 ## New: `regexType`
 
@@ -115,6 +87,10 @@ Update any imports that referenced the old name:
 import type { PetSchemaType } from './gen/zod/petSchema.ts' // [!code ++]
 import type { PetSchema } from './gen/zod/petSchema.ts' // [!code --]
 ```
+
+## Changed: `wrapOutput` receives a schema node
+
+The `wrapOutput` callback still wraps the generated Zod string, but its `schema` argument is now an AST `SchemaNode` instead of the raw OpenAPI `SchemaObject`. Common metadata such as `name`, `description`, `example`, and `format` stays on the node, so `schema.example` keeps working. The structural fields differ: the node carries `type`, `members`, `items`, and `properties` rather than the OpenAPI `properties`/`allOf`/`oneOf` shape. Update any callback that walked the raw OpenAPI tree.
 
 ## Generated output
 

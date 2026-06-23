@@ -7,7 +7,7 @@ description: Configuration and generated-output changes for @kubb/plugin-faker w
 
 Part of the [v4 → v5 migration guide](/docs/5.x/migration-guide). See the full option reference in [`@kubb/plugin-faker`](/plugins/plugin-faker).
 
-`dateType`, `integerType`, `unknownType`, and `emptySchemaType` moved to [`adapterOas`](/adapters/adapter-oas). See [Migration: @kubb/adapter-oas](/docs/5.x/migration-guide/adapter-oas). [`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`.
+`dateType`, `integerType`, `unknownType`, `emptySchemaType`, and `contentType` moved to [`adapterOas`](/adapters/adapter-oas). See [Migration: @kubb/adapter-oas](/docs/5.x/migration-guide/adapter-oas). [`resolver.resolveName`](/docs/5.x/migration-guide#transformersname-resolver) replaces `transformers.name`, and [`macros`](/docs/5.x/migration-guide#transformersschema-macros) replace `transformers.schema`. The `generators` option is [gone](/docs/5.x/migration-guide#generators-removed).
 
 ## Removed: `paramsCasing`
 
@@ -19,9 +19,9 @@ Properties inside the generated path, query, and header mocks are now always cam
 
 ## Generated output
 
-### Stricter return type and intermediate variable
+### Generic return type and intermediate variable
 
-The `create` prefix stays (`createPet` is still `createPet`), matching the naming `plugin-msw` uses. The return type and internal structure change.
+The `create` prefix stays, so `createPet` is still `createPet`. The signature and internal structure change. The factory now takes a generic `TData` and lifts the fake values into a `defaultFakeData` variable before the spread.
 
 ```diff [Diff]
 - export function createPet(data?: Partial<Pet>): Pet {
@@ -33,7 +33,7 @@ The `create` prefix stays (`createPet` is still `createPet`), matching the namin
 -     ...(data || {}),
 -   }
 - }
-+ export function createPet(data?: Partial<Pet>): Required<Pet> {
++ export function createPet<TData extends Partial<Pet> = object>(data?: TData) {
 +   const defaultFakeData = {
 +     id: faker.number.int(),
 +     ...
@@ -41,8 +41,8 @@ The `create` prefix stays (`createPet` is still `createPet`), matching the namin
 +   return {
 +     ...defaultFakeData,
 +     ...(data || {}),
-+   } as Required<Pet>
++   } as Omit<typeof defaultFakeData, keyof TData> & TData
 + }
 ```
 
-`Required<Pet>` guarantees callers see populated fields even when the schema marks them optional.
+The inferred return type keeps the fields you pass in `data` exactly as typed and fills the rest from `defaultFakeData`, so an override like `createPet({ id: 1 })` reads back `id` as the literal you set rather than the wider schema type.

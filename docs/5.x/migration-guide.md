@@ -187,7 +187,7 @@ Update your CI pipelines, the `engines` field in `package.json`, and any `Docker
 
 ### Plugins moved to a separate repository
 
-In v4, every plugin lived in [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb). v5 moves them into [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins). The npm package names stay the same, so you do not need to rename anything.
+In v4, the code-generating plugins lived in [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb). v5 moves them into [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins). The npm package names stay the same, so you do not need to rename anything. The infrastructure packages that `kubb` wires in for you, `@kubb/adapter-oas`, `@kubb/parser-ts`, and `@kubb/plugin-barrel`, stay in `kubb-labs/kubb`.
 
 ::: code-group
 
@@ -266,7 +266,7 @@ v5 adds three top-level keys that replace behavior each plugin used to carry on 
 | Option       | Package                                                     | Purpose                                       | Default                 |
 | ------------ | ----------------------------------------------------------- | --------------------------------------------- | ----------------------- |
 | `adapter`    | [`@kubb/adapter-oas`](/adapters/adapter-oas)                | Parses the input spec into a universal AST.   | `adapterOas()`          |
-| `parsers`    | [`@kubb/parser-ts`](/parsers/parser-ts)                     | Converts AST nodes to `.ts`, `.tsx`, and `.md` files. | `[parserTs, parserTsx, parserMd]` |
+| `parsers`    | [`@kubb/parser-ts`](/parsers/parser-ts), `@kubb/parser-md`  | Converts AST nodes to `.ts`, `.tsx`, and `.md` files. | `[parserTs, parserTsx, parserMd]` |
 | `plugins` (post) | [`@kubb/plugin-barrel`](/plugins/plugin-barrel) | Post-processes output, like barrel files.     | `[pluginBarrel()]`  |
 
 ### `@kubb/plugin-oas` removed
@@ -317,14 +317,14 @@ export default defineConfig({
 > [!NOTE]
 > Uninstall `@kubb/plugin-oas`. The `adapter` defaults to `adapterOas()` when importing from `kubb`, so the `adapter:` line is only required when you pass options.
 
-### `output.format` and `output.lint`: new auto-detection
+### `output.format` and `output.lint`: new defaults and detection order
 
-Both options gained an `'auto'` value that detects the tools you have installed, and `'oxfmt'` and `'oxlint'` joined the formatter and linter lists.
+Both options default to `false` in v5, so generation skips formatting and linting unless you opt in. In v4, `format` defaulted to `'prettier'` and `lint` to `'auto'`. The accepted values are unchanged (`'auto'`, `'prettier'`, `'biome'`, `'oxfmt'`, `false` for format; `'auto'`, `'eslint'`, `'biome'`, `'oxlint'`, `false` for lint), but the `'auto'` detection order now prefers the oxc tools first.
 
-| Option          | New v5 values        | Detection order                                                                          |
-| --------------- | -------------------- | ---------------------------------------------------------------------------------------- |
-| `output.format` | `'auto'`, `'oxfmt'`  | [oxfmt](https://oxc.rs) → [biome](https://biomejs.dev) → [prettier](https://prettier.io) |
-| `output.lint`   | `'auto'`, `'oxlint'` | [oxlint](https://oxc.rs) → [biome](https://biomejs.dev) → [eslint](https://eslint.org)   |
+| Option          | v4 default   | v5 default | `'auto'` detection order                                                                 |
+| --------------- | ------------ | ---------- | ---------------------------------------------------------------------------------------- |
+| `output.format` | `'prettier'` | `false`    | [oxfmt](https://oxc.rs) → [biome](https://biomejs.dev) → [prettier](https://prettier.io) |
+| `output.lint`   | `'auto'`     | `false`    | [oxlint](https://oxc.rs) → [biome](https://biomejs.dev) → [eslint](https://eslint.org)   |
 
 ### `output.barrelType` → `output.barrel`
 
@@ -478,7 +478,8 @@ To keep certain files from being written, supply a custom [storage](/docs/5.x/co
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb' // [!code --]
-import { defineConfig, fsStorage } from 'kubb' // [!code ++]
+import { defineConfig } from 'kubb' // [!code ++]
+import { fsStorage } from '@kubb/core' // [!code ++]
 
 const base = fsStorage() // [!code ++]
 const protectedPaths = ['src/gen/.kubb/client.ts'] // [!code ++]
