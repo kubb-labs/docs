@@ -8,12 +8,12 @@ outline: deep
 
 # Custom transport
 
-The client Kubb generates splits into two layers. A shared core builds the URL, serializes the query and body, resolves auth, and runs the interceptors. The **transport** is the last step: it takes the finished request and performs the send. Swap the transport and you change how a request leaves your app without touching anything the core already handled.
+The client Kubb generates splits into two layers. A shared core builds the URL, serializes the query and body, resolves auth, and runs the interceptors. The transport is the last step: it takes the finished request and sends it. Swap the transport and you change how a request leaves your app without touching anything the core already handled.
 
-You set the transport at runtime on the client, not in `kubb.config.ts`. The plugin options control what gets generated; the transport controls how the generated functions reach the network. The two client plugins expose it differently, so each section below covers its own shape.
+You set the transport at runtime on the client, not in `kubb.config.ts`. Plugin options control what gets generated. The transport controls how those generated functions reach the network. The two client plugins expose it differently, so each section below covers its own shape.
 
-- [`@kubb/plugin-fetch`](/plugins/plugin-fetch) takes a transport **function**.
-- [`@kubb/plugin-axios`](/plugins/plugin-axios) takes an **axios instance**.
+- [`@kubb/plugin-fetch`](/plugins/plugin-fetch) takes a transport function.
+- [`@kubb/plugin-axios`](/plugins/plugin-axios) takes an axios instance.
 
 ## When to reach for it
 
@@ -58,7 +58,7 @@ The core hands you a `ResolvedRequest` with the URL already built, the query ser
 
 ### Wrap the default send
 
-The simplest custom transport delegates to `fetch` and adds behavior around it. This one retries a failed `GET` with exponential backoff:
+A custom transport can delegate to `fetch` and add behavior around it. This one retries a failed `GET` with exponential backoff:
 
 ```typescript
 import { client, type Transport } from './gen/clients/.kubb/client'
@@ -131,7 +131,7 @@ type ClientConfig = {
 }
 ```
 
-This keeps you on axios's own API for the send, so an instance you already configure elsewhere drops straight in. Kubb still owns the URL, query, body, and auth; it forwards them to the instance as an `AxiosRequestConfig`.
+This keeps you on axios's own API for the send, so an instance you already configure elsewhere drops straight in. Kubb still owns the URL, query, body, and auth, then forwards them to the instance as an `AxiosRequestConfig`.
 
 ### Pass a pre-configured instance
 
@@ -157,11 +157,11 @@ client.setConfig({ transport: instance })
 Every generated function now sends through your instance, so its timeout, headers, and interceptors apply to each call.
 
 > [!NOTE]
-> Kubb sets `transformRequest`, `paramsSerializer`, and `validateStatus` on each request so its own serialization and `throwOnError` handling stay in charge. Configure cross-cutting concerns — timeouts, retries, interceptors — on the instance instead of overriding those fields.
+> Kubb sets `transformRequest`, `paramsSerializer`, and `validateStatus` on each request so its own serialization and `throwOnError` handling stay in charge. Configure cross-cutting concerns like timeouts, retries, and interceptors on the instance instead of overriding those fields.
 
 ### Add retries with a plugin
 
-An axios instance composes with the ecosystem. Wire up [`axios-retry`](https://github.com/softonic/axios-retry) on the instance you pass as the transport:
+Because the transport is a real axios instance, axios plugins work on it. Wire up [`axios-retry`](https://github.com/softonic/axios-retry) on the instance you pass as the transport:
 
 ```typescript
 import axios from 'axios'
@@ -176,11 +176,9 @@ export const apiClient = createClient({ transport: instance })
 
 ## Where to set it
 
-A transport rides the same `ClientConfig` as `baseURL` and `auth`, so you set it the same three ways. Pick the one that matches the scope you need:
+A transport rides the same `ClientConfig` as `baseURL` and `auth`, so you set it the same three ways. Pick the one that matches the scope you need.
 
-- **Globally**, with `client.setConfig({ transport })`. Every generated function imports the shared `client`, so one call covers the whole app.
-- **Per instance**, with `createClient({ transport })`. You get an isolated client to pass on the `client` option or to a query plugin, which is ideal for tests and for talking to more than one backend.
-- **Per call**, with the `transport` option on a single request, which wins over both for that one call.
+Call `client.setConfig({ transport })` to cover the whole app at once, since every generated function imports the shared `client`. Call `createClient({ transport })` for an isolated client you pass on the `client` option or hand to a query plugin, which suits tests and talking to more than one backend. Pass the `transport` option on a single request to override both for that one call.
 
 ## See also
 
