@@ -8,7 +8,7 @@ outline: deep
 
 # Set your own baseURL
 
-Set a `baseURL` in two ways. Read it from the servers list in your OpenAPI spec, or pass the `baseURL` option to the client plugin.
+Set a `baseURL` at build time or at runtime. At build time you read it from the servers list in your OpenAPI spec or pass the `baseURL` option to the client plugin, and it bakes into the generated code. At runtime you set it on the generated client, which suits a value you only know once the app runs, such as an environment variable or the tenant the user signed in as.
 
 ## Read it from the spec
 
@@ -81,3 +81,60 @@ export default defineConfig({
 ```
 
 :::
+
+## Set it at runtime
+
+The `baseURL` rides the same `ClientConfig` as `auth` and the [transport](/docs/5.x/guides/transport), so you set it at runtime the same three ways. Pick the one that matches the scope you need.
+
+Call `client.setConfig({ baseURL })` to point the whole app at one URL. Every generated function imports the shared `client`, so the change reaches each call at once. This fits reading the URL from an environment variable on startup:
+
+```typescript
+import { client } from './gen/clients/.kubb/client'
+
+client.setConfig({ baseURL: import.meta.env.VITE_API_URL })
+```
+
+Call `createClient({ baseURL })` for an isolated client with its own URL, which fits a multi-tenant app or talking to more than one backend. Pass it on the `client` option of a call, or hand it to a query plugin:
+
+```typescript
+import { createClient } from './gen/clients/.kubb/client'
+import { getPetById } from './gen/clients/getPetById'
+
+const staging = createClient({ baseURL: 'https://staging.petstore.swagger.io/v2' })
+
+const { data } = await getPetById({ path: { petId: 1 }, client: staging })
+```
+
+Pass `baseURL` on a single call to override the client for that one request:
+
+```typescript
+import { getPetById } from './gen/clients/getPetById'
+
+const { data } = await getPetById({ path: { petId: 1 }, baseURL: 'https://localhost:3000' })
+```
+
+A `baseURL` set on the call wins over `createClient`, which wins over `setConfig`, which wins over the build-time value.
+
+### Rewrite the URL with an interceptor
+
+A request interceptor sees the final request before it is sent, so it can rewrite the URL per call from logic the static options can't express, such as routing a path to a different host:
+
+```typescript
+import { client } from './gen/clients/.kubb/client'
+
+client.interceptors.request.use((request) => {
+  if (request.url.startsWith('/admin')) {
+    request.url = `https://admin.petstore.swagger.io${request.url}`
+  }
+  return request
+})
+```
+
+The interceptor receives the URL already built from the resolved `baseURL`, so reach for it only when the host depends on the request. For a fixed URL, `setConfig` and `createClient` stay the simpler path.
+
+## See also
+
+- [Custom transport](/docs/5.x/guides/transport)
+- [Authentication](/docs/5.x/guides/authentication)
+- [`@kubb/plugin-fetch`](/plugins/plugin-fetch)
+- [`@kubb/plugin-axios`](/plugins/plugin-axios)
