@@ -117,7 +117,7 @@ A `baseURL` set on the call wins over `createClient`, which wins over `setConfig
 
 ### Rewrite the URL with an interceptor
 
-A request interceptor sees the final request before it is sent, so it can rewrite the URL per call from logic the static options can't express, such as routing a path to a different host:
+A request interceptor sees the final request before it is sent, so it can rewrite the URL per call from logic the static options cannot express, such as routing a path to a different host:
 
 ```typescript
 import { client } from './gen/clients/.kubb/client'
