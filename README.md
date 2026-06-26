@@ -51,7 +51,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for details on the repo structure and h
 
 ## Star history
 
-![Star history chart](https://shieldcn.dev/chart/github/stars/kubb-labs/docs.svg?theme=orange)
+<img alt="Star history chart" src="https://shieldcn.dev/chart/github/stars/kubb-labs/docs.svg?theme=orange" width="100%" />
 
 <!-- Badges -->
 
