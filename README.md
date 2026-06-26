@@ -51,7 +51,7 @@ Kubb's development is funded by sponsors. To support the project, [become a spon
 
 <p align="center">
   <a href="https://github.com/sponsors/stijnvanhulle">
-    <img src="https://shieldcn.dev/sponsors/stijnvanhulle.svg?titleAlign=center&mode=dark" alt="stijnvanhulle sponsors" />
+    <img src="https://shieldcn.dev/sponsors/stijnvanhulle.svg?titleAlign=center&mode=dark" alt="stijnvanhulle sponsors" width="100%" />
   </a>
 </p>
 
