@@ -29,6 +29,7 @@ tags:
   - data-fetching
   - codegen
   - openapi
+  - validator
 dependencies:
   - plugin-ts
   - plugin-axios
@@ -472,7 +473,7 @@ Exported function name of your custom-options hook. Generated code imports it as
 | Required: | `false`                  |
 |  Default: | `'useCustomHookOptions'` |
 
-### parser
+### validator
 
 Runtime validator applied to request and response data using schemas from `@kubb/plugin-zod`.
 
@@ -568,7 +569,7 @@ This plugin needs these plugins in your config:
 - [`@kubb/plugin-ts`](/plugins/plugin-ts) for the types.
 - A client plugin, [`@kubb/plugin-axios`](/plugins/plugin-axios) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch), for the HTTP layer. The hooks call its functions, so generation errors out when no client plugin is registered.
 
-Set `parser` to `'zod'` and the plugin also depends on [`@kubb/plugin-zod`](/plugins/plugin-zod), which then has to be in the plugins list.
+Set `validator` to `'zod'` and the plugin also depends on [`@kubb/plugin-zod`](/plugins/plugin-zod), which then has to be in the plugins list.
 
 ## Example
 
