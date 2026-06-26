@@ -5,6 +5,7 @@
 
 [![Stars][stars-src]][stars-href]
 [![License][license-src]][license-href]
+[![OC Backers][oc-backers-src]][oc-backers-href]
 
   <h4>
     <a href="https://kubb.dev" target="_blank">Documentation</a>
@@ -44,9 +45,23 @@ Found a mistake or want to improve the docs? We welcome contributions:
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for details on the repo structure and how to submit changes.
 
+## Sponsors
+
+Kubb's development is funded by sponsors. To support the project, [become a sponsor on GitHub](https://github.com/sponsors/stijnvanhulle) or [back us on Open Collective](https://opencollective.com/kubb).
+
+<p align="center">
+  <a href="https://github.com/sponsors/stijnvanhulle">
+    <img src="https://shieldcn.dev/sponsors/stijnvanhulle.svg?titleAlign=center&mode=dark" alt="stijnvanhulle sponsors" width="100%" />
+  </a>
+</p>
+
 ## License
 
 [MIT](./LICENSE) © [Stijn Van Hulle](https://github.com/stijnvanhulle)
+
+## Star history
+
+<img alt="Star history chart" src="https://shieldcn.dev/chart/github/stars/kubb-labs/docs.svg?theme=orange" width="100%" />
 
 <!-- Badges -->
 
@@ -54,3 +69,5 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for details on the repo structure and h
 [stars-href]: https://github.com/kubb-labs/docs
 [license-src]: https://shieldcn.dev/github/license/kubb-labs/docs.svg?variant=secondary&size=xs&theme=zinc
 [license-href]: https://github.com/kubb-labs/docs/blob/main/LICENSE
+[oc-backers-src]: https://shieldcn.dev/opencollective/backers/kubb.svg?variant=secondary&size=xs&theme=zinc&mode=dark
+[oc-backers-href]: https://opencollective.com/kubb
