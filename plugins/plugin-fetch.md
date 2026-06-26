@@ -56,6 +56,21 @@ const url = client.getUrl({ url: '/pet/{petId}', path: { petId: 1 }, query: { st
 
 To authenticate requests, give the client one `auth` resolver and the runtime adds the credential to every call its security schemes guard. The [authentication guide](/docs/5.x/guides/authentication) walks through bearer, basic, and apiKey setups.
 
+The runtime sets `method`, `headers`, `body`, `signal`, and `credentials` on each `fetch` itself. To reach the rest of the `RequestInit` (`cache`, `mode`, `redirect`, `keepalive`, `duplex`, or Next.js's `next: { revalidate, tags }`), pass `options`. It works at the client level for every call and per request, where a per-request value wins:
+
+```ts
+import { client } from './.kubb/client'
+import { getPetById } from './getPetById'
+
+// every call opts out of the cache
+client.setConfig({ options: { cache: 'no-store' } })
+
+// one call overrides it and adds a Next.js revalidate window
+await getPetById({ path: { petId: 1 }, options: { cache: 'force-cache', next: { revalidate: 60 } } })
+```
+
+The transport spreads `options` into the `fetch` init before the fields the runtime owns, so it can never override the method, headers, body, signal, or credentials.
+
 ## Installation
 
 ::: code-group
