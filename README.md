@@ -49,6 +49,10 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for details on the repo structure and h
 
 [MIT](./LICENSE) © [Stijn Van Hulle](https://github.com/stijnvanhulle)
 
+## Star history
+
+![Star history chart](https://shieldcn.dev/chart/github/stars/kubb-labs/docs.svg?theme=orange)
+
 <!-- Badges -->
 
 [stars-src]: https://shieldcn.dev/github/stars/kubb-labs/docs.svg?variant=secondary&size=xs&theme=zinc&mode=dark
