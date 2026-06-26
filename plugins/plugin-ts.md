@@ -806,6 +806,27 @@ pluginTs({
 })
 ```
 
+## readOnly and writeOnly
+
+OpenAPI marks a field `readOnly` when the server owns it and `writeOnly` when the client sends it but never reads it back. `@kubb/plugin-ts` honors both at the operation boundary, where it already emits separate request and response types.
+
+A `readOnly` field stays out of the request type, and a `writeOnly` field stays out of every response type. The field is removed with `Omit`, so a write-only field such as a password cannot reach a response type.
+
+Take a `Pet` schema with a `readOnly` `id` and a `writeOnly` `password`. The request body and the `200` response both reference `Pet`, yet each keeps only the fields that belong to its direction:
+
+```typescript
+// id is server-owned, so the request never carries it
+export type AddPetData = Omit<NonNullable<Pet>, 'id'>
+
+// password is write-only, so the response never exposes it
+export type AddPetStatus200 = Omit<NonNullable<Pet>, 'password'>
+```
+
+The standalone `Pet` type still carries every field, including its `readonly id`. Only the per-operation request and response types drop what does not belong to that direction. This needs no configuration and no helper types such as `Readable<T>` or `Writable<T>`.
+
+> [!NOTE]
+> Filtering applies to the properties declared directly on the request or response body schema. A read-only or write-only field nested deeper inside a referenced schema stays in place. Reach for a [macro](#macros) when you need to rewrite those.
+
 ## Dependencies
 
 `@kubb/plugin-ts` has no plugin dependencies. It reads the OpenAPI spec through `@kubb/adapter-oas` and produces the type names every other plugin reuses, so add it whenever a client, query, mock, or validator plugin needs typed output.
