@@ -5,6 +5,7 @@
 
 [![Stars][stars-src]][stars-href]
 [![License][license-src]][license-href]
+[![OC Backers][oc-backers-src]][oc-backers-href]
 
   <h4>
     <a href="https://kubb.dev" target="_blank">Documentation</a>
@@ -54,3 +55,5 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for details on the repo structure and h
 [stars-href]: https://github.com/kubb-labs/docs
 [license-src]: https://shieldcn.dev/github/license/kubb-labs/docs.svg?variant=secondary&size=xs&theme=zinc
 [license-href]: https://github.com/kubb-labs/docs/blob/main/LICENSE
+[oc-backers-src]: https://shieldcn.dev/opencollective/backers/kubb.svg?variant=secondary&size=xs&theme=zinc&mode=dark
+[oc-backers-href]: https://opencollective.com/kubb

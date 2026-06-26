@@ -30,4 +30,4 @@ Start with [Installation](./installation) or [Basic Usage](./basic-usage). For d
 
 ## Community
 
-Join the [Discord server](https://discord.gg/shfBFeczrm), file an issue on [GitHub](https://github.com/kubb-labs/kubb/issues), or [sponsor the project](https://github.com/sponsors/stijnvanhulle).
+Join the [Discord server](https://discord.gg/shfBFeczrm), file an issue on [GitHub](https://github.com/kubb-labs/kubb/issues), or sponsor the project on [GitHub Sponsors](https://github.com/sponsors/stijnvanhulle) or [Open Collective](https://opencollective.com/kubb).
