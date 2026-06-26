@@ -56,20 +56,20 @@ const url = client.getUrl({ url: '/pet/{petId}', path: { petId: 1 }, query: { st
 
 To authenticate requests, give the client one `auth` resolver and the runtime adds the credential to every call its security schemes guard. The [authentication guide](/docs/5.x/guides/authentication) walks through bearer, basic, and apiKey setups.
 
-For a single call that needs a native axios field the runtime does not set, such as `timeout`, `proxy`, `maxRedirects`, `decompress`, or an `onUploadProgress` callback, pass `axiosOptions`. It works at the client level for every call and per request, where a per-request value wins:
+For a single call that needs a native axios field the runtime does not set, such as `timeout`, `proxy`, `maxRedirects`, `decompress`, or an `onUploadProgress` callback, pass `options`. It works at the client level for every call and per request, where a per-request value wins:
 
 ```ts
 import { client } from './.kubb/client'
 import { uploadFile } from './uploadFile'
 
 // every call gets a timeout
-client.setConfig({ axiosOptions: { timeout: 10_000 } })
+client.setConfig({ options: { timeout: 10_000 } })
 
 // one call tracks upload progress and shortens the timeout
-await uploadFile({ path: { petId: 1 }, body, axiosOptions: { timeout: 2_000, onUploadProgress: (e) => console.log(e.loaded) } })
+await uploadFile({ path: { petId: 1 }, body, options: { timeout: 2_000, onUploadProgress: (e) => console.log(e.loaded) } })
 ```
 
-The runtime spreads `axiosOptions` into the request before the fields it owns (URL, method, headers, params, body, and serialization), so it can never override them. It is the per-request counterpart to the [`transport` instance](/docs/5.x/guides/transport), which stays the place for cross-cutting concerns like retries and interceptors, and mirrors `fetchOptions` in [`@kubb/plugin-fetch`](/plugins/plugin-fetch).
+The runtime spreads `options` into the request before the fields it owns (URL, method, headers, params, body, and serialization), so it can never override them. It is the per-request counterpart to the [`transport` instance](/docs/5.x/guides/transport), which stays the place for cross-cutting concerns like retries and interceptors, and mirrors `fetchOptions` in [`@kubb/plugin-fetch`](/plugins/plugin-fetch).
 
 ## Installation
 
