@@ -43,13 +43,6 @@ type ResolvedRequest = {
   credentials?: RequestCredentials
   options?: FetchOptions
   responseType?: ResponseType
-  // Operation context, populated by the core and never sent over the wire
-  meta?: {
-    operationId?: string
-    schemaPath?: string
-    params: { path?: Record<string, unknown>; query?: unknown; headers?: HeadersInit; cookie?: Record<string, unknown> }
-    id: string
-  }
 }
 
 type TransportResult<TData = unknown> = {
@@ -64,7 +57,7 @@ type TransportResult<TData = unknown> = {
 
 The core hands you a `ResolvedRequest` with the URL already built, the query serialized, the body serialized, and the auth headers in place. Your function sends it and returns the parsed `data` along with the native `request` and `response`, so status, headers, and the raw body stay reachable on the result.
 
-The `meta` field carries the operation context the generator knows up front. It holds the `operationId`, the templated `schemaPath`, the structured `params`, and a per-request `id` for correlation. A request interceptor or transport can read it to log, trace, or route a call by operation. It stays on the resolved request and is never serialized into the outgoing HTTP request. To send through a non-standard `Request` constructor, set `Request` on the client config or per call and the default transport uses it in place of the global one.
+To send through a non-standard `Request` constructor, set `Request` on the client config or per call and the default transport uses it in place of the global one.
 
 ### Wrap the default send
 
