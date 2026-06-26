@@ -810,7 +810,7 @@ pluginTs({
 
 OpenAPI marks a field `readOnly` when the server owns it and `writeOnly` when the client sends it but never reads it back. `@kubb/plugin-ts` honors both at the operation boundary, where it already emits separate request and response types.
 
-A `readOnly` field stays out of the request type, and a `writeOnly` field stays out of every response type. The field is removed with `Omit`, so a write-only field such as a password cannot reach a response type.
+A `readOnly` field stays out of the request type, and a `writeOnly` field stays out of every response type. plugin-ts wraps the type in `Omit`, so a write-only field such as a password never reaches a response type.
 
 Take a `Pet` schema with a `readOnly` `id` and a `writeOnly` `password`. The request body and the `200` response both reference `Pet`, yet each keeps only the fields that belong to its direction:
 
