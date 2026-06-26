@@ -27,6 +27,7 @@ tags:
   - http-client
   - codegen
   - openapi
+  - validator
 dependencies:
   - plugin-ts
 resources:
@@ -255,7 +256,7 @@ Base URL prepended to every request the functions make. When omitted, the URL co
 |     Type: | `string` |
 | Required: | `false`  |
 
-### parser
+### validator
 
 Runtime validator applied to request and response bodies using schemas from `@kubb/plugin-zod`. `false` (the default) does no validation and returns the response cast to the generated type. `'zod'` validates success response bodies only. The `{ request?: 'zod', response?: 'zod' }` object form opts in per direction, where `request` validates the request body before the call and `response` validates the response body after.
 
@@ -291,14 +292,12 @@ export function getPetById<ThrowOnError extends boolean = true>(
 ): Promise<RequestResult<GetPetByIdResponses, ThrowOnError>> {
   const { client: request = client, ...config } = options
 
-  const result = await request({
+  return request({
     method: 'GET',
     url: '/pet/{petId}',
+    validator: { response: getPetByIdResponseSchema },
     ...config,
-  })
-
-  result.data = getPetByIdQueryResponseSchema.parse(result.data)
-  return result as RequestResult<GetPetByIdResponses, ThrowOnError>
+  }) as Promise<RequestResult<GetPetByIdResponses, ThrowOnError>>
 }
 ```
 
@@ -308,27 +307,23 @@ export function addPet<ThrowOnError extends boolean = true>(
 ): Promise<RequestResult<AddPetResponses, ThrowOnError>> {
   const { client: request = client, ...config } = options
 
-  config.data = addPetMutationRequestSchema.parse(config.data)
-
-  const result = await request({
+  return request({
     method: 'POST',
     url: '/pet',
+    validator: { request: addPetRequestSchema, response: addPetResponseSchema },
     ...config,
-  })
-
-  result.data = addPetMutationResponseSchema.parse(result.data)
-  return result as RequestResult<AddPetResponses, ThrowOnError>
+  }) as Promise<RequestResult<AddPetResponses, ThrowOnError>>
 }
 ```
 
 :::
 
-You call the generated function the same way for every value. With `'zod'` the response is validated and a `ZodError` throws on invalid data, and the `{ request }` form validates the request body before the call:
+You call the generated function the same way for every value. With `'zod'` the response is validated and a `ParseError` throws on invalid data, and the `{ request }` form validates the request body before the call:
 
 ```typescript
 import { addPet } from './src/gen/clients/addPet'
 
-// throws a ZodError when the request body or response fails its schema
+// throws a ParseError when the request body or response fails its schema
 const { data } = await addPet({ body: { name: 'Fluffy' } })
 ```
 
@@ -469,7 +464,7 @@ Rewrites AST nodes before the plugin prints them to source. Use it to rename ope
 
 ## Dependencies
 
-This plugin needs `@kubb/plugin-ts` in your config. Kubb runs it before `plugin-axios` so the functions can import the generated types. When `parser` is set to `'zod'`, also add `@kubb/plugin-zod`.
+This plugin needs `@kubb/plugin-ts` in your config. Kubb runs it before `plugin-axios` so the functions can import the generated types. When `validator` is set to `'zod'`, also add `@kubb/plugin-zod`.
 
 - [`@kubb/plugin-ts`](/plugins/plugin-ts)
 - [`@kubb/plugin-zod`](/plugins/plugin-zod)
