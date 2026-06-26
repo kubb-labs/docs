@@ -41,6 +41,7 @@ type ResolvedRequest = {
   body?: BodyInit
   signal?: AbortSignal
   credentials?: RequestCredentials
+  options?: FetchOptions
   responseType?: ResponseType
   // Operation context, populated by the core and never sent over the wire
   meta?: {
@@ -166,7 +167,7 @@ client.setConfig({ transport: instance })
 Every generated function now sends through your instance, so its timeout, headers, and interceptors apply to each call.
 
 > [!NOTE]
-> Kubb sets `transformRequest`, `paramsSerializer`, and `validateStatus` on each request so its own serialization and `throwOnError` handling stay in charge. Configure cross-cutting concerns like timeouts, retries, and interceptors on the instance instead of overriding those fields.
+> Kubb sets `transformRequest`, `paramsSerializer`, and `validateStatus` on each request so its own serialization and `throwOnError` handling stay in charge. Configure cross-cutting concerns like timeouts, retries, and interceptors on the instance instead of overriding those fields. For a native axios field on a single call, such as `timeout` or `onUploadProgress`, pass [`options`](/plugins/plugin-axios) instead of building a new instance.
 
 ### Add retries with a plugin
 
