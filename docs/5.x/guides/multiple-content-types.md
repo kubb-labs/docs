@@ -8,7 +8,7 @@ outline: deep
 
 # Multiple content types
 
-An OpenAPI operation can declare more than one content type for its request body, its responses, or both. A `PUT /pet` might accept `application/json` and `application/xml` for the body and return either format for `200`. The generated client lets a call choose which format to send, which format to prefer back, and then reports the format the server actually returned so you can read the body with full types.
+An OpenAPI operation can declare more than one content type for its request body, its responses, or both. A `PUT /pet` might accept `application/json` and `application/xml` for the body and return either format for `200`. The generated client lets a call pick the format to send and the format to prefer back. It then reports the format the server returned, and types the body to match.
 
 ## Choosing the request and response format
 
@@ -23,7 +23,7 @@ const result = await updatePet({
 
 The `request` key sets the `Content-Type` header and picks the body serializer. The `response` key sets the `Accept` header so the server knows which format you prefer. Both keys are optional, and a bare string still selects the request type, so `contentType: 'application/json'` keeps working.
 
-Kubb only offers the keys an operation can actually vary. A request body with a single content type bakes that type into the call, so the option exposes `response` alone. A response with a single content type needs no choice at all. When the spec declares several request types, the first one is the default, and you override it per call.
+Kubb offers only the keys an operation can vary. A request body with a single content type is baked into the call, so the option exposes `response` alone. A single response content type needs no choice. When the spec declares several request types, the first is the default and you override it per call.
 
 ## Reading the response by content type
 
