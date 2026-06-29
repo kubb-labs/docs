@@ -27,13 +27,13 @@ Kubb offers only the keys an operation can vary. A request body with a single co
 
 ## Reading the response by content type
 
-When a status documents more than one content type, the result carries the format the server returned on `result.parsed`. The `parsed` field pairs the negotiated `contentType` with `data` typed for that format, so a `switch` narrows the body.
+When a status documents more than one content type, the result carries the format the server returned on `result.contentType`, next to `status` and `data`. The two are typed together, so a `switch` on `contentType` narrows `data` to that format.
 
 ```typescript
 const result = await getPetById({ path: { petId: '1' }, contentType: { response: 'application/xml' } })
 
 if (result.status === 200) {
-  const { data, contentType } = result.parsed
+  const { data, contentType } = result
 
   switch (contentType) {
     case 'application/json':
@@ -46,7 +46,7 @@ if (result.status === 200) {
 }
 ```
 
-`result.data` still holds the plain body for callers that do not care which format arrived. The `parsed` field is the typed, discriminated view on top of it. A thrown `ResponseError` carries the same negotiated `contentType`.
+Before the `switch`, `result.data` is the body union for callers that do not need to discriminate. A thrown `ResponseError` carries the same negotiated `contentType`.
 
 ## Parsing non-JSON bodies
 
