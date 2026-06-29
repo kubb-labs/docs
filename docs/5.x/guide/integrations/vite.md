@@ -1,11 +1,11 @@
 ---
 layout: doc
-title: Vite Integration
+title: Run Kubb with Vite
 description: Run Kubb as part of your Vite build with unplugin-kubb/vite.
 outline: [2, 3]
 ---
 
-# Vite
+# Run Kubb with Vite
 
 `unplugin-kubb/vite` runs Kubb as a [Vite](https://vitejs.dev/) plugin. Add it to `vite.config.ts`. Pass your Kubb config to the `config` option.
 

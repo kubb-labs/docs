@@ -1,11 +1,11 @@
 ---
 layout: doc
-title: webpack Integration
+title: Run Kubb with webpack
 description: Run Kubb as part of your webpack build with unplugin-kubb/webpack.
 outline: [2, 3]
 ---
 
-# webpack
+# Run Kubb with webpack
 
 `unplugin-kubb/webpack` runs Kubb during [webpack](https://webpack.js.org/) compilation. It requires webpack 5. Pass your Kubb config to the `config` option.
 

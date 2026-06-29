@@ -1,11 +1,11 @@
 ---
 layout: doc
-title: esbuild Integration
+title: Run Kubb with esbuild
 description: Run Kubb as part of your esbuild build with unplugin-kubb/esbuild.
 outline: [2, 3]
 ---
 
-# esbuild
+# Run Kubb with esbuild
 
 `unplugin-kubb/esbuild` runs Kubb as an [esbuild](https://esbuild.github.io/) plugin. Add it to the `plugins` array in your build script. Pass your Kubb config to the `config` option.
 

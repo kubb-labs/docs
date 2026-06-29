@@ -1,11 +1,11 @@
 ---
 layout: doc
-title: Farm Integration
+title: Run Kubb with Farm
 description: Run Kubb as part of your Farm build with unplugin-kubb/farm.
 outline: [2, 3]
 ---
 
-# Farm
+# Run Kubb with Farm
 
 `unplugin-kubb/farm` runs Kubb as a [Farm](https://www.farmfe.org/) plugin. Farm is a Rust-based web build tool with a Vite-compatible plugin API. Pass your Kubb config to the `config` option.
 

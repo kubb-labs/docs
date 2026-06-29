@@ -122,7 +122,7 @@ flowchart LR
     Renderer --> Files
 ```
 
-Plugins walk the [AST](/docs/5.x/guide/concepts/ast) and emit `FileNode`s. They run in array order; earlier plugins produce types that later plugins can import.
+Plugins walk the [AST](/docs/5.x/guide/concepts/ast) and emit `FileNode`s. They run in array order, so earlier plugins produce types that later plugins can import.
 
 ```typescript twoslash [kubb.config.ts]
 // @noErrors

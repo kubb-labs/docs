@@ -1,11 +1,11 @@
 ---
 layout: doc
-title: Nuxt Integration
+title: Run Kubb with Nuxt
 description: Run Kubb as part of your Nuxt application with the unplugin-kubb/nuxt module.
 outline: [2, 3]
 ---
 
-# Nuxt
+# Run Kubb with Nuxt
 
 `unplugin-kubb/nuxt` runs Kubb as a [Nuxt](https://nuxt.com/) module. It works with Nuxt 3 and Nuxt 4. The module registers Kubb as both a Vite plugin and a webpack plugin, so Nuxt picks the right one for its active builder.
 

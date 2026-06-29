@@ -1,11 +1,11 @@
 ---
 layout: doc
-title: Rspack Integration
+title: Run Kubb with Rspack
 description: Run Kubb as part of your Rspack build with unplugin-kubb/rspack.
 outline: [2, 3]
 ---
 
-# Rspack
+# Run Kubb with Rspack
 
 `unplugin-kubb/rspack` runs Kubb during [Rspack](https://rspack.dev/) compilation. Rspack is a Rust-based bundler with a webpack-compatible config. Pass your Kubb config to the `config` option.
 

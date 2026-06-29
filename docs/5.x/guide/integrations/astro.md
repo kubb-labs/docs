@@ -1,11 +1,11 @@
 ---
 layout: doc
-title: Astro Integration
+title: Run Kubb with Astro
 description: Run Kubb as part of your Astro project with the unplugin-kubb/astro integration.
 outline: [2, 3]
 ---
 
-# Astro
+# Run Kubb with Astro
 
 `unplugin-kubb/astro` runs Kubb as an [Astro](https://astro.build/) integration. It hooks into Astro's Vite layer and generates during a build. Pass your Kubb config to the `config` option.
 

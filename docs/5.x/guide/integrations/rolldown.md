@@ -1,11 +1,11 @@
 ---
 layout: doc
-title: Rolldown Integration
+title: Run Kubb with Rolldown
 description: Run Kubb as part of your Rolldown build with unplugin-kubb/rolldown.
 outline: [2, 3]
 ---
 
-# Rolldown
+# Run Kubb with Rolldown
 
 `unplugin-kubb/rolldown` runs Kubb as a [Rolldown](https://rolldown.rs/) plugin. Rolldown is a Rust-based, Rollup-compatible bundler. Pass your Kubb config to the `config` option.
 
