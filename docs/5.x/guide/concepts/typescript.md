@@ -13,7 +13,7 @@ Every public surface takes a generic that pins down the same four things: the us
 
 ## Inference starts at the config
 
-You rarely write a type annotation. The [`kubb.config.ts`](/docs/5.x/api/configuration) entry point is where inference begins, and everything downstream reads from it. Pass a plugin to `defineConfig` and its options are checked against that plugin's own `Options` type, so a typo in `pluginTs` is a compiler error, not a silent no-op at runtime.
+You rarely write a type annotation. The [`kubb.config.ts`](/docs/5.x/reference/configuration) entry point is where inference begins, and everything downstream reads from it. Pass a plugin to `defineConfig` and its options are checked against that plugin's own `Options` type, so a typo in `pluginTs` is a compiler error, not a silent no-op at runtime.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -173,4 +173,4 @@ These are the only two guards [`@kubb/ast`](https://github.com/kubb-labs/kubb/bl
 - [Plugins](/docs/5.x/guide/concepts/plugins): `definePlugin`, `PluginFactoryOptions`, resolvers, generators.
 - [Adapters](/docs/5.x/guide/concepts/adapters): `createAdapter` and `AdapterFactoryOptions`.
 - [AST](/docs/5.x/guide/concepts/ast): node types, visitors, guards.
-- [Configuration](/docs/5.x/api/configuration): top-level `defineConfig` shape.
+- [Configuration](/docs/5.x/reference/configuration): top-level `defineConfig` shape.

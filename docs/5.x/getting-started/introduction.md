@@ -58,7 +58,7 @@ Each output format is its own plugin, so you add only the ones you need. The sta
 
 Beyond the app code, you can generate [Cypress](/plugins/plugin-cypress) tests and [Model Context Protocol](/plugins/plugin-mcp) servers that let AI assistants call your API. When nothing fits, [write your own plugin](/docs/5.x/guide/going-further/creating-plugins) with the same APIs the official ones use. The [plugins catalogue](/plugins) lists them all.
 
-Ready for more? Read [Installation](./installation) and [Basic Usage](./basic-usage), then reach for [Configuration](/docs/5.x/api/configuration), [Recipes](/docs/5.x/guide/recipes), and [Integrations](/docs/5.x/guide/integrations/) when you need them.
+Ready for more? Read [Installation](./installation) and [Basic Usage](./basic-usage), then reach for [Configuration](/docs/5.x/reference/configuration), [Recipes](/docs/5.x/guide/recipes), and [Integrations](/docs/5.x/guide/integrations/) when you need them.
 
 ## Community
 

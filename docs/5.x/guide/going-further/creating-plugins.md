@@ -20,12 +20,12 @@ You need:
 
 - Node.js 22 or higher and pnpm (or npm/yarn)
 - Working TypeScript knowledge
-- A Kubb project with a valid [configuration](/docs/5.x/api/configuration)
+- A Kubb project with a valid [configuration](/docs/5.x/reference/configuration)
 - A read of the [plugin concepts](/docs/5.x/guide/concepts/plugins) page
 
 ## Quick start
 
-A plugin is a factory function built with `definePlugin` from [`@kubb/core`](/docs/5.x/api/core). It returns an object with a `name` string and a `hooks` map.
+A plugin is a factory function built with `definePlugin` from [`@kubb/core`](/docs/5.x/reference/core). It returns an object with a `name` string and a `hooks` map.
 
 The `kubb:plugin:setup` hook is where you wire generators and resolvers into the build.
 
@@ -313,7 +313,7 @@ const operationGenerator = defineGenerator({
 
 ## Resolvers
 
-A [resolver](/docs/5.x/api/core#resolver) decides the file names and output paths for a plugin's files. Other plugins call `ctx.getResolver('plugin-example')` to reuse those names without hard-coding paths.
+A [resolver](/docs/5.x/reference/core#resolver) decides the file names and output paths for a plugin's files. Other plugins call `ctx.getResolver('plugin-example')` to reuse those names without hard-coding paths.
 
 ### src/resolvers/resolverExample.ts
 
@@ -338,7 +338,7 @@ export const resolverExample = defineResolver<PluginExample>(() => ({
 
 ## The setup context
 
-`kubb:plugin:setup` receives a `KubbPluginSetupContext` that wires the plugin into the build. The full interface from [`@kubb/core`](/docs/5.x/api/core):
+`kubb:plugin:setup` receives a `KubbPluginSetupContext` that wires the plugin into the build. The full interface from [`@kubb/core`](/docs/5.x/reference/core):
 
 | Method / Property | Purpose                                                                           |
 | ----------------- | --------------------------------------------------------------------------------- |

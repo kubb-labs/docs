@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Recipes
 
-Ready-made `kubb.config.ts` snippets for common setups. Copy one in, install the matching packages, and run [`kubb generate`](/docs/5.x/api/commands/generate).
+Ready-made `kubb.config.ts` snippets for common setups. Copy one in, install the matching packages, and run [`kubb generate`](/docs/5.x/reference/commands/generate).
 
 ## TypeScript only
 
@@ -110,7 +110,7 @@ export default defineConfig({
 
 ## Multiple specifications
 
-Generate from several specs in one run. Pass an array to [`defineConfig`](/docs/5.x/api/configuration). Each entry runs on its own, with its own plugins and output directory.
+Generate from several specs in one run. Pass an array to [`defineConfig`](/docs/5.x/reference/configuration). Each entry runs on its own, with its own plugins and output directory.
 
 Set a `name` per entry so each one shows up in the CLI output.
 
@@ -136,7 +136,7 @@ export default defineConfig([
 
 ## Conditional config (watch-aware)
 
-Pass a function to [`defineConfig`](/docs/5.x/api/configuration) to read CLI context. Here it turns off `clean` in watch mode so incremental runs stay fast.
+Pass a function to [`defineConfig`](/docs/5.x/reference/configuration) to read CLI context. Here it turns off `clean` in watch mode so incremental runs stay fast.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -176,7 +176,7 @@ export default defineConfig({
 
 ## Run a hook after generation
 
-Use [`hooks.done`](/docs/5.x/api/configuration#hooks) to run shell commands once generation finishes. Pass a single command or an array to run them in sequence. Commands run relative to the project root.
+Use [`hooks.done`](/docs/5.x/reference/configuration#hooks) to run shell commands once generation finishes. Pass a single command or an array to run them in sequence. Commands run relative to the project root.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -252,7 +252,7 @@ export default defineConfig({
 
 ## Programmatic build
 
-Drive Kubb from a script with [`createKubb`](/docs/5.x/api/core#createkubb) from `@kubb/core`. This fits monorepo orchestration and custom build pipelines.
+Drive Kubb from a script with [`createKubb`](/docs/5.x/reference/core#createkubb) from `@kubb/core`. This fits monorepo orchestration and custom build pipelines.
 
 Unlike `defineConfig`, `createKubb` adds no defaults. Pass `adapter`, `parsers`, and your plugins yourself.
 
@@ -284,11 +284,11 @@ if (Diagnostics.hasError(diagnostics)) {
 console.log(`Generated ${files.length} files`)
 ```
 
-Use `.build()` instead of `.safeBuild()` if you want it to throw on errors rather than return `diagnostics`. See the [Core API](/docs/5.x/api/core#createkubb) for the full `Kubb` instance API.
+Use `.build()` instead of `.safeBuild()` if you want it to throw on errors rather than return `diagnostics`. See the [Core API](/docs/5.x/reference/core#createkubb) for the full `Kubb` instance API.
 
 ## CI validation
 
-Validate the OpenAPI spec and fail the build on errors. Use [`hooks.done`](/docs/5.x/api/configuration#hooks) to run [`kubb validate`](/docs/5.x/api/commands/validate) after generation.
+Validate the OpenAPI spec and fail the build on errors. Use [`hooks.done`](/docs/5.x/reference/configuration#hooks) to run [`kubb validate`](/docs/5.x/reference/commands/validate) after generation.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'

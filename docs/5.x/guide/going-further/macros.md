@@ -13,7 +13,7 @@ This page walks through writing a macro, composing several into a pipeline, regi
 
 ## Shape
 
-A macro carries the per-kind callbacks of a [visitor](/docs/5.x/api/ast#visitors), plus a `name`, an optional `enforce` order, and an optional `when` gate.
+A macro carries the per-kind callbacks of a [visitor](/docs/5.x/reference/ast#visitors), plus a `name`, an optional `enforce` order, and an optional `when` gate.
 
 ```typescript [Type definition]
 type Macro = {

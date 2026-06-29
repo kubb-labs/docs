@@ -21,7 +21,7 @@ Kubb ships two drivers and uses `fsStorage` when you set no `storage` option.
 
 `memoryStorage` keeps everything in a `Map` and writes nothing to disk. That makes it the driver to reach for in tests, CI validation, and dry runs, where you want to inspect the output without touching the working tree. After a build you read the result back with `storage.getKeys()` and `storage.getItem(key)`.
 
-Swapping the driver is a single field in [`kubb.config.ts`](/docs/5.x/api/configuration#storage):
+Swapping the driver is a single field in [`kubb.config.ts`](/docs/5.x/reference/configuration#storage):
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -36,10 +36,10 @@ export default defineConfig({
 
 ## When to write your own
 
-Build a custom driver when the destination is neither the filesystem nor memory: an object store like S3, a virtual filesystem in the browser, or a remote service. A driver is any object that satisfies the `Storage` contract, and `createStorage` from `@kubb/core` wraps your backend into a reusable factory. The interface, the `createStorage` signature, and a worked example live in the [Core API reference](/docs/5.x/api/core#createstorage).
+Build a custom driver when the destination is neither the filesystem nor memory: an object store like S3, a virtual filesystem in the browser, or a remote service. A driver is any object that satisfies the `Storage` contract, and `createStorage` from `@kubb/core` wraps your backend into a reusable factory. The interface, the `createStorage` signature, and a worked example live in the [Core API reference](/docs/5.x/reference/core#createstorage).
 
 ## Reference
 
-- [Storage in the Core API](/docs/5.x/api/core#storage): the `Storage` interface, `createStorage`, `fsStorage`, and `memoryStorage`.
-- [`storage` configuration option](/docs/5.x/api/configuration#storage): where to set the driver.
+- [Storage in the Core API](/docs/5.x/reference/core#storage): the `Storage` interface, `createStorage`, `fsStorage`, and `memoryStorage`.
+- [`storage` configuration option](/docs/5.x/reference/configuration#storage): where to set the driver.
 - [Testing plugins](/docs/5.x/guide/going-further/creating-plugins#testing): capture generated files with `memoryStorage`.

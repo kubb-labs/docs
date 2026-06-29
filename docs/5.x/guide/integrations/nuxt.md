@@ -54,4 +54,4 @@ export default defineNuxtConfig({
 ```
 
 > [!NOTE]
-> With the default Vite builder, generation runs during `nuxt build` only, not during `nuxt dev`. Run [`kubb generate`](/docs/5.x/api/commands/) before you start the dev server.
+> With the default Vite builder, generation runs during `nuxt build` only, not during `nuxt dev`. Run [`kubb generate`](/docs/5.x/reference/commands/) before you start the dev server.

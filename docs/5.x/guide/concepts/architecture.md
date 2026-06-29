@@ -33,7 +33,7 @@ export default defineConfig({
 ```
 
 > [!NOTE]
-> Import from [`@kubb/core`](/docs/5.x/api/core) only when you need the lower-level API for programmatic builds or custom tooling.
+> Import from [`@kubb/core`](/docs/5.x/reference/core) only when you need the lower-level API for programmatic builds or custom tooling.
 
 ## [Adapter](/docs/5.x/guide/concepts/adapters)
 
@@ -172,7 +172,7 @@ See the [plugins catalogue](/plugins) for the full list.
 
 ## Renderer
 
-Plugins can use [`@kubb/renderer-jsx`](/docs/5.x/api/core) to describe generated files as React components instead of constructing `FileNode`s by hand.
+Plugins can use [`@kubb/renderer-jsx`](/docs/5.x/reference/core) to describe generated files as React components instead of constructing `FileNode`s by hand.
 
 > [!NOTE]
 > `@kubb/renderer-jsx` is optional. Plugins that build `FileNode`s directly with factory functions from [`@kubb/ast`](/docs/5.x/guide/concepts/ast) do not need it.
@@ -234,12 +234,12 @@ export default defineConfig({
 
 | Package                                    | Purpose                                                                                                                                                                          |
 | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`kubb`](/docs/5.x/api/core)               | Umbrella package. Exports `defineConfig` and bundles `adapterOas`, `parserTs`, `parserTsx`, `parserMd`, and `pluginBarrel` for a zero-config setup.                             |
-| [`@kubb/core`](/docs/5.x/api/core)         | Lower-level runtime with `createKubb`, `definePlugin`, `defineParser`, `createAdapter`, and storage APIs. Use for programmatic generation or custom tooling.                     |
-| [`@kubb/cli`](/docs/5.x/api/commands/)     | Provides the `kubb` command-line binary. Reads `kubb.config.ts` and runs the generation pipeline.                                                                                |
+| [`kubb`](/docs/5.x/reference/core)               | Umbrella package. Exports `defineConfig` and bundles `adapterOas`, `parserTs`, `parserTsx`, `parserMd`, and `pluginBarrel` for a zero-config setup.                             |
+| [`@kubb/core`](/docs/5.x/reference/core)         | Lower-level runtime with `createKubb`, `definePlugin`, `defineParser`, `createAdapter`, and storage APIs. Use for programmatic generation or custom tooling.                     |
+| [`@kubb/cli`](/docs/5.x/reference/commands/)     | Provides the `kubb` command-line binary. Reads `kubb.config.ts` and runs the generation pipeline.                                                                                |
 | [`@kubb/ast`](/docs/5.x/guide/concepts/ast)      | Universal AST layer. Includes all node factories, `walk`, `transform`, `collect`, type guards, ref helpers, and the `defineDialect` and `optionality` helpers. The macro engine lives on the root and the presets on `@kubb/ast/macros`. |
 | [`@kubb/parser-ts`](/parsers/parser-ts)    | TypeScript and TSX parser. Included automatically with the `kubb` package.                                                                                                       |
-| [`@kubb/renderer-jsx`](/docs/5.x/api/core) | JSX-based rendering for plugins that build files from React components.                                                                                                          |
+| [`@kubb/renderer-jsx`](/docs/5.x/reference/core) | JSX-based rendering for plugins that build files from React components.                                                                                                          |
 
 ## Build-tool integrations
 
@@ -253,4 +253,4 @@ See the [Integrations](/docs/5.x/guide/integrations/) page for setup instruction
 
 | Package                                   | Purpose                                                                                                     |
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| [`@kubb/mcp`](/docs/5.x/api/commands/mcp) | Standalone [MCP](https://modelcontextprotocol.io) server that lets LLM clients trigger generation directly. |
+| [`@kubb/mcp`](/docs/5.x/reference/commands/mcp) | Standalone [MCP](https://modelcontextprotocol.io) server that lets LLM clients trigger generation directly. |

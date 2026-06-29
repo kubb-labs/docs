@@ -45,7 +45,7 @@ The CLI and generated code run on Bun with no extra configuration. Deno isn't of
 
 ### How do I update generated code when my API changes?
 
-Re-run `kubb generate`. Use the [`clean`](/docs/5.x/api/configuration#output-clean) option to remove stale files before each run.
+Re-run `kubb generate`. Use the [`clean`](/docs/5.x/reference/configuration#output-clean) option to remove stale files before each run.
 
 ```shell [Terminal]
 npx kubb@beta generate
@@ -82,7 +82,7 @@ Yes. `kubb generate` is a standard Node.js command. Set `DO_NOT_TRACK=1` to sile
 
 ### How do I disable telemetry?
 
-Set `DO_NOT_TRACK=1` or `KUBB_DISABLE_TELEMETRY=1`. See [Telemetry](/docs/5.x/api/telemetry) for details.
+Set `DO_NOT_TRACK=1` or `KUBB_DISABLE_TELEMETRY=1`. See [Telemetry](/docs/5.x/reference/telemetry) for details.
 
 ## Plugins
 
