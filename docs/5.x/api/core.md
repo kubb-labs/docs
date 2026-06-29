@@ -674,7 +674,7 @@ if ('path' in input) {
 - [Plugin concepts](/docs/5.x/concepts/plugins) for lifecycle hooks, generators, resolvers, and the plugin registry
 - [AST concepts](/docs/5.x/concepts/ast) for `InputNode`, `OperationNode`, `SchemaNode`, and traversal helpers
 - [Adapter concepts](/docs/5.x/concepts/adapters) on how `createAdapter` converts specs to the universal AST
-- [Barrel files](/docs/5.x/concepts/middlewares) for barrel generation with `@kubb/plugin-barrel`
+- [Barrel files](/docs/5.x/concepts/barrel-files) for barrel generation with `@kubb/plugin-barrel`
 - [Parser concepts](/docs/5.x/concepts/parsers) on converting `FileNode` AST to source strings
 - [Creating plugins](/docs/5.x/guides/creating-plugins) for a step-by-step guide to building a full plugin
 - [Programmatic usage recipes](/docs/5.x/recipes#programmatic-build) with `createKubb` usage patterns
