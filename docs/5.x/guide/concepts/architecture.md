@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Architecture
 
-Kubb turns API specifications into code through a layered pipeline. The [adapter](/docs/5.x/guide/concepts/adapters) parses the spec into a universal [AST](/docs/5.x/guide/concepts/ast). [Macros](/docs/5.x/guide/concepts/macros) rewrite AST nodes before a plugin reads them. [Plugins](/plugins) walk the AST and emit `FileNode`s. [Parsers](/docs/5.x/guide/concepts/parsers) convert each `FileNode` into source code. [Storage](/docs/5.x/guide/concepts/storage) writes the result to disk.
+Kubb turns API specifications into code through a layered pipeline. The [adapter](/docs/5.x/guide/concepts/adapters) parses the spec into a universal [AST](/docs/5.x/guide/concepts/ast). [Macros](/docs/5.x/guide/going-further/macros) rewrite AST nodes before a plugin reads them. [Plugins](/plugins) walk the AST and emit `FileNode`s. [Parsers](/docs/5.x/guide/concepts/parsers) convert each `FileNode` into source code. [Storage](/docs/5.x/guide/concepts/storage) writes the result to disk.
 
 ## Pipeline overview
 
@@ -85,7 +85,7 @@ InputNode
 | `transform(root, visitors)` | Produces a modified copy of the tree. Return `null` to remove a node. |
 | `collect(root, visitors)`   | Gathers matching nodes into a flat array.                             |
 
-## [Macros](/docs/5.x/guide/concepts/macros)
+## [Macros](/docs/5.x/guide/going-further/macros)
 
 ```mermaid
 flowchart LR
@@ -110,7 +110,7 @@ export default defineConfig({
 })
 ```
 
-See [Macros](/docs/5.x/guide/concepts/macros) for writing macros, composing them, and the built-in presets.
+See [Macros](/docs/5.x/guide/going-further/macros) for writing macros, composing them, and the built-in presets.
 
 ## Plugins
 

@@ -96,7 +96,7 @@ The `@kubb/ast/factory` subpath also provides constructors for source files and 
 
 ## Visitors
 
-Three visitor functions cover the common traversal patterns. Visitor objects use lowercase, kind-style keys (`input`, `operation`, `schema`, `property`, `parameter`, `response`). To rewrite nodes inside a plugin, reach for [macros](/docs/5.x/guide/concepts/macros). They add names, ordering, and composition on top of `transform`.
+Three visitor functions cover the common traversal patterns. Visitor objects use lowercase, kind-style keys (`input`, `operation`, `schema`, `property`, `parameter`, `response`). To rewrite nodes inside a plugin, reach for [macros](/docs/5.x/guide/going-further/macros). They add names, ordering, and composition on top of `transform`.
 
 ### `walk`: async traversal with side effects
 
@@ -234,7 +234,7 @@ const name = extractRefName('#/components/schemas/Pet')
 
 ## Macros
 
-A macro is a named, composable transform built on `transform`. Macros rewrite nodes before printing, with ordering, gating, and reuse that a bare visitor does not give you. See [Macros concepts](/docs/5.x/guide/concepts/macros).
+A macro is a named, composable transform built on `transform`. Macros rewrite nodes before printing, with ordering, gating, and reuse that a bare visitor does not give you. See [Macros concepts](/docs/5.x/guide/going-further/macros).
 
 | Export          | Purpose                                          |
 | --------------- | ------------------------------------------------ |
@@ -250,7 +250,7 @@ Lower-level helpers for parsers that turn the AST into source code:
 | --------------- | -------------------------------------- |
 | `createPrinter` | Typed helper for creating a `Printer`. |
 
-See [Parsers concepts](/docs/5.x/guide/concepts/parsers) for how parsers consume printers. `defineDialect` is the adapter seam for spec-specific schema behavior. It keeps the shared converters generic, so an adapter supplies only the questions that differ between specs. See [Adapters](/docs/5.x/guide/concepts/adapters#schema-dispatch-and-dialects).
+See [Parsers concepts](/docs/5.x/guide/concepts/parsers) for how parsers consume printers. `defineDialect` is the adapter seam for spec-specific schema behavior. It keeps the shared converters generic, so an adapter supplies only the questions that differ between specs. See [Adapters](/docs/5.x/api/adapters#schema-dispatch-and-dialects).
 
 ## Examples
 

@@ -42,7 +42,7 @@ The same tree flows through four stages, each documented on its own page:
 
 - [Adapters](/docs/5.x/guide/concepts/adapters) build the AST from a spec.
 - [Plugins](/docs/5.x/guide/concepts/plugins) read it and emit files.
-- [Macros](/docs/5.x/guide/concepts/macros) rewrite nodes before printing.
+- [Macros](/docs/5.x/guide/going-further/macros) rewrite nodes before printing.
 - [Parsers](/docs/5.x/guide/concepts/parsers) turn the emitted nodes into source code.
 
 ## Reference

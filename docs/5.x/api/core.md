@@ -365,7 +365,7 @@ Write a custom adapter when your source is something Kubb does not parse yet, su
 #### Related
 
 - [Adapter concepts](/docs/5.x/guide/concepts/adapters)
-- [Creating a custom adapter](/docs/5.x/guide/concepts/adapters#creating-a-custom-adapter)
+- [Creating a custom adapter](/docs/5.x/api/adapters#creating-a-custom-adapter)
 
 ## Storage
 

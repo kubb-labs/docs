@@ -101,8 +101,8 @@ The `hooks` map can subscribe to any event in [`KubbHooks`](https://github.com/k
 | ----------------- | -------------------------------------------------------------------------------------- |
 | `addGenerator`    | Register one or more [`Generator`](/docs/5.x/api/core#generator)s that walk the AST. Pass them as separate arguments, or spread an existing list. |
 | `setResolver`     | Set or override the [resolver](/docs/5.x/api/core#resolver) (file naming + paths).     |
-| `addMacro`        | Add a [macro](/docs/5.x/guide/concepts/macros) that rewrites AST nodes before generators.   |
-| `setMacros`       | Replace this plugin's [macros](/docs/5.x/guide/concepts/macros) with a new list.             |
+| `addMacro`        | Add a [macro](/docs/5.x/guide/going-further/macros) that rewrites AST nodes before generators.   |
+| `setMacros`       | Replace this plugin's [macros](/docs/5.x/guide/going-further/macros) with a new list.             |
 | `setOptions`      | Provide resolved options to the build loop.                                            |
 | `injectFile`      | Inject a raw `UserFileNode` into the build, bypassing generators.                      |
 | `updateConfig`    | Merge a partial config update into the running build.                                  |
@@ -226,7 +226,7 @@ export const pluginConsumer = definePlugin(() => ({
 
 ## Macros
 
-A [macro](/docs/5.x/guide/concepts/macros) is a named, composable transform that rewrites nodes before they reach this plugin's generators. Whatever a macro returns replaces the original node for that plugin only, so other plugins keep seeing the untransformed AST.
+A [macro](/docs/5.x/guide/going-further/macros) is a named, composable transform that rewrites nodes before they reach this plugin's generators. Whatever a macro returns replaces the original node for that plugin only, so other plugins keep seeing the untransformed AST.
 
 ```typescript [Type definition]
 type Plugin<TFactory> = {

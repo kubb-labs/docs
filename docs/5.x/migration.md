@@ -541,7 +541,7 @@ pluginTs({
 
 ### `transformers.schema` → `macros`
 
-Schema-level transformations move to [macros](/docs/5.x/guide/concepts/macros). Returning `null` or `undefined` from a macro callback falls back to the built-in behavior.
+Schema-level transformations move to [macros](/docs/5.x/guide/going-further/macros). Returning `null` or `undefined` from a macro callback falls back to the built-in behavior.
 
 ::: code-group
 
