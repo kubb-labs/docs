@@ -57,7 +57,7 @@ Either way works. Many teams commit the generated code so CI can skip regenerati
 
 ### Can I customize the generated code?
 
-Yes. Each plugin exposes a `resolver` option to rename operations and types. It also exposes a `macros` option to rewrite AST nodes before they are written to disk. For deeper control, write a [custom plugin](/docs/5.x/guide/going-further/creating-plugins).
+Yes. Each plugin exposes a `resolver` option to rename operations and types, and a `macros` option to rewrite AST nodes before they are written to disk. For deeper control, write a [custom plugin](/docs/5.x/guide/going-further/creating-plugins).
 
 ### Can I run multiple configs in one command?
 

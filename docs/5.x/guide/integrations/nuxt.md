@@ -11,6 +11,8 @@ outline: [2, 3]
 
 ## Install
 
+Install the plugin as a dev dependency.
+
 ::: code-group
 
 ```shell [bun]

@@ -11,6 +11,8 @@ outline: [2, 3]
 
 ## Install
 
+Install the plugin as a dev dependency.
+
 ::: code-group
 
 ```shell [bun]
@@ -32,6 +34,8 @@ yarn add -D unplugin-kubb@beta
 :::
 
 ## Configure
+
+Add the plugin to your `webpack.config.js` and pass it your Kubb config.
 
 ```javascript [webpack.config.js]
 const kubb = require('unplugin-kubb/webpack')

@@ -17,6 +17,8 @@ outline: [2, 3]
 
 ## Installation
 
+Install the plugin as a dev dependency.
+
 ::: code-group
 
 ```shell [bun]
@@ -55,7 +57,7 @@ Each bundler has its own entrypoint.
 
 ## Options
 
-Pass your Kubb config to the `config` option. It is a [`UserConfig`](/docs/5.x/api/configuration) object with the same shape as `kubb.config.ts`.
+Pass your Kubb config to the `config` option. It takes a [`UserConfig`](/docs/5.x/api/configuration) object with the same shape as `kubb.config.ts`.
 
 ```typescript [vite.config.ts]
 import kubb from 'unplugin-kubb/vite'

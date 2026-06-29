@@ -11,6 +11,8 @@ Kubb generates an `llms.txt` file at build time. It follows the [llms.txt standa
 The file gives LLMs a compact, machine-readable index of the whole documentation. With it, they
 answer questions about Kubb without inventing outdated or missing details.
 
+The sections below list the available files and show how to point an AI assistant at them.
+
 ## Available files
 
 | URL                                                                | Description                                           |
@@ -27,8 +29,8 @@ documentation coverage:
 Read https://kubb.dev/llms-full.txt and answer questions about Kubb.
 ```
 
-For models with a small context window, use the index file. Ask the assistant to fetch individual
-pages on demand:
+For models with a small context window, use the index file and ask the assistant to fetch
+individual pages on demand:
 
 ```text [Prompt]
 Use https://kubb.dev/llms.txt to find relevant pages, then read them.

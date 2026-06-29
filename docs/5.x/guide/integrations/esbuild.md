@@ -11,6 +11,8 @@ outline: [2, 3]
 
 ## Install
 
+Install the plugin as a dev dependency.
+
 ::: code-group
 
 ```shell [bun]
@@ -32,6 +34,8 @@ yarn add -D unplugin-kubb@beta
 :::
 
 ## Configure
+
+Add the plugin to the `plugins` array in your build script and pass it your Kubb config.
 
 ```typescript [build.ts]
 import { build } from 'esbuild'
