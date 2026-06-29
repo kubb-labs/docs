@@ -140,10 +140,12 @@ To save typing, add a `generate` script to your `package.json` so you can run ge
 
 ### 5. Generate
 
+You are ready for the payoff. Run the script to generate your files:
+
 ```shell [Terminal]
 npm run generate
 ```
 
-Generated files appear under `output.path`. Re-run this command whenever your spec changes.
+Your generated files appear under `output.path`. Re-run this command whenever your spec changes, and the output updates to match.
 
-Continue to [Basic Usage](./basic-usage) to write a full config with multiple plugins. Jump to [Configuration](/docs/5.x/api/configuration) for every option. To run generation from your bundler, see [Integrations](/docs/5.x/guide/integrations/).
+Nice work, your project is set up. Continue to [Basic Usage](./basic-usage) to write a full config with multiple plugins. Jump to [Configuration](/docs/5.x/api/configuration) for every option. To run generation from your bundler, see [Integrations](/docs/5.x/guide/integrations/).
