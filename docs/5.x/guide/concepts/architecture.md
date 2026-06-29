@@ -43,9 +43,9 @@ flowchart LR
     Parse --> InputNode["InputNode\nschemas + operations"]
 ```
 
-An adapter converts an input specification into the universal [AST](/docs/5.x/guide/concepts/ast). `adapter.parse(source)` returns an `InputNode`. `adapter.getImports(node, resolve)` tracks cross-references so plugins emit correct import paths.
+An adapter converts an input specification into the universal [AST](/docs/5.x/guide/concepts/ast). `adapter.parse(source)` returns an `InputNode`, and `adapter.getImports(node, resolve)` tracks cross-references so plugins emit correct import paths.
 
-Each adapter carries a dialect. The dialect is the one place where spec-specific schema questions live: nullability, `$ref` resolution, discriminators, binary detection, and schema deduplication. Everything past the adapter is generic JSON Schema, so plugins and parsers never branch on the source format.
+Each adapter carries a dialect, and that dialect is the one place where spec-specific schema questions live: nullability, `$ref` resolution, discriminators, binary detection, and schema deduplication. Everything past the adapter is generic JSON Schema, so plugins and parsers never branch on the source format.
 
 The official adapter for OpenAPI 2.0, 3.0, and 3.1 is [`@kubb/adapter-oas`](/adapters/adapter-oas). `defineConfig` selects it automatically.
 
@@ -93,9 +93,9 @@ flowchart LR
     Macros --> Transformed["InputNode\ntransformed"]
 ```
 
-Macros are the second layer of [`@kubb/ast`](/docs/5.x/guide/concepts/ast). They are named, composable transforms that rewrite schema and operation nodes before a plugin's generators print code. Use them to rename symbols, retype fields, or normalize shapes without forking an adapter or a generator. They run on the shared AST, so the same macro works across every adapter and output target.
+Macros are the second layer of [`@kubb/ast`](/docs/5.x/guide/concepts/ast). They are named, composable transforms that rewrite schema and operation nodes before a plugin's generators print code. Use them to rename symbols, retype fields, or normalize shapes without forking an adapter or a generator. Because they run on the shared AST, the same macro works across every adapter and output target.
 
-Macros run per plugin. One plugin's macros never change the nodes another plugin sees. Pass them through a plugin's `macros` option, or register them from `kubb:plugin:setup` with `addMacro`.
+Macros run per plugin, so one plugin's macros never change the nodes another plugin sees. Pass them through a plugin's `macros` option, or register them from `kubb:plugin:setup` with `addMacro`.
 
 ```typescript twoslash [kubb.config.ts]
 // @noErrors
@@ -187,7 +187,7 @@ flowchart LR
     Storage --> Out[("disk / memory")]
 ```
 
-A parser converts a `FileNode` into a source string. Each parser declares which file extensions it handles. Kubb dispatches every emitted file to the first matching parser.
+A parser converts a `FileNode` into a source string. Each parser declares which file extensions it handles, and Kubb dispatches every emitted file to the first matching parser.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -211,7 +211,7 @@ export default defineConfig({
 
 ## [Storage](/docs/5.x/guide/concepts/storage)
 
-The storage driver controls where Kubb writes generated files. Default is `fsStorage()`. Use `memoryStorage()` for testing, or implement `Storage` to target any backend.
+The storage driver controls where Kubb writes generated files. The default is `fsStorage()`. Use `memoryStorage()` for testing, or implement `Storage` to target any backend.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'

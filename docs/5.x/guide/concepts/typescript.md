@@ -7,11 +7,13 @@ outline: deep
 
 # TypeScript
 
-Kubb is built in TypeScript end to end. Every public surface takes a generic that pins down options, resolved options, and the resolver shape: [`defineConfig`](https://github.com/kubb-labs/kubb/blob/main/packages/kubb/src/defineConfig.ts), [`definePlugin`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/definePlugin.ts#L79), [`defineParser`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineParser.ts), [`createAdapter`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/createAdapter.ts), [`defineGenerator`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineGenerator.ts), and the AST factories. IntelliSense leads you through every choice, and the compiler catches mistakes before generation runs.
+Kubb is built in TypeScript end to end, and that choice shapes how you work with it. The point is not that the source happens to be typed. It is that types travel with you: from the config you write, through the plugins and adapters that run, down to the AST nodes a generator visits. When the compiler already knows the shape of everything in the pipeline, IntelliSense can lead you through each choice and most mistakes surface before generation ever runs.
 
-## Quick start
+Every public surface takes a generic that pins down the same four things: the user-facing options, the resolved options after defaults, the plugin name, and the resolver shape. That generic threads through [`defineConfig`](https://github.com/kubb-labs/kubb/blob/main/packages/kubb/src/defineConfig.ts), [`definePlugin`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/definePlugin.ts#L79), [`defineParser`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineParser.ts), [`createAdapter`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/createAdapter.ts), [`defineGenerator`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineGenerator.ts), and the AST factories. Declare it once and the rest of the surface follows from it.
 
-Use the [`kubb.config.ts`](/docs/5.x/api/configuration) entry point and the compiler infers everything from there:
+## Inference starts at the config
+
+You rarely write a type annotation. The [`kubb.config.ts`](/docs/5.x/api/configuration) entry point is where inference begins, and everything downstream reads from it. Pass a plugin to `defineConfig` and its options are checked against that plugin's own `Options` type, so a typo in `pluginTs` is a compiler error, not a silent no-op at runtime.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -29,9 +31,11 @@ export default defineConfig({
 })
 ```
 
-## Strict mode
+Hovering an option shows the type the compiler resolved for it. That feedback loop is the whole idea: the config is the source of truth, and the editor reflects back what Kubb will actually do with it.
 
-Kubb assumes [TypeScript strict mode](https://www.typescriptlang.org/tsconfig#strict). All exported types compile cleanly under `"strict": true`, and several APIs (notably the AST node guards and resolvers) narrow correctly only when `strictNullChecks` is on:
+## Why strict mode matters
+
+Kubb assumes [TypeScript strict mode](https://www.typescriptlang.org/tsconfig#strict), and a few of its APIs only behave the way you expect with it on. All exported types compile cleanly under `"strict": true`. The AST node guards and resolvers in particular rely on `strictNullChecks`, because that is what lets the compiler treat a possibly-absent value as possibly-absent and narrow it once you check.
 
 ```json [tsconfig.json]
 {
@@ -47,9 +51,9 @@ Kubb assumes [TypeScript strict mode](https://www.typescriptlang.org/tsconfig#st
 > [!IMPORTANT]
 > If you cannot enable full `strict`, enable at least `strictNullChecks`. Without it, [`RefSchemaNode.ref`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/nodes/schema.ts#L378) and resolver helpers return widened types and you cast manually.
 
-## Typing plugin options
+## How a plugin's types thread through the pipeline
 
-Plugins use a single generic, [`PluginFactoryOptions`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/definePlugin.ts#L201), that carries four pieces of information through the plugin lifecycle:
+A plugin is described by a single generic, [`PluginFactoryOptions`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/definePlugin.ts#L201). It is the contract between the options a user passes and the values a plugin works with at runtime, and it carries four pieces of information through the plugin lifecycle:
 
 | Generic            | Purpose                                                                                                                                          |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -58,7 +62,7 @@ Plugins use a single generic, [`PluginFactoryOptions`](https://github.com/kubb-l
 | `TResolvedOptions` | The shape of `options` after defaults are applied (what runs at runtime).                                                                  |
 | `TResolver`        | The plugin's [`Resolver`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/types.ts) extension (`pluginName`, naming helpers). |
 
-Declare a `PluginFactoryOptions` alias once and reuse it:
+The split between `TOptions` and `TResolvedOptions` is the part worth understanding. `TOptions` is what a user is allowed to leave out, and `TResolvedOptions` is what the plugin sees once defaults are filled in. Declare the alias once and both halves stay in sync across the factory and its hooks.
 
 ```typescript twoslash [plugin-example.ts]
 import { definePlugin } from '@kubb/core'
@@ -87,9 +91,9 @@ export const pluginExample = definePlugin<PluginExample>((options) => {
 > [!TIP]
 > Inside hooks, `ctx.options` is typed as `TResolvedOptions` and `ctx.config` is the fully resolved [`Config`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/types.ts). No casts required.
 
-## Typing adapter options
+## Adapters extend the same idea
 
-Adapters follow the same pattern with [`AdapterFactoryOptions`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/types.ts). Pin `TName`, `TOptions`, `TResolvedOptions`, and the parsed `TDocument` once:
+Adapters follow the same pattern with [`AdapterFactoryOptions`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/types.ts), with one extra slot. Alongside `TName`, `TOptions`, and `TResolvedOptions`, an adapter also pins `TDocument`, the shape of the parsed spec it produces. That is the type every downstream plugin reads from, so getting it right here is what keeps the rest of the pipeline honest.
 
 ```typescript twoslash [adapter-example.ts]
 import { ast, createAdapter } from '@kubb/core'
@@ -116,11 +120,11 @@ export const adapterExample = createAdapter<AdapterExample>((options) => ({
 }))
 ```
 
-The same alias flows into [`Adapter<AdapterExample>`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/types.ts), so consumers that import the adapter type get full type information about its options and document.
+The same alias flows into [`Adapter<AdapterExample>`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/types.ts), so consumers that import the adapter type get the options and document for free, without redeclaring anything.
 
-## Typing parsers
+## Parsers carry their own metadata
 
-Parsers receive a [`FileNode<TMeta>`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/nodes/file.ts) in `parse`, so typing the parameter keeps plugin-attached metadata typed:
+Parsers see the files a plugin produced, and each [`FileNode<TMeta>`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/nodes/file.ts) keeps the metadata its plugin attached. The `TMeta` generic is how that survives the trip: type the `parse` parameter and `file.meta` comes back as your own shape rather than `unknown`.
 
 ```typescript twoslash [parser-typed.ts]
 import { ast, defineParser } from '@kubb/core'
@@ -140,9 +144,9 @@ export const parserTyped = defineParser({
 })
 ```
 
-## Narrowing AST nodes
+## How the AST narrows
 
-The [`SchemaNode`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/nodes/schema.ts#L640) union shares one `kind: 'Schema'` discriminator and uses `node.type` to tell variants apart. Use `narrowSchema` to narrow a `SchemaNode` to a specific variant, and `isHttpOperationNode` to narrow an `OperationNode` to an `HttpOperationNode`:
+The AST is a set of discriminated unions, which is what makes it safe to walk. The [`SchemaNode`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/nodes/schema.ts#L640) union shares one `kind: 'Schema'` discriminator and uses `node.type` to tell variants apart, so once you check a node's `type`, the compiler knows exactly which fields exist. Two helpers cover the cases the discriminants alone do not: `narrowSchema` narrows a `SchemaNode` to a specific variant, and `isHttpOperationNode` narrows an `OperationNode` to an `HttpOperationNode`.
 
 ```typescript twoslash [narrow.ts]
 import { ast } from '@kubb/core'
