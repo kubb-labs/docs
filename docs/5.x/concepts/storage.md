@@ -1,53 +1,27 @@
 ---
 layout: doc
-title: Storage - Control File Output Backends
-description: Control where Kubb writes generated files. Use fsStorage for disk output, memoryStorage for testing, or build a custom driver with createStorage.
+title: Storage - How Kubb Decides Where Files Land
+description: Understand Kubb's storage layer. The driver decouples code generation from its destination, so the same build can target disk, memory, or any backend you write.
 outline: deep
 ---
 
 # Storage
 
-The storage driver controls where Kubb writes generated files. Set it through the [`storage`](/docs/5.x/reference/configuration#storage) option in [`kubb.config.ts`](/docs/5.x/reference/configuration). Leave `storage` out and Kubb uses `fsStorage()`, the built-in filesystem driver. Swap in `memoryStorage()` for tests, or implement the `Storage` interface to target any backend.
+Storage is the layer that decides where generated files end up. The generation pipeline never writes to disk directly. It hands each file to a storage driver, and the driver decides what to do with it. That one indirection is what lets the same build target the local filesystem in development, an in-memory map during tests, or any backend you care to write.
 
-## Storage interface
+## Why a storage layer
 
-Every driver implements the `Storage` interface exported from [`@kubb/core`](https://www.npmjs.com/package/@kubb/core):
+A code generator that wrote straight to disk would be hard to test and impossible to embed. Kubb avoids that by treating the destination as a plug-in. The driver exposes a small key-value contract (write a file, read it back, list keys, clear), so the rest of the pipeline stays agnostic about where the bytes go. Keys are root-relative paths such as `src/gen/api/getPets.ts`, which keeps the same file addressable no matter which backend is behind it.
 
-| Member       | Signature                                       | Purpose                                            |
-| ------------ | ----------------------------------------------- | -------------------------------------------------- |
-| `name`       | `string`                                        | Identifier used in logs and debug output           |
-| `hasItem`    | `(key: string) => Promise<boolean>`             | Returns `true` when the key exists                 |
-| `getItem`    | `(key: string) => Promise<string \| null>`      | Returns the stored value, or `null` when missing   |
-| `setItem`    | `(key: string, value: string) => Promise<void>` | Persists a value under `key`                       |
-| `removeItem` | `(key: string) => Promise<void>`                | Removes the entry for `key`                        |
-| `getKeys`    | `(base?: string) => Promise<Array<string>>`     | Lists all keys, optionally filtered by prefix      |
-| `clear`      | `(base?: string) => Promise<void>`              | Removes all entries, optionally scoped to a prefix |
-| `dispose`    | `() => Promise<void>` (optional)                | Optional teardown hook for the backend to flush buffers or close connections |
+## The built-in drivers
 
-Keys are root-relative paths, for example `src/gen/api/getPets.ts`.
+Kubb ships two drivers and uses `fsStorage` when you set no `storage` option.
 
-## Built-in drivers
+`fsStorage` writes to the local filesystem. It skips writes when the content on disk is already identical and creates missing parent directories, so a normal `kubb generate` run needs no extra setup.
 
-### `fsStorage`
+`memoryStorage` keeps everything in a `Map` and writes nothing to disk. That makes it the driver to reach for in tests, CI validation, and dry runs, where you want to inspect the output without touching the working tree. After a build you read the result back with `storage.getKeys()` and `storage.getItem(key)`.
 
-`fsStorage` writes files to the local filesystem. Kubb uses it when no `storage` option is set.
-
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { fsStorage } from '@kubb/core'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  storage: fsStorage(),
-})
-```
-
-Keys resolve against `process.cwd()`, so root-relative paths land in the right place without extra setup. The driver skips writes when file content is already identical and creates missing parent directories. Calling `clear()` without a `base` argument is a no-op. Pass a path prefix to remove a specific subtree.
-
-### `memoryStorage`
-
-`memoryStorage` stores all output in a `Map`. Nothing is written to disk, which suits testing, CI validation, and dry runs.
+Swapping the driver is a single field in [`kubb.config.ts`](/docs/5.x/reference/configuration#storage):
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -60,81 +34,12 @@ export default defineConfig({
 })
 ```
 
-Each call to `memoryStorage()` creates an independent `Map`. Read the generated output back with `storage.getKeys()` and `storage.getItem(key)` after the build completes.
+## When to write your own
 
-## Creating a custom driver
+Build a custom driver when the destination is neither the filesystem nor memory: an object store like S3, a virtual filesystem in the browser, or a remote service. A driver is any object that satisfies the `Storage` contract, and `createStorage` from `@kubb/core` wraps your backend into a reusable factory. The interface, the `createStorage` signature, and a worked example live in the [Core API reference](/docs/5.x/api/core#createstorage).
 
-`createStorage` from [`@kubb/core`](/docs/5.x/api/core) wraps any backend. Pass a factory that receives your options and returns a `Storage` implementation.
+## Reference
 
-```typescript twoslash [s3Storage.ts]
-import { createStorage } from '@kubb/core'
-
-export const s3Storage = createStorage<{ bucket: string }>((options) => {
-  return {
-    name: 's3',
-    async hasItem(key) {
-      return false
-    },
-    async getItem(key) {
-      return null
-    },
-    async setItem(key, value) {
-      // upload to S3
-    },
-    async removeItem(key) {
-      // delete from S3
-    },
-    async getKeys(base) {
-      return []
-    },
-    async clear(base) {
-      // batch delete from S3
-    },
-    async dispose() {
-      // close any open connections
-    },
-  }
-})
-```
-
-Pass it in `kubb.config.ts`:
-
-```typescript twoslash [kubb.config.ts]
-// @noErrors
-import { defineConfig } from 'kubb'
-import { s3Storage } from './s3Storage.ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  storage: s3Storage({ bucket: process.env.S3_BUCKET! }),
-})
-```
-
-## Testing with `memoryStorage`
-
-Use `memoryStorage` in tests to capture generated files without writing to disk:
-
-```typescript twoslash [plugin.test.ts]
-// @noErrors
-import { createKubb, memoryStorage } from '@kubb/core'
-
-const storage = memoryStorage()
-
-const kubb = createKubb({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  storage,
-  plugins: [],
-})
-
-const { error } = await kubb.build()
-
-if (!error) {
-  const keys = await storage.getKeys()
-  const content = await storage.getItem(keys[0]!)
-  console.log(content)
-}
-```
-
-See [Testing](/docs/5.x/guides/creating-plugins#testing) for a complete plugin test setup.
+- [Storage in the Core API](/docs/5.x/api/core#storage): the `Storage` interface, `createStorage`, `fsStorage`, and `memoryStorage`.
+- [`storage` configuration option](/docs/5.x/reference/configuration#storage): where to set the driver.
+- [Testing plugins](/docs/5.x/guides/creating-plugins#testing): capture generated files with `memoryStorage`.
