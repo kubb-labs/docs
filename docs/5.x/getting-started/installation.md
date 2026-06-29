@@ -7,28 +7,40 @@ outline: [2, 3]
 
 # Installation
 
+Welcome. This page walks you through getting Kubb running in your project, from the first install to your first generated files. Pick the quick start if you want the wizard to set everything up for you, or follow the manual steps to see each piece.
+
 ## Prerequisites
+
+Before you start, make sure your machine has these two tools installed:
 
 - [Node.js](https://nodejs.org/) 22 or higher ([Download](https://nodejs.org/en/download))
 - [TypeScript](https://www.typescriptlang.org/) 4.7 or higher, if you use a `kubb.config.ts` or import generated types
 
 ## Quick start (recommended)
 
-The `kubb init` wizard detects your package manager. It asks where your spec lives and where generated files should go. Then it installs the plugins you pick and writes a `kubb.config.ts`.
+The fastest way to start is the `kubb init` wizard. It detects your package manager, asks where your spec lives and where generated files should go, installs the plugins you pick, and writes a `kubb.config.ts` for you.
+
+Run the wizard and answer its prompts:
 
 ```shell [Terminal]
 npx kubb@beta init
 ```
 
-Then run:
+Once the wizard finishes, generate your files:
 
 ```shell [Terminal]
 npx kubb@beta generate
 ```
 
+That is all you need to get started. If you would rather set things up by hand, the manual steps below walk through the same result one piece at a time.
+
 ## Manual installation
 
+Prefer to do it yourself? These five steps install Kubb, add the plugins you want, write a config, and run your first generation.
+
 ### 1. Install Kubb
+
+Start by adding the `kubb` package as a dev dependency. Use the tab for your package manager:
 
 ::: code-group
 
@@ -55,7 +67,7 @@ yarn add -D kubb@beta
 
 ### 2. Add plugins
 
-Each output format is its own package. Install only what you need.
+Each output format is its own package, so you install only what you need. The example below adds TypeScript types, an Axios client, and React Query hooks, but you can swap in any plugins from the table that follows:
 
 ::: code-group
 
@@ -95,7 +107,7 @@ See the [plugins](/plugins) page for a complete list.
 
 ### 3. Create `kubb.config.ts`
 
-The config points Kubb at your spec and your output directory. `defineConfig` wires up the OpenAPI adapter, the default parsers, and a barrel plugin for you.
+Next, create a `kubb.config.ts` file in your project root. The config points Kubb at your spec and your output directory, and `defineConfig` wires up the OpenAPI adapter, the default parsers, and a barrel plugin for you. Here is a minimal starting point:
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -116,7 +128,7 @@ Kubb looks for `kubb.config.ts` in the project root and the `.config/` and `conf
 
 ### 4. Add a script
 
-Add a `generate` script to `package.json` so you run generation with one command.
+To save typing, add a `generate` script to your `package.json` so you can run generation with one command:
 
 ```json [package.json]
 {
