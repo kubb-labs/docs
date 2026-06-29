@@ -1,12 +1,12 @@
 ---
 layout: doc
 
-title: Custom transport in Kubb - swap the send layer for Fetch and Axios
+title: Use a custom transport - swap the send layer for Fetch and Axios
 description: Replace the transport the generated client sends through. Wrap fetch with retries or pass a pre-configured axios instance, while Kubb keeps owning URLs, serialization, and auth.
 outline: deep
 ---
 
-# Custom transport
+# Use a custom transport
 
 The client Kubb generates splits into two layers. A shared core builds the URL, serializes the query and body, resolves auth, and runs the interceptors. The transport is the last step: it takes the finished request and sends it. Swap the transport and you change how a request leaves your app without touching anything the core already handled.
 

@@ -1,11 +1,11 @@
 ---
 layout: doc
-title: Claude - AI
+title: Set up the Claude Code plugin
 description: The Kubb Claude Code plugin adds slash commands and an agent that run Kubb code generation from inside Claude Code.
 outline: [2, 3]
 ---
 
-# Claude Code plugin
+# Set up the Claude Code plugin
 
 Kubb ships a [Claude Code](https://code.claude.com) plugin. It adds slash commands and an agent
 that generate code from an OpenAPI spec. The commands run the `kubb` CLI. A build you start in the

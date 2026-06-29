@@ -1,12 +1,12 @@
 ---
 layout: doc
 
-title: Authentication in Kubb - resolve auth from your OpenAPI spec
+title: Authenticate your API client - resolve auth from your OpenAPI spec
 description: Add authentication to the client Kubb generates. Resolve bearer, basic, and apiKey credentials from your OpenAPI security schemes with one auth callback.
 outline: deep
 ---
 
-# Authentication
+# Authenticate your API client
 
 To add authentication to your generated client, give the client one `auth` resolver. Kubb reads the security schemes from your spec and attaches them to every generated call, and the runtime adds the token to each request that needs it. Until you set a resolver the calls stay unauthenticated.
 

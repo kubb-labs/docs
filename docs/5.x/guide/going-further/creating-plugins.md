@@ -1,11 +1,11 @@
 ---
 layout: doc
-title: Creating your first plugin
+title: Create your first plugin
 description: Learn how to build a Kubb plugin from scratch. Step-by-step guide covering setup, lifecycle hooks, generators, and publishing.
 outline: [2, 3]
 ---
 
-# Creating your first plugin
+# Create your first plugin
 
 A [plugin](/docs/5.x/guide/concepts/plugins) teaches Kubb to generate something new. It owns its output folder and file naming, runs [generators](/docs/5.x/guide/concepts/plugins#generators) that walk the [AST](/docs/5.x/guide/concepts/ast), and hooks into the build lifecycle.
 

@@ -1,11 +1,11 @@
 ---
 layout: doc
-title: MCP - AI
+title: Set up the MCP server
 description: Connect AI editors and agents to Kubb's local MCP server. Configure Claude Desktop, Cursor, VS Code, and other MCP-capable clients to run Kubb tools directly.
 outline: [2, 3]
 ---
 
-# MCP
+# Set up the MCP server
 
 Kubb ships a [Model Context Protocol](https://modelcontextprotocol.io/) server. It exposes
 code-generation tools to any MCP-capable client. Once connected, your editor or agent runs Kubb
