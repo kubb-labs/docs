@@ -397,7 +397,7 @@ export const pluginExample = definePlugin(() => ({
 }))
 ```
 
-Set `copy` to an absolute on-disk path and Kubb writes that file's content into the output unchanged. It applies only `banner`/`footer` and skips the language parser. This keeps a hand-authored template as a real `.ts` file, linted, type-checked, and tested, and drops it into the generated folder without inlining its source as a string. The JSX renderer takes the same field: `<File baseName="runtime.ts" path={…} copy={templatePath} />`.
+Set `copy` to an absolute on-disk path and Kubb writes that file's content into the output unchanged. It applies only `banner`/`footer` and skips the language parser. This keeps a hand-authored template as a real `.ts` file (linted, type-checked, and tested) and drops it into the generated folder without inlining its source as a string. The JSX renderer takes the same field: `<File baseName="runtime.ts" path={…} copy={templatePath} />`.
 
 ## Options
 

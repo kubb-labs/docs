@@ -11,7 +11,7 @@ Ready-made `kubb.config.ts` snippets for common setups. Copy one in, install the
 
 ## TypeScript only
 
-The smallest setup. It generates TypeScript types and interfaces from your OpenAPI spec.
+The smallest setup, generating TypeScript types and interfaces from your OpenAPI spec.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'

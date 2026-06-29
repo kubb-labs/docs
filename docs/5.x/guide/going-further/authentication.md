@@ -8,9 +8,9 @@ outline: deep
 
 # Authentication
 
-Kubb reads the security schemes from your spec and attaches them to every generated call. You give the client one `auth` resolver, and the runtime adds the token to each request that needs it. Configure nothing and the calls stay unauthenticated, so generated code does nothing until you opt in.
+To add authentication to your generated client, give the client one `auth` resolver. Kubb reads the security schemes from your spec and attaches them to every generated call, and the runtime adds the token to each request that needs it. Until you set a resolver the calls stay unauthenticated.
 
-The setup is the same for [`@kubb/plugin-fetch`](/plugins/plugin-fetch) and [`@kubb/plugin-axios`](/plugins/plugin-axios).
+Follow the same steps for [`@kubb/plugin-fetch`](/plugins/plugin-fetch) and [`@kubb/plugin-axios`](/plugins/plugin-axios).
 
 ## Set the auth resolver
 
@@ -31,7 +31,7 @@ export function addPet<ThrowOnError extends boolean = true>(
 }
 ```
 
-Give the client an `auth` resolver and every guarded call picks up the token:
+Set the resolver on the client and every guarded call picks up the token:
 
 ```typescript
 import { client } from './gen/clients/.kubb/client'
@@ -43,9 +43,9 @@ client.setConfig({
 
 The resolver is a token string or a function that returns one, and the function can be async. Return `undefined` to skip a scheme. When an operation accepts more than one scheme, the runtime tries each in turn until one hands back a token.
 
-## How tokens map to schemes
+## Return the right token per scheme
 
-The resolver receives the resolved scheme, so one function can serve every operation:
+The resolver receives the resolved scheme, so one function can serve every operation. Read the `Auth` object it passes in to decide which credential to return:
 
 ```typescript
 type Auth = {
@@ -56,7 +56,7 @@ type Auth = {
 }
 ```
 
-Where the token lands depends on the scheme:
+The scheme decides where the runtime puts the token:
 
 | Scheme in the spec | `Auth` object                            | Where the token goes            |
 | ------------------ | ---------------------------------------- | ------------------------------- |
@@ -71,7 +71,7 @@ Where the token lands depends on the scheme:
 > [!NOTE]
 > For basic auth, return the raw `username:password` string. The runtime base64-encodes it and writes the `Basic` prefix, so you never build the header yourself.
 
-When a spec mixes schemes, read the `Auth` object and return the matching credential:
+When a spec mixes schemes, branch on the `Auth` object and return the matching credential:
 
 ```typescript
 client.setConfig({
@@ -79,9 +79,9 @@ client.setConfig({
 })
 ```
 
-## A client per environment
+## Use a separate client per environment
 
-`createClient` builds an isolated client with its own `auth`, which fits a multi-tenant app where each tenant carries a different token:
+To give each environment its own token, build an isolated client with `createClient`. This fits a multi-tenant app where each tenant carries a different token:
 
 ```typescript
 import { createClient } from './gen/clients/.kubb/client'
@@ -94,11 +94,11 @@ const tenant = createClient({
 const { data } = await getPetById({ path: { petId: 1 }, client: tenant })
 ```
 
-Pass `auth` on a single call to override the client for that one request, handy for a one-off token refresh. An explicit `headers` value you set on a call always wins over the resolved token.
+To override the client for one request, pass `auth` on that single call, which suits a one-off token refresh. An explicit `headers` value you set on a call always wins over the resolved token.
 
 ## Use an interceptor instead
 
-The scheme mapping covers what an OpenAPI security scheme can describe. For anything it does not, a request interceptor is the alternative. It runs on every call and sees the final request before it is sent, so it can set or rewrite any header without touching the spec.
+For anything an OpenAPI security scheme cannot describe, reach for a request interceptor. It runs on every call and sees the final request before it is sent, so it can set or rewrite any header without touching the spec.
 
 ```typescript
 import { client } from './gen/clients/.kubb/client'
@@ -109,7 +109,7 @@ client.interceptors.request.use((request) => {
 })
 ```
 
-Reach for this to sign a request or attach a credential the spec does not declare. To refresh a token after a `401`, read the new token from a response or error interceptor and let the request interceptor pick it up on the next call. For a standard bearer, basic, or apiKey scheme, the `auth` resolver stays the simpler path.
+Use an interceptor to sign a request or attach a credential the spec does not declare. To refresh a token after a `401`, read the new token from a response or error interceptor and let the request interceptor pick it up on the next call. For a standard bearer, basic, or apiKey scheme, the `auth` resolver stays the simpler path.
 
 ## See also
 

@@ -8,7 +8,9 @@ outline: deep
 
 # Set your own baseURL
 
-Set a `baseURL` at build time or at runtime. At build time you read it from the servers list in your OpenAPI spec or pass the `baseURL` option to the client plugin, and it bakes into the generated code. At runtime you set it on the generated client, which suits a value you only know once the app runs, such as an environment variable or the tenant the user signed in as.
+The generated client prepends a `baseURL` to every request, so it needs to know which host to call. Set your own when the spec carries no usable server URL, when you target a different host per environment (local, staging, production), or when the host depends on the running app, such as the tenant the user signed in as.
+
+Set it at build time or at runtime. At build time you read it from the servers list in your OpenAPI spec or pass the `baseURL` option to the client plugin, and it bakes into the generated code. At runtime you set it on the generated client, which suits a value you only know once the app runs, such as an environment variable or the signed-in tenant.
 
 ## Read it from the spec
 
