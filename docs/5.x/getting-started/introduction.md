@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Introduction
 
-Kubb is a meta framework for code generation. It runs a plugin-based pipeline on top of any API specification. An [adapter](/adapters) reads your spec. [Parsers](/parsers) turn the [AST](/docs/5.x/concepts/ast) into source files. [Plugins](/plugins) generate the output. The pipeline writes, formats, and lints the result, all from a single config file.
+Kubb is a meta framework for code generation. It runs a plugin-based pipeline on top of any API specification. An [adapter](/adapters) reads your spec. [Parsers](/parsers) turn the [AST](/docs/5.x/guide/concepts/ast) into source files. [Plugins](/plugins) generate the output. The pipeline writes, formats, and lints the result, all from a single config file.
 
 The default adapter reads [OpenAPI](https://www.openapis.org/) 2.0, 3.0, and 3.1. For [GraphQL](https://graphql.org/), [JSON Schema](https://json-schema.org/), [gRPC](https://grpc.io/), or any other format, you write your own adapter. From there Kubb generates TypeScript types, React Query hooks, Zod validators, MSW mocks, or a custom output. You stop hand-maintaining generated code. The output is deterministic. The same spec always produces the same result.
 
@@ -24,9 +24,9 @@ The default adapter reads [OpenAPI](https://www.openapis.org/) 2.0, 3.0, and 3.1
 | [Faker mocks](/plugins/plugin-faker)                | Realistic mock data using [Faker.js](https://fakerjs.dev/)                                                                         |
 | [Cypress tests](/plugins/plugin-cypress)            | End-to-end API tests with [Cypress](https://www.cypress.io/)                                                                       |
 | [MCP servers](/plugins/plugin-mcp)                  | [Model Context Protocol](https://modelcontextprotocol.io/) servers so AI assistants can interact with your API                     |
-| [Custom plugins](/docs/5.x/guides/creating-plugins) | Write your own using the same APIs the official plugins use                                                                        |
+| [Custom plugins](/docs/5.x/guide/going-further/creating-plugins) | Write your own using the same APIs the official plugins use                                                                        |
 
-Start with [Installation](./installation) or [Basic Usage](./basic-usage). For deeper reference, see [Configuration](../reference/configuration), [Recipes](../recipes), and [Integrations](../integrations/).
+Start with [Installation](./installation) or [Basic Usage](./basic-usage). For deeper reference, see [Configuration](/docs/5.x/api/configuration), [Recipes](/docs/5.x/guide/recipes), and [Integrations](/docs/5.x/guide/integrations/).
 
 ## Community
 

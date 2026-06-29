@@ -16,7 +16,7 @@ chat matches the one you run in a terminal.
 
 > [!NOTE]
 > This page covers the Claude Code plugin. To generate an MCP server from your spec and drive it
-> from Claude Desktop, see the [Claude MCP guide](/docs/5.x/guides/claude-mcp-plugin) instead.
+> from Claude Desktop, see the [Claude MCP guide](/docs/5.x/guide/going-further/claude-mcp-plugin) instead.
 
 ## Install
 
@@ -70,4 +70,4 @@ typing a command, and Claude calls the server directly. See [MCP](/docs/5.x/ai/m
 ## See also
 
 - [MCP](/docs/5.x/ai/mcp): connect AI editors directly to Kubb's MCP server
-- [Claude MCP guide](/docs/5.x/guides/claude-mcp-plugin): generate an MCP server from your spec
+- [Claude MCP guide](/docs/5.x/guide/going-further/claude-mcp-plugin): generate an MCP server from your spec

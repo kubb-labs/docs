@@ -134,4 +134,4 @@ npm run generate
 
 Generated files appear under `output.path`. Re-run this command whenever your spec changes.
 
-Continue to [Basic Usage](./basic-usage) to write a full config with multiple plugins. Jump to [Configuration](../reference/configuration) for every option. To run generation from your bundler, see [Integrations](/docs/5.x/integrations/).
+Continue to [Basic Usage](./basic-usage) to write a full config with multiple plugins. Jump to [Configuration](/docs/5.x/api/configuration) for every option. To run generation from your bundler, see [Integrations](/docs/5.x/guide/integrations/).

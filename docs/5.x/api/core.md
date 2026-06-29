@@ -58,7 +58,7 @@ import {
 ```
 
 > [!NOTE]
-> `@kubb/core` re-exports the entire [`@kubb/ast`](/docs/5.x/concepts/ast) module under the `ast` namespace. You can equivalently import helpers directly from `@kubb/ast`.
+> `@kubb/core` re-exports the entire [`@kubb/ast`](/docs/5.x/guide/concepts/ast) module under the `ast` namespace. You can equivalently import helpers directly from `@kubb/ast`.
 
 ## Configuration
 
@@ -91,7 +91,7 @@ export default defineConfig(({ watch }) => ({
 | Field            | Default                                  |
 | ---------------- | ---------------------------------------- |
 | `root`           | `process.cwd()`                          |
-| `adapter`        | [`adapterOas()`](/docs/5.x/concepts/adapters) |
+| `adapter`        | [`adapterOas()`](/docs/5.x/guide/concepts/adapters) |
 | `parsers`        | `[parserTs, parserTsx, parserMd]`        |
 | `reporters`      | `[cliReporter, jsonReporter, fileReporter]` |
 | `plugins`        | `pluginBarrel()` appended when not already present |
@@ -107,7 +107,7 @@ export default defineConfig(({ watch }) => ({
 
 #### Related
 
-- [Configuration reference](/docs/5.x/reference/configuration)
+- [Configuration reference](/docs/5.x/api/configuration)
 - [CLI options](/docs/5.x/api/commands/)
 - [`@kubb/plugin-barrel`](/plugins/plugin-barrel)
 
@@ -181,12 +181,12 @@ Each `Diagnostic` carries a `code`, a `severity` (`error`, `warning`, or `info`)
 
 #### Related
 
-- [Programmatic usage recipe](/docs/5.x/recipes#programmatic-build)
+- [Programmatic usage recipe](/docs/5.x/guide/recipes#programmatic-build)
 - [`KubbDriver`](#kubbdriver)
 
 ## Plugin authoring
 
-Plugins are the main extension point in Kubb. A plugin owns its file naming, its output folder, its lifecycle hooks, and the [generators](#definegenerator) that walk the [AST](/docs/5.x/concepts/ast) and emit `FileNode` objects.
+Plugins are the main extension point in Kubb. A plugin owns its file naming, its output folder, its lifecycle hooks, and the [generators](#definegenerator) that walk the [AST](/docs/5.x/guide/concepts/ast) and emit `FileNode` objects.
 
 ### `definePlugin`
 
@@ -212,7 +212,7 @@ export const pluginExample = definePlugin((options: { prefix?: string } = {}) =>
 | `name`         | `string`                             | Yes      | Unique plugin identifier (e.g., `plugin-ts`)               |
 | `dependencies` | `Array<string>`                      | No       | Names of other plugins this one requires                   |
 | `options`      | `unknown`                            | No       | User-supplied options passed through to generators         |
-| `hooks`        | `{ 'kubb:plugin:setup'?: ...; ... }` | Yes      | Lifecycle handlers (see [Plugin API](../concepts/plugins)) |
+| `hooks`        | `{ 'kubb:plugin:setup'?: ...; ... }` | Yes      | Lifecycle handlers (see [Plugin API](/docs/5.x/guide/concepts/plugins)) |
 
 #### `KubbPluginSetupContext` methods (passed to `kubb:plugin:setup`)
 
@@ -229,16 +229,16 @@ export const pluginExample = definePlugin((options: { prefix?: string } = {}) =>
 | `options`        | `TOptions`                                                      | The plugin's own options as passed by the user                |
 
 > [!IMPORTANT]
-> Plugin names should follow the convention `plugin-<feature>` (e.g., `plugin-react-query`, `plugin-zod`). See [Creating plugins](/docs/5.x/guides/creating-plugins) for naming conventions.
+> Plugin names should follow the convention `plugin-<feature>` (e.g., `plugin-react-query`, `plugin-zod`). See [Creating plugins](/docs/5.x/guide/going-further/creating-plugins) for naming conventions.
 
 #### Related
 
-- [Full Plugin API reference](../concepts/plugins)
-- [Creating your first plugin](/docs/5.x/guides/creating-plugins)
+- [Full Plugin API reference](/docs/5.x/guide/concepts/plugins)
+- [Creating your first plugin](/docs/5.x/guide/going-further/creating-plugins)
 
 ### `defineGenerator` {#generator}
 
-`defineGenerator` declares a named generator unit consumed by a plugin. Generators walk the [AST](/docs/5.x/concepts/ast) and emit files. The core calls each method for the matching node type during the generation loop.
+`defineGenerator` declares a named generator unit consumed by a plugin. Generators walk the [AST](/docs/5.x/guide/concepts/ast) and emit files. The core calls each method for the matching node type during the generation loop.
 
 Each generator method returns `TElement | Array<FileNode> | void`. Returning a renderer element (for example JSX from `@kubb/renderer-jsx`) requires a `renderer` factory on the generator. Returning `Array<FileNode>` directly, or calling `ctx.upsertFile()` and returning `void`, works without a renderer.
 
@@ -298,8 +298,8 @@ const myGenerator = defineGenerator({
 
 #### Related
 
-- [AST concepts](/docs/5.x/concepts/ast) for node types and traversal
-- [Creating plugins](/docs/5.x/guides/creating-plugins)
+- [AST concepts](/docs/5.x/guide/concepts/ast) for node types and traversal
+- [Creating plugins](/docs/5.x/guide/going-further/creating-plugins)
 
 ### `defineResolver` {#resolver}
 
@@ -340,32 +340,32 @@ export const resolver = defineResolver<MyPlugin>(() => ({
 
 #### Related
 
-- [Plugin API: resolvers](../concepts/plugins#resolvers)
-- [Creating plugins](/docs/5.x/guides/creating-plugins)
+- [Plugin API: resolvers](/docs/5.x/guide/concepts/plugins#resolvers)
+- [Creating plugins](/docs/5.x/guide/going-further/creating-plugins)
 
 ### `defineParser`
 
 `defineParser` creates a parser that converts generated file ASTs to formatted source strings. Each parser declares which file extensions it handles via `extNames`.
 
-The built-in parsers handle TypeScript, TSX, and markdown files: [`parserTs`, `parserTsx`](/docs/5.x/concepts/parsers), and `parserMd`. Implement `defineParser` to add other languages or custom output formats.
+The built-in parsers handle TypeScript, TSX, and markdown files: [`parserTs`, `parserTsx`](/docs/5.x/guide/concepts/parsers), and `parserMd`. Implement `defineParser` to add other languages or custom output formats.
 
 #### Related
 
-- [Parser concepts](/docs/5.x/concepts/parsers)
+- [Parser concepts](/docs/5.x/guide/concepts/parsers)
 
 ### `createAdapter`
 
-`createAdapter` builds adapters that translate non-OpenAPI specs into Kubb's universal [AST](/docs/5.x/concepts/ast). The built-in [`@kubb/adapter-oas`](/docs/5.x/concepts/adapters) handles OpenAPI and Swagger documents.
+`createAdapter` builds adapters that translate non-OpenAPI specs into Kubb's universal [AST](/docs/5.x/guide/concepts/ast). The built-in [`@kubb/adapter-oas`](/docs/5.x/guide/concepts/adapters) handles OpenAPI and Swagger documents.
 
 Write a custom adapter when your source is something Kubb does not parse yet, such as a GraphQL schema, a gRPC definition, an AsyncAPI spec, or your own domain-specific language.
 
 > [!IMPORTANT]
-> Adapters must parse their input format to Kubb's `InputNode` structure. See [Adapter API](/docs/5.x/concepts/adapters) for complete documentation.
+> Adapters must parse their input format to Kubb's `InputNode` structure. See [Adapter API](/docs/5.x/guide/concepts/adapters) for complete documentation.
 
 #### Related
 
-- [Adapter concepts](/docs/5.x/concepts/adapters)
-- [Creating a custom adapter](/docs/5.x/concepts/adapters#creating-a-custom-adapter)
+- [Adapter concepts](/docs/5.x/guide/concepts/adapters)
+- [Creating a custom adapter](/docs/5.x/guide/concepts/adapters#creating-a-custom-adapter)
 
 ## Storage
 
@@ -437,7 +437,7 @@ export const memoryStorage = createStorage(() => {
 
 #### Related
 
-- [Configuration reference](/docs/5.x/reference/configuration)
+- [Configuration reference](/docs/5.x/api/configuration)
 
 ## Files & rendering
 
@@ -463,7 +463,7 @@ The file manager does not expose its own `stream()` method. It streams through i
 
 #### Related
 
-- [Plugin concepts: generator context](../concepts/plugins#generators)
+- [Plugin concepts: generator context](/docs/5.x/guide/concepts/plugins#generators)
 
 ### The file processor
 
@@ -489,7 +489,7 @@ Set the renderer on a generator through its `renderer` field (`renderer: jsxRend
 
 #### Related
 
-- [Creating plugins](/docs/5.x/guides/creating-plugins)
+- [Creating plugins](/docs/5.x/guide/going-further/creating-plugins)
 
 ## Plugin driver
 
@@ -515,7 +515,7 @@ Access the driver via `ctx.driver` inside generator context methods, or from the
 
 #### Related
 
-- [Plugin concepts](../concepts/plugins)
+- [Plugin concepts](/docs/5.x/guide/concepts/plugins)
 
 ## Utilities
 
@@ -527,7 +527,7 @@ Access the driver via `ctx.driver` inside generator context methods, or from the
 
 #### Related
 
-- [Plugin concepts: lifecycle events](../concepts/plugins#lifecycle-events)
+- [Plugin concepts: lifecycle events](/docs/5.x/guide/concepts/plugins#lifecycle-events)
 
 ### `Url`
 
@@ -671,14 +671,14 @@ if ('path' in input) {
 
 ## See also
 
-- [Plugin concepts](/docs/5.x/concepts/plugins) for lifecycle hooks, generators, resolvers, and the plugin registry
-- [AST concepts](/docs/5.x/concepts/ast) for `InputNode`, `OperationNode`, `SchemaNode`, and traversal helpers
-- [Adapter concepts](/docs/5.x/concepts/adapters) on how `createAdapter` converts specs to the universal AST
-- [Barrel files](/docs/5.x/concepts/barrel-files) for barrel generation with `@kubb/plugin-barrel`
-- [Parser concepts](/docs/5.x/concepts/parsers) on converting `FileNode` AST to source strings
-- [Creating plugins](/docs/5.x/guides/creating-plugins) for a step-by-step guide to building a full plugin
-- [Programmatic usage recipes](/docs/5.x/recipes#programmatic-build) with `createKubb` usage patterns
-- [Configuration reference](/docs/5.x/reference/configuration) for all `defineConfig` options
+- [Plugin concepts](/docs/5.x/guide/concepts/plugins) for lifecycle hooks, generators, resolvers, and the plugin registry
+- [AST concepts](/docs/5.x/guide/concepts/ast) for `InputNode`, `OperationNode`, `SchemaNode`, and traversal helpers
+- [Adapter concepts](/docs/5.x/guide/concepts/adapters) on how `createAdapter` converts specs to the universal AST
+- [Barrel files](/docs/5.x/guide/concepts/barrel-files) for barrel generation with `@kubb/plugin-barrel`
+- [Parser concepts](/docs/5.x/guide/concepts/parsers) on converting `FileNode` AST to source strings
+- [Creating plugins](/docs/5.x/guide/going-further/creating-plugins) for a step-by-step guide to building a full plugin
+- [Programmatic usage recipes](/docs/5.x/guide/recipes#programmatic-build) with `createKubb` usage patterns
+- [Configuration reference](/docs/5.x/api/configuration) for all `defineConfig` options
 - [`@kubb/ast` package](https://www.npmjs.com/package/@kubb/ast), the node constructors re-exported under `ast.factory`
 - [TypeScript handbook: narrowing](https://www.typescriptlang.org/docs/handbook/2/narrowing.html) on narrowing `config.input` with the `in` operator
 - [Astro integrations reference](https://docs.astro.build/en/reference/integrations-reference/), the inspiration for the hook-style API

@@ -171,4 +171,4 @@ server.listen()
 
 ## 5. Keep it in sync
 
-Run `npm run generate` whenever the spec changes, then commit the output. To skip the manual step, [`unplugin-kubb`](../integrations/) generates during your build with [Vite](https://vite.dev), [Rollup](https://rollupjs.org), [Webpack](https://webpack.js.org), and others.
+Run `npm run generate` whenever the spec changes, then commit the output. To skip the manual step, [`unplugin-kubb`](/docs/5.x/guide/integrations/) generates during your build with [Vite](https://vite.dev), [Rollup](https://rollupjs.org), [Webpack](https://webpack.js.org), and others.

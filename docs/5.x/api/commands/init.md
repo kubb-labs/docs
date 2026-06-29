@@ -84,5 +84,5 @@ npx kubb@beta init --plugins plugin-ts,plugin-axios,plugin-react-query
 ## See also
 
 - [Installation](/docs/5.x/getting-started/installation): manual setup guide
-- [Configuration](/docs/5.x/reference/configuration): full `kubb.config.ts` reference
+- [Configuration](/docs/5.x/api/configuration): full `kubb.config.ts` reference
 - [Plugins](/plugins): browse available plugins

@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # `kubb generate`
 
-Run `kubb generate` to read your [`kubb.config.ts`](/docs/5.x/reference/configuration) and run the code-generation pipeline. This is the default command. Run `kubb` with no arguments and it runs `kubb generate`.
+Run `kubb generate` to read your [`kubb.config.ts`](/docs/5.x/api/configuration) and run the code-generation pipeline. This is the default command. Run `kubb` with no arguments and it runs `kubb generate`.
 
 ```shell [Terminal]
 command: kubb generate
@@ -60,7 +60,7 @@ kubb generate ./petStore.yaml
 
 ## Reporters
 
-A reporter decides how a run is rendered. The config registers the available reporters with [`reporters`](/docs/5.x/reference/configuration), and `--reporter` picks which ones to trigger by name (comma separated, like `--reporter cli,file`). Without the flag, the `cli` reporter runs. Three ship out of the box.
+A reporter decides how a run is rendered. The config registers the available reporters with [`reporters`](/docs/5.x/api/configuration), and `--reporter` picks which ones to trigger by name (comma separated, like `--reporter cli,file`). Without the flag, the `cli` reporter runs. Three ship out of the box.
 
 | Reporter | Output                                                                          |
 | -------- | ------------------------------------------------------------------------------- |
@@ -102,6 +102,6 @@ kubb generate --verbose
 
 ## See also
 
-- [Configuration](/docs/5.x/reference/configuration): full reference for `kubb.config.ts`
+- [Configuration](/docs/5.x/api/configuration): full reference for `kubb.config.ts`
 - [Basic usage](/docs/5.x/getting-started/basic-usage): end-to-end walkthrough
 - [Plugins](/plugins): available plugins for code generation

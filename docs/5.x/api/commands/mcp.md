@@ -46,7 +46,7 @@ The MCP server exposes three tools to connected clients.
 
 ### Structured diagnostics
 
-When `generate` or `validate` hits a problem, it returns structured [diagnostics](/docs/5.x/reference/diagnostics)
+When `generate` or `validate` hits a problem, it returns structured [diagnostics](/docs/5.x/api/diagnostics)
 instead of a single message string. Each diagnostic keeps its stable code, source pointer,
 suggested fix, and docs link, so an assistant can act on the exact problem. The tools return a
 readable text block and a JSON payload:
@@ -55,10 +55,10 @@ readable text block and a JSON payload:
 error @kubb/plugin-zod(KUBB_REF_NOT_FOUND): Could not find a definition for #/components/schemas/Pet.
   at #/components/schemas/Pet
   help: Add the schema under components.schemas, or fix the $ref.
-  docs: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-ref-not-found
+  docs: https://kubb.dev/docs/5.x/api/diagnostics/kubb-ref-not-found
 ```
 
-A missing spec passed to `validate` returns the coded [`KUBB_INPUT_NOT_FOUND`](/docs/5.x/reference/diagnostics/kubb-input-not-found)
+A missing spec passed to `validate` returns the coded [`KUBB_INPUT_NOT_FOUND`](/docs/5.x/api/diagnostics/kubb-input-not-found)
 diagnostic, the same code the CLI reports.
 
 ## Example client configuration
@@ -79,4 +79,4 @@ Most MCP clients accept a JSON config with a `command` and `args`. To register t
 ## See also
 
 - [`@kubb/mcp`](/plugins/plugin-mcp), the plugin docs with the full list of tools the MCP server exposes
-- [Concepts: Plugins](/docs/5.x/concepts/plugins): how plugins integrate with the Kubb pipeline
+- [Concepts: Plugins](/docs/5.x/guide/concepts/plugins): how plugins integrate with the Kubb pipeline
