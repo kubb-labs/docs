@@ -32,7 +32,7 @@ servers:
   - url: http://localhost:3000
 ```
 
-```typescript twoslash [kubb.config.ts]
+```diff [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { adapterOas } from '@kubb/adapter-oas'
 import { pluginAxios } from '@kubb/plugin-axios'
@@ -44,7 +44,7 @@ export default defineConfig({
   output: {
     path: './src/gen',
   },
-  adapter: adapterOas({ server: { index: 0 } }), // [!code ++]
++  adapter: adapterOas({ server: { index: 0 } }),
   plugins: [pluginAxios()],
 })
 ```
@@ -59,7 +59,7 @@ Pass `baseURL` to the client plugin. It prepends the URL to every request.
 
 ::: code-group
 
-```typescript twoslash [kubb.config.ts]
+```diff [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginAxios } from '@kubb/plugin-axios'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
@@ -73,7 +73,7 @@ export default defineConfig({
   },
   plugins: [
     pluginAxios({
-      baseURL: 'https://localhost:8080/api/v1', // [!code ++]
++      baseURL: 'https://localhost:8080/api/v1',
     }),
     pluginReactQuery({
       client: 'axios',

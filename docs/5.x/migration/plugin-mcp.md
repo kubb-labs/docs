@@ -72,24 +72,24 @@ Parameter properties in the generated handlers are now always camelCase, includi
 
 Each handler now takes a second argument, the MCP `RequestHandlerExtra` object, so it can read the request context. The handler no longer builds the request inline. Instead it calls the named operation from the registered client plugin (`addPet` here) with a single grouped `{ path, query, headers, body }` config object, and reads `res.data`.
 
-```typescript [Generated output]
-import type { CallToolResult } from '@modelcontextprotocol/sdk/types' // [!code --]
-import type { CallToolResult, ServerNotification, ServerRequest } from '@modelcontextprotocol/sdk/types' // [!code ++]
-import type { RequestHandlerExtra } from '@modelcontextprotocol/sdk/shared/protocol' // [!code ++]
-import { addPet } from './clients/addPet' // [!code ++]
+```diff [Generated output]
+-import type { CallToolResult } from '@modelcontextprotocol/sdk/types'
++import type { CallToolResult, ServerNotification, ServerRequest } from '@modelcontextprotocol/sdk/types'
++import type { RequestHandlerExtra } from '@modelcontextprotocol/sdk/shared/protocol'
++import { addPet } from './clients/addPet'
 
-export async function addPetHandler({ data }: { data: AddPetMutationRequest }): Promise<CallToolResult> { // [!code --]
-export async function addPetHandler( // [!code ++]
-  { body }: AddPetRequestConfig, // [!code ++]
-  request: RequestHandlerExtra<ServerRequest, ServerNotification>, // [!code ++]
-): Promise<CallToolResult> { // [!code ++]
-  const res = await fetch<AddPetMutationResponse, ResponseErrorConfig<AddPet405>, AddPetMutationRequest>({ // [!code --]
-    method: 'POST', // [!code --]
-    url: '/pet', // [!code --]
-    baseURL: 'https://petstore.swagger.io/v2', // [!code --]
-    data, // [!code --]
-  }) // [!code --]
-  const res = await addPet({ body }) // [!code ++]
+-export async function addPetHandler({ data }: { data: AddPetMutationRequest }): Promise<CallToolResult> {
++export async function addPetHandler(
++  { body }: AddPetRequestConfig,
++  request: RequestHandlerExtra<ServerRequest, ServerNotification>,
++): Promise<CallToolResult> {
+-  const res = await fetch<AddPetMutationResponse, ResponseErrorConfig<AddPet405>, AddPetMutationRequest>({
+-    method: 'POST',
+-    url: '/pet',
+-    baseURL: 'https://petstore.swagger.io/v2',
+-    data,
+-  })
++  const res = await addPet({ body })
   ...
 }
 ```

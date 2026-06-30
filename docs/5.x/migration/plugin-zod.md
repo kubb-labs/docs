@@ -233,9 +233,9 @@ export default defineConfig({
 })
 ```
 
-```typescript [Generated output]
-slug: z.string().regex(/^[a-z]+$/), // [!code --]
-slug: z.string().regex(new RegExp('^[a-z]+$')), // [!code ++]
+```diff [Generated output]
+-slug: z.string().regex(/^[a-z]+$/),
++slug: z.string().regex(new RegExp('^[a-z]+$')),
 ```
 
 ## Changed: inferred type names end with `Type`
@@ -244,21 +244,21 @@ With `inferred: true`, the `z.infer<typeof schema>` alias now carries a `SchemaT
 
 In v4 the schema value and its inferred type differed only by casing (`petSchema` and `PetSchema`). An all-uppercase name such as `SUV`, `URL`, or `API` produced the same identifier for both, so the barrel re-exported it twice and failed with `TS2300: Duplicate identifier`. The `Type` suffix keeps the value and type apart at any casing.
 
-```typescript [zod/petSchema.ts]
+```diff [zod/petSchema.ts]
 export const petSchema = z.object({
   name: z.string(),
   status: z.enum(['available', 'pending', 'sold']).optional(),
 })
 
-export type PetSchemaType = z.infer<typeof petSchema> // [!code ++]
-export type PetSchema = z.infer<typeof petSchema> // [!code --]
++export type PetSchemaType = z.infer<typeof petSchema>
+-export type PetSchema = z.infer<typeof petSchema>
 ```
 
 Update any imports that referenced the old name:
 
-```typescript [Update imports]
-import type { PetSchemaType } from './gen/zod/petSchema.ts' // [!code ++]
-import type { PetSchema } from './gen/zod/petSchema.ts' // [!code --]
+```diff [Update imports]
++import type { PetSchemaType } from './gen/zod/petSchema.ts'
+-import type { PetSchema } from './gen/zod/petSchema.ts'
 ```
 
 ## Changed: `wrapOutput` receives a schema node
@@ -271,13 +271,13 @@ The `wrapOutput` callback still wraps the generated Zod string, but its `schema`
 
 v5 prefers the chained Zod 4 syntax. `.optional()` sits at the end of the chain, right before `.describe()`.
 
-```typescript [Generated output]
-id: z.optional(z.int()), // [!code --]
-shipDate: z.optional(z.iso.datetime()), // [!code --]
-status: z.optional(z.enum(['placed', 'approved']).describe('Order Status')), // [!code --]
-id: z.int().optional(), // [!code ++]
-shipDate: z.iso.datetime().optional(), // [!code ++]
-status: z.enum(['placed', 'approved']).optional().describe('Order Status'), // [!code ++]
+```diff [Generated output]
+-id: z.optional(z.int()),
+-shipDate: z.optional(z.iso.datetime()),
+-status: z.optional(z.enum(['placed', 'approved']).describe('Order Status')),
++id: z.int().optional(),
++shipDate: z.iso.datetime().optional(),
++status: z.enum(['placed', 'approved']).optional().describe('Order Status'),
 ```
 
 The functional form (`z.optional(...)`) is now reserved for `mini: true` output, which lives in its own `output.path`.

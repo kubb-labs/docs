@@ -13,16 +13,16 @@ Part of the [v4 → v5 migration guide](/docs/5.x/migration). For the full optio
 
 Handlers are now typed against the request body and headers. They take an `HttpResponseResolver` callback in place of an inline MSW handler signature.
 
-```typescript [Generated output]
-import type { HttpResponseResolver } from 'msw' // [!code ++]
-import type { CreateUserData } from '../../../models/CreateUser.ts' // [!code ++]
+```diff [Generated output]
++import type { HttpResponseResolver } from 'msw'
++import type { CreateUserData } from '../../../models/CreateUser.ts'
 
 export function createUserHandler(
-  data?: string | number | boolean | null | object | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Response | Promise<Response>), // [!code --]
-  data?: string | number | boolean | null | object | HttpResponseResolver<Record<string, string>, CreateUserData, any>, // [!code ++]
+-  data?: string | number | boolean | null | object | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Response | Promise<Response>),
++  data?: string | number | boolean | null | object | HttpResponseResolver<Record<string, string>, CreateUserData, any>,
 ) {
-  return http.post('http://localhost:3000/user', function handler(info) { // [!code --]
-  return http.post<Record<string, string>, CreateUserData, any>(`http://localhost:3000/user`, function handler(info) { // [!code ++]
+-  return http.post('http://localhost:3000/user', function handler(info) {
++  return http.post<Record<string, string>, CreateUserData, any>(`http://localhost:3000/user`, function handler(info) {
     ...
   })
 }
