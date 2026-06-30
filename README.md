@@ -31,7 +31,7 @@ Want to improve the docs? See [CONTRIBUTING.md](./CONTRIBUTING.md).
 - Generate [TypeScript types](https://kubb.dev/plugins/plugin-ts), [React Query](https://kubb.dev/plugins/plugin-react-query) and [Vue Query](https://kubb.dev/plugins/plugin-vue-query) hooks, [SWR](https://kubb.dev/plugins/plugin-swr) hooks, [Zod](https://kubb.dev/plugins/plugin-zod) validators, [Faker](https://kubb.dev/plugins/plugin-faker) mocks, and [MSW](https://kubb.dev/plugins/plugin-msw) handlers, each from its own plugin.
 - Generate a typed [Axios](https://kubb.dev/plugins/plugin-axios) or [Fetch](https://kubb.dev/plugins/plugin-fetch) client with status-keyed results, auth, validation, file uploads, server-sent events, interceptors, and a swappable transport.
 - Read any OpenAPI 2.0, 3.0, or 3.1 spec through the [OpenAPI adapter](https://kubb.dev/adapters/adapter-oas), or add your own adapter.
-- Shape the output by grouping files by tag or path, emitting barrel files, and including or excluding operations.
+- Shape the output by grouping files by tag or path, including or excluding operations, and writing to disk, memory, or a [custom storage backend](https://kubb.dev/docs/5.x/guide/concepts/storage).
 - Generate [Cypress](https://kubb.dev/plugins/plugin-cypress) tests and a [Model Context Protocol server](https://kubb.dev/plugins/plugin-mcp), or write your own plugin.
 - Run generation in Vite, Nuxt, and other bundlers with `unplugin-kubb`, or from AI assistants and Claude Code.
 
