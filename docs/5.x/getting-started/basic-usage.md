@@ -125,7 +125,7 @@ output:
   -   Output  ./src/gen
 ```
 
-Kubb creates one folder per plugin under `output.path`, so the layout mirrors the config you wrote. Re-run it after every spec change. See [`kubb generate`](../api/commands/generate) for flags like `--watch` and `--reporter`.
+Kubb creates one folder per plugin under `output.path`, so the layout mirrors the config you wrote. Re-run it after every spec change. See [`kubb generate`](../reference/commands/generate) for flags like `--watch` and `--reporter`.
 
 ## 4. Use the generated code
 
