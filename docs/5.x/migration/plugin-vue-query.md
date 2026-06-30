@@ -49,7 +49,7 @@ export default defineConfig({
 
 ## Renamed: `parser` → `validator`
 
-The `parser` option is now `validator`. Set `validator: 'zod'` where you set `parser: 'zod'` before. The accepted values are unchanged: `false`, `'zod'`, or `{ request: 'zod', response: 'zod' }` to validate request and response bodies with schemas from [`@kubb/plugin-zod`](/plugins/plugin-zod).
+The `parser` option is now `validator`. Set `validator: 'zod'` where you previously set `parser: 'zod'`. The accepted values are unchanged: `false`, `'zod'`, or `{ request: 'zod', response: 'zod' }` to validate request and response bodies with schemas from [`@kubb/plugin-zod`](/plugins/plugin-zod).
 
 ```diff [Diff]
   pluginVueQuery({
