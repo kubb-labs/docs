@@ -119,9 +119,9 @@ so you pass only the body. For an operation that accepts more than one, set
 call.
 
 > [!NOTE]
-> A `FormData` body keeps its `Content-Type` unset on purpose, so the runtime can append the
-> multipart boundary. Setting `Content-Type: multipart/form-data` by hand drops the boundary and
-> the request breaks.
+> When the body is `FormData`, the runtime removes any `Content-Type` header so the transport sets
+> it with the multipart boundary. You do not need to set `multipart/form-data` yourself, and a
+> value you set is dropped for that request.
 
 To encode a content type the default serializer does not handle, register a body serializer for
 that media type. `bodySerializers` is keyed by content type:
