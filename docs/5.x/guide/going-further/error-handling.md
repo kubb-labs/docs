@@ -108,7 +108,7 @@ const pet = await getPetById({ path: { petId: 1 }, throwOnError: true })
 
 `throwOnError` governs the response status, not the send. A request that never gets a response,
 from a dropped connection, DNS failure, or an aborted `AbortSignal`, rejects whatever the setting.
-A `ResponseError` means the server answered with a non-2xx; any other rejection means the request
+A `ResponseError` means the server answered with a non-2xx. Any other rejection means the request
 did not complete.
 
 ```typescript

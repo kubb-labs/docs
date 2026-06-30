@@ -103,7 +103,7 @@ Reading the `error` body and handling failures is covered in
 ## Set the content type
 
 When an operation accepts or returns more than one media type, set `contentType` on the call. A
-bare string sets the request content type; the object form also sends an `Accept` header for the
+bare string sets the request content type. The object form also sends an `Accept` header for the
 response:
 
 ```typescript

@@ -184,7 +184,7 @@ schema's `issues`, covered in
 > [!TIP]
 > Validation guarantees the data matches its type at runtime, at the cost of parsing every body.
 > Leave it off when you trust the API and need the throughput, and turn it on where a malformed
-> response would be hard to trace.
+> response is hard to trace.
 
 ## See also
 
