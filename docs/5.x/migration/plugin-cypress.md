@@ -21,7 +21,7 @@ These three options are gone. Each request helper now takes a single grouped opt
   })
 ```
 
-The helper signature changes from positional arguments to one object. The first argument is typed `Omit<XxxRequestConfig, 'url'>`, the `RequestConfig` type `@kubb/plugin-ts` generates. When an operation has a required parameter in a group, that group (`path`, `query`, or `headers`) is required too. The trailing `options` argument is unchanged.
+The helper signature changes from positional arguments to one object. The first argument is typed `XxxRequestConfig`, the `RequestConfig` type `@kubb/plugin-ts` generates. When an operation has a required parameter in a group, that group (`path`, `query`, or `headers`) is required too. The trailing `options` argument is unchanged.
 
 ::: code-group
 
@@ -32,7 +32,7 @@ showPetById({ path: { petId: 2 }, query: { limit: 10 } }) // [!code ++]
 
 ```typescript [Generated output]
 export function showPetById(petId: number, query?: ShowPetByIdQueryParams, options = {}) {} // [!code --]
-export function showPetById({ path, query }: Omit<ShowPetByIdRequestConfig, 'url'>, options = {}) {} // [!code ++]
+export function showPetById({ path, query }: ShowPetByIdRequestConfig, options = {}) {} // [!code ++]
 ```
 
 :::
@@ -47,7 +47,7 @@ export function showPetById({ path, query }: Omit<ShowPetByIdRequestConfig, 'url
   })
 ```
 
-`baseURL` stays the same, and `exclude`, `include`, and `override` keep their v4 shape. Cypress has no `parser` option, unlike the client plugins.
+`baseURL` stays the same, and `exclude`, `include`, and `override` keep their v4 shape. Cypress has no `validator` option, unlike the client plugins.
 
 ## Generated output
 

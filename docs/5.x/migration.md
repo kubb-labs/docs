@@ -112,7 +112,7 @@ This applies at both the root output level and per-plugin output levels.
 ## 12. Preserve everything else
 All other plugin options (output, group, include, exclude, override (the
 per-operation array), client, infinite, suspense, query, mutation,
-parser, baseURL, operations, typed, inferred,
+baseURL, typed, inferred,
 coercion, guidType, mini, wrapOutput, dateParser, regexGenerator,
 seed, handlers, etc.) are unchanged.
 
@@ -136,6 +136,15 @@ They default to `mode: 'directory'`. `output.mode` only accepts
 ## 15. Remove the `generators` option
 Remove `generators` from every plugin. Plugins no longer accept custom
 generators as an option. To add custom output, build your own plugin.
+
+## 16. Rename parser → validator on the client and query plugins
+- On `plugin-axios`, `plugin-fetch`, `plugin-react-query`, `plugin-vue-query`,
+  and `plugin-swr`, rename the `parser` option to `validator`. The accepted
+  values are unchanged: `false`, `'zod'`, or `{ request: 'zod', response: 'zod' }`.
+  So `parser: 'zod'` becomes `validator: 'zod'`, and a v4 `parser: 'client'`
+  becomes the default `false` (the `'client'` value is gone).
+- Leave `plugin-msw`'s `parser` (`'data' | 'faker'`) unchanged. It is a
+  different option and is not renamed.
 
 Now migrate the following kubb.config.ts:
 ```

@@ -49,6 +49,17 @@ export default defineConfig({
 
 `dataReturnType` has no replacement on the query plugin. The client plugin returns the response body, so the hooks read `res.data`. Move `baseURL` to the client plugin, and see [Migration: @kubb/plugin-client removed](/docs/5.x/migration/plugin-client) for the `clientType`, `bundle`, and `importPath` options that went with it.
 
+## Renamed: `parser` → `validator`
+
+The `parser` option is now `validator`. Set `validator: 'zod'` where you previously set `parser: 'zod'`. The accepted values are unchanged: `false`, `'zod'`, or `{ request: 'zod', response: 'zod' }` to validate request and response bodies with schemas from [`@kubb/plugin-zod`](/plugins/plugin-zod).
+
+```diff [Diff]
+  pluginSwr({
+-   parser: 'zod',
++   validator: 'zod',
+  })
+```
+
 ## Removed: `mutation.paramsToTrigger`
 
 v4 gated the trigger-based mutation shape behind `mutation.paramsToTrigger`, off by default. v5 removes the flag and makes that shape the default, so mutation parameters always pass through `trigger()`. Drop `paramsToTrigger` from your config.

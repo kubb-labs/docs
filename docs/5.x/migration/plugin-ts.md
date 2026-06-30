@@ -136,11 +136,16 @@ v5 emits a `const`-asserted object plus a `*Key` type union. This drops the runt
 
 ```typescript [Generated output]
 export enum ParamsStatusEnum { // [!code --]
-export enum orderParamsStatusEnum { // [!code ++]
-  placed = 'placed',
-  approved = 'approved',
-  delivered = 'delivered',
-}
+  placed = 'placed', // [!code --]
+  approved = 'approved', // [!code --]
+  delivered = 'delivered', // [!code --]
+} // [!code --]
+export const orderParamsStatusEnum = { // [!code ++]
+  placed: 'placed', // [!code ++]
+  approved: 'approved', // [!code ++]
+  delivered: 'delivered', // [!code ++]
+} as const // [!code ++]
+export type OrderParamsStatusEnumKey = (typeof orderParamsStatusEnum)[keyof typeof orderParamsStatusEnum] // [!code ++]
 
 status: ParamsStatusEnum // [!code --]
 status: OrderParamsStatusEnumKey // [!code ++]

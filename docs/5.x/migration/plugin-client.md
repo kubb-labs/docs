@@ -10,7 +10,7 @@ description: '@kubb/plugin-client is removed. Migrate to @kubb/plugin-axios or @
 - [`@kubb/plugin-axios`](/plugins/plugin-axios) generates an axios HTTP client. Import `pluginAxios`.
 - [`@kubb/plugin-fetch`](/plugins/plugin-fetch) generates a Fetch API client. Import `pluginFetch`.
 
-Both speak the same `RequestResult` contract and share the same options: `output`, `exclude`, `include`, `override`, `baseURL`, `parser`, `sdk`, `group`, `resolver`, and `macros`.
+Both speak the same `RequestResult` contract and share the same options: `output`, `exclude`, `include`, `override`, `baseURL`, `validator`, `sdk`, `group`, `resolver`, and `macros`.
 
 ## Pick a plugin by the old `client` value
 
@@ -79,9 +79,9 @@ With `sdk` set, `mode: 'tag'` (the default) emits one class per tag, and a `name
 + const { data: pet } = await getPet({ path: { petId: 1 } })
 ```
 
-## `parser` validates with Zod
+## `parser` is renamed to `validator`
 
-v4 `parser` took `'client'` or `'zod'` and defaulted to `'client'`. v5 `parser` defaults to `false` and accepts `'zod'` or `{ request, response }` to validate request and response bodies with schemas from `@kubb/plugin-zod`. The `'client'` value is gone, so `parser: 'client'` becomes the default `false`.
+v4 `parser` took `'client'` or `'zod'` and defaulted to `'client'`. v5 renames the option to `validator`. It defaults to `false` and accepts `'zod'` or `{ request, response }` to validate request and response bodies with schemas from `@kubb/plugin-zod`. The `'client'` value is gone, so `parser: 'zod'` becomes `validator: 'zod'`, and `parser: 'client'` becomes the default `false`.
 
 ## Authentication comes from the spec
 
