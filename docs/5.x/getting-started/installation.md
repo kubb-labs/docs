@@ -63,7 +63,7 @@ yarn add -D kubb@beta
 :::
 
 > [!NOTE]
-> The `kubb` package includes the CLI, the core runtime, the [OpenAPI adapter](/adapters/adapter-oas), and the TypeScript, TSX, and Markdown parsers by default. You only need to add plugins for the outputs you want.
+> The `kubb` package includes the CLI, the core runtime, the [OpenAPI adapter](/adapters/adapter-oas/), and the TypeScript, TSX, and Markdown parsers by default. You only need to add plugins for the outputs you want.
 
 ### 2. Add plugins
 

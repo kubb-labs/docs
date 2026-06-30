@@ -3,7 +3,7 @@ layout: doc
 title: Kubb Markdown Parser
 description: Markdown file parser for Kubb. Joins source blocks as plain
   markdown and renders YAML frontmatter via `parserMd.print`.
-outline: 2
+outline: deep
 kind: parser
 id: parser-md
 name: Markdown
@@ -39,6 +39,8 @@ resources:
 
 The parser joins source blocks with blank lines. When `file.meta.frontmatter` is set, it prepends the YAML envelope, so you need no separate `yaml` dependency. Pair it with `parserTs` when a generator emits both TypeScript and documentation files side by side.
 
+See [Options](/parsers/parser-md/reference/options) for the configuration reference.
+
 ## Installation
 
 ::: code-group
@@ -60,26 +62,6 @@ yarn add -D @kubb/parser-md@beta
 ```
 
 :::
-
-## Frontmatter
-
-The parser takes no options of its own. To add a YAML frontmatter block, set `frontmatter` on a file's `meta` inside a plugin. The parser then prepends it to the output. Any serializable key-value object works.
-
-|           |                                   |
-| --------: | :-------------------------------- |
-|     Type: | `Record<string, unknown> \| null` |
-| Required: | `false`                           |
-
-```typescript [plugin example]
-ast.factory.createFile({
-  baseName: 'README.md',
-  path: `${config.output.path}/README.md`,
-  meta: {
-    frontmatter: { title: 'API Reference', layout: 'doc' },
-  },
-  sources: [...],
-})
-```
 
 ## Example
 

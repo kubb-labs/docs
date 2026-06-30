@@ -216,7 +216,7 @@ The custom plugin runs after `pluginZod`, so the per-operation schemas it import
 
 ## Moved to `adapterOas`
 
-`dateType`, `integerType`, `unknownType`, and `emptySchemaType` moved to [`adapterOas`](/adapters/adapter-oas). See [Migration: @kubb/adapter-oas](/docs/5.x/migration/adapter-oas).
+`dateType`, `integerType`, `unknownType`, and `emptySchemaType` moved to [`adapterOas`](/adapters/adapter-oas/). See [Migration: @kubb/adapter-oas](/docs/5.x/migration/adapter-oas).
 
 ## New: `regexType`
 

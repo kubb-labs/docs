@@ -8,7 +8,7 @@ outline: deep
 # Options
 
 > [!NOTE]
-> Schema-shaping options such as `enum`, `dateType`, `integerType`, `unknownType`, `emptySchemaType`, `enumSuffix`, and `contentType` moved to [`@kubb/adapter-oas`](/adapters/adapter-oas) in v5. Set them with `adapterOas({ ... })` instead of on this plugin.
+> Schema-shaping options such as `enum`, `dateType`, `integerType`, `unknownType`, `emptySchemaType`, `enumSuffix`, and `contentType` moved to [`@kubb/adapter-oas`](/adapters/adapter-oas/) in v5. Set them with `adapterOas({ ... })` instead of on this plugin.
 
 ### output
 

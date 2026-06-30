@@ -246,9 +246,9 @@ The following plugins have no v5 equivalent. Remove them from your config and un
 
 | Package                                                     | Purpose                                                                                              |
 | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| [`@kubb/adapter-oas`](/adapters/adapter-oas)                | Replaces `@kubb/plugin-oas`. See [Adapters](/docs/5.x/guide/concepts/adapters).                            |
+| [`@kubb/adapter-oas`](/adapters/adapter-oas/)                | Replaces `@kubb/plugin-oas`. See [Adapters](/docs/5.x/guide/concepts/adapters).                            |
 | [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) | Barrel-file generation, auto-included via `kubb`. See [Barrel files](/docs/5.x/guide/concepts/barrel-files). |
-| [`@kubb/parser-ts`](/parsers/parser-ts)                     | TypeScript and TSX printer, auto-included via `kubb`. See [Parsers](/docs/5.x/guide/concepts/parsers).     |
+| [`@kubb/parser-ts`](/parsers/parser-ts/)                     | TypeScript and TSX printer, auto-included via `kubb`. See [Parsers](/docs/5.x/guide/concepts/parsers).     |
 
 ## Core configuration
 
@@ -274,8 +274,8 @@ v5 adds three top-level keys that replace behavior each plugin used to carry on 
 
 | Option       | Package                                                     | Purpose                                       | Default                 |
 | ------------ | ----------------------------------------------------------- | --------------------------------------------- | ----------------------- |
-| `adapter`    | [`@kubb/adapter-oas`](/adapters/adapter-oas)                | Parses the input spec into a universal AST.   | `adapterOas()`          |
-| `parsers`    | [`@kubb/parser-ts`](/parsers/parser-ts), `@kubb/parser-md`  | Converts AST nodes to `.ts`, `.tsx`, and `.md` files. | `[parserTs, parserTsx, parserMd]` |
+| `adapter`    | [`@kubb/adapter-oas`](/adapters/adapter-oas/)                | Parses the input spec into a universal AST.   | `adapterOas()`          |
+| `parsers`    | [`@kubb/parser-ts`](/parsers/parser-ts/), `@kubb/parser-md`  | Converts AST nodes to `.ts`, `.tsx`, and `.md` files. | `[parserTs, parserTsx, parserMd]` |
 | `plugins` (post) | [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) | Post-processes output, like barrel files.     | `[pluginBarrel()]`  |
 
 ### `@kubb/plugin-oas` removed
@@ -770,6 +770,6 @@ The output changes specific to each generator live on its [per-extension page](#
 - [Parsers](/docs/5.x/guide/concepts/parsers): how AST nodes become source files.
 - [Barrel files](/docs/5.x/guide/concepts/barrel-files): barrel file generation with `@kubb/plugin-barrel`.
 - [Storage](/docs/5.x/guide/concepts/storage): switching between filesystem and in-memory storage.
-- [`@kubb/adapter-oas`](/adapters/adapter-oas): every option that moved here from the plugins.
+- [`@kubb/adapter-oas`](/adapters/adapter-oas/): every option that moved here from the plugins.
 - [Plugin registry](/plugins): the full list of v5 plugins.
 - [Recipes](/docs/5.x/guide/recipes): copy-paste configurations for common scenarios.

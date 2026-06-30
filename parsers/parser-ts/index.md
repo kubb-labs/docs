@@ -3,7 +3,7 @@ layout: doc
 title: Kubb TypeScript Parser
 description: Default file parser for Kubb. Converts the universal AST to
   `.ts`/`.tsx` source using the official TypeScript compiler.
-outline: 2
+outline: deep
 kind: parser
 id: parser-ts
 name: TypeScript
@@ -44,6 +44,8 @@ The package exports two parsers:
 - `parserTs` handles `.ts` and `.js` files.
 - `parserTsx` handles `.tsx` and `.jsx` files. Use it for React projects so JSX in generated components is preserved.
 
+See [Options](/parsers/parser-ts/reference/options) for the configuration reference.
+
 ## Installation
 
 ::: code-group
@@ -62,34 +64,6 @@ npm install --save-dev @kubb/parser-ts@beta
 
 ```shell [yarn]
 yarn add -D @kubb/parser-ts@beta
-```
-
-:::
-
-## Import extensions
-
-The parser takes no options of its own. You add it to the `parsers` list as-is. To change the extension written into generated imports, set `output.extension` on `defineConfig`. The parser reads that map and rewrites each import path.
-
-For example, `output.extension: { '.ts': '.js' }` turns `import { Pet } from './Pet'` into `import { Pet } from './Pet.js'`. Node's ESM resolver expects that `.js` suffix.
-
-::: code-group
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
-import { adapterOas } from '@kubb/adapter-oas'
-import { parserTs } from '@kubb/parser-ts'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen', extension: { '.ts': '.js' } },
-  adapter: adapterOas(),
-  parsers: [parserTs],
-  plugins: [],
-})
-```
-
-```typescript [Generated import]
-import type { Pet } from './Pet.js'
 ```
 
 :::

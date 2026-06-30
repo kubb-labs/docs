@@ -20,7 +20,7 @@ Kubb, [orval](https://orval.dev), [HeyAPI](https://heyapi.dev), and [openapi-typ
 
 | Feature                                               | Kubb | orval | HeyAPI         |   openapi-ts   |
 | ----------------------------------------------------- | :--: | :---: | :------------- | :------------: |
-| [OpenAPI 2.0, 3.0, 3.1 input](/adapters/adapter-oas)  |  ✅  |  ✅   | ✅             | 🔶<sup>1</sup> |
+| [OpenAPI 2.0, 3.0, 3.1 input](/adapters/adapter-oas/)  |  ✅  |  ✅   | ✅             | 🔶<sup>1</sup> |
 | [TypeScript types](/plugins/plugin-ts/)               |  ✅  |  ✅   | ✅             |       ✅       |
 | [HTTP client (Axios, Fetch)](/plugins/plugin-axios/)  |  ✅  |  ✅   | ✅             | 🔶<sup>2</sup> |
 | [React Query hooks](/plugins/plugin-react-query/)     |  ✅  |  ✅   | ✅             | 🟡<sup>3</sup> |
@@ -103,12 +103,12 @@ Every job in Kubb is one of three pieces: an [adapter](/docs/5.x/guide/concepts/
 
 **Adapters (input)**
 
-- [`@kubb/adapter-oas`](/adapters/adapter-oas) reads OpenAPI 2.0, 3.0, and 3.1.
+- [`@kubb/adapter-oas`](/adapters/adapter-oas/) reads OpenAPI 2.0, 3.0, and 3.1.
 
 **Parsers (output)**
 
-- [`@kubb/parser-ts`](/parsers/parser-ts) renders TypeScript and TSX.
-- [`@kubb/parser-md`](/parsers/parser-md) renders Markdown.
+- [`@kubb/parser-ts`](/parsers/parser-ts/) renders TypeScript and TSX.
+- [`@kubb/parser-md`](/parsers/parser-md/) renders Markdown.
 
 **Plugins (artifacts)**
 

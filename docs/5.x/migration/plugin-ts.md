@@ -63,7 +63,7 @@ The grouped object is what every generated client function, hook, and Cypress he
 
 ## Moved to `adapterOas`
 
-`dateType`, `integerType`, `unknownType`, `emptySchemaType`, `enumSuffix`, and `contentType` moved to [`adapterOas`](/adapters/adapter-oas). See [Migration: @kubb/adapter-oas](/docs/5.x/migration/adapter-oas).
+`dateType`, `integerType`, `unknownType`, `emptySchemaType`, `enumSuffix`, and `contentType` moved to [`adapterOas`](/adapters/adapter-oas/). See [Migration: @kubb/adapter-oas](/docs/5.x/migration/adapter-oas).
 
 ## Changed: `enum` options grouped under one object
 

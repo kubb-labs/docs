@@ -423,7 +423,7 @@ Casing applied to enum key names. By default the key is the raw value from the s
 | Required: | `false` |
 
 > [!WARNING]
-> Moved to [`adapterOas`](/adapters/adapter-oas#dateType). Use `adapterOas({ dateType })` instead.
+> Moved to [`adapterOas`](/adapters/adapter-oas/reference/options#dateType). Use `adapterOas({ dateType })` instead.
 
 ### integerType
 
@@ -432,7 +432,7 @@ Casing applied to enum key names. By default the key is the raw value from the s
 | Required: | `false` |
 
 > [!WARNING]
-> Moved to [`adapterOas`](/adapters/adapter-oas#integerType). Use `adapterOas({ integerType })` instead.
+> Moved to [`adapterOas`](/adapters/adapter-oas/reference/options#integerType). Use `adapterOas({ integerType })` instead.
 
 ### syntaxType
 
@@ -479,7 +479,7 @@ const pet: Pet = { name: 'Fluffy' }
 | Required: | `false` |
 
 > [!WARNING]
-> Moved to [`adapterOas`](/adapters/adapter-oas#unknownType). Use `adapterOas({ unknownType })` instead.
+> Moved to [`adapterOas`](/adapters/adapter-oas/reference/options#unknownType). Use `adapterOas({ unknownType })` instead.
 
 ### emptySchemaType
 
@@ -488,7 +488,7 @@ const pet: Pet = { name: 'Fluffy' }
 | Required: | `false` |
 
 > [!WARNING]
-> Moved to [`adapterOas`](/adapters/adapter-oas#emptySchemaType). Use `adapterOas({ emptySchemaType })` instead.
+> Moved to [`adapterOas`](/adapters/adapter-oas/reference/options#emptySchemaType). Use `adapterOas({ emptySchemaType })` instead.
 
 ### optionalType
 

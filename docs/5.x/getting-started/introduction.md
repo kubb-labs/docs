@@ -56,7 +56,7 @@ That is the full cycle. Change the spec, run `kubb generate` again, and the type
 
 - Generate [TypeScript types](/plugins/plugin-ts/), [React Query](/plugins/plugin-react-query/) and [Vue Query](/plugins/plugin-vue-query/) hooks, [SWR](/plugins/plugin-swr/) hooks, [Zod](/plugins/plugin-zod/) validators, [Faker](/plugins/plugin-faker/) mocks, and [MSW](/plugins/plugin-msw/) handlers, each from its own plugin.
 - Generate a typed [Axios](/plugins/plugin-axios/) or [Fetch](/plugins/plugin-fetch/) client with status-keyed results, auth, validation, file uploads, [server-sent events](/plugins/plugin-fetch/guide/server-sent-events), [interceptors](/plugins/plugin-fetch/guide/interceptors), and a [swappable transport](/plugins/plugin-fetch/guide/transport).
-- Read any OpenAPI 2.0, 3.0, or 3.1 spec through the [OpenAPI adapter](/adapters/adapter-oas), or add your own [adapter](/docs/5.x/guide/concepts/adapters).
+- Read any OpenAPI 2.0, 3.0, or 3.1 spec through the [OpenAPI adapter](/adapters/adapter-oas/), or add your own [adapter](/docs/5.x/guide/concepts/adapters).
 - Shape the output by grouping files by tag or path, including or excluding operations, and writing to disk, memory, or a [custom storage backend](/docs/5.x/guide/concepts/storage).
 - Generate [Cypress](/plugins/plugin-cypress/) tests and a [Model Context Protocol server](/plugins/plugin-mcp/), or [write your own plugin](/docs/5.x/guide/going-further/creating-plugins).
 - Run generation in [Vite](/docs/5.x/guide/integrations/vite), [Nuxt](/docs/5.x/guide/integrations/nuxt), and other bundlers with `unplugin-kubb`, or from [AI assistants](/docs/5.x/ai/mcp) and [Claude Code](/docs/5.x/ai/claude).

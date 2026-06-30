@@ -98,7 +98,7 @@ Drop these `plugin-client` options from your config:
 - `urlType`, with its `get<Operation>Url` helpers and the `resolveUrlName` resolver method
 - `generators`, since custom output now lives in your own plugin
 
-`transformers.name` becomes [`resolver.resolveName`](/docs/5.x/migration#transformersname-resolver), and `contentType` moves to [`adapterOas`](/adapters/adapter-oas). If you wrapped a custom HTTP library through `importPath`, move that logic into your own module and call the generated functions from it.
+`transformers.name` becomes [`resolver.resolveName`](/docs/5.x/migration#transformersname-resolver), and `contentType` moves to [`adapterOas`](/adapters/adapter-oas/). If you wrapped a custom HTTP library through `importPath`, move that logic into your own module and call the generated functions from it.
 
 ## Rebuild the URL helpers with a custom plugin
 

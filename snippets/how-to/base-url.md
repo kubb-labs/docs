@@ -6,7 +6,7 @@ Set it at build time or at runtime. At build time you read it from the servers l
 
 ## Read it from the spec
 
-When you set no `baseURL` on the client plugin, the client falls back to the server URL the [OpenAPI adapter](/adapters/adapter-oas) resolves. The adapter resolves one only when you point its `server.index` at an entry in the spec's `servers` array, so set `adapter: adapterOas({ server: { index: 0 } })` to use the first entry. Add `variables` to fill in any `{variable}` placeholders in the chosen URL. Leave `server` unset and the spec contributes no `baseURL`.
+When you set no `baseURL` on the client plugin, the client falls back to the server URL the [OpenAPI adapter](/adapters/adapter-oas/) resolves. The adapter resolves one only when you point its `server.index` at an entry in the spec's `servers` array, so set `adapter: adapterOas({ server: { index: 0 } })` to use the first entry. Add `variables` to fill in any `{variable}` placeholders in the chosen URL. Leave `server` unset and the spec contributes no `baseURL`.
 
 ::: code-group
 

@@ -10,7 +10,7 @@ outline: deep
 A parser turns a `FileNode` into the source string written to disk. This page documents `defineParser`, the `Parser` interface, the built-in parsers, and how to add your own. For why parsers exist and where they sit in the pipeline, see [Parsers concepts](/docs/5.x/guide/concepts/parsers).
 
 > [!TIP]
-> For TypeScript and JavaScript output use the built-in [`@kubb/parser-ts`](/parsers/parser-ts). It is added by default when you import `defineConfig` from the `kubb` package. Build a custom parser only when you target a different language, such as Python, Kotlin, or Rust.
+> For TypeScript and JavaScript output use the built-in [`@kubb/parser-ts`](/parsers/parser-ts/). It is added by default when you import `defineConfig` from the `kubb` package. Build a custom parser only when you target a different language, such as Python, Kotlin, or Rust.
 
 ## Quick start
 
@@ -99,13 +99,13 @@ export const parserCustom = defineParser({
 ```
 
 > [!TIP]
-> Parsers compose by extension. `parserTs` (`.ts`, `.js`) and `parserTsx` (`.tsx`, `.jsx`) ship in the same [`@kubb/parser-ts`](/parsers/parser-ts) package and register side by side.
+> Parsers compose by extension. `parserTs` (`.ts`, `.js`) and `parserTsx` (`.tsx`, `.jsx`) ship in the same [`@kubb/parser-ts`](/parsers/parser-ts/) package and register side by side.
 
 ## Built-in parsers
 
 ### `@kubb/parser-ts`
 
-The default parser for TypeScript and JavaScript output. It uses the official TypeScript compiler to resolve import paths, deduplicate declarations, print JSDoc, and rewrite extensions based on `output.extension`. See the [`@kubb/parser-ts` reference](/parsers/parser-ts) for the full option list.
+The default parser for TypeScript and JavaScript output. It uses the official TypeScript compiler to resolve import paths, deduplicate declarations, print JSDoc, and rewrite extensions based on `output.extension`. See the [`@kubb/parser-ts` reference](/parsers/parser-ts/) for the full option list.
 
 ::: code-group
 

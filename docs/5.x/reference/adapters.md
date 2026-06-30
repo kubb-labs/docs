@@ -10,7 +10,7 @@ outline: deep
 An adapter converts an input specification into the universal [AST](/docs/5.x/guide/concepts/ast) that every plugin reads. This page documents `createAdapter`, the `Adapter` interface, the built-in OpenAPI adapter, and how to build your own. For what adapters are and where they sit in the pipeline, see [Adapters concepts](/docs/5.x/guide/concepts/adapters).
 
 > [!TIP]
-> For OpenAPI 2.0, 3.0, and 3.1 use the official [`@kubb/adapter-oas`](/adapters/adapter-oas). Kubb picks it for you when you import `defineConfig` from the `kubb` package. Write a custom adapter only when you target a different specification such as AsyncAPI, GraphQL, JSON Schema, or gRPC.
+> For OpenAPI 2.0, 3.0, and 3.1 use the official [`@kubb/adapter-oas`](/adapters/adapter-oas/). Kubb picks it for you when you import `defineConfig` from the `kubb` package. Write a custom adapter only when you target a different specification such as AsyncAPI, GraphQL, JSON Schema, or gRPC.
 
 ## Quick start
 
@@ -163,7 +163,7 @@ export const adapterExample = createAdapter<AdapterExample>((options) => ({
 
 ### `@kubb/adapter-oas`
 
-Official adapter for OpenAPI 2.0 (Swagger), OpenAPI 3.0, and OpenAPI 3.1. Every official plugin is built against it. See the [`@kubb/adapter-oas` reference](/adapters/adapter-oas) for the full option list.
+Official adapter for OpenAPI 2.0 (Swagger), OpenAPI 3.0, and OpenAPI 3.1. Every official plugin is built against it. See the [`@kubb/adapter-oas` reference](/adapters/adapter-oas/) for the full option list.
 
 ::: code-group
 
