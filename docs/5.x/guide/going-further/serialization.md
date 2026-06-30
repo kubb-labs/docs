@@ -48,7 +48,7 @@ objects collapse.
 | `form`             | `false`   | `{ id: [3, 4, 5] }` | `id=3,4,5`        |
 | `spaceDelimited`   | `false`   | `{ id: [3, 4, 5] }` | `id=3%204%205`    |
 | `pipeDelimited`    | `false`   | `{ id: [3, 4, 5] }` | `id=3\|4\|5`      |
-| `deepObject`       | —         | `{ a: { b: 1 } }`  | `a%5Bb%5D=1`      |
+| `deepObject`       | `n/a`     | `{ a: { b: 1 } }`  | `a%5Bb%5D=1`      |
 
 With `explode: true`, `spaceDelimited` and `pipeDelimited` fall back to repeated keys like `form`,
 so the delimiter only shows with `explode: false`.
@@ -171,6 +171,41 @@ const { data } = await downloadInvoice({ path: { id: '123' }, responseType: 'blo
 ```
 
 For `responseType: 'stream'`, see [server-sent events](/docs/5.x/guide/going-further/server-sent-events).
+
+## Send and receive XML
+
+To talk XML in both directions, register a `bodySerializer` and a `deserializer` for the same
+media type. The body serializer turns the request object into XML, the deserializer turns the XML
+response back into data, and `contentType` sets the request `Content-Type` and the `Accept` header
+so the server answers in XML. The example below uses `fast-xml-parser` for plain-object data,
+where the `DOMParser` deserializer above returns a DOM `Document` instead:
+
+```typescript
+import { client } from './gen/clients/.kubb/client'
+import { XMLBuilder, XMLParser } from 'fast-xml-parser'
+
+const builder = new XMLBuilder()
+const parser = new XMLParser()
+
+client.setConfig({
+  bodySerializers: { 'application/xml': (body) => builder.build(body) },
+  deserializers: { 'application/xml': (raw) => parser.parse(raw as string) },
+})
+```
+
+With both registered, set `contentType` on a call to send and accept XML for that request:
+
+```typescript
+const { data } = await updatePet({
+  path: { petId: '123' },
+  body: { pet: { name: 'Fluffy', status: 'sold' } },
+  contentType: { request: 'application/xml', response: 'application/xml' },
+})
+// the body is built to XML, and data is parsed from the XML response
+```
+
+When the spec already types an operation as XML, Kubb sets the content type for you and you pass
+only the body. Set `contentType` yourself for an operation that offers more than one media type.
 
 ## Response validation
 
