@@ -1,0 +1,450 @@
+---
+layout: doc
+title: Options
+description: All configuration options for @kubb/plugin-vue-query.
+outline: deep
+---
+
+# Options
+
+### output
+
+Where the generated composables are written and how they are exported.
+
+|           |                                                |
+| --------: | :--------------------------------------------- |
+|     Type: | `Output`                                       |
+| Required: | `false`                                        |
+|  Default: | `{ path: 'hooks', barrel: { type: 'named' } }` |
+
+#### output.path
+
+Folder where the plugin writes its files. It is resolved against the global `output.path` on `defineConfig`. To write everything to one file instead, set `output.mode: 'file'` and give `path` a file name with its extension, such as `'hooks.ts'`.
+
+|           |           |
+| --------: | :-------- |
+|     Type: | `string`  |
+| Required: | `true`    |
+|  Default: | `'hooks'` |
+
+#### output.mode
+
+How the plugin groups its code into files.
+
+- `'directory'` (default) writes one file per operation under `output.path`.
+- `'file'` writes everything into a single file. The `output.path` must include the file extension, such as `'hooks.ts'`.
+
+|           |                         |
+| --------: | :---------------------- |
+|     Type: | `'directory' \| 'file'` |
+| Required: | `false`                 |
+|  Default: | `'directory'`           |
+
+> [!TIP]
+> Pair `'directory'` with the `group` option to split output into per-tag subdirectories. `mode: 'file'` forbids `group`. A single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
+
+#### output.barrel
+
+Controls how the generated `index.ts` (barrel) file re-exports the plugin's output.
+
+- `{ type: 'named' }` re-exports each symbol by name. Best for tree-shaking and explicit imports.
+- `{ type: 'all' }` uses `export *`. Smaller barrel file, but exports everything.
+- `{ nested: true }` creates a barrel in every subdirectory, so callers can import from any depth.
+- `false` skips the barrel. The plugin's files are also left out of the root `index.ts`.
+
+|           |                                                         |
+| --------: | :------------------------------------------------------ |
+|     Type: | `{ type: 'named' \| 'all', nested?: boolean } \| false` |
+| Required: | `false`                                                 |
+|  Default: | `{ type: 'named' }`                                     |
+
+#### output.banner
+
+Text added to the top of every generated file. Use it for license headers, lint disables, or a `@ts-nocheck` directive. Pass a string for a fixed banner, or a function that builds one from each file's `RootNode`.
+
+|           |                                          |
+| --------: | :--------------------------------------- |
+|     Type: | `string \| ((node: RootNode) => string)` |
+| Required: | `false`                                  |
+
+#### output.footer
+
+Text added to the bottom of every generated file. It works like `banner` but for closing comments, such as re-enabling a lint rule. Pass a string or a function that receives the file's `RootNode`.
+
+|           |                                          |
+| --------: | :--------------------------------------- |
+|     Type: | `string \| ((node: RootNode) => string)` |
+| Required: | `false`                                  |
+
+### group
+
+Splits generated files into subfolders by the operation's tag or URL path. Each group gets its own directory under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`.
+
+|           |         |
+| --------: | :------ |
+|     Type: | `Group` |
+| Required: | `false` |
+
+> [!TIP]
+> Use `group` to mirror your API's domain structure (pet, store, user) in the generated code. Combine it with `output.barrel: { type: 'named', nested: true }` to get per-tag barrel files.
+>
+> `group` only applies to `output.mode: 'directory'` (the default). It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
+
+#### group.type
+
+Property used to assign each operation to a group. Required whenever `group` is set.
+
+- `'tag'` uses the operation's first tag.
+- `'path'` uses the first segment of the operation's URL, such as `pet` for `/pet/{petId}`.
+
+Operations with no tag go in a default group.
+
+|           |                   |
+| --------: | :---------------- |
+|     Type: | `'tag' \| 'path'` |
+| Required: | `true`            |
+
+> [!NOTE]
+> `Required: true*` is conditional. It only applies when the parent `group` option is used, and `group` itself stays optional.
+
+#### group.name
+
+Function that turns a group key (the operation's first tag) into a folder name.
+
+|           |                                     |
+| --------: | :---------------------------------- |
+|     Type: | `(context: GroupContext) => string` |
+| Required: | `false`                             |
+|  Default: | `(ctx) => camelCase(ctx.group)`     |
+
+### client
+
+Selects which registered client plugin the generated composables call. Set `'axios'` to use `@kubb/plugin-axios` or `'fetch'` to use `@kubb/plugin-fetch`. When omitted, the plugin auto-detects the single client plugin in the config, so you only need this option to disambiguate when several client plugins are registered. A client plugin must be registered, since the composables call its functions.
+
+|           |                      |
+| --------: | :------------------- |
+|     Type: | `'axios' \| 'fetch'` |
+| Required: | `false`              |
+
+### infinite
+
+Enables `useInfiniteQuery` composables for cursor- or page-based pagination. Pass an object to configure how the cursor is read from the response. Pass `false` (default) to skip.
+
+|           |                              |
+| --------: | :--------------------------- |
+|     Type: | `Partial<Infinite> \| false` |
+| Required: | `false`                      |
+|  Default: | `false`                      |
+
+With `infinite: false` (the default), a `GET /pets` operation generates `useGetPetsQuery` backed by `useQuery`. Setting `infinite: {}` adds an extra `useGetPetsInfiniteQuery` composable backed by `useInfiniteQuery`:
+
+::: code-group
+
+```typescript [infinite: false (default)]
+export function useGetPetsQuery(/* ... */) {
+  return useQuery({ queryKey, queryFn })
+}
+```
+
+```typescript [infinite: {}]
+export function useGetPetsInfiniteQuery(/* ... */) {
+  return useInfiniteQuery({ queryKey, queryFn, initialPageParam, getNextPageParam })
+}
+```
+
+:::
+
+Which composable you call depends on the value:
+
+::: code-group
+
+```typescript [infinite: false (default)]
+import { useGetPetsQuery } from './src/gen/hooks/useGetPetsQuery'
+
+const { data } = useGetPetsQuery()
+```
+
+```typescript [infinite: {}]
+import { useGetPetsInfiniteQuery } from './src/gen/hooks/useGetPetsInfiniteQuery'
+
+const { data, fetchNextPage, hasNextPage } = useGetPetsInfiniteQuery()
+// data.pages holds each fetched page
+```
+
+:::
+
+#### infinite.queryParam
+
+Name of the query parameter that holds the page cursor.
+
+|           |          |
+| --------: | :------- |
+|     Type: | `string` |
+| Required: | `false`  |
+|  Default: | `'id'`   |
+
+#### infinite.initialPageParam
+
+Initial value for `pageParam` on the first fetch.
+
+|           |           |
+| --------: | :-------- |
+|     Type: | `unknown` |
+| Required: | `false`   |
+|  Default: | `0`       |
+
+#### infinite.nextParam
+
+Path to the next-page cursor on the response. Supports dot notation (`'pagination.next.id'`) or array form (`['pagination', 'next', 'id']`).
+
+|           |                              |
+| --------: | :--------------------------- |
+|     Type: | `string \| string[] \| null` |
+| Required: | `false`                      |
+|  Default: | `null`                       |
+
+#### infinite.previousParam
+
+Path to the previous-page cursor on the response. Supports dot notation or array form.
+
+|           |                              |
+| --------: | :--------------------------- |
+|     Type: | `string \| string[] \| null` |
+| Required: | `false`                      |
+|  Default: | `null`                       |
+
+#### infinite.cursorParam
+
+> [!WARNING]
+> `cursorParam` is deprecated. Use `nextParam` and `previousParam` for finer pagination control.
+
+Path to the cursor field on the response. Leave it `null` when the cursor is not known.
+
+|           |                  |
+| --------: | :--------------- |
+|     Type: | `string \| null` |
+| Required: | `false`          |
+|  Default: | `null`           |
+
+### query
+
+Configures the query composables. The plugin generates them by default. Pass `false` to skip composable generation and emit only `queryOptions(...)` helpers.
+
+|           |                           |
+| --------: | :------------------------ |
+|     Type: | `Partial<Query> \| false` |
+| Required: | `false`                   |
+|  Default: | `{}`                      |
+
+#### query.methods
+
+HTTP methods treated as queries. Operations using one of these generate a `useQuery`-style composable (or `queryOptions` helper) instead of a mutation. Add a method such as `'head'` only when your API uses it for cache-friendly reads.
+
+|           |                 |
+| --------: | :-------------- |
+|     Type: | `Array<string>` |
+| Required: | `false`         |
+|  Default: | `['get']`       |
+
+#### query.importPath
+
+Module specifier used in the `import { useQuery } from '...'` statement at the top of every generated composable file. Use it to route through your own wrapper.
+
+|           |                         |
+| --------: | :---------------------- |
+|     Type: | `string`                |
+| Required: | `false`                 |
+|  Default: | `'@tanstack/vue-query'` |
+
+### queryKey
+
+Builds the `queryKey` for each generated composable. Use it to add a version namespace, swap to operation IDs, or shape keys to match an existing invalidation strategy. The callback receives the operation `node` and the active `casing`.
+
+|           |                                                             |
+| --------: | :---------------------------------------------------------- |
+|     Type: | `(props: { node: OperationNode; casing }) => Array<unknown>` |
+| Required: | `false`                                                     |
+
+> [!WARNING]
+> String values are inlined verbatim into generated code. Wrap any literal string in `JSON.stringify(...)`.
+
+Keying off the operation ID changes the generated `queryKey` helper:
+
+::: code-group
+
+```typescript [queryKey builder]
+queryKey: ({ node }) => [JSON.stringify(node.operationId)]
+```
+
+```typescript [Generated output]
+export const getUserByNameQueryKey = () => ['getUserByName'] as const
+```
+
+:::
+
+You call the composable the same way, but the key shape changes how you invalidate it:
+
+```typescript
+import { useQueryClient } from '@tanstack/vue-query'
+import { getUserByNameQueryKey } from './src/gen/hooks/useGetUserByNameQuery'
+
+const queryClient = useQueryClient()
+queryClient.invalidateQueries({ queryKey: getUserByNameQueryKey() })
+```
+
+### mutation
+
+Configures the mutation composables. The plugin generates them by default. Pass `false` to skip mutation generation.
+
+|           |                              |
+| --------: | :--------------------------- |
+|     Type: | `Partial<Mutation> \| false` |
+| Required: | `false`                      |
+|  Default: | `{}`                         |
+
+#### mutation.methods
+
+HTTP methods treated as mutations. Operations using one of these generate a `useMutation`-style composable instead of a query. Narrow the list if your API uses one of these methods for reads.
+
+|           |                                      |
+| --------: | :----------------------------------- |
+|     Type: | `Array<string>`                      |
+| Required: | `false`                              |
+|  Default: | `['post', 'put', 'patch', 'delete']` |
+
+#### mutation.importPath
+
+Module specifier used in the `import { useMutation } from '...'` statement at the top of every generated composable file.
+
+|           |                         |
+| --------: | :---------------------- |
+|     Type: | `string`                |
+| Required: | `false`                 |
+|  Default: | `'@tanstack/vue-query'` |
+
+### hooks
+
+Controls whether `use*` composable functions are emitted. When set to `false` (the default), the plugin writes only the factory helpers: `queryOptions`, `mutationOptions`, `queryKey`, and `mutationKey`. Set to `true` to also generate `useQuery`, `useInfiniteQuery`, and `useMutation` composables.
+
+The factory helpers work with any TanStack Query adapter. You can pass the same `queryOptions` object to `prefetchQuery`, `setQueryData`, and router loaders without wrapping it in a composable.
+
+|           |           |
+| --------: | :-------- |
+|     Type: | `boolean` |
+| Required: | `false`   |
+|  Default: | `false`   |
+
+::: code-group
+
+```typescript [hooks: false (default)]
+// only factories — no use* composables
+import { getPetsQueryOptions } from './src/gen/hooks/getPetsQuery'
+
+const options = getPetsQueryOptions()
+const data = await queryClient.fetchQuery(options)
+```
+
+```typescript [hooks: true]
+// factories plus the composable
+import { useGetPetsQuery } from './src/gen/hooks/useGetPetsQuery'
+
+const { data, isLoading } = useGetPetsQuery()
+```
+
+:::
+
+### mutationKey
+
+Builds the `mutationKey` for each mutation composable. Useful when you batch invalidations or read mutation state through `useMutationState`. The callback receives the same `{ node, casing }` props as `queryKey`.
+
+|           |                                                             |
+| --------: | :---------------------------------------------------------- |
+|     Type: | `(props: { node: OperationNode; casing }) => Array<unknown>` |
+| Required: | `false`                                                     |
+
+> [!WARNING]
+> String values are inlined verbatim into generated code. Wrap any literal string in `JSON.stringify(...)`.
+
+### validator
+
+Runtime validator applied to request and response data using schemas from `@kubb/plugin-zod`.
+
+- `false` (default) does no validation. The client returns the response cast to the generated type.
+- `'zod'` validates response bodies only.
+- `{ request?: 'zod', response?: 'zod' }` opts in per direction. `request` validates the request body and query parameters before the call. `response` validates the response body after.
+
+Add `@kubb/plugin-zod` to the plugins list when either direction is set to `'zod'`.
+
+|           |                                                           |
+| --------: | :-------------------------------------------------------- |
+|     Type: | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` |
+| Required: | `false`                                                   |
+|  Default: | `false`                                                   |
+
+### include
+
+Generates only the operations that match at least one entry in the list. Everything else is skipped. Each entry filters by `tag`, `operationId`, `path`, `method`, `contentType`, or `schemaName`. The `pattern` is a string (exact match) or a `RegExp` (fuzzy match).
+
+|           |                  |
+| --------: | :--------------- |
+|     Type: | `Array<Include>` |
+| Required: | `false`          |
+
+```typescript [Type definition]
+export type Include = {
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
+  pattern: string | RegExp
+}
+```
+
+### exclude
+
+Skips any operation that matches at least one entry in the list. It is the opposite of `include`. Entries use the same `type` and `pattern`. When both are set, `exclude` wins.
+
+|           |                  |
+| --------: | :--------------- |
+|     Type: | `Array<Exclude>` |
+| Required: | `false`          |
+
+```typescript [Type definition]
+export type Exclude = {
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
+  pattern: string | RegExp
+}
+```
+
+### override
+
+Applies different plugin options to operations that match a pattern. Use it for the few endpoints that need special treatment. Each entry takes the same `type` and `pattern` as `include` and `exclude`, plus an `options` object. Entries run top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
+
+|           |                   |
+| --------: | :---------------- |
+|     Type: | `Array<Override>` |
+| Required: | `false`           |
+
+```typescript [Type definition]
+export type Override = {
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
+  pattern: string | RegExp
+  options: Omit<Partial<Options>, 'override'>
+}
+```
+
+### resolver
+
+Changes how the plugin names generated composables and files. Override only the methods you want to change. Anything you omit falls back to the default resolver. Inside a method, `this` is the full resolver.
+
+|           |                                                          |
+| --------: | :------------------------------------------------------- |
+|     Type: | `Partial<ResolverVueQuery> & ThisType<ResolverVueQuery>` |
+| Required: | `false`                                                  |
+
+### macros
+
+Rewrites AST nodes before they are printed to source. Use it to rename operation IDs, drop descriptions, or change schema metadata. Each [macro](/docs/5.x/guide/going-further/macros) callback receives the node and a context object. Return a new node to replace it, or `undefined` to leave it as is. Macros run in order, so a later one sees the output of an earlier one.
+
+|           |                |
+| --------: | :------------- |
+|     Type: | `Array<Macro>` |
+| Required: | `false`        |
+
