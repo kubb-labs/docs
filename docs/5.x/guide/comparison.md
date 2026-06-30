@@ -7,18 +7,16 @@ outline: [2, 3]
 
 # Kubb vs orval, HeyAPI, and openapi-typescript
 
-Kubb, [orval](https://orval.dev), [HeyAPI](https://heyapi.dev), and [openapi-typescript](https://openapi-ts.dev) all generate code from OpenAPI specs. The table below maps each Kubb plugin and adapter to the equivalent support in every tool.
-
-We keep this comparison accurate and fair. If you use one of these tools and think a row is wrong, open an issue or pull request in [kubb-labs/kubb](https://github.com/kubb-labs/kubb/issues) with your notes or evidence.
+Kubb, [orval](https://orval.dev), [HeyAPI](https://heyapi.dev), and [openapi-typescript](https://openapi-ts.dev) all generate code from OpenAPI specs. The tables below compare their support, feature by feature. Think a row is wrong? Open an issue or PR on [kubb-labs/kubb](https://github.com/kubb-labs/kubb/issues) with the evidence.
 
 ## Plugin and feature coverage
 
 **Legend**
 
-- ✅ Built in and ready to use with no extra configuration.
-- 🟡 Supported through a third-party or community plugin.
-- 🔶 Supported and documented, but needs extra user code.
-- 🛑 Not officially supported or documented.
+- ✅ Built in, no extra config.
+- 🟡 Through a third-party or community plugin.
+- 🔶 Supported, but needs extra user code.
+- 🛑 Not officially supported.
 
 | Feature                                                    |       Kubb        | orval | HeyAPI            |    openapi-ts    |
 | ---------------------------------------------------------- | :---------------: | :---: | :---------------- | :--------------: |
@@ -38,32 +36,86 @@ We keep this comparison accurate and fair. If you use one of these tools and thi
 
 **Notes**
 
-1. HeyAPI also generates Valibot schemas in addition to Zod.
-2. openapi-typescript generates types only. Its companion `openapi-fetch` runtime provides the typed client, so a client is not generated per operation. Note that `openapi-fetch` is in [feature-freeze and is largely considered deprecated](https://github.com/openapi-ts/openapi-typescript/discussions/2559).
-3. HeyAPI lists SWR as a [roadmap proposal](https://github.com/hey-api/openapi-ts/issues/1479) that has not started yet.
-4. openapi-typescript relies on the community [`swr-openapi`](https://github.com/htunnicliff/swr-openapi) package, maintained outside the core project.
-5. orval does not emit a standalone Faker output, but it populates its MSW request handlers with `faker`-generated mock data.
+1. HeyAPI also generates Valibot schemas alongside Zod.
+2. openapi-typescript generates types only. The typed client comes from its `openapi-fetch` runtime, not per-operation code, and `openapi-fetch` is now in [feature freeze](https://github.com/openapi-ts/openapi-typescript/discussions/2559).
+3. HeyAPI lists SWR as a [roadmap proposal](https://github.com/hey-api/openapi-ts/issues/1479) that has not started.
+4. openapi-typescript relies on the community [`swr-openapi`](https://github.com/htunnicliff/swr-openapi) package.
+5. orval has no standalone Faker output. It fills its MSW handlers with `faker` data instead.
+
+## Type safety and response handling
+
+The first table is about which outputs exist. This one is about how well each tool models a single operation, and how much of that reaches your code.
+
+On coverage the three are close. The gap is ergonomics. Kubb puts the status on the result, so one `switch` narrows the body and the same call can throw or return its error. orval does this in its `fetch` client only. HeyAPI gives a status-keyed type map to index, not a value you branch on at runtime.
+
+The legend matches the table above.
+
+| Feature                                                                              | Kubb  |     orval      | HeyAPI         |
+| ------------------------------------------------------------------------------------ | :---: | :------------: | :------------- |
+| [Status-discriminated response result](/docs/5.x/guide/going-further/error-handling) |  ✅   | 🔶<sup>1</sup> | 🔶<sup>2</sup> |
+| Multiple success (2xx) responses                                                     |  ✅   |       ✅       | ✅             |
+| Multiple content types per response                                                  |  ✅   |       ✅       | 🛑<sup>3</sup> |
+| `default` and wildcard (`4XX`, `5XX`) responses                                      |  ✅   | ✅<sup>4</sup> | ✅             |
+| [Typed error responses](/docs/5.x/guide/going-further/error-handling)                |  ✅   | 🔶<sup>5</sup> | ✅             |
+| [Throw or return the error per call](/docs/5.x/guide/going-further/error-handling)   |  ✅   |       🛑       | ✅             |
+| [Zod v4 schemas tied to the types](/plugins/plugin-zod)                              |  ✅   |       ✅       | ✅             |
+| Recursive schemas                                                                    |  ✅   |       ✅       | ✅             |
+| Server-side schema validation                                                        |  ✅   |       ✅       | ✅             |
+
+**Notes**
+
+1. Only orval's `fetch` client emits a status-narrowable union. Its axios and query clients return the success type and take the error type on the side.
+2. HeyAPI builds a status-keyed type map you index (`Responses[200]`), but the SDK returns a flat `{ data, error }` pair with no `status` to switch on.
+3. On `@hey-api/openapi-ts` v0.99.0, a response with both `application/json` and `application/xml` keeps only the JSON shape. Kubb and orval emit a variant per content type.
+4. orval expands `4XX` and `5XX` into unions of concrete codes. Kubb and HeyAPI keep the range key.
+5. orval types the error body in its `fetch` client, or once you wire `ErrorType` or `override.swr.generateErrorTypes`. Otherwise it stays `Error`.
+
+openapi-typescript is omitted here. It ships no generated client, so the runtime rows do not apply.
+
+## Client runtime
+
+The generated client does more than wrap `fetch`. It encodes parameters and bodies from the spec and decodes responses by content type, and it can validate both ends. See [serialization](/docs/5.x/guide/going-further/serialization) for the full picture.
+
+Two things set Kubb's client apart. It reads each parameter's OpenAPI `style` and `explode` from the spec, so query, path, header, and cookie all encode correctly with no config. And [`codecs`](/docs/5.x/guide/going-further/serialization#request-bodies) register a `serialize` and `deserialize` per media type, which is how XML or YAML round-trips without replacing the client.
+
+The legend matches the tables above.
+
+| Feature                                                                                                     | Kubb  | orval          | HeyAPI         |
+| ----------------------------------------------------------------------------------------------------------- | :---: | :------------- | :------------- |
+| [Parameter styles from the spec](/docs/5.x/guide/going-further/serialization#parameter-styles)              |  ✅   | 🛑<sup>1</sup> | 🔶<sup>2</sup> |
+| Request body serializers (JSON, form-data, urlencoded)                                                      | ✅<sup>3</sup> | ✅    | ✅             |
+| [Pluggable codecs per media type](/docs/5.x/guide/going-further/serialization#request-bodies) (XML, YAML)   |  ✅   | 🛑<sup>4</sup> | 🛑<sup>4</sup> |
+| [Runtime body validation](/docs/5.x/guide/going-further/error-handling#validation-failures)                 | ✅<sup>5</sup> | 🔶<sup>5</sup> | ✅<sup>5</sup> |
+| [Server-sent events and streaming](/docs/5.x/guide/going-further/server-sent-events)                        |  ✅   |       🛑       | ✅             |
+
+**Notes**
+
+1. orval interpolates path parameters directly and leaves query encoding to axios or a `qs` config, with no per-parameter `style` or `explode`.
+2. HeyAPI serializes path parameters per parameter but runs one global query serializer, and does not style header or cookie parameters.
+3. All three encode JSON, `multipart/form-data`, and `application/x-www-form-urlencoded`. Kubb also honors the OpenAPI `encoding` object, so a form part can set its own content type and style.
+4. orval and HeyAPI expose a single body serializer and one response transformer, so a new media type means replacing them, not registering one.
+5. Off by default. Kubb validates request and response bodies through any Standard Schema validator (Zod, valibot, arktype). HeyAPI covers those plus Ajv, Joi, TypeBox, and Yup. orval validates responses only, with Zod.
 
 ## What sets Kubb apart
 
 ### Plugin architecture
 
-Every output is a separate [plugin](/docs/5.x/guide/concepts/plugins), so you add only what you need. The plugins run against a shared [AST](/docs/5.x/guide/concepts/ast). Kubb parses the spec once, and naming stays consistent across every output.
+Every output is a separate [plugin](/docs/5.x/guide/concepts/plugins) on a shared [AST](/docs/5.x/guide/concepts/ast). Kubb parses the spec once, so names stay consistent across outputs and you add only what you need.
 
 ### Custom adapters and parsers
 
-A [custom adapter](/docs/5.x/guide/concepts/adapters) swaps `adapterOas` for another input format such as AsyncAPI, GraphQL, or JSON Schema. A [custom parser](/docs/5.x/guide/concepts/parsers) targets another output language such as Python, Kotlin, or Rust. Neither orval nor HeyAPI supports either one. When you combine custom adapters, parsers, and plugins in one pipeline, Kubb reaches inputs and outputs the others cannot.
+A [custom adapter](/docs/5.x/guide/concepts/adapters) swaps `adapterOas` for another input such as AsyncAPI or GraphQL. A [custom parser](/docs/5.x/guide/concepts/parsers) targets another output language such as Python or Rust. orval and HeyAPI do neither, so Kubb reaches inputs and outputs they cannot.
 
 ### Post-enforced plugins
 
-Plugins with `enforce: 'post'` run after every regular plugin finishes. They handle work that spans outputs, such as barrel files and manifests, without touching each plugin. [`@kubb/plugin-barrel`](/plugins/plugin-barrel) works this way.
+Plugins with `enforce: 'post'` run after the rest, handling cross-output work like barrel files without touching each plugin. [`@kubb/plugin-barrel`](/plugins/plugin-barrel) works this way.
 
 ### Bundler integration
 
-[`unplugin-kubb`](/docs/5.x/guide/integrations/) runs generation inside Vite, Rollup, Rolldown, Webpack, Rspack, esbuild, Farm, Nuxt, and Astro. HeyAPI ships a Vite-only plugin. orval has no bundler integration.
+[`unplugin-kubb`](/docs/5.x/guide/integrations/) runs generation inside Vite, Rollup, Webpack, esbuild, Nuxt, and Astro. HeyAPI is Vite-only. orval has no bundler integration.
 
 ## When not to use Kubb
 
-- You consume only a few endpoints that rarely change.
-- You do not have an OpenAPI spec and do not plan to write one.
-- You need codegen for a non-OpenAPI format today and do not want to write a custom adapter.
+- You use only a few endpoints that rarely change.
+- You have no OpenAPI spec and won't write one.
+- You need a non-OpenAPI format now and won't write a custom adapter.
