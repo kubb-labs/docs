@@ -433,6 +433,38 @@ Module used in the `import { useMutation } from '...'` statement at the top of e
 | Required: | `false`                   |
 |  Default: | `'@tanstack/react-query'` |
 
+### hooks
+
+Controls whether `use*` hook functions are emitted. When set to `false` (the default), the plugin writes only the factory helpers — `queryOptions`, `mutationOptions`, `queryKey`, and `mutationKey`. Set to `true` to also generate `useQuery`, `useSuspenseQuery`, `useInfiniteQuery`, `useSuspenseInfiniteQuery`, and `useMutation` functions.
+
+Factory helpers are framework-portable: the same `queryOptions` object works with `useQuery` in React, `useQuery` in Vue Query, Solid Query, and Svelte Query, and inside `prefetchQuery`, `setQueryData`, and router loaders without touching React at all.
+
+|           |           |
+| --------: | :-------- |
+|     Type: | `boolean` |
+| Required: | `false`   |
+|  Default: | `false`   |
+
+::: code-group
+
+```typescript [hooks: false (default)]
+// only factories — no use* functions
+import { getPetsQueryOptions } from './src/gen/hooks/getPetsQuery'
+
+// compose manually or pass to router loaders
+const options = getPetsQueryOptions()
+const data = await queryClient.fetchQuery(options)
+```
+
+```typescript [hooks: true]
+// factories plus the hook
+import { useGetPetsQuery } from './src/gen/hooks/useGetPetsQuery'
+
+const { data, isLoading } = useGetPetsQuery()
+```
+
+:::
+
 ### mutationKey
 
 Builds the `mutationKey` for each mutation hook. Use it when you batch invalidations or read mutation state with `useMutationState`. The callback receives the same `{ node, casing }` props as `queryKey`.

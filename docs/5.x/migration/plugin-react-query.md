@@ -152,3 +152,16 @@ useGetPetById({ path: { petId } }, { query: { enabled: !!petId } })
 
 > [!NOTE]
 > Suspense hooks always run, so they never had an `enabled` guard and are unchanged.
+
+## `hooks` defaults to `false`
+
+The `hooks` option controls whether `use*` functions are emitted alongside the factory helpers. Its default changed from `true` to `false`, so existing configs that relied on generated hooks must now opt in explicitly.
+
+```diff [kubb.config.ts]
+  pluginReactQuery({
+    output: { path: './hooks' },
++   hooks: true,
+  })
+```
+
+With `hooks: false` (the default) the plugin still emits `queryOptions`, `mutationOptions`, `queryKey`, and `mutationKey` — only the `useQuery`, `useSuspenseQuery`, `useInfiniteQuery`, `useSuspenseInfiniteQuery`, and `useMutation` wrappers are skipped.

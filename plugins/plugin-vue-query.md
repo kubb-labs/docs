@@ -388,6 +388,37 @@ Module specifier used in the `import { useMutation } from '...'` statement at th
 | Required: | `false`                 |
 |  Default: | `'@tanstack/vue-query'` |
 
+### hooks
+
+Controls whether `use*` composable functions are emitted. When set to `false` (the default), the plugin writes only the factory helpers — `queryOptions`, `mutationOptions`, `queryKey`, and `mutationKey`. Set to `true` to also generate `useQuery`, `useInfiniteQuery`, and `useMutation` composables.
+
+Factory helpers are framework-portable: the same `queryOptions` object works with any TanStack Query adapter, and inside `prefetchQuery`, `setQueryData`, and router loaders without wiring up a composable.
+
+|           |           |
+| --------: | :-------- |
+|     Type: | `boolean` |
+| Required: | `false`   |
+|  Default: | `false`   |
+
+::: code-group
+
+```typescript [hooks: false (default)]
+// only factories — no use* composables
+import { getPetsQueryOptions } from './src/gen/hooks/getPetsQuery'
+
+const options = getPetsQueryOptions()
+const data = await queryClient.fetchQuery(options)
+```
+
+```typescript [hooks: true]
+// factories plus the composable
+import { useGetPetsQuery } from './src/gen/hooks/useGetPetsQuery'
+
+const { data, isLoading } = useGetPetsQuery()
+```
+
+:::
+
 ### mutationKey
 
 Builds the `mutationKey` for each mutation composable. Useful when you batch invalidations or read mutation state through `useMutationState`. The callback receives the same `{ node, casing }` props as `queryKey`.

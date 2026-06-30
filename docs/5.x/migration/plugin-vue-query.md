@@ -83,6 +83,19 @@ useUpdatePet().mutate({ path: { petId }, body: pet })
 
 The first argument is typed `Omit<XxxRequestConfig, 'url'>`, the `RequestConfig` type `@kubb/plugin-ts` generates. The trailing `config` argument is unchanged.
 
+## `hooks` defaults to `false`
+
+The `hooks` option controls whether `use*` composables are emitted alongside the factory helpers. Its default changed from `true` to `false`, so existing configs that relied on generated composables must now opt in explicitly.
+
+```diff [kubb.config.ts]
+  pluginVueQuery({
+    output: { path: './hooks' },
++   hooks: true,
+  })
+```
+
+With `hooks: false` (the default) the plugin still emits `queryOptions`, `mutationOptions`, `queryKey`, and `mutationKey` — only the `useQuery`, `useInfiniteQuery`, and `useMutation` wrappers are skipped.
+
 ## Generated output
 
 The generated output changes match React Query. The `*MutationKey` type alias is gone, `TData` narrows to 2xx responses, required params are enforced in the type, and the auto `enabled` guard is dropped. The client call still unwraps each grouped option with `toValue()` so refs and getters resolve. See [Generated output: @kubb/plugin-react-query](/docs/5.x/migration/plugin-react-query#generated-output).
