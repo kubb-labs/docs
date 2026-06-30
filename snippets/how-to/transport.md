@@ -5,8 +5,8 @@ The client Kubb generates splits into two layers. A shared core builds the URL, 
 
 You set the transport at runtime on the client, not in `kubb.config.ts`. Plugin options control what gets generated. The transport controls how those generated functions reach the network. The two client plugins expose it differently, so each section below covers its own shape.
 
-- [`@kubb/plugin-fetch`](/plugins/plugin-fetch) takes a transport function.
-- [`@kubb/plugin-axios`](/plugins/plugin-axios) takes an axios instance.
+- [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) takes a transport function.
+- [`@kubb/plugin-axios`](/plugins/plugin-axios/) takes an axios instance.
 
 ## When to reach for it
 
@@ -18,7 +18,7 @@ Most apps never need a custom transport. The defaults send through `globalThis.f
 - Return canned responses in tests without hitting the network.
 
 > [!TIP]
-> For per-request concerns like adding a header or reading a response, an interceptor or the [`auth` resolver](/docs/5.x/guide/going-further/authentication) is the lighter tool. Reach for a custom transport when you need to own the send.
+> For per-request concerns like adding a header or reading a response, an interceptor or the [`auth` resolver](/plugins/plugin-fetch/guide/authentication) is the lighter tool. Reach for a custom transport when you need to own the send.
 
 ## Fetch: a transport function
 
@@ -151,7 +151,7 @@ client.setConfig({ transport: instance })
 Every generated function now sends through your instance, so its timeout, headers, and interceptors apply to each call.
 
 > [!NOTE]
-> Kubb sets `transformRequest`, `paramsSerializer`, and `validateStatus` on each request so its own serialization and `throwOnError` handling stay in charge. Configure cross-cutting concerns like timeouts, retries, and interceptors on the instance instead of overriding those fields. For a native axios field on a single call, such as `timeout` or `onUploadProgress`, pass [`options`](/plugins/plugin-axios) instead of building a new instance.
+> Kubb sets `transformRequest`, `paramsSerializer`, and `validateStatus` on each request so its own serialization and `throwOnError` handling stay in charge. Configure cross-cutting concerns like timeouts, retries, and interceptors on the instance instead of overriding those fields. For a native axios field on a single call, such as `timeout` or `onUploadProgress`, pass [`options`](/plugins/plugin-axios/) instead of building a new instance.
 
 ### Add retries with a plugin
 
@@ -176,8 +176,8 @@ Call `client.setConfig({ transport })` to cover the whole app at once, since eve
 
 ## See also
 
-- [`@kubb/plugin-fetch`](/plugins/plugin-fetch)
-- [`@kubb/plugin-axios`](/plugins/plugin-axios)
-- [Interceptors](/docs/5.x/guide/going-further/interceptors)
-- [Authentication guide](/docs/5.x/guide/going-further/authentication)
-- [Set your own baseURL](/docs/5.x/guide/going-further/base-url)
+- [`@kubb/plugin-fetch`](/plugins/plugin-fetch/)
+- [`@kubb/plugin-axios`](/plugins/plugin-axios/)
+- [Interceptors](/plugins/plugin-fetch/guide/interceptors)
+- [Authentication guide](/plugins/plugin-fetch/guide/authentication)
+- [Set your own baseURL](/plugins/plugin-fetch/guide/base-url)

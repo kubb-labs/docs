@@ -247,14 +247,14 @@ The following plugins have no v5 equivalent. Remove them from your config and un
 | Package                                                     | Purpose                                                                                              |
 | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | [`@kubb/adapter-oas`](/adapters/adapter-oas)                | Replaces `@kubb/plugin-oas`. See [Adapters](/docs/5.x/guide/concepts/adapters).                            |
-| [`@kubb/plugin-barrel`](/plugins/plugin-barrel) | Barrel-file generation, auto-included via `kubb`. See [Barrel files](/docs/5.x/guide/concepts/barrel-files). |
+| [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) | Barrel-file generation, auto-included via `kubb`. See [Barrel files](/docs/5.x/guide/concepts/barrel-files). |
 | [`@kubb/parser-ts`](/parsers/parser-ts)                     | TypeScript and TSX printer, auto-included via `kubb`. See [Parsers](/docs/5.x/guide/concepts/parsers).     |
 
 ## Core configuration
 
 ### Import source
 
-Import [`defineConfig`](/docs/5.x/reference/core) from the top-level `kubb` package. That package wires up the OpenAPI [adapter](/docs/5.x/guide/concepts/adapters), the TypeScript [parsers](/docs/5.x/guide/concepts/parsers), and the barrel [plugin](/plugins/plugin-barrel) for you.
+Import [`defineConfig`](/docs/5.x/reference/core) from the top-level `kubb` package. That package wires up the OpenAPI [adapter](/docs/5.x/guide/concepts/adapters), the TypeScript [parsers](/docs/5.x/guide/concepts/parsers), and the barrel [plugin](/plugins/plugin-barrel/) for you.
 
 ::: code-group
 
@@ -276,7 +276,7 @@ v5 adds three top-level keys that replace behavior each plugin used to carry on 
 | ------------ | ----------------------------------------------------------- | --------------------------------------------- | ----------------------- |
 | `adapter`    | [`@kubb/adapter-oas`](/adapters/adapter-oas)                | Parses the input spec into a universal AST.   | `adapterOas()`          |
 | `parsers`    | [`@kubb/parser-ts`](/parsers/parser-ts), `@kubb/parser-md`  | Converts AST nodes to `.ts`, `.tsx`, and `.md` files. | `[parserTs, parserTsx, parserMd]` |
-| `plugins` (post) | [`@kubb/plugin-barrel`](/plugins/plugin-barrel) | Post-processes output, like barrel files.     | `[pluginBarrel()]`  |
+| `plugins` (post) | [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) | Post-processes output, like barrel files.     | `[pluginBarrel()]`  |
 
 ### `@kubb/plugin-oas` removed
 
@@ -394,7 +394,7 @@ export default defineConfig({
 
 :::
 
-See [`@kubb/plugin-barrel`](/plugins/plugin-barrel) for the full `barrel` option reference.
+See [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) for the full `barrel` option reference.
 
 ### Single-file output uses `output.mode`
 
@@ -518,9 +518,9 @@ Typed [resolver](/docs/5.x/guide/concepts/plugins#resolvers) methods replace the
 
 | Plugin                                                                                                                                                                                                                                                                                                                                                    | Resolver method           |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| [`@kubb/plugin-ts`](/plugins/plugin-ts)                                                                                                                                                                                                                                                                                                                   | `resolveTypeName(name)`   |
-| [`@kubb/plugin-zod`](/plugins/plugin-zod)                                                                                                                                                                                                                                                                                                                 | `resolveSchemaName(name)` |
-| [`@kubb/plugin-axios`](/plugins/plugin-axios), [`@kubb/plugin-fetch`](/plugins/plugin-fetch), [`@kubb/plugin-react-query`](/plugins/plugin-react-query), [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query), [`@kubb/plugin-msw`](/plugins/plugin-msw), [`@kubb/plugin-faker`](/plugins/plugin-faker), [`@kubb/plugin-cypress`](/plugins/plugin-cypress), [`@kubb/plugin-mcp`](/plugins/plugin-mcp) | `resolveName(name)`       |
+| [`@kubb/plugin-ts`](/plugins/plugin-ts/)                                                                                                                                                                                                                                                                                                                   | `resolveTypeName(name)`   |
+| [`@kubb/plugin-zod`](/plugins/plugin-zod/)                                                                                                                                                                                                                                                                                                                 | `resolveSchemaName(name)` |
+| [`@kubb/plugin-axios`](/plugins/plugin-axios/), [`@kubb/plugin-fetch`](/plugins/plugin-fetch/), [`@kubb/plugin-react-query`](/plugins/plugin-react-query/), [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query/), [`@kubb/plugin-msw`](/plugins/plugin-msw/), [`@kubb/plugin-faker`](/plugins/plugin-faker/), [`@kubb/plugin-cypress`](/plugins/plugin-cypress/), [`@kubb/plugin-mcp`](/plugins/plugin-mcp/) | `resolveName(name)`       |
 
 Inside a resolver method, `this` is bound to the full resolver, so `this.default(name, 'function')` falls back to the built-in logic.
 

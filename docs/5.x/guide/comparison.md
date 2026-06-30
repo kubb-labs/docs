@@ -21,18 +21,18 @@ Kubb, [orval](https://orval.dev), [HeyAPI](https://heyapi.dev), and [openapi-typ
 | Feature                                                    |       Kubb        | orval | HeyAPI            |    openapi-ts    |
 | ---------------------------------------------------------- | :---------------: | :---: | :---------------- | :--------------: |
 | [OpenAPI 2.0, 3.0, 3.1 input](/adapters/adapter-oas)       |        ✅         |  ✅   | ✅                |        ✅        |
-| [TypeScript types](/plugins/plugin-ts)                     |        ✅         |  ✅   | ✅                |        ✅        |
-| [HTTP client (Axios, Fetch)](/plugins/plugin-axios)        |        ✅         |  ✅   | ✅                | 🔶<sup>2</sup>  |
-| [React Query hooks](/plugins/plugin-react-query)           |        ✅         |  ✅   | ✅                |       🛑        |
-| [Vue Query composables](/plugins/plugin-vue-query)         |        ✅         |  ✅   | ✅                |       🛑        |
-| [SWR hooks](/plugins/plugin-swr)                           |        ✅         |  ✅   | 🛑<sup>3</sup>    | 🟡<sup>4</sup>  |
-| [Zod validation schemas](/plugins/plugin-zod)              |        ✅         |  ✅   | ✅<sup>1</sup>    |       🛑        |
-| [MSW request handlers](/plugins/plugin-msw)                |        ✅         |  ✅   | 🛑                |       🛑        |
-| [Faker.js mock data](/plugins/plugin-faker)                |        ✅         | 🔶<sup>5</sup> | 🛑           |       🛑        |
-| [Cypress E2E tests](/plugins/plugin-cypress)               |        ✅         |  🛑   | 🛑                |       🛑        |
-| [MCP server](/plugins/plugin-mcp)                          |        ✅         |  🛑   | 🛑                |       🛑        |
-| [Redoc API documentation](/plugins/plugin-redoc)           |        ✅         |  🛑   | 🛑                |       🛑        |
-| [Barrel index files](/plugins/plugin-barrel)               |        ✅         |  🛑   | 🛑                |       🛑        |
+| [TypeScript types](/plugins/plugin-ts/)                     |        ✅         |  ✅   | ✅                |        ✅        |
+| [HTTP client (Axios, Fetch)](/plugins/plugin-axios/)        |        ✅         |  ✅   | ✅                | 🔶<sup>2</sup>  |
+| [React Query hooks](/plugins/plugin-react-query/)           |        ✅         |  ✅   | ✅                |       🛑        |
+| [Vue Query composables](/plugins/plugin-vue-query/)         |        ✅         |  ✅   | ✅                |       🛑        |
+| [SWR hooks](/plugins/plugin-swr/)                           |        ✅         |  ✅   | 🛑<sup>3</sup>    | 🟡<sup>4</sup>  |
+| [Zod validation schemas](/plugins/plugin-zod/)              |        ✅         |  ✅   | ✅<sup>1</sup>    |       🛑        |
+| [MSW request handlers](/plugins/plugin-msw/)                |        ✅         |  ✅   | 🛑                |       🛑        |
+| [Faker.js mock data](/plugins/plugin-faker/)                |        ✅         | 🔶<sup>5</sup> | 🛑           |       🛑        |
+| [Cypress E2E tests](/plugins/plugin-cypress/)               |        ✅         |  🛑   | 🛑                |       🛑        |
+| [MCP server](/plugins/plugin-mcp/)                          |        ✅         |  🛑   | 🛑                |       🛑        |
+| [Redoc API documentation](/plugins/plugin-redoc/)           |        ✅         |  🛑   | 🛑                |       🛑        |
+| [Barrel index files](/plugins/plugin-barrel/)               |        ✅         |  🛑   | 🛑                |       🛑        |
 
 **Notes**
 
@@ -52,13 +52,13 @@ The legend matches the table above.
 
 | Feature                                                                              | Kubb  |     orval      | HeyAPI         |
 | ------------------------------------------------------------------------------------ | :---: | :------------: | :------------- |
-| [Status-discriminated response result](/docs/5.x/guide/going-further/error-handling) |  ✅   | 🔶<sup>1</sup> | 🔶<sup>2</sup> |
+| [Status-discriminated response result](/plugins/plugin-fetch/guide/error-handling) |  ✅   | 🔶<sup>1</sup> | 🔶<sup>2</sup> |
 | Multiple success (2xx) responses                                                     |  ✅   |       ✅       | ✅             |
 | Multiple content types per response                                                  |  ✅   |       ✅       | 🛑<sup>3</sup> |
 | `default` and wildcard (`4XX`, `5XX`) responses                                      |  ✅   | ✅<sup>4</sup> | ✅             |
-| [Typed error responses](/docs/5.x/guide/going-further/error-handling)                |  ✅   | 🔶<sup>5</sup> | ✅             |
-| [Throw or return the error per call](/docs/5.x/guide/going-further/error-handling)   |  ✅   |       🛑       | ✅             |
-| [Zod v4 schemas tied to the types](/plugins/plugin-zod)                              |  ✅   |       ✅       | ✅             |
+| [Typed error responses](/plugins/plugin-fetch/guide/error-handling)                |  ✅   | 🔶<sup>5</sup> | ✅             |
+| [Throw or return the error per call](/plugins/plugin-fetch/guide/error-handling)   |  ✅   |       🛑       | ✅             |
+| [Zod v4 schemas tied to the types](/plugins/plugin-zod/)                              |  ✅   |       ✅       | ✅             |
 | Recursive schemas                                                                    |  ✅   |       ✅       | ✅             |
 | Server-side schema validation                                                        |  ✅   |       ✅       | ✅             |
 
@@ -74,19 +74,19 @@ openapi-typescript is omitted here. It ships no generated client, so the runtime
 
 ## Client runtime
 
-The generated client does more than wrap `fetch`. It encodes parameters and bodies from the spec and decodes responses by content type, and it can validate both ends. See [serialization](/docs/5.x/guide/going-further/serialization) for the full picture.
+The generated client does more than wrap `fetch`. It encodes parameters and bodies from the spec and decodes responses by content type, and it can validate both ends. See [serialization](/plugins/plugin-fetch/guide/serialization) for the full picture.
 
-Two things set Kubb's client apart. It reads each parameter's OpenAPI `style` and `explode` from the spec, so query, path, header, and cookie all encode correctly with no config. And [`codecs`](/docs/5.x/guide/going-further/serialization#request-bodies) register a `serialize` and `deserialize` per media type, which is how XML or YAML round-trips without replacing the client.
+Two things set Kubb's client apart. It reads each parameter's OpenAPI `style` and `explode` from the spec, so query, path, header, and cookie all encode correctly with no config. And [`codecs`](/plugins/plugin-fetch/guide/serialization#request-bodies) register a `serialize` and `deserialize` per media type, which is how XML or YAML round-trips without replacing the client.
 
 The legend matches the tables above.
 
 | Feature                                                                                                     | Kubb  | orval          | HeyAPI         |
 | ----------------------------------------------------------------------------------------------------------- | :---: | :------------- | :------------- |
-| [Parameter styles from the spec](/docs/5.x/guide/going-further/serialization#parameter-styles)              |  ✅   | 🛑<sup>1</sup> | 🔶<sup>2</sup> |
+| [Parameter styles from the spec](/plugins/plugin-fetch/guide/serialization#parameter-styles)              |  ✅   | 🛑<sup>1</sup> | 🔶<sup>2</sup> |
 | Request body serializers (JSON, form-data, urlencoded)                                                      | ✅<sup>3</sup> | ✅    | ✅             |
-| [Pluggable codecs per media type](/docs/5.x/guide/going-further/serialization#request-bodies) (XML, YAML)   |  ✅   | 🛑<sup>4</sup> | 🛑<sup>4</sup> |
-| [Runtime body validation](/docs/5.x/guide/going-further/error-handling#validation-failures)                 | ✅<sup>5</sup> | 🔶<sup>5</sup> | ✅<sup>5</sup> |
-| [Server-sent events and streaming](/docs/5.x/guide/going-further/server-sent-events)                        |  ✅   |       🛑       | ✅             |
+| [Pluggable codecs per media type](/plugins/plugin-fetch/guide/serialization#request-bodies) (XML, YAML)   |  ✅   | 🛑<sup>4</sup> | 🛑<sup>4</sup> |
+| [Runtime body validation](/plugins/plugin-fetch/guide/error-handling#validation-failures)                 | ✅<sup>5</sup> | 🔶<sup>5</sup> | ✅<sup>5</sup> |
+| [Server-sent events and streaming](/plugins/plugin-fetch/guide/server-sent-events)                        |  ✅   |       🛑       | ✅             |
 
 **Notes**
 
@@ -108,7 +108,7 @@ A [custom adapter](/docs/5.x/guide/concepts/adapters) swaps `adapterOas` for ano
 
 ### Post-enforced plugins
 
-Plugins with `enforce: 'post'` run after the rest, handling cross-output work like barrel files without touching each plugin. [`@kubb/plugin-barrel`](/plugins/plugin-barrel) works this way.
+Plugins with `enforce: 'post'` run after the rest, handling cross-output work like barrel files without touching each plugin. [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) works this way.
 
 ### Bundler integration
 

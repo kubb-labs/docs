@@ -61,18 +61,18 @@ resources:
 
 From your spec, the generated client gives you:
 
-- [Typed functions](/docs/5.x/guide/going-further/calling-operations) per operation with grouped `path`, `query`, `headers`, and `body`.
-- A [status-keyed result](/docs/5.x/guide/going-further/error-handling) on every call, or a thrown `ResponseError`.
-- [Auth](/docs/5.x/guide/going-further/authentication) resolved from your OpenAPI security schemes.
-- [Serialization](/docs/5.x/guide/going-further/serialization) of parameters and bodies across content types, including `multipart/form-data` uploads and binary downloads.
-- Runtime [validation](#validator) against [`@kubb/plugin-zod`](/plugins/plugin-zod) schemas.
-- Typed [server-sent events](/docs/5.x/guide/going-further/server-sent-events) you read with `for await`.
-- [Interceptors](/docs/5.x/guide/going-further/interceptors) and a [custom transport](/docs/5.x/guide/going-further/transport) for the send.
+- [Typed functions](/plugins/plugin-fetch/guide/calling-operations) per operation with grouped `path`, `query`, `headers`, and `body`.
+- A [status-keyed result](/plugins/plugin-fetch/guide/error-handling) on every call, or a thrown `ResponseError`.
+- [Auth](/plugins/plugin-fetch/guide/authentication) resolved from your OpenAPI security schemes.
+- [Serialization](/plugins/plugin-fetch/guide/serialization) of parameters and bodies across content types, including `multipart/form-data` uploads and binary downloads.
+- Runtime [validation](#validator) against [`@kubb/plugin-zod`](/plugins/plugin-zod/) schemas.
+- Typed [server-sent events](/plugins/plugin-fetch/guide/server-sent-events) you read with `for await`.
+- [Interceptors](/plugins/plugin-fetch/guide/interceptors) and a [custom transport](/plugins/plugin-fetch/guide/transport) for the send.
 - Standalone functions or a class-based [SDK](#sdk).
 
 It builds on `@kubb/plugin-ts` for the types, so add that to your config. The client uses the built-in `fetch`, so there is no extra HTTP dependency to install.
 
-Each function takes one grouped options object (`{ path, query, headers, body }`) and returns a `RequestResult` of `{ status, data, error, request, response }`, bundled into `.kubb/client.ts`. See [error handling](/docs/5.x/guide/going-further/error-handling) for `throwOnError` and the status-keyed result union.
+Each function takes one grouped options object (`{ path, query, headers, body }`) and returns a `RequestResult` of `{ status, data, error, request, response }`, bundled into `.kubb/client.ts`. See [error handling](/plugins/plugin-fetch/guide/error-handling) for `throwOnError` and the status-keyed result union.
 
 The bundled `client` also exposes `getUrl`, which builds an operation's final URL without sending the request, useful for cache keys, prefetch, and links:
 
@@ -94,7 +94,7 @@ client.setConfig({ options: { cache: 'no-store' } })
 await getPetById({ path: { petId: 1 }, options: { cache: 'force-cache', next: { revalidate: 60 } } })
 ```
 
-For cross-cutting concerns like retries and interceptors, reach for a [custom transport](/docs/5.x/guide/going-further/transport) instead.
+For cross-cutting concerns like retries and interceptors, reach for a [custom transport](/plugins/plugin-fetch/guide/transport) instead.
 
 ## Installation
 
@@ -122,8 +122,8 @@ yarn add -D @kubb/plugin-fetch@beta
 
 This plugin needs `@kubb/plugin-ts` in your config. Kubb runs it before `plugin-fetch` so the functions can import the generated types. When `validator` is set to `'zod'`, also add `@kubb/plugin-zod`.
 
-- [`@kubb/plugin-ts`](/plugins/plugin-ts)
-- [`@kubb/plugin-zod`](/plugins/plugin-zod)
+- [`@kubb/plugin-ts`](/plugins/plugin-ts/)
+- [`@kubb/plugin-zod`](/plugins/plugin-zod/)
 
 ## Example
 
@@ -156,5 +156,5 @@ export default defineConfig({
 ## See also
 
 - [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
-- [`@kubb/plugin-ts`](/plugins/plugin-ts)
+- [`@kubb/plugin-ts`](/plugins/plugin-ts/)
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-fetch/CHANGELOG.md)

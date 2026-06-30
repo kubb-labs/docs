@@ -42,7 +42,7 @@ The second is resolvers. Every plugin owns a resolver that decides where its fil
 
 Most plugins run in a normal pass, but some need to see what everyone else produced first. A barrel generator, for example, can only write its index files once the other plugins have emitted the files it re-exports. Setting `enforce: 'post'` moves a plugin to the end of every event it listens to, after the normal plugins have run.
 
-There is a matching `enforce: 'pre'` for plugins that need to run ahead of the pack. Both are about ordering relative to normal plugins, and neither overrides dependencies: a declared dependency always runs first. [`@kubb/plugin-barrel`](/plugins/plugin-barrel) is the canonical post-enforced plugin, and it is a good example to read when this pattern fits your case.
+There is a matching `enforce: 'pre'` for plugins that need to run ahead of the pack. Both are about ordering relative to normal plugins, and neither overrides dependencies: a declared dependency always runs first. [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) is the canonical post-enforced plugin, and it is a good example to read when this pattern fits your case.
 
 ## Built-in plugins
 
@@ -50,17 +50,17 @@ The Kubb monorepo ships official plugins for the most common cases. Browse them 
 
 | Plugin                                                    | Generates                        |
 | --------------------------------------------------------- | -------------------------------- |
-| [`@kubb/plugin-ts`](/plugins/plugin-ts)                   | TypeScript types from your spec. |
-| [`@kubb/plugin-zod`](/plugins/plugin-zod)                 | Zod schemas.                     |
-| [`@kubb/plugin-axios`](/plugins/plugin-axios)             | Type-safe axios client functions. |
-| [`@kubb/plugin-fetch`](/plugins/plugin-fetch)             | Type-safe Fetch client functions. |
-| [`@kubb/plugin-react-query`](/plugins/plugin-react-query) | React Query (TanStack) hooks.    |
-| [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query)     | Vue Query (TanStack) hooks.      |
-| [`@kubb/plugin-msw`](/plugins/plugin-msw)                 | MSW request handlers.            |
-| [`@kubb/plugin-faker`](/plugins/plugin-faker)             | Faker-based mock data.           |
-| [`@kubb/plugin-cypress`](/plugins/plugin-cypress)         | Cypress request helpers.         |
-| [`@kubb/plugin-mcp`](/plugins/plugin-mcp)                 | MCP tool definitions.            |
-| [`@kubb/plugin-redoc`](/plugins/plugin-redoc)             | Redoc API documentation.         |
+| [`@kubb/plugin-ts`](/plugins/plugin-ts/)                   | TypeScript types from your spec. |
+| [`@kubb/plugin-zod`](/plugins/plugin-zod/)                 | Zod schemas.                     |
+| [`@kubb/plugin-axios`](/plugins/plugin-axios/)             | Type-safe axios client functions. |
+| [`@kubb/plugin-fetch`](/plugins/plugin-fetch/)             | Type-safe Fetch client functions. |
+| [`@kubb/plugin-react-query`](/plugins/plugin-react-query/) | React Query (TanStack) hooks.    |
+| [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query/)     | Vue Query (TanStack) hooks.      |
+| [`@kubb/plugin-msw`](/plugins/plugin-msw/)                 | MSW request handlers.            |
+| [`@kubb/plugin-faker`](/plugins/plugin-faker/)             | Faker-based mock data.           |
+| [`@kubb/plugin-cypress`](/plugins/plugin-cypress/)         | Cypress request helpers.         |
+| [`@kubb/plugin-mcp`](/plugins/plugin-mcp/)                 | MCP tool definitions.            |
+| [`@kubb/plugin-redoc`](/plugins/plugin-redoc/)             | Redoc API documentation.         |
 
 ## Next steps
 

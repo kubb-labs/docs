@@ -16,7 +16,7 @@ generation, validates schemas, and inspects configuration from the chat.
 
 > [!NOTE]
 > This page covers using Kubb tooling inside your editor over MCP. To generate an MCP server from
-> your OpenAPI spec, see [`@kubb/plugin-mcp`](/plugins/plugin-mcp) instead.
+> your OpenAPI spec, see [`@kubb/plugin-mcp`](/plugins/plugin-mcp/) instead.
 
 ## Starting the server
 
@@ -77,4 +77,4 @@ Add this to your `.vscode/mcp.json` for the workspace. For a global setup, run `
 ## See also
 
 - [`kubb mcp` command](/docs/5.x/reference/commands/mcp): CLI reference and transport details
-- [`@kubb/plugin-mcp`](/plugins/plugin-mcp) generates an MCP server from your OpenAPI spec
+- [`@kubb/plugin-mcp`](/plugins/plugin-mcp/) generates an MCP server from your OpenAPI spec

@@ -7,7 +7,7 @@ encoder from the request content type, and decodes the response by its media typ
 needs no configuration: Kubb bakes the per-parameter metadata into each generated function. This
 page covers what it does by default and how to override each step.
 
-The behavior is identical for [`@kubb/plugin-fetch`](/plugins/plugin-fetch) and [`@kubb/plugin-axios`](/plugins/plugin-axios).
+The behavior is identical for [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and [`@kubb/plugin-axios`](/plugins/plugin-axios/).
 
 ## Parameter styles
 
@@ -108,7 +108,7 @@ untouched.
 
 When an operation declares a single request content type, Kubb sets it on the generated function,
 so you pass only the body. For an operation that accepts more than one, set
-[`contentType`](/docs/5.x/guide/going-further/calling-operations#set-the-content-type) on the
+[`contentType`](/plugins/plugin-fetch/guide/calling-operations#set-the-content-type) on the
 call.
 
 > [!NOTE]
@@ -164,7 +164,7 @@ const { data } = await downloadInvoice({ path: { id: '123' }, responseType: 'blo
 // data is a Blob even when the server leaves Content-Type unset
 ```
 
-For `responseType: 'stream'`, see [server-sent events](/docs/5.x/guide/going-further/server-sent-events).
+For `responseType: 'stream'`, see [server-sent events](/plugins/plugin-fetch/guide/server-sent-events).
 
 ## Send and receive XML
 
@@ -207,7 +207,7 @@ only the body. Set `contentType` yourself for an operation that offers more than
 
 ## Response validation
 
-Validation is off by default. Turn it on with the [`validator`](/plugins/plugin-fetch) plugin
+Validation is off by default. Turn it on with the [`validator`](/plugins/plugin-fetch/) plugin
 option to check request and response bodies against schemas from `@kubb/plugin-zod`:
 
 ```typescript
@@ -228,7 +228,7 @@ With a validator set, Kubb passes the matching schema to each generated call, an
 parses the body through it. The schemas are Standard Schema compatible, so this works the same
 with Zod, valibot, and arktype. A body that does not match throws a `ParseError` carrying the
 schema's `issues`, covered in
-[error handling](/docs/5.x/guide/going-further/error-handling#validation-failures).
+[error handling](/plugins/plugin-fetch/guide/error-handling#validation-failures).
 
 > [!TIP]
 > Validation guarantees the data matches its type at runtime, at the cost of parsing every body.
@@ -237,8 +237,8 @@ schema's `issues`, covered in
 
 ## See also
 
-- [Call operations](/docs/5.x/guide/going-further/calling-operations)
-- [Error handling](/docs/5.x/guide/going-further/error-handling)
-- [`@kubb/plugin-fetch`](/plugins/plugin-fetch)
-- [`@kubb/plugin-axios`](/plugins/plugin-axios)
-- [`@kubb/plugin-zod`](/plugins/plugin-zod)
+- [Call operations](/plugins/plugin-fetch/guide/calling-operations)
+- [Error handling](/plugins/plugin-fetch/guide/error-handling)
+- [`@kubb/plugin-fetch`](/plugins/plugin-fetch/)
+- [`@kubb/plugin-axios`](/plugins/plugin-axios/)
+- [`@kubb/plugin-zod`](/plugins/plugin-zod/)
