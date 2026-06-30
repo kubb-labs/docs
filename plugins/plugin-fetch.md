@@ -55,7 +55,7 @@ const url = client.getUrl({ url: '/pet/{petId}', path: { petId: 1 }, query: { st
 // '/pet/1?status=available'
 ```
 
-To authenticate requests, give the client one `auth` resolver and the runtime adds the credential to every call its security schemes guard. The [authentication guide](/docs/5.x/guides/authentication) walks through bearer, basic, and apiKey setups.
+To authenticate requests, give the client one `auth` resolver and the runtime adds the credential to every call its security schemes guard. The [authentication guide](/docs/5.x/guide/going-further/authentication) walks through bearer, basic, and apiKey setups.
 
 The runtime sets `method`, `headers`, `body`, `signal`, and `credentials` on each `fetch` itself. To reach the rest of the `RequestInit` (`cache`, `mode`, `redirect`, `keepalive`, `duplex`, or Next.js's `next: { revalidate, tags }`), pass `options`. It works at the client level for every call and per request, where a per-request value wins:
 
@@ -452,7 +452,7 @@ Changes how the plugin names generated files and functions. Use it to add a pref
 
 ### macros
 
-Rewrites AST nodes before the plugin prints them to source. Use it to rename operation IDs, drop descriptions, or change schema metadata without forking the generator. Each [macro](/docs/5.x/concepts/macros) callback, such as `schema` or `operation`, receives the node and a context object. Return a new node to replace it, or `undefined` to leave it as is. Callbacks you omit keep their default behavior. Macros run in order, so a later one sees the output of an earlier one.
+Rewrites AST nodes before the plugin prints them to source. Use it to rename operation IDs, drop descriptions, or change schema metadata without forking the generator. Each [macro](/docs/5.x/guide/going-further/macros) callback, such as `schema` or `operation`, receives the node and a context object. Return a new node to replace it, or `undefined` to leave it as is. Callbacks you omit keep their default behavior. Macros run in order, so a later one sees the output of an earlier one.
 
 |           |                |
 | --------: | :------------- |

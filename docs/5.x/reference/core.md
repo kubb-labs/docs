@@ -531,13 +531,13 @@ Access the driver via `ctx.driver` inside generator context methods, or from the
 
 ### `Url`
 
-`Url` is a helper class for working with OpenAPI path strings. Use `Url.canParse` to detect whether a given path string is a remote URL rather than a local file path.
+`Url` is a helper class for turning OpenAPI path strings into other shapes. `Url.toPath` rewrites `{param}` placeholders into Express-style `:param` segments, and `Url.toObject` returns the path together with its extracted params.
 
 ```typescript twoslash [url.ts]
 import { Url } from '@kubb/core'
 
-Url.canParse('https://petstore.swagger.io/v2/swagger.json') // true
-Url.canParse('./petStore.yaml') // false
+Url.toPath('/pet/{petId}') // '/pet/:petId'
+Url.toObject('/pet/{petId}') // { url: '/pet/:petId', params: { petId: 'petId' } }
 ```
 
 ### Narrowing `config.input`

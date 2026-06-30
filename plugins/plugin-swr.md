@@ -367,7 +367,7 @@ Changes how the plugin names generated functions and types. Override only the me
 
 ### macros
 
-Rewrites AST nodes before they are printed to source. Each [macro](/docs/5.x/concepts/macros) callback receives the node and a context object. Return a new node to replace it, or `undefined` to leave it as is. Macros run in order, so a later one sees the output of an earlier one.
+Rewrites AST nodes before they are printed to source. Each [macro](/docs/5.x/guide/going-further/macros) callback receives the node and a context object. Return a new node to replace it, or `undefined` to leave it as is. Macros run in order, so a later one sees the output of an earlier one.
 
 |           |                |
 | --------: | :------------- |

@@ -392,7 +392,7 @@ Changes how the plugin names the generated factory helpers. Override only the me
 
 ### macros
 
-Rewrites AST nodes before they are printed to source. Use it to drop descriptions or change schema metadata without forking the generator. Each [macro](/docs/5.x/concepts/macros) callback (such as `schema` or `operation`) receives the node and a context object. Return a new node to replace it, or `undefined` to leave it as is. Callbacks you omit keep their default behavior. Macros run in order, so a later one sees the output of an earlier one.
+Rewrites AST nodes before they are printed to source. Use it to drop descriptions or change schema metadata without forking the generator. Each [macro](/docs/5.x/guide/going-further/macros) callback (such as `schema` or `operation`) receives the node and a context object. Return a new node to replace it, or `undefined` to leave it as is. Callbacks you omit keep their default behavior. Macros run in order, so a later one sees the output of an earlier one.
 
 |           |                |
 | --------: | :------------- |

@@ -54,7 +54,7 @@ That is the full cycle. Change the spec, run `kubb generate` again, and the type
 
 ## What you can generate
 
-Each output format is its own plugin, so you add only the ones you need. The starter set covers [TypeScript types](/plugins/plugin-ts), HTTP clients for [Axios](/plugins/plugin-axios) or [Fetch](/plugins/plugin-client), [React Query](/plugins/plugin-react-query) and [Vue Query](/plugins/plugin-vue-query) hooks, [Zod](/plugins/plugin-zod) validators, [MSW](/plugins/plugin-msw) handlers, and [Faker](/plugins/plugin-faker) mock data.
+Each output format is its own plugin, so you add only the ones you need. The starter set covers [TypeScript types](/plugins/plugin-ts), HTTP clients for [Axios](/plugins/plugin-axios) or [Fetch](/plugins/plugin-fetch), [React Query](/plugins/plugin-react-query) and [Vue Query](/plugins/plugin-vue-query) hooks, [Zod](/plugins/plugin-zod) validators, [MSW](/plugins/plugin-msw) handlers, and [Faker](/plugins/plugin-faker) mock data.
 
 Beyond the app code, you can generate [Cypress](/plugins/plugin-cypress) tests and [Model Context Protocol](/plugins/plugin-mcp) servers that let AI assistants call your API. When nothing fits, [write your own plugin](/docs/5.x/guide/going-further/creating-plugins) with the same APIs the official ones use. The [plugins catalogue](/plugins) lists them all.
 
