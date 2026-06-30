@@ -47,7 +47,7 @@ From your spec, the generated client gives you:
 - [Typed functions](/docs/5.x/guide/going-further/calling-operations) per operation with grouped `path`, `query`, `headers`, and `body`.
 - A [status-keyed result](/docs/5.x/guide/going-further/error-handling) on every call, or a thrown `ResponseError`.
 - [Auth](/docs/5.x/guide/going-further/authentication) resolved from your OpenAPI security schemes.
-- [Serialization](/docs/5.x/guide/going-further/serialization) of parameters and bodies straight from the spec.
+- [Serialization](/docs/5.x/guide/going-further/serialization) of parameters and bodies across content types, including `multipart/form-data` uploads and binary downloads.
 - Runtime [validation](#validator) against [`@kubb/plugin-zod`](/plugins/plugin-zod) schemas.
 - Typed [server-sent events](/docs/5.x/guide/going-further/server-sent-events) you read with `for await`.
 - [Interceptors](/docs/5.x/guide/going-further/interceptors) and a [custom transport](/docs/5.x/guide/going-further/transport) for the send.

@@ -55,7 +55,7 @@ That is the full cycle. Change the spec, run `kubb generate` again, and the type
 ## Features
 
 - Generate [TypeScript types](/plugins/plugin-ts), [React Query](/plugins/plugin-react-query) and [Vue Query](/plugins/plugin-vue-query) hooks, [SWR](/plugins/plugin-swr) hooks, [Zod](/plugins/plugin-zod) validators, [Faker](/plugins/plugin-faker) mocks, and [MSW](/plugins/plugin-msw) handlers, each from its own plugin.
-- Generate a typed [Axios](/plugins/plugin-axios) or [Fetch](/plugins/plugin-fetch) client with status-keyed results, auth, validation, [server-sent events](/docs/5.x/guide/going-further/server-sent-events), [interceptors](/docs/5.x/guide/going-further/interceptors), and a [swappable transport](/docs/5.x/guide/going-further/transport).
+- Generate a typed [Axios](/plugins/plugin-axios) or [Fetch](/plugins/plugin-fetch) client with status-keyed results, auth, validation, file uploads, [server-sent events](/docs/5.x/guide/going-further/server-sent-events), [interceptors](/docs/5.x/guide/going-further/interceptors), and a [swappable transport](/docs/5.x/guide/going-further/transport).
 - Read any OpenAPI 2.0, 3.0, or 3.1 spec through the [OpenAPI adapter](/adapters/adapter-oas), or add your own [adapter](/docs/5.x/guide/concepts/adapters).
 - Shape the output by grouping files by tag or path, emitting [barrel files](/docs/5.x/guide/concepts/barrel-files), and including or excluding operations.
 - Generate [Cypress](/plugins/plugin-cypress) tests and a [Model Context Protocol server](/plugins/plugin-mcp), or [write your own plugin](/docs/5.x/guide/going-further/creating-plugins).
