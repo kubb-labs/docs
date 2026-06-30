@@ -472,9 +472,9 @@ The `--debug` flag and the `debug` value of `--logLevel` are gone. v5 renders a 
 | `json`            | A stable machine-readable report on stdout, for CI.                     |
 | `file`            | A log written to `.kubb/kubb-<name>-<timestamp>.log`. This replaces `--debug`. |
 
-```shell [Terminal]
-kubb generate --debug # [!code --]
-kubb generate --reporter file # [!code ++]
+```diff [Terminal]
+-kubb generate --debug
++kubb generate --reporter file
 ```
 
 The `kubb:debug` hook and the `createDebugger` helper go away with the flag. See [`kubb generate`](/docs/5.x/reference/commands/generate) for the full flag list and [Diagnostics](/docs/5.x/reference/diagnostics) for the structured problem model the reporters render.
@@ -485,25 +485,25 @@ The `output.override` boolean is gone, both on the root `output` and on each plu
 
 To keep certain files from being written, supply a custom [storage](/docs/5.x/guide/concepts/storage) that no-ops `setItem` for the paths you want to protect. The storage owns every write, so this is the single place that decides what lands on disk:
 
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb' // [!code --]
-import { defineConfig } from 'kubb' // [!code ++]
-import { fsStorage } from '@kubb/core' // [!code ++]
+```diff [kubb.config.ts]
+-import { defineConfig } from 'kubb'
++import { defineConfig } from 'kubb'
++import { fsStorage } from '@kubb/core'
 
-const base = fsStorage() // [!code ++]
-const protectedPaths = ['src/gen/.kubb/client.ts'] // [!code ++]
++const base = fsStorage()
++const protectedPaths = ['src/gen/.kubb/client.ts']
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
-  output: { path: './src/gen', override: false }, // [!code --]
-  output: { path: './src/gen' }, // [!code ++]
-  storage: { // [!code ++]
-    ...base, // [!code ++]
-    async setItem(path, source) { // [!code ++]
-      if (protectedPaths.some((p) => path.endsWith(p))) return // [!code ++]
-      return base.setItem(path, source) // [!code ++]
-    }, // [!code ++]
-  }, // [!code ++]
+-  output: { path: './src/gen', override: false },
++  output: { path: './src/gen' },
++  storage: {
++    ...base,
++    async setItem(path, source) {
++      if (protectedPaths.some((p) => path.endsWith(p))) return
++      return base.setItem(path, source)
++    },
++  },
   plugins: [],
 })
 ```

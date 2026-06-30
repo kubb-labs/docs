@@ -83,7 +83,7 @@ Write a `kubb.config.ts` that sets up the [MCP](https://modelcontextprotocol.io)
 > [!IMPORTANT]
 > Set the `baseURL` on the client plugin so the generated handlers know which host to call.
 
-```typescript twoslash [kubb.config.ts]
+```diff [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'
@@ -101,7 +101,7 @@ export default defineConfig({
     pluginTs(),
     pluginZod(),
     pluginAxios({
-      baseURL: 'https://petstore.swagger.io/v2', // [!code ++]
++      baseURL: 'https://petstore.swagger.io/v2',
     }),
     pluginMcp(),
   ],

@@ -25,14 +25,14 @@ The helper signature changes from positional arguments to one object. The first 
 
 ::: code-group
 
-```typescript [Call site]
-showPetById(2, { limit: 10 }) // [!code --]
-showPetById({ path: { petId: 2 }, query: { limit: 10 } }) // [!code ++]
+```diff [Call site]
+-showPetById(2, { limit: 10 })
++showPetById({ path: { petId: 2 }, query: { limit: 10 } })
 ```
 
-```typescript [Generated output]
-export function showPetById(petId: number, query?: ShowPetByIdQueryParams, options = {}) {} // [!code --]
-export function showPetById({ path, query }: ShowPetByIdRequestConfig, options = {}) {} // [!code ++]
+```diff [Generated output]
+-export function showPetById(petId: number, query?: ShowPetByIdQueryParams, options = {}) {}
++export function showPetById({ path, query }: ShowPetByIdRequestConfig, options = {}) {}
 ```
 
 :::
