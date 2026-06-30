@@ -54,12 +54,12 @@ That is the full cycle. Change the spec, run `kubb generate` again, and the type
 
 ## Features
 
-- Generate [TypeScript types](/plugins/plugin-ts), [React Query](/plugins/plugin-react-query) and [Vue Query](/plugins/plugin-vue-query) hooks, [SWR](/plugins/plugin-swr) hooks, [Zod](/plugins/plugin-zod) validators, [Faker](/plugins/plugin-faker) mock data, and [MSW](/plugins/plugin-msw) handlers, each from its own plugin so you add only the ones you need.
-- Call your API through a generated [Axios](/plugins/plugin-axios) or [Fetch](/plugins/plugin-fetch) client that hands you one typed function per operation, a result keyed on the HTTP status, runtime validation, auth resolved from your OpenAPI security schemes, typed [server-sent events](/docs/5.x/guide/going-further/server-sent-events), [interceptors](/docs/5.x/guide/going-further/interceptors), and a [swappable transport](/docs/5.x/guide/going-further/transport).
-- Read any OpenAPI 2.0, 3.0, or 3.1 spec through the [OpenAPI adapter](/adapters/adapter-oas), or add an [adapter](/docs/5.x/guide/concepts/adapters) for another input format.
+- Generate [TypeScript types](/plugins/plugin-ts), [React Query](/plugins/plugin-react-query) and [Vue Query](/plugins/plugin-vue-query) hooks, [SWR](/plugins/plugin-swr) hooks, [Zod](/plugins/plugin-zod) validators, [Faker](/plugins/plugin-faker) mocks, and [MSW](/plugins/plugin-msw) handlers, each from its own plugin.
+- Generate a typed [Axios](/plugins/plugin-axios) or [Fetch](/plugins/plugin-fetch) client with status-keyed results, auth, validation, [server-sent events](/docs/5.x/guide/going-further/server-sent-events), [interceptors](/docs/5.x/guide/going-further/interceptors), and a [swappable transport](/docs/5.x/guide/going-further/transport).
+- Read any OpenAPI 2.0, 3.0, or 3.1 spec through the [OpenAPI adapter](/adapters/adapter-oas), or add your own [adapter](/docs/5.x/guide/concepts/adapters).
 - Shape the output by grouping files by tag or path, emitting [barrel files](/docs/5.x/guide/concepts/barrel-files), and including or excluding operations.
-- Generate [Cypress](/plugins/plugin-cypress) tests, a [Model Context Protocol server](/plugins/plugin-mcp) that lets AI assistants call your API, or output no plugin covers by [writing your own](/docs/5.x/guide/going-further/creating-plugins) on the same APIs the official plugins use.
-- Run generation inside [Vite](/docs/5.x/guide/integrations/vite), [Nuxt](/docs/5.x/guide/integrations/nuxt), and other build tools with `unplugin-kubb`, or drive it from [AI assistants](/docs/5.x/ai/mcp) and [Claude Code](/docs/5.x/ai/claude).
+- Generate [Cypress](/plugins/plugin-cypress) tests and a [Model Context Protocol server](/plugins/plugin-mcp), or [write your own plugin](/docs/5.x/guide/going-further/creating-plugins).
+- Run generation in [Vite](/docs/5.x/guide/integrations/vite), [Nuxt](/docs/5.x/guide/integrations/nuxt), and other bundlers with `unplugin-kubb`, or from [AI assistants](/docs/5.x/ai/mcp) and [Claude Code](/docs/5.x/ai/claude).
 
 Ready for more? Read [Installation](./installation) and [Basic Usage](./basic-usage), then reach for [Configuration](/docs/5.x/reference/configuration), [Recipes](/docs/5.x/guide/recipes), and [Integrations](/docs/5.x/guide/integrations/) when you need them.
 
