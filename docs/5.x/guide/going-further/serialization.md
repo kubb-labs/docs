@@ -28,7 +28,7 @@ side. The generated call carries it:
 request({
   method: 'GET',
   url: '/pets/{petId}',
-  serialization: {
+  styles: {
     path: { petId: { style: 'matrix', explode: true } },
     query: { tags: { style: 'pipeDelimited', explode: false } },
   },
@@ -123,24 +123,20 @@ call.
 > it with the multipart boundary. You do not need to set `multipart/form-data` yourself, and a
 > value you set is dropped for that request.
 
-To encode a content type the default serializer does not handle, register a body serializer for
-that media type. `bodySerializers` is keyed by content type:
+To encode a content type the default serializer does not handle, register a codec for that media
+type. `codecs` is keyed by content type, and each entry holds a `serialize` for the request body
+and a `deserialize` for the response, so either half is optional:
 
 ```typescript
 import { client } from './gen/clients/.kubb/client'
 import { stringify } from 'yaml'
 
 client.setConfig({
-  bodySerializers: {
-    'application/yaml': (body) => stringify(body),
+  codecs: {
+    'application/yaml': { serialize: (body) => stringify(body) },
   },
 })
 ```
-
-A `bodySerializers` entry overrides the body encoding for one media type and keeps the default
-JSON, multipart, and urlencoded handling for the rest. The `serializer.body` function from
-[Override the serializer](#override-the-serializer) replaces the whole body serializer instead, so
-reach for it only when you want to own every content type.
 
 ## Response decoding
 
@@ -149,22 +145,22 @@ stays a string, and a binary type becomes a `Blob`. The negotiated media type is
 `contentType`, so a `switch (result.contentType)` narrows `data` for an operation that returns
 more than one.
 
-To decode a media type the runtime does not handle, register a deserializer for it. A deserializer
-receives the raw body and the content type and returns the parsed value. It runs before
+To decode a media type the runtime does not handle, register a codec's `deserialize` for it. It
+receives the raw body and the content type and returns the parsed value, and runs before
 validation, so a custom format is transformed first and then checked against its schema:
 
 ```typescript
 import { client } from './gen/clients/.kubb/client'
 
 client.setConfig({
-  deserializers: {
-    'application/xml': (raw) => new DOMParser().parseFromString(raw as string, 'application/xml'),
+  codecs: {
+    'application/xml': { deserialize: (raw) => new DOMParser().parseFromString(raw as string, 'application/xml') },
   },
 })
 ```
 
-Like the other config, `deserializers` can also be passed on a single call, and a per-call entry
-merges over the client one for that request.
+Like the other config, `codecs` can also be passed on a single call, and a per-call entry merges
+over the client one for that content type.
 
 When the runtime picks the wrong parse mode because a response omits its `Content-Type` or sets a
 misleading one, force the mode with `responseType` on the call. It accepts `'json'`, `'text'`,
@@ -179,11 +175,11 @@ For `responseType: 'stream'`, see [server-sent events](/docs/5.x/guide/going-fur
 
 ## Send and receive XML
 
-To talk XML in both directions, register a `bodySerializer` and a `deserializer` for the same
-media type. The body serializer turns the request object into XML, the deserializer turns the XML
-response back into data, and `contentType` sets the request `Content-Type` and the `Accept` header
-so the server answers in XML. The example below uses `fast-xml-parser` for plain-object data,
-where the `DOMParser` deserializer above returns a DOM `Document` instead:
+To talk XML in both directions, register one codec for the media type with both halves. `serialize`
+turns the request object into XML, `deserialize` turns the XML response back into data, and
+`contentType` sets the request `Content-Type` and the `Accept` header so the server answers in XML.
+The example below uses `fast-xml-parser` for plain-object data, where the `DOMParser` deserializer
+above returns a DOM `Document` instead:
 
 ```typescript
 import { client } from './gen/clients/.kubb/client'
@@ -193,8 +189,12 @@ const builder = new XMLBuilder()
 const parser = new XMLParser()
 
 client.setConfig({
-  bodySerializers: { 'application/xml': (body) => builder.build(body) },
-  deserializers: { 'application/xml': (raw) => parser.parse(raw as string) },
+  codecs: {
+    'application/xml': {
+      serialize: (body) => builder.build(body),
+      deserialize: (raw) => parser.parse(raw as string),
+    },
+  },
 })
 ```
 
