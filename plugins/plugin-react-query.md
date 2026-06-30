@@ -435,9 +435,9 @@ Module used in the `import { useMutation } from '...'` statement at the top of e
 
 ### hooks
 
-Controls whether `use*` hook functions are emitted. When set to `false` (the default), the plugin writes only the factory helpers — `queryOptions`, `mutationOptions`, `queryKey`, and `mutationKey`. Set to `true` to also generate `useQuery`, `useSuspenseQuery`, `useInfiniteQuery`, `useSuspenseInfiniteQuery`, and `useMutation` functions.
+Controls whether `use*` hook functions are emitted. When set to `false` (the default), the plugin writes only the factory helpers: `queryOptions`, `mutationOptions`, `queryKey`, and `mutationKey`. Set to `true` to also generate `useQuery`, `useSuspenseQuery`, `useInfiniteQuery`, `useSuspenseInfiniteQuery`, and `useMutation` functions.
 
-Factory helpers are framework-portable: the same `queryOptions` object works with `useQuery` in React, `useQuery` in Vue Query, Solid Query, and Svelte Query, and inside `prefetchQuery`, `setQueryData`, and router loaders without touching React at all.
+The factory helpers work with any TanStack Query adapter. You can pass the same `queryOptions` object to `prefetchQuery`, `setQueryData`, and router loaders without wrapping it in a hook.
 
 |           |           |
 | --------: | :-------- |

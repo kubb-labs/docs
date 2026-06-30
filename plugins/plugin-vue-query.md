@@ -390,9 +390,9 @@ Module specifier used in the `import { useMutation } from '...'` statement at th
 
 ### hooks
 
-Controls whether `use*` composable functions are emitted. When set to `false` (the default), the plugin writes only the factory helpers — `queryOptions`, `mutationOptions`, `queryKey`, and `mutationKey`. Set to `true` to also generate `useQuery`, `useInfiniteQuery`, and `useMutation` composables.
+Controls whether `use*` composable functions are emitted. When set to `false` (the default), the plugin writes only the factory helpers: `queryOptions`, `mutationOptions`, `queryKey`, and `mutationKey`. Set to `true` to also generate `useQuery`, `useInfiniteQuery`, and `useMutation` composables.
 
-Factory helpers are framework-portable: the same `queryOptions` object works with any TanStack Query adapter, and inside `prefetchQuery`, `setQueryData`, and router loaders without wiring up a composable.
+The factory helpers work with any TanStack Query adapter. You can pass the same `queryOptions` object to `prefetchQuery`, `setQueryData`, and router loaders without wrapping it in a composable.
 
 |           |           |
 | --------: | :-------- |

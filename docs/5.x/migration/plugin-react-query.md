@@ -164,4 +164,4 @@ The `hooks` option controls whether `use*` functions are emitted alongside the f
   })
 ```
 
-With `hooks: false` (the default) the plugin still emits `queryOptions`, `mutationOptions`, `queryKey`, and `mutationKey` — only the `useQuery`, `useSuspenseQuery`, `useInfiniteQuery`, `useSuspenseInfiniteQuery`, and `useMutation` wrappers are skipped.
+With `hooks: false` (the default) the plugin still emits `queryOptions`, `mutationOptions`, `queryKey`, and `mutationKey`. Only the `useQuery`, `useSuspenseQuery`, `useInfiniteQuery`, `useSuspenseInfiniteQuery`, and `useMutation` wrappers are skipped.
