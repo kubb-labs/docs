@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Installation
 
-Welcome. This page walks you through getting Kubb running in your project, from the first install to your first generated files. Pick the quick start if you want the wizard to set everything up for you, or follow the manual steps to see each piece.
+This page walks you through getting Kubb running in your project, from the first install to your first generated files. Pick the quick start if you want the wizard to set everything up for you, or follow the manual steps to see each piece.
 
 ## Prerequisites
 

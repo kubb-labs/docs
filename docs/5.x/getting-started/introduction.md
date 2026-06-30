@@ -9,14 +9,14 @@ outline: [2, 3]
 
 Kubb is a meta framework for code generation. It runs a plugin-based pipeline on top of any API specification. An [adapter](/adapters) reads your spec. [Parsers](/parsers) turn the [AST](/docs/5.x/guide/concepts/ast) into source files. [Plugins](/plugins) generate the output. The pipeline writes, formats, and lints the result, all from a single config file.
 
-The default adapter reads [OpenAPI](https://www.openapis.org/) 2.0, 3.0, and 3.1. For [GraphQL](https://graphql.org/), [JSON Schema](https://json-schema.org/), [gRPC](https://grpc.io/), or any other format, you write your own adapter. From there Kubb generates TypeScript types, React Query hooks, Zod validators, MSW mocks, or a custom output. You stop hand-maintaining generated code. The output is deterministic. The same spec always produces the same result.
+The default adapter reads [OpenAPI](https://www.openapis.org/) 2.0, 3.0, and 3.1. From there Kubb generates TypeScript types, React Query hooks, Zod validators, MSW mocks, or a custom output. You stop hand-maintaining generated code. The output is deterministic. The same spec always produces the same result.
 
 ## See it work
 
 Here is the whole loop, start to finish. Install Kubb together with one plugin:
 
 ```shell [Terminal]
-npm install -D @kubb/core @kubb/plugin-ts
+npm install -D @kubb/core@beta @kubb/plugin-ts@beta
 ```
 
 Create a `kubb.config.ts` next to your spec. It points at the spec, sets an output directory, and lists the plugins you want. This one generates TypeScript types with [`@kubb/plugin-ts`](/plugins/plugin-ts):
