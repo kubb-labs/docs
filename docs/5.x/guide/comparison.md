@@ -18,29 +18,29 @@ Kubb, [orval](https://orval.dev), [HeyAPI](https://heyapi.dev), and [openapi-typ
 - 🔶 Supported, but needs extra user code.
 - 🛑 Not officially supported.
 
-| Feature                                                    |       Kubb        | orval | HeyAPI            |    openapi-ts    |
-| ---------------------------------------------------------- | :---------------: | :---: | :---------------- | :--------------: |
-| [OpenAPI 2.0, 3.0, 3.1 input](/adapters/adapter-oas)       |        ✅         |  ✅   | ✅                |        ✅        |
-| [TypeScript types](/plugins/plugin-ts)                     |        ✅         |  ✅   | ✅                |        ✅        |
-| [HTTP client (Axios, Fetch)](/plugins/plugin-axios)        |        ✅         |  ✅   | ✅                | 🔶<sup>2</sup>  |
-| [React Query hooks](/plugins/plugin-react-query)           |        ✅         |  ✅   | ✅                |       🛑        |
-| [Vue Query composables](/plugins/plugin-vue-query)         |        ✅         |  ✅   | ✅                |       🛑        |
-| [SWR hooks](/plugins/plugin-swr)                           |        ✅         |  ✅   | 🛑<sup>3</sup>    | 🟡<sup>4</sup>  |
-| [Zod validation schemas](/plugins/plugin-zod)              |        ✅         |  ✅   | ✅<sup>1</sup>    |       🛑        |
-| [MSW request handlers](/plugins/plugin-msw)                |        ✅         |  ✅   | 🛑                |       🛑        |
-| [Faker.js mock data](/plugins/plugin-faker)                |        ✅         | 🔶<sup>5</sup> | 🛑           |       🛑        |
-| [Cypress E2E tests](/plugins/plugin-cypress)               |        ✅         |  🛑   | 🛑                |       🛑        |
-| [MCP server](/plugins/plugin-mcp)                          |        ✅         |  🛑   | 🛑                |       🛑        |
-| [Redoc API documentation](/plugins/plugin-redoc)           |        ✅         |  🛑   | 🛑                |       🛑        |
-| [Barrel index files](/plugins/plugin-barrel)               |        ✅         |  🛑   | 🛑                |       🛑        |
+| Feature                                              | Kubb | orval | HeyAPI         |   openapi-ts   |
+| ---------------------------------------------------- | :--: | :---: | :------------- | :------------: |
+| [OpenAPI 2.0, 3.0, 3.1 input](/adapters/adapter-oas) |  ✅  |  ✅   | ✅             | 🔶<sup>1</sup> |
+| [TypeScript types](/plugins/plugin-ts)               |  ✅  |  ✅   | ✅             |       ✅       |
+| [HTTP client (Axios, Fetch)](/plugins/plugin-axios)  |  ✅  |  ✅   | ✅             | 🔶<sup>2</sup> |
+| [React Query hooks](/plugins/plugin-react-query)     |  ✅  |  ✅   | ✅             | 🟡<sup>3</sup> |
+| [Vue Query composables](/plugins/plugin-vue-query)   |  ✅  |  ✅   | ✅             |       🛑       |
+| [SWR hooks](/plugins/plugin-swr)                     |  ✅  |  ✅   | ✅             | 🟡<sup>4</sup> |
+| [Zod validation schemas](/plugins/plugin-zod)        |  ✅  |  ✅   | ✅<sup>5</sup> |       🛑       |
+| [MSW request handlers](/plugins/plugin-msw)          |  ✅  |  ✅   | ✅             |       🛑       |
+| [Faker.js mock data](/plugins/plugin-faker)          |  ✅  |  ✅   | ✅             |       🛑       |
+| [Cypress E2E tests](/plugins/plugin-cypress)         |  ✅  |  🛑   | 🛑             |       🛑       |
+| [MCP server](/plugins/plugin-mcp)                    |  ✅  |  ✅   | 🛑             |       🛑       |
+| [Redoc API documentation](/plugins/plugin-redoc)     |  ✅  |  🛑   | 🛑             |       🛑       |
+| [Barrel index files](/plugins/plugin-barrel)         |  ✅  |  ✅   | ✅             |       🛑       |
 
 **Notes**
 
-1. HeyAPI also generates Valibot schemas alongside Zod.
-2. openapi-typescript generates types only. The typed client comes from its `openapi-fetch` runtime, not per-operation code, and `openapi-fetch` is now in [feature freeze](https://github.com/openapi-ts/openapi-typescript/discussions/2559).
-3. HeyAPI lists SWR as a [roadmap proposal](https://github.com/hey-api/openapi-ts/issues/1479) that has not started.
+1. openapi-typescript reads OpenAPI 3.0 and 3.1 only, so a Swagger 2.0 document has to be up-converted first. Kubb, orval, and HeyAPI accept 2.0 and up-convert it for you.
+2. openapi-typescript generates types only. The typed client comes from its `openapi-fetch` runtime, not per-operation code, and `openapi-fetch` is now in [maintenance mode](https://github.com/openapi-ts/openapi-typescript/discussions/2559).
+3. openapi-typescript generates no hooks. React Query support comes from the first-party [`openapi-react-query`](https://www.npmjs.com/package/openapi-react-query) runtime, also in maintenance mode.
 4. openapi-typescript relies on the community [`swr-openapi`](https://github.com/htunnicliff/swr-openapi) package.
-5. orval has no standalone Faker output. It fills its MSW handlers with `faker` data instead.
+5. HeyAPI also generates Valibot schemas alongside Zod.
 
 ## Type safety and response handling
 
@@ -82,19 +82,20 @@ The legend matches the tables above.
 
 | Feature                                                                                                     | Kubb  | orval          | HeyAPI         |
 | ----------------------------------------------------------------------------------------------------------- | :---: | :------------- | :------------- |
-| [Parameter styles from the spec](/docs/5.x/guide/going-further/serialization#parameter-styles)              |  ✅   | 🛑<sup>1</sup> | 🔶<sup>2</sup> |
+| [Parameter styles from the spec](/docs/5.x/guide/going-further/serialization#parameter-styles)              |  ✅   | 🔶<sup>1</sup> | 🔶<sup>2</sup> |
 | Request body serializers (JSON, form-data, urlencoded)                                                      | ✅<sup>3</sup> | ✅    | ✅             |
 | [Pluggable codecs per media type](/docs/5.x/guide/going-further/serialization#request-bodies) (XML, YAML)   |  ✅   | 🛑<sup>4</sup> | 🛑<sup>4</sup> |
 | [Runtime body validation](/docs/5.x/guide/going-further/error-handling#validation-failures)                 | ✅<sup>5</sup> | 🔶<sup>5</sup> | ✅<sup>5</sup> |
-| [Server-sent events and streaming](/docs/5.x/guide/going-further/server-sent-events)                        |  ✅   |       🛑       | ✅             |
+| [Server-sent events and streaming](/docs/5.x/guide/going-further/server-sent-events)                        |  ✅   | 🔶<sup>6</sup> | ✅             |
 
 **Notes**
 
-1. orval interpolates path parameters directly and leaves query encoding to axios or a `qs` config, with no per-parameter `style` or `explode`.
+1. Only orval's `fetch` client reads `style` and `explode` from the spec. Its axios and query clients interpolate path parameters directly and leave query encoding to axios or a `qs` config.
 2. HeyAPI serializes path parameters per parameter but runs one global query serializer, and does not style header or cookie parameters.
 3. All three encode JSON, `multipart/form-data`, and `application/x-www-form-urlencoded`. Kubb also honors the OpenAPI `encoding` object, so a form part can set its own content type and style.
 4. orval and HeyAPI expose a single body serializer and one response transformer, so a new media type means replacing them, not registering one.
-5. Off by default. Kubb validates request and response bodies through any Standard Schema validator (Zod, valibot, arktype). HeyAPI covers those plus Ajv, Joi, TypeBox, and Yup. orval validates responses only, with Zod.
+5. Off by default. Kubb validates request and response bodies through any Standard Schema validator (Zod, valibot, arktype). HeyAPI validates both with Zod or Valibot. orval validates responses only, with Zod.
+6. orval streams NDJSON on its `fetch` client but has no server-sent events (`text/event-stream`) support. Kubb and HeyAPI consume SSE.
 
 ## What sets Kubb apart
 
@@ -104,7 +105,7 @@ Every output is a separate [plugin](/docs/5.x/guide/concepts/plugins) on a share
 
 ### Custom adapters and parsers
 
-A [custom adapter](/docs/5.x/guide/concepts/adapters) swaps `adapterOas` for another input such as AsyncAPI or GraphQL. A [custom parser](/docs/5.x/guide/concepts/parsers) targets another output language such as Python or Rust. orval and HeyAPI do neither, so Kubb reaches inputs and outputs they cannot.
+A [custom adapter](/docs/5.x/guide/concepts/adapters) swaps `adapterOas` for another input such as AsyncAPI or GraphQL. A [custom parser](/docs/5.x/guide/concepts/parsers) targets another output language such as Python or Rust. orval and HeyAPI expose no equivalent extension point: their input is OpenAPI and their generators are first-party, so reaching a new input format or output language waits on the maintainers rather than an adapter or parser you write yourself.
 
 ### Post-enforced plugins
 
@@ -112,7 +113,7 @@ Plugins with `enforce: 'post'` run after the rest, handling cross-output work li
 
 ### Bundler integration
 
-[`unplugin-kubb`](/docs/5.x/guide/integrations/) runs generation inside Vite, Rollup, Webpack, esbuild, Nuxt, and Astro. HeyAPI is Vite-only. orval has no bundler integration.
+[`unplugin-kubb`](/docs/5.x/guide/integrations/) runs generation inside Vite, Rollup, Webpack, esbuild, Nuxt, and Astro. HeyAPI ships a Vite plugin and a Nuxt module. orval has no bundler integration.
 
 ## When not to use Kubb
 
