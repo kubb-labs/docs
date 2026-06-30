@@ -156,6 +156,17 @@ client.setConfig({
 Like the other config, `deserializers` can also be passed on a single call, and a per-call entry
 merges over the client one for that request.
 
+When the runtime picks the wrong parse mode because a response omits its `Content-Type` or sets a
+misleading one, force the mode with `responseType` on the call. It accepts `'json'`, `'text'`,
+`'blob'`, `'arraybuffer'`, and `'document'` (`@kubb/plugin-axios` adds `'formdata'`):
+
+```typescript
+const { data } = await downloadInvoice({ path: { id: '123' }, responseType: 'blob' })
+// data is a Blob even when the server leaves Content-Type unset
+```
+
+For `responseType: 'stream'`, see [server-sent events](/docs/5.x/guide/going-further/server-sent-events).
+
 ## Response validation
 
 Validation is off by default. Turn it on with the [`validator`](/plugins/plugin-fetch) plugin

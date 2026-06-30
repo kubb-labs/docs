@@ -162,6 +162,23 @@ await getPetById({ path: { petId: 1 }, client: staging })
 The configuration object is the same `ClientConfig` in both cases. `baseURL`, `auth`, and the
 transport each have their own guide, linked below.
 
+## Build a URL without sending
+
+`client.getUrl` returns the URL for a call without making the request. It runs the same
+`baseURL`, path interpolation, and query serialization as the send path, so it suits building a
+link or logging the target ahead of a request:
+
+```typescript
+import { client } from './gen/clients/.kubb/client'
+
+const url = client.getUrl({
+  url: '/pets/{petId}',
+  path: { petId: 1 },
+  query: { fields: 'name' },
+})
+// https://api.example.com/v1/pets/1?fields=name
+```
+
 ## See also
 
 - [`@kubb/plugin-fetch`](/plugins/plugin-fetch)
