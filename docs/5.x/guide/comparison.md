@@ -72,6 +72,30 @@ The legend matches the table above.
 
 openapi-typescript is omitted here. It ships no generated client, so the runtime rows do not apply.
 
+## Client runtime
+
+The generated client does more than wrap `fetch`. It encodes parameters and bodies from the spec and decodes responses by content type, and it can validate both ends. See [serialization](/docs/5.x/guide/going-further/serialization) for the full picture.
+
+Two things set Kubb's client apart. It reads each parameter's OpenAPI `style` and `explode` from the spec, so query, path, header, and cookie all encode correctly with no config. And [`codecs`](/docs/5.x/guide/going-further/serialization#request-bodies) register a `serialize` and `deserialize` per media type, which is how XML or YAML round-trips without replacing the client.
+
+The legend matches the tables above.
+
+| Feature                                                                                                     | Kubb  | orval          | HeyAPI         |
+| ----------------------------------------------------------------------------------------------------------- | :---: | :------------- | :------------- |
+| [Parameter styles from the spec](/docs/5.x/guide/going-further/serialization#parameter-styles)              |  ✅   | 🛑<sup>1</sup> | 🔶<sup>2</sup> |
+| Request body serializers (JSON, form-data, urlencoded)                                                      | ✅<sup>3</sup> | ✅    | ✅             |
+| [Pluggable codecs per media type](/docs/5.x/guide/going-further/serialization#request-bodies) (XML, YAML)   |  ✅   | 🛑<sup>4</sup> | 🛑<sup>4</sup> |
+| [Runtime body validation](/docs/5.x/guide/going-further/error-handling#validation-failures)                 | ✅<sup>5</sup> | 🔶<sup>5</sup> | ✅<sup>5</sup> |
+| [Server-sent events and streaming](/docs/5.x/guide/going-further/server-sent-events)                        |  ✅   |       🛑       | ✅             |
+
+**Notes**
+
+1. orval interpolates path parameters directly and leaves query encoding to axios or a `qs` config, with no per-parameter `style` or `explode`.
+2. HeyAPI serializes path parameters per parameter but runs one global query serializer, and does not style header or cookie parameters.
+3. All three encode JSON, `multipart/form-data`, and `application/x-www-form-urlencoded`. Kubb also honors the OpenAPI `encoding` object, so a form part can set its own content type and style.
+4. orval and HeyAPI expose a single body serializer and one response transformer, so a new media type means replacing them, not registering one.
+5. Off by default. Kubb validates request and response bodies through any Standard Schema validator (Zod, valibot, arktype). HeyAPI covers those plus Ajv, Joi, TypeBox, and Yup. orval validates responses only, with Zod.
+
 ## What sets Kubb apart
 
 ### Plugin architecture
