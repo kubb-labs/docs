@@ -40,39 +40,44 @@ request({
 
 Query parameters default to the `form` style. Arrays explode into repeated keys unless the spec
 says otherwise, and `spaceDelimited`, `pipeDelimited`, and `deepObject` change how arrays and
-objects collapse:
+objects collapse.
 
-```typescript
-// { id: [3, 4, 5] }                    style form,           explode true  -> id=3&id=4&id=5
-// { id: [3, 4, 5] }                    style form,           explode false -> id=3,4,5
-// { id: [3, 4, 5] }                    style spaceDelimited, explode false -> id=3%204%205
-// { id: [3, 4, 5] }                    style pipeDelimited,  explode false -> id=3|4|5
-// { a: { b: 1 } }                      style deepObject                    -> a%5Bb%5D=1
-```
+| Style              | `explode` | Input              | Result            |
+| ------------------ | --------- | ------------------ | ----------------- |
+| `form` (default)   | `true`    | `{ id: [3, 4, 5] }` | `id=3&id=4&id=5`  |
+| `form`             | `false`   | `{ id: [3, 4, 5] }` | `id=3,4,5`        |
+| `spaceDelimited`   | `false`   | `{ id: [3, 4, 5] }` | `id=3%204%205`    |
+| `pipeDelimited`    | `false`   | `{ id: [3, 4, 5] }` | `id=3\|4\|5`      |
+| `deepObject`       | —         | `{ a: { b: 1 } }`  | `a%5Bb%5D=1`      |
+
+With `explode: true`, `spaceDelimited` and `pipeDelimited` fall back to repeated keys like `form`,
+so the delimiter only shows with `explode: false`.
 
 ### Path
 
 Path parameters default to the `simple` style, which emits the bare value. `label` prefixes a
-`.` and `matrix` prefixes a `;name=` segment:
+`.` and `matrix` prefixes a `;name=` segment. The results below are the serialized segment for a
+parameter named `id`.
 
-```typescript
-// { id: [3, 4, 5] }  style simple                -> 3,4,5
-// { id: [3, 4, 5] }  style label,  explode true  -> .3.4.5
-// { id: [3, 4, 5] }  style matrix, explode true  -> ;id=3;id=4;id=5
-// { x: 1, y: 2 }     style simple                -> x,1,y,2
-```
+| Style              | `explode` | Input            | Result             |
+| ------------------ | --------- | ---------------- | ------------------ |
+| `simple` (default) | `false`   | `[3, 4, 5]`      | `3,4,5`            |
+| `label`            | `true`    | `[3, 4, 5]`      | `.3.4.5`           |
+| `matrix`           | `true`    | `[3, 4, 5]`      | `;id=3;id=4;id=5`  |
+| `simple`           | `false`   | `{ x: 1, y: 2 }` | `x,1,y,2`          |
 
 ### Header and cookie
 
 Header parameters use the `simple` style and cookie parameters use the `form` style. Both fix the
 style and only let `explode` vary, so the metadata for these locations carries `explode` alone.
-Header values are sent as-is, and cookie values are URL-encoded into a single `Cookie` header:
+Header values are sent as-is, and cookie values are URL-encoded into a single `Cookie` header.
 
-```typescript
-// header [3, 4]              explode false -> X-Ids: 3,4
-// header { role: 'admin' }   explode true  -> X-Filter: role=admin
-// cookie { session: 'abc', ids: [1, 2] }   -> Cookie: session=abc; ids=1,2
-```
+| Location | `explode` | Input                            | Result                  |
+| -------- | --------- | -------------------------------- | ----------------------- |
+| header   | `false`   | `[3, 4]`                         | `X-Ids: 3,4`            |
+| header   | `true`    | `{ role: 'admin' }`              | `X-Filter: role=admin`  |
+| cookie   | `false`   | `{ session: 'abc', ids: [1, 2] }` | `session=abc; ids=1,2`  |
+| cookie   | `true`    | `{ ids: [1, 2] }`                | `ids=1; ids=2`          |
 
 ### Override the serializer
 
