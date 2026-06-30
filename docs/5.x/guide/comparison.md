@@ -97,6 +97,31 @@ The legend matches the tables above.
 5. Off by default. Kubb validates request and response bodies through any Standard Schema validator (Zod, valibot, arktype). HeyAPI validates both with Zod or Valibot. orval validates responses only, with Zod.
 6. orval streams NDJSON on its `fetch` client but has no server-sent events (`text/event-stream`) support. Kubb and HeyAPI consume SSE.
 
+## The Kubb toolkit
+
+Every job in Kubb is one of three pieces: an [adapter](/docs/5.x/guide/concepts/adapters) reads the input, a [parser](/docs/5.x/guide/concepts/parsers) renders the output language, and a [plugin](/docs/5.x/guide/concepts/plugins) emits each artifact on the shared [AST](/docs/5.x/guide/concepts/ast). When a built-in falls short you write your own, the extension point orval and HeyAPI do not have.
+
+**Adapters (input)**
+
+- [`@kubb/adapter-oas`](/adapters/adapter-oas) reads OpenAPI 2.0, 3.0, and 3.1.
+
+**Parsers (output)**
+
+- [`@kubb/parser-ts`](/parsers/parser-ts) renders TypeScript and TSX.
+- [`@kubb/parser-md`](/parsers/parser-md) renders Markdown.
+
+**Plugins (artifacts)**
+
+- [`@kubb/plugin-ts`](/plugins/plugin-ts) types, interfaces, and enums.
+- [`@kubb/plugin-zod`](/plugins/plugin-zod) Zod v4 schemas.
+- [`@kubb/plugin-fetch`](/plugins/plugin-fetch) and [`@kubb/plugin-axios`](/plugins/plugin-axios) HTTP clients.
+- [`@kubb/plugin-react-query`](/plugins/plugin-react-query), [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query), and [`@kubb/plugin-swr`](/plugins/plugin-swr) data-fetching hooks.
+- [`@kubb/plugin-faker`](/plugins/plugin-faker) mock data and [`@kubb/plugin-msw`](/plugins/plugin-msw) request handlers.
+- [`@kubb/plugin-cypress`](/plugins/plugin-cypress) end-to-end tests.
+- [`@kubb/plugin-redoc`](/plugins/plugin-redoc) API documentation.
+- [`@kubb/plugin-mcp`](/plugins/plugin-mcp) an MCP server for your API.
+- [`@kubb/plugin-barrel`](/plugins/plugin-barrel) barrel index files.
+
 ## What sets Kubb apart
 
 ### Plugin architecture
@@ -107,6 +132,10 @@ Every output is a separate [plugin](/docs/5.x/guide/concepts/plugins) on a share
 
 A [custom adapter](/docs/5.x/guide/concepts/adapters) swaps `adapterOas` for another input such as AsyncAPI or GraphQL. A [custom parser](/docs/5.x/guide/concepts/parsers) targets another output language such as Python or Rust. orval and HeyAPI expose no equivalent extension point: their input is OpenAPI and their generators are first-party, so reaching a new input format or output language waits on the maintainers rather than an adapter or parser you write yourself.
 
+### Advanced client
+
+One client backs both [`fetch`](/plugins/plugin-fetch) and [`axios`](/plugins/plugin-axios) with the same contract. It reads each parameter's `style` and `explode` for query, path, header, and cookie, encodes the body from the request content type, and decodes the response by its media type. [`codecs`](/docs/5.x/guide/going-further/serialization#request-bodies) register a `serialize` and `deserialize` per media type, so XML or YAML round-trips without swapping the client. A call returns a status-discriminated result you narrow with one `switch`, and [`throwOnError`](/docs/5.x/guide/going-further/error-handling) picks throw or return per call. The client also streams [server-sent events](/docs/5.x/guide/going-further/server-sent-events) and validates bodies against any Standard Schema validator. The codec system and the full parameter-style coverage are the parts orval and HeyAPI do not match.
+
 ### Post-enforced plugins
 
 Plugins with `enforce: 'post'` run after the rest, handling cross-output work like barrel files without touching each plugin. [`@kubb/plugin-barrel`](/plugins/plugin-barrel) works this way.
@@ -114,6 +143,10 @@ Plugins with `enforce: 'post'` run after the rest, handling cross-output work li
 ### Bundler integration
 
 [`unplugin-kubb`](/docs/5.x/guide/integrations/) runs generation inside Vite, Rollup, Webpack, esbuild, Nuxt, and Astro. HeyAPI ships a Vite plugin and a Nuxt module. orval has no bundler integration.
+
+### MCP and AI agents
+
+[`@kubb/plugin-mcp`](/plugins/plugin-mcp) turns your spec into an MCP server, so an assistant calls your API as a set of typed tools. orval ships the same idea as `@orval/mcp`. HeyAPI has no MCP output. Kubb goes one step further with `@kubb/mcp`, an MCP server for the generator itself, so Claude, Cursor, or any MCP client runs Kubb and writes the code from a prompt.
 
 ## When not to use Kubb
 
