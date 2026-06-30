@@ -185,5 +185,6 @@ Call `client.setConfig({ transport })` to cover the whole app at once, since eve
 
 - [`@kubb/plugin-fetch`](/plugins/plugin-fetch)
 - [`@kubb/plugin-axios`](/plugins/plugin-axios)
+- [Interceptors](/docs/5.x/guide/going-further/interceptors)
 - [Authentication guide](/docs/5.x/guide/going-further/authentication)
 - [Set your own baseURL](/docs/5.x/guide/going-further/base-url)

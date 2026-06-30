@@ -132,11 +132,12 @@ client.interceptors.request.use((request) => {
 })
 ```
 
-The interceptor receives the URL already built from the resolved `baseURL`, so reach for it only when the host depends on the request. For a fixed URL, `setConfig` and `createClient` stay the simpler path.
+The interceptor receives the URL already built from the resolved `baseURL`, so reach for it only when the host depends on the request. For a fixed URL, `setConfig` and `createClient` stay the simpler path. See the [interceptors guide](/docs/5.x/guide/going-further/interceptors) for the full request, response, and error channels.
 
 ## See also
 
 - [Custom transport](/docs/5.x/guide/going-further/transport)
 - [Authentication](/docs/5.x/guide/going-further/authentication)
+- [Interceptors](/docs/5.x/guide/going-further/interceptors)
 - [`@kubb/plugin-fetch`](/plugins/plugin-fetch)
 - [`@kubb/plugin-axios`](/plugins/plugin-axios)

@@ -109,10 +109,11 @@ client.interceptors.request.use((request) => {
 })
 ```
 
-Use an interceptor to sign a request or attach a credential the spec does not declare. To refresh a token after a `401`, read the new token from a response or error interceptor and let the request interceptor pick it up on the next call. For a standard bearer, basic, or apiKey scheme, the `auth` resolver stays the simpler path.
+Use an interceptor to sign a request or attach a credential the spec does not declare. To refresh a token after a `401`, read the new token from a response or error interceptor and let the request interceptor pick it up on the next call. For a standard bearer, basic, or apiKey scheme, the `auth` resolver stays the simpler path. The [interceptors guide](/docs/5.x/guide/going-further/interceptors) covers the response and error channels and the full handler lifecycle.
 
 ## See also
 
+- [Interceptors](/docs/5.x/guide/going-further/interceptors)
 - [`@kubb/plugin-fetch`](/plugins/plugin-fetch)
 - [`@kubb/plugin-axios`](/plugins/plugin-axios)
 - [OpenAPI security scheme object](https://spec.openapis.org/oas/v3.1.0#security-scheme-object)
