@@ -137,6 +137,11 @@ client.setConfig({
 })
 ```
 
+A `bodySerializers` entry overrides the body encoding for one media type and keeps the default
+JSON, multipart, and urlencoded handling for the rest. The `serializer.body` function from
+[Override the serializer](#override-the-serializer) replaces the whole body serializer instead, so
+reach for it only when you want to own every content type.
+
 ## Response decoding
 
 The runtime reads the response `Content-Type` and decodes the body by it: JSON is parsed, text
