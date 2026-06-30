@@ -47,7 +47,7 @@ An adapter converts an input specification into the universal [AST](/docs/5.x/gu
 
 Each adapter carries a dialect, and that dialect is the one place where spec-specific schema questions live: nullability, `$ref` resolution, discriminators, binary detection, and schema deduplication. Everything past the adapter is generic JSON Schema, so plugins and parsers never branch on the source format.
 
-The official adapter for OpenAPI 2.0, 3.0, and 3.1 is [`@kubb/adapter-oas`](/adapters/adapter-oas). `defineConfig` selects it automatically.
+The official adapter for OpenAPI 2.0, 3.0, and 3.1 is [`@kubb/adapter-oas`](/adapters/adapter-oas/). `defineConfig` selects it automatically.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -206,8 +206,8 @@ export default defineConfig({
 
 | Package                                 | Extensions                   | Description                                                                                                  |
 | --------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| [`@kubb/parser-ts`](/parsers/parser-ts) | `.ts`, `.js`, `.tsx`, `.jsx` | Uses the TypeScript compiler to print, deduplicate, and resolve imports. Included automatically with `kubb`. |
-| [`@kubb/parser-md`](/parsers/parser-md) | `.md`                        | Writes Markdown files. Included automatically with `kubb`.                                                   |
+| [`@kubb/parser-ts`](/parsers/parser-ts/) | `.ts`, `.js`, `.tsx`, `.jsx` | Uses the TypeScript compiler to print, deduplicate, and resolve imports. Included automatically with `kubb`. |
+| [`@kubb/parser-md`](/parsers/parser-md/) | `.md`                        | Writes Markdown files. Included automatically with `kubb`.                                                   |
 
 ## [Storage](/docs/5.x/guide/concepts/storage)
 
@@ -238,7 +238,7 @@ export default defineConfig({
 | [`@kubb/core`](/docs/5.x/reference/core)         | Lower-level runtime with `createKubb`, `definePlugin`, `defineParser`, `createAdapter`, and storage APIs. Use for programmatic generation or custom tooling.                     |
 | [`@kubb/cli`](/docs/5.x/reference/commands/)     | Provides the `kubb` command-line binary. Reads `kubb.config.ts` and runs the generation pipeline.                                                                                |
 | [`@kubb/ast`](/docs/5.x/guide/concepts/ast)      | Universal AST layer. Includes all node factories, `walk`, `transform`, `collect`, type guards, ref helpers, and the `defineDialect` and `optionality` helpers. The macro engine lives on the root and the presets on `@kubb/ast/macros`. |
-| [`@kubb/parser-ts`](/parsers/parser-ts)    | TypeScript and TSX parser. Included automatically with the `kubb` package.                                                                                                       |
+| [`@kubb/parser-ts`](/parsers/parser-ts/)    | TypeScript and TSX parser. Included automatically with the `kubb` package.                                                                                                       |
 | [`@kubb/renderer-jsx`](/docs/5.x/reference/core) | JSX-based rendering for plugins that build files from React components.                                                                                                          |
 
 ## Build-tool integrations

@@ -398,7 +398,7 @@ export default defineConfig({
 
 ### `adapter`
 
-Adapter that converts your input into the universal AST. With `defineConfig` from the `kubb` package this defaults to `adapterOas()` from [`@kubb/adapter-oas`](/adapters/adapter-oas).
+Adapter that converts your input into the universal AST. With `defineConfig` from the `kubb` package this defaults to `adapterOas()` from [`@kubb/adapter-oas`](/adapters/adapter-oas/).
 
 Omit `adapter` (and `input`) to run in plugin-only mode. Kubb skips spec parsing, but `kubb:plugin:setup` hooks still fire and `injectFile` still adds files to the build. Reach for this when a generation script doesn't consume an OpenAPI spec.
 
@@ -452,13 +452,13 @@ await kubb.build()
 > [!NOTE]
 > `adapterOas()` validates OpenAPI specs by default (`validate: true`). Pass `adapterOas({ validate: false })` to skip validation for faster startup or for non-conforming specs.
 
-See the [`@kubb/adapter-oas`](/adapters/adapter-oas) reference for every adapter option (`validate`, `contentType`, `server`, `discriminator`, `dateType`, `integerType`, `unknownType`, `emptySchemaType`, `enumSuffix`, …).
+See the [`@kubb/adapter-oas`](/adapters/adapter-oas/) reference for every adapter option (`validate`, `contentType`, `server`, `discriminator`, `dateType`, `integerType`, `unknownType`, `emptySchemaType`, `enumSuffix`, …).
 
 ### `parsers`
 
 Array of parsers that turn the in-memory file representation into source code. Each parser declares which file extensions it handles through `extNames`.
 
-See the [Parser concept](/docs/5.x/guide/concepts/parsers) and [`@kubb/parser-ts`](/parsers/parser-ts) for the built-in parsers.
+See the [Parser concept](/docs/5.x/guide/concepts/parsers) and [`@kubb/parser-ts`](/parsers/parser-ts/) for the built-in parsers.
 
 |           |                                                |
 | --------: | :--------------------------------------------- |

@@ -52,7 +52,7 @@ First, install [Claude desktop](https://claude.ai/download) and work through the
 Then install Kubb with the [MCP plugin](/plugins/plugin-mcp/).
 
 > [!TIP]
-> The MCP plugin builds on the [OpenAPI adapter](/adapters/adapter-oas), the [TypeScript](/plugins/plugin-ts/) and [Zod](/plugins/plugin-zod/) plugins, and a client plugin ([axios](/plugins/plugin-axios/) or [fetch](/plugins/plugin-fetch/)) to generate every file it needs.
+> The MCP plugin builds on the [OpenAPI adapter](/adapters/adapter-oas/), the [TypeScript](/plugins/plugin-ts/) and [Zod](/plugins/plugin-zod/) plugins, and a client plugin ([axios](/plugins/plugin-axios/) or [fetch](/plugins/plugin-fetch/)) to generate every file it needs.
 
 ::: code-group
 

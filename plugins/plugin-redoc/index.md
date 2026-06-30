@@ -48,7 +48,7 @@ This plugin reads the OpenAPI adapter. Kubb uses `adapterOas()` by default, so i
 **See also**
 
 - [Redoc](https://redocly.com/redoc)
-- [adapterOas](/adapters/adapter-oas)
+- [adapterOas](/adapters/adapter-oas/)
 
 ## Installation
 

@@ -5,11 +5,11 @@ description: Configuration changes for @kubb/adapter-oas when migrating from Kub
 
 # Migration: `@kubb/adapter-oas`
 
-Part of the [v4 → v5 migration guide](/docs/5.x/migration). See the full option reference in [`@kubb/adapter-oas`](/adapters/adapter-oas).
+Part of the [v4 → v5 migration guide](/docs/5.x/migration). See the full option reference in [`@kubb/adapter-oas`](/adapters/adapter-oas/).
 
 `@kubb/plugin-oas` is gone. When you import `defineConfig` from `kubb`, the OpenAPI adapter is applied for you, so most projects never name it. Set `adapter: adapterOas({ ... })` only when you want to change its options.
 
-v4 repeated the same schema-level options on every plugin. In v5 they live on [`adapterOas`](/adapters/adapter-oas) and apply once across all plugins. Remove them from each plugin and set them on the adapter.
+v4 repeated the same schema-level options on every plugin. In v5 they live on [`adapterOas`](/adapters/adapter-oas/) and apply once across all plugins. Remove them from each plugin and set them on the adapter.
 
 | Option            | Removed from                              | v5 location                       |
 | ----------------- | ----------------------------------------- | --------------------------------- |
