@@ -42,11 +42,22 @@ resources:
 
 `@kubb/plugin-fetch` turns each OpenAPI operation into a typed async function that calls your API with the global [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API). The path, query parameters, request body, response, and error shape all come from the spec, so a call stays in sync with the API it targets.
 
-It builds on `@kubb/plugin-ts` for the types, so add that to your config. The client uses the runtime's built-in `fetch`, so there is no extra HTTP dependency to install.
+From your spec, the generated client gives you:
 
-Each generated function takes one grouped options object (`{ path, query, headers, body }`) and returns a `RequestResult` of `{ status, data, error, request, response }`. `throwOnError` defaults to `true`, so a resolved call means the request succeeded and `data` is set. Pass `throwOnError: false` per call to get the discriminated union instead, keyed on the top-level `status`. A check on `status` narrows `data` on a success code and `error` on a documented error code, the same way `data` is typed on the success path. The runtime is always bundled into `.kubb/client.ts`, so there is no `bundle` option.
+- [Typed functions](/docs/5.x/guide/going-further/calling-operations) per operation with grouped `path`, `query`, `headers`, and `body`.
+- A [status-keyed result](/docs/5.x/guide/going-further/error-handling) on every call, or a thrown `ResponseError`.
+- [Auth](/docs/5.x/guide/going-further/authentication) resolved from your OpenAPI security schemes.
+- [Serialization](/docs/5.x/guide/going-further/serialization) of parameters and bodies across content types, including `multipart/form-data` uploads and binary downloads.
+- Runtime [validation](#validator) against [`@kubb/plugin-zod`](/plugins/plugin-zod) schemas.
+- Typed [server-sent events](/docs/5.x/guide/going-further/server-sent-events) you read with `for await`.
+- [Interceptors](/docs/5.x/guide/going-further/interceptors) and a [custom transport](/docs/5.x/guide/going-further/transport) for the send.
+- Standalone functions or a class-based [SDK](#sdk).
 
-The bundled `client` also exposes a `getUrl` method. It returns the final URL for an operation from the base URL, the interpolated path params, and the serialized query, without sending the request. This helps when you build cache keys, prefetch data, or render links:
+It builds on `@kubb/plugin-ts` for the types, so add that to your config. The client uses the built-in `fetch`, so there is no extra HTTP dependency to install.
+
+Each function takes one grouped options object (`{ path, query, headers, body }`) and returns a `RequestResult` of `{ status, data, error, request, response }`, bundled into `.kubb/client.ts`. See [error handling](/docs/5.x/guide/going-further/error-handling) for `throwOnError` and the status-keyed result union.
+
+The bundled `client` also exposes `getUrl`, which builds an operation's final URL without sending the request, useful for cache keys, prefetch, and links:
 
 ```ts
 import { client } from './.kubb/client'
@@ -55,22 +66,18 @@ const url = client.getUrl({ url: '/pet/{petId}', path: { petId: 1 }, query: { st
 // '/pet/1?status=available'
 ```
 
-To authenticate requests, give the client one `auth` resolver and the runtime adds the credential to every call its security schemes guard. The [authentication guide](/docs/5.x/guide/going-further/authentication) walks through bearer, basic, and apiKey setups.
-
-The runtime sets `method`, `headers`, `body`, `signal`, and `credentials` on each `fetch` itself. To reach the rest of the `RequestInit` (`cache`, `mode`, `redirect`, `keepalive`, `duplex`, or Next.js's `next: { revalidate, tags }`), pass `options`. It works at the client level for every call and per request, where a per-request value wins:
+The runtime sets `method`, `headers`, `body`, `signal`, and `credentials` itself. To reach the rest of `RequestInit` (`cache`, `mode`, `redirect`, `keepalive`, `duplex`, or Next.js's `next`), pass `options`, on the client or per call, where a per-call value wins:
 
 ```ts
 import { client } from './.kubb/client'
 import { getPetById } from './getPetById'
 
-// every call opts out of the cache
 client.setConfig({ options: { cache: 'no-store' } })
 
-// one call overrides it and adds a Next.js revalidate window
 await getPetById({ path: { petId: 1 }, options: { cache: 'force-cache', next: { revalidate: 60 } } })
 ```
 
-The transport spreads `options` into the `fetch` init before the fields the runtime owns, so it can never override the method, headers, body, signal, or credentials.
+For cross-cutting concerns like retries and interceptors, reach for a [custom transport](/docs/5.x/guide/going-further/transport) instead.
 
 ## Installation
 

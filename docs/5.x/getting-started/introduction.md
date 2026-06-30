@@ -52,11 +52,14 @@ const pet: Pet = { id: 1, name: 'Cat' }
 
 That is the full cycle. Change the spec, run `kubb generate` again, and the types follow.
 
-## What you can generate
+## Features
 
-Each output format is its own plugin, so you add only the ones you need. The starter set covers [TypeScript types](/plugins/plugin-ts), HTTP clients for [Axios](/plugins/plugin-axios) or [Fetch](/plugins/plugin-fetch), [React Query](/plugins/plugin-react-query) and [Vue Query](/plugins/plugin-vue-query) hooks, [Zod](/plugins/plugin-zod) validators, [MSW](/plugins/plugin-msw) handlers, and [Faker](/plugins/plugin-faker) mock data.
-
-Beyond the app code, you can generate [Cypress](/plugins/plugin-cypress) tests and [Model Context Protocol](/plugins/plugin-mcp) servers that let AI assistants call your API. When nothing fits, [write your own plugin](/docs/5.x/guide/going-further/creating-plugins) with the same APIs the official ones use. The [plugins catalogue](/plugins) lists them all.
+- Generate [TypeScript types](/plugins/plugin-ts), [React Query](/plugins/plugin-react-query) and [Vue Query](/plugins/plugin-vue-query) hooks, [SWR](/plugins/plugin-swr) hooks, [Zod](/plugins/plugin-zod) validators, [Faker](/plugins/plugin-faker) mocks, and [MSW](/plugins/plugin-msw) handlers, each from its own plugin.
+- Generate a typed [Axios](/plugins/plugin-axios) or [Fetch](/plugins/plugin-fetch) client with status-keyed results, auth, validation, file uploads, [server-sent events](/docs/5.x/guide/going-further/server-sent-events), [interceptors](/docs/5.x/guide/going-further/interceptors), and a [swappable transport](/docs/5.x/guide/going-further/transport).
+- Read any OpenAPI 2.0, 3.0, or 3.1 spec through the [OpenAPI adapter](/adapters/adapter-oas), or add your own [adapter](/docs/5.x/guide/concepts/adapters).
+- Shape the output by grouping files by tag or path, including or excluding operations, and writing to disk, memory, or a [custom storage backend](/docs/5.x/guide/concepts/storage).
+- Generate [Cypress](/plugins/plugin-cypress) tests and a [Model Context Protocol server](/plugins/plugin-mcp), or [write your own plugin](/docs/5.x/guide/going-further/creating-plugins).
+- Run generation in [Vite](/docs/5.x/guide/integrations/vite), [Nuxt](/docs/5.x/guide/integrations/nuxt), and other bundlers with `unplugin-kubb`, or from [AI assistants](/docs/5.x/ai/mcp) and [Claude Code](/docs/5.x/ai/claude).
 
 Ready for more? Read [Installation](./installation) and [Basic Usage](./basic-usage), then reach for [Configuration](/docs/5.x/reference/configuration), [Recipes](/docs/5.x/guide/recipes), and [Integrations](/docs/5.x/guide/integrations/) when you need them.
 

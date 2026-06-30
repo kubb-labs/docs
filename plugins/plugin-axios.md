@@ -42,11 +42,22 @@ resources:
 
 `@kubb/plugin-axios` turns each OpenAPI operation into a typed async function that calls your API with [axios](https://axios-http.com/). The path, query parameters, request body, response, and error shape all come from the spec, so a call stays in sync with the API it targets.
 
-It builds on `@kubb/plugin-ts` for the types, so add that to your config. Axios is a runtime dependency, so install it next to your application code.
+From your spec, the generated client gives you:
 
-Each generated function takes one grouped options object (`{ path, query, headers, body }`) and returns a `RequestResult` of `{ status, data, error, request, response }`. `throwOnError` defaults to `true`, so a resolved call means the request succeeded and `data` is set. Pass `throwOnError: false` per call to get the discriminated union instead, keyed on the top-level `status`. A check on `status` narrows `data` on a success code and `error` on a documented error code, the same way `data` is typed on the success path. The runtime is always bundled into `.kubb/client.ts`, so there is no `bundle` option.
+- [Typed functions](/docs/5.x/guide/going-further/calling-operations) per operation with grouped `path`, `query`, `headers`, and `body`.
+- A [status-keyed result](/docs/5.x/guide/going-further/error-handling) on every call, or a thrown `ResponseError`.
+- [Auth](/docs/5.x/guide/going-further/authentication) resolved from your OpenAPI security schemes.
+- [Serialization](/docs/5.x/guide/going-further/serialization) of parameters and bodies across content types, including `multipart/form-data` uploads and binary downloads.
+- Runtime [validation](#validator) against [`@kubb/plugin-zod`](/plugins/plugin-zod) schemas.
+- Typed [server-sent events](/docs/5.x/guide/going-further/server-sent-events) you read with `for await`.
+- [Interceptors](/docs/5.x/guide/going-further/interceptors) and a [custom transport](/docs/5.x/guide/going-further/transport) for the send.
+- Standalone functions or a class-based [SDK](#sdk).
 
-The bundled `client` also exposes a `getUrl` method. It returns the final URL for an operation from the base URL, the interpolated path params, and the serialized query, without sending the request. This helps when you build cache keys, prefetch data, or render links:
+It builds on `@kubb/plugin-ts` for the types, so add that to your config, and axios is a runtime dependency to install next to your app.
+
+Each function takes one grouped options object (`{ path, query, headers, body }`) and returns a `RequestResult` of `{ status, data, error, request, response }`, bundled into `.kubb/client.ts`. See [error handling](/docs/5.x/guide/going-further/error-handling) for `throwOnError` and the status-keyed result union.
+
+The bundled `client` also exposes `getUrl`, which builds an operation's final URL without sending the request, useful for cache keys, prefetch, and links:
 
 ```ts
 import { client } from './.kubb/client'
@@ -55,22 +66,18 @@ const url = client.getUrl({ url: '/pet/{petId}', path: { petId: 1 }, query: { st
 // '/pet/1?status=available'
 ```
 
-To authenticate requests, give the client one `auth` resolver and the runtime adds the credential to every call its security schemes guard. The [authentication guide](/docs/5.x/guide/going-further/authentication) walks through bearer, basic, and apiKey setups.
-
-For a single call that needs a native axios field the runtime does not set, such as `timeout`, `proxy`, `maxRedirects`, `decompress`, or an `onUploadProgress` callback, pass `options`. It works at the client level for every call and per request, where a per-request value wins:
+For a native axios field the runtime does not set (`timeout`, `proxy`, `maxRedirects`, `decompress`, `onUploadProgress`), pass `options`, on the client or per call, where a per-call value wins:
 
 ```ts
 import { client } from './.kubb/client'
 import { uploadFile } from './uploadFile'
 
-// every call gets a timeout
 client.setConfig({ options: { timeout: 10_000 } })
 
-// one call tracks upload progress and shortens the timeout
 await uploadFile({ path: { petId: 1 }, body, options: { timeout: 2_000, onUploadProgress: (e) => console.log(e.loaded) } })
 ```
 
-The runtime spreads `options` into the request before the fields it owns (URL, method, headers, params, body, and serialization), so it can never override them. It is the per-request counterpart to the [`transport` instance](/docs/5.x/guide/going-further/transport), which stays the place for cross-cutting concerns like retries and interceptors, and mirrors `fetchOptions` in [`@kubb/plugin-fetch`](/plugins/plugin-fetch).
+For cross-cutting concerns like retries and interceptors, reach for a [custom transport](/docs/5.x/guide/going-further/transport) instead.
 
 ## Installation
 
