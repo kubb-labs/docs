@@ -58,8 +58,8 @@ await updatePet({
 ```
 
 Each key is optional and only appears when the operation declares it, so an operation with no
-parameters is called with no arguments. How Kubb encodes arrays and objects in each location is
-covered in [serialization](/docs/5.x/guide/going-further/serialization).
+parameters is called with an empty object, `getStatus({})`. How Kubb encodes arrays and objects in
+each location is covered in [serialization](/docs/5.x/guide/going-further/serialization).
 
 ## Read the result
 

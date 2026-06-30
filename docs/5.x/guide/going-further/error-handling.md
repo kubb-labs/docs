@@ -138,7 +138,7 @@ that does not match its schema throws a `ParseError` instead of returning. It ca
 `issues` from the schema, so the same handling works across Zod, valibot, and arktype:
 
 ```typescript
-import { ParseError } from './gen/clients/.kubb/client'
+import { ParseError } from './gen/clients/.kubb/standardSchema'
 
 try {
   const { data } = await getPetById({ path: { petId: 1 } })
