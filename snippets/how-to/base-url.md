@@ -78,7 +78,7 @@ export default defineConfig({
 
 ## Set it at runtime
 
-The `baseURL` rides the same `ClientConfig` as `auth` and the [transport](/docs/5.x/guide/going-further/transport), so you set it at runtime the same three ways. Pick the one that matches the scope you need.
+The `baseURL` rides the same `ClientConfig` as `auth` and the [transport](/plugins/plugin-fetch/guide/transport), so you set it at runtime the same three ways. Pick the one that matches the scope you need.
 
 Call `client.setConfig({ baseURL })` to point the whole app at one URL. Every generated function imports the shared `client`, so the change reaches each call at once. This fits reading the URL from an environment variable on startup:
 
@@ -124,12 +124,12 @@ client.interceptors.request.use((request) => {
 })
 ```
 
-The interceptor receives the URL already built from the resolved `baseURL`, so reach for it only when the host depends on the request. For a fixed URL, `setConfig` and `createClient` stay the simpler path. See the [interceptors guide](/docs/5.x/guide/going-further/interceptors) for the full request, response, and error channels.
+The interceptor receives the URL already built from the resolved `baseURL`, so reach for it only when the host depends on the request. For a fixed URL, `setConfig` and `createClient` stay the simpler path. See the [interceptors guide](/plugins/plugin-fetch/guide/interceptors) for the full request, response, and error channels.
 
 ## See also
 
-- [Custom transport](/docs/5.x/guide/going-further/transport)
-- [Authentication](/docs/5.x/guide/going-further/authentication)
-- [Interceptors](/docs/5.x/guide/going-further/interceptors)
-- [`@kubb/plugin-fetch`](/plugins/plugin-fetch)
-- [`@kubb/plugin-axios`](/plugins/plugin-axios)
+- [Custom transport](/plugins/plugin-fetch/guide/transport)
+- [Authentication](/plugins/plugin-fetch/guide/authentication)
+- [Interceptors](/plugins/plugin-fetch/guide/interceptors)
+- [`@kubb/plugin-fetch`](/plugins/plugin-fetch/)
+- [`@kubb/plugin-axios`](/plugins/plugin-axios/)

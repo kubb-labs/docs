@@ -78,5 +78,5 @@ Most MCP clients accept a JSON config with a `command` and `args`. To register t
 
 ## See also
 
-- [`@kubb/mcp`](/plugins/plugin-mcp), the plugin docs with the full list of tools the MCP server exposes
+- [`@kubb/mcp`](/plugins/plugin-mcp/), the plugin docs with the full list of tools the MCP server exposes
 - [Concepts: Plugins](/docs/5.x/guide/concepts/plugins): how plugins integrate with the Kubb pipeline
