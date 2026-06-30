@@ -13,7 +13,7 @@ body. Kubb generates a function for it that hands back a typed event stream you 
 `for await`, rather than the usual `RequestResult`. The events stay typed from the spec, and the
 native response stays reachable alongside them.
 
-Both `@kubb/plugin-fetch` and `@kubb/plugin-axios` support this. On axios, streaming needs the
+Both [`@kubb/plugin-fetch`](/plugins/plugin-fetch) and [`@kubb/plugin-axios`](/plugins/plugin-axios) support this. On axios, streaming needs the
 fetch adapter, which Kubb selects for a stream request unless you set an adapter yourself.
 
 ## Consume a stream

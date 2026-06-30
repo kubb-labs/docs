@@ -13,8 +13,8 @@ the spec. The client exposes three channels on `client.interceptors`: `request` 
 send, `response` runs after it, and `error` runs when a call throws. Reach for one when a concern
 cuts across every request, such as a trace header, request logging, or a token refresh on `401`.
 
-The channels carry a different payload on each transport. `@kubb/plugin-fetch` hands you the
-resolved request and result as plain objects, while `@kubb/plugin-axios` wraps axios's own
+The channels carry a different payload on each transport. [`@kubb/plugin-fetch`](/plugins/plugin-fetch) hands you the
+resolved request and result as plain objects, while [`@kubb/plugin-axios`](/plugins/plugin-axios) wraps axios's own
 interceptor managers, so a handler there receives the native axios config, response, and error.
 The examples below show both.
 

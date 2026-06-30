@@ -14,7 +14,7 @@ encoder from the request content type, and decodes the response by its media typ
 needs no configuration: Kubb bakes the per-parameter metadata into each generated function. This
 page covers what it does by default and how to override each step.
 
-The behavior is identical for `@kubb/plugin-fetch` and `@kubb/plugin-axios`.
+The behavior is identical for [`@kubb/plugin-fetch`](/plugins/plugin-fetch) and [`@kubb/plugin-axios`](/plugins/plugin-axios).
 
 ## Parameter styles
 

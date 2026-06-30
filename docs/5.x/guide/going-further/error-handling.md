@@ -13,7 +13,7 @@ or lands on the result, and you choose which with `throwOnError`. It defaults to
 resolved call always means success and you read `data` without a guard. Turn it off and the same
 call resolves for every status, with the failure on `error`.
 
-This holds for both `@kubb/plugin-fetch` and `@kubb/plugin-axios`. The transport differs, the
+This holds for both [`@kubb/plugin-fetch`](/plugins/plugin-fetch) and [`@kubb/plugin-axios`](/plugins/plugin-axios). The transport differs, the
 error contract does not.
 
 ## Throw on a non-2xx response

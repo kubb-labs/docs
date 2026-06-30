@@ -8,7 +8,7 @@ outline: deep
 
 # Call operations
 
-`@kubb/plugin-fetch` and `@kubb/plugin-axios` turn each operation in your OpenAPI spec into a
+[`@kubb/plugin-fetch`](/plugins/plugin-fetch) and [`@kubb/plugin-axios`](/plugins/plugin-axios) turn each operation in your OpenAPI spec into a
 typed function. The two plugins generate different transports but share one calling convention, so
 the code on this page reads the same whichever you pick. Swap the import and the examples still
 hold.
