@@ -5,13 +5,13 @@ description: Configuration and generated-output changes for @kubb/plugin-react-q
 
 # Migration: `@kubb/plugin-react-query`
 
-Part of the [v4 → v5 migration guide](/docs/5.x/migration). For the full option reference, see [`@kubb/plugin-react-query`](/plugins/plugin-react-query).
+Part of the [v4 → v5 migration guide](/docs/5.x/migration). For the full option reference, see [`@kubb/plugin-react-query`](/plugins/plugin-react-query/).
 
-[`resolver.resolveName`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`. The v4 `transformers` object held only `name`, so that is the whole rename. To rewrite generated nodes before printing, use the new [`macros`](/plugins/plugin-react-query#macros) option.
+[`resolver.resolveName`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`. The v4 `transformers` object held only `name`, so that is the whole rename. To rewrite generated nodes before printing, use the new [`macros`](/plugins/plugin-react-query/reference/options#macros) option.
 
 ## `client` is a selector, not an object
 
-In v4 the `client` option carried the whole client config, including `dataReturnType`, `clientType`, `baseURL`, `bundle`, and the custom `importPath`. v5 drops the object form. The hooks no longer emit their own client. They call a registered client plugin instead, so you register [`@kubb/plugin-axios`](/plugins/plugin-axios) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch) and point `client` at it with the string `'axios'` or `'fetch'`. When exactly one client plugin is registered, leave `client` off and the plugin picks it up. Set the string only to disambiguate when both are registered.
+In v4 the `client` option carried the whole client config, including `dataReturnType`, `clientType`, `baseURL`, `bundle`, and the custom `importPath`. v5 drops the object form. The hooks no longer emit their own client. They call a registered client plugin instead, so you register [`@kubb/plugin-axios`](/plugins/plugin-axios/) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and point `client` at it with the string `'axios'` or `'fetch'`. When exactly one client plugin is registered, leave `client` off and the plugin picks it up. Set the string only to disambiguate when both are registered.
 
 ::: code-group
 
@@ -49,7 +49,7 @@ export default defineConfig({
 
 ## Renamed: `parser` → `validator`
 
-The `parser` option is now `validator`. Set `validator: 'zod'` where you previously set `parser: 'zod'`. The accepted values are unchanged: `false`, `'zod'`, or `{ request: 'zod', response: 'zod' }` to validate request and response bodies with schemas from [`@kubb/plugin-zod`](/plugins/plugin-zod).
+The `parser` option is now `validator`. Set `validator: 'zod'` where you previously set `parser: 'zod'`. The accepted values are unchanged: `false`, `'zod'`, or `{ request: 'zod', response: 'zod' }` to validate request and response bodies with schemas from [`@kubb/plugin-zod`](/plugins/plugin-zod/).
 
 ```diff [Diff]
   pluginReactQuery({

@@ -91,17 +91,17 @@ yarn add -D @kubb/plugin-ts@beta @kubb/plugin-axios@beta @kubb/plugin-react-quer
 
 | Package                                                   | Generates                                                                                                                             |
 | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| [`@kubb/plugin-ts`](/plugins/plugin-ts)                   | [TypeScript](https://www.typescriptlang.org/) types and interfaces                                                                    |
-| [`@kubb/plugin-axios`](/plugins/plugin-axios)             | [Axios](https://axios-http.com/) HTTP client functions                                                                               |
-| [`@kubb/plugin-fetch`](/plugins/plugin-fetch)             | [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) HTTP client functions                                           |
-| [`@kubb/plugin-react-query`](/plugins/plugin-react-query) | [TanStack Query](https://tanstack.com/query) hooks for React                                                                          |
-| [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query)     | [TanStack Query](https://tanstack.com/query) hooks for Vue                                                                            |
-| [`@kubb/plugin-zod`](/plugins/plugin-zod)                 | [Zod](https://zod.dev/) schemas for runtime validation                                                                                |
-| [`@kubb/plugin-faker`](/plugins/plugin-faker)             | [Faker.js](https://fakerjs.dev/) mock data generators                                                                                 |
-| [`@kubb/plugin-msw`](/plugins/plugin-msw)                 | [MSW](https://mswjs.io/) request handlers                                                                                             |
-| [`@kubb/plugin-cypress`](/plugins/plugin-cypress)         | [Cypress](https://www.cypress.io/) end-to-end tests                                                                                   |
-| [`@kubb/plugin-mcp`](/plugins/plugin-mcp)                 | [MCP](https://modelcontextprotocol.io/) server from your spec                                                                         |
-| [`@kubb/plugin-redoc`](/plugins/plugin-redoc)             | [Redoc](https://redocly.com/docs/redoc/) API documentation                                                                            |
+| [`@kubb/plugin-ts`](/plugins/plugin-ts/)                   | [TypeScript](https://www.typescriptlang.org/) types and interfaces                                                                    |
+| [`@kubb/plugin-axios`](/plugins/plugin-axios/)             | [Axios](https://axios-http.com/) HTTP client functions                                                                               |
+| [`@kubb/plugin-fetch`](/plugins/plugin-fetch/)             | [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) HTTP client functions                                           |
+| [`@kubb/plugin-react-query`](/plugins/plugin-react-query/) | [TanStack Query](https://tanstack.com/query) hooks for React                                                                          |
+| [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query/)     | [TanStack Query](https://tanstack.com/query) hooks for Vue                                                                            |
+| [`@kubb/plugin-zod`](/plugins/plugin-zod/)                 | [Zod](https://zod.dev/) schemas for runtime validation                                                                                |
+| [`@kubb/plugin-faker`](/plugins/plugin-faker/)             | [Faker.js](https://fakerjs.dev/) mock data generators                                                                                 |
+| [`@kubb/plugin-msw`](/plugins/plugin-msw/)                 | [MSW](https://mswjs.io/) request handlers                                                                                             |
+| [`@kubb/plugin-cypress`](/plugins/plugin-cypress/)         | [Cypress](https://www.cypress.io/) end-to-end tests                                                                                   |
+| [`@kubb/plugin-mcp`](/plugins/plugin-mcp/)                 | [MCP](https://modelcontextprotocol.io/) server from your spec                                                                         |
+| [`@kubb/plugin-redoc`](/plugins/plugin-redoc/)             | [Redoc](https://redocly.com/docs/redoc/) API documentation                                                                            |
 
 See the [plugins](/plugins) page for a complete list.
 

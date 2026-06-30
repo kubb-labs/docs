@@ -5,7 +5,7 @@ or lands on the result, and you choose which with `throwOnError`. It defaults to
 resolved call always means success and you read `data` without a guard. Turn it off and the same
 call resolves for every status, with the failure on `error`.
 
-This holds for both [`@kubb/plugin-fetch`](/plugins/plugin-fetch) and [`@kubb/plugin-axios`](/plugins/plugin-axios). The transport differs, the
+This holds for both [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and [`@kubb/plugin-axios`](/plugins/plugin-axios/). The transport differs, the
 error contract does not.
 
 ## Throw on a non-2xx response
@@ -125,7 +125,7 @@ await searchPets({ query: { status: 'available' }, signal: controller.signal })
 
 ## Validation failures
 
-When you turn on the [`validator`](/docs/5.x/guide/going-further/serialization) option, a body
+When you turn on the [`validator`](/plugins/plugin-fetch/guide/serialization) option, a body
 that does not match its schema throws a `ParseError` instead of returning. It carries the raw
 `issues` from the schema, so the same handling works across Zod, valibot, and arktype:
 
@@ -148,8 +148,8 @@ but the body did not match the schema. Validation runs after the status check, s
 
 ## See also
 
-- [Call operations](/docs/5.x/guide/going-further/calling-operations)
-- [Serialization](/docs/5.x/guide/going-further/serialization)
-- [`@kubb/plugin-fetch`](/plugins/plugin-fetch)
-- [`@kubb/plugin-axios`](/plugins/plugin-axios)
-- [Custom transport](/docs/5.x/guide/going-further/transport)
+- [Call operations](/plugins/plugin-fetch/guide/calling-operations)
+- [Serialization](/plugins/plugin-fetch/guide/serialization)
+- [`@kubb/plugin-fetch`](/plugins/plugin-fetch/)
+- [`@kubb/plugin-axios`](/plugins/plugin-axios/)
+- [Custom transport](/plugins/plugin-fetch/guide/transport)

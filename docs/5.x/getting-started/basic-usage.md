@@ -93,11 +93,11 @@ Here is what each plugin in those examples gives you.
 
 | Plugin                                            | Package                    | Generates                                          |
 | ------------------------------------------------- | -------------------------- | -------------------------------------------------- |
-| [`pluginTs`](/plugins/plugin-ts)                  | `@kubb/plugin-ts`          | TypeScript types and interfaces                    |
-| [`pluginAxios`](/plugins/plugin-axios)            | `@kubb/plugin-axios`       | Axios-based HTTP client functions                  |
-| [`pluginReactQuery`](/plugins/plugin-react-query) | `@kubb/plugin-react-query` | [TanStack Query](https://tanstack.com/query) hooks |
-| [`pluginZod`](/plugins/plugin-zod)                | `@kubb/plugin-zod`         | [Zod](https://zod.dev) validation schemas          |
-| [`pluginMsw`](/plugins/plugin-msw)                | `@kubb/plugin-msw`         | [MSW](https://mswjs.io) request handlers           |
+| [`pluginTs`](/plugins/plugin-ts/)                  | `@kubb/plugin-ts`          | TypeScript types and interfaces                    |
+| [`pluginAxios`](/plugins/plugin-axios/)            | `@kubb/plugin-axios`       | Axios-based HTTP client functions                  |
+| [`pluginReactQuery`](/plugins/plugin-react-query/) | `@kubb/plugin-react-query` | [TanStack Query](https://tanstack.com/query) hooks |
+| [`pluginZod`](/plugins/plugin-zod/)                | `@kubb/plugin-zod`         | [Zod](https://zod.dev) validation schemas          |
+| [`pluginMsw`](/plugins/plugin-msw/)                | `@kubb/plugin-msw`         | [MSW](https://mswjs.io) request handlers           |
 
 > [!NOTE]
 > `pluginAxios`, `pluginReactQuery`, and `pluginMsw` each require `pluginTs` in the same config. `pluginReactQuery` also calls a registered client plugin, so add `pluginAxios` or `pluginFetch` alongside it.

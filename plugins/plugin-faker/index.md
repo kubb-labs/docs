@@ -67,7 +67,7 @@ yarn add -D @kubb/plugin-faker@beta
 
 ## Dependencies
 
-This plugin depends on [`@kubb/plugin-ts`](/plugins/plugin-ts) for the types each factory returns. Keep `pluginTs()` in the plugins array. No other plugin is required.
+This plugin depends on [`@kubb/plugin-ts`](/plugins/plugin-ts/) for the types each factory returns. Keep `pluginTs()` in the plugins array. No other plugin is required.
 
 ## Example
 
@@ -98,6 +98,6 @@ export default defineConfig({
 ## See also
 
 - [Faker.js](https://fakerjs.dev/)
-- [@kubb/plugin-ts](/plugins/plugin-ts)
-- [@kubb/plugin-msw](/plugins/plugin-msw)
+- [@kubb/plugin-ts](/plugins/plugin-ts/)
+- [@kubb/plugin-msw](/plugins/plugin-msw/)
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-faker/CHANGELOG.md)

@@ -1,6 +1,6 @@
 # Call operations
 
-[`@kubb/plugin-fetch`](/plugins/plugin-fetch) and [`@kubb/plugin-axios`](/plugins/plugin-axios) turn each operation in your OpenAPI spec into a
+[`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and [`@kubb/plugin-axios`](/plugins/plugin-axios/) turn each operation in your OpenAPI spec into a
 typed function. The two plugins generate different transports but share one calling convention, so
 the code on this page reads the same whichever you pick. Swap the import and the examples still
 hold.
@@ -51,7 +51,7 @@ await updatePet({
 
 Each key is optional and only appears when the operation declares it, so an operation with no
 parameters is called with an empty object, `getStatus({})`. How Kubb encodes arrays and objects in
-each location is covered in [serialization](/docs/5.x/guide/going-further/serialization).
+each location is covered in [serialization](/plugins/plugin-fetch/guide/serialization).
 
 ## Read the result
 
@@ -90,7 +90,7 @@ if (result.status === 200) {
 ```
 
 Reading the `error` body and handling failures is covered in
-[error handling](/docs/5.x/guide/going-further/error-handling).
+[error handling](/plugins/plugin-fetch/guide/error-handling).
 
 ## Set the content type
 
@@ -122,7 +122,7 @@ await uploadFile({ path: { petId: '123' }, body: { file: pngBlob } })
 ```
 
 How each content type maps to a request body, and how a response body is decoded, lives in
-[serialization](/docs/5.x/guide/going-further/serialization).
+[serialization](/plugins/plugin-fetch/guide/serialization).
 
 ## Reuse one configuration
 
@@ -173,11 +173,11 @@ const url = client.getUrl({
 
 ## See also
 
-- [`@kubb/plugin-fetch`](/plugins/plugin-fetch)
-- [`@kubb/plugin-axios`](/plugins/plugin-axios)
-- [Error handling](/docs/5.x/guide/going-further/error-handling)
-- [Serialization](/docs/5.x/guide/going-further/serialization)
-- [Server-sent events](/docs/5.x/guide/going-further/server-sent-events)
-- [Set your own baseURL](/docs/5.x/guide/going-further/base-url)
-- [Authentication](/docs/5.x/guide/going-further/authentication)
-- [Custom transport](/docs/5.x/guide/going-further/transport)
+- [`@kubb/plugin-fetch`](/plugins/plugin-fetch/)
+- [`@kubb/plugin-axios`](/plugins/plugin-axios/)
+- [Error handling](/plugins/plugin-fetch/guide/error-handling)
+- [Serialization](/plugins/plugin-fetch/guide/serialization)
+- [Server-sent events](/plugins/plugin-fetch/guide/server-sent-events)
+- [Set your own baseURL](/plugins/plugin-fetch/guide/base-url)
+- [Authentication](/plugins/plugin-fetch/guide/authentication)
+- [Custom transport](/plugins/plugin-fetch/guide/transport)

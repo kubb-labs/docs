@@ -70,9 +70,9 @@ yarn add -D @kubb/plugin-msw@beta
 
 ## Dependencies
 
-This plugin always depends on [`@kubb/plugin-ts`](/plugins/plugin-ts), so keep `pluginTs()` in the plugins array.
+This plugin always depends on [`@kubb/plugin-ts`](/plugins/plugin-ts/), so keep `pluginTs()` in the plugins array.
 
-It depends on [`@kubb/plugin-faker`](/plugins/plugin-faker) only when you set `parser: 'faker'`. With the default `parser: 'data'`, Faker is not needed.
+It depends on [`@kubb/plugin-faker`](/plugins/plugin-faker/) only when you set `parser: 'faker'`. With the default `parser: 'data'`, Faker is not needed.
 
 ## Example
 
@@ -105,6 +105,6 @@ export default defineConfig({
 ## See also
 
 - [MSW](https://mswjs.io/)
-- [@kubb/plugin-ts](/plugins/plugin-ts)
-- [@kubb/plugin-faker](/plugins/plugin-faker)
+- [@kubb/plugin-ts](/plugins/plugin-ts/)
+- [@kubb/plugin-faker](/plugins/plugin-faker/)
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-msw/CHANGELOG.md)

@@ -20,7 +20,7 @@ flowchart LR
 
 ## Config
 
-`defineConfig` from the `kubb` package pre-wires [`adapterOas`](/docs/5.x/guide/concepts/adapters), the default parsers [`parserTs`, `parserTsx`, `parserMd`](/docs/5.x/guide/concepts/parsers), and [`pluginBarrel`](/plugins/plugin-barrel). A minimal config only needs `input` and `output`.
+`defineConfig` from the `kubb` package pre-wires [`adapterOas`](/docs/5.x/guide/concepts/adapters), the default parsers [`parserTs`, `parserTsx`, `parserMd`](/docs/5.x/guide/concepts/parsers), and [`pluginBarrel`](/plugins/plugin-barrel/). A minimal config only needs `input` and `output`.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -141,32 +141,32 @@ export default defineConfig({
 
 | Package                                         | Generates                                                                                                                               |
 | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| [`@kubb/plugin-ts`](/plugins/plugin-ts)         | TypeScript types and interfaces                                                                                                         |
-| [`@kubb/plugin-axios`](/plugins/plugin-axios)   | [Axios](https://axios-http.com) HTTP client functions                                                                                   |
-| [`@kubb/plugin-fetch`](/plugins/plugin-fetch)   | [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) HTTP client functions                                              |
+| [`@kubb/plugin-ts`](/plugins/plugin-ts/)         | TypeScript types and interfaces                                                                                                         |
+| [`@kubb/plugin-axios`](/plugins/plugin-axios/)   | [Axios](https://axios-http.com) HTTP client functions                                                                                   |
+| [`@kubb/plugin-fetch`](/plugins/plugin-fetch/)   | [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) HTTP client functions                                              |
 
 ### Data-fetching hooks
 
 | Package                                                   | Generates                                                    |
 | --------------------------------------------------------- | ------------------------------------------------------------ |
-| [`@kubb/plugin-react-query`](/plugins/plugin-react-query) | [TanStack Query](https://tanstack.com/query) hooks for React |
-| [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query)     | [TanStack Query](https://tanstack.com/query) hooks for Vue   |
+| [`@kubb/plugin-react-query`](/plugins/plugin-react-query/) | [TanStack Query](https://tanstack.com/query) hooks for React |
+| [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query/)     | [TanStack Query](https://tanstack.com/query) hooks for Vue   |
 
 ### Validation and mocking
 
 | Package                                       | Generates                                      |
 | --------------------------------------------- | ---------------------------------------------- |
-| [`@kubb/plugin-zod`](/plugins/plugin-zod)     | [Zod](https://zod.dev) validation schemas      |
-| [`@kubb/plugin-faker`](/plugins/plugin-faker) | [Faker.js](https://fakerjs.dev) data factories |
-| [`@kubb/plugin-msw`](/plugins/plugin-msw)     | [MSW](https://mswjs.io) request handlers       |
+| [`@kubb/plugin-zod`](/plugins/plugin-zod/)     | [Zod](https://zod.dev) validation schemas      |
+| [`@kubb/plugin-faker`](/plugins/plugin-faker/) | [Faker.js](https://fakerjs.dev) data factories |
+| [`@kubb/plugin-msw`](/plugins/plugin-msw/)     | [MSW](https://mswjs.io) request handlers       |
 
 ### Tooling
 
 | Package                                           | Purpose                                                                                         |
 | ------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| [`@kubb/plugin-cypress`](/plugins/plugin-cypress) | [Cypress](https://www.cypress.io) test scaffolding                                              |
-| [`@kubb/plugin-redoc`](/plugins/plugin-redoc)     | Embeds [Redoc](https://redocly.com/docs/redoc/)-rendered API docs                               |
-| [`@kubb/plugin-mcp`](/plugins/plugin-mcp)         | Generates [MCP](https://modelcontextprotocol.io)-compatible tools and schemas for AI assistants |
+| [`@kubb/plugin-cypress`](/plugins/plugin-cypress/) | [Cypress](https://www.cypress.io) test scaffolding                                              |
+| [`@kubb/plugin-redoc`](/plugins/plugin-redoc/)     | Embeds [Redoc](https://redocly.com/docs/redoc/)-rendered API docs                               |
+| [`@kubb/plugin-mcp`](/plugins/plugin-mcp/)         | Generates [MCP](https://modelcontextprotocol.io)-compatible tools and schemas for AI assistants |
 
 See the [plugins catalogue](/plugins) for the full list.
 

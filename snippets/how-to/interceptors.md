@@ -5,8 +5,8 @@ the spec. The client exposes three channels on `client.interceptors`: `request` 
 send, `response` runs after it, and `error` runs when a call throws. Reach for one when a concern
 cuts across every request, such as a trace header, request logging, or a token refresh on `401`.
 
-The channels carry a different payload on each transport. [`@kubb/plugin-fetch`](/plugins/plugin-fetch) hands you the
-resolved request and result as plain objects, while [`@kubb/plugin-axios`](/plugins/plugin-axios) wraps axios's own
+The channels carry a different payload on each transport. [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) hands you the
+resolved request and result as plain objects, while [`@kubb/plugin-axios`](/plugins/plugin-axios/) wraps axios's own
 interceptor managers, so a handler there receives the native axios config, response, and error.
 The examples below show both.
 
@@ -95,7 +95,7 @@ client.interceptors.error.use((error) => {
 The fetch handler receives the `ResponseError`, the axios handler an `AxiosError`. This channel
 only fires on the throw path. When you read with `throwOnError: false`, the call resolves and no
 error interceptor runs, so inspect the returned `error` on the result instead. See
-[error handling](/docs/5.x/guide/going-further/error-handling) for that path.
+[error handling](/plugins/plugin-fetch/guide/error-handling) for that path.
 
 ## Add, replace, and remove handlers
 
@@ -117,14 +117,14 @@ client.interceptors.request.eject(id)
 
 Interceptors live on a client instance, not on a single call. Register them on the shared `client`
 every generated function imports to cover the whole app. For an isolated instance from
-[`createClient`](/docs/5.x/guide/going-further/calling-operations#reuse-one-configuration), set
+[`createClient`](/plugins/plugin-fetch/guide/calling-operations#reuse-one-configuration), set
 them on that instance, and they stay scoped to the calls you pass it to.
 
 ## See also
 
-- [Call operations](/docs/5.x/guide/going-further/calling-operations)
-- [Error handling](/docs/5.x/guide/going-further/error-handling)
-- [Authentication](/docs/5.x/guide/going-further/authentication)
-- [Custom transport](/docs/5.x/guide/going-further/transport)
-- [`@kubb/plugin-fetch`](/plugins/plugin-fetch)
-- [`@kubb/plugin-axios`](/plugins/plugin-axios)
+- [Call operations](/plugins/plugin-fetch/guide/calling-operations)
+- [Error handling](/plugins/plugin-fetch/guide/error-handling)
+- [Authentication](/plugins/plugin-fetch/guide/authentication)
+- [Custom transport](/plugins/plugin-fetch/guide/transport)
+- [`@kubb/plugin-fetch`](/plugins/plugin-fetch/)
+- [`@kubb/plugin-axios`](/plugins/plugin-axios/)

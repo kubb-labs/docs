@@ -7,8 +7,8 @@ description: '@kubb/plugin-client is removed. Migrate to @kubb/plugin-axios or @
 
 `@kubb/plugin-client` no longer ships. Two dedicated plugins replace it:
 
-- [`@kubb/plugin-axios`](/plugins/plugin-axios) generates an axios HTTP client. Import `pluginAxios`.
-- [`@kubb/plugin-fetch`](/plugins/plugin-fetch) generates a Fetch API client. Import `pluginFetch`.
+- [`@kubb/plugin-axios`](/plugins/plugin-axios/) generates an axios HTTP client. Import `pluginAxios`.
+- [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) generates a Fetch API client. Import `pluginFetch`.
 
 Both speak the same `RequestResult` contract and share the same options: `output`, `exclude`, `include`, `override`, `baseURL`, `validator`, `sdk`, `group`, `resolver`, and `macros`.
 
@@ -85,7 +85,7 @@ v4 `parser` took `'client'` or `'zod'` and defaulted to `'client'`. v5 renames t
 
 ## Authentication comes from the spec
 
-v4 left auth to the custom client you imported through `importPath`. v5 reads the security schemes from your OpenAPI spec and attaches them to every generated call. You give the bundled client one `auth` resolver and the runtime adds the token to each guarded request. See [Authentication](/docs/5.x/guide/going-further/authentication) for the setup.
+v4 left auth to the custom client you imported through `importPath`. v5 reads the security schemes from your OpenAPI spec and attaches them to every generated call. You give the bundled client one `auth` resolver and the runtime adds the token to each guarded request. See [Authentication](/plugins/plugin-fetch/guide/authentication) for the setup.
 
 ## Other removed options
 

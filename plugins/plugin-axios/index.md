@@ -59,18 +59,18 @@ resources:
 
 From your spec, the generated client gives you:
 
-- [Typed functions](/docs/5.x/guide/going-further/calling-operations) per operation with grouped `path`, `query`, `headers`, and `body`.
-- A [status-keyed result](/docs/5.x/guide/going-further/error-handling) on every call, or a thrown `ResponseError`.
-- [Auth](/docs/5.x/guide/going-further/authentication) resolved from your OpenAPI security schemes.
-- [Serialization](/docs/5.x/guide/going-further/serialization) of parameters and bodies across content types, including `multipart/form-data` uploads and binary downloads.
-- Runtime [validation](#validator) against [`@kubb/plugin-zod`](/plugins/plugin-zod) schemas.
-- Typed [server-sent events](/docs/5.x/guide/going-further/server-sent-events) you read with `for await`.
-- [Interceptors](/docs/5.x/guide/going-further/interceptors) and a [custom transport](/docs/5.x/guide/going-further/transport) for the send.
+- [Typed functions](/plugins/plugin-axios/guide/calling-operations) per operation with grouped `path`, `query`, `headers`, and `body`.
+- A [status-keyed result](/plugins/plugin-axios/guide/error-handling) on every call, or a thrown `ResponseError`.
+- [Auth](/plugins/plugin-axios/guide/authentication) resolved from your OpenAPI security schemes.
+- [Serialization](/plugins/plugin-axios/guide/serialization) of parameters and bodies across content types, including `multipart/form-data` uploads and binary downloads.
+- Runtime [validation](#validator) against [`@kubb/plugin-zod`](/plugins/plugin-zod/) schemas.
+- Typed [server-sent events](/plugins/plugin-fetch/guide/server-sent-events) you read with `for await`.
+- [Interceptors](/plugins/plugin-axios/guide/interceptors) and a [custom transport](/plugins/plugin-axios/guide/transport) for the send.
 - Standalone functions or a class-based [SDK](#sdk).
 
 It builds on `@kubb/plugin-ts` for the types, so add that to your config, and axios is a runtime dependency to install next to your app.
 
-Each function takes one grouped options object (`{ path, query, headers, body }`) and returns a `RequestResult` of `{ status, data, error, request, response }`, bundled into `.kubb/client.ts`. See [error handling](/docs/5.x/guide/going-further/error-handling) for `throwOnError` and the status-keyed result union.
+Each function takes one grouped options object (`{ path, query, headers, body }`) and returns a `RequestResult` of `{ status, data, error, request, response }`, bundled into `.kubb/client.ts`. See [error handling](/plugins/plugin-axios/guide/error-handling) for `throwOnError` and the status-keyed result union.
 
 The bundled `client` also exposes `getUrl`, which builds an operation's final URL without sending the request, useful for cache keys, prefetch, and links:
 
@@ -92,7 +92,7 @@ client.setConfig({ options: { timeout: 10_000 } })
 await uploadFile({ path: { petId: 1 }, body, options: { timeout: 2_000, onUploadProgress: (e) => console.log(e.loaded) } })
 ```
 
-For cross-cutting concerns like retries and interceptors, reach for a [custom transport](/docs/5.x/guide/going-further/transport) instead.
+For cross-cutting concerns like retries and interceptors, reach for a [custom transport](/plugins/plugin-axios/guide/transport) instead.
 
 ## Installation
 
@@ -120,8 +120,8 @@ yarn add -D @kubb/plugin-axios@beta
 
 This plugin needs `@kubb/plugin-ts` in your config. Kubb runs it before `plugin-axios` so the functions can import the generated types. When `validator` is set to `'zod'`, also add `@kubb/plugin-zod`.
 
-- [`@kubb/plugin-ts`](/plugins/plugin-ts)
-- [`@kubb/plugin-zod`](/plugins/plugin-zod)
+- [`@kubb/plugin-ts`](/plugins/plugin-ts/)
+- [`@kubb/plugin-zod`](/plugins/plugin-zod/)
 
 ## Example
 
@@ -154,5 +154,5 @@ export default defineConfig({
 ## See also
 
 - [axios](https://axios-http.com/)
-- [`@kubb/plugin-ts`](/plugins/plugin-ts)
+- [`@kubb/plugin-ts`](/plugins/plugin-ts/)
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-axios/CHANGELOG.md)

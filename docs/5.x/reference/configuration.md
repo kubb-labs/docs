@@ -244,7 +244,7 @@ Rewrite the file extensions emitted in `import` and `export` statements. Keys ar
 
 Behavior of the root `index.ts` barrel file at `output.path`.
 
-Provided by [`@kubb/plugin-barrel`](/plugins/plugin-barrel).
+Provided by [`@kubb/plugin-barrel`](/plugins/plugin-barrel/).
 
 |           |                                                         |
 | --------: | :------------------------------------------------------ |

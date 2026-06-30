@@ -5,7 +5,7 @@ description: Configuration and generated-output changes for @kubb/plugin-zod whe
 
 # Migration: `@kubb/plugin-zod`
 
-Part of the [v4 → v5 migration guide](/docs/5.x/migration). See the full option reference in [`@kubb/plugin-zod`](/plugins/plugin-zod).
+Part of the [v4 → v5 migration guide](/docs/5.x/migration). See the full option reference in [`@kubb/plugin-zod`](/plugins/plugin-zod/).
 
 ## Zod v3 no longer supported
 
@@ -35,7 +35,7 @@ yarn add zod@^4
 
 ## Removed: `mapper`
 
-Use [`macros`](/plugins/plugin-zod#macros) or [`printer`](/plugins/plugin-zod#printer) instead.
+Use [`macros`](/plugins/plugin-zod/reference/options#macros) or [`printer`](/plugins/plugin-zod/reference/options#printer) instead.
 
 ## Removed: `operations`
 

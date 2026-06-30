@@ -68,7 +68,7 @@ yarn add -D @kubb/plugin-cypress@beta
 
 ## Dependencies
 
-This plugin depends on [`@kubb/plugin-ts`](/plugins/plugin-ts) for the request, parameter, and response types it imports. Keep `pluginTs()` in the plugins array.
+This plugin depends on [`@kubb/plugin-ts`](/plugins/plugin-ts/) for the request, parameter, and response types it imports. Keep `pluginTs()` in the plugins array.
 
 ## Example
 
@@ -117,5 +117,5 @@ describe('Pet API', () => {
 
 - [Cypress](https://www.cypress.io/)
 - [cy.request()](https://docs.cypress.io/api/commands/request)
-- [@kubb/plugin-ts](/plugins/plugin-ts)
+- [@kubb/plugin-ts](/plugins/plugin-ts/)
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-cypress/CHANGELOG.md)

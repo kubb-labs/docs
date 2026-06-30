@@ -49,10 +49,10 @@ flowchart LR
 
 First, install [Claude desktop](https://claude.ai/download) and work through the [user quickstart](https://modelcontextprotocol.io/quickstart/user).
 
-Then install Kubb with the [MCP plugin](/plugins/plugin-mcp).
+Then install Kubb with the [MCP plugin](/plugins/plugin-mcp/).
 
 > [!TIP]
-> The MCP plugin builds on the [OpenAPI adapter](/adapters/adapter-oas), the [TypeScript](/plugins/plugin-ts) and [Zod](/plugins/plugin-zod) plugins, and a client plugin ([axios](/plugins/plugin-axios) or [fetch](/plugins/plugin-fetch)) to generate every file it needs.
+> The MCP plugin builds on the [OpenAPI adapter](/adapters/adapter-oas), the [TypeScript](/plugins/plugin-ts/) and [Zod](/plugins/plugin-zod/) plugins, and a client plugin ([axios](/plugins/plugin-axios/) or [fetch](/plugins/plugin-fetch/)) to generate every file it needs.
 
 ::: code-group
 
@@ -78,7 +78,7 @@ yarn add -D kubb@beta @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-ax
 
 Write a `kubb.config.ts` that sets up the [MCP](https://modelcontextprotocol.io) server.
 
-`pluginMcp` depends on [`pluginTs`](/plugins/plugin-ts) and [`pluginZod`](/plugins/plugin-zod), and each handler calls a registered client plugin. Add [`pluginAxios`](/plugins/plugin-axios) or [`pluginFetch`](/plugins/plugin-fetch), and `pluginMcp` detects it.
+`pluginMcp` depends on [`pluginTs`](/plugins/plugin-ts/) and [`pluginZod`](/plugins/plugin-zod/), and each handler calls a registered client plugin. Add [`pluginAxios`](/plugins/plugin-axios/) or [`pluginFetch`](/plugins/plugin-fetch/), and `pluginMcp` detects it.
 
 > [!IMPORTANT]
 > Set the `baseURL` on the client plugin so the generated handlers know which host to call.

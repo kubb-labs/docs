@@ -109,7 +109,7 @@ export default defineConfig(({ watch }) => ({
 
 - [Configuration reference](/docs/5.x/reference/configuration)
 - [CLI options](/docs/5.x/reference/commands/)
-- [`@kubb/plugin-barrel`](/plugins/plugin-barrel)
+- [`@kubb/plugin-barrel`](/plugins/plugin-barrel/)
 
 ## Build
 

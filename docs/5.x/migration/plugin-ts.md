@@ -5,7 +5,7 @@ description: Configuration and generated-output changes for @kubb/plugin-ts when
 
 # Migration: `@kubb/plugin-ts`
 
-Part of the [v4 → v5 migration guide](/docs/5.x/migration). See the full option reference in [`@kubb/plugin-ts`](/plugins/plugin-ts).
+Part of the [v4 → v5 migration guide](/docs/5.x/migration). See the full option reference in [`@kubb/plugin-ts`](/plugins/plugin-ts/).
 
 ## Removed: `mapper`
 
@@ -13,7 +13,7 @@ Part of the [v4 → v5 migration guide](/docs/5.x/migration). See the full optio
 pluginTs({ mapper: { status: 'string' } })
 ```
 
-Use [`printer.nodes`](/plugins/plugin-ts#printer) to override a schema-type renderer, or [`macros`](/plugins/plugin-ts#macros) to rewrite AST nodes before printing.
+Use [`printer.nodes`](/plugins/plugin-ts/reference/options#printer) to override a schema-type renderer, or [`macros`](/plugins/plugin-ts/reference/options#macros) to rewrite AST nodes before printing.
 
 ## Removed: `paramsCasing`
 
@@ -151,7 +151,7 @@ v5 emits a `const`-asserted object plus a `*Key` type union. This drops the runt
 +status: OrderParamsStatusEnumKey
 ```
 
-Enum names are now operation-scoped (`orderParamsStatusEnum`, `customerParamsStatusEnum`) instead of suffix-deduplicated (`ParamsStatusEnum`, `ParamsStatusEnum2`), so the numeric collisions are gone. Configure [`enum`](/plugins/plugin-ts) on `pluginTs` when you want `enum`, `constEnum`, `literal`, or a different const and type casing.
+Enum names are now operation-scoped (`orderParamsStatusEnum`, `customerParamsStatusEnum`) instead of suffix-deduplicated (`ParamsStatusEnum`, `ParamsStatusEnum2`), so the numeric collisions are gone. Configure [`enum`](/plugins/plugin-ts/) on `pluginTs` when you want `enum`, `constEnum`, `literal`, or a different const and type casing.
 
 ### `int64` maps to `bigint` by default
 

@@ -78,9 +78,9 @@ yarn add -D @kubb/plugin-mcp@beta
 
 This plugin needs three other plugins. Kubb runs them before `plugin-mcp` so the handlers can import the generated types, Zod schemas, and the client functions they call.
 
-- [`@kubb/plugin-ts`](/plugins/plugin-ts) for the request and response types.
-- [`@kubb/plugin-zod`](/plugins/plugin-zod) for the schemas that validate each tool call.
-- [`@kubb/plugin-axios`](/plugins/plugin-axios) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch) for the HTTP client the handlers call.
+- [`@kubb/plugin-ts`](/plugins/plugin-ts/) for the request and response types.
+- [`@kubb/plugin-zod`](/plugins/plugin-zod/) for the schemas that validate each tool call.
+- [`@kubb/plugin-axios`](/plugins/plugin-axios/) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) for the HTTP client the handlers call.
 
 A client plugin is required. The handlers call its generated functions, so the build stops with a setup error when no client plugin is registered. Register one of them and set [`client`](#client) only when both are present.
 
