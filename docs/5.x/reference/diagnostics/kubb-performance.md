@@ -18,7 +18,7 @@ This is bookkeeping, not a problem. Kubb attaches a `KUBB_PERFORMANCE` record to
 
 It surfaces in two places.
 
-- The run total `durationMs` in the [`--reporter json`](/docs/5.x/api/commands/generate#reporters) report is the sum of every `KUBB_PERFORMANCE` record.
+- The run total `durationMs` in the [`--reporter json`](/docs/5.x/reference/commands/generate#reporters) report is the sum of every `KUBB_PERFORMANCE` record.
 - The per-plugin timing bars in the end-of-run summary, shown with `--verbose`.
 
 ```shell [Terminal]
@@ -44,5 +44,5 @@ Nothing to fix. To find a slow plugin, run `kubb generate --verbose` and read th
 
 ## See also
 
-- [`kubb generate`](/docs/5.x/api/commands/generate)
+- [`kubb generate`](/docs/5.x/reference/commands/generate)
 - [Diagnostics reference](/docs/5.x/reference/diagnostics)

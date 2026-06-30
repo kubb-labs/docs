@@ -52,5 +52,5 @@ export default defineConfig({
 ## See also
 
 - [Configuration reference](/docs/5.x/reference/configuration)
-- [Plugins concept](/docs/5.x/concepts/plugins)
+- [Plugins concept](/docs/5.x/guide/concepts/plugins)
 - [Diagnostics reference](/docs/5.x/reference/diagnostics)

@@ -19,7 +19,7 @@ Kubb resolves local references (`#/...`) against the document it parsed. This di
 ## How to fix it
 
 - Add the missing definition under `components.schemas`, or correct the `$ref` to match an existing one.
-- Run [`kubb validate`](/docs/5.x/api/commands/validate) to catch unresolved references before generating.
+- Run [`kubb validate`](/docs/5.x/reference/commands/validate) to catch unresolved references before generating.
 - If the target lives in another file, bundle the document first so all references are local.
 
 ## Common causes
@@ -54,5 +54,5 @@ paths:
 
 ## See also
 
-- [`kubb validate`](/docs/5.x/api/commands/validate)
+- [`kubb validate`](/docs/5.x/reference/commands/validate)
 - [Diagnostics reference](/docs/5.x/reference/diagnostics)

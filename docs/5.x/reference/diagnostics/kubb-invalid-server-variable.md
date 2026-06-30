@@ -50,5 +50,5 @@ servers:
 
 ## See also
 
-- [Base URL guide](/docs/5.x/guides/base-url)
+- [Base URL guide](/docs/5.x/guide/going-further/base-url)
 - [Diagnostics reference](/docs/5.x/reference/diagnostics)

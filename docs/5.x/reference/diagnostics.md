@@ -128,7 +128,7 @@ scraping the terminal:
 Each config emits one report. `counts` totals the `problem` diagnostics by severity. `timings` lists
 per-plugin durations slowest first. `name` is the config name, empty when unnamed.
 
-The exit code is unchanged. It is non-zero on any error. See [`--reporter`](/docs/5.x/api/commands/generate#reporters)
+The exit code is unchanged. It is non-zero on any error. See [`--reporter`](/docs/5.x/reference/commands/generate#reporters)
 for the other reporters.
 
 ## Reading a diagnostic in the terminal

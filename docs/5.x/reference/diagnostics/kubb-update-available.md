@@ -36,5 +36,5 @@ npm install @kubb/adapter-oas@beta @kubb/plugin-ts@beta
 
 ## See also
 
-- [`kubb generate`](/docs/5.x/api/commands/generate)
+- [`kubb generate`](/docs/5.x/reference/commands/generate)
 - [Diagnostics reference](/docs/5.x/reference/diagnostics)

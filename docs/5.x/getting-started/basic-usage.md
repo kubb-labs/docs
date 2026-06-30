@@ -7,9 +7,11 @@ outline: [2, 3]
 
 # Basic Usage
 
+In this tutorial you start from an empty config and finish with generated types, a client, and hooks imported into your app. Work through the five steps in order. By the end you will have run Kubb once and seen real code land in `./src/gen`.
+
 ## 1. Create the config
 
-`kubb.config.ts` drives everything Kubb does. A minimal config points at your spec and an output directory.
+Everything Kubb does starts from `kubb.config.ts`. Begin with a minimal config that points at your spec and names an output directory.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -20,11 +22,11 @@ export default defineConfig({
 })
 ```
 
-`input.path` accepts a local file path or a URL. `output.clean: true` wipes the output directory before each run.
+A couple of details to note here. `input.path` accepts a local file path or a URL, so you can point it at a spec on disk or one served over HTTP. `output.clean: true` wipes the output directory before each run, which keeps stale files from piling up.
 
 ## 2. Pick your plugins
 
-Each output format is its own plugin. Add only the ones you need.
+Each output format is its own plugin, so you only generate what you ask for. Start small and add plugins as you need them. The tabs below build up from types alone to a full setup with types, a client, hooks, schemas, and mocks.
 
 ::: code-group
 
@@ -87,6 +89,8 @@ export default defineConfig({
 
 :::
 
+Here is what each plugin in those examples gives you.
+
 | Plugin                                            | Package                    | Generates                                          |
 | ------------------------------------------------- | -------------------------- | -------------------------------------------------- |
 | [`pluginTs`](/plugins/plugin-ts)                  | `@kubb/plugin-ts`          | TypeScript types and interfaces                    |
@@ -101,6 +105,8 @@ export default defineConfig({
 See the [plugins catalogue](/plugins) for the full list.
 
 ## 3. Run generate
+
+With the config saved, run the generate command. You should see each plugin report in turn and a summary at the end.
 
 ```shell [Terminal]
 command: kubb generate
@@ -119,11 +125,11 @@ output:
   -   Output  ./src/gen
 ```
 
-Kubb creates one folder per plugin under `output.path`. Re-run it after every spec change. See [`kubb generate`](../api/commands/generate) for flags like `--watch` and `--reporter`.
+Kubb creates one folder per plugin under `output.path`, so the layout mirrors the config you wrote. Re-run it after every spec change. See [`kubb generate`](../api/commands/generate) for flags like `--watch` and `--reporter`.
 
 ## 4. Use the generated code
 
-Import paths follow the `output.path` values you set for each plugin.
+Now for the payoff. Import the generated code into your app. The import paths follow the `output.path` values you set for each plugin, so a plugin pointed at `models` lives under `gen/models`.
 
 ::: code-group
 
@@ -171,4 +177,4 @@ server.listen()
 
 ## 5. Keep it in sync
 
-Run `npm run generate` whenever the spec changes, then commit the output. To skip the manual step, [`unplugin-kubb`](../integrations/) generates during your build with [Vite](https://vite.dev), [Rollup](https://rollupjs.org), [Webpack](https://webpack.js.org), and others.
+That is the full loop. From now on, run `npm run generate` whenever the spec changes, then commit the output. To skip the manual step, [`unplugin-kubb`](/docs/5.x/guide/integrations/) generates during your build with [Vite](https://vite.dev), [Rollup](https://rollupjs.org), [Webpack](https://webpack.js.org), and others.

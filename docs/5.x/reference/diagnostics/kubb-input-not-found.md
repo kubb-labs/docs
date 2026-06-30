@@ -39,5 +39,5 @@ Kubb resolves `input.path` relative to the config file, then confirms the file e
 ## See also
 
 - [Configuration](/docs/5.x/reference/configuration)
-- [`kubb generate`](/docs/5.x/api/commands/generate)
+- [`kubb generate`](/docs/5.x/reference/commands/generate)
 - [Diagnostics reference](/docs/5.x/reference/diagnostics)

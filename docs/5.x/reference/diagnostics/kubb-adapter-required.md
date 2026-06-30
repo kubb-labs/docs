@@ -42,6 +42,6 @@ export default defineConfig({
 
 ## See also
 
-- [Adapters](/docs/5.x/concepts/adapters)
+- [Adapters](/docs/5.x/guide/concepts/adapters)
 - [Configuration](/docs/5.x/reference/configuration)
 - [Diagnostics reference](/docs/5.x/reference/diagnostics)

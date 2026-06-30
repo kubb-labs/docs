@@ -402,7 +402,7 @@ Adapter that converts your input into the universal AST. With `defineConfig` fro
 
 Omit `adapter` (and `input`) to run in plugin-only mode. Kubb skips spec parsing, but `kubb:plugin:setup` hooks still fire and `injectFile` still adds files to the build. Reach for this when a generation script doesn't consume an OpenAPI spec.
 
-See the [Adapter concept](/docs/5.x/concepts/adapters) for the full picture.
+See the [Adapter concept](/docs/5.x/guide/concepts/adapters) for the full picture.
 
 |           |                                       |
 | --------: | :------------------------------------ |
@@ -458,7 +458,7 @@ See the [`@kubb/adapter-oas`](/adapters/adapter-oas) reference for every adapter
 
 Array of parsers that turn the in-memory file representation into source code. Each parser declares which file extensions it handles through `extNames`.
 
-See the [Parser concept](/docs/5.x/concepts/parsers) and [`@kubb/parser-ts`](/parsers/parser-ts) for the built-in parsers.
+See the [Parser concept](/docs/5.x/guide/concepts/parsers) and [`@kubb/parser-ts`](/parsers/parser-ts) for the built-in parsers.
 
 |           |                                                |
 | --------: | :--------------------------------------------- |
@@ -485,7 +485,7 @@ Use `defineParser` from `@kubb/core` to write your own.
 
 Storage driver that persists generated files. Defaults to `fsStorage()` (filesystem).
 
-See the [Storage concept](/docs/5.x/concepts/storage) for the built-in drivers and how to write a custom backend.
+See the [Storage concept](/docs/5.x/guide/concepts/storage) for the built-in drivers and how to write a custom backend.
 
 |           |                                      |
 | --------: | :----------------------------------- |
@@ -543,7 +543,7 @@ export default defineConfig({
 
 ### `reporters`
 
-Reporters available to the run, registered as instances. `defineConfig` registers the built-in `cli`, `json`, and `file` reporters by default. The CLI [`--reporter`](/docs/5.x/api/commands/generate#reporters) flag picks which ones fire by name, defaulting to `cli` when omitted. `cli` writes the end-of-run summary to the terminal. `json` writes a machine-readable report to stdout for CI. `file` writes the run's diagnostics to `.kubb/kubb-<name>-<timestamp>.log`.
+Reporters available to the run, registered as instances. `defineConfig` registers the built-in `cli`, `json`, and `file` reporters by default. The CLI [`--reporter`](/docs/5.x/reference/commands/generate#reporters) flag picks which ones fire by name, defaulting to `cli` when omitted. `cli` writes the end-of-run summary to the terminal. `json` writes a machine-readable report to stdout for CI. `file` writes the run's diagnostics to `.kubb/kubb-<name>-<timestamp>.log`.
 
 |           |                                             |
 | --------: | :------------------------------------------ |
@@ -551,7 +551,7 @@ Reporters available to the run, registered as instances. `defineConfig` register
 |  Default: | `[cliReporter, jsonReporter, fileReporter]` |
 | Required: | `false`                                     |
 
-Add more reporters to the array, including your own built with [`createReporter`](/docs/5.x/api/core), then select them on the CLI with `--reporter <name>`.
+Add more reporters to the array, including your own built with [`createReporter`](/docs/5.x/reference/core), then select them on the CLI with `--reporter <name>`.
 
 ```typescript twoslash [kubb.config.ts]
 import { cliReporter, jsonReporter } from '@kubb/core'

@@ -37,4 +37,4 @@ Kubb wraps every failure in a diagnostic. When the underlying error has no struc
 ## See also
 
 - [Diagnostics reference](/docs/5.x/reference/diagnostics)
-- [`kubb generate`](/docs/5.x/api/commands/generate)
+- [`kubb generate`](/docs/5.x/reference/commands/generate)

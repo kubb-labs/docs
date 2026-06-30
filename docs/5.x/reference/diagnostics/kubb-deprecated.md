@@ -43,5 +43,5 @@ components:
 
 ## See also
 
-- [`kubb validate`](/docs/5.x/api/commands/validate)
+- [`kubb validate`](/docs/5.x/reference/commands/validate)
 - [Diagnostics reference](/docs/5.x/reference/diagnostics)

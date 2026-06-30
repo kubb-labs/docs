@@ -1,15 +1,15 @@
 ---
 layout: doc
-title: MCP - AI
+title: Set up the MCP server
 description: Connect AI editors and agents to Kubb's local MCP server. Configure Claude Desktop, Cursor, VS Code, and other MCP-capable clients to run Kubb tools directly.
 outline: [2, 3]
 ---
 
-# MCP
+# Set up the MCP server
 
 Kubb ships a [Model Context Protocol](https://modelcontextprotocol.io/) server. It exposes
 code-generation tools to any MCP-capable client. Once connected, your editor or agent runs Kubb
-generation, validates schemas, and inspects configuration without leaving the chat.
+generation, validates schemas, and inspects configuration from the chat.
 
 > [!IMPORTANT]
 > The built-in MCP server needs Kubb v5 or higher.
@@ -20,8 +20,8 @@ generation, validates schemas, and inspects configuration without leaving the ch
 
 ## Starting the server
 
-Run the server with one command. It communicates over stdio, the transport every major LLM
-client speaks:
+Run the server with one command. It communicates over stdio, the transport that every major LLM
+client speaks.
 
 ```shell [Terminal]
 kubb mcp
@@ -31,7 +31,7 @@ kubb mcp
 
 ### Claude Desktop
 
-Add this to your `claude_desktop_config.json`. On macOS it usually lives at `~/Library/Application Support/Claude/claude_desktop_config.json`:
+Add this to your `claude_desktop_config.json`. On macOS it usually lives at `~/Library/Application Support/Claude/claude_desktop_config.json`.
 
 ```json [Claude Desktop]
 {
@@ -46,7 +46,7 @@ Add this to your `claude_desktop_config.json`. On macOS it usually lives at `~/L
 
 ### Cursor
 
-Open `Settings → MCP` and add a new server entry:
+Open `Settings → MCP` and add a new server entry.
 
 ```json [Cursor]
 {
@@ -61,7 +61,7 @@ Open `Settings → MCP` and add a new server entry:
 
 ### VS Code (GitHub Copilot)
 
-Add this to your `.vscode/mcp.json` for the workspace. For a global setup, run `MCP: Open User Configuration` in the Command Palette:
+Add this to your `.vscode/mcp.json` for the workspace. For a global setup, run `MCP: Open User Configuration` in the Command Palette.
 
 ```json [.vscode/mcp.json]
 {
@@ -76,5 +76,5 @@ Add this to your `.vscode/mcp.json` for the workspace. For a global setup, run `
 
 ## See also
 
-- [`kubb mcp` command](/docs/5.x/api/commands/mcp): CLI reference and transport details
+- [`kubb mcp` command](/docs/5.x/reference/commands/mcp): CLI reference and transport details
 - [`@kubb/plugin-mcp`](/plugins/plugin-mcp) generates an MCP server from your OpenAPI spec
