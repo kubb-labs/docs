@@ -44,7 +44,7 @@ resources:
 
 It builds on `@kubb/plugin-ts` for the types, so add that to your config. Axios is a runtime dependency, so install it next to your application code.
 
-Each generated function takes one grouped options object (`{ path, query, headers, body }`) and returns a `RequestResult` of `{ data, error, request, response }`. `throwOnError` defaults to `true`, so a resolved call means the request succeeded and `data` is set. Pass `throwOnError: false` per call to get the discriminated `{ data?, error? }` form and read `error` and `response.status` yourself. The runtime is always bundled into `.kubb/client.ts`, so there is no `bundle` option.
+Each generated function takes one grouped options object (`{ path, query, headers, body }`) and returns a `RequestResult` of `{ status, data, error, request, response }`. `throwOnError` defaults to `true`, so a resolved call means the request succeeded and `data` is set. Pass `throwOnError: false` per call to get the discriminated union instead, keyed on the top-level `status`. A check on `status` narrows `data` on a success code and `error` on a documented error code, the same way `data` is typed on the success path. The runtime is always bundled into `.kubb/client.ts`, so there is no `bundle` option.
 
 The bundled `client` also exposes a `getUrl` method. It returns the final URL for an operation from the base URL, the interpolated path params, and the serialized query, without sending the request. This helps when you build cache keys, prefetch data, or render links:
 
@@ -426,15 +426,15 @@ await api.placeOrder({ body: { petId: 1, quantity: 1 } })
 
 :::
 
-Each call resolves to `{ data, error, request, response }`. Because `throwOnError` defaults to `true`, a resolved call means the request succeeded and `data` is set. Pass `throwOnError: false` on a call to get the discriminated `{ data?, error? }` form and read `error` and `response.status` yourself:
+Each call resolves to `{ status, data, error, request, response }`. Because `throwOnError` defaults to `true`, a resolved call means the request succeeded and `data` is set. Pass `throwOnError: false` on a call to get the discriminated union instead. Every variant is keyed on the top-level `status`, so a check on it narrows `data` on a success code and `error` on a documented error code, the same typed union you get for `data` on the success path:
 
 ```typescript
-const { data, error, response } = await pet.getPetById({ path: { petId: 1 }, throwOnError: false })
+const { status, data, error } = await pet.getPetById({ path: { petId: 1 }, throwOnError: false })
 
-if (error) {
-  console.error(response.status, error)
+if (status === 200) {
+  console.log(data) // data is the success body, error is undefined
 } else {
-  console.log(data)
+  console.error(status, error) // status is the documented error code, error is its parsed body
 }
 ```
 
