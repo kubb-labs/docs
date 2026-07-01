@@ -1,8 +1,8 @@
 ---
 layout: doc
 title: Kubb Fetch Plugin
-description: Generate a type-safe Fetch API client from OpenAPI, one async
-  function per operation, fully typed end to end.
+description: Generates a type-safe Fetch API client from your OpenAPI spec, one async
+  function per operation, so each call stays in sync with the API.
 outline: deep
 guides:
   - id: authentication

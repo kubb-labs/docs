@@ -1,183 +1,198 @@
 ---
 layout: doc
 title: Options
-description: All configuration options for @kubb/plugin-axios.
+description: Configuration options for @kubb/plugin-axios.
 outline: deep
 ---
 
 # Options
 
+| Option | Type | Default | Description |
+| ------ | ---- | ------- | ----------- |
+| [`output`](#output) | `Output` | `{ path: 'clients' }` | Where the generated files are written and exported |
+| [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
+| [`baseURL`](#baseurl) | `string` | — | Base URL prepended to every request |
+| [`validator`](#validator) | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` | `false` | Validate request and response bodies with Zod |
+| [`sdk`](#sdk) | `{ mode?: 'tag' \| 'flat', name?: string }` | — | Emit a class-based SDK instead of standalone functions |
+| [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
+| [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
+| [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
+| [`resolver`](#resolver) | `Partial<ResolverClient>` | — | Customize generated names and file paths |
+| [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
+
 ### output
 
-Where the plugin writes the generated functions and how it exports them.
+Where the generated `.ts` files are written and how they are exported.
 
-|           |                                                  |
-| --------: | :----------------------------------------------- |
-|     Type: | `Output`                                         |
-| Required: | `false`                                          |
-|  Default: | `{ path: 'clients', barrel: { type: 'named' } }` |
+|          |                     |
+| -------: | :------------------ |
+|    Type: | `Output`            |
+| Default: | `{ path: 'clients', barrel: { type: 'named' } }` |
 
 #### output.path
 
-Folder where the plugin writes its files, resolved against the global `output.path` on `defineConfig`. To write everything to one file instead, set `output.mode: 'file'` and give `path` a file name with its extension, such as `'clients.ts'`.
+Folder where the plugin writes its files. It is resolved against the global `output.path` on `defineConfig`. To write everything to one file instead, set `output.mode: 'file'` and give `path` a file name with its extension, such as `'clients.ts'`.
 
-|           |             |
-| --------: | :---------- |
-|     Type: | `string`    |
-| Required: | `true`      |
-|  Default: | `'clients'` |
+|          |             |
+| -------: | :---------- |
+|    Type: | `string`    |
+| Default: | `'clients'` |
 
 > [!TIP]
 > `output.path` sets where files go, `output.mode` sets how many. Use `'directory'` (the default) for one file per operation, optionally grouped into subdirectories with the `group` option. Use `'file'` to write everything into a single file.
 
 #### output.mode
 
-How the plugin consolidates its generated code into files. `'directory'` (the default) writes one file per operation under `output.path`. `'file'` writes everything into a single file, so `output.path` must include the file extension, such as `'clients.ts'`.
+How the plugin consolidates its generated code into files.
 
-|           |                         |
-| --------: | :---------------------- |
-|     Type: | `'directory' \| 'file'` |
-| Required: | `false`                 |
-|  Default: | `'directory'`           |
+- `'directory'` (default) writes one file per operation under `output.path`.
+- `'file'` writes everything into a single file. The `output.path` must include the file extension (for example `'clients.ts'`).
+
+|          |                         |
+| -------: | :---------------------- |
+|    Type: | `'directory' \| 'file'` |
+| Default: | `'directory'`           |
 
 > [!TIP]
 > Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group`. A single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 #### output.barrel
 
-How the generated `index.ts` barrel file re-exports the plugin's output. `{ type: 'named' }` re-exports each symbol by name, which is best for tree-shaking and explicit imports. `{ type: 'all' }` uses `export *` for a smaller barrel that exports everything. Add `nested: true` to create a barrel in every subdirectory, so callers can import from any depth. Set `false` to skip the barrel entirely, which also excludes the plugin's files from the root `index.ts`.
+Controls how the generated `index.ts` (barrel) file re-exports the plugin's output.
 
-|           |                                                         |
-| --------: | :------------------------------------------------------ |
-|     Type: | `{ type: 'named' \| 'all', nested?: boolean } \| false` |
-| Required: | `false`                                                 |
-|  Default: | `{ type: 'named' }`                                     |
+- `{ type: 'named' }` re-exports each symbol by name. Best for tree-shaking and explicit imports.
+- `{ type: 'all' }` uses `export *`. Smaller barrel file, but exports everything.
+- `{ nested: true }` creates a barrel in every subdirectory, so callers can import from any depth.
+- `false` skips the barrel entirely. The plugin's files are also excluded from the root `index.ts`.
+
+|          |                                                         |
+| -------: | :------------------------------------------------------ |
+|    Type: | `{ type: 'named' \| 'all', nested?: boolean } \| false` |
+| Default: | `{ type: 'named' }`                                     |
+
+> [!TIP]
+> Pick `'named'` when consumers care about which symbols they import (better tree-shaking, friendlier auto-import). Pick `'all'` when the file count is small and you want a one-line barrel.
+
+::: code-group
+
+```typescript ['named' (default)]
+// src/gen/clients/index.ts
+export { getPetById } from './getPetById'
+export { addPet } from './addPet'
+```
+
+```typescript ['all']
+// src/gen/clients/index.ts
+export * from './getPetById'
+export * from './addPet'
+```
+
+```text [nested]
+src/gen/clients/
+├── index.ts          # re-exports ./pet and ./store
+├── pet/
+│   ├── index.ts      # re-exports getPetById, addPet, ...
+│   └── getPetById.ts
+└── store/
+    ├── index.ts
+    └── placeOrder.ts
+```
+
+```text [false]
+# No index.ts is generated for this plugin.
+# Its files are also excluded from the root index.ts.
+```
+
+:::
 
 #### output.banner
 
 Text added to the top of every generated file. Use it for license headers, lint disables, or a `@ts-nocheck` directive. Pass a string for a fixed banner, or a function that builds one from each file's `RootNode` (the AST root with the path, schema, and operation context).
 
-|           |                                          |
-| --------: | :--------------------------------------- |
-|     Type: | `string \| ((node: RootNode) => string)` |
-| Required: | `false`                                  |
+|          |                                          |
+| -------: | :--------------------------------------- |
+|    Type: | `string \| ((node: RootNode) => string)` |
+
+A static `banner: '/* eslint-disable */\n// @ts-nocheck'` lands at the top of each generated file. A function banner builds the text from the file's `RootNode`, such as `banner: (node) => \`// Source: ${node.filePath}\``.
 
 #### output.footer
 
-Text added to the bottom of every generated file. It works like `banner` but for closing comments, such as re-enabling a lint rule. Pass a string or a function that receives the file's `RootNode` and returns the text.
+Text added to the bottom of every generated file. It works like `banner` but for closing comments, such as re-enabling a lint rule. Pass a string or a function that receives the file's `RootNode` and returns the text. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a lint disable to the generated file.
 
-|           |                                          |
-| --------: | :--------------------------------------- |
-|     Type: | `string \| ((node: RootNode) => string)` |
-| Required: | `false`                                  |
+|          |                                          |
+| -------: | :--------------------------------------- |
+|    Type: | `string \| ((node: RootNode) => string)` |
 
 ### group
 
-Splits generated files into subfolders by the operation's first tag or first path segment. Each group gets its own directory under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`.
+Splits generated files into subfolders by the operation's tag or URL path. Each group gets its own directory under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`.
 
-|           |         |
-| --------: | :------ |
-|     Type: | `Group` |
-| Required: | `false` |
-|  Default: | `null`  |
+|          |         |
+| -------: | :------ |
+|    Type: | `Group` |
 
 > [!TIP]
-> Use `group` to mirror your API's domain structure (pet, store, user) in the generated code. Combine it with `output.barrel: { type: 'named', nested: true }` to get a barrel file per group.
+> Use `group` to mirror your API's domain structure (pet, store, user) in the generated code. Combine it with `output.barrel: { type: 'named', nested: true }` to get per-tag barrel files.
 >
 > `group` only applies to `output.mode: 'directory'` (the default). It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
 
+With `group: { type: 'tag' }`, the generator emits one folder per tag, named after the camelCased tag:
+
+```text [Resulting tree]
+src/gen/clients/
+├── pet/
+│   ├── addPet.ts
+│   └── getPetById.ts
+└── store/
+    ├── placeOrder.ts
+    └── getInventory.ts
+```
+
+Pass `group.name` to customize the folder name. For example, a `name` function that appends `Service` to the group keeps a `petService/` layout.
+
 #### group.type
 
-Property used to assign each operation to a group, required whenever `group` is set. `'tag'` reads the first tag on the operation (`operation.getTags().at(0)?.name`), and operations without a tag go in a default group. `'path'` reads the first segment of the operation's URL.
+Property used to assign each operation to a group. Required whenever `group` is set.
 
-|           |                   |
-| --------: | :---------------- |
-|     Type: | `'tag' \| 'path'` |
-| Required: | `true`            |
+- `'tag'` uses the operation's first tag (`operation.getTags().at(0)?.name`).
+- `'path'` uses the first segment of the operation's URL, such as `pet` for `/pet/{petId}`.
 
-> [!NOTE]
-> `Required` here is conditional. It applies only when the parent `group` option is set, and `group` itself stays optional.
+Operations with no tag go in a default group.
+
+|          |                   |
+| -------: | :---------------- |
+|    Type: | `'tag' \| 'path'` |
 
 #### group.name
 
-Function that builds the folder name from the group key. The default depends on `group.type`. A `'tag'` group uses the camelCased tag. A `'path'` group uses the second path segment (`/pet/findByStatus` becomes `pet`). A `group.name` you pass always wins over the default.
+Function that turns a group key into a folder name. The default depends on `group.type`. A `'tag'` group uses the camelCased tag. A `'path'` group uses the second path segment (`/pet/findByStatus` becomes `pet`). A `group.name` you pass always wins over the default.
 
-|           |                                           |
-| --------: | :---------------------------------------- |
-|     Type: | `(context: { group: string }) => string` |
-| Required: | `false`                                   |
-
-### exclude
-
-Skips any operation that matches at least one entry in the list. It is the opposite of `include`. Entries use a `type` (`tag`, `operationId`, `path`, `method`, `contentType`, `schemaName`) and a `pattern` (string or `RegExp`). When both are set, `exclude` wins.
-
-|           |                  |
-| --------: | :--------------- |
-|     Type: | `Array<Exclude>` |
-| Required: | `false`          |
-|  Default: | `[]`             |
-
-```typescript [Type definition]
-export type Exclude = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
-  pattern: string | RegExp
-}
-```
-
-### include
-
-Generates only the operations that match at least one entry in the list, and skips everything else. Entries use the same `type` (`tag`, `operationId`, `path`, `method`, `contentType`, `schemaName`) and `pattern` (string or `RegExp`) as `exclude`.
-
-|           |                  |
-| --------: | :--------------- |
-|     Type: | `Array<Include>` |
-| Required: | `false`          |
-
-```typescript [Type definition]
-export type Include = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
-  pattern: string | RegExp
-}
-```
-
-### override
-
-Applies different plugin options to operations that match a pattern. Use it for the few endpoints that need special treatment. Each entry takes the same `type` and `pattern` as `include` and `exclude`, plus an `options` object. Entries run top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
-
-|           |                   |
-| --------: | :---------------- |
-|     Type: | `Array<Override>` |
-| Required: | `false`           |
-|  Default: | `[]`              |
-
-```typescript [Type definition]
-export type Override = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
-  pattern: string | RegExp
-  options: Partial<Options>
-}
-```
+|          |                                     |
+| -------: | :---------------------------------- |
+|    Type: | `(context: { group: string }) => string` |
 
 ### baseURL
 
 Base URL prepended to every request the functions make. When omitted, the URL comes from the adapter's server URL (`servers[0].url` in the spec). Set it to point the client at a different environment, such as staging or production, than the spec.
 
-|           |          |
-| --------: | :------- |
-|     Type: | `string` |
-| Required: | `false`  |
+|          |          |
+| -------: | :------- |
+|    Type: | `string` |
 
 ### validator
 
-Runtime validator applied to request and response bodies using schemas from `@kubb/plugin-zod`. `false` (the default) does no validation and returns the response cast to the generated type. `'zod'` validates success response bodies only. The `{ request?: 'zod', response?: 'zod' }` object form opts in per direction, where `request` validates the request body before the call and `response` validates the response body after.
+Runtime validator applied to request and response bodies using schemas from `@kubb/plugin-zod`.
+
+- `false` (default) does no validation and returns the response cast to the generated type.
+- `'zod'` validates success response bodies only.
+- `{ request?: 'zod', response?: 'zod' }` opts in per direction, where `request` validates the request body before the call and `response` validates the response body after.
 
 Add `@kubb/plugin-zod` to the plugins list when either direction is `'zod'`.
 
-|           |                                                           |
-| --------: | :-------------------------------------------------------- |
-|     Type: | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` |
-| Required: | `false`                                                   |
-|  Default: | `false`                                                   |
+|          |                                                           |
+| -------: | :-------------------------------------------------------- |
+|    Type: | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` |
+| Default: | `false`                                                   |
 
 The value changes what the generated function does with the response:
 
@@ -242,10 +257,9 @@ const { data } = await addPet({ body: { name: 'Fluffy' } })
 
 Generates a class-based SDK instead of standalone functions. Each tag client is an instance class whose constructor takes a client config and builds its own client, so every environment is a separate instance. Leave `sdk` unset to keep the per-operation functions, which is what the query plugins consume.
 
-|           |                                             |
-| --------: | :------------------------------------------ |
-|     Type: | `{ mode?: 'tag' \| 'flat'; name?: string }` |
-| Required: | `false`                                     |
+|          |                                             |
+| -------: | :------------------------------------------ |
+|    Type: | `{ mode?: 'tag' \| 'flat'; name?: string }` |
 
 The `sdk.mode` value changes the shape the plugin emits:
 
@@ -349,27 +363,104 @@ if (status === 200) {
 }
 ```
 
+### include
+
+Generates only the operations that match at least one entry in the list. Everything else is skipped. Each entry filters by one of:
+
+- `tag`: the operation's first tag in the OpenAPI spec.
+- `operationId`: the operation's `operationId`.
+- `path`: the URL path, such as `'/pet/{petId}'`.
+- `method`: the HTTP method, such as `'get'` or `'post'`.
+- `contentType`: the request or response media type, such as `'application/json'`.
+- `schemaName`: the component schema name under `#/components/schemas`.
+
+`pattern` accepts either a string (exact match) or a `RegExp` for fuzzy matches.
+
+|          |                  |
+| -------: | :--------------- |
+|    Type: | `Array<Include>` |
+
+```typescript [Type definition]
+export type Include = {
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
+  pattern: string | RegExp
+}
+```
+
+Pass `include: [{ type: 'tag', pattern: 'pet' }]` to keep only the `pet` tag. Stack entries to narrow further, such as `{ type: 'method', pattern: 'GET' }` with `{ type: 'path', pattern: /^\/pet/ }` for GET operations under `/pet`.
+
+### exclude
+
+Skips any operation that matches at least one entry in the list. It is the opposite of `include`. Entries use the same `type` (`tag`, `operationId`, `path`, `method`, `contentType`, `schemaName`) and `pattern` (string or `RegExp`). When both are set, `exclude` wins.
+
+|          |                  |
+| -------: | :--------------- |
+|    Type: | `Array<Exclude>` |
+
+```typescript [Type definition]
+export type Exclude = {
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
+  pattern: string | RegExp
+}
+```
+
+Pass `exclude: [{ type: 'tag', pattern: 'store' }]` to drop the `store` tag, or stack `{ type: 'operationId', pattern: 'deletePet' }` with `{ type: 'method', pattern: 'DELETE' }` to skip one operation and every DELETE.
+
+### override
+
+Applies different plugin options to operations that match a pattern. Use it for the few endpoints that need special treatment. Each entry takes the same `type` and `pattern` as `include` and `exclude`, plus an `options` object. That object accepts any plugin option except `override`, so rules cannot nest. Entries run top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
+
+|          |                   |
+| -------: | :---------------- |
+|    Type: | `Array<Override>` |
+
+```typescript [Type definition]
+export type Override = {
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
+  pattern: string | RegExp
+  options: Omit<Partial<Options>, 'override'>
+}
+```
+
+For example, `override: [{ type: 'tag', pattern: 'user', options: { validator: 'zod' } }]` turns on Zod validation for the `user` tag while the rest of the spec keeps the plugin default.
+
 ### resolver
 
 Changes how the plugin names generated files and functions. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change. Anything you omit, or that returns `null` or `undefined`, falls back to the default. Inside a method, `this` is the full resolver, so you can call `this.default(name, 'function')` to reuse the built-in name.
 
-|           |                                                      |
-| --------: | :--------------------------------------------------- |
-|     Type: | `Partial<ResolverClient> & ThisType<ResolverClient>` |
-| Required: | `false`                                              |
+|          |                                                      |
+| -------: | :--------------------------------------------------- |
+|    Type: | `Partial<ResolverClient> & ThisType<ResolverClient>` |
 
 > [!TIP]
 > Use `resolver` for naming and file-location tweaks. To change the AST nodes themselves, such as stripping descriptions, use `macros` instead.
+
+For example, `resolver: { resolveName(name) { return \`api${this.default(name, 'function')}\` } }` prefixes every generated function name with `api`. The default resolver for this plugin is `resolverClient`, shared with `@kubb/plugin-fetch`.
 
 ### macros
 
 Rewrites AST nodes before the plugin prints them to source. Use it to rename operation IDs, drop descriptions, or change schema metadata without forking the generator. Each [macro](/docs/5.x/guide/going-further/macros) callback, such as `schema` or `operation`, receives the node and a context object. Return a new node to replace it, or `undefined` to leave it as is. Callbacks you omit keep their default behavior. Macros run in order, so a later one sees the output of an earlier one.
 
-|           |                |
-| --------: | :------------- |
-|     Type: | `Array<Macro>` |
-| Required: | `false`        |
+|          |                |
+| -------: | :------------- |
+|    Type: | `Array<Macro>` |
 
 > [!TIP]
 > Use `macros` to rewrite node properties before printing. To change the names of generated symbols and files, use `resolver` instead.
 
+Each entry names the macro and supplies one callback per node kind:
+
+```typescript [A macros array]
+import { pluginAxios } from '@kubb/plugin-axios'
+
+pluginAxios({
+  macros: [
+    {
+      name: 'prefix-operation-id',
+      operation(node) {
+        return { ...node, operationId: `api_${node.operationId}` }
+      },
+    },
+  ],
+})
+```

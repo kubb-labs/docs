@@ -1,8 +1,8 @@
 ---
 layout: doc
 title: Kubb Faker Plugin
-description: Generate Faker.js mock-data factories from OpenAPI for tests,
-  Storybook, and seeded local data.
+description: Generates a Faker.js mock-data factory for every schema in your OpenAPI spec.
+  Use the factories in tests, Storybook, and local development without a running backend.
 outline: deep
 kind: plugin
 id: plugin-faker

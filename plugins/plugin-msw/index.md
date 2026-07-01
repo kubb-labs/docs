@@ -1,8 +1,8 @@
 ---
 layout: doc
 title: Kubb MSW Plugin
-description: Generate MSW request handlers from OpenAPI so you can mock the
-  entire API in tests and during local development.
+description: Generates MSW request handlers from your OpenAPI spec so you can
+  mock the API in tests and during local development.
 outline: deep
 kind: plugin
 id: plugin-msw

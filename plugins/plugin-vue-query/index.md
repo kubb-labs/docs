@@ -1,8 +1,8 @@
 ---
 layout: doc
 title: Kubb Vue Query Plugin
-description: Generate TanStack Query composables for Vue (useQuery, useMutation,
-  useInfiniteQuery) from OpenAPI.
+description: Generates TanStack Query composables for Vue from your OpenAPI spec, so
+  every read and write is a typed useQuery, useInfiniteQuery, or useMutation.
 outline: deep
 guides:
   - id: calling-operations

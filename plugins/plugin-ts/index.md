@@ -1,8 +1,8 @@
 ---
 layout: doc
 title: Kubb TypeScript Plugin
-description: Generate TypeScript types and interfaces from OpenAPI schemas with
-  full type safety end to end.
+description: Generates TypeScript types and interfaces from your OpenAPI spec, the
+  typed foundation the other Kubb plugins build on.
 outline: deep
 kind: plugin
 id: plugin-ts

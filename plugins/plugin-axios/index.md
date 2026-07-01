@@ -1,8 +1,8 @@
 ---
 layout: doc
 title: Kubb Axios Plugin
-description: Generate a type-safe axios HTTP client from OpenAPI, one async
-  function per operation, fully typed end to end.
+description: Generates a type-safe axios client from your OpenAPI spec, one async
+  function per operation, so each call stays in sync with the API.
 outline: deep
 guides:
   - id: authentication

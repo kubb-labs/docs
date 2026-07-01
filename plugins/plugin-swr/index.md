@@ -1,7 +1,7 @@
 ---
 layout: doc
 title: Kubb SWR Plugin
-description: Generate SWR hooks (useSWR, useSWRMutation) from OpenAPI specifications.
+description: Generates typed SWR hooks from your OpenAPI spec, so data fetching stays in sync with the API.
 outline: deep
 guides:
   - id: calling-operations
@@ -102,7 +102,7 @@ export default defineConfig({
       group: { type: 'tag', name: ({ group }) => `${group}Hooks` },
       client: 'fetch',
       query: { methods: ['get'], importPath: 'swr' },
-      mutation: { methods: ['post', 'put', 'delete'] },
+      mutation: { methods: ['post', 'put', 'patch', 'delete'] },
     }),
   ],
 })
