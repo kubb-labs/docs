@@ -17,7 +17,7 @@ outline: deep
 | [`dateType`](#datetype) | `false \| 'string' \| 'stringOffset' \| 'stringLocal' \| 'date'` | `'string'` | How `format: date-time` schemas are represented |
 | [`integerType`](#integertype) | `'number' \| 'bigint'` | `'bigint'` | How integers map to TypeScript |
 | [`unknownType`](#unknowntype) | `'any' \| 'unknown' \| 'void'` | `'any'` | Type for schemas Kubb cannot infer |
-| [`emptySchemaType`](#emptyschematype) | `'any' \| 'unknown' \| 'void'` | `'any'` | Type for empty schemas |
+| [`emptySchemaType`](#emptyschematype) | `'any' \| 'unknown' \| 'void'` | `unknownType \| 'any'` | Type for empty schemas |
 | [`enumSuffix`](#enumsuffix) | `string` | `'enum'` | Suffix for derived enum names |
 
 ### validate
@@ -270,7 +270,7 @@ AST type used for fully empty schemas (`{}`). It follows `unknownType` unless yo
 |          |                                |
 | -------: | :----------------------------- |
 |    Type: | `'any' \| 'unknown' \| 'void'` |
-| Default: | `'any'`                        |
+| Default: | `unknownType \| 'any'`         |
 
 > [!TIP]
 > A common pairing sets `unknownType: 'unknown'` for safety and `emptySchemaType: 'any'` so empty 204 response bodies stay easy to use.

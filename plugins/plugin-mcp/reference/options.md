@@ -181,7 +181,7 @@ Function that turns a group key (the operation's first tag) into a folder or ide
 |          |                                     |
 | -------: | :---------------------------------- |
 |    Type: | `(context: GroupContext) => string` |
-| Default: | `(ctx) => \`${ctx.group}\``         |
+| Default: | `(ctx) => camelCase(ctx.group)`         |
 
 ### include
 

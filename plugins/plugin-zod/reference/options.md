@@ -11,7 +11,7 @@ outline: deep
 | ------ | ---- | ------- | ----------- |
 | [`output`](#output) | `Output` | `{ path: 'zod' }` | Where the generated files are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
-| [`importPath`](#importpath) | `string` | `'zod'` | Module the generated files import `z` from |
+| [`importPath`](#importpath) | `string` | `mini ? 'zod/mini' : 'zod'` | Module the generated files import `z` from |
 | [`typed`](#typed) | `boolean` | — | Tie each schema to its `@kubb/plugin-ts` type |
 | [`inferred`](#inferred) | `boolean` | — | Emit a `z.infer` alias next to each schema |
 | [`coercion`](#coercion) | `boolean \| { dates?: boolean, strings?: boolean, numbers?: boolean }` | `false` | Coerce input before validation |
@@ -188,7 +188,7 @@ Function that turns a group key (the operation's first tag) into a folder or ide
 |          |                                     |
 | -------: | :---------------------------------- |
 |    Type: | `(context: GroupContext) => string` |
-| Default: | `(ctx) => \`${ctx.group}\``         |
+| Default: | `(ctx) => camelCase(ctx.group)`         |
 
 ### importPath
 
@@ -385,6 +385,9 @@ querySchema.parse({ count: '5', date: '2024-01-01' }) // throws, the date is not
 ```
 
 :::
+
+> [!NOTE]
+> `coercion.dates` covers `date` and `datetime` string fields. Fields that Kubb represents as a JavaScript `Date` are generated with transform-based codecs rather than `z.coerce.date()`, so `coercion.dates` does not change them.
 
 ### guidType
 

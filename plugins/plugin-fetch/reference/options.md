@@ -170,7 +170,7 @@ Function that turns a group key into a folder name. The default depends on `grou
 |          |                                     |
 | -------: | :---------------------------------- |
 |    Type: | `(context: { group: string }) => string` |
-| Default: | `(ctx) => \`${ctx.group}\``         |
+| Default: | `(ctx) => camelCase(ctx.group)`         |
 
 ### baseURL
 

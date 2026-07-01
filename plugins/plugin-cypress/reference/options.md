@@ -116,8 +116,17 @@ A static `banner: '/* eslint-disable */\n// @ts-nocheck'` lands at the top of ea
 ```typescript
 /* eslint-disable */
 // @ts-nocheck
-export function getPetById({ path }: { path: { petId: number } }) {
-  return cy.request('GET', `/pet/${path.petId}`)
+export function showPetById(
+  { path }: ShowPetByIdRequestConfig,
+  options: Partial<Cypress.RequestOptions> = {},
+): Cypress.Chainable<ShowPetByIdResponse> {
+  return cy
+    .request<ShowPetByIdResponse>({
+      method: 'GET',
+      url: `/pets/${path.petId}`,
+      ...options,
+    })
+    .then((res) => res.body)
 }
 ```
 
@@ -191,14 +200,32 @@ Base URL prepended to every request in the generated helpers. When omitted, the 
 ::: code-group
 
 ```typescript [Without baseURL]
-export function getPetById({ path }: { path: { petId: number } }) {
-  return cy.request('GET', `/pet/${path.petId}`)
+export function showPetById(
+  { path }: ShowPetByIdRequestConfig,
+  options: Partial<Cypress.RequestOptions> = {},
+): Cypress.Chainable<ShowPetByIdResponse> {
+  return cy
+    .request<ShowPetByIdResponse>({
+      method: 'GET',
+      url: `/pets/${path.petId}`,
+      ...options,
+    })
+    .then((res) => res.body)
 }
 ```
 
 ```typescript [baseURL: 'https://staging.petstore.dev']
-export function getPetById({ path }: { path: { petId: number } }) {
-  return cy.request('GET', `https://staging.petstore.dev/pet/${path.petId}`)
+export function showPetById(
+  { path }: ShowPetByIdRequestConfig,
+  options: Partial<Cypress.RequestOptions> = {},
+): Cypress.Chainable<ShowPetByIdResponse> {
+  return cy
+    .request<ShowPetByIdResponse>({
+      method: 'GET',
+      url: `https://staging.petstore.dev/pets/${path.petId}`,
+      ...options,
+    })
+    .then((res) => res.body)
 }
 ```
 

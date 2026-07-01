@@ -14,10 +14,10 @@ outline: deep
 | [`client`](#client) | `'axios' \| 'fetch'` | — | Which registered client plugin the hooks call |
 | [`infinite`](#infinite) | `Partial<Infinite> \| false` | `false` | Generate `useInfiniteQuery` hooks for pagination |
 | [`suspense`](#suspense) | `Partial<object> \| false` | `{}` | Generate `useSuspenseQuery` hooks |
-| [`query`](#query) | `Partial<Query> \| false` | `{}` | Configure the query hooks |
-| [`queryKey`](#querykey) | `(props) => unknown[]` | — | Build the `queryKey` for each query hook |
-| [`mutation`](#mutation) | `Partial<Mutation> \| false` | `{}` | Configure the mutation hooks |
-| [`mutationKey`](#mutationkey) | `(props) => unknown[]` | — | Build the `mutationKey` for each mutation hook |
+| [`query`](#query) | `Partial<Query> \| false` | `{ methods: ['get'], … }` | Configure the query hooks |
+| [`queryKey`](#querykey) | `(props) => unknown[]` | `built-in` | Build the `queryKey` for each query hook |
+| [`mutation`](#mutation) | `Partial<Mutation> \| false` | `{ methods: ['post', 'put', 'patch', 'delete'], … }` | Configure the mutation hooks |
+| [`mutationKey`](#mutationkey) | `(props) => unknown[]` | `built-in` | Build the `mutationKey` for each mutation hook |
 | [`customOptions`](#customoptions) | `CustomOptions` | — | Route every hook through your own options function |
 | [`validator`](#validator) | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` | `false` | Validate request and response data with Zod |
 | [`hooks`](#hooks) | `boolean` | `false` | Emit `use*` hook functions on top of the factories |
@@ -84,25 +84,25 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 
 ```typescript ['named' (default)]
 // src/gen/hooks/index.ts
-export { useGetPetsQuery, getPetsQueryKey } from './useGetPetsQuery'
-export { useAddPetMutation } from './useAddPetMutation'
+export { getPetsQueryKey, getPetsQueryOptions } from './useGetPets'
+export { createPetMutationKey, createPetMutationOptions } from './useCreatePet'
 ```
 
 ```typescript ['all']
 // src/gen/hooks/index.ts
-export * from './useGetPetsQuery'
-export * from './useAddPetMutation'
+export * from './useGetPets'
+export * from './useCreatePet'
 ```
 
 ```text [nested]
 src/gen/hooks/
 ├── index.ts          # re-exports ./pet and ./store
 ├── pet/
-│   ├── index.ts      # re-exports useGetPetsQuery, useAddPetMutation, ...
-│   └── useGetPetsQuery.ts
+│   ├── index.ts      # re-exports getPetsQueryKey, getPetsQueryOptions, ...
+│   └── useGetPets.ts
 └── store/
     ├── index.ts
-    └── useGetOrderByIdQuery.ts
+    └── useGetOrderById.ts
 ```
 
 ```text [false]
@@ -146,11 +146,11 @@ With `group: { type: 'tag' }`, the generator emits one folder per tag, named aft
 ```text [Resulting tree]
 src/gen/hooks/
 ├── pet/
-│   ├── useAddPetMutation.ts
-│   └── useGetPetsQuery.ts
+│   ├── useCreatePet.ts
+│   └── useGetPets.ts
 └── store/
-    ├── useCreateOrderMutation.ts
-    └── useGetOrderByIdQuery.ts
+    ├── useCreateOrder.ts
+    └── useGetOrderById.ts
 ```
 
 Pass `group.name` to customize the folder name. For example, a `name` function that appends `Hooks` to the group produces a `petHooks/` layout.
@@ -217,13 +217,13 @@ Which factory you reach for depends on the value:
 ::: code-group
 
 ```typescript [infinite: false (default)]
-import { getPetsQueryOptions } from './src/gen/hooks/getPetsQuery'
+import { getPetsQueryOptions } from './src/gen/hooks/useGetPets'
 
 const { data } = useQuery(getPetsQueryOptions())
 ```
 
 ```typescript [infinite: {}]
-import { getPetsInfiniteQueryOptions } from './src/gen/hooks/getPetsInfiniteQuery'
+import { getPetsInfiniteQueryOptions } from './src/gen/hooks/useGetPetsInfinite'
 
 const { data, fetchNextPage, hasNextPage } = useInfiniteQuery(getPetsInfiniteQueryOptions())
 // data.pages holds each fetched page
@@ -305,14 +305,14 @@ Which factory you reach for depends on the value:
 ::: code-group
 
 ```typescript [suspense: {} (default)]
-import { getPetsSuspenseQueryOptions } from './src/gen/hooks/getPetsSuspenseQuery'
+import { getPetsSuspenseQueryOptions } from './src/gen/hooks/useGetPetsSuspense'
 
 // inside a <Suspense> boundary, data is already resolved with no isLoading flag
 const { data } = useSuspenseQuery(getPetsSuspenseQueryOptions())
 ```
 
 ```typescript [suspense: false]
-import { getPetsQueryOptions } from './src/gen/hooks/getPetsQuery'
+import { getPetsQueryOptions } from './src/gen/hooks/useGetPets'
 
 const { data, isLoading, error } = useQuery(getPetsQueryOptions())
 ```
@@ -348,11 +348,12 @@ Module used in the `import { queryOptions } from '...'` statement at the top of 
 
 ### queryKey
 
-Builds the `queryKey` for each generated hook. Use it to add a version namespace, key off the operation ID, or match an existing `queryClient.invalidateQueries` strategy. The callback receives the operation `node` and the active `casing`, and returns the array of values that make up the key.
+Builds the `queryKey` for each generated hook. Use it to add a version namespace, key off the operation ID, or match an existing `queryClient.invalidateQueries` strategy. The callback receives the operation `node` and the active `casing`, and returns the array of values that make up the key. When unset, it defaults to Kubb's built-in key builder (`queryKeyTransformer`).
 
 |          |                                                                      |
 | -------: | :------------------------------------------------------------------- |
 |    Type: | `(props: { node: OperationNode; casing?: 'camelcase' }) => unknown[]` |
+| Default: | `built-in`                                                           |
 
 > [!WARNING]
 > String values are inlined verbatim into generated code. Wrap any string you want emitted as a literal in `JSON.stringify(...)`.
@@ -404,11 +405,12 @@ Module used in the `import { mutationOptions } from '...'` statement at the top 
 
 ### mutationKey
 
-Builds the `mutationKey` for each mutation hook. Use it when you batch invalidations or read mutation state with `useMutationState`. The callback receives the same `{ node, casing }` props as `queryKey`.
+Builds the `mutationKey` for each mutation hook. Use it when you batch invalidations or read mutation state with `useMutationState`. The callback receives the same `{ node, casing }` props as `queryKey`. When unset, it defaults to Kubb's built-in key builder (`mutationKeyTransformer`).
 
 |          |                                                                      |
 | -------: | :------------------------------------------------------------------- |
 |    Type: | `(props: { node: OperationNode; casing?: 'camelcase' }) => unknown[]` |
+| Default: | `built-in`                                                           |
 
 > [!WARNING]
 > String values are inlined verbatim into generated code. Wrap literal strings in `JSON.stringify(...)`.
@@ -468,7 +470,7 @@ The factory helpers work with any TanStack Query adapter. You can pass the same 
 
 ```typescript [hooks: false (default)]
 // only factories, no use* functions
-import { getPetsQueryOptions } from './src/gen/hooks/getPetsQuery'
+import { getPetsQueryOptions } from './src/gen/hooks/useGetPets'
 
 // compose manually or pass to router loaders
 const options = getPetsQueryOptions()
@@ -477,9 +479,9 @@ const data = await queryClient.fetchQuery(options)
 
 ```typescript [hooks: true]
 // factories plus the hook
-import { useGetPetsQuery } from './src/gen/hooks/useGetPetsQuery'
+import { useGetPets } from './src/gen/hooks/useGetPets'
 
-const { data, isLoading } = useGetPetsQuery()
+const { data, isLoading } = useGetPets()
 ```
 
 :::
