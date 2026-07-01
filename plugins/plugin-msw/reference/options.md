@@ -11,7 +11,7 @@ outline: deep
 | ------ | ---- | ------- | ----------- |
 | [`output`](#output) | `Output` | `{ path: 'handlers' }` | Where the generated files are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
-| [`baseURL`](#baseurl) | `string` | — | URL prepended to every handler's request URL |
+| [`baseURL`](#baseurl) | `string` | — | Base URL prepended to every handler's request |
 | [`handlers`](#handlers) | `boolean` | `false` | Emit a `handlers.ts` that re-exports every handler |
 | [`parser`](#parser) | `'data' \| 'faker'` | `'data'` | Source of the response body each handler returns |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
@@ -186,7 +186,7 @@ Function that turns a group key (the operation's first tag) into a folder or ide
 
 ### baseURL
 
-URL added in front of every handler's request URL. When omitted, the URL comes from the adapter's server URL, usually the spec's `servers[0].url`. Set it to point at a different environment than the spec.
+Base URL prepended to every handler's request. When omitted, the URL comes from the adapter's server URL, usually the spec's `servers[0].url`. Set it to point at a different environment than the spec.
 
 |          |          |
 | -------: | :------- |

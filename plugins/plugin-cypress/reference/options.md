@@ -11,7 +11,7 @@ outline: deep
 | ------ | ---- | ------- | ----------- |
 | [`output`](#output) | `Output` | `{ path: 'cypress' }` | Where the generated files are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
-| [`baseURL`](#baseurl) | `string` | — | URL prepended to every request URL |
+| [`baseURL`](#baseurl) | `string` | — | Base URL prepended to every request |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
@@ -182,7 +182,7 @@ Function that turns a group key into a folder name. For `'tag'` groups the key i
 
 ### baseURL
 
-URL prepended to every request URL in the generated helpers. When omitted, the URL comes from the adapter's server URL, usually the spec's `servers[0].url`. Set it to point the helpers at a different environment, such as staging or production.
+Base URL prepended to every request in the generated helpers. When omitted, the URL comes from the adapter's server URL, usually the spec's `servers[0].url`. Set it to point the helpers at a different environment, such as staging or production.
 
 |          |          |
 | -------: | :------- |
