@@ -2,9 +2,9 @@
 title: Changelog
 description: Track all updates, features, and improvements to Kubb
 layout: doc
-outline:
-  - 2
-  - 3
+sidebar: false
+pageClass: changelog
+outline: 2
 ---
 
 # Changelog
