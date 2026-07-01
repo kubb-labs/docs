@@ -1,8 +1,7 @@
 ---
 layout: doc
 title: Kubb Markdown Parser
-description: Markdown file parser for Kubb. Joins source blocks as plain
-  markdown and renders YAML frontmatter via `parserMd.print`.
+description: Emits `.md` and `.markdown` files from the Kubb AST, joining source blocks as plain markdown and prepending YAML frontmatter from a file's meta.
 outline: deep
 kind: parser
 id: parser-md
@@ -32,14 +31,9 @@ resources:
   changelog: https://github.com/kubb-labs/kubb/blob/main/packages/parser-md/CHANGELOG.md
 ---
 
-> [!TIP]
-> `parserMd.print({ title: 'Pets', layout: 'doc' })` returns `---\ntitle: Pets\nlayout: doc\n---`. Render it from a plugin to inject frontmatter into a generated page without depending on `yaml` directly.
+`@kubb/parser-md` lets Kubb emit `.md` and `.markdown` files. Register it in the `parsers` array, and any plugin that writes a markdown source has its output serialized for you.
 
-`@kubb/parser-md` lets Kubb emit `.md` and `.markdown` files. Register it alongside `parserTs`, and any plugin that writes a markdown source has its output serialized automatically.
-
-The parser joins source blocks with blank lines. When `file.meta.frontmatter` is set, it prepends the YAML envelope, so you need no separate `yaml` dependency. Pair it with `parserTs` when a generator emits both TypeScript and documentation files side by side.
-
-See [Options](/parsers/parser-md/reference/options) for the configuration reference.
+The parser joins a file's source blocks with blank lines to form the body. When `file.meta.frontmatter` is set, it renders those keys as a YAML frontmatter block and prepends it, so you need no separate `yaml` dependency. Pair it with `parserTs` when a generator emits both TypeScript and documentation files side by side. `parserTs` keeps handling `.ts` and `.js`, and `parserMd` claims `.md` and `.markdown`.
 
 ## Installation
 
@@ -62,6 +56,36 @@ yarn add -D @kubb/parser-md@beta
 ```
 
 :::
+
+## Frontmatter
+
+`@kubb/parser-md` takes no options of its own. To add a YAML frontmatter block to a generated page, set `frontmatter` on a file's `meta` inside a plugin. The parser renders those keys and prepends them to the output. Any serializable object works.
+
+|          |                                   |
+| -------: | :-------------------------------- |
+|    Type: | `Record<string, unknown> \| null` |
+
+```typescript [Plugin that sets frontmatter]
+ast.factory.createFile({
+  baseName: 'README.md',
+  path: `${config.output.path}/README.md`,
+  meta: {
+    frontmatter: { title: 'API Reference', layout: 'doc' },
+  },
+  sources: [...],
+})
+```
+
+The parser turns that meta into:
+
+```markdown
+---
+title: API Reference
+layout: doc
+---
+```
+
+You can also call `parserMd.print` directly to build a frontmatter envelope without depending on `yaml`. It accepts objects and markdown strings and joins them with blank lines, so `parserMd.print({ title: 'Pets', layout: 'doc' })` returns `---\ntitle: Pets\nlayout: doc\n---`.
 
 ## Example
 

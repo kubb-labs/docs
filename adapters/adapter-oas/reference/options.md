@@ -1,43 +1,53 @@
 ---
 layout: doc
 title: Options
-description: All configuration options for @kubb/adapter-oas.
+description: Configuration options for @kubb/adapter-oas.
 outline: deep
 ---
 
 # Options
 
+| Option | Type | Default | Description |
+| ------ | ---- | ------- | ----------- |
+| [`validate`](#validate) | `boolean` | `true` | Validate the spec before parsing |
+| [`contentType`](#contenttype) | `'application/json' \| string` | — | Preferred media type for request and response schemas |
+| [`server`](#server) | `{ index?: number, variables?: Record<string, string> }` | — | Which server URL plugins use as the base URL |
+| [`discriminator`](#discriminator) | `'preserve' \| 'propagate'` | `'preserve'` | How `discriminator` fields are interpreted |
+| [`enums`](#enums) | `'inline' \| 'root'` | `'inline'` | Where inline enums live |
+| [`dateType`](#datetype) | `false \| 'string' \| 'stringOffset' \| 'stringLocal' \| 'date'` | `'string'` | How `format: date-time` schemas are represented |
+| [`integerType`](#integertype) | `'number' \| 'bigint'` | `'bigint'` | How integers map to TypeScript |
+| [`unknownType`](#unknowntype) | `'any' \| 'unknown' \| 'void'` | `'any'` | Type for schemas Kubb cannot infer |
+| [`emptySchemaType`](#emptyschematype) | `'any' \| 'unknown' \| 'void'` | `unknownType \| 'any'` | Type for empty schemas |
+| [`enumSuffix`](#enumsuffix) | `string` | `'enum'` | Suffix for derived enum names |
+
 ### validate
 
-Validates the OpenAPI spec with `@readme/openapi-parser` before parsing. Set to `false` only when you have a known-invalid spec that you still want to generate from.
+Validates the OpenAPI spec with `@readme/openapi-parser` before parsing. Set it to `false` only when you have a known-invalid spec that you still want to generate from.
 
-|           |           |
-| --------: | :-------- |
-|     Type: | `boolean` |
-| Required: | `false`   |
-|  Default: | `true`    |
+|          |           |
+| -------: | :-------- |
+|    Type: | `boolean` |
+| Default: | `true`    |
 
 ### contentType
 
-Preferred media type when extracting request and response schemas. Operations with multiple media types fall back to this one.
+Preferred media type when an operation defines several. Operations with multiple media types use this one.
 
-Defaults to the first JSON-compatible media type found in the spec (`application/json`, `application/vnd.api+json`, any `*+json`).
+Without a value, it falls back to the first JSON-compatible media type found in the spec (`application/json`, `application/vnd.api+json`, or any `*+json`).
 
-|           |                                |
-| --------: | :----------------------------- |
-|     Type: | `'application/json' \| string` |
-| Required: | `false`                        |
+|          |                                |
+| -------: | :----------------------------- |
+|    Type: | `'application/json' \| string` |
 
 ### server
 
-Selects which entry in the spec's `servers` array becomes the base URL, and supplies values for its `{variable}` placeholders. Plugins that need a base URL read it from here (`@kubb/plugin-axios`, `@kubb/plugin-fetch`, `@kubb/plugin-msw`, ...).
+Selects which entry in the spec's `servers` array becomes the base URL, and supplies values for its `{variable}` placeholders. Plugins that need a base URL read it from here (`@kubb/plugin-axios`, `@kubb/plugin-fetch`, `@kubb/plugin-msw`).
 
-`server.index` points at one of the spec's servers. Most projects pick `0` for the primary server, and use higher indices for staging or localhost. `server.variables` fills in any `{variable}` placeholders in the selected URL, falling back to each variable's `default` from the spec. Omit `server` to leave `baseURL` undefined.
+`server.index` points at one of the spec's servers. Most projects pick `0` for the primary server and use higher indices for staging or localhost. `server.variables` fills in any `{variable}` placeholders in the selected URL, falling back to each variable's `default` from the spec. Omit `server` to leave `baseURL` undefined.
 
-|           |                                                      |
-| --------: | :--------------------------------------------------- |
-|     Type: | `{ index?: number; variables?: Record<string, string> }` |
-| Required: | `false`                                             |
+|          |                                                          |
+| -------: | :------------------------------------------------------- |
+|    Type: | `{ index?: number, variables?: Record<string, string> }` |
 
 > [!TIP]
 > Plugins read `baseURL` from this server unless they override it explicitly.
@@ -51,11 +61,10 @@ How `discriminator` fields on `oneOf`/`anyOf` schemas are interpreted.
 - `'preserve'` (default) keeps child schemas exactly as written. The discriminator narrows types at the call site, but child shapes stay the same.
 - `'propagate'` pushes the discriminator property with its literal value into each child schema, so each branch's `type` field is precisely typed.
 
-|           |                             |
-| --------: | :-------------------------- |
-|     Type: | `'preserve' \| 'propagate'` |
-| Required: | `false`                     |
-|  Default: | `'preserve'`                |
+|          |                             |
+| -------: | :-------------------------- |
+|    Type: | `'preserve' \| 'propagate'` |
+| Default: | `'preserve'`                |
 
 ::: code-group
 
@@ -127,11 +136,10 @@ Where inline enums live.
 - `'inline'` (default) keeps each enum on the property that declares it.
 - `'root'` lifts every inline enum to a reusable top-level schema named after its context (for example `PetStatusEnum`) and references it wherever it appears.
 
-|           |                      |
-| --------: | :------------------- |
-|     Type: | `'inline' \| 'root'` |
-| Required: | `false`              |
-|  Default: | `'inline'`           |
+|          |                      |
+| -------: | :------------------- |
+|    Type: | `'inline' \| 'root'` |
+| Default: | `'inline'`           |
 
 ::: code-group
 
@@ -173,13 +181,12 @@ How `format: date-time` schemas are represented downstream.
 - `'stringLocal'` emits a local datetime string with no timezone.
 - `'date'` emits a JavaScript `Date`. Best for client code, though JSON needs parsing to revive it.
 
-|           |                                                                  |
-| --------: | :--------------------------------------------------------------- |
-|     Type: | `false \| 'string' \| 'stringOffset' \| 'stringLocal' \| 'date'` |
-| Required: | `false`                                                          |
-|  Default: | `'string'`                                                       |
+|          |                                                                 |
+| -------: | :-------------------------------------------------------------- |
+|    Type: | `false \| 'string' \| 'stringOffset' \| 'stringLocal' \| 'date'` |
+| Default: | `'string'`                                                      |
 
-The string variants all emit `string` at the TypeScript type level. The offset/local distinction surfaces in schema output such as Zod.
+The string variants all emit `string` at the TypeScript type level. The offset and local distinction surfaces in schema output such as Zod.
 
 ::: code-group
 
@@ -202,19 +209,12 @@ How `type: integer` (and `format: int64`) maps to TypeScript.
 - `'bigint'` (default) is exact for 64-bit IDs, but `JSON.stringify` and `JSON.parse` cannot round-trip it. Use it only when you handle bigint serialization yourself.
 - `'number'` fits most JSON APIs. It loses precision above `Number.MAX_SAFE_INTEGER`.
 
-|           |                        |
-| --------: | :--------------------- |
-|     Type: | `'number' \| 'bigint'` |
-| Required: | `false`                |
-|  Default: | `'bigint'`             |
+|          |                        |
+| -------: | :--------------------- |
+|    Type: | `'number' \| 'bigint'` |
+| Default: | `'bigint'`             |
 
 ::: code-group
-
-```typescript ['number']
-type Pet = {
-  id: number
-}
-```
 
 ```typescript ['bigint' (default)]
 type Pet = {
@@ -222,19 +222,24 @@ type Pet = {
 }
 ```
 
+```typescript ['number']
+type Pet = {
+  id: number
+}
+```
+
 :::
 
 ### unknownType
 
-AST type used when a schema's type cannot be inferred from the spec (`additionalProperties: true`, missing `type`, etc.).
+AST type used when a schema's type cannot be inferred from the spec (`additionalProperties: true`, a missing `type`, and similar).
 
 Pick `'unknown'` to force callers to narrow before using the value. `'any'` is the loosest. `'void'` matches some legacy APIs.
 
-|           |                                |
-| --------: | :----------------------------- |
-|     Type: | `'any' \| 'unknown' \| 'void'` |
-| Required: | `false`                        |
-|  Default: | `'any'`                        |
+|          |                                |
+| -------: | :----------------------------- |
+|    Type: | `'any' \| 'unknown' \| 'void'` |
+| Default: | `'any'`                        |
 
 ::: code-group
 
@@ -260,13 +265,12 @@ type Pet = {
 
 ### emptySchemaType
 
-AST type used for fully empty schemas (`{}`). Defaults to the value of `unknownType`. Override only when empty schemas should be treated differently from unresolvable ones.
+AST type used for fully empty schemas (`{}`). It follows `unknownType` unless you set it. Override it only when empty schemas should be treated differently from unresolvable ones.
 
-|           |                                |
-| --------: | :----------------------------- |
-|     Type: | `'any' \| 'unknown' \| 'void'` |
-| Required: | `false`                        |
-|  Default: | `unknownType \| 'any'`         |
+|          |                                |
+| -------: | :----------------------------- |
+|    Type: | `'any' \| 'unknown' \| 'void'` |
+| Default: | `unknownType \| 'any'`         |
 
 > [!TIP]
 > A common pairing sets `unknownType: 'unknown'` for safety and `emptySchemaType: 'any'` so empty 204 response bodies stay easy to use.
@@ -287,15 +291,14 @@ type EmptyModel = unknown
 
 ### enumSuffix
 
-Suffix appended to derived enum names when Kubb has to invent one (typically for inline enums on object properties).
+Suffix appended to derived enum names when Kubb has to invent one, typically for inline enums on object properties.
 
-Inline enums on a `status` property would be named `statusEnum` with the default. Change this to align with your project's naming convention.
+An inline enum on a `status` property becomes `statusEnum` with the default. Change it to align with your project's naming convention.
 
-|           |          |
-| --------: | :------- |
-|     Type: | `string` |
-| Required: | `false`  |
-|  Default: | `'enum'` |
+|          |          |
+| -------: | :------- |
+|    Type: | `string` |
+| Default: | `'enum'` |
 
 ::: code-group
 

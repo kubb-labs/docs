@@ -1,8 +1,8 @@
 ---
 layout: doc
 title: Kubb Cypress Plugin
-description: Generate typed `cy.request()` wrappers from OpenAPI so end-to-end
-  tests reuse one source of truth for API calls.
+description: Generates a typed cy.request() wrapper per OpenAPI operation so your
+  Cypress tests call the API through generated helpers and catch broken calls at compile time.
 outline: deep
 kind: plugin
 id: plugin-cypress

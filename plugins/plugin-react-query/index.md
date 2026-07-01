@@ -1,8 +1,9 @@
 ---
 layout: doc
 title: Kubb React Query Plugin
-description: Generate TanStack Query hooks for React (useQuery, useMutation,
-  useSuspenseQuery, useInfiniteQuery) from OpenAPI.
+description: Generates typed TanStack Query hooks for React from your OpenAPI spec, so
+  reads and writes call your API through useQuery, useMutation, and useInfiniteQuery
+  without hand-written boilerplate.
 outline: deep
 guides:
   - id: calling-operations

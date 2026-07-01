@@ -1,31 +1,44 @@
 ---
 layout: doc
 title: Options
-description: All configuration options for @kubb/plugin-ts.
+description: Configuration options for @kubb/plugin-ts.
 outline: deep
 ---
 
 # Options
 
+| Option | Type | Default | Description |
+| ------ | ---- | ------- | ----------- |
+| [`output`](#output) | `Output` | `{ path: 'types' }` | Where the generated files are written and exported |
+| [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
+| [`enum`](#enum) | `EnumOptions` | `{ type: 'asConst', … }` | How enums are generated and cased |
+| [`syntaxType`](#syntaxtype) | `'type' \| 'interface'` | `'type'` | Emit object schemas as type aliases or interfaces |
+| [`optionalType`](#optionaltype) | `'questionToken' \| 'undefined' \| 'questionTokenAndUndefined'` | `'questionToken'` | How optional properties are written |
+| [`arrayType`](#arraytype) | `'array' \| 'generic'` | `'array'` | `Type[]` or `Array<Type>` |
+| [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
+| [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
+| [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
+| [`resolver`](#resolver) | `Partial<ResolverTs>` | — | Customize generated names and file paths |
+| [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
+| [`printer`](#printer) | `{ nodes?: PrinterTsNodes }` | — | Replace the handler for a schema type |
+
 ### output
 
 Where the generated `.ts` files are written and how they are exported.
 
-|           |                                                |
-| --------: | :--------------------------------------------- |
-|     Type: | `Output`                                       |
-| Required: | `false`                                        |
-|  Default: | `{ path: 'types', barrel: { type: 'named' } }` |
+|          |                     |
+| -------: | :------------------ |
+|    Type: | `Output`            |
+| Default: | `{ path: 'types', barrel: { type: 'named' } }` |
 
 #### output.path
 
 Folder where the plugin writes its files. It is resolved against the global `output.path` on `defineConfig`. To write everything to one file instead, set `output.mode: 'file'` and give `path` a file name with its extension, such as `'types.ts'`.
 
-|           |           |
-| --------: | :-------- |
-|     Type: | `string`  |
-| Required: | `true`    |
-|  Default: | `'types'` |
+|          |           |
+| -------: | :-------- |
+|    Type: | `string`  |
+| Default: | `'types'` |
 
 > [!TIP]
 > `output.path` sets where files go, `output.mode` sets how many. Use `'directory'` (the default) for one file per operation, optionally grouped into subdirectories with the `group` option. Use `'file'` to write everything into a single file.
@@ -35,13 +48,12 @@ Folder where the plugin writes its files. It is resolved against the global `out
 How the plugin consolidates its generated code into files.
 
 - `'directory'` (default) writes one file per operation or schema under `output.path`.
-- `'file'` writes everything into a single file. The `output.path` must include the file extension (e.g. `'types.ts'`, `'models.py'`).
+- `'file'` writes everything into a single file. The `output.path` must include the file extension (for example `'types.ts'`).
 
-|           |                         |
-| --------: | :---------------------- |
-|     Type: | `'directory' \| 'file'` |
-| Required: | `false`                 |
-|  Default: | `'directory'`           |
+|          |                         |
+| -------: | :---------------------- |
+|    Type: | `'directory' \| 'file'` |
+| Default: | `'directory'`           |
 
 > [!TIP]
 > Pair `'directory'` with the `group` option to organize output into per-tag or per-path subdirectories. `mode: 'file'` forbids `group`. A single-file output has nothing to group, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
@@ -55,11 +67,10 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 - `{ nested: true }` creates a barrel in every subdirectory, so callers can import from any depth.
 - `false` skips the barrel entirely. The plugin's files are also excluded from the root `index.ts`.
 
-|           |                                                         |
-| --------: | :------------------------------------------------------ |
-|     Type: | `{ type: 'named' \| 'all', nested?: boolean } \| false` |
-| Required: | `false`                                                 |
-|  Default: | `{ type: 'named' }`                                     |
+|          |                                                         |
+| -------: | :------------------------------------------------------ |
+|    Type: | `{ type: 'named' \| 'all', nested?: boolean } \| false` |
+| Default: | `{ type: 'named' }`                                     |
 
 > [!TIP]
 > Pick `'named'` when consumers care about which symbols they import (better tree-shaking, friendlier auto-import). Pick `'all'` when the file count is small and you want a one-line barrel.
@@ -100,10 +111,9 @@ src/gen/types/
 
 Text added to the top of every generated file. Use it for license headers, lint disables, or a `@ts-nocheck` directive. Pass a string for a fixed banner, or a function that builds one from each file's `RootNode` (the AST root with the path, schema, and operation context).
 
-|           |                                          |
-| --------: | :--------------------------------------- |
-|     Type: | `string \| ((node: RootNode) => string)` |
-| Required: | `false`                                  |
+|          |                                          |
+| -------: | :--------------------------------------- |
+|    Type: | `string \| ((node: RootNode) => string)` |
 
 A static `banner: '/* eslint-disable */\n// @ts-nocheck'` lands at the top of each generated file:
 
@@ -122,19 +132,17 @@ A function banner builds the text from the file's `RootNode`, such as `banner: (
 
 Text added to the bottom of every generated file. It works like `banner` but for closing comments, such as re-enabling a lint rule. Pass a string or a function that receives the file's `RootNode` and returns the text. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a lint disable to the generated file.
 
-|           |                                          |
-| --------: | :--------------------------------------- |
-|     Type: | `string \| ((node: RootNode) => string)` |
-| Required: | `false`                                  |
+|          |                                          |
+| -------: | :--------------------------------------- |
+|    Type: | `string \| ((node: RootNode) => string)` |
 
 ### group
 
 Splits generated files into subfolders by the operation's tag or URL path. Each group gets its own directory under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`.
 
-|           |         |
-| --------: | :------ |
-|     Type: | `Group` |
-| Required: | `false` |
+|          |         |
+| -------: | :------ |
+|    Type: | `Group` |
 
 > [!TIP]
 > Use `group` to mirror your API's domain structure (pet, store, user) in the generated code. Combine it with `output.barrel: { type: 'named', nested: true }` to get per-tag barrel files.
@@ -164,35 +172,27 @@ Property used to assign each operation to a group. Required whenever `group` is 
 
 Operations with no tag go in a default group.
 
-|           |                   |
-| --------: | :---------------- |
-|     Type: | `'tag' \| 'path'` |
-| Required: | `true`            |
-
-> [!NOTE]
-> `Required: true*` is conditional. It only applies when the parent `group` option is used, and `group` itself stays optional.
+|          |                   |
+| -------: | :---------------- |
+|    Type: | `'tag' \| 'path'` |
 
 #### group.name
 
-Function that turns a group key (the operation's first tag) into a folder/identifier name.
+Function that turns a group key (the operation's first tag) into a folder or identifier name. The result is used as both the subdirectory name under `output.path` and as a suffix when naming aggregate files.
 
-The result is used as both the subdirectory name under `output.path` and as a suffix when naming aggregate files.
-
-|           |                                     |
-| --------: | :---------------------------------- |
-|     Type: | `(context: GroupContext) => string` |
-| Required: | `false`                             |
-|  Default: | `(ctx) => \`${ctx.group}\``         |
+|          |                                     |
+| -------: | :---------------------------------- |
+|    Type: | `(context: GroupContext) => string` |
+| Default: | `(ctx) => camelCase(ctx.group)`         |
 
 ### enum
 
 How OpenAPI enums are represented in the generated TypeScript, and how their names are cased.
 
-|           |                                                                                       |
-| --------: | :------------------------------------------------------------------------------------ |
-|     Type: | `EnumOptions`                                                                         |
-| Required: | `false`                                                                               |
-|  Default: | `{ type: 'asConst', constCasing: 'camelCase', typeSuffix: 'Key', keyCasing: 'none' }` |
+|          |                                                                                      |
+| -------: | :----------------------------------------------------------------------------------- |
+|    Type: | `EnumOptions`                                                                         |
+| Default: | `{ type: 'asConst', constCasing: 'camelCase', typeSuffix: 'Key', keyCasing: 'none' }` |
 
 > [!TIP]
 > Set `constCasing: 'pascalCase'` together with `typeSuffix: ''` to emit a const and a type that share the schema's exact name. This is the convention most hand-written codebases use, so migrating an existing project keeps every annotation and value reference intact.
@@ -217,11 +217,10 @@ How OpenAPI enums are represented in the generated TypeScript.
 - `'literal'` generates a plain union type (`'available' | 'pending' | 'sold'`) with no runtime value.
 - `'inlineLiteral'` inlines the union at every usage site instead of giving it a name.
 
-|           |                                                                      |
-| --------: | :------------------------------------------------------------------- |
-|     Type: | `'asConst' \| 'enum' \| 'constEnum' \| 'literal' \| 'inlineLiteral'` |
-| Required: | `false`                                                              |
-|  Default: | `'asConst'`                                                          |
+|          |                                                                     |
+| -------: | :------------------------------------------------------------------ |
+|    Type: | `'asConst' \| 'enum' \| 'constEnum' \| 'literal' \| 'inlineLiteral'` |
+| Default: | `'asConst'`                                                         |
 
 ::: code-group
 
@@ -306,11 +305,10 @@ Casing of the generated const variable when `type` is `'asConst'`.
 - `'camelCase'` names the const `petStatus`.
 - `'pascalCase'` names the const `PetStatus`, matching the schema name.
 
-|           |                               |
-| --------: | :---------------------------- |
-|     Type: | `'camelCase' \| 'pascalCase'` |
-| Required: | `false`                       |
-|  Default: | `'camelCase'`                 |
+|          |                               |
+| -------: | :---------------------------- |
+|    Type: | `'camelCase' \| 'pascalCase'` |
+| Default: | `'camelCase'`                 |
 
 ::: code-group
 
@@ -348,13 +346,12 @@ const status: PetStatusKey = petStatus.available // 'available'
 
 Suffix appended to the type alias generated for enums when `type` is `'asConst'`.
 
-The const object name (e.g. `petStatus`) is unaffected, so only the companion type alias is renamed. Set it to `''` to drop the suffix, which (with `constCasing: 'pascalCase'`) merges the const and type under one name.
+The const object name (for example `petStatus`) is unaffected, so only the companion type alias is renamed. Set it to `''` to drop the suffix, which (with `constCasing: 'pascalCase'`) merges the const and type under one name.
 
-|           |          |
-| --------: | :------- |
-|     Type: | `string` |
-| Required: | `false`  |
-|  Default: | `'Key'`  |
+|          |          |
+| -------: | :------- |
+|    Type: | `string` |
+| Default: | `'Key'`  |
 
 ::: code-group
 
@@ -402,11 +399,10 @@ const status: PetStatusValue = petStatus.available // 'available'
 
 Casing applied to enum key names. By default the key is the raw value from the spec. Switch to a project convention when needed.
 
-|           |                                                                                |
-| --------: | :----------------------------------------------------------------------------- |
-|     Type: | `'screamingSnakeCase' \| 'snakeCase' \| 'pascalCase' \| 'camelCase' \| 'none'` |
-| Required: | `false`                                                                        |
-|  Default: | `'none'`                                                                       |
+|          |                                                                                |
+| -------: | :----------------------------------------------------------------------------- |
+|    Type: | `'screamingSnakeCase' \| 'snakeCase' \| 'pascalCase' \| 'camelCase' \| 'none'` |
+| Default: | `'none'`                                                                       |
 
 | Value                  | Example key  |
 | ---------------------- | ------------ |
@@ -416,37 +412,16 @@ Casing applied to enum key names. By default the key is the raw value from the s
 | `'camelCase'`          | `enumValue`  |
 | `'none'` (default)     | as-is        |
 
-### dateType
-
-|           |         |
-| --------: | :------ |
-| Required: | `false` |
-
-> [!WARNING]
-> Moved to [`adapterOas`](/adapters/adapter-oas/reference/options#dateType). Use `adapterOas({ dateType })` instead.
-
-### integerType
-
-|           |         |
-| --------: | :------ |
-| Required: | `false` |
-
-> [!WARNING]
-> Moved to [`adapterOas`](/adapters/adapter-oas/reference/options#integerType). Use `adapterOas({ integerType })` instead.
-
 ### syntaxType
 
 Whether object schemas are emitted as `type` aliases or `interface` declarations.
 
-`type` is the safer default for generated code. Type aliases are closed, intersections work cleanly, and unions are fine. Pick `interface` only when consumers need declaration merging, which is rare for generated code.
+`type` is the safer default for generated code. Type aliases are closed, intersections work cleanly, and unions are fine. Pick `interface` only when consumers need declaration merging, which is rare for generated code. For more background, see [Type vs Interface](https://www.totaltypescript.com/type-vs-interface-which-should-you-use).
 
-For more background, see [Type vs Interface](https://www.totaltypescript.com/type-vs-interface-which-should-you-use).
-
-|           |                         |
-| --------: | :---------------------- |
-|     Type: | `'type' \| 'interface'` |
-| Required: | `false`                 |
-|  Default: | `'type'`                |
+|          |                         |
+| -------: | :---------------------- |
+|    Type: | `'type' \| 'interface'` |
+| Default: | `'type'`                |
 
 ::: code-group
 
@@ -472,24 +447,6 @@ import type { Pet } from './src/gen/types/Pet'
 const pet: Pet = { name: 'Fluffy' }
 ```
 
-### unknownType
-
-|           |         |
-| --------: | :------ |
-| Required: | `false` |
-
-> [!WARNING]
-> Moved to [`adapterOas`](/adapters/adapter-oas/reference/options#unknownType). Use `adapterOas({ unknownType })` instead.
-
-### emptySchemaType
-
-|           |         |
-| --------: | :------ |
-| Required: | `false` |
-
-> [!WARNING]
-> Moved to [`adapterOas`](/adapters/adapter-oas/reference/options#emptySchemaType). Use `adapterOas({ emptySchemaType })` instead.
-
 ### optionalType
 
 How optional properties are written in generated types.
@@ -498,11 +455,10 @@ How optional properties are written in generated types.
 - `'undefined'` writes `type: string | undefined`. The property must exist but may be `undefined`.
 - `'questionTokenAndUndefined'` writes `type?: string | undefined`. This is the strictest option: the property may be missing or explicitly set to `undefined`.
 
-|           |                                                                 |
-| --------: | :-------------------------------------------------------------- |
-|     Type: | `'questionToken' \| 'undefined' \| 'questionTokenAndUndefined'` |
-| Required: | `false`                                                         |
-|  Default: | `'questionToken'`                                               |
+|          |                                                                |
+| -------: | :------------------------------------------------------------- |
+|    Type: | `'questionToken' \| 'undefined' \| 'questionTokenAndUndefined'` |
+| Default: | `'questionToken'`                                              |
 
 > [!TIP]
 > Choose `'questionTokenAndUndefined'` when your project enables `"exactOptionalPropertyTypes": true` in `tsconfig.json`. It keeps generated types compatible with that setting.
@@ -563,11 +519,10 @@ Syntax used for array types in generated code.
 - `'array'` (default) uses the postfix `Type[]`, which is slightly shorter.
 - `'generic'` uses `Array<Type>`, which reads better for complex element types such as `Array<{ id: number }>`.
 
-|           |                        |
-| --------: | :--------------------- |
-|     Type: | `'array' \| 'generic'` |
-| Required: | `false`                |
-|  Default: | `'array'`              |
+|          |                        |
+| -------: | :--------------------- |
+|    Type: | `'array' \| 'generic'` |
+| Default: | `'array'`              |
 
 ::: code-group
 
@@ -594,17 +549,77 @@ const pet: Pet = { tags: ['cute', 'small'] }
 pet.tags.forEach((tag) => console.log(tag))
 ```
 
+### include
+
+Generates only the operations and schemas that match at least one entry in the list. Everything else is skipped. Each entry filters by one of:
+
+- `tag`: the operation's first tag in the OpenAPI spec.
+- `operationId`: the operation's `operationId`.
+- `path`: the URL path, such as `'/pet/{petId}'`.
+- `method`: the HTTP method, such as `'get'` or `'post'`.
+- `contentType`: the request or response media type, such as `'application/json'`.
+- `schemaName`: the component schema name under `#/components/schemas`.
+
+`pattern` accepts either a string (exact match) or a `RegExp` for fuzzy matches.
+
+|          |                  |
+| -------: | :--------------- |
+|    Type: | `Array<Include>` |
+
+```typescript [Type definition]
+export type Include = {
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
+  pattern: string | RegExp
+}
+```
+
+Pass `include: [{ type: 'tag', pattern: 'pet' }]` to keep only the `pet` tag. Stack entries to narrow further, such as `{ type: 'method', pattern: 'GET' }` with `{ type: 'path', pattern: /^\/pet/ }` for GET operations under `/pet`.
+
+### exclude
+
+Skips any operation or schema that matches at least one entry in the list. It is the opposite of `include`. Entries use the same `type` (`tag`, `operationId`, `path`, `method`, `contentType`, `schemaName`) and `pattern` (string or `RegExp`). When both are set, `exclude` wins.
+
+|          |                  |
+| -------: | :--------------- |
+|    Type: | `Array<Exclude>` |
+
+```typescript [Type definition]
+export type Exclude = {
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
+  pattern: string | RegExp
+}
+```
+
+Pass `exclude: [{ type: 'tag', pattern: 'store' }]` to drop the `store` tag, or stack `{ type: 'operationId', pattern: 'deletePet' }` with `{ type: 'method', pattern: 'DELETE' }` to skip one operation and every DELETE.
+
+### override
+
+Applies different plugin options to operations that match a pattern. Use it for the few endpoints that need special treatment. Each entry takes the same `type` and `pattern` as `include` and `exclude`, plus an `options` object. That object accepts any plugin option except `override`, so rules cannot nest. Entries run top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
+
+|          |                   |
+| -------: | :---------------- |
+|    Type: | `Array<Override>` |
+
+```typescript [Type definition]
+export type Override = {
+  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
+  pattern: string | RegExp
+  options: Omit<Partial<Options>, 'override'>
+}
+```
+
+For example, `override: [{ type: 'tag', pattern: 'user', options: { enum: { type: 'literal' } } }]` switches the `user` tag to literal enums while the rest of the spec keeps the plugin default.
+
 ### resolver
 
 Changes how the plugin names generated files and symbols. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change. Anything you omit, or that returns `null` or `undefined`, falls back to the default. Inside a method, `this` is the full resolver, so you can call `this.default(name, 'function')` to reuse the built-in name.
 
-|           |                                              |
-| --------: | :------------------------------------------- |
-|     Type: | `Partial<ResolverTs> & ThisType<ResolverTs>` |
-| Required: | `false`                                      |
+|          |                                              |
+| -------: | :------------------------------------------- |
+|    Type: | `Partial<ResolverTs> & ThisType<ResolverTs>` |
 
 > [!TIP]
-> Use `resolver` for naming and file-location tweaks. For changing the AST nodes themselves (e.g. stripping descriptions), use `macros` instead.
+> Use `resolver` for naming and file-location tweaks. For changing the AST nodes themselves (for example stripping descriptions), use `macros` instead.
 
 For example, `resolver: { resolveTypeName(name) { return \`Api${this.default(name, 'function')}\` } }` prefixes every generated type name with `Api`.
 
@@ -621,78 +636,13 @@ Each plugin ships with a default resolver:
 | `@kubb/plugin-axios`   | `resolverClient`  |
 | `@kubb/plugin-fetch`   | `resolverClient`  |
 
-### include
-
-Generates only the operations and schemas that match at least one entry in the list. Everything else is skipped. Each entry filters by one of:
-
-- `tag`: the operation's first tag in the OpenAPI spec.
-- `operationId`: the operation's `operationId`.
-- `path`: the URL path, such as `'/pet/{petId}'`.
-- `method`: the HTTP method, such as `'get'` or `'post'`.
-- `contentType`: the request or response media type, such as `'application/json'`.
-- `schemaName`: the component schema name under `#/components/schemas`.
-
-`pattern` accepts either a string (exact match) or a `RegExp` for fuzzy matches.
-
-|           |                  |
-| --------: | :--------------- |
-|     Type: | `Array<Include>` |
-| Required: | `false`          |
-
-```typescript [Type definition]
-export type Include = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
-  pattern: string | RegExp
-}
-```
-
-Pass `include: [{ type: 'tag', pattern: 'pet' }]` to keep only the `pet` tag. Stack entries to narrow further, such as `{ type: 'method', pattern: 'GET' }` with `{ type: 'path', pattern: /^\/pet/ }` for GET operations under `/pet`.
-
-### exclude
-
-Skips any operation or schema that matches at least one entry in the list. It is the opposite of `include`. Entries use the same `type` (`tag`, `operationId`, `path`, `method`, `contentType`, `schemaName`) and `pattern` (string or `RegExp`). When both are set, `exclude` wins.
-
-|           |                  |
-| --------: | :--------------- |
-|     Type: | `Array<Exclude>` |
-| Required: | `false`          |
-
-```typescript [Type definition]
-export type Exclude = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
-  pattern: string | RegExp
-}
-```
-
-Pass `exclude: [{ type: 'tag', pattern: 'store' }]` to drop the `store` tag, or stack `{ type: 'operationId', pattern: 'deletePet' }` with `{ type: 'method', pattern: 'DELETE' }` to skip one operation and every DELETE.
-
-### override
-
-Applies different plugin options to operations that match a pattern. Use it for the few endpoints that need special treatment. Each entry takes the same `type` and `pattern` as `include` and `exclude`, plus an `options` object. That object accepts any plugin option except `override`, so rules cannot nest. Entries run top to bottom. The first match merges onto the plugin defaults, and later entries do not stack.
-
-|           |                   |
-| --------: | :---------------- |
-|     Type: | `Array<Override>` |
-| Required: | `false`           |
-
-```typescript [Type definition]
-export type Override = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
-  pattern: string | RegExp
-  options: Omit<Partial<Options>, 'override'>
-}
-```
-
-For example, `override: [{ type: 'tag', pattern: 'user', options: { enum: { type: 'literal' } } }]` switches the `user` tag to literal enums while the rest of the spec keeps the plugin default.
-
 ### macros
 
 Rewrites AST nodes before they are printed to source. Use it to rename operation IDs, drop descriptions, or change schema metadata without forking the generator. Each [macro](/docs/5.x/guide/going-further/macros) callback (such as `schema` or `operation`) receives the node and a context object. Return a new node to replace it, or `undefined` to leave it as is. Callbacks you omit keep their default behavior. Macros run in order, so a later one sees the output of an earlier one.
 
-|           |                 |
-| --------: | :-------------- |
-|     Type: | `Array<Macro>`  |
-| Required: | `false`         |
+|          |                |
+| -------: | :------------- |
+|    Type: | `Array<Macro>` |
 
 > [!TIP]
 > Use `macros` to rewrite node properties before printing. For changing the names of generated symbols and files, use `resolver` instead.
@@ -722,14 +672,11 @@ pluginTs({
 
 ### printer
 
-Replaces the TypeScript node handler for a specific schema type, such as `'integer'`, `'date'`, or `'string'`. Each handler builds a TypeScript AST node for that type.
+Replaces the TypeScript node handler for a specific schema type, such as `'integer'`, `'date'`, or `'string'`. Each handler builds a TypeScript AST node for that type. Use `this.transform` to recurse into nested nodes, and `this.options` to read printer options.
 
-Use `this.transform` to recurse into nested nodes, and `this.options` to read printer options.
-
-|           |                              |
-| --------: | :--------------------------- |
-|     Type: | `{ nodes?: PrinterTsNodes }` |
-| Required: | `false`                      |
+|          |                              |
+| -------: | :--------------------------- |
+|    Type: | `{ nodes?: PrinterTsNodes }` |
 
 ```typescript [Map date schemas to the Date object]
 import ts from 'typescript'
@@ -748,4 +695,3 @@ pluginTs({
   },
 })
 ```
-

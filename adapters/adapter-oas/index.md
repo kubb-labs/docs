@@ -1,9 +1,9 @@
 ---
 layout: doc
 title: Kubb OpenAPI Adapter
-description: Parse and convert OpenAPI 2.0, 3.0, and 3.1 specifications into
-  Kubb's universal AST. Handles discriminators, date formats, and server URL
-  resolution.
+description: Reads an OpenAPI 2.0, 3.0, or 3.1 spec and converts every schema and
+  operation into the AST that Kubb plugins generate from, so one adapter feeds
+  the whole build.
 outline: deep
 kind: adapter
 id: adapter-oas

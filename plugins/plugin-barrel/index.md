@@ -1,8 +1,9 @@
 ---
 layout: doc
 title: Kubb Barrel Plugin
-description: Generates `index.ts` re-export files for every plugin output and
-  one root barrel. Ships with Kubb and is enabled by default.
+description: Generates an index.ts barrel for every plugin output and one root
+  barrel, so you import all generated code from a single entry point. Ships with
+  Kubb and runs by default.
 outline: deep
 kind: plugin
 id: plugin-barrel

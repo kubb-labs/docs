@@ -1,8 +1,8 @@
 ---
 layout: doc
 title: Kubb Zod Plugin
-description: Generate Zod v4 schemas from OpenAPI for runtime validation that
-  stays in sync with your TypeScript types.
+description: Generates Zod v4 schemas from your OpenAPI spec so you validate API
+  responses, form input, and query params at runtime.
 outline: deep
 kind: plugin
 id: plugin-zod

@@ -1,8 +1,8 @@
 ---
 layout: doc
 title: Kubb TypeScript Parser
-description: Default file parser for Kubb. Converts the universal AST to
-  `.ts`/`.tsx` source using the official TypeScript compiler.
+description: Prints the Kubb AST to TypeScript source with the official TypeScript compiler, so
+  every plugin writes real `.ts` and `.tsx` files.
 outline: deep
 kind: parser
 id: parser-ts
@@ -39,12 +39,12 @@ resources:
 
 `@kubb/parser-ts` takes the `FileNode` your plugins stage and prints it as TypeScript source with the official [TypeScript compiler](https://www.typescriptlang.org/). It resolves import paths, writes the import and export statements, prints JSDoc, and rewrites import extensions based on `output.extension`.
 
-The package exports two parsers:
+The package exports two parsers, and Kubb selects one by the file extension a plugin writes:
 
 - `parserTs` handles `.ts` and `.js` files.
 - `parserTsx` handles `.tsx` and `.jsx` files. Use it for React projects so JSX in generated components is preserved.
 
-See [Options](/parsers/parser-ts/reference/options) for the configuration reference.
+Neither parser takes configuration options. You pick the behavior by choosing which parser goes in the `parsers` array.
 
 ## Installation
 
