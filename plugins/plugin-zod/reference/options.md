@@ -597,19 +597,6 @@ Changes how the plugin names generated files and symbols. Use it to add a prefix
 
 For example, `resolver: { resolveSchemaName(name) { return \`${this.default(name, 'function')}Validator\` } }` renames every generated schema from `petSchema` to `petValidator`.
 
-Each plugin ships with a default resolver:
-
-| Plugin                 | Default resolver  |
-| ---------------------- | ----------------- |
-| `@kubb/plugin-ts`      | `resolverTs`      |
-| `@kubb/plugin-zod`     | `resolverZod`     |
-| `@kubb/plugin-faker`   | `resolverFaker`   |
-| `@kubb/plugin-cypress` | `resolverCypress` |
-| `@kubb/plugin-msw`     | `resolverMsw`     |
-| `@kubb/plugin-mcp`     | `resolverMcp`     |
-| `@kubb/plugin-axios`   | `resolverClient`  |
-| `@kubb/plugin-fetch`   | `resolverClient`  |
-
 ### printer
 
 Replaces the Zod handler for a specific schema type, such as `'integer'`, `'date'`, or `'string'`. Each handler returns the Zod expression as a string. When `mini: true`, overrides target the Zod Mini printer. Otherwise they target the standard Zod printer.

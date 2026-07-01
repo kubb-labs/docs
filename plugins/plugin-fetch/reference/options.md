@@ -438,19 +438,6 @@ Changes how the plugin names generated files and functions. Use it to add a pref
 
 For example, `resolver: { resolveName(name) { return \`api${this.default(name, 'function')}\` } }` prefixes every generated function name with `api`.
 
-Each plugin ships with a default resolver:
-
-| Plugin                 | Default resolver  |
-| ---------------------- | ----------------- |
-| `@kubb/plugin-ts`      | `resolverTs`      |
-| `@kubb/plugin-zod`     | `resolverZod`     |
-| `@kubb/plugin-faker`   | `resolverFaker`   |
-| `@kubb/plugin-cypress` | `resolverCypress` |
-| `@kubb/plugin-msw`     | `resolverMsw`     |
-| `@kubb/plugin-mcp`     | `resolverMcp`     |
-| `@kubb/plugin-axios`   | `resolverClient`  |
-| `@kubb/plugin-fetch`   | `resolverClient`  |
-
 ### macros
 
 Rewrites AST nodes before they are printed to source. Use it to rename operation IDs, drop descriptions, or change schema metadata without forking the generator. Each [macro](/docs/5.x/guide/going-further/macros) callback (such as `schema` or `operation`) receives the node and a context object. Return a new node to replace it, or `undefined` to leave it as is. Callbacks you omit keep their default behavior. Macros run in order, so a later one sees the output of an earlier one.
