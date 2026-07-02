@@ -106,14 +106,14 @@ export default defineConfig({
         name: ({ group }) => `${group}Hooks`,
       },
       client: 'axios',
-      mutation: { methods: ['post', 'put', 'delete'] },
+      mutation: { methods: ['POST', 'PUT', 'DELETE'] },
       infinite: {
         queryParam: 'next_page',
         initialPageParam: 0,
         nextParam: 'pagination.next.cursor',
       },
       query: {
-        methods: ['get'],
+        methods: ['GET'],
         importPath: '@tanstack/vue-query',
       },
     }),
