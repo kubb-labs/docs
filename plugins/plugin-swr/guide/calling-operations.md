@@ -50,6 +50,4 @@ await trigger({ body: { name: 'Fluffy' } })
 
 A `mutationKey` helper is exported next to the hook, and `shouldFetch: false` sets the key to `null` so the mutation cannot fire.
 
-## Errors and transport
-
-The hooks call the client operation with `throwOnError: true`, so failures surface through SWR's `error` state, typed from the spec's error responses. Transport concerns (base URL, authentication, interceptors, serialization) live on the client plugin: see the [plugin-fetch](/plugins/plugin-fetch/guide/calling-operations) or [plugin-axios](/plugins/plugin-axios/guide/calling-operations) guides.
+<!--@include: ../../../snippets/how-to/query-errors-transport.md-->
