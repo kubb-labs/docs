@@ -117,8 +117,9 @@ A request interceptor sees the final request before it is sent, so it can rewrit
 import { client } from './gen/clients/.kubb/client'
 
 client.interceptors.request.use((request) => {
-  if (request.url.startsWith('/admin')) {
-    request.url = `https://admin.petstore.swagger.io${request.url}`
+  const { pathname } = new URL(request.url, 'http://placeholder')
+  if (pathname.startsWith('/admin')) {
+    request.url = `https://admin.petstore.swagger.io${pathname}`
   }
   return request
 })

@@ -9,14 +9,13 @@ outline: deep
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'hooks' }` | Where the generated hooks are written and exported |
+| [`output`](#output) | `Output` | `{ path: 'hooks', barrel: { type: 'named' } }` | Where the generated hooks are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`client`](#client) | `'fetch' \| 'axios'` | — | Which registered client plugin the hooks call |
 | [`query`](#query) | `Partial<Query> \| false` | `{ methods: ['get'], importPath: 'swr' }` | Configure the `useSWR` hooks, or turn them off |
 | [`queryKey`](#querykey) | `Transformer` | — | Build the SWR key for each query hook |
 | [`mutation`](#mutation) | `Partial<Mutation> \| false` | `{ methods: ['post', 'put', 'patch', 'delete'], importPath: 'swr/mutation' }` | Configure the `useSWRMutation` hooks, or turn them off |
 | [`mutationKey`](#mutationkey) | `Transformer` | — | Build the SWR key for each mutation hook |
-| [`validator`](#validator) | `false \| 'zod' \| { request?: 'zod', response?: 'zod' }` | `false` | Validate request and response data with Zod schemas |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
@@ -110,11 +109,11 @@ src/gen/hooks/
 
 #### output.banner
 
-Text added to the top of every generated file. Use it for license headers, lint disables, or a `@ts-nocheck` directive. Pass a string for a fixed banner, or a function that builds one from each file's `RootNode` (the AST root with the path, schema, and operation context).
+Text added to the top of every generated file. Use it for license headers, lint disables, or a `@ts-nocheck` directive. Pass a string for a fixed banner, or a function that builds one from a `BannerMeta` object. The meta carries the document info (`title`, `description`, `version`, `baseURL`) plus the per-file context `filePath`, `baseName`, `isBarrel`, and `isAggregation`, so a directive such as `'use server'` can skip barrel files.
 
 |          |                                          |
 | -------: | :--------------------------------------- |
-|    Type: | `string \| ((node: RootNode) => string)` |
+|    Type: | `string \| ((meta: BannerMeta) => string)` |
 
 A static `banner: '/* eslint-disable */\n// @ts-nocheck'` lands at the top of each generated file:
 
@@ -124,15 +123,15 @@ A static `banner: '/* eslint-disable */\n// @ts-nocheck'` lands at the top of ea
 import useSWR from 'swr'
 ```
 
-A function banner builds the text from the file's `RootNode`, such as `banner: (node) => \`// Source: ${node.filePath}\``.
+A function banner builds the text from the meta, such as `banner: (meta) => \`// Source: ${meta.filePath}\``.
 
 #### output.footer
 
-Text added to the bottom of every generated file. It works like `banner` but for closing comments, such as re-enabling a lint rule. Pass a string or a function that receives the file's `RootNode` and returns the text. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a lint disable to the generated file.
+Text added to the bottom of every generated file. It works like `banner` but for closing comments, such as re-enabling a lint rule. Pass a string or a function that receives the same `BannerMeta` and returns the text. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a lint disable to the generated file.
 
 |          |                                          |
 | -------: | :--------------------------------------- |
-|    Type: | `string \| ((node: RootNode) => string)` |
+|    Type: | `string \| ((meta: BannerMeta) => string)` |
 
 ### group
 
@@ -165,10 +164,10 @@ Pass `group.name` to customize the folder name. For example, a `name` function t
 
 Property used to assign each operation to a group. Required whenever `group` is set.
 
-- `'tag'` uses the operation's first tag (`operation.getTags().at(0)?.name`).
+- `'tag'` uses the operation's first tag.
 - `'path'` uses the first segment of the operation's URL, such as `pet` for `/pet/{petId}`.
 
-Operations with no tag go in a default group.
+An operation with no tag goes in the `default` group.
 
 |          |                   |
 | -------: | :---------------- |
@@ -180,8 +179,10 @@ Function that turns a group key (the operation's first tag) into a folder or ide
 
 |          |                                     |
 | -------: | :---------------------------------- |
-|    Type: | `(context: GroupContext) => string` |
-| Default: | `(ctx) => camelCase(ctx.group)`         |
+|    Type: | `(context: { group: string }) => string` |
+| Default: | `({ group }) => camelCase(group)` |
+
+For `type: 'path'` groups, the default uses the first URL segment as-is instead of camelCasing.
 
 ### client
 
@@ -316,35 +317,6 @@ Builds the SWR key for each mutation hook. The callback receives the operation `
 > [!WARNING]
 > String values are inlined verbatim into generated code. Wrap any literal string in `JSON.stringify(...)`.
 
-### validator
-
-Runtime validator applied to request and response data using schemas from `@kubb/plugin-zod`.
-
-- `false` (default) does no validation. The hook returns the response cast to the generated type.
-- `'zod'` validates the response body only.
-- `{ request?: 'zod', response?: 'zod' }` opts in per direction. `request` validates the request body and query parameters before the call. `response` validates the response body after.
-
-Add `@kubb/plugin-zod` to the plugins list when either direction is `'zod'`.
-
-|          |                                                           |
-| -------: | :-------------------------------------------------------- |
-|    Type: | `false \| 'zod' \| { request?: 'zod', response?: 'zod' }` |
-| Default: | `false`                                                   |
-
-::: code-group
-
-```typescript [false (default)]
-// no validation, response is cast to the generated type
-const { data } = useGetPetById({ path: { petId: 1 } })
-```
-
-```typescript ['zod']
-// the response body is parsed with the generated Zod schema
-const { data } = useGetPetById({ path: { petId: 1 } })
-```
-
-:::
-
 ### include
 
 Generates only the operations that match at least one entry in the list. Everything else is skipped. Each entry filters by one of:
@@ -352,7 +324,7 @@ Generates only the operations that match at least one entry in the list. Everyth
 - `tag`: the operation's first tag in the OpenAPI spec.
 - `operationId`: the operation's `operationId`.
 - `path`: the URL path, such as `'/pet/{petId}'`.
-- `method`: the HTTP method, such as `'get'` or `'post'`.
+- `method`: the HTTP method, such as `'GET'` or `'POST'`.
 - `contentType`: the request or response media type, such as `'application/json'`.
 - `schemaName`: the component schema name under `#/components/schemas`.
 
@@ -404,11 +376,11 @@ export type Override = {
 }
 ```
 
-For example, `override: [{ type: 'tag', pattern: 'user', options: { validator: 'zod' } }]` turns on response validation for the `user` tag while the rest of the spec keeps the plugin default.
+For example, `override: [{ type: 'tag', pattern: 'user', options: { query: false } }]` skips query generation for the `user` tag while the rest of the spec keeps the plugin default.
 
 ### resolver
 
-Changes how the plugin names generated files and symbols. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change. Anything you omit, or that returns `null` or `undefined`, falls back to the default. Inside a method, `this` is the full resolver, so you can call `this.default(name, 'function')` to reuse the built-in name.
+Changes how the plugin names generated files and symbols. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change, since anything you omit keeps its default behavior. Inside a method, `this` is the full resolver, so you can call `this.default(name, 'function')` to reuse the built-in name.
 
 |          |                                                |
 | -------: | :--------------------------------------------- |

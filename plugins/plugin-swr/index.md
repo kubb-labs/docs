@@ -30,10 +30,8 @@ tags:
   - data-fetching
   - codegen
   - openapi
-  - validator
 dependencies:
   - plugin-ts
-  - plugin-axios
 resources:
   documentation: https://kubb.dev/plugins/plugin-swr
   repository: https://github.com/kubb-labs/plugins
@@ -48,7 +46,7 @@ resources:
 
 The hooks call an HTTP client, so a client plugin must be registered. Add `@kubb/plugin-ts` for the types and either `@kubb/plugin-axios` or `@kubb/plugin-fetch` for the client. Generation errors out when no client plugin is present.
 
-Each hook takes its parameters as a single grouped options object shaped as `{ body, path, query, headers }`, with camelCase property names. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
+Query hooks take the grouped request config (`{ path, query, headers }`, camelCase property names) as their first argument. Mutation hooks take only an options object, and you pass the grouped config through `trigger(...)` instead. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
 
 ## Installation
 
@@ -79,7 +77,7 @@ This plugin needs these plugins in your config:
 - [`@kubb/plugin-ts`](/plugins/plugin-ts/) for the types.
 - A client plugin, [`@kubb/plugin-axios`](/plugins/plugin-axios/) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch/), for the HTTP layer. The hooks call its functions, so generation errors out when no client plugin is registered.
 
-Set `validator` to `'zod'` and the plugin also depends on [`@kubb/plugin-zod`](/plugins/plugin-zod/), which then has to be in the plugins list.
+For runtime validation, set `validator` on the client plugin. The generated operations carry the validation, so the hooks get it for free.
 
 ## Example
 
@@ -110,7 +108,7 @@ export default defineConfig({
 
 :::
 
-## See Also
+## See also
 
 - [SWR](https://swr.vercel.app)
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-swr/CHANGELOG.md)

@@ -9,16 +9,14 @@ outline: deep
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'zod' }` | Where the generated files are written and exported |
+| [`output`](#output) | `Output` | `{ path: 'zod', barrel: { type: 'named' } }` | Where the generated files are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`importPath`](#importpath) | `string` | `mini ? 'zod/mini' : 'zod'` | Module the generated files import `z` from |
-| [`typed`](#typed) | `boolean` | — | Tie each schema to its `@kubb/plugin-ts` type |
 | [`inferred`](#inferred) | `boolean` | — | Emit a `z.infer` alias next to each schema |
 | [`coercion`](#coercion) | `boolean \| { dates?: boolean, strings?: boolean, numbers?: boolean }` | `false` | Coerce input before validation |
 | [`guidType`](#guidtype) | `'uuid' \| 'guid'` | `'uuid'` | Validator for `format: uuid` properties |
 | [`regexType`](#regextype) | `'literal' \| 'constructor'` | `'literal'` | How an OpenAPI `pattern` is written |
 | [`mini`](#mini) | `boolean` | `false` | Generate Zod Mini schemas |
-| [`wrapOutput`](#wrapoutput) | `(arg) => string \| undefined` | — | Wrap each schema string with extra calls |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
@@ -113,11 +111,11 @@ src/gen/zod/
 
 #### output.banner
 
-Text added to the top of every generated file. Use it for license headers, lint disables, or a `@ts-nocheck` directive. Pass a string for a fixed banner, or a function that builds one from each file's `RootNode` (the AST root with the path, schema, and operation context).
+Text added to the top of every generated file. Use it for license headers, lint disables, or a `@ts-nocheck` directive. Pass a string for a fixed banner, or a function that builds one from a `BannerMeta` object. The meta carries the document info (`title`, `description`, `version`, `baseURL`) plus the per-file context `filePath`, `baseName`, `isBarrel`, and `isAggregation`, so a directive such as `'use server'` can skip barrel files.
 
 |          |                                          |
 | -------: | :--------------------------------------- |
-|    Type: | `string \| ((node: RootNode) => string)` |
+|    Type: | `string \| ((meta: BannerMeta) => string)` |
 
 A static `banner: '/* eslint-disable */\n// @ts-nocheck'` lands at the top of each generated file:
 
@@ -131,15 +129,15 @@ export const petSchema = z.object({
 })
 ```
 
-A function banner builds the text from the file's `RootNode`, such as `banner: (node) => \`// Source: ${node.filePath}\``.
+A function banner builds the text from the meta, such as `banner: (meta) => \`// Source: ${meta.filePath}\``.
 
 #### output.footer
 
-Text added to the bottom of every generated file. It works like `banner` but for closing comments, such as re-enabling a lint rule. Pass a string or a function that receives the file's `RootNode` and returns the text. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a lint disable to the generated file.
+Text added to the bottom of every generated file. It works like `banner` but for closing comments, such as re-enabling a lint rule. Pass a string or a function that receives the same `BannerMeta` and returns the text. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a lint disable to the generated file.
 
 |          |                                          |
 | -------: | :--------------------------------------- |
-|    Type: | `string \| ((node: RootNode) => string)` |
+|    Type: | `string \| ((meta: BannerMeta) => string)` |
 
 ### group
 
@@ -172,10 +170,10 @@ Pass `group.name` to customize the folder name. For example, a `name` function t
 
 Property used to assign each operation to a group. Required whenever `group` is set.
 
-- `'tag'` uses the operation's first tag (`operation.getTags().at(0)?.name`).
+- `'tag'` uses the operation's first tag.
 - `'path'` uses the first segment of the operation's URL, such as `pet` for `/pet/{petId}`.
 
-Operations with no tag go in a default group.
+An operation with no tag goes in the `default` group.
 
 |          |                   |
 | -------: | :---------------- |
@@ -183,12 +181,14 @@ Operations with no tag go in a default group.
 
 #### group.name
 
-Function that turns a group key (the operation's first tag) into a folder or identifier name. The result is used as both the subdirectory name under `output.path` and as a suffix when naming aggregate files.
+Function that turns a group key (the operation's first tag or path segment) into a folder or identifier name. The result is used as both the subdirectory name under `output.path` and as a suffix when naming aggregate files.
 
-|          |                                     |
-| -------: | :---------------------------------- |
-|    Type: | `(context: GroupContext) => string` |
-| Default: | `(ctx) => camelCase(ctx.group)`         |
+|          |                                          |
+| -------: | :--------------------------------------- |
+|    Type: | `(context: { group: string }) => string` |
+| Default: | `({ group }) => camelCase(group)` |
+
+For `type: 'path'` groups, the default uses the first URL segment as-is instead of camelCasing.
 
 ### importPath
 
@@ -226,49 +226,6 @@ const pet = petSchema.parse(data)
 
 > [!NOTE]
 > The `'zod'` and `'zod/mini'` modules import the `z` namespace (`import * as z`). A custom module imports the named `z` export (`import { z }`), so re-export `z` from there.
-
-### typed
-
-Ties each Zod schema to its TypeScript type from `@kubb/plugin-ts`. With `typed: true`, the generated `petSchema` is typed as `ToZod<Pet>`. TypeScript then fails to compile when the schema drifts from the type. This needs `@kubb/plugin-ts` in the plugins list.
-
-|          |           |
-| -------: | :-------- |
-|    Type: | `boolean` |
-
-> [!IMPORTANT]
-> The mapping uses a [ToZod-style](https://github.com/colinhacks/tozod) helper (vendored in Kubb) to derive a Zod shape from a TypeScript type.
-
-::: code-group
-
-```typescript [typed: true]
-import * as z from 'zod'
-import type { ToZod } from '@kubb/plugin-zod'
-import type { Pet } from '../ts/Pet'
-
-export const petSchema: ToZod<Pet> = z.object({
-  name: z.string(),
-  status: z.enum(['available', 'pending', 'sold']).optional(),
-})
-```
-
-```typescript [typed unset (default)]
-import * as z from 'zod'
-
-export const petSchema = z.object({
-  name: z.string(),
-  status: z.enum(['available', 'pending', 'sold']).optional(),
-})
-```
-
-:::
-
-You consume the schema the same way whether or not it is typed. `typed` only adds the compile-time `ToZod<Pet>` check on the schema declaration:
-
-```typescript
-import { petSchema } from './src/gen/zod/petSchema'
-
-const pet = petSchema.parse(data)
-```
 
 ### inferred
 
@@ -339,21 +296,21 @@ See [Coercion for primitives](https://zod.dev/?id=coercion-for-primitives).
 
 ```typescript [coercion: true]
 z.coerce.string()
-z.coerce.date()
 z.coerce.number()
+z.coerce.date()
 ```
 
 ```typescript [coercion: false (default)]
 z.string()
-z.date()
 z.number()
+z.date()
 ```
 
 ```typescript [Coerce numbers only]
-// { numbers: true, strings: false, dates: false }
+// { numbers: true }
 z.string()
-z.date()
 z.coerce.number()
+z.date()
 ```
 
 :::
@@ -387,7 +344,7 @@ querySchema.parse({ count: '5', date: '2024-01-01' }) // throws, the date is not
 :::
 
 > [!NOTE]
-> `coercion.dates` covers `date` and `datetime` string fields. Fields that Kubb represents as a JavaScript `Date` are generated with transform-based codecs rather than `z.coerce.date()`, so `coercion.dates` does not change them.
+> `dates` applies to fields typed as `Date`, which the adapter produces with `dateType: 'date'`. Such a field then validates with `z.coerce.date()` instead of the `z.iso.datetime().transform(...)` decode codec, while the request-direction `InputSchema` variant keeps encoding `Date` back to a wire string. Fields kept as ISO strings (`z.iso.date()`, `z.iso.datetime()`) are never coerced.
 
 ### guidType
 
@@ -426,7 +383,7 @@ const id = idSchema.parse('123e4567-e89b-12d3-a456-426614174000')
 Controls how an OpenAPI `pattern` is written inside `.regex(...)`.
 
 - `'literal'` (default) emits a regex literal, such as `.regex(/^[a-z]+$/)`.
-- `'constructor'` emits the `RegExp` constructor, such as `.regex(new RegExp("^[a-z]+$"))`.
+- `'constructor'` emits the `RegExp` constructor, such as `.regex(new RegExp('^[a-z]+$'))`.
 
 Reach for `'constructor'` when a regex literal trips up your build pipeline or when you need the pattern as a plain string.
 
@@ -498,31 +455,6 @@ import { petSchema } from './src/gen/zod/petSchema'
 const pet = petSchema.parse(data)
 ```
 
-### wrapOutput
-
-Wraps the generated Zod schema string with extra calls before it is written to disk. The callback receives the raw schema string and its `SchemaNode`. Return a new string to replace the output, or `undefined` to leave it untouched.
-
-|          |                                                                        |
-| -------: | :--------------------------------------------------------------------- |
-|    Type: | `(arg: { output: string; schema: SchemaNode }) => string \| undefined` |
-
-> [!TIP]
-> Use this to round-trip OpenAPI metadata back into Zod, such as examples, descriptions, or `.openapi()` annotations for libraries that re-emit OpenAPI from Zod schemas.
-
-```typescript [Append .openapi() with metadata]
-import { pluginZod } from '@kubb/plugin-zod'
-
-pluginZod({
-  wrapOutput: ({ output, schema }) => {
-    if (!schema.examples?.length) {
-      return undefined
-    }
-
-    return `${output}.openapi(${JSON.stringify({ examples: schema.examples })})`
-  },
-})
-```
-
 ### include
 
 Generates only the operations and schemas that match at least one entry in the list. Everything else is skipped. Each entry filters by one of:
@@ -530,7 +462,7 @@ Generates only the operations and schemas that match at least one entry in the l
 - `tag`: the operation's first tag in the OpenAPI spec.
 - `operationId`: the operation's `operationId`.
 - `path`: the URL path, such as `'/pet/{petId}'`.
-- `method`: the HTTP method, such as `'get'` or `'post'`.
+- `method`: the HTTP method, such as `'GET'` or `'POST'`.
 - `contentType`: the request or response media type, such as `'application/json'`.
 - `schemaName`: the component schema name under `#/components/schemas`.
 
@@ -586,7 +518,7 @@ For example, `override: [{ type: 'tag', pattern: 'user', options: { coercion: tr
 
 ### resolver
 
-Changes how the plugin names generated files and symbols. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change. Anything you omit, or that returns `null` or `undefined`, falls back to the default. Inside a method, `this` is the full resolver, so you can call `this.default(name, 'function')` to reuse the built-in name.
+Changes how the plugin names generated files and symbols. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change, since anything you omit keeps its default behavior. Inside a method, `this` is the full resolver, so you can call `this.default(name, 'function')` to reuse the built-in name.
 
 |          |                                                |
 | -------: | :--------------------------------------------- |
@@ -597,26 +529,17 @@ Changes how the plugin names generated files and symbols. Use it to add a prefix
 
 For example, `resolver: { resolveSchemaName(name) { return \`${this.default(name, 'function')}Validator\` } }` renames every generated schema from `petSchema` to `petValidator`.
 
-Each plugin ships with a default resolver:
-
-| Plugin                 | Default resolver  |
-| ---------------------- | ----------------- |
-| `@kubb/plugin-ts`      | `resolverTs`      |
-| `@kubb/plugin-zod`     | `resolverZod`     |
-| `@kubb/plugin-faker`   | `resolverFaker`   |
-| `@kubb/plugin-cypress` | `resolverCypress` |
-| `@kubb/plugin-msw`     | `resolverMsw`     |
-| `@kubb/plugin-mcp`     | `resolverMcp`     |
-| `@kubb/plugin-axios`   | `resolverClient`  |
-| `@kubb/plugin-fetch`   | `resolverClient`  |
-
 ### printer
 
 Replaces the Zod handler for a specific schema type, such as `'integer'`, `'date'`, or `'string'`. Each handler returns the Zod expression as a string. When `mini: true`, overrides target the Zod Mini printer. Otherwise they target the standard Zod printer.
 
+Inside a handler, `this.base(node)` returns what the built-in handler would have emitted, so you can wrap the default output instead of rebuilding it. `this.transform(node)` recurses into nested schema nodes.
+
 |          |                                                     |
 | -------: | :-------------------------------------------------- |
 |    Type: | `{ nodes?: PrinterZodNodes \| PrinterZodMiniNodes }` |
+
+::: code-group
 
 ```typescript [Map integers and dates to other Zod expressions]
 import { pluginZod } from '@kubb/plugin-zod'
@@ -634,6 +557,22 @@ pluginZod({
   },
 })
 ```
+
+```typescript [Wrap the built-in output with .openapi()]
+import { pluginZod } from '@kubb/plugin-zod'
+
+pluginZod({
+  printer: {
+    nodes: {
+      object(node) {
+        return `${this.base(node)}.openapi(${JSON.stringify({ description: node.description })})`
+      },
+    },
+  },
+})
+```
+
+:::
 
 ### macros
 

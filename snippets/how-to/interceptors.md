@@ -93,14 +93,17 @@ client.interceptors.error.use((error) => {
 :::
 
 The fetch handler receives the `ResponseError`, the axios handler an `AxiosError`. This channel
-only fires on the throw path. When you read with `throwOnError: false`, the call resolves and no
-error interceptor runs, so inspect the returned `error` on the result instead. See
+only fires on the throw path. When you read with `throwOnError: false`, a documented non-2xx
+response resolves and no error interceptor runs, so inspect the returned `error` on the result
+instead. A transport failure (no response at all) still throws and still fires the channel. See
 [error handling](/plugins/plugin-fetch/guide/error-handling) for that path.
 
 ## Add, replace, and remove handlers
 
 `use` registers a handler and returns an id. Pass that id to `eject` to remove it, or to `update`
-to swap its function in place. Handlers run in the order they were registered.
+to swap its function in place. Response and error handlers run in the order they were registered.
+Request handlers do too on `plugin-fetch`, but `plugin-axios` delegates to axios, which runs
+request handlers in reverse registration order.
 
 ```typescript
 const id = client.interceptors.request.use((request) => request)

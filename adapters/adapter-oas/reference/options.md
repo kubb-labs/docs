@@ -33,7 +33,7 @@ Validates the OpenAPI spec with `@readme/openapi-parser` before parsing. Set it 
 
 Preferred media type when an operation defines several. Operations with multiple media types use this one.
 
-Without a value, it falls back to the first JSON-compatible media type found in the spec (`application/json`, `application/vnd.api+json`, or any `*+json`).
+Without a value, it falls back to the first JSON-like media type found in the spec (`application/json`, `application/x-json`, `text/json`, `text/x-json`, or any `*+json`). When the spec has no JSON-like media type at all, the first media type overall is used.
 
 |          |                                |
 | -------: | :----------------------------- |
@@ -43,7 +43,7 @@ Without a value, it falls back to the first JSON-compatible media type found in 
 
 Selects which entry in the spec's `servers` array becomes the base URL, and supplies values for its `{variable}` placeholders. Plugins that need a base URL read it from here (`@kubb/plugin-axios`, `@kubb/plugin-fetch`, `@kubb/plugin-msw`).
 
-`server.index` points at one of the spec's servers. Most projects pick `0` for the primary server and use higher indices for staging or localhost. `server.variables` fills in any `{variable}` placeholders in the selected URL, falling back to each variable's `default` from the spec. Omit `server` to leave `baseURL` undefined.
+`server.index` points at one of the spec's servers. Most projects pick `0` for the primary server and use higher indices for staging or localhost. `server.variables` fills in any `{variable}` placeholders in the selected URL, falling back to each variable's `default` from the spec. Omit `server` and `baseURL` resolves to `null`.
 
 |          |                                                          |
 | -------: | :------------------------------------------------------- |
@@ -291,9 +291,7 @@ type EmptyModel = unknown
 
 ### enumSuffix
 
-Suffix appended to derived enum names when Kubb has to invent one, typically for inline enums on object properties.
-
-An inline enum on a `status` property becomes `statusEnum` with the default. Change it to align with your project's naming convention.
+Suffix appended to derived enum names when Kubb has to invent one, typically for inline enums on object properties. The derived name joins the parent schema name, the property name, and the suffix in PascalCase, so an inline enum on the `status` property of the `Pet` schema derives `PetStatusEnum`.
 
 |          |          |
 | -------: | :------- |
@@ -303,14 +301,15 @@ An inline enum on a `status` property becomes `statusEnum` with the default. Cha
 ::: code-group
 
 ```typescript ['enum' (default)]
-// Property `status` with inline enum values
-const statusEnum = { available: 'available', pending: 'pending' } as const
-type StatusEnum = (typeof statusEnum)[keyof typeof statusEnum]
+// Inline enum on Pet.status → PetStatusEnum
+const petStatusEnum = { available: 'available', pending: 'pending' } as const
+type PetStatusEnum = (typeof petStatusEnum)[keyof typeof petStatusEnum]
 ```
 
 ```typescript ['type']
-const statusType = { available: 'available', pending: 'pending' } as const
-type StatusType = (typeof statusType)[keyof typeof statusType]
+// Inline enum on Pet.status → PetStatusType
+const petStatusType = { available: 'available', pending: 'pending' } as const
+type PetStatusType = (typeof petStatusType)[keyof typeof petStatusType]
 ```
 
 :::

@@ -47,13 +47,15 @@ export default defineConfig({
 
 `dataReturnType` has no replacement on the query plugin. The client plugin returns the response body, so the hooks read `res.data`. Move `baseURL` to the client plugin, and see [Migration: @kubb/plugin-client removed](/docs/5.x/migration/plugin-client) for the `clientType`, `bundle`, and `importPath` options that went with it.
 
-## Renamed: `parser` → `validator`
+## Removed: `parser`
 
-The `parser` option is now `validator`. Set `validator: 'zod'` where you previously set `parser: 'zod'`. The accepted values are unchanged: `false`, `'zod'`, or `{ request: 'zod', response: 'zod' }` to validate request and response bodies with schemas from [`@kubb/plugin-zod`](/plugins/plugin-zod/).
+The v4 `parser` option is gone, and so is its v5 rename `validator`: this plugin never applies validation itself. The hooks call the client operation, and the client plugin bakes the validation into that operation. Set `validator: 'zod'` on `pluginAxios` or `pluginFetch` instead.
 
 ```diff [Diff]
   pluginReactQuery({
 -   parser: 'zod',
+  })
+  pluginAxios({
 +   validator: 'zod',
   })
 ```

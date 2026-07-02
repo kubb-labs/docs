@@ -1,11 +1,11 @@
 ---
-title: Migration Guide
+title: Migration guide
 description: Step-by-step guide for migrating from Kubb v4 to v5. Covers every breaking change in core and every plugin, with verified before/after examples for both configuration and generated output.
 layout: doc
 outline: [2, 3, 4]
 ---
 
-# Migration Guide: v4 → v5
+# Migration guide: v4 → v5
 
 Kubb v5 splits responsibilities across [adapters](/docs/5.x/guide/concepts/adapters), [plugins](/docs/5.x/guide/concepts/plugins), [parsers](/docs/5.x/guide/concepts/parsers), and [storage](/docs/5.x/guide/concepts/storage), so the upgrade touches more than a version number. This page covers the changes that affect every project: the new import path, the core config, the shared plugin API, and the package moves. Anything specific to one plugin or adapter lives on its [per-extension page](#per-extension-changes), with a before/after diff and a link to the reference.
 
@@ -63,6 +63,10 @@ built-in logic as a fallback.
 - Remove `mapper` (use printer or macros instead).
 - Set zod dependency to ^4.
 
+## 7b. plugin-faker specific
+- Remove `mapper` (use printer or macros instead). A macro that rewrites the
+  property's schema to an enum of the wanted values reproduces the common case.
+
 ## 8. Rename output.barrelType → output.barrel (object)
 Replace every `barrelType` string with the `barrel` object:
   - output.barrelType: 'named'     → output.barrel: { type: 'named' }
@@ -112,9 +116,18 @@ This applies at both the root output level and per-plugin output levels.
 ## 12. Preserve everything else
 All other plugin options (output, group, include, exclude, override (the
 per-operation array), client, infinite, suspense, query, mutation,
-baseURL, typed, inferred,
-coercion, guidType, mini, wrapOutput, dateParser, regexGenerator,
+baseURL, inferred,
+coercion, guidType, mini, dateParser, regexGenerator,
 seed, handlers, etc.) are unchanged.
+
+Two plugin-zod exceptions: drop `typed` (removed, it no longer does
+anything) and replace `wrapOutput` with a [printer
+override](/docs/5.x/migration/plugin-zod#removed-wrapoutput).
+
+One query-plugin exception: `parser` (and its v5 rename `validator`) is
+removed from plugin-react-query, plugin-vue-query, and plugin-swr. Set
+`validator` on the client plugin (`pluginAxios` or `pluginFetch`)
+instead.
 
 ## 13. New v5 defaults (informational, do not edit the config)
 
@@ -137,12 +150,15 @@ They default to `mode: 'directory'`. `output.mode` only accepts
 Remove `generators` from every plugin. Plugins no longer accept custom
 generators as an option. To add custom output, build your own plugin.
 
-## 16. Rename parser → validator on the client and query plugins
-- On `plugin-axios`, `plugin-fetch`, `plugin-react-query`, `plugin-vue-query`,
-  and `plugin-swr`, rename the `parser` option to `validator`. The accepted
-  values are unchanged: `false`, `'zod'`, or `{ request: 'zod', response: 'zod' }`.
-  So `parser: 'zod'` becomes `validator: 'zod'`, and a v4 `parser: 'client'`
-  becomes the default `false` (the `'client'` value is gone).
+## 16. Move parser → validator to the client plugins
+- On `plugin-axios` and `plugin-fetch`, rename the `parser` option to
+  `validator`. The accepted values are `false`, `'zod'`, or
+  `{ request: 'zod', response: 'zod' }`. So `parser: 'zod'` becomes
+  `validator: 'zod'`, and a v4 `parser: 'client'` becomes the default
+  `false` (the `'client'` value is gone).
+- On `plugin-react-query`, `plugin-vue-query`, and `plugin-swr`, delete
+  `parser` entirely. Validation lives in the client operation, so set
+  `validator: 'zod'` on the client plugin instead.
 - Leave `plugin-msw`'s `parser` (`'data' | 'faker'`) unchanged. It is a
   different option and is not renamed.
 

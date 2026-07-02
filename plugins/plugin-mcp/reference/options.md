@@ -9,7 +9,7 @@ outline: deep
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'mcp' }` | Where the generated handlers are written and exported |
+| [`output`](#output) | `Output` | `{ path: 'mcp', barrel: { type: 'named' } }` | Where the generated handlers are written and exported |
 | [`client`](#client) | `'fetch' \| 'axios'` | — | Which registered client plugin the handlers call |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
@@ -77,17 +77,21 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 // src/gen/mcp/index.ts
 export { addPetHandler } from './addPetHandler'
 export { getPetByIdHandler } from './getPetByIdHandler'
+export { getServer, server, startServer } from './server'
 ```
 
 ```typescript ['all']
 // src/gen/mcp/index.ts
 export * from './addPetHandler'
 export * from './getPetByIdHandler'
+export * from './server'
 ```
 
 ```text [nested]
 src/gen/mcp/
-├── index.ts          # re-exports ./pet and ./store
+├── index.ts          # re-exports ./pet, ./store, and ./server
+├── server.ts
+├── .mcp.json
 ├── pet/
 │   ├── index.ts      # re-exports addPetHandler, getPetByIdHandler, ...
 │   └── addPetHandler.ts
@@ -105,21 +109,21 @@ src/gen/mcp/
 
 #### output.banner
 
-Text added to the top of every generated file. Use it for license headers, lint disables, or a `@ts-nocheck` directive. Pass a string for a fixed banner, or a function that builds one from each file's `RootNode` (the AST root with the path, schema, and operation context).
+Text added to the top of every generated file. Use it for license headers, lint disables, or a `@ts-nocheck` directive. Pass a string for a fixed banner, or a function that builds one from a `BannerMeta` object. The meta carries the document info (`title`, `description`, `version`, `baseURL`) plus the per-file context `filePath`, `baseName`, `isBarrel`, and `isAggregation`, so a directive such as `'use server'` can skip barrel files.
 
 |          |                                          |
 | -------: | :--------------------------------------- |
-|    Type: | `string \| ((node: RootNode) => string)` |
+|    Type: | `string \| ((meta: BannerMeta) => string)` |
 
-A static `banner: '/* eslint-disable */\n// @ts-nocheck'` lands at the top of each generated file. A function banner builds the text from the file's `RootNode`, such as `banner: (node) => \`// Source: ${node.filePath}\``.
+A static `banner: '/* eslint-disable */\n// @ts-nocheck'` lands at the top of each generated file. A function banner builds the text from the meta, such as `banner: (meta) => \`// Source: ${meta.filePath}\``.
 
 #### output.footer
 
-Text added to the bottom of every generated file. It works like `banner` but for closing comments, such as re-enabling a lint rule. Pass a string or a function that receives the file's `RootNode` and returns the text. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a lint disable to the generated file.
+Text added to the bottom of every generated file. It works like `banner` but for closing comments, such as re-enabling a lint rule. Pass a string or a function that receives the same `BannerMeta` and returns the text. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a lint disable to the generated file.
 
 |          |                                          |
 | -------: | :--------------------------------------- |
-|    Type: | `string \| ((node: RootNode) => string)` |
+|    Type: | `string \| ((meta: BannerMeta) => string)` |
 
 ### client
 
@@ -151,6 +155,8 @@ With `group: { type: 'tag' }`, the generator emits one folder per tag, named aft
 
 ```text [Resulting tree]
 src/gen/
+├── server.ts
+├── .mcp.json
 ├── pet/
 │   ├── addPetHandler.ts
 │   └── getPetByIdHandler.ts
@@ -165,10 +171,10 @@ Pass `group.name` to customize the folder name. For example, a `name` function t
 
 Property used to assign each operation to a group. Required whenever `group` is set.
 
-- `'tag'` uses the operation's first tag (`operation.getTags().at(0)?.name`).
+- `'tag'` uses the operation's first tag.
 - `'path'` uses the first segment of the operation's URL, such as `pet` for `/pet/{petId}`.
 
-Operations with no tag go in a default group.
+An operation with no tag goes in the `default` group.
 
 |          |                   |
 | -------: | :---------------- |
@@ -176,12 +182,14 @@ Operations with no tag go in a default group.
 
 #### group.name
 
-Function that turns a group key (the operation's first tag) into a folder or identifier name. The result is used as both the subdirectory name under `output.path` and as a suffix when naming aggregate files.
+Function that turns a group key (the operation's first tag) into a folder name, used as the subdirectory name under `output.path`. The `server.ts` and `.mcp.json` files keep their fixed names at the root of `output.path`.
 
 |          |                                     |
 | -------: | :---------------------------------- |
-|    Type: | `(context: GroupContext) => string` |
-| Default: | `(ctx) => camelCase(ctx.group)`         |
+|    Type: | `(context: { group: string }) => string` |
+| Default: | `({ group }) => camelCase(group)` |
+
+For `type: 'path'` groups, the default uses the first URL segment as-is instead of camelCasing.
 
 ### include
 
@@ -190,7 +198,7 @@ Generates only the operations that match at least one entry in the list. Everyth
 - `tag`: the operation's first tag in the OpenAPI spec.
 - `operationId`: the operation's `operationId`.
 - `path`: the URL path, such as `'/pet/{petId}'`.
-- `method`: the HTTP method, such as `'get'` or `'post'`.
+- `method`: the HTTP method, such as `'GET'` or `'POST'`.
 - `contentType`: the request or response media type, such as `'application/json'`.
 - `schemaName`: the component schema name under `#/components/schemas`.
 
@@ -242,11 +250,14 @@ export type Override = {
 }
 ```
 
-For example, `override: [{ type: 'tag', pattern: 'user', options: { client: 'fetch' } }]` switches the `user` tag to the fetch client while the rest of the spec keeps the plugin default.
+For example, `override: [{ type: 'tag', pattern: 'user', options: { output: { path: 'mcp/user' } } }]` routes the `user` tag's handlers to their own folder.
+
+> [!NOTE]
+> `client` resolves once at setup, so it cannot be changed per override.
 
 ### resolver
 
-Changes how the plugin names generated files and handlers. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change. Anything you omit, or that returns `null` or `undefined`, falls back to the default. Inside a method, `this` is the full resolver, so you can call `this.default(name, 'function')` to reuse the built-in name.
+Changes how the plugin names generated files and handlers. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change, since anything you omit keeps its default behavior. Inside a method, `this` is the full resolver, so you can call `this.default(name, 'function')` to reuse the built-in name.
 
 |          |                                                |
 | -------: | :--------------------------------------------- |
@@ -256,19 +267,6 @@ Changes how the plugin names generated files and handlers. Use it to add a prefi
 > Use `resolver` for naming and file-location tweaks. For changing the AST nodes themselves (for example stripping descriptions), use `macros` instead.
 
 For example, `resolver: { resolveName(name) { return \`Api${this.default(name, 'function')}\` } }` prefixes every generated handler name with `Api`.
-
-Each plugin ships with a default resolver:
-
-| Plugin                 | Default resolver  |
-| ---------------------- | ----------------- |
-| `@kubb/plugin-ts`      | `resolverTs`      |
-| `@kubb/plugin-zod`     | `resolverZod`     |
-| `@kubb/plugin-faker`   | `resolverFaker`   |
-| `@kubb/plugin-cypress` | `resolverCypress` |
-| `@kubb/plugin-msw`     | `resolverMsw`     |
-| `@kubb/plugin-mcp`     | `resolverMcp`     |
-| `@kubb/plugin-axios`   | `resolverClient`  |
-| `@kubb/plugin-fetch`   | `resolverClient`  |
 
 ### macros
 

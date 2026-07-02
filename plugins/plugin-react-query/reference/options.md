@@ -9,7 +9,7 @@ outline: deep
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'hooks' }` | Where the generated hooks are written and exported |
+| [`output`](#output) | `Output` | `{ path: 'hooks', barrel: { type: 'named' } }` | Where the generated hooks are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`client`](#client) | `'axios' \| 'fetch'` | — | Which registered client plugin the hooks call |
 | [`infinite`](#infinite) | `Partial<Infinite> \| false` | `false` | Generate `useInfiniteQuery` hooks for pagination |
@@ -19,7 +19,6 @@ outline: deep
 | [`mutation`](#mutation) | `Partial<Mutation> \| false` | `{ methods: ['post', 'put', 'patch', 'delete'], … }` | Configure the mutation hooks |
 | [`mutationKey`](#mutationkey) | `(props) => unknown[]` | `built-in` | Build the `mutationKey` for each mutation hook |
 | [`customOptions`](#customoptions) | `CustomOptions` | — | Route every hook through your own options function |
-| [`validator`](#validator) | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` | `false` | Validate request and response data with Zod |
 | [`hooks`](#hooks) | `boolean` | `false` | Emit `use*` hook functions on top of the factories |
 | [`resolver`](#resolver) | `Partial<ResolverReactQuery>` | — | Customize generated names and file paths |
 | [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
@@ -114,19 +113,19 @@ src/gen/hooks/
 
 #### output.banner
 
-Text added to the top of every generated file. Use it for license headers, lint disables, or a `@ts-nocheck` directive. Pass a string for a fixed banner, or a function that builds one from each file's `RootNode` (the AST root with the path, schema, and operation context).
+Text added to the top of every generated file. Use it for license headers, lint disables, or a `@ts-nocheck` directive. Pass a string for a fixed banner, or a function that builds one from a `BannerMeta` object. The meta carries the document info (`title`, `description`, `version`, `baseURL`) plus the per-file context `filePath`, `baseName`, `isBarrel`, and `isAggregation`, so a directive such as `'use server'` can skip barrel files.
 
 |          |                                          |
 | -------: | :--------------------------------------- |
-|    Type: | `string \| ((node: RootNode) => string)` |
+|    Type: | `string \| ((meta: BannerMeta) => string)` |
 
 #### output.footer
 
-Text added to the bottom of every generated file. It works like `banner` but for closing comments, such as re-enabling a lint rule. Pass a string or a function that receives the file's `RootNode` and returns the text. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a lint disable to the generated file.
+Text added to the bottom of every generated file. It works like `banner` but for closing comments, such as re-enabling a lint rule. Pass a string or a function that receives the same `BannerMeta` and returns the text. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a lint disable to the generated file.
 
 |          |                                          |
 | -------: | :--------------------------------------- |
-|    Type: | `string \| ((node: RootNode) => string)` |
+|    Type: | `string \| ((meta: BannerMeta) => string)` |
 
 ### group
 
@@ -159,10 +158,10 @@ Pass `group.name` to customize the folder name. For example, a `name` function t
 
 Property used to assign each operation to a group. Required whenever `group` is set.
 
-- `'tag'` uses the operation's first tag (`operation.getTags().at(0)?.name`).
+- `'tag'` uses the operation's first tag.
 - `'path'` uses the first segment of the operation's URL, such as `pet` for `/pet/{petId}`.
 
-Operations with no tag go in a default group.
+An operation with no tag goes in the `default` group.
 
 |          |                   |
 | -------: | :---------------- |
@@ -174,8 +173,10 @@ Function that turns a group key (the operation's first tag) into a folder or ide
 
 |          |                                     |
 | -------: | :---------------------------------- |
-|    Type: | `(context: GroupContext) => string` |
-| Default: | `(ctx) => camelCase(ctx.group)`     |
+|    Type: | `(context: { group: string }) => string` |
+| Default: | `({ group }) => camelCase(group)` |
+
+For `type: 'path'` groups, the default uses the first URL segment as-is instead of camelCasing.
 
 ### client
 
@@ -193,6 +194,9 @@ Adds infinite-query output for cursor- or page-based pagination. Pass an object 
 | -------: | :--------------------------- |
 |    Type: | `Partial<Infinite> \| false` |
 | Default: | `false`                      |
+
+> [!IMPORTANT]
+> Infinite output is emitted per operation only when the operation declares a query parameter whose name matches `infinite.queryParam` (default `'id'`). Operations without that parameter keep their regular query output.
 
 With `infinite: false` (the default), a `GET /pets` operation generates `getPetsQueryOptions`. Setting `infinite: {}` adds an extra `getPetsInfiniteQueryOptions` factory that reads the cursor from the response:
 
@@ -326,7 +330,7 @@ Decides which operations are treated as queries and how their output is built. T
 |          |                           |
 | -------: | :------------------------ |
 |    Type: | `Partial<Query> \| false` |
-| Default: | `{}`                      |
+| Default: | `{ methods: ['get'], importPath: '@tanstack/react-query' }` |
 
 #### query.methods
 
@@ -383,7 +387,7 @@ Decides which operations are treated as mutations and how their output is built.
 |          |                              |
 | -------: | :--------------------------- |
 |    Type: | `Partial<Mutation> \| false` |
-| Default: | `{}`                         |
+| Default: | `{ methods: ['post', 'put', 'patch', 'delete'], importPath: '@tanstack/react-query' }` |
 
 #### mutation.methods
 
@@ -439,21 +443,6 @@ Exported function name of your custom-options hook. Generated code imports it as
 | -------: | :----------------------- |
 |    Type: | `string`                 |
 | Default: | `'useCustomHookOptions'` |
-
-### validator
-
-Runtime validator applied to request and response data using schemas from `@kubb/plugin-zod`.
-
-- `false` (default) does no validation. The client returns the response cast to the generated type.
-- `'zod'` validates response bodies only.
-- `{ request?: 'zod', response?: 'zod' }` opts in per direction. `request` validates the request body and query parameters before the call. `response` validates the response body after.
-
-Add `@kubb/plugin-zod` to the plugins list when either direction is `'zod'`.
-
-|          |                                                          |
-| -------: | :------------------------------------------------------- |
-|    Type: | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` |
-| Default: | `false`                                                  |
 
 ### hooks
 
@@ -517,7 +506,7 @@ Generates only the operations that match at least one entry in the list. Everyth
 - `tag`: the operation's first tag in the OpenAPI spec.
 - `operationId`: the operation's `operationId`.
 - `path`: the URL path, such as `'/pet/{petId}'`.
-- `method`: the HTTP method, such as `'get'` or `'post'`.
+- `method`: the HTTP method, such as `'GET'` or `'POST'`.
 - `contentType`: the request or response media type, such as `'application/json'`.
 - `schemaName`: the component schema name under `#/components/schemas`.
 

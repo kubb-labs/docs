@@ -34,10 +34,8 @@ tags:
   - data-fetching
   - codegen
   - openapi
-  - validator
 dependencies:
   - plugin-ts
-  - plugin-axios
 resources:
   documentation: https://kubb.dev/plugins/plugin-vue-query
   repository: https://github.com/kubb-labs/plugins
@@ -83,7 +81,7 @@ This plugin needs these plugins in your config:
 - [`@kubb/plugin-ts`](/plugins/plugin-ts/) for the types.
 - A client plugin, [`@kubb/plugin-axios`](/plugins/plugin-axios/) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch/), for the HTTP layer. The composables call its functions, so generation errors out when no client plugin is registered.
 
-Set `validator` to `'zod'` and the plugin also depends on [`@kubb/plugin-zod`](/plugins/plugin-zod/), which then has to be in the plugins list.
+For runtime validation, set `validator` on the client plugin. The generated operations carry the validation, so the composables get it for free.
 
 ## Example
 
@@ -125,7 +123,7 @@ export default defineConfig({
 
 :::
 
-## See Also
+## See also
 
 - [TanStack Query for Vue](https://tanstack.com/query/latest/docs/framework/vue/overview)
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-vue-query/CHANGELOG.md)

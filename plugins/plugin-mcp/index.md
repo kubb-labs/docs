@@ -32,7 +32,6 @@ tags:
   - openapi
 dependencies:
   - plugin-ts
-  - plugin-axios
   - plugin-zod
 resources:
   documentation: https://kubb.dev/plugins/plugin-mcp
@@ -44,7 +43,7 @@ resources:
 
 # @kubb/plugin-mcp
 
-`@kubb/plugin-mcp` turns your OpenAPI spec into a [Model Context Protocol](https://modelcontextprotocol.io/introduction) server. Each operation becomes one MCP tool. AI assistants like Claude Desktop and Claude Code call those tools to reach your API. The plugin generates the tool handlers and the Zod schemas that validate each call.
+`@kubb/plugin-mcp` turns your OpenAPI spec into a [Model Context Protocol](https://modelcontextprotocol.io/introduction) server. Each operation becomes one MCP tool. AI assistants like Claude Desktop and Claude Code call those tools to reach your API. The plugin generates the tool handlers plus a `server.ts` and `.mcp.json`, and validates each call with the schemas from `@kubb/plugin-zod`.
 
 Each handler calls a registered client plugin, so you must add `@kubb/plugin-axios` or `@kubb/plugin-fetch` alongside `@kubb/plugin-ts` and `@kubb/plugin-zod`. Without a client plugin, the build stops with a setup error.
 
@@ -76,7 +75,7 @@ yarn add -D @kubb/plugin-mcp@beta
 
 ## Dependencies
 
-This plugin needs three other plugins. Kubb runs them before `plugin-mcp` so the handlers can import the generated types, Zod schemas, and the client functions they call.
+This plugin needs three other plugins. `@kubb/plugin-ts` and `@kubb/plugin-zod` are declared dependencies, so Kubb runs them before `plugin-mcp` and the handlers can import the generated types and Zod schemas. The client plugin is resolved separately at setup.
 
 - [`@kubb/plugin-ts`](/plugins/plugin-ts/) for the request and response types.
 - [`@kubb/plugin-zod`](/plugins/plugin-zod/) for the schemas that validate each tool call.
@@ -104,7 +103,6 @@ export default defineConfig({
     pluginZod(),
     pluginMcp({
       output: { path: 'mcp', barrel: { type: 'named' } },
-      client: 'axios',
       group: {
         type: 'tag',
         name: ({ group }) => `${group}Handlers`,
@@ -116,7 +114,7 @@ export default defineConfig({
 
 :::
 
-## See Also
+## See also
 
 - [Connect Claude to a remote MCP server](https://modelcontextprotocol.io/docs/tools/claude-desktop)
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-mcp/CHANGELOG.md)

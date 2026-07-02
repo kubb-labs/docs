@@ -43,6 +43,7 @@ type TransportResult<TData = unknown> = {
   status: number
   statusText: string
   headers: Headers
+  contentType?: string
   request: Request
   response: Response
 }

@@ -2,7 +2,7 @@
 
 A macro is a named, composable transform over Kubb's [AST](/docs/5.x/guide/concepts/ast). It rewrites the schema and operation nodes that adapters produce before generators print code, so you can rename a symbol, retype a field, strip metadata, or normalize a shape without forking an adapter or a generator. Because macros run on the shared AST, the same macro works across every input adapter (OpenAPI, AsyncAPI, JSON Schema) and every output target (TypeScript, Zod, and any printer a plugin supplies).
 
-This page walks through writing a macro, composing several into a pipeline, registering them in a plugin, reaching for the built-in presets, and sharing your own. The engine (`defineMacro`, `composeMacros`, `applyMacros`, and the `Macro` type) lives on the `@kubb/ast` root, next to the node tree it transforms. The built-in macro presets live on the `@kubb/ast/macros` subpath, one per file.
+The engine (`defineMacro`, `composeMacros`, `applyMacros`, and the `Macro` type) lives on the `@kubb/ast` root, next to the node tree it transforms. The built-in macro presets live on the `@kubb/ast/macros` subpath, one per file.
 
 ## Shape
 
@@ -109,7 +109,7 @@ Macros run before resolver options are computed, so a renamed `operationId` or `
 
 `@kubb/ast/macros` ships built-in macros for common schema normalizations that any adapter can apply. Import them like any macro and compose them with your own.
 
-`macroSimplifyUnion` drops union members that a broader member already covers, such as a single-value string enum next to a plain `string`. `macroDiscriminatorEnum` rewrites a discriminator property into a string enum of its allowed values, and `macroEnumName` names an inline enum from the schema and property it belongs to. The last two read options, so you call them to build a macro.
+`macroSimplifyUnion` drops union members that a broader member already covers, such as a multi-value string enum next to a plain `string`. Single-value enums stay, since they narrow the type. `macroDiscriminatorEnum` rewrites a discriminator property into a string enum of its allowed values, and `macroEnumName` names an inline enum from the schema and property it belongs to. The last two read options, so you call them to build a macro.
 
 ```typescript twoslash [presets.ts]
 import { ast } from '@kubb/core'

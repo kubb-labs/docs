@@ -31,9 +31,12 @@ resources:
   changelog: https://github.com/kubb-labs/kubb/blob/main/packages/parser-md/CHANGELOG.md
 ---
 
-`@kubb/parser-md` lets Kubb emit `.md` and `.markdown` files. Register it in the `parsers` array, and any plugin that writes a markdown source has its output serialized for you.
+`@kubb/parser-md` lets Kubb emit `.md` and `.markdown` files. Any plugin that writes a markdown source has its output serialized for you.
 
-The parser joins a file's source blocks with blank lines to form the body. When `file.meta.frontmatter` is set, it renders those keys as a YAML frontmatter block and prepends it, so you need no separate `yaml` dependency. Pair it with `parserTs` when a generator emits both TypeScript and documentation files side by side. `parserTs` keeps handling `.ts` and `.js`, and `parserMd` claims `.md` and `.markdown`.
+The parser joins a file's source blocks with blank lines to form the body. When `file.meta.frontmatter` is set, it renders those keys as a YAML frontmatter block and prepends it, so you do not add a `yaml` dependency yourself.
+
+> [!TIP]
+> `parserMd` ships with Kubb and runs by default next to `parserTs` and `parserTsx`. Add it to `parsers` yourself only when you set a custom list, since a custom `parsers` array replaces the whole default set. Files whose extension has no registered parser are written by joining their sources verbatim.
 
 ## Installation
 
@@ -85,7 +88,7 @@ layout: doc
 ---
 ```
 
-You can also call `parserMd.print` directly to build a frontmatter envelope without depending on `yaml`. It accepts objects and markdown strings and joins them with blank lines, so `parserMd.print({ title: 'Pets', layout: 'doc' })` returns `---\ntitle: Pets\nlayout: doc\n---`.
+You can also call `parserMd.print` directly to build a frontmatter envelope. It accepts objects and markdown strings and joins them with blank lines, so `parserMd.print({ title: 'Pets', layout: 'doc' })` returns `---\ntitle: Pets\nlayout: doc\n---`.
 
 ## Example
 
@@ -109,19 +112,19 @@ export default defineConfig({
 import { defineConfig } from 'kubb'
 import { adapterOas } from '@kubb/adapter-oas'
 import { parserMd } from '@kubb/parser-md'
-import { parserTs } from '@kubb/parser-ts'
+import { parserTs, parserTsx } from '@kubb/parser-ts'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   adapter: adapterOas(),
-  parsers: [parserTs, parserMd],
+  parsers: [parserTs, parserTsx, parserMd],
   plugins: [],
 })
 ```
 
 :::
 
-## See Also
+## See also
 
 - [Changelog](https://github.com/kubb-labs/kubb/blob/main/packages/parser-md/CHANGELOG.md)

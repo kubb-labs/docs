@@ -9,7 +9,7 @@ outline: deep
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'hooks' }` | Where the generated composables are written and exported |
+| [`output`](#output) | `Output` | `{ path: 'hooks', barrel: { type: 'named' } }` | Where the generated composables are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`client`](#client) | `'axios' \| 'fetch'` | — | Which registered client plugin the composables call |
 | [`infinite`](#infinite) | `Partial<Infinite> \| false` | `false` | Add `useInfiniteQuery` composables for paginated reads |
@@ -18,7 +18,6 @@ outline: deep
 | [`mutation`](#mutation) | `Partial<Mutation> \| false` | `{ methods: ['post', …], … }` | Configure or disable mutation composables |
 | [`mutationKey`](#mutationkey) | `(props) => Array<unknown>` | `built-in` | Build the `mutationKey` for each mutation composable |
 | [`hooks`](#hooks) | `boolean` | `false` | Emit `use*` composables on top of the factory helpers |
-| [`validator`](#validator) | `false \| 'zod' \| { request?, response? }` | `false` | Validate request and response data with Zod |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
@@ -112,23 +111,23 @@ src/gen/hooks/
 
 #### output.banner
 
-Text added to the top of every generated file. Use it for license headers, lint disables, or a `@ts-nocheck` directive. Pass a string for a fixed banner, or a function that builds one from each file's `RootNode` (the AST root with the path, schema, and operation context).
+Text added to the top of every generated file. Use it for license headers, lint disables, or a `@ts-nocheck` directive. Pass a string for a fixed banner, or a function that builds one from a `BannerMeta` object. The meta carries the document info (`title`, `description`, `version`, `baseURL`) plus the per-file context `filePath`, `baseName`, `isBarrel`, and `isAggregation`, so a directive such as `'use server'` can skip barrel files.
 
 |          |                                          |
 | -------: | :--------------------------------------- |
-|    Type: | `string \| ((node: RootNode) => string)` |
+|    Type: | `string \| ((meta: BannerMeta) => string)` |
 
 A static `banner: '/* eslint-disable */\n// @ts-nocheck'` lands at the top of each generated file.
 
-A function banner builds the text from the file's `RootNode`, such as `banner: (node) => \`// Source: ${node.filePath}\``.
+A function banner builds the text from the meta, such as `banner: (meta) => \`// Source: ${meta.filePath}\``.
 
 #### output.footer
 
-Text added to the bottom of every generated file. It works like `banner` but for closing comments, such as re-enabling a lint rule. Pass a string or a function that receives the file's `RootNode` and returns the text. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a lint disable to the generated file.
+Text added to the bottom of every generated file. It works like `banner` but for closing comments, such as re-enabling a lint rule. Pass a string or a function that receives the same `BannerMeta` and returns the text. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a lint disable to the generated file.
 
 |          |                                          |
 | -------: | :--------------------------------------- |
-|    Type: | `string \| ((node: RootNode) => string)` |
+|    Type: | `string \| ((meta: BannerMeta) => string)` |
 
 ### group
 
@@ -161,10 +160,10 @@ Pass `group.name` to customize the folder name. For example, a `name` function t
 
 Property used to assign each operation to a group. Required whenever `group` is set.
 
-- `'tag'` uses the operation's first tag (`operation.getTags().at(0)?.name`).
+- `'tag'` uses the operation's first tag.
 - `'path'` uses the first segment of the operation's URL, such as `pet` for `/pet/{petId}`.
 
-Operations with no tag go in a default group.
+An operation with no tag goes in the `default` group.
 
 |          |                   |
 | -------: | :---------------- |
@@ -176,8 +175,10 @@ Function that turns a group key (the operation's first tag) into a folder or ide
 
 |          |                                     |
 | -------: | :---------------------------------- |
-|    Type: | `(context: GroupContext) => string` |
-| Default: | `(ctx) => camelCase(ctx.group)`     |
+|    Type: | `(context: { group: string }) => string` |
+| Default: | `({ group }) => camelCase(group)` |
+
+For `type: 'path'` groups, the default uses the first URL segment as-is instead of camelCasing.
 
 ### client
 
@@ -195,6 +196,9 @@ Adds infinite-query output for cursor- or page-based pagination. Pass an object 
 | -------: | :--------------------------- |
 |    Type: | `Partial<Infinite> \| false` |
 | Default: | `false`                      |
+
+> [!IMPORTANT]
+> Infinite output is emitted per operation only when the operation declares a query parameter whose name matches `infinite.queryParam` (default `'id'`). Operations without that parameter keep their regular query output.
 
 With `infinite: false` (the default), a `GET /pets` operation generates `getPetsQueryOptions`. Setting `infinite: {}` adds an extra `getPetsInfiniteQueryOptions` factory that reads the cursor from the response:
 
@@ -373,7 +377,7 @@ Builds the `mutationKey` for each mutation composable. Use it when you batch inv
 
 ### hooks
 
-Controls whether `use*` composable functions are emitted. When set to `false` (the default), the plugin writes only the factory helpers: `queryOptions`, `mutationOptions`, `queryKey`, and `mutationKey`. Set to `true` to also generate `useQuery`, `useInfiniteQuery`, and `useMutation` composables.
+Controls whether `use*` composable functions are emitted. When set to `false` (the default), the plugin writes only the factory helpers: `queryOptions`, `queryKey`, and `mutationKey`. Set to `true` to also generate `useQuery`, `useInfiniteQuery`, and `useMutation` composables.
 
 The factory helpers work with any TanStack Query adapter. You can pass the same `queryOptions` object to `prefetchQuery`, `setQueryData`, and router loaders without wrapping it in a composable.
 
@@ -401,21 +405,6 @@ const { data, isLoading } = useGetPets()
 
 :::
 
-### validator
-
-Runtime validator applied to request and response data using schemas from `@kubb/plugin-zod`.
-
-- `false` (default) does no validation. The client returns the response cast to the generated type.
-- `'zod'` validates response bodies only.
-- `{ request?: 'zod', response?: 'zod' }` opts in per direction. `request` validates the request body and query parameters before the call. `response` validates the response body after.
-
-Add `@kubb/plugin-zod` to the plugins list when either direction is set to `'zod'`.
-
-|          |                                                           |
-| -------: | :-------------------------------------------------------- |
-|    Type: | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` |
-| Default: | `false`                                                   |
-
 ### include
 
 Generates only the operations that match at least one entry in the list. Everything else is skipped. Each entry filters by one of:
@@ -423,7 +412,7 @@ Generates only the operations that match at least one entry in the list. Everyth
 - `tag`: the operation's first tag in the OpenAPI spec.
 - `operationId`: the operation's `operationId`.
 - `path`: the URL path, such as `'/pet/{petId}'`.
-- `method`: the HTTP method, such as `'get'` or `'post'`.
+- `method`: the HTTP method, such as `'GET'` or `'POST'`.
 - `contentType`: the request or response media type, such as `'application/json'`.
 - `schemaName`: the component schema name under `#/components/schemas`.
 
@@ -479,7 +468,7 @@ For example, `override: [{ type: 'tag', pattern: 'user', options: { mutation: fa
 
 ### resolver
 
-Changes how the plugin names generated composables and files. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change. Anything you omit, or that returns `null` or `undefined`, falls back to the default. Inside a method, `this` is the full resolver, so you can call `this.default(name, 'function')` to reuse the built-in name.
+Changes how the plugin names generated composables and files. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change, since anything you omit keeps its default behavior. Inside a method, `this` is the full resolver, so you can call `this.default(name, 'function')` to reuse the built-in name.
 
 |          |                                                          |
 | -------: | :------------------------------------------------------- |

@@ -35,10 +35,8 @@ tags:
   - data-fetching
   - codegen
   - openapi
-  - validator
 dependencies:
   - plugin-ts
-  - plugin-axios
 resources:
   documentation: https://kubb.dev/plugins/plugin-react-query
   repository: https://github.com/kubb-labs/plugins
@@ -49,7 +47,7 @@ resources:
 
 # @kubb/plugin-react-query
 
-`@kubb/plugin-react-query` turns each OpenAPI operation into a [TanStack Query](https://tanstack.com/query) hook for React. Read operations become `useFooQuery`, `useFooSuspenseQuery`, or `useFooInfiniteQuery`. Write operations become `useFooMutation`. Every hook is typed: query keys, input variables, response data, and error shape all come from the spec.
+`@kubb/plugin-react-query` turns each OpenAPI operation into a [TanStack Query](https://tanstack.com/query) hook for React. Read operations become `useFoo`, with `useFooSuspense` and `useFooInfinite` variants. Write operations become `useFoo` mutations. Every hook is typed: query keys, input variables, response data, and error shape all come from the spec.
 
 The hooks call an HTTP client, so a client plugin must be registered. Add `@kubb/plugin-ts` for the types and either `@kubb/plugin-axios` or `@kubb/plugin-fetch` for the client. Generation errors out when no client plugin is present.
 
@@ -84,7 +82,7 @@ This plugin needs these plugins in your config:
 - [`@kubb/plugin-ts`](/plugins/plugin-ts/) for the types.
 - A client plugin, [`@kubb/plugin-axios`](/plugins/plugin-axios/) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch/), for the HTTP layer. The hooks call its functions, so generation errors out when no client plugin is registered.
 
-Set `validator` to `'zod'` and the plugin also depends on [`@kubb/plugin-zod`](/plugins/plugin-zod/), which then has to be in the plugins list.
+For runtime validation, set `validator` on the client plugin. The generated operations carry the validation, so the hooks get it for free.
 
 ## Example
 
@@ -128,7 +126,7 @@ export default defineConfig({
 
 :::
 
-## See Also
+## See also
 
 - [TanStack Query](https://tanstack.com/query)
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-react-query/CHANGELOG.md)

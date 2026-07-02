@@ -217,8 +217,8 @@ pluginFetch({ validator: 'zod' })
 ```
 
 `'zod'` validates the success response body, and the error body when a non-2xx call does not
-throw. Use the object form to opt in per direction, where `request` also validates the request
-body and query before the call goes out:
+throw. Use the object form to opt in per direction, where `request` validates the request
+body before the call goes out:
 
 ```typescript
 pluginFetch({ validator: { request: 'zod', response: 'zod' } })

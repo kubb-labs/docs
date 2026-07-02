@@ -9,7 +9,7 @@ outline: deep
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'cypress' }` | Where the generated files are written and exported |
+| [`output`](#output) | `Output` | `{ path: 'cypress', barrel: { type: 'named' } }` | Where the generated files are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`baseURL`](#baseurl) | `string` | — | Base URL prepended to every request |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
@@ -105,11 +105,11 @@ src/gen/cypress/
 
 #### output.banner
 
-Text added to the top of every generated file. Use it for license headers, lint disables, or a `@ts-nocheck` directive. Pass a string for a fixed banner, or a function that builds one from each file's `RootNode` (the AST root with the path, schema, and operation context).
+Text added to the top of every generated file. Use it for license headers, lint disables, or a `@ts-nocheck` directive. Pass a string for a fixed banner, or a function that builds one from a `BannerMeta` object. The meta carries the document info (`title`, `description`, `version`, `baseURL`) plus the per-file context `filePath`, `baseName`, `isBarrel`, and `isAggregation`, so a directive such as `'use server'` can skip barrel files.
 
 |          |                                          |
 | -------: | :--------------------------------------- |
-|    Type: | `string \| ((node: RootNode) => string)` |
+|    Type: | `string \| ((meta: BannerMeta) => string)` |
 
 A static `banner: '/* eslint-disable */\n// @ts-nocheck'` lands at the top of each generated file:
 
@@ -130,15 +130,15 @@ export function showPetById(
 }
 ```
 
-A function banner builds the text from the file's `RootNode`, such as `banner: (node) => \`// Source: ${node.filePath}\``.
+A function banner builds the text from the meta, such as `banner: (meta) => \`// Source: ${meta.filePath}\``.
 
 #### output.footer
 
-Text added to the bottom of every generated file. It works like `banner` but for closing comments, such as re-enabling a lint rule. Pass a string or a function that receives the file's `RootNode` and returns the text. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a lint disable to the generated file.
+Text added to the bottom of every generated file. It works like `banner` but for closing comments, such as re-enabling a lint rule. Pass a string or a function that receives the same `BannerMeta` and returns the text. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a lint disable to the generated file.
 
 |          |                                          |
 | -------: | :--------------------------------------- |
-|    Type: | `string \| ((node: RootNode) => string)` |
+|    Type: | `string \| ((meta: BannerMeta) => string)` |
 
 ### group
 
@@ -171,10 +171,10 @@ Pass `group.name` to customize the folder name. For example, a `name` function t
 
 Property used to assign each operation to a group. Required whenever `group` is set.
 
-- `'tag'` uses the operation's first tag (`operation.getTags().at(0)?.name`).
+- `'tag'` uses the operation's first tag.
 - `'path'` uses the first segment of the operation's URL, such as `pet` for `/pet/{petId}`.
 
-Operations with no tag go in a default group.
+An operation with no tag goes in the `default` group.
 
 |          |                   |
 | -------: | :---------------- |
@@ -186,7 +186,7 @@ Function that turns a group key into a folder name. For `'tag'` groups the key i
 
 |          |                                     |
 | -------: | :---------------------------------- |
-|    Type: | `(context: GroupContext) => string` |
+|    Type: | `(context: { group: string }) => string` |
 | Default: | camelCased tag, or first path segment for `path` groups |
 
 ### baseURL
@@ -238,7 +238,7 @@ Generates only the operations that match at least one entry in the list. Everyth
 - `tag`: the operation's first tag in the OpenAPI spec.
 - `operationId`: the operation's `operationId`.
 - `path`: the URL path, such as `'/pet/{petId}'`.
-- `method`: the HTTP method, such as `'get'` or `'post'`.
+- `method`: the HTTP method, such as `'GET'` or `'POST'`.
 - `contentType`: the request or response media type, such as `'application/json'`.
 - `schemaName`: the component schema name under `#/components/schemas`.
 
@@ -294,7 +294,7 @@ For example, `override: [{ type: 'tag', pattern: 'user', options: { baseURL: 'ht
 
 ### resolver
 
-Changes how the plugin names generated files and symbols. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change. Anything you omit, or that returns `null` or `undefined`, falls back to the default. Inside a method, `this` is the full resolver, so you can call `this.default(name, 'function')` to reuse the built-in name.
+Changes how the plugin names generated files and symbols. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change, since anything you omit keeps its default behavior. Inside a method, `this` is the full resolver, so you can call `this.default(name, 'function')` to reuse the built-in name.
 
 |          |                                                        |
 | -------: | :----------------------------------------------------- |
@@ -304,19 +304,6 @@ Changes how the plugin names generated files and symbols. Use it to add a prefix
 > Use `resolver` for naming and file-location tweaks. For changing the AST nodes themselves (for example stripping descriptions), use `macros` instead.
 
 For example, `resolver: { resolveName(name) { return \`api${this.default(name, 'function')}\` } }` prefixes every generated helper name with `api`.
-
-Each plugin ships with a default resolver:
-
-| Plugin                 | Default resolver  |
-| ---------------------- | ----------------- |
-| `@kubb/plugin-ts`      | `resolverTs`      |
-| `@kubb/plugin-zod`     | `resolverZod`     |
-| `@kubb/plugin-faker`   | `resolverFaker`   |
-| `@kubb/plugin-cypress` | `resolverCypress` |
-| `@kubb/plugin-msw`     | `resolverMsw`     |
-| `@kubb/plugin-mcp`     | `resolverMcp`     |
-| `@kubb/plugin-axios`   | `resolverClient`  |
-| `@kubb/plugin-fetch`   | `resolverClient`  |
 
 ### macros
 
