@@ -2,7 +2,7 @@
 layout: doc
 title: Kubb TypeScript Parser
 description: Prints the Kubb AST to TypeScript source with the official TypeScript compiler, so
-  every plugin writes real `.ts` and `.tsx` files.
+  every plugin writes real `.ts`, `.tsx`, `.js`, and `.jsx` files.
 outline: deep
 kind: parser
 id: parser-ts
@@ -44,7 +44,7 @@ The package exports two parsers, and Kubb selects one by the file extension a pl
 - `parserTs` handles `.ts` and `.js` files.
 - `parserTsx` handles `.tsx` and `.jsx` files. Use it for React projects so JSX in generated components is preserved.
 
-Neither parser takes configuration options. You pick the behavior by choosing which parser goes in the `parsers` array.
+Neither parser takes configuration options. You pick the behavior by choosing which parser goes in the `parsers` array. A custom `parsers` array replaces the default set (`parserTs`, `parserTsx`, `parserMd`), and files whose extension has no registered parser are written by joining their sources verbatim, so list every parser your plugins need.
 
 ## Installation
 
@@ -86,16 +86,16 @@ export default defineConfig({
 })
 ```
 
-```typescript twoslash [TSX (React)]
+```typescript twoslash [TypeScript and TSX (React)]
 import { defineConfig } from 'kubb'
 import { adapterOas } from '@kubb/adapter-oas'
-import { parserTsx } from '@kubb/parser-ts'
+import { parserTs, parserTsx } from '@kubb/parser-ts'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   adapter: adapterOas(),
-  parsers: [parserTsx],
+  parsers: [parserTs, parserTsx],
   plugins: [],
 })
 ```
