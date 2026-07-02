@@ -33,7 +33,6 @@ tags:
   - validator
 dependencies:
   - plugin-ts
-  - plugin-axios
 resources:
   documentation: https://kubb.dev/plugins/plugin-swr
   repository: https://github.com/kubb-labs/plugins
@@ -48,7 +47,7 @@ resources:
 
 The hooks call an HTTP client, so a client plugin must be registered. Add `@kubb/plugin-ts` for the types and either `@kubb/plugin-axios` or `@kubb/plugin-fetch` for the client. Generation errors out when no client plugin is present.
 
-Each hook takes its parameters as a single grouped options object shaped as `{ body, path, query, headers }`, with camelCase property names. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
+Query hooks take the grouped request config (`{ path, query, headers }`, camelCase property names) as their first argument. Mutation hooks take only an options object, and you pass the grouped config through `trigger(...)` instead. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
 
 ## Installation
 

@@ -37,7 +37,6 @@ tags:
   - validator
 dependencies:
   - plugin-ts
-  - plugin-axios
 resources:
   documentation: https://kubb.dev/plugins/plugin-vue-query
   repository: https://github.com/kubb-labs/plugins

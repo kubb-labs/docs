@@ -198,6 +198,9 @@ Adds infinite-query output for cursor- or page-based pagination. Pass an object 
 |    Type: | `Partial<Infinite> \| false` |
 | Default: | `false`                      |
 
+> [!IMPORTANT]
+> Infinite output is emitted per operation only when the operation declares a query parameter whose name matches `infinite.queryParam` (default `'id'`). Operations without that parameter keep their regular query output.
+
 With `infinite: false` (the default), a `GET /pets` operation generates `getPetsQueryOptions`. Setting `infinite: {}` adds an extra `getPetsInfiniteQueryOptions` factory that reads the cursor from the response:
 
 ::: code-group
@@ -375,7 +378,7 @@ Builds the `mutationKey` for each mutation composable. Use it when you batch inv
 
 ### hooks
 
-Controls whether `use*` composable functions are emitted. When set to `false` (the default), the plugin writes only the factory helpers: `queryOptions`, `mutationOptions`, `queryKey`, and `mutationKey`. Set to `true` to also generate `useQuery`, `useInfiniteQuery`, and `useMutation` composables.
+Controls whether `use*` composable functions are emitted. When set to `false` (the default), the plugin writes only the factory helpers: `queryOptions`, `queryKey`, and `mutationKey`. Set to `true` to also generate `useQuery`, `useInfiniteQuery`, and `useMutation` composables.
 
 The factory helpers work with any TanStack Query adapter. You can pass the same `queryOptions` object to `prefetchQuery`, `setQueryData`, and router loaders without wrapping it in a composable.
 
@@ -408,8 +411,8 @@ const { data, isLoading } = useGetPets()
 Runtime validator applied to request and response data using schemas from `@kubb/plugin-zod`.
 
 - `false` (default) does no validation. The client returns the response cast to the generated type.
-- `'zod'` validates response bodies only.
-- `{ request?: 'zod', response?: 'zod' }` opts in per direction. `request` validates the request body and query parameters before the call. `response` validates the response body after.
+- `'zod'` validates the success response body, and the error body when a non-2xx call does not throw.
+- `{ request?: 'zod', response?: 'zod' }` opts in per direction. `request` validates the request body and query parameters before the call. `response` validates the response body after, including the error body on the non-throw path.
 
 Add `@kubb/plugin-zod` to the plugins list when either direction is set to `'zod'`.
 
