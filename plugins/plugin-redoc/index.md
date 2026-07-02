@@ -39,7 +39,7 @@ resources:
 
 # @kubb/plugin-redoc
 
-`@kubb/plugin-redoc` turns your OpenAPI spec into a static HTML documentation page with [Redoc](https://redocly.com/). The page is self-contained, so you can drop it on any static host or open it locally.
+`@kubb/plugin-redoc` turns your OpenAPI spec into a static HTML documentation page with [Redoc](https://redocly.com/). The output is a single file with the spec embedded inline, so you can drop it on any static host without a build step. The page loads the Redoc bundle and fonts from a CDN when viewed, so rendering needs network access.
 
 Kubb rebuilds the file on every run. Your docs stay in step with the spec your code was generated from.
 
