@@ -99,30 +99,33 @@ summary and notices, not the diagnostic log.
 
 ## Machine-readable output
 
-`kubb generate --reporter json` prints a stable report to stdout. CI can read diagnostics without
-scraping the terminal:
+`kubb generate --reporter json` prints a stable report to stdout. The output is a JSON array with
+one report per config, so a single-config run still prints `[ ... ]`. CI can read diagnostics
+without scraping the terminal:
 
 ```json [Report]
-{
-  "name": "",
-  "status": "failed",
-  "plugins": { "passed": 2, "failed": ["@kubb/plugin-zod"], "total": 3 },
-  "counts": { "errors": 1, "warnings": 0, "infos": 0 },
-  "filesCreated": 0,
-  "durationMs": 312,
-  "output": "/project/src/gen",
-  "timings": [{ "plugin": "@kubb/plugin-ts", "durationMs": 84 }],
-  "diagnostics": [
-    {
-      "code": "KUBB_REF_NOT_FOUND",
-      "severity": "error",
-      "message": "Could not find a definition for #/components/schemas/Pet.",
-      "location": { "kind": "schema", "pointer": "#/components/schemas/Pet" },
-      "help": "Add the schema under components.schemas, or fix the $ref. Run `kubb validate` to check the spec.",
-      "docsUrl": "https://kubb.dev/docs/5.x/reference/diagnostics/kubb-ref-not-found"
-    }
-  ]
-}
+[
+  {
+    "name": "",
+    "status": "failed",
+    "plugins": { "passed": 2, "failed": ["@kubb/plugin-zod"], "total": 3 },
+    "counts": { "errors": 1, "warnings": 0, "infos": 0 },
+    "filesCreated": 0,
+    "durationMs": 312,
+    "output": "/project/src/gen",
+    "timings": [{ "plugin": "@kubb/plugin-ts", "durationMs": 84 }],
+    "diagnostics": [
+      {
+        "code": "KUBB_REF_NOT_FOUND",
+        "severity": "error",
+        "message": "Could not find a definition for #/components/schemas/Pet.",
+        "location": { "kind": "schema", "pointer": "#/components/schemas/Pet" },
+        "help": "Add the schema under components.schemas, or fix the $ref. Run `kubb validate` to check the spec.",
+        "docsUrl": "https://kubb.dev/docs/5.x/reference/diagnostics/kubb-ref-not-found"
+      }
+    ]
+  }
+]
 ```
 
 Each config emits one report. `counts` totals the `problem` diagnostics by severity. `timings` lists

@@ -36,8 +36,8 @@ npm install -D kubb@beta
 A `SessionStart` hook checks for `kubb` when a session starts. It warns you when `kubb` is
 missing so you can install it first. It never installs anything for you.
 
-`kubb init` installs the `@kubb/plugin-*` packages you select. Add `@kubb/adapter-oas` when you
-want `kubb validate`.
+`kubb init` installs the `@kubb/plugin-*` packages you select. The OpenAPI adapter ships with
+`kubb` itself, so `kubb validate` works without installing anything extra.
 
 ## Commands
 

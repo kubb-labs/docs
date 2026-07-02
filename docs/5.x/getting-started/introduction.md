@@ -16,7 +16,7 @@ The default adapter reads [OpenAPI](https://www.openapis.org/) 2.0, 3.0, and 3.1
 Here is the whole loop, start to finish. Install Kubb together with one plugin:
 
 ```shell [Terminal]
-npm install -D @kubb/core@beta @kubb/plugin-ts@beta
+npm install -D kubb@beta @kubb/plugin-ts@beta
 ```
 
 Create a `kubb.config.ts` next to your spec. It points at the spec, sets an output directory, and lists the plugins you want. This one generates TypeScript types with [`@kubb/plugin-ts`](/plugins/plugin-ts/):

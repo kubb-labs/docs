@@ -13,7 +13,7 @@ outline: deep
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`baseURL`](#baseurl) | `string` | — | Base URL prepended to every request |
 | [`validator`](#validator) | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` | `false` | Validate request and response bodies with Zod |
-| [`sdk`](#sdk) | `{ mode?: 'tag' \| 'flat', name?: string }` | — | Emit a class-based SDK instead of standalone functions |
+| [`sdk`](#sdk) | `{ mode?: 'tag' \| 'flat'; name?: string }` | — | Emit a class-based SDK instead of standalone functions |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
@@ -173,7 +173,9 @@ Function that turns a group key into a folder name. The default depends on `grou
 
 ### baseURL
 
-Base URL prepended to every request the functions make. When omitted, the URL comes from the adapter's server URL (`servers[0].url` in the spec). Set it to point the client at a different environment, such as staging or production, than the spec.
+Base URL prepended to every request the functions make. When omitted, the client falls back to the server URL the [OpenAPI adapter](/adapters/adapter-oas/) resolves, which it only does when the adapter's `server.index` points at an entry in the spec's `servers` list. Set it to point the client at a different environment, such as staging or production, than the spec.
+
+A value containing a `${...}` interpolation is emitted as a template literal in the generated client config, so `baseURL: '${process.env.API_URL}'` reads the environment variable when the app runs instead of baking in the build-time value.
 
 |          |          |
 | -------: | :------- |

@@ -52,7 +52,7 @@ export default defineConfig(({ watch, logLevel }) => ({
 }))
 ```
 
-The context carries four parameters:
+The context carries five parameters:
 
 |             | Type | Description |
 | ----------: | :--- | :---------- |
@@ -60,6 +60,7 @@ The context carries four parameters:
 |     `watch` | `boolean` | `true` in watch mode. |
 |  `logLevel` | `'silent' \| 'info' \| 'verbose'` | Current log level. |
 |    `config` | `string` | Path to the config file in use. |
+| `reporters` | `Array<ReporterName>` | Reporters selected via `--reporter`, overriding `config.reporters`. |
 
 ### Multiple configurations (array)
 
