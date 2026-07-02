@@ -19,7 +19,6 @@ outline: deep
 | [`mutation`](#mutation) | `Partial<Mutation> \| false` | `{ methods: ['post', 'put', 'patch', 'delete'], … }` | Configure the mutation hooks |
 | [`mutationKey`](#mutationkey) | `(props) => unknown[]` | `built-in` | Build the `mutationKey` for each mutation hook |
 | [`customOptions`](#customoptions) | `CustomOptions` | — | Route every hook through your own options function |
-| [`validator`](#validator) | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` | `false` | Validate request and response data with Zod |
 | [`hooks`](#hooks) | `boolean` | `false` | Emit `use*` hook functions on top of the factories |
 | [`resolver`](#resolver) | `Partial<ResolverReactQuery>` | — | Customize generated names and file paths |
 | [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
@@ -444,21 +443,6 @@ Exported function name of your custom-options hook. Generated code imports it as
 | -------: | :----------------------- |
 |    Type: | `string`                 |
 | Default: | `'useCustomHookOptions'` |
-
-### validator
-
-Runtime validator applied to request and response data using schemas from `@kubb/plugin-zod`.
-
-- `false` (default) does no validation. The client returns the response cast to the generated type.
-- `'zod'` validates the success response body, and the error body when a non-2xx call does not throw.
-- `{ request?: 'zod', response?: 'zod' }` opts in per direction. `request` validates the request body and query parameters before the call. `response` validates the response body after, including the error body on the non-throw path.
-
-Add `@kubb/plugin-zod` to the plugins list when either direction is `'zod'`.
-
-|          |                                                          |
-| -------: | :------------------------------------------------------- |
-|    Type: | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` |
-| Default: | `false`                                                  |
 
 ### hooks
 

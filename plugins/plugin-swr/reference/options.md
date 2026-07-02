@@ -16,7 +16,6 @@ outline: deep
 | [`queryKey`](#querykey) | `Transformer` | — | Build the SWR key for each query hook |
 | [`mutation`](#mutation) | `Partial<Mutation> \| false` | `{ methods: ['post', 'put', 'patch', 'delete'], importPath: 'swr/mutation' }` | Configure the `useSWRMutation` hooks, or turn them off |
 | [`mutationKey`](#mutationkey) | `Transformer` | — | Build the SWR key for each mutation hook |
-| [`validator`](#validator) | `false \| 'zod' \| { request?: 'zod', response?: 'zod' }` | `false` | Validate request and response data with Zod schemas |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
@@ -318,35 +317,6 @@ Builds the SWR key for each mutation hook. The callback receives the operation `
 > [!WARNING]
 > String values are inlined verbatim into generated code. Wrap any literal string in `JSON.stringify(...)`.
 
-### validator
-
-Runtime validator applied to request and response data using schemas from `@kubb/plugin-zod`.
-
-- `false` (default) does no validation. The hook returns the response cast to the generated type.
-- `'zod'` validates the response body only.
-- `{ request?: 'zod', response?: 'zod' }` opts in per direction. `request` validates the request body and query parameters before the call. `response` validates the response body after.
-
-Add `@kubb/plugin-zod` to the plugins list when either direction is `'zod'`.
-
-|          |                                                           |
-| -------: | :-------------------------------------------------------- |
-|    Type: | `false \| 'zod' \| { request?: 'zod', response?: 'zod' }` |
-| Default: | `false`                                                   |
-
-::: code-group
-
-```typescript [false (default)]
-// no validation, response is cast to the generated type
-const { data } = useGetPetById({ path: { petId: 1 } })
-```
-
-```typescript ['zod']
-// the response body is parsed with the generated Zod schema
-const { data } = useGetPetById({ path: { petId: 1 } })
-```
-
-:::
-
 ### include
 
 Generates only the operations that match at least one entry in the list. Everything else is skipped. Each entry filters by one of:
@@ -406,7 +376,7 @@ export type Override = {
 }
 ```
 
-For example, `override: [{ type: 'tag', pattern: 'user', options: { validator: 'zod' } }]` turns on response validation for the `user` tag while the rest of the spec keeps the plugin default.
+For example, `override: [{ type: 'tag', pattern: 'user', options: { query: false } }]` skips query generation for the `user` tag while the rest of the spec keeps the plugin default.
 
 ### resolver
 

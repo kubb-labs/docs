@@ -120,6 +120,11 @@ Two plugin-zod exceptions: drop `typed` (removed, it no longer does
 anything) and replace `wrapOutput` with a [printer
 override](/docs/5.x/migration/plugin-zod#removed-wrapoutput).
 
+One query-plugin exception: `parser` (and its v5 rename `validator`) is
+removed from plugin-react-query, plugin-vue-query, and plugin-swr. Set
+`validator` on the client plugin (`pluginAxios` or `pluginFetch`)
+instead.
+
 ## 13. New v5 defaults (informational, do not edit the config)
 
 With `group: { type: 'tag' }`, v5 names each tag folder after the plain

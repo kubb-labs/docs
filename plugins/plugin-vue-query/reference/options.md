@@ -18,7 +18,6 @@ outline: deep
 | [`mutation`](#mutation) | `Partial<Mutation> \| false` | `{ methods: ['post', …], … }` | Configure or disable mutation composables |
 | [`mutationKey`](#mutationkey) | `(props) => Array<unknown>` | `built-in` | Build the `mutationKey` for each mutation composable |
 | [`hooks`](#hooks) | `boolean` | `false` | Emit `use*` composables on top of the factory helpers |
-| [`validator`](#validator) | `false \| 'zod' \| { request?, response? }` | `false` | Validate request and response data with Zod |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
@@ -405,21 +404,6 @@ const { data, isLoading } = useGetPets()
 ```
 
 :::
-
-### validator
-
-Runtime validator applied to request and response data using schemas from `@kubb/plugin-zod`.
-
-- `false` (default) does no validation. The client returns the response cast to the generated type.
-- `'zod'` validates the success response body, and the error body when a non-2xx call does not throw.
-- `{ request?: 'zod', response?: 'zod' }` opts in per direction. `request` validates the request body and query parameters before the call. `response` validates the response body after, including the error body on the non-throw path.
-
-Add `@kubb/plugin-zod` to the plugins list when either direction is set to `'zod'`.
-
-|          |                                                           |
-| -------: | :-------------------------------------------------------- |
-|    Type: | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` |
-| Default: | `false`                                                   |
 
 ### include
 
