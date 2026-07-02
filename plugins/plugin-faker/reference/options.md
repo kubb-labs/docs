@@ -13,7 +13,6 @@ outline: deep
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`dateParser`](#dateparser) | `'faker' \| 'dayjs' \| 'moment' \| string` | `'faker'` | Library that formats string date, time, and datetime fields |
 | [`regexGenerator`](#regexgenerator) | `'faker' \| 'randexp'` | `'faker'` | Library that turns a regex `pattern` into a string |
-| [`mapper`](#mapper) | `Record<string, string>` | `{}` | Map a property name to a custom Faker expression |
 | [`locale`](#locale) | `string` | `'en'` | Faker locale code for the generated values |
 | [`seed`](#seed) | `number \| number[]` | — | Value passed to `faker.seed(...)` for deterministic output |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
@@ -253,26 +252,6 @@ You call the factory the same way for both libraries. Only the source of the gen
 import { createPet } from './src/gen/mocks/createPet'
 
 const pet = createPet()
-```
-
-### mapper
-
-Maps an object property name to a custom Faker expression. Use it when the property name does not give Faker enough context to pick a sensible value, such as `'email'`, `'avatarUrl'`, or `'phoneNumber'`. Keys are the case-sensitive property name. Values are the JavaScript expression that produces the mock value.
-
-|          |                          |
-| -------: | :----------------------- |
-|    Type: | `Record<string, string>` |
-| Default: | `{}`                     |
-
-Pass `mapper: { email: 'faker.internet.email()', avatarUrl: 'faker.image.avatar()' }` to steer those properties toward the right Faker call:
-
-```typescript
-export function createUser() {
-  return {
-    email: faker.internet.email(),
-    avatarUrl: faker.image.avatar(),
-  }
-}
 ```
 
 ### locale

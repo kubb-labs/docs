@@ -63,6 +63,10 @@ built-in logic as a fallback.
 - Remove `mapper` (use printer or macros instead).
 - Set zod dependency to ^4.
 
+## 7b. plugin-faker specific
+- Remove `mapper` (use printer or macros instead). A macro that rewrites the
+  property's schema to an enum of the wanted values reproduces the common case.
+
 ## 8. Rename output.barrelType → output.barrel (object)
 Replace every `barrelType` string with the `barrel` object:
   - output.barrelType: 'named'     → output.barrel: { type: 'named' }
