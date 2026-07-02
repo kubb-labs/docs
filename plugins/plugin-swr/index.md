@@ -99,8 +99,8 @@ export default defineConfig({
       output: { path: './hooks' },
       group: { type: 'tag', name: ({ group }) => `${group}Hooks` },
       client: 'fetch',
-      query: { methods: ['get'], importPath: 'swr' },
-      mutation: { methods: ['post', 'put', 'patch', 'delete'] },
+      query: { methods: ['GET'], importPath: 'swr' },
+      mutation: { methods: ['POST', 'PUT', 'PATCH', 'DELETE'] },
     }),
   ],
 })

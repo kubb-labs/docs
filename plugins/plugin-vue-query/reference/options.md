@@ -13,9 +13,9 @@ outline: deep
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`client`](#client) | `'axios' \| 'fetch'` | — | Which registered client plugin the composables call |
 | [`infinite`](#infinite) | `Partial<Infinite> \| false` | `false` | Add `useInfiniteQuery` composables for paginated reads |
-| [`query`](#query) | `Partial<Query> \| false` | `{ methods: ['get'], … }` | Configure or disable query composables |
+| [`query`](#query) | `Partial<Query> \| false` | `{ methods: ['GET'], … }` | Configure or disable query composables |
 | [`queryKey`](#querykey) | `(props) => Array<unknown>` | `built-in` | Build the `queryKey` for each query composable |
-| [`mutation`](#mutation) | `Partial<Mutation> \| false` | `{ methods: ['post', …], … }` | Configure or disable mutation composables |
+| [`mutation`](#mutation) | `Partial<Mutation> \| false` | `{ methods: ['POST', …], … }` | Configure or disable mutation composables |
 | [`mutationKey`](#mutationkey) | `(props) => Array<unknown>` | `built-in` | Build the `mutationKey` for each mutation composable |
 | [`hooks`](#hooks) | `boolean` | `false` | Emit `use*` composables on top of the factory helpers |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
@@ -280,7 +280,7 @@ Decides which operations are treated as queries and how their output is built. T
 |          |                           |
 | -------: | :------------------------ |
 |    Type: | `Partial<Query> \| false` |
-| Default: | `{ methods: ['get'], importPath: '@tanstack/vue-query' }` |
+| Default: | `{ methods: ['GET'], importPath: '@tanstack/vue-query' }` |
 
 #### query.methods
 
@@ -343,7 +343,7 @@ Decides which operations are treated as mutations and how their output is built.
 |          |                              |
 | -------: | :--------------------------- |
 |    Type: | `Partial<Mutation> \| false` |
-| Default: | `{ methods: ['post', 'put', 'patch', 'delete'], importPath: '@tanstack/vue-query' }` |
+| Default: | `{ methods: ['POST', 'PUT', 'PATCH', 'DELETE'], importPath: '@tanstack/vue-query' }` |
 
 #### mutation.methods
 

@@ -12,9 +12,9 @@ outline: deep
 | [`output`](#output) | `Output` | `{ path: 'hooks', barrel: { type: 'named' } }` | Where the generated hooks are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`client`](#client) | `'fetch' \| 'axios'` | — | Which registered client plugin the hooks call |
-| [`query`](#query) | `Partial<Query> \| false` | `{ methods: ['get'], importPath: 'swr' }` | Configure the `useSWR` hooks, or turn them off |
+| [`query`](#query) | `Partial<Query> \| false` | `{ methods: ['GET'], importPath: 'swr' }` | Configure the `useSWR` hooks, or turn them off |
 | [`queryKey`](#querykey) | `Transformer` | `built-in` | Build the SWR key for each query hook |
-| [`mutation`](#mutation) | `Partial<Mutation> \| false` | `{ methods: ['post', 'put', 'patch', 'delete'], importPath: 'swr/mutation' }` | Configure the `useSWRMutation` hooks, or turn them off |
+| [`mutation`](#mutation) | `Partial<Mutation> \| false` | `{ methods: ['POST', 'PUT', 'PATCH', 'DELETE'], importPath: 'swr/mutation' }` | Configure the `useSWRMutation` hooks, or turn them off |
 | [`mutationKey`](#mutationkey) | `Transformer` | `built-in` | Build the SWR key for each mutation hook |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
@@ -204,7 +204,7 @@ Configures the generated `useSWR` hooks. The plugin generates them by default. P
 |          |                           |
 | -------: | :------------------------ |
 |    Type: | `Partial<Query> \| false` |
-| Default: | `{ methods: ['get'], importPath: 'swr' }` |
+| Default: | `{ methods: ['GET'], importPath: 'swr' }` |
 
 #### query.methods
 
@@ -264,7 +264,7 @@ Configures the generated `useSWRMutation` hooks. The plugin generates them by de
 |          |                              |
 | -------: | :--------------------------- |
 |    Type: | `Partial<Mutation> \| false` |
-| Default: | `{ methods: ['post', 'put', 'patch', 'delete'], importPath: 'swr/mutation' }` |
+| Default: | `{ methods: ['POST', 'PUT', 'PATCH', 'DELETE'], importPath: 'swr/mutation' }` |
 
 #### mutation.methods
 

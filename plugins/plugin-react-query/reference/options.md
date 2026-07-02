@@ -14,9 +14,9 @@ outline: deep
 | [`client`](#client) | `'axios' \| 'fetch'` | — | Which registered client plugin the hooks call |
 | [`infinite`](#infinite) | `Partial<Infinite> \| false` | `false` | Generate `useInfiniteQuery` hooks for pagination |
 | [`suspense`](#suspense) | `Partial<object> \| false` | `{}` | Generate `useSuspenseQuery` hooks |
-| [`query`](#query) | `Partial<Query> \| false` | `{ methods: ['get'], … }` | Configure the query hooks |
+| [`query`](#query) | `Partial<Query> \| false` | `{ methods: ['GET'], … }` | Configure the query hooks |
 | [`queryKey`](#querykey) | `(props) => unknown[]` | `built-in` | Build the `queryKey` for each query hook |
-| [`mutation`](#mutation) | `Partial<Mutation> \| false` | `{ methods: ['post', 'put', 'patch', 'delete'], … }` | Configure the mutation hooks |
+| [`mutation`](#mutation) | `Partial<Mutation> \| false` | `{ methods: ['POST', 'PUT', 'PATCH', 'DELETE'], … }` | Configure the mutation hooks |
 | [`mutationKey`](#mutationkey) | `(props) => unknown[]` | `built-in` | Build the `mutationKey` for each mutation hook |
 | [`customOptions`](#customoptions) | `CustomOptions` | — | Route every hook through your own options function |
 | [`hooks`](#hooks) | `boolean` | `false` | Emit `use*` hook functions on top of the factories |
@@ -330,7 +330,7 @@ Decides which operations are treated as queries and how their output is built. T
 |          |                           |
 | -------: | :------------------------ |
 |    Type: | `Partial<Query> \| false` |
-| Default: | `{ methods: ['get'], importPath: '@tanstack/react-query' }` |
+| Default: | `{ methods: ['GET'], importPath: '@tanstack/react-query' }` |
 
 #### query.methods
 
@@ -387,7 +387,7 @@ Decides which operations are treated as mutations and how their output is built.
 |          |                              |
 | -------: | :--------------------------- |
 |    Type: | `Partial<Mutation> \| false` |
-| Default: | `{ methods: ['post', 'put', 'patch', 'delete'], importPath: '@tanstack/react-query' }` |
+| Default: | `{ methods: ['POST', 'PUT', 'PATCH', 'DELETE'], importPath: '@tanstack/react-query' }` |
 
 #### mutation.methods
 

@@ -107,7 +107,7 @@ export default defineConfig({
         name: ({ group }) => `${group}Hooks`,
       },
       client: 'fetch',
-      mutation: { methods: ['post', 'put', 'delete'] },
+      mutation: { methods: ['POST', 'PUT', 'DELETE'] },
       infinite: {
         queryParam: 'next_page',
         initialPageParam: 0,
@@ -115,7 +115,7 @@ export default defineConfig({
         previousParam: ['pagination', 'prev', 'cursor'],
       },
       query: {
-        methods: ['get'],
+        methods: ['GET'],
         importPath: '@tanstack/react-query',
       },
       suspense: {},
