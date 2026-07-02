@@ -37,6 +37,34 @@ yarn add zod@^4
 
 Use [`macros`](/plugins/plugin-zod/reference/options#macros) or [`printer`](/plugins/plugin-zod/reference/options#printer) instead.
 
+## Removed: `typed`
+
+In v4, `typed: true` annotated each schema with a `ToZod` type from the matching `@kubb/plugin-ts` output. v5 removes the option. Delete `typed` from your `pluginZod` options. To keep a type next to each schema, use [`inferred: true`](/plugins/plugin-zod/reference/options#inferred), which exports a `z.infer` alias instead.
+
+```diff [kubb.config.ts]
+pluginZod({
+-  typed: true,
++  inferred: true,
+})
+```
+
+## Removed: `wrapOutput`
+
+The `wrapOutput` callback only fired on object property values, so a top-level string, enum, or union schema was never wrapped. v5 removes it in favor of a [`printer`](/plugins/plugin-zod/reference/options#printer) override, which targets any node type, including the whole schema. Inside an override, `this.base(node)` returns what the built-in handler would have emitted, so you wrap it instead of rebuilding it.
+
+```diff [kubb.config.ts]
+pluginZod({
+-  wrapOutput: ({ output, schema }) => `${output}.openapi(${JSON.stringify({ description: schema.description })})`,
++  printer: {
++    nodes: {
++      object(node) {
++        return `${this.base(node)}.openapi(${JSON.stringify({ description: node.description })})`
++      },
++    },
++  },
+})
+```
+
 ## Removed: `operations`
 
 The `operations` option is gone, so `plugin-zod` no longer emits an `operations.ts` file with the `operations` and `paths` maps. If you wired that file into a server framework, add a small custom plugin that rebuilds it. The plugin reuses the Zod resolver, so the generated schema names stay in sync with the rest of the output. See [Creating plugins](/docs/5.x/guide/going-further/creating-plugins) for the plugin API.
@@ -260,10 +288,6 @@ Update any imports that referenced the old name:
 +import type { PetSchemaType } from './gen/zod/petSchema.ts'
 -import type { PetSchema } from './gen/zod/petSchema.ts'
 ```
-
-## Changed: `wrapOutput` receives a schema node
-
-The `wrapOutput` callback still wraps the generated Zod string, but its `schema` argument is now an AST `SchemaNode` instead of the raw OpenAPI `SchemaObject`. Common metadata such as `name`, `description`, `example`, and `format` stays on the node, so `schema.example` keeps working. The structural fields differ: the node carries `type`, `members`, `items`, and `properties` rather than the OpenAPI `properties`/`allOf`/`oneOf` shape. Update any callback that walked the raw OpenAPI tree.
 
 ## Generated output
 

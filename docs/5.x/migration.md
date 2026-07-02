@@ -112,9 +112,13 @@ This applies at both the root output level and per-plugin output levels.
 ## 12. Preserve everything else
 All other plugin options (output, group, include, exclude, override (the
 per-operation array), client, infinite, suspense, query, mutation,
-baseURL, typed, inferred,
-coercion, guidType, mini, wrapOutput, dateParser, regexGenerator,
+baseURL, inferred,
+coercion, guidType, mini, dateParser, regexGenerator,
 seed, handlers, etc.) are unchanged.
+
+Two plugin-zod exceptions: drop `typed` (removed, it no longer does
+anything) and replace `wrapOutput` with a [printer
+override](/docs/5.x/migration/plugin-zod#removed-wrapoutput).
 
 ## 13. New v5 defaults (informational, do not edit the config)
 

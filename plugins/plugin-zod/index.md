@@ -67,7 +67,7 @@ yarn add -D @kubb/plugin-zod@beta
 
 ## Dependencies
 
-`@kubb/plugin-zod` pairs with `@kubb/plugin-ts`. Add `pluginTs` to the plugins list when `typed: true`, since the generated schemas reference the TypeScript types it produces. Without `typed`, the schemas stand alone, and `inferred: true` exports their `z.infer` types so you do not need `pluginTs` at all.
+The generated schemas stand alone: they import `z` from your project, so add [Zod](https://zod.dev/) v4 to your dependencies. Set `inferred: true` to export a `z.infer` type alias next to each schema, which makes the schemas the single source of truth for types without `@kubb/plugin-ts`.
 
 ## Example
 
@@ -75,18 +75,16 @@ yarn add -D @kubb/plugin-zod@beta
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   plugins: [
-    pluginTs(),
     pluginZod({
       output: { path: './zod' },
       group: { type: 'tag', name: ({ group }) => `${group}Schemas` },
-      typed: true,
+      inferred: true,
       importPath: 'zod',
     }),
   ],
