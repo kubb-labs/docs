@@ -93,7 +93,7 @@ export default defineConfig({
 
 :::
 
-## See Also
+## See also
 
 - [Zod](https://zod.dev/)
 - [Zod Mini](https://zod.dev/packages/mini)

@@ -102,6 +102,6 @@ export default defineConfig({
 
 :::
 
-## See Also
+## See also
 
 - [Changelog](https://github.com/kubb-labs/kubb/blob/main/packages/parser-ts/CHANGELOG.md)

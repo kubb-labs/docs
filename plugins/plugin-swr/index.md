@@ -108,7 +108,7 @@ export default defineConfig({
 
 :::
 
-## See Also
+## See also
 
 - [SWR](https://swr.vercel.app)
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-swr/CHANGELOG.md)

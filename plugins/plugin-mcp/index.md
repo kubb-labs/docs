@@ -114,7 +114,7 @@ export default defineConfig({
 
 :::
 
-## See Also
+## See also
 
 - [Connect Claude to a remote MCP server](https://modelcontextprotocol.io/docs/tools/claude-desktop)
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-mcp/CHANGELOG.md)

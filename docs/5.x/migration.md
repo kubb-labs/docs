@@ -1,11 +1,11 @@
 ---
-title: Migration Guide
+title: Migration guide
 description: Step-by-step guide for migrating from Kubb v4 to v5. Covers every breaking change in core and every plugin, with verified before/after examples for both configuration and generated output.
 layout: doc
 outline: [2, 3, 4]
 ---
 
-# Migration Guide: v4 → v5
+# Migration guide: v4 → v5
 
 Kubb v5 splits responsibilities across [adapters](/docs/5.x/guide/concepts/adapters), [plugins](/docs/5.x/guide/concepts/plugins), [parsers](/docs/5.x/guide/concepts/parsers), and [storage](/docs/5.x/guide/concepts/storage), so the upgrade touches more than a version number. This page covers the changes that affect every project: the new import path, the core config, the shared plugin API, and the package moves. Anything specific to one plugin or adapter lives on its [per-extension page](#per-extension-changes), with a before/after diff and a link to the reference.
 

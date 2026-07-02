@@ -126,7 +126,7 @@ export default defineConfig({
 
 :::
 
-## See Also
+## See also
 
 - [TanStack Query](https://tanstack.com/query)
 - [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-react-query/CHANGELOG.md)

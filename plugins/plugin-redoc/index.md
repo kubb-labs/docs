@@ -90,7 +90,7 @@ export default defineConfig({
 
 :::
 
-## See Also
+## See also
 
 - [Redoc](https://redocly.com/redoc)
 - [adapterOas](/adapters/adapter-oas/)
