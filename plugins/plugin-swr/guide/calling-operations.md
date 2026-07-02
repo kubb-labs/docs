@@ -22,6 +22,8 @@ const { data, error, isLoading } = useGetPetById({ path: { petId: 1 } })
 The second argument holds the SWR configuration plus Kubb-specific switches. `query` takes any `SWRConfiguration`, `client` takes per-call request config for the underlying client, `shouldFetch: false` makes the key `null` so SWR skips the request, and `immutable: true` disables revalidation:
 
 ```typescript
+import { useGetPetById } from './gen/hooks/useGetPetById'
+
 useGetPetById(
   { path: { petId: 1 } },
   {
@@ -39,7 +41,9 @@ The key is built by the exported `queryKey` helper as `[{ url, params }]`, so yo
 A mutation hook takes only an options object. The grouped request config travels through `trigger(...)` as the mutation argument:
 
 ```typescript
+import { mutate } from 'swr'
 import { useCreatePet } from './gen/hooks/useCreatePet'
+import { getPetsQueryKey } from './gen/hooks/useGetPets'
 
 const { trigger, isMutating } = useCreatePet({
   mutation: { onSuccess: () => mutate(getPetsQueryKey()) },

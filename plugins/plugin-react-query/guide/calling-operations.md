@@ -22,6 +22,8 @@ const { data, error, isLoading } = useGetPetById({ path: { petId: 1 } })
 The second argument holds two option groups. `query` takes any TanStack Query option plus a `client` to target a specific `QueryClient`. `client` takes per-call request config for the underlying client, such as `baseURL`, `headers`, or `timeout`:
 
 ```typescript
+import { useGetPetById } from './gen/hooks/useGetPetById'
+
 useGetPetById(
   { path: { petId: 1 } },
   {
@@ -36,7 +38,10 @@ useGetPetById(
 Every operation also exports a `queryOptions` factory and a `queryKey` helper, so you can prefetch, seed, or compose outside a hook. The key is `[{ url, params }]`, built from the operation path and its path params:
 
 ```typescript
+import { useQueryClient } from '@tanstack/react-query'
 import { getPetByIdQueryKey, getPetByIdQueryOptions } from './gen/hooks/useGetPetById'
+
+const queryClient = useQueryClient()
 
 await queryClient.prefetchQuery(getPetByIdQueryOptions({ path: { petId: 1 } }))
 queryClient.invalidateQueries({ queryKey: getPetByIdQueryKey({ path: { petId: 1 } }) })
@@ -47,7 +52,10 @@ queryClient.invalidateQueries({ queryKey: getPetByIdQueryKey({ path: { petId: 1 
 A mutation hook takes only an options object. The grouped request config is the mutation variable, so you pass it to `mutate` or `mutateAsync`:
 
 ```typescript
+import { useQueryClient } from '@tanstack/react-query'
 import { useDeletePet } from './gen/hooks/useDeletePet'
+
+const queryClient = useQueryClient()
 
 const { mutate } = useDeletePet({
   mutation: { onSuccess: () => queryClient.invalidateQueries() },

@@ -14,6 +14,7 @@ outline: deep
 A query composable takes the operation's grouped request config as its first argument. Parameters accept a value, a `ref`, or a getter (`MaybeRefOrGetter`), so the query re-runs when a reactive parameter changes:
 
 ```typescript
+import { ref } from 'vue'
 import { useFindPetsByTags } from './gen/hooks/useFindPetsByTags'
 
 const tags = ref(['dog'])
@@ -23,6 +24,8 @@ const { data, error, isLoading } = useFindPetsByTags({ query: () => ({ tags: tag
 The second argument holds two option groups. `query` takes any TanStack Query option plus a `client` to target a specific `QueryClient`. `client` takes per-call request config for the underlying client:
 
 ```typescript
+import { useFindPetsByTags } from './gen/hooks/useFindPetsByTags'
+
 useFindPetsByTags(
   { query: { tags: ['dog'] } },
   {
@@ -37,7 +40,10 @@ useFindPetsByTags(
 Every query operation also exports a `queryOptions` factory and a `queryKey` helper for prefetching and invalidation. The key is `[{ url }, query]`, built from the operation path and its query params:
 
 ```typescript
+import { useQueryClient } from '@tanstack/vue-query'
 import { findPetsByTagsQueryKey, findPetsByTagsQueryOptions } from './gen/hooks/useFindPetsByTags'
+
+const queryClient = useQueryClient()
 
 await queryClient.prefetchQuery(findPetsByTagsQueryOptions({ query: { tags: ['dog'] } }))
 queryClient.invalidateQueries({ queryKey: findPetsByTagsQueryKey({ query: { tags: ['dog'] } }) })
@@ -50,7 +56,10 @@ Mutations export a `mutationKey` helper next to the composable.
 A mutation composable takes only an options object. The grouped request config is the mutation variable, so you pass it to `mutate` or `mutateAsync`:
 
 ```typescript
+import { useQueryClient } from '@tanstack/vue-query'
 import { useUpdatePetWithForm } from './gen/hooks/useUpdatePetWithForm'
+
+const queryClient = useQueryClient()
 
 const { mutate } = useUpdatePetWithForm({
   mutation: { onSuccess: () => queryClient.invalidateQueries() },
