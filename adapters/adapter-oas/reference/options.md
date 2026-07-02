@@ -291,11 +291,25 @@ type EmptyModel = unknown
 
 ### enumSuffix
 
-Suffix appended to derived enum names when Kubb has to invent one, typically for inline enums on object properties. The derived name joins the parent schema name, the property name, and the suffix in PascalCase.
+Suffix appended to derived enum names when Kubb has to invent one, typically for inline enums on object properties. The derived name joins the parent schema name, the property name, and the suffix in PascalCase, so an inline enum on the `status` property of the `Pet` schema derives `PetStatusEnum`.
 
 |          |          |
 | -------: | :------- |
 |    Type: | `string` |
 | Default: | `'enum'` |
 
-With the default, an inline enum on the `status` property of the `Pet` schema derives `PetStatusEnum`. With `enumSuffix: 'type'`, the same enum derives `PetStatusType`.
+::: code-group
+
+```typescript ['enum' (default)]
+// Inline enum on Pet.status → PetStatusEnum
+const petStatusEnum = { available: 'available', pending: 'pending' } as const
+type PetStatusEnum = (typeof petStatusEnum)[keyof typeof petStatusEnum]
+```
+
+```typescript ['type']
+// Inline enum on Pet.status → PetStatusType
+const petStatusType = { available: 'available', pending: 'pending' } as const
+type PetStatusType = (typeof petStatusType)[keyof typeof petStatusType]
+```
+
+:::
