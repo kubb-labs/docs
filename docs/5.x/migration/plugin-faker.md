@@ -21,23 +21,25 @@ Properties inside the generated path, query, and header mocks are now always cam
 
 The `mapper` option mapped a property name to a raw Faker expression. v5 removes it, matching the removal on `plugin-ts` and `plugin-zod`. Rewrite the property's schema with a [macro](/docs/5.x/guide/going-further/macros) instead. The default printer turns an enum into `faker.helpers.arrayElement([...])`, so an enum macro reproduces the common case, and a [`printer`](/plugins/plugin-faker/reference/options#printer) override changes how a schema type renders.
 
+The generated mock is typed against the `@kubb/plugin-ts` output, so pick values the property's type allows. The v4 `mapper` bypassed that check with a raw expression.
+
 ```diff [kubb.config.ts]
 import { ast } from '@kubb/core'
 
 pluginFaker({
 -  mapper: {
--    status: `faker.helpers.arrayElement<any>(['working', 'idle'])`,
+-    status: `faker.helpers.arrayElement<any>(['available', 'pending'])`,
 -  },
 +  macros: [
 +    {
-+      name: 'status-values',
++      name: 'pet-status-values',
 +      schema(node) {
-+        if ('properties' in node) {
++        if (node.name === 'Pet' && 'properties' in node) {
 +          return {
 +            ...node,
 +            properties: node.properties.map((property) =>
 +              property.name === 'status'
-+                ? { ...property, schema: ast.factory.createSchema({ type: 'enum', primitive: 'string', enumValues: ['working', 'idle'] }) }
++                ? { ...property, schema: ast.factory.createSchema({ type: 'enum', primitive: 'string', enumValues: ['available', 'pending'] }) }
 +                : property,
 +            ),
 +          }
