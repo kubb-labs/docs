@@ -165,14 +165,12 @@ An operation with no tag goes in the `default` group.
 
 #### group.name
 
-Function that turns a group key into a folder name. The default depends on `group.type`. A `'tag'` group uses the camelCased tag. A `'path'` group uses the second path segment (`/pet/findByStatus` becomes `pet`). A `group.name` you pass always wins over the default.
+Function that turns a group key into a folder name. The default depends on `group.type`. A `'tag'` group uses the camelCased tag. A `'path'` group uses the first path segment (`/pet/findByStatus` becomes `pet`). A `group.name` you pass always wins over the default.
 
 |          |                                     |
 | -------: | :---------------------------------- |
 |    Type: | `(context: { group: string }) => string` |
 | Default: | `({ group }) => camelCase(group)` |
-
-For `type: 'path'` groups, the default uses the first URL segment as-is instead of camelCasing.
 
 ### baseURL
 
@@ -187,8 +185,8 @@ Base URL prepended to every request the functions make. When omitted, the URL co
 Runtime validator applied to request and response bodies using schemas from `@kubb/plugin-zod`.
 
 - `false` (default) does no validation and returns the response cast to the generated type.
-- `'zod'` validates the success response body only.
-- `{ request?: 'zod', response?: 'zod' }` opts in per direction. `request` validates the request body before the call, and `response` validates the response body after.
+- `'zod'` validates the success response body, and the error body when a non-2xx call does not throw.
+- `{ request?: 'zod', response?: 'zod' }` opts in per direction. `request` validates the request body and query params before the call, and `response` validates the response body after.
 
 Add `@kubb/plugin-zod` to the plugins list when either direction is `'zod'`.
 
@@ -239,7 +237,7 @@ export function addPet<ThrowOnError extends boolean = true>(
   return request({
     method: 'POST',
     url: '/pet',
-    validator: { request: addPetRequestSchema, response: addPetResponseSchema },
+    validator: { request: addPetDataSchema, response: addPetResponseSchema, error: addPetErrorSchema },
     ...config,
   }) as Promise<RequestResult<AddPetResponses, ThrowOnError>>
 }
@@ -354,7 +352,7 @@ await api.placeOrder({ body: { petId: 1, quantity: 1 } })
 
 :::
 
-Each call resolves to `{ status, data, error, request, response }`. Because `throwOnError` defaults to `true`, a resolved call means the request succeeded and `data` is set. Pass `throwOnError: false` on a call to get the discriminated union instead. Every variant is keyed on the top-level `status`, so a check on it narrows `data` on a success code and `error` on a documented error code, the same typed union you get for `data` on the success path:
+Each call resolves to `{ status, data, error, contentType, request, response }`. Because `throwOnError` defaults to `true`, a resolved call means the request succeeded and `data` is set. Pass `throwOnError: false` on a call to get the discriminated union instead. Every variant is keyed on the top-level `status`, so a check on it narrows `data` on a success code and `error` on a documented error code, the same typed union you get for `data` on the success path:
 
 ```typescript
 const { status, data, error } = await pet.getPetById({ path: { petId: 1 }, throwOnError: false })
