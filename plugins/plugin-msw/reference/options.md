@@ -77,25 +77,25 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 
 ```typescript ['named' (default)]
 // src/gen/handlers/index.ts
-export { getPet } from './getPet'
-export { addPet } from './addPet'
+export { getPetHandler } from './getPetHandler'
+export { addPetHandler } from './addPetHandler'
 ```
 
 ```typescript ['all']
 // src/gen/handlers/index.ts
-export * from './getPet'
-export * from './addPet'
+export * from './getPetHandler'
+export * from './addPetHandler'
 ```
 
 ```text [nested]
 src/gen/handlers/
 ├── index.ts          # re-exports ./pet and ./store
 ├── pet/
-│   ├── index.ts      # re-exports getPet, addPet, ...
-│   └── getPet.ts
+│   ├── index.ts      # re-exports getPetHandler, addPetHandler, ...
+│   └── getPetHandler.ts
 └── store/
     ├── index.ts
-    └── getStoreById.ts
+    └── getStoreByIdHandler.ts
 ```
 
 ```text [false]
@@ -120,7 +120,7 @@ A static `banner: '/* eslint-disable */\n// @ts-nocheck'` lands at the top of ea
 // @ts-nocheck
 import { http } from 'msw'
 
-export function getPet(data?: GetPetQueryResponse) {
+export function getPetHandler(data?: GetPetQueryResponse) {
   // ...
 }
 ```
@@ -153,11 +153,11 @@ With `group: { type: 'tag' }`, the generator emits one folder per tag, named aft
 ```text [Resulting tree]
 src/gen/
 ├── pet/
-│   ├── addPet.ts
-│   └── getPet.ts
+│   ├── addPetHandler.ts
+│   └── getPetHandler.ts
 └── store/
-    ├── createStore.ts
-    └── getStoreById.ts
+    ├── createStoreHandler.ts
+    └── getStoreByIdHandler.ts
 ```
 
 Pass `group.name` to customize the folder name. For example, a `name` function that appends `Service` to the group renames each folder to `petService/`.
@@ -196,7 +196,7 @@ Base URL prepended to every handler's request. When omitted, the URL comes from 
 
 ### handlers
 
-Emits a `handlers.ts` file that re-exports every generated handler grouped by HTTP method. Spread it into your MSW `setupServer(...handlers)` or `setupWorker(...handlers)` call.
+Emits a `handlers.ts` file that re-exports every generated handler in operation order. Spread it into your MSW `setupServer(...handlers)` or `setupWorker(...handlers)` call.
 
 |          |           |
 | -------: | :-------- |
@@ -206,10 +206,10 @@ Emits a `handlers.ts` file that re-exports every generated handler grouped by HT
 ::: code-group
 
 ```typescript [gen/handlers.ts]
-import { getPet } from './getPet'
-import { addPet } from './addPet'
+import { getPetHandler } from './getPetHandler'
+import { addPetHandler } from './addPetHandler'
 
-export const handlers = [getPet(), addPet()] as const
+export const handlers = [getPetHandler(), addPetHandler()] as const
 ```
 
 ```typescript [setup.ts]
@@ -238,8 +238,10 @@ The handler body changes with the parser. With `'data'` the caller passes the pa
 ::: code-group
 
 ```typescript ['data' (default)]
-export function getPet(data?: GetPetQueryResponse) {
-  return http.get('/pet/:petId', function handler(info) {
+export function getPetHandler(data?: GetPetQueryResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Response | Promise<Response>)) {
+  return http.get(`/pet/:petId`, function handler(info) {
+    if (typeof data === 'function') return data(info)
+
     return new Response(JSON.stringify(data), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
@@ -249,9 +251,11 @@ export function getPet(data?: GetPetQueryResponse) {
 ```
 
 ```typescript ['faker']
-export function getPet(data?: GetPetQueryResponse) {
-  return http.get('/pet/:petId', function handler(info) {
-    return new Response(JSON.stringify(data || getPetQueryResponse()), {
+export function getPetHandler(data?: GetPetQueryResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Response | Promise<Response>)) {
+  return http.get(`/pet/:petId`, function handler(info) {
+    if (typeof data === 'function') return data(info)
+
+    return new Response(JSON.stringify(data || getPetQueryResponse(data)), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     })
@@ -267,18 +271,18 @@ How you register the handler in a test depends on the value:
 
 ```typescript ['data' (default)]
 import { setupServer } from 'msw/node'
-import { getPet } from './src/gen/handlers/getPet'
+import { getPetHandler } from './src/gen/handlers/getPetHandler'
 
 // you pass the response payload yourself
-const server = setupServer(getPet({ name: 'Fluffy' }))
+const server = setupServer(getPetHandler({ name: 'Fluffy' }))
 ```
 
 ```typescript ['faker']
 import { setupServer } from 'msw/node'
-import { getPet } from './src/gen/handlers/getPet'
+import { getPetHandler } from './src/gen/handlers/getPetHandler'
 
 // no payload needed, the handler returns generated mock data
-const server = setupServer(getPet())
+const server = setupServer(getPetHandler())
 ```
 
 :::
@@ -290,7 +294,7 @@ Generates only the operations that match at least one entry in the list. Everyth
 - `tag`: the operation's first tag in the OpenAPI spec.
 - `operationId`: the operation's `operationId`.
 - `path`: the URL path, such as `'/pet/{petId}'`.
-- `method`: the HTTP method, such as `'get'` or `'post'`.
+- `method`: the HTTP method, such as `'GET'` or `'POST'`.
 - `contentType`: the request or response media type, such as `'application/json'`.
 - `schemaName`: the component schema name under `#/components/schemas`.
 

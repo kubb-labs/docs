@@ -77,17 +77,21 @@ Controls how the generated `index.ts` (barrel) file re-exports the plugin's outp
 // src/gen/mcp/index.ts
 export { addPetHandler } from './addPetHandler'
 export { getPetByIdHandler } from './getPetByIdHandler'
+export { getServer, server, startServer } from './server'
 ```
 
 ```typescript ['all']
 // src/gen/mcp/index.ts
 export * from './addPetHandler'
 export * from './getPetByIdHandler'
+export * from './server'
 ```
 
 ```text [nested]
 src/gen/mcp/
-├── index.ts          # re-exports ./pet and ./store
+├── index.ts          # re-exports ./pet, ./store, and ./server
+├── server.ts
+├── .mcp.json
 ├── pet/
 │   ├── index.ts      # re-exports addPetHandler, getPetByIdHandler, ...
 │   └── addPetHandler.ts
@@ -151,6 +155,8 @@ With `group: { type: 'tag' }`, the generator emits one folder per tag, named aft
 
 ```text [Resulting tree]
 src/gen/
+├── server.ts
+├── .mcp.json
 ├── pet/
 │   ├── addPetHandler.ts
 │   └── getPetByIdHandler.ts
@@ -176,7 +182,7 @@ An operation with no tag goes in the `default` group.
 
 #### group.name
 
-Function that turns a group key (the operation's first tag) into a folder or identifier name. The result is used as both the subdirectory name under `output.path` and as a suffix when naming aggregate files.
+Function that turns a group key (the operation's first tag) into a folder name, used as the subdirectory name under `output.path`. The `server.ts` and `.mcp.json` files keep their fixed names at the root of `output.path`.
 
 |          |                                     |
 | -------: | :---------------------------------- |
@@ -192,7 +198,7 @@ Generates only the operations that match at least one entry in the list. Everyth
 - `tag`: the operation's first tag in the OpenAPI spec.
 - `operationId`: the operation's `operationId`.
 - `path`: the URL path, such as `'/pet/{petId}'`.
-- `method`: the HTTP method, such as `'get'` or `'post'`.
+- `method`: the HTTP method, such as `'GET'` or `'POST'`.
 - `contentType`: the request or response media type, such as `'application/json'`.
 - `schemaName`: the component schema name under `#/components/schemas`.
 
@@ -244,7 +250,10 @@ export type Override = {
 }
 ```
 
-For example, `override: [{ type: 'tag', pattern: 'user', options: { client: 'fetch' } }]` switches the `user` tag to the fetch client while the rest of the spec keeps the plugin default.
+For example, `override: [{ type: 'tag', pattern: 'user', options: { output: { path: 'mcp/user' } } }]` routes the `user` tag's handlers to their own folder.
+
+> [!NOTE]
+> `client` resolves once at setup, so it cannot be changed per override.
 
 ### resolver
 
