@@ -10,7 +10,7 @@ outline: deep
 `@kubb/ast` is the package behind Kubb's universal Abstract Syntax Tree. This page documents its callable surface: node factories, the three visitors, type guards, and helpers. For why the AST exists and how it fits the pipeline, see [AST concepts](/docs/5.x/guide/concepts/ast).
 
 > [!NOTE]
-> `@kubb/core` re-exports `@kubb/ast` as the `ast` namespace, with node constructors under `ast.factory` the way TypeScript groups them under `ts.factory`. Most plugins do not need `@kubb/ast` as a direct dependency. Install it only for named imports without the `ast.` prefix, taking constructors from the `@kubb/ast/factory` subpath.
+> `@kubb/core` re-exports `@kubb/ast` as the `ast` namespace, with node constructors under `ast.factory` the way TypeScript groups them under `ts.factory`. Most plugins do not need `@kubb/ast` as a direct dependency. Install it only for named imports without the `ast.` prefix, taking constructors from the `factory` export of `@kubb/ast`.
 
 ## Quick start
 
@@ -81,7 +81,7 @@ const root = ast.factory.createInput({
 })
 ```
 
-The `@kubb/ast/factory` subpath also provides constructors for source files and TypeScript-level artifacts that generators emit:
+The `factory` namespace also provides constructors for source files and TypeScript-level artifacts that generators emit:
 
 | Factory                                                             | Purpose                                                  |
 | ------------------------------------------------------------------- | -------------------------------------------------------- |
@@ -217,7 +217,6 @@ The ref and naming helpers live in the `@kubb/ast/utils` subpath, alongside the 
 | `extractRefName`    | `@kubb/ast/utils` | Turn `'#/components/schemas/Pet'` into `'Pet'`.     |
 | `childName`         | `@kubb/ast/utils` | Derive a child property name from context.          |
 | `enumPropName`      | `@kubb/ast/utils` | Convert an enum value into a valid property name.   |
-| `findDiscriminator` | `@kubb/ast/utils` | Locate a discriminator on a `oneOf`/`union` schema. |
 
 ```typescript twoslash [refs.ts]
 import { extractRefName } from '@kubb/ast/utils'
@@ -249,6 +248,8 @@ Lower-level helpers for parsers that turn the AST into source code:
 | Export          | Purpose                                |
 | --------------- | -------------------------------------- |
 | `createPrinter` | Typed helper for creating a `Printer`. |
+
+`createPrinter` takes an `overrides` map to replace the handler for individual schema node types. Inside an override, `this.base(node)` runs the built-in handler the override replaced, so you can wrap its output instead of re-implementing it. Pass overrides through the `overrides` field rather than spreading them into `nodes`, otherwise `this.base` cannot find the original handler.
 
 See [Parsers concepts](/docs/5.x/guide/concepts/parsers) for how parsers consume printers. `defineDialect` is the adapter seam for spec-specific schema behavior. It keeps the shared converters generic, so an adapter supplies only the questions that differ between specs. See [Adapters](/docs/5.x/reference/adapters#schema-dispatch-and-dialects).
 

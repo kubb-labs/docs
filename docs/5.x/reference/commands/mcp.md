@@ -52,10 +52,10 @@ suggested fix, and docs link, so an assistant can act on the exact problem. The 
 readable text block and a JSON payload:
 
 ```text [Terminal]
-error @kubb/plugin-zod(KUBB_REF_NOT_FOUND): Could not find a definition for #/components/schemas/Pet.
-  at #/components/schemas/Pet
-  help: Add the schema under components.schemas, or fix the $ref.
-  docs: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-ref-not-found
+[KUBB_REF_NOT_FOUND] @kubb/plugin-zod: Could not find a definition for #/components/schemas/Pet.
+  at: #/components/schemas/Pet
+  fix: Add the schema under components.schemas, or fix the $ref.
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-ref-not-found
 ```
 
 A missing spec passed to `validate` returns the coded [`KUBB_INPUT_NOT_FOUND`](/docs/5.x/reference/diagnostics/kubb-input-not-found)

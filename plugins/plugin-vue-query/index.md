@@ -46,7 +46,7 @@ resources:
 
 # @kubb/plugin-vue-query
 
-`@kubb/plugin-vue-query` turns each OpenAPI operation into a [TanStack Query](https://tanstack.com/query) composable for Vue. Read operations become `useFooQuery` and optionally `useFooInfiniteQuery`. Write operations become `useFooMutation`. Every composable is typed: query keys, input variables, response data, and error shape all come from the spec.
+`@kubb/plugin-vue-query` turns each OpenAPI operation into a [TanStack Query](https://tanstack.com/query) composable for Vue. Read operations become `useFoo`, with an optional `useFooInfinite` variant. Write operations become `useFoo` mutations. Every composable is typed: query keys, input variables, response data, and error shape all come from the spec.
 
 The composables call an HTTP client, so a client plugin must be registered. Add `@kubb/plugin-ts` for the types and either `@kubb/plugin-axios` or `@kubb/plugin-fetch` for the client. Generation errors out when no client plugin is present.
 

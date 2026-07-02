@@ -76,6 +76,8 @@ export default defineConfig({
 
 :::
 
+A value containing a `${...}` interpolation stays dynamic. The plugin emits it as a template literal in the generated client config, so `baseURL: '${process.env.API_URL}'` reads the environment variable when the app runs instead of baking in the build-time value.
+
 ## Set it at runtime
 
 The `baseURL` rides the same `ClientConfig` as `auth` and the [transport](/plugins/plugin-fetch/guide/transport), so you set it at runtime the same three ways. Pick the one that matches the scope you need.

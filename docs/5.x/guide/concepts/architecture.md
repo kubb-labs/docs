@@ -207,7 +207,7 @@ export default defineConfig({
 | Package                                 | Extensions                   | Description                                                                                                  |
 | --------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | [`@kubb/parser-ts`](/parsers/parser-ts/) | `.ts`, `.js`, `.tsx`, `.jsx` | Uses the TypeScript compiler to print, deduplicate, and resolve imports. Included automatically with `kubb`. |
-| [`@kubb/parser-md`](/parsers/parser-md/) | `.md`                        | Writes Markdown files. Included automatically with `kubb`.                                                   |
+| [`@kubb/parser-md`](/parsers/parser-md/) | `.md`, `.markdown`           | Writes Markdown files. Included automatically with `kubb`.                                                   |
 
 ## [Storage](/docs/5.x/guide/concepts/storage)
 

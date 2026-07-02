@@ -13,9 +13,9 @@ outline: deep
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`client`](#client) | `'fetch' \| 'axios'` | — | Which registered client plugin the hooks call |
 | [`query`](#query) | `Partial<Query> \| false` | `{ methods: ['get'], importPath: 'swr' }` | Configure the `useSWR` hooks, or turn them off |
-| [`queryKey`](#querykey) | `Transformer` | — | Build the SWR key for each query hook |
+| [`queryKey`](#querykey) | `Transformer` | `built-in` | Build the SWR key for each query hook |
 | [`mutation`](#mutation) | `Partial<Mutation> \| false` | `{ methods: ['post', 'put', 'patch', 'delete'], importPath: 'swr/mutation' }` | Configure the `useSWRMutation` hooks, or turn them off |
-| [`mutationKey`](#mutationkey) | `Transformer` | — | Build the SWR key for each mutation hook |
+| [`mutationKey`](#mutationkey) | `Transformer` | `built-in` | Build the SWR key for each mutation hook |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |

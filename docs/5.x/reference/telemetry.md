@@ -21,6 +21,8 @@ Each CLI command sends this anonymous data:
 | `command`      | CLI command that was run                             | `"generate"`, `"validate"`, `"mcp"`                                             |
 | `kubbVersion`  | Kubb CLI version                                     | `"5.0.0"`                                                                       |
 | `nodeVersion`  | Node.js major version                                | `"22"`                                                                          |
+| `runtime`      | JavaScript runtime name                              | `"node"`, `"bun"`, `"deno"`                                                     |
+| `runtimeVersion` | Runtime major version                              | `"22"`                                                                          |
 | `platform`     | Operating system                                     | `"linux"`, `"darwin"`, `"win32"`                                                |
 | `ci`           | Whether running in CI                                | `true`                                                                          |
 | `plugins`      | Plugin names and their options (only for `generate`) | `[{ "name": "@kubb/plugin-ts", "options": { "output": { "path": "types" } } }]` |

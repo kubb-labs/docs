@@ -70,7 +70,7 @@ From your spec, the generated client gives you:
 
 It builds on `@kubb/plugin-ts` for the types, so add that to your config, and axios is a runtime dependency to install next to your app.
 
-Each function takes one grouped options object (`{ path, query, headers, body }`) and returns a `RequestResult` of `{ status, data, error, request, response }`, bundled into `.kubb/client.ts`. See [error handling](/plugins/plugin-axios/guide/error-handling) for `throwOnError` and the status-keyed result union.
+Each function takes one grouped options object (`{ path, query, headers, body }`) and returns a `RequestResult` of `{ status, data, error, contentType, request, response }`, bundled into `.kubb/client.ts`. See [error handling](/plugins/plugin-axios/guide/error-handling) for `throwOnError` and the status-keyed result union.
 
 The bundled `client` also exposes `getUrl`, which builds an operation's final URL without sending the request, useful for cache keys, prefetch, and links:
 
