@@ -146,12 +146,15 @@ They default to `mode: 'directory'`. `output.mode` only accepts
 Remove `generators` from every plugin. Plugins no longer accept custom
 generators as an option. To add custom output, build your own plugin.
 
-## 16. Rename parser → validator on the client and query plugins
-- On `plugin-axios`, `plugin-fetch`, `plugin-react-query`, `plugin-vue-query`,
-  and `plugin-swr`, rename the `parser` option to `validator`. The accepted
-  values are unchanged: `false`, `'zod'`, or `{ request: 'zod', response: 'zod' }`.
-  So `parser: 'zod'` becomes `validator: 'zod'`, and a v4 `parser: 'client'`
-  becomes the default `false` (the `'client'` value is gone).
+## 16. Move parser → validator to the client plugins
+- On `plugin-axios` and `plugin-fetch`, rename the `parser` option to
+  `validator`. The accepted values are `false`, `'zod'`, or
+  `{ request: 'zod', response: 'zod' }`. So `parser: 'zod'` becomes
+  `validator: 'zod'`, and a v4 `parser: 'client'` becomes the default
+  `false` (the `'client'` value is gone).
+- On `plugin-react-query`, `plugin-vue-query`, and `plugin-swr`, delete
+  `parser` entirely. Validation lives in the client operation, so set
+  `validator: 'zod'` on the client plugin instead.
 - Leave `plugin-msw`'s `parser` (`'data' | 'faker'`) unchanged. It is a
   different option and is not renamed.
 

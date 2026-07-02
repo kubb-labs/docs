@@ -107,7 +107,7 @@ The `hooks` option controls whether `use*` composables are emitted alongside the
   })
 ```
 
-With `hooks: false` (the default) the plugin still emits `queryOptions`, `mutationOptions`, `queryKey`, and `mutationKey`. Only the `useQuery`, `useInfiniteQuery`, and `useMutation` wrappers are skipped.
+With `hooks: false` (the default) the plugin still emits `queryOptions`, `queryKey`, and `mutationKey`. Only the `useQuery`, `useInfiniteQuery`, and `useMutation` wrappers are skipped.
 
 ## Generated output
 
