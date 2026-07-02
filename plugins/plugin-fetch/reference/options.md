@@ -186,7 +186,7 @@ Runtime validator applied to request and response bodies using schemas from `@ku
 
 - `false` (default) does no validation and returns the response cast to the generated type.
 - `'zod'` validates the success response body, and the error body when a non-2xx call does not throw.
-- `{ request?: 'zod', response?: 'zod' }` opts in per direction. `request` validates the request body and query params before the call, and `response` validates the response body after.
+- `{ request?: 'zod', response?: 'zod' }` opts in per direction. `request` validates the request body before the call, and `response` validates the response body after.
 
 Add `@kubb/plugin-zod` to the plugins list when either direction is `'zod'`.
 

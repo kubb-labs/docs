@@ -109,7 +109,7 @@ Macros run before resolver options are computed, so a renamed `operationId` or `
 
 `@kubb/ast/macros` ships built-in macros for common schema normalizations that any adapter can apply. Import them like any macro and compose them with your own.
 
-`macroSimplifyUnion` drops union members that a broader member already covers, such as a single-value string enum next to a plain `string`. `macroDiscriminatorEnum` rewrites a discriminator property into a string enum of its allowed values, and `macroEnumName` names an inline enum from the schema and property it belongs to. The last two read options, so you call them to build a macro.
+`macroSimplifyUnion` drops union members that a broader member already covers, such as a multi-value string enum next to a plain `string`. Single-value enums stay, since they narrow the type. `macroDiscriminatorEnum` rewrites a discriminator property into a string enum of its allowed values, and `macroEnumName` names an inline enum from the schema and property it belongs to. The last two read options, so you call them to build a macro.
 
 ```typescript twoslash [presets.ts]
 import { ast } from '@kubb/core'
