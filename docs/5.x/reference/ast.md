@@ -93,7 +93,7 @@ const root = ast.factory.createInput({
 })
 ```
 
-The `factory` namespace also provides constructors for source files and TypeScript-level artifacts that generators emit:
+The `ast.factory` namespace also provides constructors for source files and TypeScript-level artifacts that generators emit:
 
 | Factory                                                             | Purpose                                                  |
 | ------------------------------------------------------------------- | -------------------------------------------------------- |

@@ -23,6 +23,6 @@ The `ast` namespace holds everything else too: the guards, the macros, the schem
 
 ## Reference
 
-The full list of exports, `definePlugin`, `defineGenerator`, `defineResolver`, `defineParser`, `createAdapter`, `createRenderer`, `createStorage`, `Diagnostics`, `memoryStorage`, `fsStorage`, the `ast` and `factory` namespaces, and the `kubb/kit/testing` helpers, lives in the [Kit API reference](/docs/5.x/reference/kit).
+The full list of exports, `definePlugin`, `defineGenerator`, `defineResolver`, `defineParser`, `createAdapter`, `createRenderer`, `createStorage`, `Diagnostics`, `memoryStorage`, `fsStorage`, the `ast` namespace, and the `kubb/kit/testing` helpers, lives in the [Kit API reference](/docs/5.x/reference/kit).
 
 See also [Plugins](/docs/5.x/guide/concepts/plugins) for the plugin lifecycle, [AST](/docs/5.x/guide/concepts/ast) for the tree kit's `ast` namespace wraps, and [Creating your first plugin](/docs/5.x/guide/going-further/creating-plugins) for a step-by-step build.

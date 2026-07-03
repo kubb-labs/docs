@@ -1,7 +1,7 @@
 ---
 layout: doc
 title: Kit API
-description: Public API surface of kubb/kit, the plugin and generator authoring toolkit, including definePlugin, defineGenerator, defineResolver, defineParser, createAdapter, createRenderer, createStorage, Diagnostics, the ast and factory namespaces, and the kubb/kit/testing helpers.
+description: Public API surface of kubb/kit, the plugin and generator authoring toolkit, including definePlugin, defineGenerator, defineResolver, defineParser, createAdapter, createRenderer, createStorage, Diagnostics, the ast namespace, and the kubb/kit/testing helpers.
 outline: [2, 3]
 ---
 
@@ -22,7 +22,6 @@ import {
   fsStorage,
   Diagnostics,
   ast,
-  factory,
 } from 'kubb/kit'
 ```
 
@@ -302,21 +301,17 @@ const root = ast.factory.createInput({
 })
 ```
 
-### `factory`
+Node building goes through `ast.factory`. `ast.factory.createFile`, `ast.factory.createSource`, and `ast.factory.createText` build the `FileNode` tree a generator returns.
 
-`factory` is the bare node-builder namespace, equivalent to `ast.factory` but importable on its own when a generator only needs to construct nodes and does not need the rest of the `ast` namespace.
+```typescript twoslash [factory.ts]
+import { ast } from 'kubb/kit'
 
-```typescript twoslash [factory-namespace.ts]
-import { factory } from 'kubb/kit'
-
-const file = factory.createFile({
+const file = ast.factory.createFile({
   baseName: 'pet.ts',
   path: './pet.ts',
-  sources: [factory.createSource({ nodes: [factory.createText("export type Pet = { id: number }")] })],
+  sources: [ast.factory.createSource({ nodes: [ast.factory.createText('export type Pet = { id: number }')] })],
 })
 ```
-
-`ast.factory.createX(...)` and the bare `factory.createX(...)` construct the same nodes. Pick whichever import reads better in the file: `ast.factory` when the file already uses `ast.walk` or `ast.transform` nearby, `factory` on its own when node construction is the only thing the file does. Both come from `kubb/kit`.
 
 #### Related
 
