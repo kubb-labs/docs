@@ -9,7 +9,7 @@ outline: [2, 3]
 
 Run `kubb init` for an interactive setup wizard. Answer a few questions and Kubb creates a `package.json` if one is missing, installs your chosen plugins, and writes a ready-to-use `kubb.config.ts`.
 
-```shell [Terminal]
+```terminal
 command: npx kubb@beta init
 output:
   - ◆  Kubb Init

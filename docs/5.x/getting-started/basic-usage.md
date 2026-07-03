@@ -108,7 +108,7 @@ See the [plugins catalogue](/plugins) for the full list.
 
 With the config saved, run the generate command. You should see each plugin report in turn and a summary at the end.
 
-```shell [Terminal]
+```terminal
 command: kubb generate
 output:
   - ◆  Generation started

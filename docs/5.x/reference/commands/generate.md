@@ -9,7 +9,7 @@ outline: [2, 3]
 
 Run `kubb generate` to read your [`kubb.config.ts`](/docs/5.x/reference/configuration) and run the code-generation pipeline. This is the default command. Run `kubb` with no arguments and it runs `kubb generate`.
 
-```shell [Terminal]
+```terminal
 command: kubb generate
 output:
   - ◆  Generation started
