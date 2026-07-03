@@ -33,7 +33,7 @@ yarn add -D @kubb/core@beta
 > Most users do not install `@kubb/core` directly. The top-level [`kubb`](https://www.npmjs.com/package/kubb) package re-exports it with `adapterOas` and the default parsers pre-installed. Use `@kubb/core` directly when embedding Kubb programmatically. Writing a plugin instead? See the [Kit API](/docs/5.x/reference/kit).
 
 ```typescript twoslash [imports.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import {
   createKubb,
   createReporter,
@@ -74,7 +74,7 @@ See the [Kit API](/docs/5.x/reference/kit) for the full authoring reference.
 `defineConfig` adds TypeScript type-checking to a `kubb.config.ts` file. It comes from the `kubb` package, not `@kubb/core`. It fills in defaults for any field you omit.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
@@ -85,7 +85,7 @@ export default defineConfig({
 It accepts a config object, an array of configs, a Promise, or a function. The function form receives the [CLI options](/docs/5.x/reference/commands/) at runtime, so you can toggle behavior on flags like `--watch`:
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 
 export default defineConfig(({ watch }) => ({
   input: { path: './petStore.yaml' },

@@ -42,7 +42,7 @@ Wire it into your config with `defineConfig` from `kubb` and pass the adapter:
 
 ```typescript twoslash [kubb.config.ts]
 // @errors: 2307
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { adapterCustom } from './adapterCustom.ts'
 
 export default defineConfig({
@@ -194,7 +194,7 @@ Key options:
 | `server`      | `{ index?: number; variables?: Record<string, string> }` | none     | Which `servers[]` entry to use as the base URL, and its variable overrides. |
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { adapterOas } from '@kubb/adapter-oas'
 
 export default defineConfig({
@@ -257,7 +257,7 @@ Register the adapter in `kubb.config.ts`:
 
 ```typescript twoslash [kubb.config.ts]
 // @errors: 2307
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { adapterJsonSchema } from './adapterJsonSchema.ts'
 
 export default defineConfig({

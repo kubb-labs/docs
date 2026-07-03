@@ -40,7 +40,7 @@ Add the plugin to your `farm.config.ts` and pass it your Kubb config.
 ```typescript [farm.config.ts]
 import { defineConfig as defineFarmConfig } from '@farmfe/core'
 import kubb from 'unplugin-kubb/farm'
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 const config = defineConfig({

@@ -38,7 +38,7 @@ yarn add -D unplugin-kubb@beta
 Pass your Kubb config as the second element of the module tuple. Nuxt auto-imports `defineNuxtConfig`, so you do not import it.
 
 ```typescript [nuxt.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 const config = defineConfig({

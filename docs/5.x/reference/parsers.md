@@ -38,7 +38,7 @@ Wire it into your config:
 
 ```typescript twoslash [kubb.config.ts]
 // @errors: 2307
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { parserTs, parserTsx } from '@kubb/parser-ts'
 import { parserText } from './parserText.ts'
 
@@ -135,7 +135,7 @@ yarn add -D @kubb/parser-ts@beta
 Both expose `parse(file, options?)` and `print(...nodes: ts.Node[])`. Call `parserTs.print(node)` from a plugin to render a TypeScript compiler node to its source string before staging it on `FileNode.sources`.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { parserTs, parserTsx } from '@kubb/parser-ts'
 
 export default defineConfig({
@@ -189,7 +189,7 @@ Register it alongside the built-ins:
 
 ```typescript twoslash [kubb.config.ts]
 // @errors: 2307
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { parserTs } from '@kubb/parser-ts'
 import { parserPython } from './parserPython.ts'
 

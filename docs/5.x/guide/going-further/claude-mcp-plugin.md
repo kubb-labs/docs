@@ -84,7 +84,7 @@ Write a `kubb.config.ts` that sets up the [MCP](https://modelcontextprotocol.io)
 > Set the `baseURL` on the client plugin so the generated handlers know which host to call.
 
 ```diff [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'
 import { pluginAxios } from '@kubb/plugin-axios'

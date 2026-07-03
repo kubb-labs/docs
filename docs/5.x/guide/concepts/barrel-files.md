@@ -14,7 +14,7 @@ A barrel file is an `index.ts` that re-exports everything from a directory. Cons
 `@kubb/plugin-barrel` is included by default when you import `defineConfig` from the `kubb` package. To change how barrels are generated, add it to your `plugins` array.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginBarrel } from '@kubb/plugin-barrel'
 
 export default defineConfig({

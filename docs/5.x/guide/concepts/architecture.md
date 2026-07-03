@@ -23,7 +23,7 @@ flowchart LR
 `defineConfig` from the `kubb` package pre-wires [`adapterOas`](/docs/5.x/guide/concepts/adapters), the default parsers [`parserTs`, `parserTsx`, `parserMd`](/docs/5.x/guide/concepts/parsers), and [`pluginBarrel`](/plugins/plugin-barrel/). A minimal config only needs `input` and `output`.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
@@ -50,7 +50,7 @@ Each adapter carries a dialect, and that dialect is the one place where spec-spe
 The official adapter for OpenAPI 2.0, 3.0, and 3.1 is [`@kubb/adapter-oas`](/adapters/adapter-oas/). `defineConfig` selects it automatically.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { adapterOas } from '@kubb/adapter-oas'
 
 export default defineConfig({
@@ -99,7 +99,7 @@ Macros run per plugin, so one plugin's macros never change the nodes another plu
 
 ```typescript twoslash [kubb.config.ts]
 // @noErrors
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { macroSimplifyUnion } from 'kubb/ast'
 
@@ -126,7 +126,7 @@ Plugins walk the [AST](/docs/5.x/guide/concepts/ast) and emit `FileNode`s. They 
 
 ```typescript twoslash [kubb.config.ts]
 // @noErrors
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginAxios } from '@kubb/plugin-axios'
 
@@ -190,7 +190,7 @@ flowchart LR
 A parser converts a `FileNode` into a source string. Each parser declares which file extensions it handles, and Kubb dispatches every emitted file to the first matching parser.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { parserTs, parserTsx } from '@kubb/parser-ts'
 import { parserMd } from '@kubb/parser-md'
 
@@ -214,7 +214,7 @@ export default defineConfig({
 The storage driver controls where Kubb writes generated files. The default is `fsStorage()`. Use `memoryStorage()` for testing, or implement `Storage` to target any backend.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { memoryStorage } from 'kubb/kit'
 
 export default defineConfig({

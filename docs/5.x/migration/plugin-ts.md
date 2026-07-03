@@ -96,7 +96,7 @@ export default defineConfig({
 ```
 
 ```typescript [v5 kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({

@@ -40,7 +40,7 @@ Add the plugin to your `vite.config.ts` and pass it your Kubb config.
 ```typescript [vite.config.ts]
 import kubb from 'unplugin-kubb/vite'
 import { defineConfig as defineViteConfig } from 'vite'
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 const config = defineConfig({

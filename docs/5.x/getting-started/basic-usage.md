@@ -14,7 +14,7 @@ In this tutorial you start from an empty config and finish with generated types,
 Everything Kubb does starts from `kubb.config.ts`. Begin with a minimal config that points at your spec and names an output directory.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
@@ -31,7 +31,7 @@ Each output format is its own plugin, so you only generate what you ask for. Sta
 ::: code-group
 
 ```typescript twoslash [TypeScript types]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
@@ -42,7 +42,7 @@ export default defineConfig({
 ```
 
 ```typescript twoslash [Types + HTTP client]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginAxios } from '@kubb/plugin-axios'
 
@@ -54,7 +54,7 @@ export default defineConfig({
 ```
 
 ```typescript twoslash [+ React Query hooks]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginAxios } from '@kubb/plugin-axios'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
@@ -67,7 +67,7 @@ export default defineConfig({
 ```
 
 ```typescript twoslash [+ Zod + MSW]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginAxios } from '@kubb/plugin-axios'
 import { pluginReactQuery } from '@kubb/plugin-react-query'

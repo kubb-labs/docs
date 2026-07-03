@@ -57,7 +57,7 @@ export default defineConfig({
 ```
 
 ```typescript twoslash [v5 kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'
@@ -106,7 +106,7 @@ export default defineConfig({
 ```
 
 ```typescript twoslash [v5 kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -129,7 +129,7 @@ export default defineConfig({
 v5 adds `enums` to `adapterOas` to control where inline enums live. The default `'inline'` keeps each enum on the property that declares it, which matches v4 output, so you can ignore this option unless you want the new behavior. Set `enums: 'root'` to lift every inline enum to a reusable top-level schema named after its context, such as `PetStatusEnum`, and reference it everywhere it appears.
 
 ```typescript twoslash [v5 kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'
 

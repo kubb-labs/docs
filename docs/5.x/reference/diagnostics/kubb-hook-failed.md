@@ -28,7 +28,7 @@ A post-generate shell hook (`hooks.done`) exited with a non-zero status. Hooks r
 - Confirm the binary is installed and the command is spelled correctly.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
