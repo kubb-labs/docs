@@ -21,4 +21,4 @@ Most of an adapter's work, turning schema objects into AST nodes, is generic JSO
 
 ## Reference
 
-`createAdapter`, the `Adapter` interface, streaming, the OpenAPI adapter options, and a worked custom-adapter example live in the [Adapters API reference](/docs/5.x/reference/adapters).
+`createAdapter`, the `Adapter` interface, streaming, the OpenAPI adapter options, and a worked custom-adapter example live in the [Kit API reference](/docs/5.x/reference/kit#adapters).

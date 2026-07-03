@@ -271,7 +271,7 @@ The following plugins have no v5 equivalent. Remove them from your config and un
 
 ### Import source
 
-Import [`defineConfig`](/docs/5.x/reference/core) from the top-level `kubb` package. That package wires up the OpenAPI [adapter](/docs/5.x/guide/concepts/adapters), the TypeScript [parsers](/docs/5.x/guide/concepts/parsers), and the barrel [plugin](/plugins/plugin-barrel/) for you.
+Import [`defineConfig`](/docs/5.x/reference/kit#defineconfig) from the top-level `kubb` package. That package wires up the OpenAPI [adapter](/docs/5.x/guide/concepts/adapters), the TypeScript [parsers](/docs/5.x/guide/concepts/parsers), and the barrel [plugin](/plugins/plugin-barrel/) for you.
 
 ::: code-group
 
@@ -637,7 +637,7 @@ import { ast, definePlugin, defineGenerator } from 'kubb/kit'
 
 :::
 
-See [Kit](/docs/5.x/guide/concepts/kit), the [Kit reference](/docs/5.x/reference/kit), and the [AST reference](/docs/5.x/reference/ast).
+See [Kit](/docs/5.x/guide/concepts/kit) and the [Kit reference](/docs/5.x/reference/kit), which also covers the full AST surface.
 
 ## Multiple content types
 

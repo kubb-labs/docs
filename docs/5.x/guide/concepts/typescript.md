@@ -166,7 +166,7 @@ if (ast.isHttpOperationNode(op)) {
 }
 ```
 
-These are the only two guards the [AST](/docs/5.x/reference/ast#guards-and-narrowing) exposes. Everything else narrows through the `kind` and `type` discriminants directly.
+These are the only two guards the [AST](/docs/5.x/reference/kit#guards-and-narrowing) exposes. Everything else narrows through the `kind` and `type` discriminants directly.
 
 ## See also
 

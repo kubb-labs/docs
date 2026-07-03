@@ -41,6 +41,6 @@ Build a custom driver when the destination is neither the filesystem nor memory:
 ## Reference
 
 - [Storage in the Kit API](/docs/5.x/reference/kit#storage): `createStorage`, `fsStorage`, and `memoryStorage`.
-- [Storage in the Core API](/docs/5.x/reference/core#storage): the `Storage` interface every driver implements.
+- [The `Storage` interface](/docs/5.x/reference/kit#storage-interface): the contract every driver implements.
 - [`storage` configuration option](/docs/5.x/reference/configuration#storage): where to set the driver.
 - [Testing plugins](/docs/5.x/guide/going-further/creating-plugins#testing): capture generated files with `memoryStorage`.
