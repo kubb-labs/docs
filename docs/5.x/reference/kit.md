@@ -293,7 +293,7 @@ The `Storage` interface itself (`hasItem`, `getItem`, `setItem`, `removeItem`, `
 
 `ast` is `kubb/kit`'s re-export of the entire [`@kubb/ast`](/docs/5.x/reference/ast) module, the same way TypeScript groups its node constructors under `ts.factory`. Reach for `ast` when you also need the visitors (`ast.walk`, `ast.transform`, `ast.collect`), the guards, or the schema and string helpers alongside node construction.
 
-`kubb/kit` is the namespaced way in. For the prefix-free `kubb/ast` and `@kubb/ast` alternatives, see [Choosing an import](/docs/5.x/reference/ast#choosing-an-import) on the AST reference.
+`kubb/kit` is the namespaced way in. For the prefix-free `kubb/ast` alternative, see [Choosing an import](/docs/5.x/reference/ast#choosing-an-import) on the AST reference.
 
 ```typescript twoslash [ast-namespace.ts]
 import { ast } from 'kubb/kit'

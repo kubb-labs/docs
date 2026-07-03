@@ -7,19 +7,20 @@ outline: deep
 
 # AST API
 
-`@kubb/ast` is the package behind Kubb's universal Abstract Syntax Tree. This page documents its callable surface: node factories, the three visitors, type guards, and helpers. For why the AST exists and how it fits the pipeline, see [AST concepts](/docs/5.x/guide/concepts/ast).
+`@kubb/ast` is the package behind Kubb's universal Abstract Syntax Tree, reached through `kubb/kit` and `kubb/ast`. This page documents its callable surface: node factories, the three visitors, type guards, and helpers. For why the AST exists and how it fits the pipeline, see [AST concepts](/docs/5.x/guide/concepts/ast).
 
 ## Choosing an import
 
-The same AST layer is reachable three ways. Pick the one that matches how you want to write the call, not a different feature set.
+Reach the AST two ways. Pick the one that matches how you want to write the call, not a different feature set.
 
-| Import      | What you get                                                                                                              | Style               | Reach for it when                                                                        |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------- | ---------------------------------------------------------------------------------------- |
-| `kubb/kit`  | The `ast` and `factory` namespaces: `ast.factory.createX`, `ast.walk`, `ast.transform`, `ast.collect`, `ast.narrowSchema` | Namespaced (`ast.`) | You are authoring a plugin or generator. This is the default, and nothing extra to install. |
-| `kubb/ast`  | The flat runtime and types: `walk`, `transform`, `extractRefName`, `narrowSchema`, the `*Def` guards, the macro engine    | Flat named          | You want prefix-free named imports and already depend on the top-level `kubb` package.   |
-| `@kubb/ast` | Both surfaces: the flat named exports and the `ast` / `factory` namespaces                                                | Flat named or `ast.` | You depend on the standalone package directly, without `kubb`.                            |
+| Import     | What you get                                                                                                              | Style               | Reach for it when                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------- | ------------------------------------------------------------------------------------------- |
+| `kubb/kit` | The `ast` and `factory` namespaces: `ast.factory.createX`, `ast.walk`, `ast.transform`, `ast.collect`, `ast.narrowSchema` | Namespaced (`ast.`) | You are authoring a plugin or generator. This is the default, and nothing extra to install. |
+| `kubb/ast` | The flat runtime and types: `walk`, `transform`, `extractRefName`, `narrowSchema`, the `*Def` guards, the macro engine    | Flat named          | You want prefix-free named imports instead of the `ast.` prefix.                            |
 
-The `ast` and `factory` namespaces come only from `kubb/kit` (and from `@kubb/ast` directly). The `kubb/ast` subpath deliberately leaves them out, so `import { ast } from 'kubb/ast'` does not resolve. Reach for `kubb/ast` when you want the flat names.
+Both re-export `@kubb/ast`, the package that defines the AST. `@kubb/ast` stays internal to the kubb monorepo, so import it directly only from inside kubb itself. Everywhere else, plugins and your own code included, go through `kubb/kit` or `kubb/ast`.
+
+The `ast` and `factory` namespaces come only from `kubb/kit`. The `kubb/ast` subpath deliberately leaves them out, so `import { ast } from 'kubb/ast'` does not resolve. Reach for `kubb/ast` when you want the flat names.
 
 Here is the same call written in each style:
 
@@ -32,7 +33,7 @@ factory.createInput({ schemas: [], operations: [] }) // bare factory namespace
 extractRefName('#/components/schemas/Pet') // flat named helper
 ```
 
-As a rule of thumb, import from `kubb/kit` when you are authoring a plugin or generator. Add `@kubb/ast` as a direct dependency only when you want flat named imports and do not already depend on `kubb`.
+As a rule of thumb, import from `kubb/kit` when you are authoring a plugin or generator, and from `kubb/ast` when you want the flat helpers without the `ast.` prefix.
 
 The code samples below import `ast` from `kubb/kit`, since that is where most authors reach for the AST.
 
@@ -234,7 +235,7 @@ await ast.walk(root, {
 
 ## Refs and naming helpers
 
-The ref and naming helpers ship as part of `@kubb/ast`'s main export, alongside the other string and code-building utilities. There is no separate subpath for them. Import them the same way you import guards or node types, from `kubb/ast` or directly from `@kubb/ast`.
+The ref and naming helpers ship as flat exports, alongside the other string and code-building utilities. There is no separate subpath for them. Import them from `kubb/ast` the same way you import guards or node types.
 
 | Helper           | Purpose                                            |
 | ---------------- | --------------------------------------------------- |
