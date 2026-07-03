@@ -15,13 +15,6 @@ output:
   - ✅ Validation success
 ```
 
-> [!IMPORTANT]
-> `@kubb/adapter-oas` is an optional dependency. Install it before you run this command:
->
-> ```shell [Terminal]
-> npm i @kubb/adapter-oas@beta
-> ```
-
 ## Usage
 
 Validate a local OpenAPI file:

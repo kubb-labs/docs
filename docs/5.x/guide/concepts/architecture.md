@@ -20,7 +20,7 @@ flowchart LR
 
 ## Config
 
-`defineConfig` from the `kubb` package pre-wires [`adapterOas`](/docs/5.x/guide/concepts/adapters), the default parsers [`parserTs`, `parserTsx`, `parserMd`](/docs/5.x/guide/concepts/parsers), and [`pluginBarrel`](/plugins/plugin-barrel/). A minimal config only needs `input` and `output`.
+`defineConfig` from the `kubb/config` package pre-wires [`adapterOas`](/docs/5.x/guide/concepts/adapters), the default parsers [`parserTs`, `parserTsx`, `parserMd`](/docs/5.x/guide/concepts/parsers), and [`pluginBarrel`](/plugins/plugin-barrel/). A minimal config only needs `input` and `output`.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -137,37 +137,6 @@ export default defineConfig({
 })
 ```
 
-### Types and clients
-
-| Package                                         | Generates                                                                                                                               |
-| ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| [`@kubb/plugin-ts`](/plugins/plugin-ts/)         | TypeScript types and interfaces                                                                                                         |
-| [`@kubb/plugin-axios`](/plugins/plugin-axios/)   | [Axios](https://axios-http.com) HTTP client functions                                                                                   |
-| [`@kubb/plugin-fetch`](/plugins/plugin-fetch/)   | [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) HTTP client functions                                              |
-
-### Data-fetching hooks
-
-| Package                                                   | Generates                                                    |
-| --------------------------------------------------------- | ------------------------------------------------------------ |
-| [`@kubb/plugin-react-query`](/plugins/plugin-react-query/) | [TanStack Query](https://tanstack.com/query) hooks for React |
-| [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query/)     | [TanStack Query](https://tanstack.com/query) hooks for Vue   |
-
-### Validation and mocking
-
-| Package                                       | Generates                                      |
-| --------------------------------------------- | ---------------------------------------------- |
-| [`@kubb/plugin-zod`](/plugins/plugin-zod/)     | [Zod](https://zod.dev) validation schemas      |
-| [`@kubb/plugin-faker`](/plugins/plugin-faker/) | [Faker.js](https://fakerjs.dev) data factories |
-| [`@kubb/plugin-msw`](/plugins/plugin-msw/)     | [MSW](https://mswjs.io) request handlers       |
-
-### Tooling
-
-| Package                                           | Purpose                                                                                         |
-| ------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| [`@kubb/plugin-cypress`](/plugins/plugin-cypress/) | [Cypress](https://www.cypress.io) test scaffolding                                              |
-| [`@kubb/plugin-redoc`](/plugins/plugin-redoc/)     | Embeds [Redoc](https://redocly.com/docs/redoc/)-rendered API docs                               |
-| [`@kubb/plugin-mcp`](/plugins/plugin-mcp/)         | Generates [MCP](https://modelcontextprotocol.io)-compatible tools and schemas for AI assistants |
-
 See the [plugins catalogue](/plugins) for the full list.
 
 ## Renderer
@@ -230,19 +199,7 @@ export default defineConfig({
 | `memoryStorage()` | Stores output in a `Map`. Nothing touches disk. Ideal for tests.                     |
 | Custom            | Implement `Storage` with `createStorage` to write to S3, a database, or any backend. |
 
-## Foundation packages
-
-| Package                                    | Purpose                                                                                                                                                                          |
-| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`kubb`](/docs/5.x/reference/kit#engine-and-configuration) | Umbrella package. Exports `defineConfig` and `createKubb`, and bundles `adapterOas`, `parserTs`, `parserTsx`, `parserMd`, and `pluginBarrel` for a zero-config setup.           |
-| [`kubb/kit`](/docs/5.x/reference/kit)            | The complete authoring toolkit: `definePlugin`, `defineGenerator`, `defineResolver`, `defineParser`, `createAdapter`, `createRenderer`, `createStorage`, and the `ast` namespace with the `factory` node builders, visitors, guards, and macro engine. |
-| [`@kubb/cli`](/docs/5.x/reference/commands/)     | Provides the `kubb` command-line binary. Reads `kubb.config.ts` and runs the generation pipeline.                                                                                |
-| [`@kubb/parser-ts`](/parsers/parser-ts/)    | TypeScript and TSX parser. Included automatically with the `kubb` package.                                                                                                       |
-| [`@kubb/renderer-jsx`](/docs/5.x/reference/jsx)  | JSX-based rendering for plugins that build files from React components. Import it as `kubb/jsx`.                                                                                |
-
-Two internal libraries sit behind these packages: `@kubb/core` (the plugin driver, file manager, and build orchestration) and `@kubb/ast` (the universal AST). You never install or import them directly. Everything you write imports from `kubb`, `kubb/config`, `kubb/kit`, or `kubb/jsx`.
-
-## Build-tool integrations
+## Integrations
 
 | Package                                    | Description                                                                                                                                                                                                                                                                                                           |
 | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -250,7 +207,7 @@ Two internal libraries sit behind these packages: `@kubb/core` (the plugin drive
 
 See the [Integrations](/docs/5.x/guide/integrations/) page for setup instructions for each build tool.
 
-## Servers
+## AI
 
 | Package                                   | Purpose                                                                                                     |
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
