@@ -9,11 +9,32 @@ outline: deep
 
 `@kubb/ast` is the package behind Kubb's universal Abstract Syntax Tree. This page documents its callable surface: node factories, the three visitors, type guards, and helpers. For why the AST exists and how it fits the pipeline, see [AST concepts](/docs/5.x/guide/concepts/ast).
 
-> [!NOTE]
-> `kubb/kit` re-exports `@kubb/ast` as the `ast` namespace, with node constructors under `ast.factory` the way TypeScript groups them under `ts.factory`. Most plugins do not need `@kubb/ast` as a direct dependency. Install it only for named imports without the `ast.` prefix, taking constructors from the `factory` export of `@kubb/ast`.
+## Choosing an import
 
-> [!TIP]
-> This page documents `@kubb/ast` (and its `kubb/ast` alias): the flat helpers, guards, and node types. The `ast` namespace and its `factory` node builders are re-exported through [`kubb/kit`](/docs/5.x/reference/kit) instead, alongside `definePlugin` and `defineGenerator`, since generator authors already import from there. The code samples below still import `ast` from `kubb/kit` for that reason, even though the rest of this page covers `@kubb/ast`'s own exports.
+The same AST layer is reachable three ways. Pick the one that matches how you want to write the call, not a different feature set.
+
+| Import      | What you get                                                                                                              | Style               | Reach for it when                                                                        |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------- | ---------------------------------------------------------------------------------------- |
+| `kubb/kit`  | The `ast` and `factory` namespaces: `ast.factory.createX`, `ast.walk`, `ast.transform`, `ast.collect`, `ast.narrowSchema` | Namespaced (`ast.`) | You are authoring a plugin or generator. This is the default, and nothing extra to install. |
+| `kubb/ast`  | The flat runtime and types: `walk`, `transform`, `extractRefName`, `narrowSchema`, the `*Def` guards, the macro engine    | Flat named          | You want prefix-free named imports and already depend on the top-level `kubb` package.   |
+| `@kubb/ast` | Both surfaces: the flat named exports and the `ast` / `factory` namespaces                                                | Flat named or `ast.` | You depend on the standalone package directly, without `kubb`.                            |
+
+The `ast` and `factory` namespaces come only from `kubb/kit` (and from `@kubb/ast` directly). The `kubb/ast` subpath deliberately leaves them out, so `import { ast } from 'kubb/ast'` does not resolve. Reach for `kubb/ast` when you want the flat names.
+
+Here is the same call written in each style:
+
+```typescript twoslash [imports.ts]
+import { ast, factory } from 'kubb/kit'
+import { extractRefName } from 'kubb/ast'
+
+ast.factory.createInput({ schemas: [], operations: [] }) // namespaced
+factory.createInput({ schemas: [], operations: [] }) // bare factory namespace
+extractRefName('#/components/schemas/Pet') // flat named helper
+```
+
+As a rule of thumb, import from `kubb/kit` when you are authoring a plugin or generator. Add `@kubb/ast` as a direct dependency only when you want flat named imports and do not already depend on `kubb`.
+
+The code samples below import `ast` from `kubb/kit`, since that is where most authors reach for the AST.
 
 ## Quick start
 
