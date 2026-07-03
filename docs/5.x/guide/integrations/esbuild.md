@@ -1,34 +1,34 @@
 ---
 layout: doc
 title: Run Kubb with esbuild
-description: Run Kubb as part of your esbuild build with unplugin-kubb/esbuild.
+description: Run Kubb as part of your esbuild build with kubb/esbuild.
 outline: [2, 3]
 ---
 
 # Run Kubb with esbuild
 
-`unplugin-kubb/esbuild` runs Kubb as an [esbuild](https://esbuild.github.io/) plugin. Add it to the `plugins` array in your build script. Pass your Kubb config to the `config` option.
+`kubb/esbuild` runs Kubb as an [esbuild](https://esbuild.github.io/) plugin. Add it to the `plugins` array in your build script. Pass your Kubb config to the `config` option.
 
 ## Install
 
-Install the plugin as a dev dependency.
+Install `kubb` as a dev dependency.
 
 ::: code-group
 
 ```shell [bun]
-bun add -d unplugin-kubb@beta
+bun add -d kubb@beta
 ```
 
 ```shell [pnpm]
-pnpm add -D unplugin-kubb@beta
+pnpm add -D kubb@beta
 ```
 
 ```shell [npm]
-npm install --save-dev unplugin-kubb@beta
+npm install --save-dev kubb@beta
 ```
 
 ```shell [yarn]
-yarn add -D unplugin-kubb@beta
+yarn add -D kubb@beta
 ```
 
 :::
@@ -39,7 +39,7 @@ Add the plugin to the `plugins` array in your build script and pass it your Kubb
 
 ```typescript [build.ts]
 import { build } from 'esbuild'
-import kubb from 'unplugin-kubb/esbuild'
+import kubb from 'kubb/esbuild'
 import { pluginTs } from '@kubb/plugin-ts'
 
 const config = {

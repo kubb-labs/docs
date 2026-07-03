@@ -1,34 +1,34 @@
 ---
 layout: doc
 title: Run Kubb with Rollup
-description: Run Kubb as part of your Rollup build with unplugin-kubb/rollup.
+description: Run Kubb as part of your Rollup build with kubb/rollup.
 outline: [2, 3]
 ---
 
 # Run Kubb with Rollup
 
-`unplugin-kubb/rollup` runs Kubb as a [Rollup](https://rollupjs.org/) plugin. It writes the generated files in the `buildStart` hook, before the rest of the bundle runs. Pass your Kubb config to the `config` option.
+`kubb/rollup` runs Kubb as a [Rollup](https://rollupjs.org/) plugin. It writes the generated files in the `buildStart` hook, before the rest of the bundle runs. Pass your Kubb config to the `config` option.
 
 ## Install
 
-Install the plugin as a dev dependency.
+Install `kubb` as a dev dependency.
 
 ::: code-group
 
 ```shell [bun]
-bun add -d unplugin-kubb@beta
+bun add -d kubb@beta
 ```
 
 ```shell [pnpm]
-pnpm add -D unplugin-kubb@beta
+pnpm add -D kubb@beta
 ```
 
 ```shell [npm]
-npm install --save-dev unplugin-kubb@beta
+npm install --save-dev kubb@beta
 ```
 
 ```shell [yarn]
-yarn add -D unplugin-kubb@beta
+yarn add -D kubb@beta
 ```
 
 :::
@@ -38,7 +38,7 @@ yarn add -D unplugin-kubb@beta
 Add the plugin to your `rollup.config.ts` and pass it your Kubb config.
 
 ```typescript [rollup.config.ts]
-import kubb from 'unplugin-kubb/rollup'
+import kubb from 'kubb/rollup'
 import { pluginTs } from '@kubb/plugin-ts'
 
 const config = {

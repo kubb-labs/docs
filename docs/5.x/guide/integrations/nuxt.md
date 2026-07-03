@@ -1,34 +1,34 @@
 ---
 layout: doc
 title: Run Kubb with Nuxt
-description: Run Kubb as part of your Nuxt application with the unplugin-kubb/nuxt module.
+description: Run Kubb as part of your Nuxt application with the kubb/nuxt module.
 outline: [2, 3]
 ---
 
 # Run Kubb with Nuxt
 
-`unplugin-kubb/nuxt` runs Kubb as a [Nuxt](https://nuxt.com/) module. It works with Nuxt 3 and Nuxt 4. The module registers Kubb as both a Vite plugin and a webpack plugin, so Nuxt picks the right one for its active builder.
+`kubb/nuxt` runs Kubb as a [Nuxt](https://nuxt.com/) module. It works with Nuxt 3 and Nuxt 4. The module registers Kubb as both a Vite plugin and a webpack plugin, so Nuxt picks the right one for its active builder.
 
 ## Install
 
-Install the plugin as a dev dependency.
+Install `kubb` as a dev dependency.
 
 ::: code-group
 
 ```shell [bun]
-bun add -d unplugin-kubb@beta
+bun add -d kubb@beta
 ```
 
 ```shell [pnpm]
-pnpm add -D unplugin-kubb@beta
+pnpm add -D kubb@beta
 ```
 
 ```shell [npm]
-npm install --save-dev unplugin-kubb@beta
+npm install --save-dev kubb@beta
 ```
 
 ```shell [yarn]
-yarn add -D unplugin-kubb@beta
+yarn add -D kubb@beta
 ```
 
 :::
@@ -48,7 +48,7 @@ const config = {
 }
 
 export default defineNuxtConfig({
-  modules: [['unplugin-kubb/nuxt', { config }]],
+  modules: [['kubb/nuxt', { config }]],
 })
 ```
 

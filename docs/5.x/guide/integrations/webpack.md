@@ -1,34 +1,34 @@
 ---
 layout: doc
 title: Run Kubb with webpack
-description: Run Kubb as part of your webpack build with unplugin-kubb/webpack.
+description: Run Kubb as part of your webpack build with kubb/webpack.
 outline: [2, 3]
 ---
 
 # Run Kubb with webpack
 
-`unplugin-kubb/webpack` runs Kubb during [webpack](https://webpack.js.org/) compilation. It requires webpack 5. Pass your Kubb config to the `config` option.
+`kubb/webpack` runs Kubb during [webpack](https://webpack.js.org/) compilation. It requires webpack 5. Pass your Kubb config to the `config` option.
 
 ## Install
 
-Install the plugin as a dev dependency.
+Install `kubb` as a dev dependency.
 
 ::: code-group
 
 ```shell [bun]
-bun add -d unplugin-kubb@beta
+bun add -d kubb@beta
 ```
 
 ```shell [pnpm]
-pnpm add -D unplugin-kubb@beta
+pnpm add -D kubb@beta
 ```
 
 ```shell [npm]
-npm install --save-dev unplugin-kubb@beta
+npm install --save-dev kubb@beta
 ```
 
 ```shell [yarn]
-yarn add -D unplugin-kubb@beta
+yarn add -D kubb@beta
 ```
 
 :::
@@ -38,7 +38,7 @@ yarn add -D unplugin-kubb@beta
 Add the plugin to your `webpack.config.js` and pass it your Kubb config.
 
 ```javascript [webpack.config.js]
-const kubb = require('unplugin-kubb/webpack')
+const kubb = require('kubb/webpack')
 const { pluginTs } = require('@kubb/plugin-ts')
 
 const config = {

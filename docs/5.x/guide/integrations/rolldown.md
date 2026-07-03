@@ -1,34 +1,34 @@
 ---
 layout: doc
 title: Run Kubb with Rolldown
-description: Run Kubb as part of your Rolldown build with unplugin-kubb/rolldown.
+description: Run Kubb as part of your Rolldown build with kubb/rolldown.
 outline: [2, 3]
 ---
 
 # Run Kubb with Rolldown
 
-`unplugin-kubb/rolldown` runs Kubb as a [Rolldown](https://rolldown.rs/) plugin. Rolldown is a Rust-based, Rollup-compatible bundler. Pass your Kubb config to the `config` option.
+`kubb/rolldown` runs Kubb as a [Rolldown](https://rolldown.rs/) plugin. Rolldown is a Rust-based, Rollup-compatible bundler. Pass your Kubb config to the `config` option.
 
 ## Install
 
-Install the plugin as a dev dependency.
+Install `kubb` as a dev dependency.
 
 ::: code-group
 
 ```shell [bun]
-bun add -d unplugin-kubb@beta
+bun add -d kubb@beta
 ```
 
 ```shell [pnpm]
-pnpm add -D unplugin-kubb@beta
+pnpm add -D kubb@beta
 ```
 
 ```shell [npm]
-npm install --save-dev unplugin-kubb@beta
+npm install --save-dev kubb@beta
 ```
 
 ```shell [yarn]
-yarn add -D unplugin-kubb@beta
+yarn add -D kubb@beta
 ```
 
 :::
@@ -38,7 +38,7 @@ yarn add -D unplugin-kubb@beta
 Add the plugin to your `rolldown.config.ts` and pass it your Kubb config.
 
 ```typescript [rolldown.config.ts]
-import kubb from 'unplugin-kubb/rolldown'
+import kubb from 'kubb/rolldown'
 import { defineConfig as defineRolldownConfig } from 'rolldown'
 import { pluginTs } from '@kubb/plugin-ts'
 
