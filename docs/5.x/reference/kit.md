@@ -1335,7 +1335,7 @@ import { createMockedPlugin, renderGeneratorOperation, matchFiles } from 'kubb/k
 - [Adapter concepts](/docs/5.x/guide/concepts/adapters) on how adapters convert specs to the universal AST
 - [Parser concepts](/docs/5.x/guide/concepts/parsers) on converting `FileNode` AST to source strings
 - [Macros concepts](/docs/5.x/guide/going-further/macros) for `defineMacro`, `composeMacros`, and `applyMacros`
-- [Barrel files](/docs/5.x/guide/concepts/barrel-files) for barrel generation with `@kubb/plugin-barrel`
+- [Barrel files](/docs/5.x/guide/going-further/barrel-files) for barrel generation with `@kubb/plugin-barrel`
 - [Creating plugins](/docs/5.x/guide/going-further/creating-plugins) for a step-by-step guide to building a full plugin
 - [Programmatic usage recipes](/docs/5.x/guide/recipes#programmatic-build) with `createKubb` usage patterns
 - [Configuration reference](/docs/5.x/reference/configuration) for all `defineConfig` options
