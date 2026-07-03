@@ -1,34 +1,34 @@
 ---
 layout: doc
 title: Run Kubb with Rspack
-description: Run Kubb as part of your Rspack build with unplugin-kubb/rspack.
+description: Run Kubb as part of your Rspack build with kubb/rspack.
 outline: [2, 3]
 ---
 
 # Run Kubb with Rspack
 
-`unplugin-kubb/rspack` runs Kubb during [Rspack](https://rspack.dev/) compilation. Rspack is a Rust-based bundler with a webpack-compatible config. Pass your Kubb config to the `config` option.
+`kubb/rspack` runs Kubb during [Rspack](https://rspack.dev/) compilation. Rspack is a Rust-based bundler with a webpack-compatible config. Pass your Kubb config to the `config` option.
 
 ## Install
 
-Install the plugin as a dev dependency.
+Install `kubb` as a dev dependency.
 
 ::: code-group
 
 ```shell [bun]
-bun add -d unplugin-kubb@beta
+bun add -d kubb@beta
 ```
 
 ```shell [pnpm]
-pnpm add -D unplugin-kubb@beta
+pnpm add -D kubb@beta
 ```
 
 ```shell [npm]
-npm install --save-dev unplugin-kubb@beta
+npm install --save-dev kubb@beta
 ```
 
 ```shell [yarn]
-yarn add -D unplugin-kubb@beta
+yarn add -D kubb@beta
 ```
 
 :::
@@ -38,16 +38,15 @@ yarn add -D unplugin-kubb@beta
 Add the plugin to your `rspack.config.js` and pass it your Kubb config.
 
 ```javascript [rspack.config.js]
-const kubb = require('unplugin-kubb/rspack')
-const { defineConfig } = require('kubb')
+const kubb = require('kubb/rspack')
 const { pluginTs } = require('@kubb/plugin-ts')
 
-const config = defineConfig({
+const config = {
   root: '.',
   input: { path: './petStore.yaml' },
   output: { path: './src/gen', clean: true },
   plugins: [pluginTs({ output: { path: 'models' } })],
-})
+}
 
 module.exports = {
   plugins: [kubb({ config })],

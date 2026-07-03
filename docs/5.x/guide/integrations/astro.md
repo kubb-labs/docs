@@ -1,34 +1,34 @@
 ---
 layout: doc
 title: Run Kubb with Astro
-description: Run Kubb as part of your Astro project with the unplugin-kubb/astro integration.
+description: Run Kubb as part of your Astro project with the kubb/astro integration.
 outline: [2, 3]
 ---
 
 # Run Kubb with Astro
 
-`unplugin-kubb/astro` runs Kubb as an [Astro](https://astro.build/) integration. It hooks into Astro's Vite layer and generates during a build. Pass your Kubb config to the `config` option.
+`kubb/astro` runs Kubb as an [Astro](https://astro.build/) integration. It hooks into Astro's Vite layer and generates during a build. Pass your Kubb config to the `config` option.
 
 ## Install
 
-Install the plugin as a dev dependency.
+Install `kubb` as a dev dependency.
 
 ::: code-group
 
 ```shell [bun]
-bun add -d unplugin-kubb@beta
+bun add -d kubb@beta
 ```
 
 ```shell [pnpm]
-pnpm add -D unplugin-kubb@beta
+pnpm add -D kubb@beta
 ```
 
 ```shell [npm]
-npm install --save-dev unplugin-kubb@beta
+npm install --save-dev kubb@beta
 ```
 
 ```shell [yarn]
-yarn add -D unplugin-kubb@beta
+yarn add -D kubb@beta
 ```
 
 :::
@@ -39,16 +39,15 @@ Add the integration to your `astro.config.mjs` and pass it your Kubb config.
 
 ```typescript [astro.config.mjs]
 import { defineConfig as defineAstroConfig } from 'astro/config'
-import kubb from 'unplugin-kubb/astro'
-import { defineConfig } from 'kubb/config'
+import kubb from 'kubb/astro'
 import { pluginTs } from '@kubb/plugin-ts'
 
-const config = defineConfig({
+const config = {
   root: '.',
   input: { path: './petStore.yaml' },
   output: { path: './src/gen', clean: true },
   plugins: [pluginTs({ output: { path: 'models' } })],
-})
+}
 
 export default defineAstroConfig({
   integrations: [kubb({ config })],
