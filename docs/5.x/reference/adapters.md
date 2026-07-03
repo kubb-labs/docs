@@ -17,8 +17,8 @@ An adapter converts an input specification into the universal [AST](/docs/5.x/gu
 A minimal adapter declares a name and returns an empty [`InputNode`](/docs/5.x/guide/concepts/ast). An empty AST emits nothing, so fill `schemas` and `operations` from your spec next.
 
 ```typescript twoslash [adapterCustom.ts]
-import { ast, createAdapter } from '@kubb/core'
-import type { AdapterFactoryOptions } from '@kubb/core'
+import { ast, createAdapter } from 'kubb/kit'
+import type { AdapterFactoryOptions } from 'kubb/kit'
 
 type AdapterCustom = AdapterFactoryOptions<'adapter-custom', { strict?: boolean }, { strict: boolean }>
 
@@ -83,8 +83,8 @@ type AdapterSource = { type: 'path'; path: string } | { type: 'data'; data: stri
 The build driver prefers `stream()` when an adapter implements it. For `parse()`-only adapters, the driver wraps the result in a reusable `AsyncIterable` so the rest of the pipeline stays stream-shaped.
 
 ```typescript twoslash [adapterStream.ts]
-import { ast, createAdapter } from '@kubb/core'
-import type { AdapterFactoryOptions } from '@kubb/core'
+import { ast, createAdapter } from 'kubb/kit'
+import type { AdapterFactoryOptions } from 'kubb/kit'
 
 type AdapterStream = AdapterFactoryOptions<'adapter-stream', Record<string, never>>
 
@@ -137,8 +137,8 @@ Adapters share the layout of plugins, so [`getResolver`](/docs/5.x/reference/cor
 Export the runtime name as a `satisfies`-typed constant so consumers reference it without typos:
 
 ```typescript twoslash [naming.ts]
-import { ast, createAdapter } from '@kubb/core'
-import type { AdapterFactoryOptions } from '@kubb/core'
+import { ast, createAdapter } from 'kubb/kit'
+import type { AdapterFactoryOptions } from 'kubb/kit'
 
 export type AdapterExample = AdapterFactoryOptions<'example', { strict?: boolean }, { strict: boolean }, unknown>
 export const adapterExampleName = 'example' satisfies AdapterExample['name']
@@ -212,8 +212,8 @@ export default defineConfig({
 Use `createAdapter` with `AdapterFactoryOptions` to model your input format. This JSON Schema adapter exposes the parsed document for plugins:
 
 ```typescript twoslash [adapterJsonSchema.ts]
-import { ast, createAdapter } from '@kubb/core'
-import type { AdapterFactoryOptions } from '@kubb/core'
+import { ast, createAdapter } from 'kubb/kit'
+import type { AdapterFactoryOptions } from 'kubb/kit'
 
 type Document = { $schema: string; definitions?: Record<string, unknown> }
 
@@ -292,8 +292,8 @@ The adapter derives a small context from each schema, then runs it through an or
 ### Validate before parsing
 
 ```typescript twoslash [adapterValidated.ts]
-import { ast, createAdapter } from '@kubb/core'
-import type { AdapterFactoryOptions } from '@kubb/core'
+import { ast, createAdapter } from 'kubb/kit'
+import type { AdapterFactoryOptions } from 'kubb/kit'
 
 type AdapterValidated = AdapterFactoryOptions<'adapter-validated', Record<string, never>>
 

@@ -72,7 +72,7 @@ The `operations` option is gone, so `plugin-zod` no longer emits an `operations.
 ::: code-group
 
 ```typescript [operationsPlugin.ts]
-import { ast, defineGenerator, definePlugin } from '@kubb/core'
+import { ast, defineGenerator, definePlugin } from 'kubb/kit'
 import { pluginZodName, type ResolverZod } from '@kubb/plugin-zod'
 
 const operationSchemaType = `{

@@ -101,7 +101,7 @@ Macros run per plugin, so one plugin's macros never change the nodes another plu
 // @noErrors
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
-import { macroSimplifyUnion } from '@kubb/ast/macros'
+import { macroSimplifyUnion } from 'kubb/ast'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
@@ -172,10 +172,10 @@ See the [plugins catalogue](/plugins) for the full list.
 
 ## Renderer
 
-Plugins can use [`@kubb/renderer-jsx`](/docs/5.x/reference/core) to describe generated files as React components instead of constructing `FileNode`s by hand.
+Plugins can use [`kubb/jsx`](/docs/5.x/reference/jsx), backed by `@kubb/renderer-jsx`, to describe generated files as React components instead of constructing `FileNode`s by hand.
 
 > [!NOTE]
-> `@kubb/renderer-jsx` is optional. Plugins that build `FileNode`s directly with factory functions from [`@kubb/ast`](/docs/5.x/guide/concepts/ast) do not need it.
+> `kubb/jsx` is optional. Plugins that build `FileNode`s directly with the `factory` node builders from [`kubb/kit`](/docs/5.x/reference/kit) do not need it.
 
 ## [Parsers](/docs/5.x/guide/concepts/parsers)
 
@@ -215,7 +215,7 @@ The storage driver controls where Kubb writes generated files. The default is `f
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
-import { memoryStorage } from '@kubb/core'
+import { memoryStorage } from 'kubb/kit'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
@@ -235,11 +235,12 @@ export default defineConfig({
 | Package                                    | Purpose                                                                                                                                                                          |
 | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`kubb`](/docs/5.x/reference/core)               | Umbrella package. Exports `defineConfig` and bundles `adapterOas`, `parserTs`, `parserTsx`, `parserMd`, and `pluginBarrel` for a zero-config setup.                             |
-| [`@kubb/core`](/docs/5.x/reference/core)         | Lower-level runtime with `createKubb`, `definePlugin`, `defineParser`, `createAdapter`, and storage APIs. Use for programmatic generation or custom tooling.                     |
+| [`@kubb/core`](/docs/5.x/reference/core)         | Lower-level build engine with `createKubb`, `KubbDriver`, the file pipeline, and reporters. Use for programmatic generation or custom tooling.                     |
+| [`kubb/kit`](/docs/5.x/reference/kit)            | Plugin authoring toolkit: `definePlugin`, `defineGenerator`, `defineResolver`, `defineParser`, `createAdapter`, `createStorage`, and the `ast` and `factory` node builders. |
 | [`@kubb/cli`](/docs/5.x/reference/commands/)     | Provides the `kubb` command-line binary. Reads `kubb.config.ts` and runs the generation pipeline.                                                                                |
-| [`@kubb/ast`](/docs/5.x/guide/concepts/ast)      | Universal AST layer. Includes all node factories, `walk`, `transform`, `collect`, type guards, ref helpers, and the `defineDialect` and `optionality` helpers. The macro engine lives on the root and the presets on `@kubb/ast/macros`. |
+| [`@kubb/ast`](/docs/5.x/guide/concepts/ast)      | Universal AST layer. Includes all node factories, `walk`, `transform`, `collect`, type guards, ref helpers, and the `defineDialect` and `optionality` helpers. The macro engine and its presets both live on the package root. |
 | [`@kubb/parser-ts`](/parsers/parser-ts/)    | TypeScript and TSX parser. Included automatically with the `kubb` package.                                                                                                       |
-| [`@kubb/renderer-jsx`](/docs/5.x/reference/core) | JSX-based rendering for plugins that build files from React components.                                                                                                          |
+| [`@kubb/renderer-jsx`](/docs/5.x/reference/jsx)  | JSX-based rendering for plugins that build files from React components. Import it as `kubb/jsx`.                                                                                |
 
 ## Build-tool integrations
 

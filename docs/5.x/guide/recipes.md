@@ -252,12 +252,13 @@ export default defineConfig({
 
 ## Programmatic build
 
-Drive Kubb from a script with [`createKubb`](/docs/5.x/reference/core#createkubb) from `@kubb/core`. This fits monorepo orchestration and custom build pipelines.
+Drive Kubb from a script with [`createKubb`](/docs/5.x/reference/core#createkubb) from `@kubb/core`, paired with `Diagnostics` from `kubb/kit`. This fits monorepo orchestration and custom build pipelines.
 
 Unlike `defineConfig`, `createKubb` adds no defaults. Pass `adapter`, `parsers`, and your plugins yourself.
 
 ```typescript twoslash [generate.ts]
-import { createKubb, Diagnostics } from '@kubb/core'
+import { createKubb } from '@kubb/core'
+import { Diagnostics } from 'kubb/kit'
 import { adapterOas } from '@kubb/adapter-oas'
 import { parserTs, parserTsx } from '@kubb/parser-ts'
 import { pluginTs } from '@kubb/plugin-ts'

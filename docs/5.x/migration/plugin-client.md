@@ -105,7 +105,7 @@ Drop these `plugin-client` options from your config:
 `urlType: 'export'` used to emit one `get<Operation>Url` function per operation that returned the URL without sending the request. The client plugins no longer generate those. If you relied on them, generate the same helpers from your own plugin. The URL lives on each operation node as `node.path`, so a small `operation` generator covers it.
 
 ```typescript twoslash [pluginClientUrl.ts]
-import { ast, definePlugin, defineGenerator } from '@kubb/core'
+import { ast, definePlugin, defineGenerator } from 'kubb/kit'
 
 export const pluginClientUrl = definePlugin(() => ({
   name: 'plugin-client-url',

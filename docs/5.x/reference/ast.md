@@ -10,14 +10,17 @@ outline: deep
 `@kubb/ast` is the package behind Kubb's universal Abstract Syntax Tree. This page documents its callable surface: node factories, the three visitors, type guards, and helpers. For why the AST exists and how it fits the pipeline, see [AST concepts](/docs/5.x/guide/concepts/ast).
 
 > [!NOTE]
-> `@kubb/core` re-exports `@kubb/ast` as the `ast` namespace, with node constructors under `ast.factory` the way TypeScript groups them under `ts.factory`. Most plugins do not need `@kubb/ast` as a direct dependency. Install it only for named imports without the `ast.` prefix, taking constructors from the `factory` export of `@kubb/ast`.
+> `kubb/kit` re-exports `@kubb/ast` as the `ast` namespace, with node constructors under `ast.factory` the way TypeScript groups them under `ts.factory`. Most plugins do not need `@kubb/ast` as a direct dependency. Install it only for named imports without the `ast.` prefix, taking constructors from the `factory` export of `@kubb/ast`.
+
+> [!TIP]
+> This page documents `@kubb/ast` (and its `kubb/ast` alias): the flat helpers, guards, and node types. The `ast` namespace and its `factory` node builders are re-exported through [`kubb/kit`](/docs/5.x/reference/kit) instead, alongside `definePlugin` and `defineGenerator`. Generator authors already import from `kubb/kit`, so `ast`/`factory` live there rather than in `kubb/ast` itself. The code samples below import `ast` from `kubb/kit` for that reason, even though the rest of this page covers `@kubb/ast`'s own exports.
 
 ## Quick start
 
 The public surface is a handful of factories, three visitors, and a few guards:
 
 ```typescript twoslash [example.ts]
-import { ast } from '@kubb/core'
+import { ast } from 'kubb/kit'
 
 const root: ast.InputNode = ast.factory.createInput({
   schemas: [ast.factory.createSchema({ name: 'Pet', type: 'object', properties: [] })],
@@ -73,7 +76,7 @@ A `SchemaNode` is discriminated by its `type`. The values fall into three famili
 Factories return defaulted, fully typed nodes. Use them in adapters and inside generator handlers. Never build AST literals by hand.
 
 ```typescript twoslash [factories.ts]
-import { ast } from '@kubb/core'
+import { ast } from 'kubb/kit'
 
 const root = ast.factory.createInput({
   schemas: [ast.factory.createSchema({ name: 'Pet', type: 'object', properties: [] }), ast.factory.createSchema({ name: 'Status', type: 'enum', values: ['active', 'inactive'] })],
@@ -101,7 +104,7 @@ Three visitor functions cover the common traversal patterns. Visitor objects use
 ### `walk`: async traversal with side effects
 
 ```typescript twoslash [walk.ts]
-import { ast } from '@kubb/core'
+import { ast } from 'kubb/kit'
 
 const root = ast.factory.createInput({ schemas: [], operations: [] })
 
@@ -122,7 +125,7 @@ Use `walk` to log, validate, collect statistics, or trigger a side effect per no
 ### `transform`: synchronous, returns a new tree
 
 ```typescript twoslash [transform.ts]
-import { ast } from '@kubb/core'
+import { ast } from 'kubb/kit'
 
 const root = ast.factory.createInput({ schemas: [], operations: [] })
 
@@ -147,7 +150,7 @@ Use `transform` to change AST structure, normalize inconsistencies, or annotate 
 To apply a change and keep that guarantee, use the `update` factory instead of spreading by hand. It returns the same node when every field you pass already matches:
 
 ```typescript twoslash [update.ts]
-import { ast } from '@kubb/core'
+import { ast } from 'kubb/kit'
 
 const node = ast.factory.createSchema({ name: 'Pet', type: 'object', properties: [] })
 
@@ -158,7 +161,7 @@ ast.factory.update(node, { name: 'Animal' }) // -> new node with `name` replaced
 ### `collect`: gather matching nodes
 
 ```typescript twoslash [collect.ts]
-import { ast } from '@kubb/core'
+import { ast } from 'kubb/kit'
 
 const root = ast.factory.createInput({ schemas: [], operations: [] })
 
@@ -185,7 +188,7 @@ Use `collect` to find specific nodes, filter by a criterion, or build a list for
 `@kubb/ast` exports type guards and a `narrowSchema` helper for safe discrimination:
 
 ```typescript twoslash [guards.ts]
-import { ast } from '@kubb/core'
+import { ast } from 'kubb/kit'
 
 const root = ast.factory.createInput({ schemas: [], operations: [] })
 
@@ -210,16 +213,16 @@ await ast.walk(root, {
 
 ## Refs and naming helpers
 
-The ref and naming helpers live in the `@kubb/ast/utils` subpath, alongside the other string and code-building utilities.
+The ref and naming helpers ship as part of `@kubb/ast`'s main export, alongside the other string and code-building utilities. There is no separate subpath for them. Import them the same way you import guards or node types, from `kubb/ast` or directly from `@kubb/ast`.
 
-| Helper              | Import from       | Purpose                                             |
-| ------------------- | ----------------- | --------------------------------------------------- |
-| `extractRefName`    | `@kubb/ast/utils` | Turn `'#/components/schemas/Pet'` into `'Pet'`.     |
-| `childName`         | `@kubb/ast/utils` | Derive a child property name from context.          |
-| `enumPropName`      | `@kubb/ast/utils` | Convert an enum value into a valid property name.   |
+| Helper           | Purpose                                            |
+| ---------------- | --------------------------------------------------- |
+| `extractRefName` | Turn `'#/components/schemas/Pet'` into `'Pet'`.    |
+| `childName`      | Derive a child property name from context.         |
+| `enumPropName`   | Convert an enum value into a valid property name.  |
 
 ```typescript twoslash [refs.ts]
-import { extractRefName } from '@kubb/ast/utils'
+import { extractRefName } from 'kubb/ast'
 
 const name = extractRefName('#/components/schemas/Pet')
 //    ^?
@@ -258,7 +261,7 @@ See [Parsers concepts](/docs/5.x/guide/concepts/parsers) for how parsers consume
 ### Collect every operation tag
 
 ```typescript twoslash [tags.ts]
-import { ast } from '@kubb/core'
+import { ast } from 'kubb/kit'
 
 const root = ast.factory.createInput({ schemas: [], operations: [] })
 
@@ -272,3 +275,11 @@ const tags = new Set(
 
 console.log([...tags])
 ```
+
+## See also
+
+- [Kit API](/docs/5.x/reference/kit) for `ast`, `factory`, `definePlugin`, `defineGenerator`, and the rest of the plugin authoring toolkit
+- [AST concepts](/docs/5.x/guide/concepts/ast) for why the AST exists and how it fits the pipeline
+- [Macros concepts](/docs/5.x/guide/going-further/macros) for `defineMacro`, `composeMacros`, and `applyMacros`
+- [Parsers concepts](/docs/5.x/guide/concepts/parsers) for how printers turn nodes into source code
+- [Core API](/docs/5.x/reference/core) for `createKubb`, `definePlugin`, and the rest of the engine surface
