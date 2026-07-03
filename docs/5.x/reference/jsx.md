@@ -80,4 +80,4 @@ Use `stream(element)` instead of `render` when you want files as they are produc
 
 - [Kit API](/docs/5.x/reference/kit) for `defineGenerator`'s `renderer` field and the `ast.factory` alternative to JSX
 - [Creating plugins](/docs/5.x/guide/going-further/creating-plugins) for how a generator wires a renderer into its output
-- [Core API](/docs/5.x/reference/core) for the engine-level `jsxRenderer` mention
+- [Kit API: rendering](/docs/5.x/reference/kit#jsxrenderer-via-kubb-jsx) for how `jsxRenderer` sits next to `createRenderer`

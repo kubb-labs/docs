@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Create your first plugin
 
-A [plugin](/docs/5.x/guide/concepts/plugins) teaches Kubb to generate something new. It owns its output folder and file naming, runs [generators](/docs/5.x/guide/concepts/plugins#generators) that walk the [AST](/docs/5.x/guide/concepts/ast), and hooks into the build lifecycle.
+A [plugin](/docs/5.x/guide/concepts/plugins) teaches Kubb to generate something new. It owns its output folder and file naming, runs [generators](/docs/5.x/guide/concepts/plugins#generators) that walk the [AST](/docs/5.x/guide/concepts/ast), and hooks into the build lifecycle. Everything this guide uses comes from [`kubb/kit`](/docs/5.x/reference/kit) and its `kubb/kit/testing` subpath, so installing `kubb` is the only setup.
 
 This guide builds a `kubb-plugin-example` package from scratch and publishes it to npm.
 

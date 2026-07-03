@@ -7,7 +7,7 @@ outline: deep
 
 # Kit: the plugin authoring toolkit
 
-`kubb/kit` is what you import to author a plugin, a generator, a resolver, a parser, or a custom adapter or renderer. It groups `definePlugin`, `defineGenerator`, `defineResolver`, `defineParser`, `createAdapter`, `createRenderer`, the `ast` namespace and `factory` node builders you use to construct output, and the option and hook types that go with all of it. See [Architecture](/docs/5.x/guide/concepts/architecture) for where kit sits in the pipeline, [Plugins](/docs/5.x/guide/concepts/plugins) for what a plugin does once it is built, and [AST](/docs/5.x/guide/concepts/ast) for the tree kit's `ast` namespace wraps.
+`kubb/kit` contains everything you need to create your own plugin and custom logic. A plugin, a generator, a resolver, a parser, or a custom adapter or renderer all start from this one import. It groups `definePlugin`, `defineGenerator`, `defineResolver`, `defineParser`, `createAdapter`, `createRenderer`, the `ast` namespace and `factory` node builders you use to construct output, and the option and hook types that go with all of it. See [Architecture](/docs/5.x/guide/concepts/architecture) for where kit sits in the pipeline, [Plugins](/docs/5.x/guide/concepts/plugins) for what a plugin does once it is built, and [AST](/docs/5.x/guide/concepts/ast) for the tree kit's `ast` namespace wraps.
 
 ## Why a separate surface from the engine
 
@@ -19,7 +19,7 @@ Kit keeps the two apart the same way the AST layer and the JSX renderer stay sep
 
 Node building is the most common thing a generator author does. Nearly every `operation` or `schema` handler ends with a call to `ast.factory.createFile` or one of its neighbors, so the node builders sit right next to `definePlugin` and `defineGenerator` instead of living behind a separate AST import.
 
-The `ast` namespace holds everything else too: the guards, the macros, the schema and string helpers, the dialect, the printer, and the visitors. Pull `ast` from `kubb/kit` whether you are inside a plugin or writing a standalone script that narrows a node on its own. To depend on the AST on its own, without the rest of the toolkit, install the `@kubb/ast` package and import its members directly.
+The `ast` namespace holds everything else too: the guards, the macros, the schema and string helpers, the dialect, the printer, and the visitors. Pull `ast` from `kubb/kit` whether you are inside a plugin or writing a standalone script that narrows a node on its own. The namespace is backed by `@kubb/ast`, an internal library, the same way the authoring helpers are backed by the internal `@kubb/core`. You never depend on either package directly.
 
 ## Reference
 

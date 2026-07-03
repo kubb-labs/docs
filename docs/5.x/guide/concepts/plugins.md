@@ -9,7 +9,7 @@ outline: deep
 
 A plugin teaches Kubb to generate something new. It owns its file naming, its output folder, the lifecycle hooks it listens to, and the [generators](/docs/5.x/reference/kit#defineGenerator) that walk the [AST](/docs/5.x/guide/concepts/ast) and emit files. Almost everything you see in a generated `src/gen/` folder traces back to one plugin or another, so understanding how plugins behave explains how Kubb behaves.
 
-This page is about the idea: what a plugin is, how its lifecycle runs, and how plugins work together. For the signatures (`definePlugin`, `defineGenerator`, `defineResolver`, and the context tables) see the [Core API](/docs/5.x/reference/core). When you want to build one step by step, follow [Creating your first plugin](/docs/5.x/guide/going-further/creating-plugins).
+This page is about the idea: what a plugin is, how its lifecycle runs, and how plugins work together. For the signatures (`definePlugin`, `defineGenerator`, `defineResolver`, and the context tables) see the [Kit API](/docs/5.x/reference/kit). When you want to build one step by step, follow [Creating your first plugin](/docs/5.x/guide/going-further/creating-plugins).
 
 > [!TIP]
 > Need a TanStack Query client, a Zod schema set, or MSW handlers? Check the [Plugins](/plugins) registry first. Build a custom plugin only when no existing one fits.
@@ -28,7 +28,7 @@ During setup, every plugin wires itself in once. It registers its generators, se
 
 Then Kubb walks the AST. For each schema node it calls the schema handlers, for each operation node the operation handlers, and once after the walk it calls the operations handlers with the full list. Generators return file nodes during this phase, which is where the bulk of the output is produced.
 
-When a plugin's generators finish, it gets a closing event with a snapshot of the files it produced. After every plugin has finished, a final event fires before anything is written to disk, which is the spot to inject aggregate files. Writing, formatting, linting, and user hooks follow, each with its own start and end events. The full event list, with the context each one carries, lives in the [Core API](/docs/5.x/reference/core).
+When a plugin's generators finish, it gets a closing event with a snapshot of the files it produced. After every plugin has finished, a final event fires before anything is written to disk, which is the spot to inject aggregate files. Writing, formatting, linting, and user hooks follow, each with its own start and end events. The full event list, with the context each one carries, lives in the [Kit API](/docs/5.x/reference/kit).
 
 ## How plugins compose
 
@@ -64,4 +64,4 @@ The Kubb monorepo ships official plugins for the most common cases. Browse them 
 
 ## Next steps
 
-To build a plugin of your own, work through [Creating your first plugin](/docs/5.x/guide/going-further/creating-plugins). For the exact shape of `definePlugin`, `defineGenerator`, `defineResolver`, and the context passed to each hook, read the [Core API](/docs/5.x/reference/core).
+To build a plugin of your own, work through [Creating your first plugin](/docs/5.x/guide/going-further/creating-plugins). For the exact shape of `definePlugin`, `defineGenerator`, `defineResolver`, and the context passed to each hook, read the [Kit API](/docs/5.x/reference/kit).

@@ -252,7 +252,7 @@ export default defineConfig({
 
 ## Programmatic build
 
-Drive Kubb from a script with [`createKubb`](/docs/5.x/reference/core#createkubb) from the `kubb` package, paired with `Diagnostics` from `kubb/kit`. This fits monorepo orchestration and custom build pipelines.
+Drive Kubb from a script with [`createKubb`](/docs/5.x/reference/kit#createkubb) from the `kubb` package, paired with `Diagnostics` from `kubb/kit`. This fits monorepo orchestration and custom build pipelines.
 
 Unlike `defineConfig`, `createKubb` adds no defaults. Pass `adapter`, `parsers`, and your plugins yourself.
 
@@ -285,7 +285,7 @@ if (Diagnostics.hasError(diagnostics)) {
 console.log(`Generated ${files.length} files`)
 ```
 
-Use `.build()` instead of `.safeBuild()` if you want it to throw on errors rather than return `diagnostics`. See the [Core API](/docs/5.x/reference/core#createkubb) for the full `Kubb` instance API.
+Use `.build()` instead of `.safeBuild()` if you want it to throw on errors rather than return `diagnostics`. See the [Kit API](/docs/5.x/reference/kit#createkubb) for the full `Kubb` instance API.
 
 ## CI validation
 

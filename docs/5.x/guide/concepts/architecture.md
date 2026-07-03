@@ -33,7 +33,7 @@ export default defineConfig({
 ```
 
 > [!NOTE]
-> Reach for [`createKubb`](/docs/5.x/reference/core#createkubb) from the `kubb` package only when you need a programmatic build or custom tooling.
+> Reach for [`createKubb`](/docs/5.x/reference/kit#createkubb) from the `kubb` package only when you need a programmatic build or custom tooling.
 
 ## [Adapter](/docs/5.x/guide/concepts/adapters)
 
@@ -64,7 +64,7 @@ See [Adapters](/docs/5.x/guide/concepts/adapters) for the full list of options a
 
 ## [AST](/docs/5.x/guide/concepts/ast)
 
-The AST is the intermediate representation between the [adapter](/docs/5.x/guide/concepts/adapters) and the [plugins](/plugins). Every adapter produces an `InputNode`; every plugin consumes it. Plugins never read the raw spec, so the same plugin works with any adapter.
+The AST is the intermediate representation between the [adapter](/docs/5.x/guide/concepts/adapters) and the [plugins](/plugins). Every adapter produces an `InputNode` and every plugin consumes it. Plugins never read the raw spec, so the same plugin works with any adapter.
 
 ```text [Resulting tree]
 InputNode
@@ -234,12 +234,13 @@ export default defineConfig({
 
 | Package                                    | Purpose                                                                                                                                                                          |
 | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`kubb`](/docs/5.x/reference/core)               | Umbrella package. Exports `defineConfig` and `createKubb`, and bundles `adapterOas`, `parserTs`, `parserTsx`, `parserMd`, and `pluginBarrel` for a zero-config setup.           |
-| [`kubb/kit`](/docs/5.x/reference/kit)            | Plugin authoring toolkit: `definePlugin`, `defineGenerator`, `defineResolver`, `defineParser`, `createAdapter`, `createStorage`, and the `ast` and `factory` node builders. |
+| [`kubb`](/docs/5.x/reference/kit#engine-and-configuration) | Umbrella package. Exports `defineConfig` and `createKubb`, and bundles `adapterOas`, `parserTs`, `parserTsx`, `parserMd`, and `pluginBarrel` for a zero-config setup.           |
+| [`kubb/kit`](/docs/5.x/reference/kit)            | The complete authoring toolkit: `definePlugin`, `defineGenerator`, `defineResolver`, `defineParser`, `createAdapter`, `createRenderer`, `createStorage`, and the `ast` namespace with the `factory` node builders, visitors, guards, and macro engine. |
 | [`@kubb/cli`](/docs/5.x/reference/commands/)     | Provides the `kubb` command-line binary. Reads `kubb.config.ts` and runs the generation pipeline.                                                                                |
-| [`@kubb/ast`](/docs/5.x/guide/concepts/ast)      | Universal AST layer, reached through `kubb/kit` (the `ast` namespace), or installed on its own for AST-only usage. Includes all node factories, `walk`, `transform`, `collect`, type guards, ref helpers, the `defineDialect` and `optionality` helpers, and the macro engine with its presets. |
 | [`@kubb/parser-ts`](/parsers/parser-ts/)    | TypeScript and TSX parser. Included automatically with the `kubb` package.                                                                                                       |
 | [`@kubb/renderer-jsx`](/docs/5.x/reference/jsx)  | JSX-based rendering for plugins that build files from React components. Import it as `kubb/jsx`.                                                                                |
+
+Two internal libraries sit behind these packages: `@kubb/core` (the plugin driver, file manager, and build orchestration) and `@kubb/ast` (the universal AST). You never install or import them directly. Everything you write imports from `kubb`, `kubb/config`, `kubb/kit`, or `kubb/jsx`.
 
 ## Build-tool integrations
 
