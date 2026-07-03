@@ -110,8 +110,8 @@ Scaffold the directories:
 ```shell [Terminal]
 mkdir kubb-plugin-example && cd kubb-plugin-example
 npm init -y
-npm install --save-peer @kubb/kit@beta
-npm install --save-dev typescript @types/node vitest @kubb/core@beta
+npm install --save-peer kubb@beta
+npm install --save-dev typescript @types/node vitest kubb@beta
 mkdir -p src/generators src/resolvers mocks
 ```
 
@@ -521,7 +521,7 @@ await kubb.build()
 
 ### Configure package.json
 
-Peer-depend on `@kubb/kit` at v5 to keep the runtime out of your bundle. List `@kubb/kit` under `devDependencies` too, for local builds, alongside `@kubb/core` for the tests that call `createKubb`.
+Peer-depend on `kubb` at v5 to keep the runtime out of your bundle, and list it under `devDependencies` too, for local builds and typechecking. Add `@kubb/core` as a devDependency only if your tests call `createKubb` directly, since that engine-level API isn't part of `kubb/kit`.
 
 ```json [package.json]
 {
@@ -542,10 +542,10 @@ Peer-depend on `@kubb/kit` at v5 to keep the runtime out of your bundle. List `@
     "prepublishOnly": "npm run build && npm test"
   },
   "peerDependencies": {
-    "@kubb/kit": "^5.0.0"
+    "kubb": "^5.0.0"
   },
   "devDependencies": {
-    "@kubb/kit": "^5.0.0",
+    "kubb": "^5.0.0",
     "@kubb/core": "^5.0.0",
     "@types/node": "^22.0.0",
     "typescript": "^5.0.0",
