@@ -130,7 +130,8 @@ Reach for `createKubb` when you orchestrate several builds, inspect diagnostics,
 
 ```typescript twoslash [build.ts]
 // @module: esnext
-import { createKubb, Diagnostics } from '@kubb/core'
+import { createKubb } from '@kubb/core'
+import { Diagnostics } from 'kubb/kit'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginAxios } from '@kubb/plugin-axios'
 

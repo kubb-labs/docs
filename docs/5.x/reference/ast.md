@@ -13,7 +13,7 @@ outline: deep
 > `kubb/kit` re-exports `@kubb/ast` as the `ast` namespace, with node constructors under `ast.factory` the way TypeScript groups them under `ts.factory`. Most plugins do not need `@kubb/ast` as a direct dependency. Install it only for named imports without the `ast.` prefix, taking constructors from the `factory` export of `@kubb/ast`.
 
 > [!TIP]
-> This page documents `@kubb/ast` (and its `kubb/ast` alias): the flat helpers, guards, and node types. The `ast` namespace and its `factory` node builders are re-exported through [`kubb/kit`](/docs/5.x/reference/kit) instead, alongside `definePlugin` and `defineGenerator`. Generator authors already import from `kubb/kit`, so `ast`/`factory` live there rather than in `kubb/ast` itself. The code samples below import `ast` from `kubb/kit` for that reason, even though the rest of this page covers `@kubb/ast`'s own exports.
+> This page documents `@kubb/ast` (and its `kubb/ast` alias): the flat helpers, guards, and node types. The `ast` namespace and its `factory` node builders are re-exported through [`kubb/kit`](/docs/5.x/reference/kit) instead, alongside `definePlugin` and `defineGenerator`, since generator authors already import from there. The code samples below still import `ast` from `kubb/kit` for that reason, even though the rest of this page covers `@kubb/ast`'s own exports.
 
 ## Quick start
 
@@ -282,4 +282,4 @@ console.log([...tags])
 - [AST concepts](/docs/5.x/guide/concepts/ast) for why the AST exists and how it fits the pipeline
 - [Macros concepts](/docs/5.x/guide/going-further/macros) for `defineMacro`, `composeMacros`, and `applyMacros`
 - [Parsers concepts](/docs/5.x/guide/concepts/parsers) for how printers turn nodes into source code
-- [Core API](/docs/5.x/reference/core) for `createKubb`, `definePlugin`, and the rest of the engine surface
+- [Core API](/docs/5.x/reference/core) for `createKubb`, `KubbDriver`, and the rest of the engine surface

@@ -2,7 +2,7 @@
 
 A macro is a named, composable transform over Kubb's [AST](/docs/5.x/guide/concepts/ast). It rewrites the schema and operation nodes that adapters produce before generators print code, so you can rename a symbol, retype a field, strip metadata, or normalize a shape without forking an adapter or a generator. Because macros run on the shared AST, the same macro works across every input adapter (OpenAPI, AsyncAPI, JSON Schema) and every output target (TypeScript, Zod, and any printer a plugin supplies).
 
-The engine (`defineMacro`, `composeMacros`, `applyMacros`, and the `Macro` type) lives on the `@kubb/ast` root, next to the node tree it transforms and the built-in macro presets.
+The engine (`defineMacro`, `composeMacros`, `applyMacros`, and the `Macro` type) and the built-in macro presets both live on the `@kubb/ast` root, next to the node tree they transform.
 
 ## Shape
 

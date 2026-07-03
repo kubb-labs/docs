@@ -46,7 +46,7 @@ The same tree flows through four stages, each documented on its own page:
 - [Parsers](/docs/5.x/guide/concepts/parsers) turn the emitted nodes into source code.
 
 > [!NOTE]
-> The `ast` namespace and its `factory` node builders are not part of `kubb/ast`. They travel with the plugin authoring toolkit instead, so you import them from [`kubb/kit`](/docs/5.x/guide/concepts/kit) alongside `definePlugin` and `defineGenerator`. Everything else on this page, the guards, the macros, the printer, and the visitors, comes from `kubb/ast` directly. See the [Kit API reference](/docs/5.x/reference/kit) for the full list.
+> The `ast` namespace and its `factory` node builders are not part of `kubb/ast`. They travel with the plugin authoring toolkit instead, so you import them from [`kubb/kit`](/docs/5.x/guide/concepts/kit) alongside `definePlugin` and `defineGenerator`. Everything else on this page, including the guards, the macros, the printer, and the visitors, comes from `kubb/ast` directly. See the [Kit API reference](/docs/5.x/reference/kit) for the full list.
 
 ## Reference
 
