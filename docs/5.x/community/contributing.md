@@ -9,7 +9,7 @@ outline: [2, 3]
 
 There are two places to contribute:
 
-1. [Kubb core](#kubb-core): the runtime, [AST](/docs/5.x/guide/concepts/ast), [adapter](/docs/5.x/guide/concepts/adapters), [parsers](/docs/5.x/guide/concepts/parsers), and built-in plugins in [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb).
+1. [Kubb core](#kubb-core): the runtime, [AST](/docs/5.x/guide/concepts/ast), [adapter](/docs/5.x/guide/concepts/adapters), [parsers](/docs/5.x/guide/concepts/parsers), the [authoring kit](/docs/5.x/guide/concepts/kit), and built-in plugins in [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb).
 2. [Kubb plugins](#kubb-plugins): community and official plugins in the registry at [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins).
 
 First, check the open [issues](https://github.com/kubb-labs/kubb/issues) and [pull requests](https://github.com/kubb-labs/kubb/pulls) so you don't duplicate work. Say hello on [Discord](https://discord.gg/4dQjA6vrWX).
@@ -62,6 +62,7 @@ pnpm run test
 | Path                          | What lives there                                                        |
 | ----------------------------- | ----------------------------------------------------------------------- |
 | `packages/core/`              | Plugin runtime, build loop, `definePlugin`/`createKubb` API.            |
+| `packages/kit/`               | Authoring toolkit re-exported through `kubb/kit`, holding `definePlugin`, `defineGenerator`, `createAdapter`, `createRenderer`, and the `ast` node builders. |
 | `packages/ast/`               | Universal AST and visitor utilities.                                    |
 | `packages/adapter-oas/`       | OpenAPI adapter that parses an OAS 2.0/3.x spec into the AST.           |
 | `packages/parser-ts/`         | Parser that turns the AST into TypeScript and TSX source.               |
