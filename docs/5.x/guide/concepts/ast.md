@@ -7,7 +7,7 @@ outline: deep
 
 # AST
 
-The `@kubb/ast` package defines Kubb's universal Abstract Syntax Tree, the contract between the two halves of the pipeline. [Adapters](/docs/5.x/guide/concepts/adapters) produce the AST from a specification (OpenAPI, AsyncAPI, JSON Schema, and so on), and [plugins](/docs/5.x/guide/concepts/plugins) consume it to emit files. Because every plugin reads the same tree, one plugin works against any spec a custom adapter supplies.
+Kubb's universal Abstract Syntax Tree is the contract between the two halves of the pipeline. [Adapters](/docs/5.x/guide/concepts/adapters) produce the AST from a specification (OpenAPI, AsyncAPI, JSON Schema, and so on), and [plugins](/docs/5.x/guide/concepts/plugins) consume it to emit files. Because every plugin reads the same tree, one plugin works against any spec a custom adapter supplies.
 
 ## The tree shape
 

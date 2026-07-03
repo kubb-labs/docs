@@ -1,13 +1,13 @@
 ---
 layout: doc
 title: AST API - Factories, Visitors, and Guards
-description: The @kubb/ast surface. Node factories, the walk, transform, and collect visitors, type guards, naming helpers, and constants for working with Kubb's universal AST.
+description: The Kubb AST surface. Node factories, the walk, transform, and collect visitors, type guards, naming helpers, and constants for working with Kubb's universal AST.
 outline: deep
 ---
 
 # AST API
 
-`@kubb/ast` is the package behind Kubb's universal Abstract Syntax Tree, reached through `kubb/kit` and `kubb/ast`. This page documents its callable surface: node factories, the three visitors, type guards, and helpers. For why the AST exists and how it fits the pipeline, see [AST concepts](/docs/5.x/guide/concepts/ast).
+Kubb's universal Abstract Syntax Tree is reached through `kubb/kit` and `kubb/ast`. This page documents its callable surface: node factories, the three visitors, type guards, and helpers. For why the AST exists and how it fits the pipeline, see [AST concepts](/docs/5.x/guide/concepts/ast).
 
 ## Choosing an import
 
@@ -18,7 +18,7 @@ Reach the AST two ways. Pick the one that matches how you want to write the call
 | `kubb/kit` | The `ast` and `factory` namespaces: `ast.factory.createX`, `ast.walk`, `ast.transform`, `ast.collect`, `ast.narrowSchema` | Namespaced (`ast.`) | You are authoring a plugin or generator. This is the default, and nothing extra to install. |
 | `kubb/ast` | The flat runtime and types: `walk`, `transform`, `extractRefName`, `narrowSchema`, the `*Def` guards, the macro engine    | Flat named          | You want prefix-free named imports instead of the `ast.` prefix.                            |
 
-Both re-export `@kubb/ast`, the package that defines the AST. `@kubb/ast` stays internal to the kubb monorepo, so import it directly only from inside kubb itself. Everywhere else, plugins and your own code included, go through `kubb/kit` or `kubb/ast`.
+Everything the AST offers is reachable through `kubb/kit`, so make it your default. Reach for `kubb/ast` only when you want a symbol in its flat, prefix-free form.
 
 The `ast` and `factory` namespaces come only from `kubb/kit`. The `kubb/ast` subpath deliberately leaves them out, so `import { ast } from 'kubb/ast'` does not resolve. Reach for `kubb/ast` when you want the flat names.
 
@@ -207,7 +207,7 @@ Use `collect` to find specific nodes, filter by a criterion, or build a list for
 
 ## Guards and narrowing
 
-`@kubb/ast` exports type guards and a `narrowSchema` helper for safe discrimination:
+Kubb exports type guards and a `narrowSchema` helper for safe discrimination:
 
 ```typescript twoslash [guards.ts]
 import { ast } from 'kubb/kit'

@@ -2,7 +2,7 @@
 
 A macro is a named, composable transform over Kubb's [AST](/docs/5.x/guide/concepts/ast). It rewrites the schema and operation nodes that adapters produce before generators print code, so you can rename a symbol, retype a field, strip metadata, or normalize a shape without forking an adapter or a generator. Because macros run on the shared AST, the same macro works across every input adapter (OpenAPI, AsyncAPI, JSON Schema) and every output target (TypeScript, Zod, and any printer a plugin supplies).
 
-The engine (`defineMacro`, `composeMacros`, `applyMacros`, and the `Macro` type) and the built-in macro presets both live on the `@kubb/ast` root, next to the node tree they transform.
+The engine (`defineMacro`, `composeMacros`, `applyMacros`, and the `Macro` type) and the built-in macro presets come with the `ast` namespace from `kubb/kit`, next to the node tree they transform.
 
 ## Shape
 
@@ -107,16 +107,15 @@ Macros run before resolver options are computed, so a renamed `operationId` or `
 
 ## Built-in macros
 
-`@kubb/ast` ships built-in macros for common schema normalizations that any adapter can apply. Import them like any macro and compose them with your own.
+Kubb ships built-in macros for common schema normalizations that any adapter can apply. Import them like any macro and compose them with your own.
 
 `macroSimplifyUnion` drops union members that a broader member already covers, such as a multi-value string enum next to a plain `string`. Single-value enums stay, since they narrow the type. `macroDiscriminatorEnum` rewrites a discriminator property into a string enum of its allowed values, and `macroEnumName` names an inline enum from the schema and property it belongs to. The last two read options, so you call them to build a macro.
 
 ```typescript twoslash [presets.ts]
 import { ast } from 'kubb/kit'
-import { macroDiscriminatorEnum, macroSimplifyUnion } from 'kubb/ast'
 
 const root = ast.factory.createInput({ schemas: [], operations: [] })
-const next = ast.applyMacros(root, [macroSimplifyUnion, macroDiscriminatorEnum({ propertyName: 'kind', values: ['cat', 'dog'] })])
+const next = ast.applyMacros(root, [ast.macroSimplifyUnion, ast.macroDiscriminatorEnum({ propertyName: 'kind', values: ['cat', 'dog'] })])
 ```
 
 ## Sharing macros

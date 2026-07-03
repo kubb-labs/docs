@@ -77,7 +77,7 @@ InputNode
     └── consumed by plugins          → FileNode (e.g. client functions, hooks)
 ```
 
-[`@kubb/ast`](/docs/5.x/guide/concepts/ast) ships three visitor patterns:
+The [AST layer](/docs/5.x/guide/concepts/ast) ships three visitor patterns:
 
 | Visitor                     | Purpose                                                               |
 | --------------------------- | --------------------------------------------------------------------- |
@@ -93,7 +93,7 @@ flowchart LR
     Macros --> Transformed["InputNode\ntransformed"]
 ```
 
-Macros are the second layer of [`@kubb/ast`](/docs/5.x/guide/concepts/ast). They are named, composable transforms that rewrite schema and operation nodes before a plugin's generators print code. Use them to rename symbols, retype fields, or normalize shapes without forking an adapter or a generator. Because they run on the shared AST, the same macro works across every adapter and output target.
+Macros are the second layer of the [AST](/docs/5.x/guide/concepts/ast). They are named, composable transforms that rewrite schema and operation nodes before a plugin's generators print code. Use them to rename symbols, retype fields, or normalize shapes without forking an adapter or a generator. Because they run on the shared AST, the same macro works across every adapter and output target.
 
 Macros run per plugin, so one plugin's macros never change the nodes another plugin sees. Pass them through a plugin's `macros` option, or register them from `kubb:plugin:setup` with `addMacro`.
 
@@ -238,7 +238,7 @@ export default defineConfig({
 | [`@kubb/core`](/docs/5.x/reference/core)         | Lower-level build engine with `createKubb`, `KubbDriver`, the file pipeline, and reporters. Use for programmatic generation or custom tooling.                     |
 | [`kubb/kit`](/docs/5.x/reference/kit)            | Plugin authoring toolkit: `definePlugin`, `defineGenerator`, `defineResolver`, `defineParser`, `createAdapter`, `createStorage`, and the `ast` and `factory` node builders. |
 | [`@kubb/cli`](/docs/5.x/reference/commands/)     | Provides the `kubb` command-line binary. Reads `kubb.config.ts` and runs the generation pipeline.                                                                                |
-| [`@kubb/ast`](/docs/5.x/guide/concepts/ast)      | Universal AST layer. Includes all node factories, `walk`, `transform`, `collect`, type guards, ref helpers, and the `defineDialect` and `optionality` helpers. The macro engine and its presets both live on the package root. |
+| [`kubb/ast`](/docs/5.x/guide/concepts/ast)      | Universal AST layer, reached through `kubb/kit` (the `ast` namespace) or the flat `kubb/ast` subpath. Includes all node factories, `walk`, `transform`, `collect`, type guards, ref helpers, the `defineDialect` and `optionality` helpers, and the macro engine with its presets. |
 | [`@kubb/parser-ts`](/parsers/parser-ts/)    | TypeScript and TSX parser. Included automatically with the `kubb` package.                                                                                                       |
 | [`@kubb/renderer-jsx`](/docs/5.x/reference/jsx)  | JSX-based rendering for plugins that build files from React components. Import it as `kubb/jsx`.                                                                                |
 

@@ -166,7 +166,7 @@ if (ast.isHttpOperationNode(op)) {
 }
 ```
 
-These are the only two guards [`@kubb/ast`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/guards.ts) exports. Everything else narrows through the `kind` and `type` discriminants directly.
+These are the only two guards the [AST](/docs/5.x/reference/ast#guards-and-narrowing) exposes. Everything else narrows through the `kind` and `type` discriminants directly.
 
 ## See also
 

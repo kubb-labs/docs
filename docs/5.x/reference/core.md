@@ -65,7 +65,7 @@ import {
 See the [Kit API](/docs/5.x/reference/kit) for the full authoring reference.
 
 > [!NOTE]
-> `@kubb/core` no longer re-exports `@kubb/ast`. Import `ast` from [`kubb/kit`](/docs/5.x/reference/kit#ast) for the authoring-side namespace, or from `@kubb/ast` directly for the [AST API](/docs/5.x/reference/ast).
+> `@kubb/core` no longer re-exports the `ast` namespace. Import `ast` from [`kubb/kit`](/docs/5.x/reference/kit#ast) for the authoring-side namespace, documented in the [AST API](/docs/5.x/reference/ast).
 
 ## Configuration
 
@@ -432,6 +432,6 @@ if ('path' in input) {
 - [Creating plugins](/docs/5.x/guide/going-further/creating-plugins) for a step-by-step guide to building a full plugin
 - [Programmatic usage recipes](/docs/5.x/guide/recipes#programmatic-build) with `createKubb` usage patterns
 - [Configuration reference](/docs/5.x/reference/configuration) for all `defineConfig` options
-- [`@kubb/ast` package](https://www.npmjs.com/package/@kubb/ast), the node constructors re-exported under `ast.factory`
+- [AST API reference](/docs/5.x/reference/ast) for the node constructors under `ast.factory` and the rest of the AST surface
 - [TypeScript handbook: narrowing](https://www.typescriptlang.org/docs/handbook/2/narrowing.html) on narrowing `config.input` with the `in` operator
 - [Astro integrations reference](https://docs.astro.build/en/reference/integrations-reference/), the inspiration for the hook-style API

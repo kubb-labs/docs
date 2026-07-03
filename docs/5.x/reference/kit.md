@@ -291,7 +291,7 @@ The `Storage` interface itself (`hasItem`, `getItem`, `setItem`, `removeItem`, `
 
 ### `ast`
 
-`ast` is `kubb/kit`'s re-export of the entire [`@kubb/ast`](/docs/5.x/reference/ast) module, the same way TypeScript groups its node constructors under `ts.factory`. Reach for `ast` when you also need the visitors (`ast.walk`, `ast.transform`, `ast.collect`), the guards, or the schema and string helpers alongside node construction.
+`ast` is `kubb/kit`'s namespace for the [entire AST surface](/docs/5.x/reference/ast), the same way TypeScript groups its node constructors under `ts.factory`. Reach for `ast` when you also need the visitors (`ast.walk`, `ast.transform`, `ast.collect`), the guards, or the schema and string helpers alongside node construction.
 
 `kubb/kit` is the namespaced way in. For the prefix-free `kubb/ast` alternative, see [Choosing an import](/docs/5.x/reference/ast#choosing-an-import) on the AST reference.
 
@@ -306,7 +306,7 @@ const root = ast.factory.createInput({
 
 ### `factory`
 
-`factory` is the bare node-builder namespace, equivalent to `ast.factory` but importable on its own when a generator only needs to construct nodes and does not need the rest of `@kubb/ast`.
+`factory` is the bare node-builder namespace, equivalent to `ast.factory` but importable on its own when a generator only needs to construct nodes and does not need the rest of the `ast` namespace.
 
 ```typescript twoslash [factory-namespace.ts]
 import { factory } from 'kubb/kit'
@@ -323,7 +323,7 @@ const file = factory.createFile({
 #### Related
 
 - [AST concepts](/docs/5.x/guide/concepts/ast) for the full mental model of the AST, its node kinds, and traversal
-- [AST API reference](/docs/5.x/reference/ast) for every factory, visitor, and guard `@kubb/ast` exports
+- [AST API reference](/docs/5.x/reference/ast) for every factory, visitor, and guard the AST exposes
 
 ## Diagnostics
 
@@ -412,7 +412,7 @@ import { createMockedPlugin, renderGeneratorOperation, matchFiles } from 'kubb/k
 ## See also
 
 - [Core API](/docs/5.x/reference/core) for the engine: `createKubb`, `KubbDriver`, storage, reporters, and the file pipeline
-- [AST API reference](/docs/5.x/reference/ast) for the full `@kubb/ast` surface behind `kubb/kit`'s `ast` and `factory`
+- [AST API reference](/docs/5.x/reference/ast) for the full AST surface behind `kubb/kit`'s `ast` and `factory`
 - [JSX API reference](/docs/5.x/reference/jsx) for `kubb/jsx`, the JSX renderer
 - [Plugin concepts](/docs/5.x/guide/concepts/plugins) for lifecycle hooks, generators, resolvers, and the plugin registry
 - [Creating plugins](/docs/5.x/guide/going-further/creating-plugins) for a step-by-step guide to building a full plugin

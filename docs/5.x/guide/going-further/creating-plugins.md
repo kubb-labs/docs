@@ -272,7 +272,7 @@ Each handler can return a Promise of any of these.
 
 ### Emit roles
 
-Most generators return `Array<FileNode>` built with the `create*` factories from `@kubb/ast`. That is the default. Three named roles cover the cases beyond it.
+Most generators return `Array<FileNode>` built with the `create*` factories from `kubb/kit` (`ast.factory`). That is the default. Three named roles cover the cases beyond it.
 
 A printer renders one `SchemaNode` to a string, such as a TypeScript type or a `z.object({ ... })`. A handler calls it and stages the result on a `FileNode`.
 
