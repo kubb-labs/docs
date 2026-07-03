@@ -39,15 +39,14 @@ Add the plugin to your `webpack.config.js` and pass it your Kubb config.
 
 ```javascript [webpack.config.js]
 const kubb = require('unplugin-kubb/webpack')
-const { defineConfig } = require('kubb')
 const { pluginTs } = require('@kubb/plugin-ts')
 
-const config = defineConfig({
+const config = {
   root: '.',
   input: { path: './petStore.yaml' },
   output: { path: './src/gen', clean: true },
   plugins: [pluginTs({ output: { path: 'models' } })],
-})
+}
 
 module.exports = {
   plugins: [kubb({ config })],

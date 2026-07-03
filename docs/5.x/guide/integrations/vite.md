@@ -40,15 +40,14 @@ Add the plugin to your `vite.config.ts` and pass it your Kubb config.
 ```typescript [vite.config.ts]
 import kubb from 'unplugin-kubb/vite'
 import { defineConfig as defineViteConfig } from 'vite'
-import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
-const config = defineConfig({
+const config = {
   root: '.',
   input: { path: './petStore.yaml' },
   output: { path: './src/gen', clean: true },
   plugins: [pluginTs({ output: { path: 'models' } })],
-})
+}
 
 export default defineViteConfig({
   plugins: [kubb({ config })],

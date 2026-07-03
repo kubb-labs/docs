@@ -40,15 +40,14 @@ Add the plugin to the `plugins` array in your build script and pass it your Kubb
 ```typescript [build.ts]
 import { build } from 'esbuild'
 import kubb from 'unplugin-kubb/esbuild'
-import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
-const config = defineConfig({
+const config = {
   root: '.',
   input: { path: './petStore.yaml' },
   output: { path: './src/gen', clean: true },
   plugins: [pluginTs({ output: { path: 'models' } })],
-})
+}
 
 await build({
   entryPoints: ['src/index.ts'],
