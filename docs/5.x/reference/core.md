@@ -126,11 +126,13 @@ export default defineConfig(({ watch }) => ({
 
 Reach for `createKubb` when you orchestrate several builds, inspect diagnostics, or feed Kubb output into a larger toolchain. For a one-off build, chain the call: `await createKubb(config).build()`.
 
+The `kubb` package and `@kubb/core` both export a `createKubb`. Import it from `kubb` to get the same defaults as `defineConfig` (`adapterOas`, the default parsers, the built-in reporters, and `pluginBarrel`), which is the entry point most scripts want since it drops the `@kubb/core` dependency. Import it from [`@kubb/core`](#createkubb-from-kubb-core) when you wire the adapter and parsers yourself.
+
 `createKubb` takes a plain config object, the same shape `defineConfig` produces in `kubb.config.ts`. It is not a fluent builder. The config stays plain serializable data so Kubb can validate it against the shipped JSON schema.
 
 ```typescript twoslash [build.ts]
 // @module: esnext
-import { createKubb } from '@kubb/core'
+import { createKubb } from 'kubb'
 import { Diagnostics } from 'kubb/kit'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginAxios } from '@kubb/plugin-axios'
@@ -186,6 +188,27 @@ Each `Diagnostic` carries a `code`, a `severity` (`error`, `warning`, or `info`)
 
 > [!WARNING]
 > After `safeBuild()`, check `Diagnostics.hasError(diagnostics)` before processing files. Plugins can fail without `safeBuild()` throwing. `build()` throws a `BuildError` in that case.
+
+#### `createKubb` from `@kubb/core`
+
+The `@kubb/core` export is the same function without the `defineConfig` defaults. It adds no `adapter`, `parsers`, `reporters`, or `pluginBarrel`, so you pass them yourself. Use it when you embed the engine without the `kubb` package or when you want full control over the adapter and parser set.
+
+```typescript twoslash [build.ts]
+import { createKubb } from '@kubb/core'
+import { adapterOas } from '@kubb/adapter-oas'
+import { parserTs, parserTsx } from '@kubb/parser-ts'
+import { pluginTs } from '@kubb/plugin-ts'
+
+const kubb = createKubb({
+  adapter: adapterOas(),
+  parsers: [parserTs, parserTsx],
+  input: { path: './petStore.yaml' },
+  output: { path: './gen' },
+  plugins: [pluginTs()],
+})
+
+await kubb.build()
+```
 
 #### Related
 

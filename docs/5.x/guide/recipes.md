@@ -252,20 +252,16 @@ export default defineConfig({
 
 ## Programmatic build
 
-Drive Kubb from a script with [`createKubb`](/docs/5.x/reference/core#createkubb) from `@kubb/core`, paired with `Diagnostics` from `kubb/kit`. This fits monorepo orchestration and custom build pipelines.
+Drive Kubb from a script with [`createKubb`](/docs/5.x/reference/core#createkubb) from the `kubb` package, paired with `Diagnostics` from `kubb/kit`. This fits monorepo orchestration and custom build pipelines, and needs only `kubb` on your dependencies rather than `@kubb/core`.
 
-Unlike `defineConfig`, `createKubb` adds no defaults. Pass `adapter`, `parsers`, and your plugins yourself.
+`createKubb` from `kubb` fills in the same defaults as [`defineConfig`](/docs/5.x/reference/core#defineconfig): `adapterOas`, the default parsers, the built-in reporters, and `pluginBarrel`. Pass only your `input`, `output`, and plugins.
 
 ```typescript twoslash [generate.ts]
-import { createKubb } from '@kubb/core'
+import { createKubb } from 'kubb'
 import { Diagnostics } from 'kubb/kit'
-import { adapterOas } from '@kubb/adapter-oas'
-import { parserTs, parserTsx } from '@kubb/parser-ts'
 import { pluginTs } from '@kubb/plugin-ts'
 
 const kubb = createKubb({
-  adapter: adapterOas(),
-  parsers: [parserTs, parserTsx],
   input: { path: './petStore.yaml' },
   output: { path: './gen' },
   plugins: [pluginTs()],
@@ -286,6 +282,8 @@ console.log(`Generated ${files.length} files`)
 ```
 
 Use `.build()` instead of `.safeBuild()` if you want it to throw on errors rather than return `diagnostics`. See the [Core API](/docs/5.x/reference/core#createkubb) for the full `Kubb` instance API.
+
+To wire the adapter and parsers yourself, or to embed the engine without the `kubb` package, use [`createKubb` from `@kubb/core`](/docs/5.x/reference/core#createkubb-from-kubb-core), which adds no defaults.
 
 ## CI validation
 
