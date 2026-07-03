@@ -427,7 +427,7 @@ export default defineConfig({
 Plugin-only mode, with no spec and no adapter:
 
 ```typescript twoslash [kubb.config.ts (plugin-only)]
-import { createKubb } from '@kubb/core'
+import { createKubb } from 'kubb'
 import { definePlugin, ast } from 'kubb/kit'
 
 const kubb = createKubb({
@@ -550,18 +550,7 @@ Reporters available to the run, registered as instances. `defineConfig` register
 |           |                                             |
 | --------: | :------------------------------------------ |
 |     Type: | `Array<Reporter>`                           |
-|  Default: | `[cliReporter, jsonReporter, fileReporter]` |
+|  Default: | `[cli, json, file]`                         |
 | Required: | `false`                                     |
 
-Add more reporters to the array, including your own built with [`createReporter`](/docs/5.x/reference/core), then select them on the CLI with `--reporter <name>`.
-
-```typescript twoslash [kubb.config.ts]
-import { cliReporter, jsonReporter } from '@kubb/core'
-import { defineConfig } from 'kubb/config'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  reporters: [cliReporter, jsonReporter],
-})
-```
+The built-in reporters are registered by default. Pick which ones fire by name on the CLI with `--reporter <name>`, so most configs never set this option.

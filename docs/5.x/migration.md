@@ -505,7 +505,7 @@ To keep certain files from being written, supply a custom [storage](/docs/5.x/gu
 ```diff [kubb.config.ts]
 -import { defineConfig } from 'kubb/config'
 +import { defineConfig } from 'kubb/config'
-+import { fsStorage } from '@kubb/core'
++import { fsStorage } from 'kubb/kit'
 
 +const base = fsStorage()
 +const protectedPaths = ['src/gen/.kubb/client.ts']
@@ -739,7 +739,7 @@ export default defineConfig({
 
 ```typescript twoslash [v5 kubb.config.ts]
 import { defineConfig } from 'kubb/config'
-import { memoryStorage } from '@kubb/core'
+import { memoryStorage } from 'kubb/kit'
 import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'

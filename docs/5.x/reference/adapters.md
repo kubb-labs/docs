@@ -55,7 +55,7 @@ export default defineConfig({
 
 ## Anatomy
 
-Every adapter returned from `createAdapter` matches the `Adapter` interface from [`@kubb/core`](https://www.npmjs.com/package/@kubb/core):
+Every adapter returned from `createAdapter` matches the `Adapter` interface from [`kubb/kit`](/docs/5.x/reference/kit#adapters-and-parsers):
 
 | Property     | Type                                                                                                  | Required | Purpose                                                                                                                                            |
 | ------------ | ----------------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |

@@ -11,7 +11,7 @@ outline: deep
 
 ## Why a separate surface from the engine
 
-`@kubb/core` also runs the build engine: the plugin driver, the file manager, the CLI reporters. None of that is part of authoring a plugin. A plugin author calls `definePlugin` and returns an object. The engine discovers that object, walks the AST against it, and writes the result to disk. Mixing the two into one import would mean every plugin author pulls in driver internals they never call.
+The Kubb engine also runs the build: the plugin driver, the file manager, the CLI reporters. None of that is part of authoring a plugin. A plugin author calls `definePlugin` and returns an object. The engine discovers that object, walks the AST against it, and writes the result to disk. Mixing the two into one import would mean every plugin author pulls in driver internals they never call.
 
 Kit keeps the two apart the same way `kubb/ast` and `kubb/jsx` separate the AST layer and the JSX renderer from the engine that drives them. You call `kubb/kit` to build things. The engine, reached through the `kubb` package and its CLI, runs them.
 

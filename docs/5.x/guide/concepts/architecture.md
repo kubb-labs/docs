@@ -33,7 +33,7 @@ export default defineConfig({
 ```
 
 > [!NOTE]
-> Import from [`@kubb/core`](/docs/5.x/reference/core) only when you need the lower-level API for programmatic builds or custom tooling.
+> Reach for [`createKubb`](/docs/5.x/reference/core#createkubb) from the `kubb` package only when you need a programmatic build or custom tooling.
 
 ## [Adapter](/docs/5.x/guide/concepts/adapters)
 
@@ -234,8 +234,7 @@ export default defineConfig({
 
 | Package                                    | Purpose                                                                                                                                                                          |
 | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`kubb`](/docs/5.x/reference/core)               | Umbrella package. Exports `defineConfig` and bundles `adapterOas`, `parserTs`, `parserTsx`, `parserMd`, and `pluginBarrel` for a zero-config setup.                             |
-| [`@kubb/core`](/docs/5.x/reference/core)         | Lower-level build engine with `createKubb`, `KubbDriver`, the file pipeline, and reporters. Use for programmatic generation or custom tooling.                     |
+| [`kubb`](/docs/5.x/reference/core)               | Umbrella package. Exports `defineConfig` and `createKubb`, and bundles `adapterOas`, `parserTs`, `parserTsx`, `parserMd`, and `pluginBarrel` for a zero-config setup.           |
 | [`kubb/kit`](/docs/5.x/reference/kit)            | Plugin authoring toolkit: `definePlugin`, `defineGenerator`, `defineResolver`, `defineParser`, `createAdapter`, `createStorage`, and the `ast` and `factory` node builders. |
 | [`@kubb/cli`](/docs/5.x/reference/commands/)     | Provides the `kubb` command-line binary. Reads `kubb.config.ts` and runs the generation pipeline.                                                                                |
 | [`kubb/ast`](/docs/5.x/guide/concepts/ast)      | Universal AST layer, reached through `kubb/kit` (the `ast` namespace) or the flat `kubb/ast` subpath. Includes all node factories, `walk`, `transform`, `collect`, type guards, ref helpers, the `defineDialect` and `optionality` helpers, and the macro engine with its presets. |

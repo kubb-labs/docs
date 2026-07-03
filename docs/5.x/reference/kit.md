@@ -27,7 +27,7 @@ import {
 ```
 
 > [!TIP]
-> The build-time engine (`createKubb`, `KubbDriver`, reporters) stays on [`@kubb/core`](/docs/5.x/reference/core). `kubb/kit` is only for the authoring side: the code you write to add a new plugin, generator, resolver, parser, adapter, or renderer.
+> The build-time engine (`createKubb`) lives in the [`kubb`](/docs/5.x/reference/core) package. `kubb/kit` is only for the authoring side: the code you write to add a new plugin, generator, resolver, parser, adapter, or renderer.
 
 ## Plugin authoring
 
@@ -341,7 +341,7 @@ See the [Diagnostics reference](/docs/5.x/reference/diagnostics) for the full li
 
 ## Public types
 
-`kubb/kit` re-exports the types that go with plugin, generator, resolver, adapter, and renderer authoring. Import them alongside the functions above to type your own code. `Config` and `UserConfig`, the overall build configuration shapes, stay on [`@kubb/core`](/docs/5.x/reference/core#public-types), since `createKubb` and `defineConfig` are the engine's entry points.
+`kubb/kit` re-exports the types that go with plugin, generator, resolver, adapter, and renderer authoring. Import them alongside the functions above to type your own code. `Config` and `UserConfig`, the overall build configuration shapes, are re-exported here too, next to `defineConfig` and `createKubb` from the `kubb` package.
 
 #### Plugins
 

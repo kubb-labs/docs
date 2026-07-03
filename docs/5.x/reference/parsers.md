@@ -17,7 +17,7 @@ A parser turns a `FileNode` into the source string written to disk. This page do
 A minimal parser registers its extensions and concatenates each source:
 
 ```typescript twoslash [parserText.ts]
-import { defineParser } from '@kubb/core'
+import { defineParser } from 'kubb/kit'
 
 export const parserText = defineParser({
   name: 'parser-text',
@@ -51,7 +51,7 @@ export default defineConfig({
 
 ## Anatomy
 
-Every value returned from `defineParser` matches the `Parser` interface from [`@kubb/core`](https://www.npmjs.com/package/@kubb/core):
+Every value returned from `defineParser` matches the `Parser` interface from [`kubb/kit`](/docs/5.x/reference/kit#adapters-and-parsers):
 
 | Property   | Type                                                                      | Required | When called                                  | Purpose                                                                                                                                              |
 | ---------- | ------------------------------------------------------------------------- | -------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -84,7 +84,7 @@ Parsers share the layout of [plugins](/docs/5.x/guide/concepts/plugins) and [ada
 Parsers export a plain [`Parser`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineParser.ts#L7) object, not a factory function. Pass them directly to `parsers:` in `defineConfig`:
 
 ```typescript twoslash [naming.ts]
-import { defineParser } from '@kubb/core'
+import { defineParser } from 'kubb/kit'
 
 export const parserCustom = defineParser({
   name: 'custom',
@@ -150,10 +150,10 @@ export default defineConfig({
 
 ## Creating a custom parser
 
-Use `defineParser` from [`@kubb/core`](/docs/5.x/reference/core). It is an identity wrapper that infers the parser type. It returns the object you pass in unchanged, with no per-build options:
+Use `defineParser` from [`kubb/kit`](/docs/5.x/reference/kit). It is an identity wrapper that infers the parser type. It returns the object you pass in unchanged, with no per-build options:
 
 ```typescript twoslash [parserPython.ts]
-import { defineParser } from '@kubb/core'
+import { defineParser } from 'kubb/kit'
 
 export const parserPython = defineParser({
   name: 'parser-python',
@@ -208,4 +208,4 @@ export default defineConfig({
 
 ## Streaming
 
-The file processor is internal to `@kubb/core` and processes files one at a time. The build driver enqueues each file as plugins emit it, the processor runs it through `parse()`, and the result lands in storage without buffering the full set. Progress surfaces as `start`, `update` (with `{ file, source, processed, total, percentage }`), and `end` events on the main event bus, which the built-in reporters render. Memory stays flat regardless of build size because each file is pulled through the pipeline one at a time.
+The file processor is internal to the Kubb engine and processes files one at a time. The build driver enqueues each file as plugins emit it, the processor runs it through `parse()`, and the result lands in storage without buffering the full set. Progress surfaces as `start`, `update` (with `{ file, source, processed, total, percentage }`), and `end` events on the main event bus, which the built-in reporters render. Memory stays flat regardless of build size because each file is pulled through the pipeline one at a time.

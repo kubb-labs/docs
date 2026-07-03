@@ -92,7 +92,7 @@ No. Each plugin is an independent npm package. Install only what you need.
 
 ### Can I write a custom plugin?
 
-Yes. Use `definePlugin` from `@kubb/core`. The [Creating Your First Plugin](/docs/5.x/guide/going-further/creating-plugins) guide walks through a full example.
+Yes. Use `definePlugin` from `kubb/kit`. The [Creating Your First Plugin](/docs/5.x/guide/going-further/creating-plugins) guide walks through a full example.
 
 ### Where can I find all available plugins?
 
