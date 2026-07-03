@@ -1,19 +1,28 @@
 ---
 layout: doc
 title: AST API - Factories, Visitors, and Guards
-description: The @kubb/ast surface. Node factories, the walk, transform, and collect visitors, type guards, naming helpers, and constants for working with Kubb's universal AST.
+description: The Kubb AST surface. Node factories, the walk, transform, and collect visitors, type guards, naming helpers, and constants for working with Kubb's universal AST.
 outline: deep
 ---
 
 # AST API
 
-`@kubb/ast` is the package behind Kubb's universal Abstract Syntax Tree. This page documents its callable surface: node factories, the three visitors, type guards, and helpers. For why the AST exists and how it fits the pipeline, see [AST concepts](/docs/5.x/guide/concepts/ast).
+Kubb's universal Abstract Syntax Tree is reached through the `ast` namespace in `kubb/kit`. This page documents its callable surface: node factories, the three visitors, type guards, and helpers. For why the AST exists and how it fits the pipeline, see [AST concepts](/docs/5.x/guide/concepts/ast).
 
-> [!NOTE]
-> `kubb/kit` re-exports `@kubb/ast` as the `ast` namespace, with node constructors under `ast.factory` the way TypeScript groups them under `ts.factory`. Most plugins do not need `@kubb/ast` as a direct dependency. Install it only for named imports without the `ast.` prefix, taking constructors from the `factory` export of `@kubb/ast`.
+## Import
 
-> [!TIP]
-> This page documents `@kubb/ast` (and its `kubb/ast` alias): the flat helpers, guards, and node types. The `ast` namespace and its `factory` node builders are re-exported through [`kubb/kit`](/docs/5.x/reference/kit) instead, alongside `definePlugin` and `defineGenerator`, since generator authors already import from there. The code samples below still import `ast` from `kubb/kit` for that reason, even though the rest of this page covers `@kubb/ast`'s own exports.
+Import the `ast` namespace from `kubb/kit`. It carries the whole AST surface: the `factory` node builders, the `walk`, `transform`, and `collect` visitors, the guards, the ref and string helpers, and the macro engine.
+
+```typescript twoslash [imports.ts]
+import { ast } from 'kubb/kit'
+
+const root = ast.factory.createInput({ schemas: [], operations: [] })
+const name = ast.extractRefName('#/components/schemas/Pet')
+```
+
+Authoring a plugin or generator needs nothing more, since `kubb/kit` bundles the AST with `definePlugin`, `defineGenerator`, and the rest of the toolkit. To depend on the AST on its own, without the authoring toolkit, install `@kubb/ast` and import its members directly.
+
+The code samples below import `ast` from `kubb/kit`, since that is where most authors reach for the AST.
 
 ## Quick start
 
@@ -84,7 +93,7 @@ const root = ast.factory.createInput({
 })
 ```
 
-The `factory` namespace also provides constructors for source files and TypeScript-level artifacts that generators emit:
+The `ast.factory` namespace also provides constructors for source files and TypeScript-level artifacts that generators emit:
 
 | Factory                                                             | Purpose                                                  |
 | ------------------------------------------------------------------- | -------------------------------------------------------- |
@@ -185,7 +194,7 @@ Use `collect` to find specific nodes, filter by a criterion, or build a list for
 
 ## Guards and narrowing
 
-`@kubb/ast` exports type guards and a `narrowSchema` helper for safe discrimination:
+Kubb exports type guards and a `narrowSchema` helper for safe discrimination:
 
 ```typescript twoslash [guards.ts]
 import { ast } from 'kubb/kit'
@@ -213,7 +222,7 @@ await ast.walk(root, {
 
 ## Refs and naming helpers
 
-The ref and naming helpers ship as part of `@kubb/ast`'s main export, alongside the other string and code-building utilities. There is no separate subpath for them. Import them the same way you import guards or node types, from `kubb/ast` or directly from `@kubb/ast`.
+The ref and naming helpers ship on the `ast` namespace, alongside the other string and code-building utilities. Reach them the same way you reach the guards or node types.
 
 | Helper           | Purpose                                            |
 | ---------------- | --------------------------------------------------- |
@@ -222,9 +231,9 @@ The ref and naming helpers ship as part of `@kubb/ast`'s main export, alongside 
 | `enumPropName`   | Convert an enum value into a valid property name.  |
 
 ```typescript twoslash [refs.ts]
-import { extractRefName } from 'kubb/ast'
+import { ast } from 'kubb/kit'
 
-const name = extractRefName('#/components/schemas/Pet')
+const name = ast.extractRefName('#/components/schemas/Pet')
 //    ^?
 ```
 

@@ -1,7 +1,7 @@
 ---
 layout: doc
 title: Kit API
-description: Public API surface of kubb/kit, the plugin and generator authoring toolkit, including definePlugin, defineGenerator, defineResolver, defineParser, createAdapter, createRenderer, createStorage, Diagnostics, the ast and factory namespaces, and the kubb/kit/testing helpers.
+description: Public API surface of kubb/kit, the plugin and generator authoring toolkit, including definePlugin, defineGenerator, defineResolver, defineParser, createAdapter, createRenderer, createStorage, Diagnostics, the ast namespace, and the kubb/kit/testing helpers.
 outline: [2, 3]
 ---
 
@@ -22,12 +22,11 @@ import {
   fsStorage,
   Diagnostics,
   ast,
-  factory,
 } from 'kubb/kit'
 ```
 
 > [!TIP]
-> The build-time engine (`createKubb`, `KubbDriver`, reporters) stays on [`@kubb/core`](/docs/5.x/reference/core). `kubb/kit` is only for the authoring side: the code you write to add a new plugin, generator, resolver, parser, adapter, or renderer.
+> The build-time engine (`createKubb`) lives in the [`kubb`](/docs/5.x/reference/core) package. `kubb/kit` is only for the authoring side: the code you write to add a new plugin, generator, resolver, parser, adapter, or renderer.
 
 ## Plugin authoring
 
@@ -291,7 +290,7 @@ The `Storage` interface itself (`hasItem`, `getItem`, `setItem`, `removeItem`, `
 
 ### `ast`
 
-`ast` is `kubb/kit`'s re-export of the entire [`@kubb/ast`](/docs/5.x/reference/ast) module, the same way TypeScript groups its node constructors under `ts.factory`. Reach for `ast` when you also need the visitors (`ast.walk`, `ast.transform`, `ast.collect`), the guards, or the schema and string helpers alongside node construction.
+`ast` is `kubb/kit`'s namespace for the [entire AST surface](/docs/5.x/reference/ast), the same way TypeScript groups its node constructors under `ts.factory`. Reach for `ast` when you also need the visitors (`ast.walk`, `ast.transform`, `ast.collect`), the guards, or the schema and string helpers alongside node construction.
 
 ```typescript twoslash [ast-namespace.ts]
 import { ast } from 'kubb/kit'
@@ -302,26 +301,22 @@ const root = ast.factory.createInput({
 })
 ```
 
-### `factory`
+Node building goes through `ast.factory`. `ast.factory.createFile`, `ast.factory.createSource`, and `ast.factory.createText` build the `FileNode` tree a generator returns.
 
-`factory` is the bare node-builder namespace, equivalent to `ast.factory` but importable on its own when a generator only needs to construct nodes and does not need the rest of `@kubb/ast`.
+```typescript twoslash [factory.ts]
+import { ast } from 'kubb/kit'
 
-```typescript twoslash [factory-namespace.ts]
-import { factory } from 'kubb/kit'
-
-const file = factory.createFile({
+const file = ast.factory.createFile({
   baseName: 'pet.ts',
   path: './pet.ts',
-  sources: [factory.createSource({ nodes: [factory.createText("export type Pet = { id: number }")] })],
+  sources: [ast.factory.createSource({ nodes: [ast.factory.createText('export type Pet = { id: number }')] })],
 })
 ```
-
-`ast.factory.createX(...)` and the bare `factory.createX(...)` construct the same nodes. Pick whichever import reads better in the file: `ast.factory` when the file already uses `ast.walk` or `ast.transform` nearby, `factory` on its own when node construction is the only thing the file does.
 
 #### Related
 
 - [AST concepts](/docs/5.x/guide/concepts/ast) for the full mental model of the AST, its node kinds, and traversal
-- [AST API reference](/docs/5.x/reference/ast) for every factory, visitor, and guard `@kubb/ast` exports
+- [AST API reference](/docs/5.x/reference/ast) for every factory, visitor, and guard the AST exposes
 
 ## Diagnostics
 
@@ -339,7 +334,7 @@ See the [Diagnostics reference](/docs/5.x/reference/diagnostics) for the full li
 
 ## Public types
 
-`kubb/kit` re-exports the types that go with plugin, generator, resolver, adapter, and renderer authoring. Import them alongside the functions above to type your own code. `Config` and `UserConfig`, the overall build configuration shapes, stay on [`@kubb/core`](/docs/5.x/reference/core#public-types), since `createKubb` and `defineConfig` are the engine's entry points.
+`kubb/kit` re-exports the types that go with plugin, generator, resolver, adapter, and renderer authoring. Import them alongside the functions above to type your own code. `Config` and `UserConfig`, the overall build configuration shapes, are re-exported here too, next to `defineConfig` and `createKubb` from the `kubb` package.
 
 #### Plugins
 
@@ -410,7 +405,7 @@ import { createMockedPlugin, renderGeneratorOperation, matchFiles } from 'kubb/k
 ## See also
 
 - [Core API](/docs/5.x/reference/core) for the engine: `createKubb`, `KubbDriver`, storage, reporters, and the file pipeline
-- [AST API reference](/docs/5.x/reference/ast) for the full `@kubb/ast` surface behind `kubb/kit`'s `ast` and `factory`
+- [AST API reference](/docs/5.x/reference/ast) for the full AST surface behind `kubb/kit`'s `ast` and `factory`
 - [JSX API reference](/docs/5.x/reference/jsx) for `kubb/jsx`, the JSX renderer
 - [Plugin concepts](/docs/5.x/guide/concepts/plugins) for lifecycle hooks, generators, resolvers, and the plugin registry
 - [Creating plugins](/docs/5.x/guide/going-further/creating-plugins) for a step-by-step guide to building a full plugin

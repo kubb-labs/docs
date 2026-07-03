@@ -272,7 +272,7 @@ Each handler can return a Promise of any of these.
 
 ### Emit roles
 
-Most generators return `Array<FileNode>` built with the `create*` factories from `@kubb/ast`. That is the default. Three named roles cover the cases beyond it.
+Most generators return `Array<FileNode>` built with the `create*` factories from `kubb/kit` (`ast.factory`). That is the default. Three named roles cover the cases beyond it.
 
 A printer renders one `SchemaNode` to a string, such as a TypeScript type or a `z.object({ ... })`. A handler calls it and stages the result on a `FileNode`.
 
@@ -436,14 +436,14 @@ export const pluginExample = definePlugin<PluginExample>((options) => {
 
 ## Testing
 
-Use `createKubb` from `@kubb/core` to run an in-process build and check that your generator emits the files you expect. Pair it with a small [OpenAPI](https://spec.openapis.org/oas/latest.html) fixture so tests stay fast and predictable.
+Use `createKubb` from `kubb` to run an in-process build and check that your generator emits the files you expect. Pair it with a small [OpenAPI](https://spec.openapis.org/oas/latest.html) fixture so tests stay fast and predictable.
 
-`@kubb/core` does not apply the default adapter or parsers, so pass `adapter: adapterOas()` and the parsers your generator emits. (The `kubb` package's `defineConfig` is what wires those up automatically.) Without an adapter, Kubb runs in plugin-only mode and the `operation` and `schema` handlers never fire.
+`createKubb` does not apply the default adapter or parsers, so pass `adapter: adapterOas()` and the parsers your generator emits. (The `kubb` package's `defineConfig` is what wires those up automatically.) Without an adapter, Kubb runs in plugin-only mode and the `operation` and `schema` handlers never fire.
 
 ```typescript twoslash [plugin.test.ts]
 // @errors: 2307
 import { describe, it, expect } from 'vitest'
-import { createKubb } from '@kubb/core'
+import { createKubb } from 'kubb'
 import { ast, definePlugin, defineGenerator } from 'kubb/kit'
 import { adapterOas } from '@kubb/adapter-oas'
 import { parserTs } from '@kubb/parser-ts'
@@ -491,7 +491,7 @@ describe('pluginExample', () => {
 Subscribe to `kubb.hooks` before you call `build()` to trace plugin activity or collect metrics. Each hook receives one typed context object.
 
 ```typescript twoslash [lifecycle.ts]
-import { createKubb } from '@kubb/core'
+import { createKubb } from 'kubb'
 import { definePlugin } from 'kubb/kit'
 import { adapterOas } from '@kubb/adapter-oas'
 
@@ -521,7 +521,7 @@ await kubb.build()
 
 ### Configure package.json
 
-Peer-depend on `kubb` at v5 to keep the runtime out of your bundle, and list it under `devDependencies` too, for local builds and typechecking. Add `@kubb/core` as a devDependency only if your tests call `createKubb` directly, since that engine-level API isn't part of `kubb/kit`.
+Peer-depend on `kubb` at v5 to keep the runtime out of your bundle, and list it under `devDependencies` too, for local builds, typechecking, and any tests that call `createKubb`.
 
 ```json [package.json]
 {
@@ -546,7 +546,6 @@ Peer-depend on `kubb` at v5 to keep the runtime out of your bundle, and list it 
   },
   "devDependencies": {
     "kubb": "^5.0.0",
-    "@kubb/core": "^5.0.0",
     "@types/node": "^22.0.0",
     "typescript": "^5.0.0",
     "vitest": "^3.0.0"

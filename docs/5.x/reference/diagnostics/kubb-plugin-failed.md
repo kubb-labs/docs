@@ -33,17 +33,15 @@ Each plugin runs against the AST and can fail on a specific schema or operation.
 `ctx.error` reports a `KUBB_PLUGIN_FAILED` and fails the build. For a structured diagnostic with a stable code and a source pointer, call `Diagnostics.report(...)` or throw a `DiagnosticError` instead.
 
 ```typescript [plugin.ts]
-import { Diagnostics, type Diagnostic } from '@kubb/core'
+import { Diagnostics } from 'kubb/kit'
 
-const diagnostic: Diagnostic = {
+Diagnostics.report({
   code: 'KUBB_REF_NOT_FOUND',
   severity: 'error',
   message: 'Could not find a definition for Pet.',
   location: { kind: 'schema', pointer: '#/components/schemas/Pet' },
   help: 'Add the schema under components.schemas, or fix the $ref.',
-}
-
-Diagnostics.report(diagnostic)
+})
 ```
 
 ## Example output

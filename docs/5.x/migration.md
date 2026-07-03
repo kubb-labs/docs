@@ -505,7 +505,7 @@ To keep certain files from being written, supply a custom [storage](/docs/5.x/gu
 ```diff [kubb.config.ts]
 -import { defineConfig } from 'kubb/config'
 +import { defineConfig } from 'kubb/config'
-+import { fsStorage } from '@kubb/core'
++import { fsStorage } from 'kubb/kit'
 
 +const base = fsStorage()
 +const protectedPaths = ['src/gen/.kubb/client.ts']
@@ -623,7 +623,7 @@ The `generators` plugin option is gone. It accepted an array of custom `Generato
 
 The helpers for authoring plugins, generators, resolvers, parsers, and adapters, along with the `ast` namespace, moved out of `@kubb/core` into the new `kubb/kit` subpath of the `kubb` package. `@kubb/core` no longer exports `ast` at all.
 
-`@kubb/ast`'s helpers stay published under `@kubb/ast`, and are also reachable through `kubb/ast`. Its old `/utils` and `/macros` subpaths no longer exist. Import directly from `@kubb/ast` (or `kubb/ast`) instead.
+The AST helpers move with the `ast` namespace. Reach them through `kubb/kit` as `ast.extractRefName` and friends. The old `/utils` and `/macros` subpaths no longer exist.
 
 ::: code-group
 
@@ -633,18 +633,6 @@ import { ast, definePlugin, defineGenerator } from '@kubb/core'
 
 ```typescript twoslash [after]
 import { ast, definePlugin, defineGenerator } from 'kubb/kit'
-```
-
-:::
-
-::: code-group
-
-```typescript [before]
-import { extractRefName } from '@kubb/ast/utils'
-```
-
-```typescript twoslash [after]
-import { extractRefName } from 'kubb/ast'
 ```
 
 :::
@@ -751,7 +739,7 @@ export default defineConfig({
 
 ```typescript twoslash [v5 kubb.config.ts]
 import { defineConfig } from 'kubb/config'
-import { memoryStorage } from '@kubb/core'
+import { memoryStorage } from 'kubb/kit'
 import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'

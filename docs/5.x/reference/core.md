@@ -1,53 +1,15 @@
 ---
 layout: doc
-title: Core API
-description: Public API surface of @kubb/core, the build engine, including createKubb, KubbDriver, the file manager and file processor, reporters, and the engine-only public types.
+title: Programmatic API
+description: The programmatic surface of Kubb, driven from your own code with createKubb and defineConfig from the kubb package, plus storage, rendering, and the public types.
 outline: [2, 3]
 ---
 
-# Core API
+# Programmatic API
 
-`@kubb/core` is the foundation of Kubb, the build engine. It exports the primitives for embedding Kubb in your own code and driving the generation pipeline: `createKubb`, the plugin driver, the file manager and processor, and the reporters.
+Kubb runs as a build engine you can drive from your own code. This page documents that programmatic surface: `createKubb` and `defineConfig` from the `kubb` package, storage, rendering, and the public types.
 
-::: code-group
-
-```shell [bun]
-bun add -d @kubb/core@beta
-```
-
-```shell [pnpm]
-pnpm add -D @kubb/core@beta
-```
-
-```shell [npm]
-npm install --save-dev @kubb/core@beta
-```
-
-```shell [yarn]
-yarn add -D @kubb/core@beta
-```
-
-:::
-
-> [!TIP]
-> Most users do not install `@kubb/core` directly. The top-level [`kubb`](https://www.npmjs.com/package/kubb) package re-exports it with `adapterOas` and the default parsers pre-installed. Use `@kubb/core` directly when embedding Kubb programmatically. Writing a plugin instead? See the [Kit API](/docs/5.x/reference/kit).
-
-```typescript twoslash [imports.ts]
-import { defineConfig } from 'kubb/config'
-import {
-  createKubb,
-  createReporter,
-  cliReporter,
-  jsonReporter,
-  fileReporter,
-  KubbDriver,
-  AsyncEventEmitter,
-  Url,
-  logLevel,
-} from '@kubb/core'
-```
-
-Writing a plugin, generator, resolver, parser, or adapter instead? That surface moved to `kubb/kit`:
+Writing a plugin, generator, resolver, parser, or adapter instead? That surface is `kubb/kit`:
 
 ```typescript twoslash [authoring-imports.ts]
 import {
@@ -64,14 +26,11 @@ import {
 
 See the [Kit API](/docs/5.x/reference/kit) for the full authoring reference.
 
-> [!NOTE]
-> `@kubb/core` no longer re-exports `@kubb/ast`. Import `ast` from [`kubb/kit`](/docs/5.x/reference/kit#ast) for the authoring-side namespace, or from `@kubb/ast` directly for the [AST API](/docs/5.x/reference/ast).
-
 ## Configuration
 
 ### `defineConfig`
 
-`defineConfig` adds TypeScript type-checking to a `kubb.config.ts` file. It comes from the `kubb` package, not `@kubb/core`. It fills in defaults for any field you omit.
+`defineConfig` adds TypeScript type-checking to a `kubb.config.ts` file. It comes from the `kubb` package and fills in defaults for any field you omit.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -100,14 +59,14 @@ export default defineConfig(({ watch }) => ({
 | `root`           | `process.cwd()`                          |
 | `adapter`        | [`adapterOas()`](/docs/5.x/guide/concepts/adapters) |
 | `parsers`        | `[parserTs, parserTsx, parserMd]`        |
-| `reporters`      | `[cliReporter, jsonReporter, fileReporter]` |
+| `reporters`      | `[cli, json, file]`                      |
 | `plugins`        | `pluginBarrel()` appended when not already present |
 | `output.barrel`  | `{ type: 'named' }`, only when `pluginBarrel` is in `plugins` |
 | `output.format`  | `false`                                  |
 | `output.lint`    | `false`                                  |
 
 > [!IMPORTANT]
-> `defineConfig` is only exported from the `kubb` package. The `@kubb/core` package exports the raw `UserConfig` type but does not provide a `defineConfig` with defaults.
+> `defineConfig` comes from the `kubb` package. Import it from `kubb` or the `kubb/config` subpath.
 
 > [!TIP]
 > The `output.barrel` default of `{ type: 'named' }` applies only when `pluginBarrel` is present in `plugins`. A plugins list without `pluginBarrel` leaves barrel generation untouched.
@@ -126,7 +85,7 @@ export default defineConfig(({ watch }) => ({
 
 Reach for `createKubb` when you orchestrate several builds, inspect diagnostics, or feed Kubb output into a larger toolchain. For a one-off build, chain the call: `await createKubb(config).build()`.
 
-`createKubb` is exported from both `@kubb/core` and the top-level `kubb` package, which re-exports it. It is the same function either way, so a script that already depends on `kubb` can import it from there instead of adding `@kubb/core`. Unlike `defineConfig`, `createKubb` adds no defaults, so pass `adapter`, `parsers`, and your plugins yourself.
+Import `createKubb` from the `kubb` package. Unlike `defineConfig`, `createKubb` adds no defaults, so pass `adapter`, `parsers`, and your plugins yourself.
 
 `createKubb` takes a plain config object, the same shape `defineConfig` produces in `kubb.config.ts`. It is not a fluent builder. The config stays plain serializable data so Kubb can validate it against the shipped JSON schema.
 
@@ -177,7 +136,7 @@ paths.forEach((path) => console.log(`  ${path}`))
 | `.hooks`       | `AsyncEventEmitter<KubbHooks>` | Read-only. Shared event emitter. Attach listeners before calling `build()`.                        |
 | `.config`      | `Config`                       | Read-only. Resolved config, available right after `createKubb` since it resolves in the constructor. |
 | `.storage`     | `Storage`                      | Read-only getter. Final source code keyed by absolute path. Available after `setup()`, throws before. |
-| `.driver`      | `KubbDriver`                 | Read-only getter. Available after `setup()`. Throws if accessed before `setup()`.                  |
+| `.driver`      | read-only getter               | Advanced plugin driver handle, available after `setup()`. Throws if accessed before `setup()`.     |
 
 #### `BuildOutput` fields
 
@@ -185,7 +144,7 @@ paths.forEach((path) => console.log(`  ${path}`))
 | ------------- | ------------------- | -------------------------------------------------------------------------- |
 | `files`       | `Array<FileNode>`   | Generated files with paths, names, and content                                  |
 | `storage`     | `Storage`           | Generated source code accessible via the `Storage` API                          |
-| `driver`      | `KubbDriver`        | Plugin driver instance for advanced introspection                               |
+| `driver`      | driver handle       | Advanced plugin driver handle for introspection                                 |
 | `diagnostics` | `Array<Diagnostic>` | Problems collected during the build, plus a `performance` diagnostic per plugin |
 
 Each `Diagnostic` carries a `code`, a `severity` (`error`, `warning`, or `info`), a `message`, and the `plugin` that produced it. Failed-plugin diagnostics keep the original error on `cause`. A `performance` diagnostic (`kind: 'performance'`) carries a `duration` in milliseconds. Use the `Diagnostics.isProblem`, `Diagnostics.isPerformance`, and `Diagnostics.isUpdate` guards to narrow by kind.
@@ -196,17 +155,16 @@ Each `Diagnostic` carries a `code`, a `severity` (`error`, `warning`, or `info`)
 #### Related
 
 - [Programmatic usage recipe](/docs/5.x/guide/recipes#programmatic-build)
-- [`KubbDriver`](#kubbdriver)
 
 ## Plugin authoring
 
-Writing a plugin, generator, resolver, parser, or adapter no longer happens against `@kubb/core`. `definePlugin`, `defineGenerator`, `defineResolver`, `defineParser`, and `createAdapter` moved to `kubb/kit`, alongside `createRenderer`, `createStorage`, and `Diagnostics`.
+Writing a plugin, generator, resolver, parser, or adapter happens through `kubb/kit`. `definePlugin`, `defineGenerator`, `defineResolver`, `defineParser`, and `createAdapter` live there, alongside `createRenderer`, `createStorage`, and `Diagnostics`.
 
 See the [Kit API](/docs/5.x/reference/kit) for the full reference, and [Creating plugins](/docs/5.x/guide/going-further/creating-plugins) for a step-by-step guide.
 
 ## Storage
 
-Storage backends decide where generated files are written. The two built-in backends, `fsStorage` and `memoryStorage`, and the `createStorage` builder for writing a custom one, moved to [`kubb/kit`](/docs/5.x/reference/kit#storage). The `Storage` interface below is the shape every backend implements, kept here because a `Storage` instance is what the engine consumes at build time and returns from `driver.storage`.
+Storage backends decide where generated files are written. The two built-in backends, `fsStorage` and `memoryStorage`, and the `createStorage` builder for writing a custom one, live in [`kubb/kit`](/docs/5.x/reference/kit#storage). The `Storage` interface below is the shape every backend implements, kept here because a `Storage` instance is what the engine consumes at build time and returns from `driver.storage`.
 
 #### `Storage` interface
 
@@ -225,39 +183,7 @@ Storage backends decide where generated files are written. The two built-in back
 - [Kit API: Storage](/docs/5.x/reference/kit#storage)
 - [Configuration reference](/docs/5.x/reference/configuration)
 
-## Files & rendering
-
-### The file manager (`driver.fileManager`)
-
-The file manager is the high-level store for generated files within the build pipeline. The plugin driver creates and owns one instance, reachable via `driver.fileManager`. The class is internal and not exported from `@kubb/core`. Inside generators, prefer the context helpers `ctx.addFile()` and `ctx.upsertFile()` over reaching the file manager directly.
-
-#### Key members
-
-| Member           | Purpose                                                                                                                                  |
-| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `add()`          | Add one or more files. An entry at the same path is replaced, not merged.                                                                |
-| `upsert()`       | Add or merge files, concatenating sources, imports, and exports when an entry at the same path exists.                                   |
-| `getByPath()`    | Retrieve a file by its absolute path.                                                                                                    |
-| `deleteByPath()` | Remove a file by its absolute path.                                                                                                      |
-| `clear()`        | Remove all files.                                                                                                                        |
-| `hooks`          | An `AsyncEventEmitter` that emits `upsert` with the resolved `FileNode` every time a file lands through `add` or `upsert`.               |
-| `files`          | Getter returning all stored files sorted by path length. The sort runs lazily on read, so high-volume `upsert` calls stay O(1).         |
-
-#### Streaming model
-
-The file manager does not expose its own `stream()` method. It streams through its `hooks`. Every `addFile()` or `upsertFile()` call emits `upsert` with the resolved `FileNode`. The build driver subscribes to that event, so files flow into the file processor, get parsed one at a time, and land in `Storage` without buffering. The full cache is only iterated when a consumer reads `files`, for example inside a post-enforced plugin that listens on `kubb:plugins:end`.
-
-#### Related
-
-- [Plugin concepts: generator context](/docs/5.x/guide/concepts/plugins#generators)
-
-### The file processor
-
-The file processor is the lower-level pipeline that processes each `FileNode` before writing. It runs the registered parsers, falls back to joining raw source strings when no parser claims a file's extension, and writes the result to storage one file at a time. The build driver enqueues every file the file manager emits, so the flow is automatic. The class is internal and not exported from `@kubb/core`.
-
-#### Streaming
-
-Files stream through the processor as they arrive. The driver calls `enqueue(file)` for every `upsert` the file manager emits, and the processor parses and persists each one without buffering the full set. Progress surfaces through `start`, `update` (with `{ file, source, processed, total, percentage }`), and `end` events on the processor's `hooks` emitter, which the core re-emits on the main event bus for reporters.
+## Rendering
 
 ### `jsxRenderer` (via `kubb/jsx`)
 
@@ -277,61 +203,12 @@ Set the renderer on a generator through its `renderer` field (`renderer: jsxRend
 
 - [Creating plugins](/docs/5.x/guide/going-further/creating-plugins)
 
-## Plugin driver
+## Narrowing `config.input`
 
-### `KubbDriver`
-
-`KubbDriver` orchestrates the generation pipeline. It runs plugins in dependency order, emits lifecycle events, owns the [file manager](#the-file-manager-driver-filemanager), and routes path and name resolution through each plugin's resolver.
-
-Access the driver via `ctx.driver` inside generator context methods, or from the build result via `result.driver`.
-
-#### Key members
-
-| Property               | Type                                    | Purpose                                               |
-| ---------------------- | --------------------------------------- | ----------------------------------------------------- |
-| `driver.plugins`       | `Map<string, Plugin>`                   | All installed plugins keyed by name                   |
-| `driver.fileManager`   | `FileManager`                           | Central file store (`add`, `upsert`, `getByPath`)     |
-| `driver.config`        | `Config`                                | Resolved Kubb configuration                           |
-| `driver.hooks`         | `AsyncEventEmitter<KubbHooks>`          | Lifecycle event bus for listening and emitting        |
-| `driver.getPlugin()`   | `(name: string) => Plugin \| undefined` | Look up a plugin by name (typed via `PluginRegistry`) |
-| `driver.getResolver()` | `(name: string) => Resolver`            | Look up a plugin's resolver by name                   |
-
-> [!TIP]
-> Subscribe to lifecycle events via `driver.hooks.on(event, handler)` to observe the full build pipeline from outside of a plugin.
-
-#### Related
-
-- [Plugin concepts](/docs/5.x/guide/concepts/plugins)
-
-## Utilities
-
-### `AsyncEventEmitter`
-
-`AsyncEventEmitter` is the typed event emitter that drives every `KubbHooks` event. Listeners can be async. The emitter awaits them, propagates errors, and filters events as it goes.
-
-`@kubb/core` re-exports `AsyncEventEmitter` from `@internals/utils`. Use it to listen to events on a `Kubb` instance before calling `.build()`.
-
-#### Related
-
-- [Plugin concepts: lifecycle events](/docs/5.x/guide/concepts/plugins#lifecycle-events)
-
-### `Url`
-
-`Url` is a helper class for turning OpenAPI path strings into other shapes. `Url.toPath` rewrites `{param}` placeholders into Express-style `:param` segments, and `Url.toObject` returns the path together with its extracted params.
-
-```typescript twoslash [url.ts]
-import { Url } from '@kubb/core'
-
-Url.toPath('/pet/{petId}') // '/pet/:petId'
-Url.toObject('/pet/{petId}') // { url: '/pet/:petId', params: { petId: 'petId' } }
-```
-
-### Narrowing `config.input`
-
-`config.input` is either an `InputPath` (the `{ path: string }` form) or an `InputData` (the `{ data: string | unknown }` form). Both types are exported from `@kubb/core`. Narrow between them with an [`in` check](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#the-in-operator-narrowing):
+`config.input` is either the `{ path: string }` form or the `{ data: string | unknown }` form. Narrow between them with an [`in` check](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#the-in-operator-narrowing):
 
 ```typescript twoslash [narrow.ts]
-import type { UserConfig } from '@kubb/core'
+import type { UserConfig } from 'kubb/kit'
 
 declare const input: NonNullable<UserConfig['input']>
 
@@ -342,84 +219,18 @@ if ('path' in input) {
 }
 ```
 
-### `logLevel`
-
-`logLevel` is a constants object that enumerates the valid log level values. Pass one of them to the `logLevel` CLI flag.
-
-| Level     | Usage              | Output                                  |
-| --------- | ------------------ | --------------------------------------- |
-| `silent`  | Production, CI     | No output                               |
-| `info`    | Normal development | Status messages                         |
-| `verbose` | Debugging builds   | Timing info, plugin details             |
-
-> [!TIP]
-> Use `verbose` when profiling plugin performance. To write a log file, pick the `file` reporter with [`--reporter file`](/docs/5.x/reference/commands/generate#reporters).
-
 ## Public types
 
-`@kubb/core` re-exports its public types from the `types.ts` barrel. Import them to type your own build runners and event listeners.
+The programmatic types come from the `kubb` package, next to `createKubb` and `defineConfig`.
 
-#### Configuration
+| Type                    | Purpose                                     |
+| ----------------------- | ------------------------------------------- |
+| `Config` / `UserConfig` | Resolved and user-facing configuration shapes |
+| `CreateKubbOptions`     | Options accepted by `createKubb`            |
+| `Kubb`                  | Instance returned from `createKubb`         |
+| `BuildOutput`           | Return shape of `kubb.build()`              |
 
-| Type                      | Purpose                                                              |
-| ------------------------- | -------------------------------------------------------------------- |
-| `Config` / `UserConfig`   | Resolved and user-facing configuration shapes                        |
-| `PossibleConfig`          | Every accepted form of a Kubb config (object, fn, array, sync/async) |
-| `CLIOptions`              | Flags passed to the CLI (`--config`, `--watch`, `--logLevel`)        |
-| `InputPath` / `InputData` | Two discriminants of `Config['input']`                               |
-
-> [!NOTE]
-> `Output`, `OutputMode`, `OutputOptions`, and `Group` (the per-plugin output shape nested under `Config['output']`) moved to [`kubb/kit`](/docs/5.x/reference/kit#public-types).
-
-#### Build
-
-| Type                     | Purpose                                            |
-| ------------------------ | -------------------------------------------------- |
-| `NormalizedPlugin`       | Internal representation after driver normalization |
-| `KubbBuildStartContext`  | Context passed to `kubb:build:start`               |
-| `KubbBuildEndContext`    | Context passed to `kubb:build:end`                 |
-| `Kubb`                   | Kubb instance returned from `createKubb`           |
-| `BuildOutput`            | Return shape of `kubb.build()`                     |
-
-> [!NOTE]
-> `Plugin`, `PluginFactoryOptions`, `KubbPluginSetupContext`, and `KubbHooks` moved to [`kubb/kit`](/docs/5.x/reference/kit#public-types).
-
-#### Lifecycle hook context types
-
-| Type                              | Event                         | Shape                                                                      |
-| --------------------------------- | ----------------------------- | -------------------------------------------------------------------------- |
-| `KubbLifecycleStartContext`       | `kubb:lifecycle:start`        | `{ version: string }`                                                      |
-| `KubbGenerationStartContext`      | `kubb:generation:start`       | `{ config: Config }`                                                       |
-| `KubbGenerationEndContext`        | `kubb:generation:end`         | `{ config, storage, diagnostics?, status?, hrStart?, filesCreated? }`     |
-| `KubbPluginStartContext`          | `kubb:plugin:start`           | `{ plugin: Plugin }`                                                       |
-| `KubbPluginEndContext`            | `kubb:plugin:end`             | `{ plugin, duration, success, error? }`                                    |
-| `KubbHookStartContext`            | `kubb:hook:start`             | `{ id?, command, args? }`                                                  |
-| `KubbHookLineContext`             | `kubb:hook:line`              | `{ id, line }`                                                              |
-| `KubbHookEndContext`              | `kubb:hook:end`               | `{ id?, command, args?, success, error, stdout?, stderr? }`                |
-| `KubbFilesProcessingStartContext`  | `kubb:files:processing:start`  | `{ files: FileNode[] }`                                                    |
-| `KubbFilesProcessingUpdateContext` | `kubb:files:processing:update` | `{ files: Array<KubbFileProcessingUpdate> }`                               |
-| `KubbFileProcessingUpdate`         | (per-item, inside `files[]`)   | `{ processed, total, percentage, source?, file, config }`                  |
-| `KubbFilesProcessingEndContext`    | `kubb:files:processing:end`    | `{ files: FileNode[] }`                                                    |
-| `KubbInfoContext`                 | `kubb:info`                   | `{ message: string, info?: string }`                                       |
-| `KubbErrorContext`                | `kubb:error`                  | `{ error: Error, meta?: Record<string, unknown> }`                         |
-| `KubbDiagnosticContext`           | `kubb:diagnostic`             | `{ diagnostic: ProblemDiagnostic \| UpdateDiagnostic }`                    |
-| `KubbSuccessContext`              | `kubb:success`                | `{ message: string, info?: string }`                                       |
-| `KubbWarnContext`                 | `kubb:warn`                   | `{ message: string, info?: string }`                                       |
-
-> [!NOTE]
-> `KubbPluginStartContext` and `KubbPluginEndContext` stay here because the driver emits them for every plugin during a build. `kubb/kit` re-exports both for typing a plugin's own hook listeners.
-
-#### Storage
-
-| Type      | Purpose                            |
-| --------- | ------------------------------------|
-| `Storage` | Shape returned by `createStorage`  |
-
-> [!NOTE]
-> `Adapter`, `AdapterFactoryOptions`, `AdapterSource`, `Parser`, `Resolver`, `ResolverContext`, `ResolverPathParams`, `ResolverFileParams`, `ResolveBannerContext`, `ResolveBannerFile`, `BannerMeta`, `ResolveOptionsContext`, `Generator`, `GeneratorContext`, `Include`, `Exclude`, `Override`, `Renderer`, and `RendererFactory` moved to [`kubb/kit`](/docs/5.x/reference/kit#public-types).
-
-> [!NOTE]
-> `defineLogger` and the logger types (`Logger`, `UserLogger`, `LoggerOptions`, `LoggerContext`) have moved to `@kubb/cli`. They are only needed when building a custom CLI logger.
+The plugin, generator, resolver, parser, adapter, renderer, output, and lifecycle hook context types are re-exported from [`kubb/kit`](/docs/5.x/reference/kit#public-types). The logger types (`Logger`, `UserLogger`, `LoggerOptions`, `LoggerContext`) and `defineLogger` live in `@kubb/cli`, needed only when building a custom CLI logger.
 
 ## See also
 
@@ -432,6 +243,5 @@ if ('path' in input) {
 - [Creating plugins](/docs/5.x/guide/going-further/creating-plugins) for a step-by-step guide to building a full plugin
 - [Programmatic usage recipes](/docs/5.x/guide/recipes#programmatic-build) with `createKubb` usage patterns
 - [Configuration reference](/docs/5.x/reference/configuration) for all `defineConfig` options
-- [`@kubb/ast` package](https://www.npmjs.com/package/@kubb/ast), the node constructors re-exported under `ast.factory`
+- [AST API reference](/docs/5.x/reference/ast) for the node constructors under `ast.factory` and the rest of the AST surface
 - [TypeScript handbook: narrowing](https://www.typescriptlang.org/docs/handbook/2/narrowing.html) on narrowing `config.input` with the `in` operator
-- [Astro integrations reference](https://docs.astro.build/en/reference/integrations-reference/), the inspiration for the hook-style API
