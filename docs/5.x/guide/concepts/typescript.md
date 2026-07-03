@@ -65,8 +65,8 @@ A plugin is described by a single generic, [`PluginFactoryOptions`](https://gith
 The split between `TOptions` and `TResolvedOptions` is the part worth understanding. `TOptions` is what a user is allowed to leave out, and `TResolvedOptions` is what the plugin sees once defaults are filled in. Declare the alias once and both halves stay in sync across the factory and its hooks.
 
 ```typescript twoslash [plugin-example.ts]
-import { definePlugin } from '@kubb/core'
-import type { PluginFactoryOptions, Resolver } from '@kubb/core'
+import { definePlugin } from 'kubb/kit'
+import type { PluginFactoryOptions, Resolver } from 'kubb/kit'
 
 type Options = { suffix?: string }
 type ResolvedOptions = Required<Options>
@@ -96,8 +96,8 @@ export const pluginExample = definePlugin<PluginExample>((options) => {
 Adapters follow the same pattern with [`AdapterFactoryOptions`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/types.ts), with one extra slot. Alongside `TName`, `TOptions`, and `TResolvedOptions`, an adapter also pins `TDocument`, the shape of the parsed spec it produces. That is the type every downstream plugin reads from, so getting it right here is what keeps the rest of the pipeline honest.
 
 ```typescript twoslash [adapter-example.ts]
-import { ast, createAdapter } from '@kubb/core'
-import type { AdapterFactoryOptions } from '@kubb/core'
+import { ast, createAdapter } from 'kubb/kit'
+import type { AdapterFactoryOptions } from 'kubb/kit'
 
 type Options = { strict?: boolean }
 type ResolvedOptions = Required<Options>
@@ -127,7 +127,7 @@ The same alias flows into [`Adapter<AdapterExample>`](https://github.com/kubb-la
 Parsers see the files a plugin produced, and each [`FileNode<TMeta>`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/nodes/file.ts) keeps the metadata its plugin attached. The `TMeta` generic is how that survives the trip: type the `parse` parameter and `file.meta` comes back as your own shape rather than `unknown`.
 
 ```typescript twoslash [parser-typed.ts]
-import { ast, defineParser } from '@kubb/core'
+import { ast, defineParser } from 'kubb/kit'
 
 type Meta = { language: 'ts' | 'tsx' }
 
@@ -149,7 +149,7 @@ export const parserTyped = defineParser({
 The AST is a set of discriminated unions, which is what makes it safe to walk. The [`SchemaNode`](https://github.com/kubb-labs/kubb/blob/main/packages/ast/src/nodes/schema.ts#L640) union shares one `kind: 'Schema'` discriminator and uses `node.type` to tell variants apart, so once you check a node's `type`, the compiler knows exactly which fields exist. Two helpers cover the cases the discriminants alone do not: `narrowSchema` narrows a `SchemaNode` to a specific variant, and `isHttpOperationNode` narrows an `OperationNode` to an `HttpOperationNode`.
 
 ```typescript twoslash [narrow.ts]
-import { ast } from '@kubb/core'
+import { ast } from 'kubb/kit'
 
 declare const node: ast.SchemaNode
 

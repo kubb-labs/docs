@@ -25,7 +25,7 @@ Swapping the driver is a single field in [`kubb.config.ts`](/docs/5.x/reference/
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
-import { memoryStorage } from '@kubb/core'
+import { memoryStorage } from 'kubb/kit'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
@@ -36,10 +36,11 @@ export default defineConfig({
 
 ## When to write your own
 
-Build a custom driver when the destination is neither the filesystem nor memory: an object store like S3, a virtual filesystem in the browser, or a remote service. A driver is any object that satisfies the `Storage` contract, and `createStorage` from `@kubb/core` wraps your backend into a reusable factory. The interface, the `createStorage` signature, and a worked example live in the [Core API reference](/docs/5.x/reference/core#createstorage).
+Build a custom driver when the destination is neither the filesystem nor memory: an object store like S3, a virtual filesystem in the browser, or a remote service. A driver is any object that satisfies the `Storage` contract, and `createStorage` from `kubb/kit` wraps your backend into a reusable factory. The interface, the `createStorage` signature, and a worked example live in the [Kit API reference](/docs/5.x/reference/kit#createstorage).
 
 ## Reference
 
-- [Storage in the Core API](/docs/5.x/reference/core#storage): the `Storage` interface, `createStorage`, `fsStorage`, and `memoryStorage`.
+- [Storage in the Kit API](/docs/5.x/reference/kit#storage): `createStorage`, `fsStorage`, and `memoryStorage`.
+- [Storage in the Core API](/docs/5.x/reference/core#storage): the `Storage` interface every driver implements.
 - [`storage` configuration option](/docs/5.x/reference/configuration#storage): where to set the driver.
 - [Testing plugins](/docs/5.x/guide/going-further/creating-plugins#testing): capture generated files with `memoryStorage`.

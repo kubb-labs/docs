@@ -265,6 +265,7 @@ The following plugins have no v5 equivalent. Remove them from your config and un
 | [`@kubb/adapter-oas`](/adapters/adapter-oas/)                | Replaces `@kubb/plugin-oas`. See [Adapters](/docs/5.x/guide/concepts/adapters).                            |
 | [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) | Barrel-file generation, auto-included via `kubb`. See [Barrel files](/docs/5.x/guide/concepts/barrel-files). |
 | [`@kubb/parser-ts`](/parsers/parser-ts/)                     | TypeScript and TSX printer, auto-included via `kubb`. See [Parsers](/docs/5.x/guide/concepts/parsers).     |
+| [`@kubb/kit`](/docs/5.x/reference/kit)                       | The plugin, generator, resolver, parser, and adapter authoring toolkit. Re-exported through `kubb/kit`. See [Kit](/docs/5.x/guide/concepts/kit). |
 
 ## Core configuration
 
@@ -617,6 +618,38 @@ pluginTs({
 ### `generators` removed
 
 The `generators` plugin option is gone. It accepted an array of custom `Generator` objects that ran next to the built-in ones. To add custom output, build your own plugin. See [Creating plugins](/docs/5.x/guide/going-further/creating-plugins).
+
+### Authoring imports moved to `kubb/kit`
+
+The helpers for authoring plugins, generators, resolvers, parsers, and adapters, along with the `ast` namespace, moved out of `@kubb/core` into the new `kubb/kit` subpath of the `kubb` package. `@kubb/core` no longer exports `ast` at all.
+
+`@kubb/ast`'s helpers stay published under `@kubb/ast`, and are also reachable through `kubb/ast`. Its old `/utils` and `/macros` subpaths no longer exist. Import directly from `@kubb/ast` (or `kubb/ast`) instead.
+
+::: code-group
+
+```typescript [before]
+import { ast, definePlugin, defineGenerator } from '@kubb/core'
+```
+
+```typescript twoslash [after]
+import { ast, definePlugin, defineGenerator } from 'kubb/kit'
+```
+
+:::
+
+::: code-group
+
+```typescript [before]
+import { extractRefName } from '@kubb/ast/utils'
+```
+
+```typescript twoslash [after]
+import { extractRefName } from 'kubb/ast'
+```
+
+:::
+
+See [Kit](/docs/5.x/guide/concepts/kit), the [Kit reference](/docs/5.x/reference/kit), and the [AST reference](/docs/5.x/reference/ast).
 
 ## Multiple content types
 

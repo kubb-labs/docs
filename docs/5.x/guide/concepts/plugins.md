@@ -7,7 +7,7 @@ outline: deep
 
 # Plugins
 
-A plugin teaches Kubb to generate something new. It owns its file naming, its output folder, the lifecycle hooks it listens to, and the [generators](/docs/5.x/reference/core#generator) that walk the [AST](/docs/5.x/guide/concepts/ast) and emit files. Almost everything you see in a generated `src/gen/` folder traces back to one plugin or another, so understanding how plugins behave explains how Kubb behaves.
+A plugin teaches Kubb to generate something new. It owns its file naming, its output folder, the lifecycle hooks it listens to, and the [generators](/docs/5.x/reference/kit#defineGenerator) that walk the [AST](/docs/5.x/guide/concepts/ast) and emit files. Almost everything you see in a generated `src/gen/` folder traces back to one plugin or another, so understanding how plugins behave explains how Kubb behaves.
 
 This page is about the idea: what a plugin is, how its lifecycle runs, and how plugins work together. For the signatures (`definePlugin`, `defineGenerator`, `defineResolver`, and the context tables) see the [Core API](/docs/5.x/reference/core). When you want to build one step by step, follow [Creating your first plugin](/docs/5.x/guide/going-further/creating-plugins).
 

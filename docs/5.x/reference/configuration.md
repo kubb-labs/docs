@@ -427,7 +427,8 @@ export default defineConfig({
 Plugin-only mode, with no spec and no adapter:
 
 ```typescript twoslash [kubb.config.ts (plugin-only)]
-import { createKubb, definePlugin, ast } from '@kubb/core'
+import { createKubb } from '@kubb/core'
+import { definePlugin, ast } from 'kubb/kit'
 
 const kubb = createKubb({
   root: process.cwd(),
@@ -480,7 +481,7 @@ export default defineConfig({
 })
 ```
 
-Use `defineParser` from `@kubb/core` to write your own.
+Use `defineParser` from `kubb/kit` to write your own.
 
 ### `storage`
 
@@ -494,11 +495,11 @@ See the [Storage concept](/docs/5.x/guide/concepts/storage) for the built-in dri
 | Required: | `false`                              |
 |  Default: | `fsStorage()` (included with `kubb`) |
 
-Use `createStorage` from `@kubb/core` to plug in S3, Redis, an in-memory map, or any other backend.
+Use `createStorage` from `kubb/kit` to plug in S3, Redis, an in-memory map, or any other backend.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
-import { memoryStorage } from '@kubb/core'
+import { memoryStorage } from 'kubb/kit'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },

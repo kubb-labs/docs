@@ -2,7 +2,7 @@
 
 A macro is a named, composable transform over Kubb's [AST](/docs/5.x/guide/concepts/ast). It rewrites the schema and operation nodes that adapters produce before generators print code, so you can rename a symbol, retype a field, strip metadata, or normalize a shape without forking an adapter or a generator. Because macros run on the shared AST, the same macro works across every input adapter (OpenAPI, AsyncAPI, JSON Schema) and every output target (TypeScript, Zod, and any printer a plugin supplies).
 
-The engine (`defineMacro`, `composeMacros`, `applyMacros`, and the `Macro` type) lives on the `@kubb/ast` root, next to the node tree it transforms. The built-in macro presets live on the `@kubb/ast/macros` subpath, one per file.
+The engine (`defineMacro`, `composeMacros`, `applyMacros`, and the `Macro` type) and the built-in macro presets both live on the `@kubb/ast` root, next to the node tree they transform.
 
 ## Shape
 
@@ -26,7 +26,7 @@ Each callback returns a replacement node, or `undefined` to leave the node untou
 `defineMacro` types a macro and keeps its definition in one place, the way `definePlugin` does for plugins.
 
 ```typescript twoslash [macro.ts]
-import { ast } from '@kubb/core'
+import { ast } from 'kubb/kit'
 
 const macroIntegerToString = ast.defineMacro({
   name: 'integer-to-string',
@@ -39,7 +39,7 @@ const macroIntegerToString = ast.defineMacro({
 The `when` gate skips a macro for nodes it does not care about, and `enforce` places a macro before or after the unmarked ones.
 
 ```typescript twoslash [enforce.ts]
-import { ast } from '@kubb/core'
+import { ast } from 'kubb/kit'
 
 const macroUntagged = ast.defineMacro({
   name: 'untagged',
@@ -56,7 +56,7 @@ const macroUntagged = ast.defineMacro({
 A plugin runs a list of macros. They apply in order, so a later macro sees the output of an earlier one. `composeMacros` folds a list into a single visitor, and `applyMacros` runs the list over a tree.
 
 ```typescript twoslash [compose.ts]
-import { ast } from '@kubb/core'
+import { ast } from 'kubb/kit'
 
 const macroDto = ast.defineMacro({
   name: 'dto',
@@ -81,7 +81,7 @@ const next = ast.applyMacros(root, [macroDto, macroFetchPrefix])
 Pass macros through a plugin's `macros` option, or register them from `kubb:plugin:setup` with `addMacro` and `setMacros`. Macros run per plugin, so one plugin's macros never change the nodes another plugin sees.
 
 ```typescript twoslash [plugin.ts]
-import { ast, definePlugin } from '@kubb/core'
+import { ast, definePlugin } from 'kubb/kit'
 
 const macroDropDescriptions = ast.defineMacro({
   name: 'drop-descriptions',
@@ -107,13 +107,13 @@ Macros run before resolver options are computed, so a renamed `operationId` or `
 
 ## Built-in macros
 
-`@kubb/ast/macros` ships built-in macros for common schema normalizations that any adapter can apply. Import them like any macro and compose them with your own.
+`@kubb/ast` ships built-in macros for common schema normalizations that any adapter can apply. Import them like any macro and compose them with your own.
 
 `macroSimplifyUnion` drops union members that a broader member already covers, such as a multi-value string enum next to a plain `string`. Single-value enums stay, since they narrow the type. `macroDiscriminatorEnum` rewrites a discriminator property into a string enum of its allowed values, and `macroEnumName` names an inline enum from the schema and property it belongs to. The last two read options, so you call them to build a macro.
 
 ```typescript twoslash [presets.ts]
-import { ast } from '@kubb/core'
-import { macroDiscriminatorEnum, macroSimplifyUnion } from '@kubb/ast/macros'
+import { ast } from 'kubb/kit'
+import { macroDiscriminatorEnum, macroSimplifyUnion } from 'kubb/ast'
 
 const root = ast.factory.createInput({ schemas: [], operations: [] })
 const next = ast.applyMacros(root, [macroSimplifyUnion, macroDiscriminatorEnum({ propertyName: 'kind', values: ['cat', 'dog'] })])

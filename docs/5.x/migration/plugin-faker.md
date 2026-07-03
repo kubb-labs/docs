@@ -24,7 +24,7 @@ The `mapper` option mapped a property name to a raw Faker expression. v5 removes
 The generated mock is typed against the `@kubb/plugin-ts` output, so pick values the property's type allows. The v4 `mapper` bypassed that check with a raw expression.
 
 ```diff [kubb.config.ts]
-import { ast } from '@kubb/core'
+import { ast } from 'kubb/kit'
 
 pluginFaker({
 -  mapper: {

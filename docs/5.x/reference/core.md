@@ -1,13 +1,13 @@
 ---
 layout: doc
 title: Core API
-description: Public API surface of @kubb/core including createKubb, definePlugin, defineGenerator, defineResolver, defineParser, createAdapter, createStorage, Diagnostics, KubbDriver, and all public types.
+description: Public API surface of @kubb/core, the build engine, including createKubb, KubbDriver, the file manager and file processor, reporters, and the engine-only public types.
 outline: [2, 3]
 ---
 
 # Core API
 
-`@kubb/core` is the foundation of Kubb. It exports the primitives for embedding Kubb in your own code, writing a plugin, building a storage backend, or extending the generation pipeline.
+`@kubb/core` is the foundation of Kubb, the build engine. It exports the primitives for embedding Kubb in your own code and driving the generation pipeline: `createKubb`, the plugin driver, the file manager and processor, and the reporters.
 
 ::: code-group
 
@@ -30,35 +30,42 @@ yarn add -D @kubb/core@beta
 :::
 
 > [!TIP]
-> Most users do not install `@kubb/core` directly. The top-level [`kubb`](https://www.npmjs.com/package/kubb) package re-exports it with `adapterOas` and the default parsers pre-installed. Use `@kubb/core` directly when embedding Kubb programmatically or writing a plugin.
+> Most users do not install `@kubb/core` directly. The top-level [`kubb`](https://www.npmjs.com/package/kubb) package re-exports it with `adapterOas` and the default parsers pre-installed. Use `@kubb/core` directly when embedding Kubb programmatically. Writing a plugin instead? See the [Kit API](/docs/5.x/reference/kit).
 
 ```typescript twoslash [imports.ts]
 import { defineConfig } from 'kubb'
 import {
-  defineGenerator,
-  defineParser,
-  definePlugin,
-  defineResolver,
-  createAdapter,
   createKubb,
-  createStorage,
   createReporter,
-  fsStorage,
-  memoryStorage,
   cliReporter,
   jsonReporter,
   fileReporter,
   KubbDriver,
-  Diagnostics,
   AsyncEventEmitter,
   Url,
   logLevel,
-  ast,
 } from '@kubb/core'
 ```
 
+Writing a plugin, generator, resolver, parser, or adapter instead? That surface moved to `kubb/kit`:
+
+```typescript twoslash [authoring-imports.ts]
+import {
+  ast,
+  definePlugin,
+  defineGenerator,
+  defineResolver,
+  defineParser,
+  createAdapter,
+  createStorage,
+  Diagnostics,
+} from 'kubb/kit'
+```
+
+See the [Kit API](/docs/5.x/reference/kit) for the full authoring reference.
+
 > [!NOTE]
-> `@kubb/core` re-exports the entire [`@kubb/ast`](/docs/5.x/guide/concepts/ast) module under the `ast` namespace. You can equivalently import helpers directly from `@kubb/ast`.
+> `@kubb/core` no longer re-exports `@kubb/ast`. Import `ast` from [`kubb/kit`](/docs/5.x/reference/kit#ast) for the authoring-side namespace, or from `@kubb/ast` directly for the [AST API](/docs/5.x/reference/ast).
 
 ## Configuration
 
@@ -123,7 +130,8 @@ Reach for `createKubb` when you orchestrate several builds, inspect diagnostics,
 
 ```typescript twoslash [build.ts]
 // @module: esnext
-import { createKubb, Diagnostics } from '@kubb/core'
+import { createKubb } from '@kubb/core'
+import { Diagnostics } from 'kubb/kit'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginAxios } from '@kubb/plugin-axios'
 
@@ -186,231 +194,13 @@ Each `Diagnostic` carries a `code`, a `severity` (`error`, `warning`, or `info`)
 
 ## Plugin authoring
 
-Plugins are the main extension point in Kubb. A plugin owns its file naming, its output folder, its lifecycle hooks, and the [generators](#definegenerator) that walk the [AST](/docs/5.x/guide/concepts/ast) and emit `FileNode` objects.
+Writing a plugin, generator, resolver, parser, or adapter no longer happens against `@kubb/core`. `definePlugin`, `defineGenerator`, `defineResolver`, `defineParser`, and `createAdapter` moved to `kubb/kit`, alongside `createRenderer`, `createStorage`, and `Diagnostics`.
 
-### `definePlugin`
-
-`definePlugin` wraps a factory function and returns a typed `Plugin`. All lifecycle handlers live under one `hooks` object, inspired by [Astro integrations](https://docs.astro.build/en/reference/integrations-reference/).
-
-```typescript twoslash [plugin-example.ts]
-import { definePlugin } from '@kubb/core'
-
-export const pluginExample = definePlugin((options: { prefix?: string } = {}) => ({
-  name: 'plugin-example',
-  hooks: {
-    'kubb:plugin:setup'(ctx) {
-      // Register resolvers, generators, and options here.
-    },
-  },
-}))
-```
-
-#### Plugin shape
-
-| Property       | Type                                 | Required | Description                                                |
-| -------------- | ------------------------------------ | -------- | ---------------------------------------------------------- |
-| `name`         | `string`                             | Yes      | Unique plugin identifier (e.g., `plugin-ts`)               |
-| `dependencies` | `Array<string>`                      | No       | Names of other plugins this one requires                   |
-| `options`      | `unknown`                            | No       | User-supplied options passed through to generators         |
-| `hooks`        | `{ 'kubb:plugin:setup'?: ...; ... }` | Yes      | Lifecycle handlers (see [Plugin API](/docs/5.x/guide/concepts/plugins)) |
-
-#### `KubbPluginSetupContext` methods (passed to `kubb:plugin:setup`)
-
-| Method           | Signature                                                       | Purpose                                                       |
-| ---------------- | --------------------------------------------------------------- | ------------------------------------------------------------- |
-| `addGenerator`   | `(...generators: Array<Generator>) => void`                     | Register one or more generators for this plugin               |
-| `setResolver`    | `(resolver: Partial<Resolver>) => void`                         | Set or partially override the file naming resolver            |
-| `addMacro`       | `(macro: Macro) => void`                                        | Add a macro that rewrites AST nodes before generators         |
-| `setMacros`      | `(macros: Array<Macro>) => void`                                | Replace this plugin's macros with a new list                  |
-| `setOptions`     | `(options: ResolvedOptions) => void`                            | Set the resolved options used by generators                   |
-| `injectFile`     | `(file: UserFileNode) => void`                                  | Inject a raw file into the build output, bypassing generation |
-| `updateConfig`   | `(config: Partial<Config>) => void`                             | Merge a partial config update into the current build config   |
-| `config`         | `Config`                                                        | The resolved build configuration at setup time                |
-| `options`        | `TOptions`                                                      | The plugin's own options as passed by the user                |
-
-> [!IMPORTANT]
-> Plugin names should follow the convention `plugin-<feature>` (e.g., `plugin-react-query`, `plugin-zod`). See [Creating plugins](/docs/5.x/guide/going-further/creating-plugins) for naming conventions.
-
-#### Related
-
-- [Full Plugin API reference](/docs/5.x/guide/concepts/plugins)
-- [Creating your first plugin](/docs/5.x/guide/going-further/creating-plugins)
-
-### `defineGenerator` {#generator}
-
-`defineGenerator` declares a named generator unit consumed by a plugin. Generators walk the [AST](/docs/5.x/guide/concepts/ast) and emit files. The core calls each method for the matching node type during the generation loop.
-
-Each generator method returns `TElement | Array<FileNode> | void`. Returning a renderer element (for example JSX from `@kubb/renderer-jsx`) requires a `renderer` factory on the generator. Returning `Array<FileNode>` directly, or calling `ctx.upsertFile()` and returning `void`, works without a renderer.
-
-```typescript twoslash [my-generator.ts]
-import { ast, defineGenerator } from '@kubb/core'
-
-const myGenerator = defineGenerator({
-  name: 'my-generator',
-  operation(node, ctx) {
-    return [
-      ast.factory.createFile({
-        baseName: `${node.operationId}.ts`,
-        path: `./${node.operationId}.ts`,
-        sources: [
-          ast.factory.createSource({
-            nodes: [ast.factory.createText(`export const op = '${node.operationId}'`)],
-          }),
-        ],
-      }),
-    ]
-  },
-})
-```
-
-#### Generator methods
-
-| Method         | Input                                   | Output                                | When to use                                                      |
-| -------------- | --------------------------------------- | ------------------------------------- | ---------------------------------------------------------------- |
-| `schema()`     | `SchemaNode` (per data schema)          | `TElement \| Array<FileNode> \| void` | Generate types, validators, factories. Called once per schema    |
-| `operation()`  | `OperationNode` (per API operation)     | `TElement \| Array<FileNode> \| void` | Generate hooks, clients, handlers. Called once per operation     |
-| `operations()` | `Array<OperationNode>` (all operations) | `TElement \| Array<FileNode> \| void` | Generate index or barrel files. Called once after all operations |
-
-#### `GeneratorContext` properties (the `ctx` argument passed to each method)
-
-| Property              | Type                                                | Purpose                                                              |
-| --------------------- | --------------------------------------------------- | -------------------------------------------------------------------- |
-| `ctx.config`          | `Config`                                            | Resolved Kubb configuration                                          |
-| `ctx.root`            | `string`                                            | Absolute path to the output directory for the current plugin         |
-| `ctx.options`         | `TResolvedOptions`                                  | Per-node resolved options (after exclude/include/override filtering) |
-| `ctx.plugin`          | `Plugin`                                            | The owning plugin descriptor                                         |
-| `ctx.resolver`        | `Resolver`                                          | Resolver for the current plugin                                      |
-| `ctx.driver`          | `KubbDriver`                                      | Plugin driver for cross-plugin access                                |
-| `ctx.hooks`           | `AsyncEventEmitter<KubbHooks>`                      | Event bus for `KubbHooks` events                                     |
-| `ctx.adapter`         | `Adapter`                                           | The adapter that parsed the input spec                               |
-| `ctx.meta`            | `InputMeta`                                         | Document metadata from the adapter. Carries `title`, `version`, `baseURL`, and the pre-computed `circularNames` and `enumNames` arrays. |
-| `ctx.addFile()`       | `(...files: FileNode[]) => Promise<void>`           | Add files, skipping any that already exist                           |
-| `ctx.upsertFile()`    | `(...files: FileNode[]) => Promise<void>`           | Add or merge files (concatenates sources and imports)                |
-| `ctx.getPlugin()`     | `(name: string) => Plugin \| undefined`             | Get a plugin by name                                                 |
-| `ctx.requirePlugin()` | `(name: string) => Plugin`                          | Get a plugin by name or throw a descriptive error                    |
-| `ctx.getResolver()`   | `(name: string) => Resolver`                        | Get a resolver by plugin name                                        |
-| `ctx.info()`          | `(message: string) => void`                         | Emit an info message via the build event system                      |
-| `ctx.warn()`          | `(message: string) => void`                         | Emit a warning via the build event system                            |
-| `ctx.error()`         | `(error: string \| Error) => void`                  | Emit an error via the build event system                             |
-
-> [!TIP]
-> Return an empty array `[]` to skip a node without error. Return `void` to handle file writing manually via `ctx.upsertFile()`.
-
-#### Related
-
-- [AST concepts](/docs/5.x/guide/concepts/ast) for node types and traversal
-- [Creating plugins](/docs/5.x/guide/going-further/creating-plugins)
-
-### `defineResolver` {#resolver}
-
-`defineResolver` creates a resolver that controls file naming and path resolution for a plugin. The builder is a zero-argument function. Use `this` to call sibling resolver methods.
-
-The builder must return at least `{ name, pluginName }`. The other resolver methods (`default`, `resolveOptions`, `resolvePath`, `resolveFile`, `resolveBanner`, `resolveFooter`) receive built-in defaults and can each be overridden.
-
-```typescript twoslash [resolver.ts]
-import { defineResolver } from '@kubb/core'
-import type { PluginFactoryOptions, Resolver } from '@kubb/core'
-
-// Extend the base Resolver with plugin-specific naming methods.
-type MyResolver = Resolver & {
-  resolveName(node: { name: string }): string
-}
-
-type MyPlugin = PluginFactoryOptions<'plugin-example', object, object, MyResolver>
-
-export const resolver = defineResolver<MyPlugin>(() => ({
-  name: 'default',
-  pluginName: 'plugin-example',
-  resolveName(node) {
-    return this.default(node.name, 'function')
-  },
-}))
-```
-
-#### Auto-injected resolver defaults
-
-| Method           | Default behavior                                                       |
-| ---------------- | ---------------------------------------------------------------------- |
-| `default`        | `camelCase` for `function`/`file`, `PascalCase` for `type`             |
-| `resolveOptions` | Applies `exclude`, `include`, and `override` filters                   |
-| `resolvePath`    | Resolves to `output.path`, with optional tag/path-based subdirectories |
-| `resolveFile`    | Constructs a full `FileNode` using `default` + `resolvePath`           |
-| `resolveBanner`  | Returns `output.banner` or the standard "Generated by Kubb" header     |
-| `resolveFooter`  | Returns `output.footer` when set                                       |
-
-#### Related
-
-- [Plugin API: resolvers](/docs/5.x/guide/concepts/plugins#resolvers)
-- [Creating plugins](/docs/5.x/guide/going-further/creating-plugins)
-
-### `defineParser`
-
-`defineParser` creates a parser that converts generated file ASTs to formatted source strings. Each parser declares which file extensions it handles via `extNames`.
-
-The built-in parsers handle TypeScript, TSX, and markdown files: [`parserTs`, `parserTsx`](/docs/5.x/guide/concepts/parsers), and `parserMd`. Implement `defineParser` to add other languages or custom output formats.
-
-#### Related
-
-- [Parser concepts](/docs/5.x/guide/concepts/parsers)
-
-### `createAdapter`
-
-`createAdapter` builds adapters that translate non-OpenAPI specs into Kubb's universal [AST](/docs/5.x/guide/concepts/ast). The built-in [`@kubb/adapter-oas`](/docs/5.x/guide/concepts/adapters) handles OpenAPI and Swagger documents.
-
-Write a custom adapter when your source is something Kubb does not parse yet, such as a GraphQL schema, a gRPC definition, an AsyncAPI spec, or your own domain-specific language.
-
-> [!IMPORTANT]
-> Adapters must parse their input format to Kubb's `InputNode` structure. See [Adapter API](/docs/5.x/guide/concepts/adapters) for complete documentation.
-
-#### Related
-
-- [Adapter concepts](/docs/5.x/guide/concepts/adapters)
-- [Creating a custom adapter](/docs/5.x/reference/adapters#creating-a-custom-adapter)
+See the [Kit API](/docs/5.x/reference/kit) for the full reference, and [Creating plugins](/docs/5.x/guide/going-further/creating-plugins) for a step-by-step guide.
 
 ## Storage
 
-Storage backends decide where generated files are written. Kubb ships a filesystem backend and an in-memory one. Use `createStorage` to build your own.
-
-### `createStorage`
-
-`createStorage` takes a builder function `(options: TOptions) => Storage` and returns a factory `(options?: TOptions) => Storage`. Call the returned factory to instantiate the storage, optionally with options.
-
-```typescript twoslash [memory-storage.ts]
-import { createStorage } from '@kubb/core'
-
-export const memoryStorage = createStorage(() => {
-  const store = new Map<string, string>()
-  return {
-    name: 'memory',
-    async hasItem(key) {
-      return store.has(key)
-    },
-    async getItem(key) {
-      return store.get(key) ?? null
-    },
-    async setItem(key, value) {
-      store.set(key, value)
-    },
-    async removeItem(key) {
-      store.delete(key)
-    },
-    async getKeys(base) {
-      const keys = [...store.keys()]
-      return base ? keys.filter((k) => k.startsWith(base)) : keys
-    },
-    async clear(base) {
-      if (!base) return store.clear()
-      for (const k of store.keys()) if (k.startsWith(base)) store.delete(k)
-    },
-    async dispose() {
-      store.clear()
-    },
-  }
-})
-```
-
-> [!TIP]
-> Use `memoryStorage` for tests and dry-runs. Use `fsStorage` for normal development and CI/CD.
+Storage backends decide where generated files are written. The two built-in backends, `fsStorage` and `memoryStorage`, and the `createStorage` builder for writing a custom one, moved to [`kubb/kit`](/docs/5.x/reference/kit#storage). The `Storage` interface below is the shape every backend implements, kept here because a `Storage` instance is what the engine consumes at build time and returns from `driver.storage`.
 
 #### `Storage` interface
 
@@ -424,19 +214,9 @@ export const memoryStorage = createStorage(() => {
 | `clear()`      | `base?: string`              | `Promise<void>`           | Delete all items, optionally scoped by prefix           |
 | `dispose?()`   | (none)                       | `Promise<void>`           | Optional teardown hook called after the build completes |
 
-### `fsStorage`
-
-`fsStorage` is the built-in filesystem storage backend. Kubb uses it by default when no `storage` option is set in the config. It creates output directories automatically and respects `output.path`.
-
-### `memoryStorage`
-
-`memoryStorage` is the built-in in-memory storage backend. It writes nothing to disk, so it suits plugin tests, CI validation, and dry runs.
-
-> [!NOTE]
-> Both `fsStorage` and `memoryStorage` are exported from `@kubb/core` and can be passed directly to the `storage` field at the root of your config.
-
 #### Related
 
+- [Kit API: Storage](/docs/5.x/reference/kit#storage)
 - [Configuration reference](/docs/5.x/reference/configuration)
 
 ## Files & rendering
@@ -473,19 +253,19 @@ The file processor is the lower-level pipeline that processes each `FileNode` be
 
 Files stream through the processor as they arrive. The driver calls `enqueue(file)` for every `upsert` the file manager emits, and the processor parses and persists each one without buffering the full set. Progress surfaces through `start`, `update` (with `{ file, source, processed, total, percentage }`), and `end` events on the processor's `hooks` emitter, which the core re-emits on the main event bus for reporters.
 
-### `jsxRenderer` (via `@kubb/renderer-jsx`)
+### `jsxRenderer` (via `kubb/jsx`)
 
-For JSX-based rendering, import `jsxRenderer` from [`@kubb/renderer-jsx`](https://www.npmjs.com/package/@kubb/renderer-jsx).
+For JSX-based rendering, import `jsxRenderer` from [`kubb/jsx`](/docs/5.x/reference/jsx), backed by the `@kubb/renderer-jsx` package.
 
 `jsxRenderer` is a React-free recursive renderer. It walks the JSX components into `FileNode`s without a React reconciliation pass, and its `stream()` returns a synchronous `Generator<FileNode>` that skips a microtask per file. Components run as plain functions, so hooks and suspense are not available.
 
 ```typescript twoslash [renderer.ts]
-import { jsxRenderer } from '@kubb/renderer-jsx'
+import { jsxRenderer } from 'kubb/jsx'
 
 const renderer = jsxRenderer()
 ```
 
-Set the renderer on a generator through its `renderer` field (`renderer: jsxRenderer`) to enable JSX-based output for that generator. Leave it unset, or pass `renderer: null`, to opt out of rendering.
+Set the renderer on a generator through its `renderer` field (`renderer: jsxRenderer`) to enable JSX-based output for that generator. Leave it unset, or pass `renderer: null`, to opt out of rendering. See the [JSX API reference](/docs/5.x/reference/jsx) for `File`, `Function`, `Type`, `Const`, and the `jsx-runtime` / `jsx-dev-runtime` subpaths.
 
 #### Related
 
@@ -571,7 +351,7 @@ if ('path' in input) {
 
 ## Public types
 
-`@kubb/core` re-exports its public types from the `types.ts` barrel. Import them to type your own plugins, adapters, parsers, and build runners.
+`@kubb/core` re-exports its public types from the `types.ts` barrel. Import them to type your own build runners and event listeners.
 
 #### Configuration
 
@@ -581,24 +361,22 @@ if ('path' in input) {
 | `PossibleConfig`          | Every accepted form of a Kubb config (object, fn, array, sync/async) |
 | `CLIOptions`              | Flags passed to the CLI (`--config`, `--watch`, `--logLevel`)        |
 | `InputPath` / `InputData` | Two discriminants of `Config['input']`                               |
-| `Output`                  | Per-plugin output configuration                                      |
-| `OutputMode`              | `'directory' \| 'file'`                                              |
-| `OutputOptions`           | Output plus a `group` strategy                                       |
-| `Group`                   | Grouping strategy for generated files                               |
 
-#### Plugins
+> [!NOTE]
+> `Output`, `OutputMode`, `OutputOptions`, and `Group` (the per-plugin output shape nested under `Config['output']`) moved to [`kubb/kit`](/docs/5.x/reference/kit#public-types).
+
+#### Build
 
 | Type                     | Purpose                                            |
 | ------------------------ | -------------------------------------------------- |
-| `Plugin`                 | Final plugin object returned from `definePlugin`   |
-| `PluginFactoryOptions`   | Generic parameter pack used to type a plugin       |
 | `NormalizedPlugin`       | Internal representation after driver normalization |
-| `KubbPluginSetupContext` | Context passed to `kubb:plugin:setup`              |
 | `KubbBuildStartContext`  | Context passed to `kubb:build:start`               |
 | `KubbBuildEndContext`    | Context passed to `kubb:build:end`                 |
-| `KubbHooks`              | Map of every lifecycle event the driver emits      |
 | `Kubb`                   | Kubb instance returned from `createKubb`           |
 | `BuildOutput`            | Return shape of `kubb.build()`                     |
+
+> [!NOTE]
+> `Plugin`, `PluginFactoryOptions`, `KubbPluginSetupContext`, and `KubbHooks` moved to [`kubb/kit`](/docs/5.x/reference/kit#public-types).
 
 #### Lifecycle hook context types
 
@@ -622,55 +400,24 @@ if ('path' in input) {
 | `KubbSuccessContext`              | `kubb:success`                | `{ message: string, info?: string }`                                       |
 | `KubbWarnContext`                 | `kubb:warn`                   | `{ message: string, info?: string }`                                       |
 
-#### Adapters & parsers
+> [!NOTE]
+> `KubbPluginStartContext` and `KubbPluginEndContext` stay here because the driver emits them for every plugin during a build. `kubb/kit` re-exports both for typing a plugin's own hook listeners.
 
-| Type                    | Purpose                                                        |
-| ----------------------- | -------------------------------------------------------------- |
-| `Adapter`               | Final adapter object returned from `createAdapter`             |
-| `AdapterFactoryOptions` | Generic parameter pack for an adapter                          |
-| `AdapterSource`         | `{ type: 'path'; path }` or `{ type: 'data'; data }`          |
-| `Parser`                | Final parser object returned from `defineParser`               |
+#### Storage
 
-#### Resolvers
+| Type      | Purpose                            |
+| --------- | ------------------------------------|
+| `Storage` | Shape returned by `createStorage`  |
 
-| Type                    | Purpose                                                                        |
-| ----------------------- | ------------------------------------------------------------------------------ |
-| `Resolver`              | Base constraint for resolvers returned from `defineResolver`                   |
-| `ResolverContext`       | Shared context for path, file, and name resolution                             |
-| `ResolverPathParams`    | Parameters for `Resolver.resolvePath`                                          |
-| `ResolverFileParams`    | Parameters for `Resolver.resolveFile`                                          |
-| `ResolveBannerContext`  | Context for banner and footer resolution (`output`, `config`, per-file `file`) |
-| `ResolveBannerFile`     | Per-file context (`path`, `baseName`, `isBarrel`, `isAggregation`)             |
-| `BannerMeta`            | `InputMeta` extended with per-file fields, passed to a `banner` or `footer` function |
-| `ResolveOptionsContext` | Context for `resolveOptions` (include, exclude, override)                      |
-
-#### Generators & files
-
-| Type               | Purpose                                                                 |
-| ------------------ | ----------------------------------------------------------------------- |
-| `Generator`        | Generator object returned from `defineGenerator`                        |
-| `GeneratorContext` | Context passed to `schema()`, `operation()`, and `operations()` methods |
-
-#### Filters
-
-| Type       | Purpose                                                |
-| ---------- | ------------------------------------------------------ |
-| `Include`  | Filter narrowing generation to matching nodes          |
-| `Exclude`  | Filter preventing matching nodes from being generated  |
-| `Override` | Filter pairing a match with per-node option overrides  |
-
-#### Storage and rendering
-
-| Type                           | Purpose                                                       |
-| ------------------------------ | ------------------------------------------------------------- |
-| `Storage`                      | Shape returned by `createStorage`                             |
-| `Renderer` / `RendererFactory` | Interfaces for custom renderers set on a generator's `renderer` field |
+> [!NOTE]
+> `Adapter`, `AdapterFactoryOptions`, `AdapterSource`, `Parser`, `Resolver`, `ResolverContext`, `ResolverPathParams`, `ResolverFileParams`, `ResolveBannerContext`, `ResolveBannerFile`, `BannerMeta`, `ResolveOptionsContext`, `Generator`, `GeneratorContext`, `Include`, `Exclude`, `Override`, `Renderer`, and `RendererFactory` moved to [`kubb/kit`](/docs/5.x/reference/kit#public-types).
 
 > [!NOTE]
 > `defineLogger` and the logger types (`Logger`, `UserLogger`, `LoggerOptions`, `LoggerContext`) have moved to `@kubb/cli`. They are only needed when building a custom CLI logger.
 
 ## See also
 
+- [Kit API](/docs/5.x/reference/kit) for the plugin, generator, resolver, parser, and adapter authoring toolkit
 - [Plugin concepts](/docs/5.x/guide/concepts/plugins) for lifecycle hooks, generators, resolvers, and the plugin registry
 - [AST concepts](/docs/5.x/guide/concepts/ast) for `InputNode`, `OperationNode`, `SchemaNode`, and traversal helpers
 - [Adapter concepts](/docs/5.x/guide/concepts/adapters) on how `createAdapter` converts specs to the universal AST
