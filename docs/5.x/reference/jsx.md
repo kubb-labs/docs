@@ -29,6 +29,7 @@ With that in place, `.tsx` files in the plugin resolve `jsx-runtime` and `jsx-de
 `jsxRenderer` creates a renderer instance with three members: `render`, `files`, and `stream`. Call `render` with a JSX element, then read the generated files back off `files`.
 
 ```tsx twoslash [render.tsx]
+// @jsxImportSource: kubb/jsx
 import { jsxRenderer } from 'kubb/jsx'
 import { File, Function, Type } from 'kubb/jsx'
 
@@ -67,6 +68,28 @@ Use `stream(element)` instead of `render` when you want files as they are produc
 | `Paragraph` | Generates a paragraph in markdown output |
 
 `Callout`, `Frontmatter`, `Heading`, `List`, and `Paragraph` target markdown output. The rest emit TypeScript.
+
+### Markdown output
+
+The markdown components go directly inside a `<File>` instead of a `<File.Source>`, since each one emits its own source block. Render the file with `parserMd` so it is written as markdown.
+
+```tsx twoslash [docs.tsx]
+// @jsxImportSource: kubb/jsx
+import { jsxRenderer } from 'kubb/jsx'
+import { File, Frontmatter, Heading, Paragraph, List, Callout } from 'kubb/jsx'
+
+const renderer = jsxRenderer()
+
+await renderer.render(
+  <File baseName="pets.md" path="src/docs/pets.md">
+    <Frontmatter data={{ title: 'Pets', layout: 'doc' }} />
+    <Heading level={2}>Pets</Heading>
+    <Paragraph>{'A pet object with an id and a name.'}</Paragraph>
+    <List items={['id: number', 'name: string']} />
+    <Callout type="tip">Keep the generator hot with kubb start --watch.</Callout>
+  </File>,
+)
+```
 
 ## Types
 
