@@ -7,7 +7,7 @@ outline: deep
 
 # Kit: the plugin authoring toolkit
 
-`kubb/kit` contains everything you need to create your own plugin and custom logic: a plugin, a generator, a resolver, a parser, or a custom adapter or renderer all start from this one import. It groups `definePlugin`, `defineGenerator`, `defineResolver`, `defineParser`, `createAdapter`, `createRenderer`, the `ast` namespace and `factory` node builders you use to construct output, and the option and hook types that go with all of it. See [Architecture](/docs/5.x/guide/concepts/architecture) for where kit sits in the pipeline, [Plugins](/docs/5.x/guide/concepts/plugins) for what a plugin does once it is built, and [AST](/docs/5.x/guide/concepts/ast) for the tree kit's `ast` namespace wraps.
+`kubb/kit` contains everything you need to create your own plugin and custom logic. A plugin, a generator, a resolver, a parser, or a custom adapter or renderer all start from this one import. It groups `definePlugin`, `defineGenerator`, `defineResolver`, `defineParser`, `createAdapter`, `createRenderer`, the `ast` namespace and `factory` node builders you use to construct output, and the option and hook types that go with all of it. See [Architecture](/docs/5.x/guide/concepts/architecture) for where kit sits in the pipeline, [Plugins](/docs/5.x/guide/concepts/plugins) for what a plugin does once it is built, and [AST](/docs/5.x/guide/concepts/ast) for the tree kit's `ast` namespace wraps.
 
 ## Why a separate surface from the engine
 

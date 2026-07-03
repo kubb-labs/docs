@@ -64,7 +64,7 @@ See [Adapters](/docs/5.x/guide/concepts/adapters) for the full list of options a
 
 ## [AST](/docs/5.x/guide/concepts/ast)
 
-The AST is the intermediate representation between the [adapter](/docs/5.x/guide/concepts/adapters) and the [plugins](/plugins). Every adapter produces an `InputNode`; every plugin consumes it. Plugins never read the raw spec, so the same plugin works with any adapter.
+The AST is the intermediate representation between the [adapter](/docs/5.x/guide/concepts/adapters) and the [plugins](/plugins). Every adapter produces an `InputNode` and every plugin consumes it. Plugins never read the raw spec, so the same plugin works with any adapter.
 
 ```text [Resulting tree]
 InputNode

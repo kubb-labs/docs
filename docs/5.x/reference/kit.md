@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Kit API
 
-`kubb/kit` contains everything you need to build your own plugin and custom logic: plugins, generators, resolvers, parsers, adapters, renderers, and storage backends all start here. It is a subpath of the top-level `kubb` package, so there is nothing extra to install. Import straight from `kubb/kit`.
+`kubb/kit` contains everything you need to build your own plugin and custom logic. Plugins, generators, resolvers, parsers, adapters, renderers, and storage backends all start here. It is a subpath of the top-level `kubb` package, so there is nothing extra to install. Import straight from `kubb/kit`.
 
 ```typescript twoslash [imports.ts]
 import {
@@ -25,7 +25,7 @@ import {
 } from 'kubb/kit'
 ```
 
-Behind the scenes `kubb/kit` is backed by `@kubb/kit`, which in turn re-exports from the internal `@kubb/core` and `@kubb/ast` libraries. Treat those as implementation details: always import from `kubb/kit`, never from the internal packages directly.
+`kubb/kit` is backed by the `@kubb/kit` package, which re-exports from the internal `@kubb/core` and `@kubb/ast` libraries. Treat both as implementation details and always import from `kubb/kit`, never from the internal packages directly.
 
 > [!TIP]
 > The build-time engine (`createKubb`) and `defineConfig` come from the `kubb` package and its `kubb/config` subpath, documented in [Engine and configuration](#engine-and-configuration) below. `kubb/kit` is the authoring side: the code you write to add a new plugin, generator, resolver, parser, adapter, or renderer.
