@@ -263,7 +263,7 @@ The following plugins have no v5 equivalent. Remove them from your config and un
 | Package                                                     | Purpose                                                                                              |
 | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | [`@kubb/adapter-oas`](/adapters/adapter-oas/)                | Replaces `@kubb/plugin-oas`. See [Adapters](/docs/5.x/guide/concepts/adapters).                            |
-| [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) | Barrel-file generation, auto-included via `kubb`. See [Barrel files](/docs/5.x/guide/concepts/barrel-files). |
+| [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) | Barrel-file generation, auto-included via `kubb`. See [Barrel files](/docs/5.x/guide/going-further/barrel-files). |
 | [`@kubb/parser-ts`](/parsers/parser-ts/)                     | TypeScript and TSX printer, auto-included via `kubb`. See [Parsers](/docs/5.x/guide/concepts/parsers).     |
 | [`@kubb/kit`](/docs/5.x/reference/kit)                       | The plugin, generator, resolver, parser, and adapter authoring toolkit. Re-exported through `kubb/kit`. See [Kit](/docs/5.x/guide/concepts/kit). |
 
@@ -805,7 +805,7 @@ The output changes specific to each generator live on its [per-extension page](#
 - [Adapters](/docs/5.x/guide/concepts/adapters): how the OpenAPI input is parsed into the universal AST.
 - [Plugins](/docs/5.x/guide/concepts/plugins): lifecycle, generators, and resolvers.
 - [Parsers](/docs/5.x/guide/concepts/parsers): how AST nodes become source files.
-- [Barrel files](/docs/5.x/guide/concepts/barrel-files): barrel file generation with `@kubb/plugin-barrel`.
+- [Barrel files](/docs/5.x/guide/going-further/barrel-files): barrel file generation with `@kubb/plugin-barrel`.
 - [Storage](/docs/5.x/guide/concepts/storage): switching between filesystem and in-memory storage.
 - [`@kubb/adapter-oas`](/adapters/adapter-oas/): every option that moved here from the plugins.
 - [Plugin registry](/plugins): the full list of v5 plugins.
