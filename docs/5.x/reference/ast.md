@@ -7,33 +7,20 @@ outline: deep
 
 # AST API
 
-Kubb's universal Abstract Syntax Tree is reached through `kubb/kit` and `kubb/ast`. This page documents its callable surface: node factories, the three visitors, type guards, and helpers. For why the AST exists and how it fits the pipeline, see [AST concepts](/docs/5.x/guide/concepts/ast).
+Kubb's universal Abstract Syntax Tree is reached through the `ast` namespace in `kubb/kit`. This page documents its callable surface: node factories, the three visitors, type guards, and helpers. For why the AST exists and how it fits the pipeline, see [AST concepts](/docs/5.x/guide/concepts/ast).
 
-## Choosing an import
+## Import
 
-Reach the AST two ways. Pick the one that matches how you want to write the call, not a different feature set.
-
-| Import     | What you get                                                                                                              | Style               | Reach for it when                                                                           |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------- | ------------------------------------------------------------------------------------------- |
-| `kubb/kit` | The `ast` and `factory` namespaces: `ast.factory.createX`, `ast.walk`, `ast.transform`, `ast.collect`, `ast.narrowSchema` | Namespaced (`ast.`) | You are authoring a plugin or generator. This is the default, and nothing extra to install. |
-| `kubb/ast` | The flat runtime and types: `walk`, `transform`, `extractRefName`, `narrowSchema`, the `*Def` guards, the macro engine    | Flat named          | You want prefix-free named imports instead of the `ast.` prefix.                            |
-
-Everything the AST offers is reachable through `kubb/kit`, so make it your default. Reach for `kubb/ast` only when you want a symbol in its flat, prefix-free form.
-
-The `ast` and `factory` namespaces come only from `kubb/kit`. The `kubb/ast` subpath deliberately leaves them out, so `import { ast } from 'kubb/ast'` does not resolve. Reach for `kubb/ast` when you want the flat names.
-
-Here is the same call written in each style:
+Import the `ast` namespace from `kubb/kit`. It carries the whole AST surface: the `factory` node builders, the `walk`, `transform`, and `collect` visitors, the guards, the ref and string helpers, and the macro engine.
 
 ```typescript twoslash [imports.ts]
-import { ast, factory } from 'kubb/kit'
-import { extractRefName } from 'kubb/ast'
+import { ast } from 'kubb/kit'
 
-ast.factory.createInput({ schemas: [], operations: [] }) // namespaced
-factory.createInput({ schemas: [], operations: [] }) // bare factory namespace
-extractRefName('#/components/schemas/Pet') // flat named helper
+const root = ast.factory.createInput({ schemas: [], operations: [] })
+const name = ast.extractRefName('#/components/schemas/Pet')
 ```
 
-As a rule of thumb, import from `kubb/kit` when you are authoring a plugin or generator, and from `kubb/ast` when you want the flat helpers without the `ast.` prefix.
+Authoring a plugin or generator needs nothing more, since `kubb/kit` bundles the AST with `definePlugin`, `defineGenerator`, and the rest of the toolkit. To depend on the AST on its own, without the authoring toolkit, install `@kubb/ast` and import its members directly.
 
 The code samples below import `ast` from `kubb/kit`, since that is where most authors reach for the AST.
 
@@ -235,7 +222,7 @@ await ast.walk(root, {
 
 ## Refs and naming helpers
 
-The ref and naming helpers ship as flat exports, alongside the other string and code-building utilities. There is no separate subpath for them. Import them from `kubb/ast` the same way you import guards or node types.
+The ref and naming helpers ship on the `ast` namespace, alongside the other string and code-building utilities. Reach them the same way you reach the guards or node types.
 
 | Helper           | Purpose                                            |
 | ---------------- | --------------------------------------------------- |
@@ -244,9 +231,9 @@ The ref and naming helpers ship as flat exports, alongside the other string and 
 | `enumPropName`   | Convert an enum value into a valid property name.  |
 
 ```typescript twoslash [refs.ts]
-import { extractRefName } from 'kubb/ast'
+import { ast } from 'kubb/kit'
 
-const name = extractRefName('#/components/schemas/Pet')
+const name = ast.extractRefName('#/components/schemas/Pet')
 //    ^?
 ```
 

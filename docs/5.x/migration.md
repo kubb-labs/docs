@@ -623,7 +623,7 @@ The `generators` plugin option is gone. It accepted an array of custom `Generato
 
 The helpers for authoring plugins, generators, resolvers, parsers, and adapters, along with the `ast` namespace, moved out of `@kubb/core` into the new `kubb/kit` subpath of the `kubb` package. `@kubb/core` no longer exports `ast` at all.
 
-The AST helpers move with the `ast` namespace. Reach them through `kubb/kit` as `ast.extractRefName` and friends, or through the flat `kubb/ast` subpath. The old `/utils` and `/macros` subpaths no longer exist.
+The AST helpers move with the `ast` namespace. Reach them through `kubb/kit` as `ast.extractRefName` and friends. The old `/utils` and `/macros` subpaths no longer exist.
 
 ::: code-group
 
