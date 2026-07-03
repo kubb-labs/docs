@@ -40,7 +40,7 @@ Add the integration to your `astro.config.mjs` and pass it your Kubb config.
 ```typescript [astro.config.mjs]
 import { defineConfig as defineAstroConfig } from 'astro/config'
 import kubb from 'unplugin-kubb/astro'
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 const config = defineConfig({

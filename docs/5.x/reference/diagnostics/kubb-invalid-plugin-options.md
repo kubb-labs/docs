@@ -22,7 +22,7 @@ A plugin was given options that cannot be honored together. The main case is `ou
 - Or switch to `output.mode: 'directory'` (the default, one file per operation or schema) and keep `group` to organize that output into subdirectories.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({

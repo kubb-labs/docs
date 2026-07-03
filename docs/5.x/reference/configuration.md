@@ -10,7 +10,7 @@ outline: [2, 3]
 `kubb.config.ts` drives a Kubb run. The file default-exports a `defineConfig` call. Pass it an object, a function that returns one, or an array of configs.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
   name: 'petStore',
@@ -29,7 +29,7 @@ export default defineConfig({
 ### Single config object
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
   name: 'petStore',
@@ -43,7 +43,7 @@ export default defineConfig({
 Pass a function when the config depends on the run context, such as `watch` or `logLevel`:
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 
 export default defineConfig(({ watch, logLevel }) => ({
   name: 'petStore',
@@ -67,7 +67,7 @@ The context carries five parameters:
 Pass an array to generate from several specs in one command:
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig([
@@ -91,7 +91,7 @@ export default defineConfig([
 Combine the array and function forms:
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig(({ watch }) => [
@@ -172,7 +172,7 @@ How a plugin consolidates its code into files. Set it on a plugin's `output`, no
 `'directory'` writes one file per operation or schema under `output.path`. `'file'` writes everything into a single file, so `output.path` must include the extension (`'types.ts'`). Pair `'directory'` with `group` to split the output into per-tag or per-path subdirectories.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginAxios } from '@kubb/plugin-axios'
 
@@ -343,7 +343,7 @@ A string applies to every file the plugin generates, including barrel (`index.ts
 The function form fits Next.js Server Actions. Add `'use server'` to source files, but skip it on re-export files, which only re-export symbols or return function references and break under the directive.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({
@@ -383,7 +383,7 @@ Array of Kubb plugins. A plugin can declare dependencies, and Kubb throws at sta
 | Required: | `false`                 |
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
@@ -414,7 +414,7 @@ See the [Adapter concept](/docs/5.x/guide/concepts/adapters) for the full pictur
 Pass options to customize the adapter:
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { adapterOas } from '@kubb/adapter-oas'
 
 export default defineConfig({
@@ -471,7 +471,7 @@ See the [Parser concept](/docs/5.x/guide/concepts/parsers) and [`@kubb/parser-ts
 Import parsers explicitly to override the default set:
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { parserTs, parserTsx } from '@kubb/parser-ts'
 
 export default defineConfig({
@@ -498,7 +498,7 @@ See the [Storage concept](/docs/5.x/guide/concepts/storage) for the built-in dri
 Use `createStorage` from `kubb/kit` to plug in S3, Redis, an in-memory map, or any other backend.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { memoryStorage } from 'kubb/kit'
 
 export default defineConfig({
@@ -532,7 +532,7 @@ Shell command or commands to run when the build finishes, such as a formatter or
 | Required: | `false`                   |
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
@@ -557,7 +557,7 @@ Add more reporters to the array, including your own built with [`createReporter`
 
 ```typescript twoslash [kubb.config.ts]
 import { cliReporter, jsonReporter } from '@kubb/core'
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },

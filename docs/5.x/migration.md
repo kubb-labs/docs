@@ -24,7 +24,7 @@ Apply every rule below in order, then output the complete updated file.
 
 ## 1. Import source
 - Change: import { defineConfig } from '@kubb/core'
-+ To:     import { defineConfig } from 'kubb'
++ To:     import { defineConfig } from 'kubb/config'
 
 ## 2. Remove @kubb/plugin-oas from plugins[]
 - Remove pluginOas() from the plugins array entirely.
@@ -280,7 +280,7 @@ import { defineConfig } from '@kubb/core'
 ```
 
 ```typescript twoslash [v5 kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 ```
 
 :::
@@ -322,7 +322,7 @@ export default defineConfig({
 ```
 
 ```typescript twoslash [v5 kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -375,7 +375,7 @@ export default defineConfig({
 ```
 
 ```typescript [v5 kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
   input: { path: './petstore.yaml' },
@@ -399,7 +399,7 @@ export default defineConfig({
 ```
 
 ```typescript [v5 kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
@@ -438,7 +438,7 @@ export default defineConfig({
 ```
 
 ```typescript [v5 kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
@@ -465,7 +465,7 @@ v4: src/gen/clients/petController/  →  v5: src/gen/clients/pet/
 To keep the v4 layout, set `group.name` on the plugin:
 
 ```typescript [v5 kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({
@@ -503,8 +503,8 @@ The `output.override` boolean is gone, both on the root `output` and on each plu
 To keep certain files from being written, supply a custom [storage](/docs/5.x/guide/concepts/storage) that no-ops `setItem` for the paths you want to protect. The storage owns every write, so this is the single place that decides what lands on disk:
 
 ```diff [kubb.config.ts]
--import { defineConfig } from 'kubb'
-+import { defineConfig } from 'kubb'
+-import { defineConfig } from 'kubb/config'
++import { defineConfig } from 'kubb/config'
 +import { fsStorage } from '@kubb/core'
 
 +const base = fsStorage()
@@ -750,7 +750,7 @@ export default defineConfig({
 ```
 
 ```typescript twoslash [v5 kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { memoryStorage } from '@kubb/core'
 import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'

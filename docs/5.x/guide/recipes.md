@@ -14,7 +14,7 @@ Ready-made `kubb.config.ts` snippets for common setups. Copy one in, install the
 The smallest setup, generating TypeScript types and interfaces from your OpenAPI spec.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
@@ -29,7 +29,7 @@ export default defineConfig({
 Generates types and [TanStack Query](https://tanstack.com/query) hooks for React.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginAxios } from '@kubb/plugin-axios'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
@@ -46,7 +46,7 @@ export default defineConfig({
 Generates types and [TanStack Query](https://tanstack.com/query) hooks for Vue.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
@@ -62,7 +62,7 @@ export default defineConfig({
 Runtime validation with [Zod](https://zod.dev), plus [MSW](https://mswjs.io) request handlers backed by [Faker.js](https://fakerjs.dev) mock data.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'
 import { pluginFaker } from '@kubb/plugin-faker'
@@ -80,7 +80,7 @@ export default defineConfig({
 Generates [Faker.js](https://fakerjs.dev) data factories next to [Zod](https://zod.dev) schemas. Use them in unit and integration tests.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'
 import { pluginFaker } from '@kubb/plugin-faker'
@@ -97,7 +97,7 @@ export default defineConfig({
 Choose [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) or [Axios](https://axios-http.com) by registering the matching plugin. Swap `pluginFetch` for `pluginAxios` to use the global `fetch` instead.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginAxios } from '@kubb/plugin-axios'
 
@@ -115,7 +115,7 @@ Generate from several specs in one run. Pass an array to [`defineConfig`](/docs/
 Set a `name` per entry so each one shows up in the CLI output.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig([
@@ -139,7 +139,7 @@ export default defineConfig([
 Pass a function to [`defineConfig`](/docs/5.x/reference/configuration) to read CLI context. Here it turns off `clean` in watch mode so incremental runs stay fast.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig(({ watch }) => ({
@@ -159,7 +159,7 @@ Run `kubb generate --watch` to regenerate on spec changes.
 Format generated files with [Biome](https://biomejs.dev) and lint them with [Oxlint](https://oxc.rs/docs/guide/usage/linter) on every build. Set `format` and `lint` to `'auto'` to pick whichever tool is installed.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
@@ -179,7 +179,7 @@ export default defineConfig({
 Use [`hooks.done`](/docs/5.x/reference/configuration#hooks) to run shell commands once generation finishes. Pass a single command or an array to run them in sequence. Commands run relative to the project root.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
@@ -197,7 +197,7 @@ export default defineConfig({
 Generate a different client library per package or team from one config file.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginAxios } from '@kubb/plugin-axios'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
@@ -223,7 +223,7 @@ export default defineConfig([
 Pick input and output from `NODE_ENV` so one config covers development, staging, and production.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginAxios } from '@kubb/plugin-axios'
 
@@ -292,7 +292,7 @@ Use `.build()` instead of `.safeBuild()` if you want it to throw on errors rathe
 Validate the OpenAPI spec and fail the build on errors. Use [`hooks.done`](/docs/5.x/reference/configuration#hooks) to run [`kubb validate`](/docs/5.x/reference/commands/validate) after generation.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({

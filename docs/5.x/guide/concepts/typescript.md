@@ -16,7 +16,7 @@ Every public surface takes a generic that pins down the same four things: the us
 You rarely write a type annotation. The [`kubb.config.ts`](/docs/5.x/reference/configuration) entry point is where inference begins, and everything downstream reads from it. Pass a plugin to `defineConfig` and its options are checked against that plugin's own `Options` type, so a typo in `pluginTs` is a compiler error, not a silent no-op at runtime.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({

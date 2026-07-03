@@ -39,7 +39,7 @@ Add the plugin to your `rollup.config.ts` and pass it your Kubb config.
 
 ```typescript [rollup.config.ts]
 import kubb from 'unplugin-kubb/rollup'
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 const config = defineConfig({

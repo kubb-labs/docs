@@ -24,7 +24,7 @@ Kubb ships two drivers and uses `fsStorage` when you set no `storage` option.
 Swapping the driver is a single field in [`kubb.config.ts`](/docs/5.x/reference/configuration#storage):
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { memoryStorage } from 'kubb/kit'
 
 export default defineConfig({

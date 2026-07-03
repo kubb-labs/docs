@@ -21,7 +21,7 @@ The adapter turns your spec into the AST that plugins generate from. It has to b
 Set `adapter` in `kubb.config.ts`.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { adapterOas } from '@kubb/adapter-oas'
 
 export default defineConfig({

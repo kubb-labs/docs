@@ -30,7 +30,7 @@ Some plugins build on others. The query and client generators, for example, need
 ## Example
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 // @kubb/plugin-ts is missing, but pluginReactQuery needs it for the generated types
 

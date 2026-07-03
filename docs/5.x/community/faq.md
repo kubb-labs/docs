@@ -64,7 +64,7 @@ Yes. Each plugin exposes a `resolver` option to rename operations and types, and
 Yes. Pass an array to `defineConfig`. Each entry has its own `input`, `output`, and `plugins`.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 
 export default defineConfig([
   { input: { path: './specs/users.yaml' }, output: { path: './src/gen/users' }, plugins: [] },

@@ -222,7 +222,7 @@ export const pluginZodOperations = definePlugin(() => ({
 ```
 
 ```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'
 import { pluginZodOperations } from './operationsPlugin.ts'
@@ -251,7 +251,7 @@ The custom plugin runs after `pluginZod`, so the per-operation schemas it import
 Pick how an OpenAPI `pattern` is emitted inside `.regex(...)`. The default `'literal'` keeps a regex literal, while `'constructor'` switches to the `RegExp` constructor. Use the constructor form when a regex literal trips up your build pipeline or when you need the pattern as a string.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginZod } from '@kubb/plugin-zod'
 
 export default defineConfig({

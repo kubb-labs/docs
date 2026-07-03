@@ -33,7 +33,7 @@ input: { data: openapiObject }
 ## Example
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
   // input is missing
