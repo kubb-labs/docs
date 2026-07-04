@@ -39,7 +39,7 @@ Add the plugin to your `rolldown.config.ts` and pass it your Kubb config.
 
 ```typescript [rolldown.config.ts]
 import kubb from 'kubb/rolldown'
-import { defineConfig as defineRolldownConfig } from 'rolldown'
+import { defineConfig } from 'rolldown'
 import { pluginTs } from '@kubb/plugin-ts'
 
 const config = {
@@ -49,7 +49,7 @@ const config = {
   plugins: [pluginTs({ output: { path: 'models' } })],
 }
 
-export default defineRolldownConfig({
+export default defineConfig({
   input: 'src/index.ts',
   plugins: [kubb({ config })],
 })
