@@ -8,7 +8,7 @@ outline: deep
 
 # Set up Claude with Kubb
 
-![Claude](/public/screenshots/claude.png)
+![Claude](/screenshots/claude.png)
 
 [Kubb](https://kubb.dev) and [Claude](https://claude.ai) connect over [MCP](https://modelcontextprotocol.io), the Model Context Protocol. Claude calls your API through plain conversation.
 
@@ -247,7 +247,7 @@ startServer()
 
 Point [Claude](https://claude.ai) at your [MCP](https://modelcontextprotocol.io) server config (`src/mcp/mcp.json`). Open Claude desktop and go to settings.
 
-![Claude setup 1](/public/screenshots/claude-setup1.png)
+![Claude setup 1](/screenshots/claude-setup1.png)
 
 In the settings panel, open the `developer` section and click `edit config`. A window shows where the JSON file that lists your [MCP](https://modelcontextprotocol.io) servers lives.
 
@@ -257,7 +257,7 @@ In the settings panel, open the `developer` section and click `edit config`. A w
 > - Mac: `~/Library/Application Support/Claude/claude_desktop_config.json`
 > - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
 
-![Claude setup 2](/public/screenshots/claude-setup2.png)
+![Claude setup 2](/screenshots/claude-setup2.png)
 
 Copy the content of `src/mcp/mcp.json` so [Claude](https://claude.ai) picks up your [MCP](https://modelcontextprotocol.io) server.
 
@@ -296,17 +296,17 @@ For example:
 
 Quit [Claude](https://claude.ai) and reopen the desktop app. Click the button below to check that your [MCP](https://modelcontextprotocol.io) server is connected.
 
-![Claude](/public/screenshots/claude-setup3.png)
+![Claude](/screenshots/claude-setup3.png)
 
 The view below opens and shows your generated [MCP](https://modelcontextprotocol.io) server.
 
-![Claude](/public/screenshots/claude-setup4.png)
+![Claude](/screenshots/claude-setup4.png)
 
 ## Use your MCP server
 
 The prompt `create a random pet` reaches your [MCP](https://modelcontextprotocol.io) server. The server maps it to the `addPet` tool, which calls `addPetHandler` and creates the pet.
 
-![Claude interaction](/public/screenshots/claude-interaction.gif)
+![Claude interaction](/screenshots/claude-interaction.gif)
 
 ## See also
 

@@ -186,7 +186,7 @@ export const resolver = defineResolver<MyPlugin>(() => ({
 
 #### Related
 
-- [Plugin API: resolvers](/docs/5.x/guide/concepts/plugins#resolvers)
+- [Plugin API: resolvers](/docs/5.x/guide/concepts/plugins#how-plugins-compose)
 - [Creating plugins](/docs/5.x/guide/going-further/creating-plugins)
 
 ## Adapters

@@ -529,9 +529,9 @@ export default defineConfig({
 
 These changes apply to every plugin that used `transformers` in v4.
 
-### `transformers.name` → `resolver`
+### `transformers.name` → `resolver` {#transformersname-resolver}
 
-Typed [resolver](/docs/5.x/guide/concepts/plugins#resolvers) methods replace the single `transformers.name(name, type)` callback. Which method you use depends on the plugin:
+Typed [resolver](/docs/5.x/reference/kit#defineresolver) methods replace the single `transformers.name(name, type)` callback. Which method you use depends on the plugin:
 
 | Plugin                                                                                                                                                                                                                                                                                                                                                    | Resolver method           |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
@@ -565,7 +565,7 @@ pluginTs({
 
 :::
 
-### `transformers.schema` → `macros`
+### `transformers.schema` → `macros` {#transformersschema-macros}
 
 Schema-level transformations move to [macros](/docs/5.x/guide/going-further/macros). Returning `null` or `undefined` from a macro callback falls back to the built-in behavior.
 

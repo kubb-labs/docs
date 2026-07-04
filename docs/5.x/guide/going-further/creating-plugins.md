@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Create your first plugin
 
-A [plugin](/docs/5.x/guide/concepts/plugins) teaches Kubb to generate something new. It owns its output folder and file naming, runs [generators](/docs/5.x/guide/concepts/plugins#generators) that walk the [AST](/docs/5.x/guide/concepts/ast), and hooks into the build lifecycle. Everything this guide uses comes from [`kubb/kit`](/docs/5.x/reference/kit) and its `kubb/kit/testing` subpath, so installing `kubb` is the only setup.
+A [plugin](/docs/5.x/guide/concepts/plugins) teaches Kubb to generate something new. It owns its output folder and file naming, runs [generators](/docs/5.x/reference/kit#defineGenerator) that walk the [AST](/docs/5.x/guide/concepts/ast), and hooks into the build lifecycle. Everything this guide uses comes from [`kubb/kit`](/docs/5.x/reference/kit) and its `kubb/kit/testing` subpath, so installing `kubb` is the only setup.
 
 This guide builds a `kubb-plugin-example` package from scratch and publishes it to npm.
 
@@ -342,7 +342,7 @@ export const resolverExample = defineResolver<PluginExample>(() => ({
 
 | Method / Property | Purpose                                                                           |
 | ----------------- | --------------------------------------------------------------------------------- |
-| `addGenerator`    | Register one or more [`Generator`](/docs/5.x/guide/concepts/plugins#generators)s for the AST walk. Pass them as separate arguments, or spread an existing list. |
+| `addGenerator`    | Register one or more [`Generator`](/docs/5.x/reference/kit#defineGenerator)s for the AST walk. Pass them as separate arguments, or spread an existing list. |
 | `setResolver`     | Set or override the resolver (file naming and paths).                             |
 | `addMacro`        | Add a [macro](/docs/5.x/guide/going-further/macros) that rewrites AST nodes before generators. |
 | `setOptions`      | Provide resolved options to the build loop.                                       |
