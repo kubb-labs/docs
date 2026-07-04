@@ -38,7 +38,7 @@ yarn add -D kubb@beta
 Add the plugin to your `farm.config.ts` and pass it your Kubb config.
 
 ```typescript [farm.config.ts]
-import { defineConfig as defineFarmConfig } from '@farmfe/core'
+import { defineConfig } from '@farmfe/core'
 import kubb from 'kubb/farm'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -49,7 +49,7 @@ const config = {
   plugins: [pluginTs({ output: { path: 'models' } })],
 }
 
-export default defineFarmConfig({
+export default defineConfig({
   plugins: [kubb({ config })],
 })
 ```
