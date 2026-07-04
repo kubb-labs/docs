@@ -38,7 +38,7 @@ yarn add -D kubb@beta
 Add the integration to your `astro.config.mjs` and pass it your Kubb config.
 
 ```typescript [astro.config.mjs]
-import { defineConfig as defineAstroConfig } from 'astro/config'
+import { defineConfig } from 'astro/config'
 import kubb from 'kubb/astro'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -49,7 +49,7 @@ const config = {
   plugins: [pluginTs({ output: { path: 'models' } })],
 }
 
-export default defineAstroConfig({
+export default defineConfig({
   integrations: [kubb({ config })],
 })
 ```
