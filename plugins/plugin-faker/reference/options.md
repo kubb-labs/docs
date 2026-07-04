@@ -408,7 +408,7 @@ pluginFaker({
 
 ### printer
 
-Replaces the Faker node handler for a specific schema type, such as `'integer'`, `'date'`, or `'string'`. Each handler returns the Faker expression as a string. Use `this.transform` to recurse into nested nodes, and `this.options` to read printer options.
+Replaces the Faker node handler for a specific schema type, such as `'integer'`, `'date'`, or `'string'`. Each handler returns the Faker expression as a string. Use `this.transform` to recurse into nested nodes, and `this.options` to read printer options. The [printer guide](/docs/5.x/guide/going-further/printers) covers the handler context and how overrides compose with macros.
 
 |          |                                 |
 | -------: | :------------------------------ |
