@@ -533,7 +533,7 @@ For example, `resolver: { resolveSchemaName(name) { return \`${this.default(name
 
 Replaces the Zod handler for a specific schema type, such as `'integer'`, `'date'`, or `'string'`. Each handler returns the Zod expression as a string. When `mini: true`, overrides target the Zod Mini printer. Otherwise they target the standard Zod printer.
 
-Inside a handler, `this.base(node)` returns what the built-in handler would have emitted, so you can wrap the default output instead of rebuilding it. `this.transform(node)` recurses into nested schema nodes.
+Inside a handler, `this.base(node)` returns what the built-in handler would have emitted, so you can wrap the default output instead of rebuilding it. `this.transform(node)` recurses into nested schema nodes. The [printer guide](/docs/5.x/guide/going-further/printers) covers the handler context and how overrides compose with macros.
 
 |          |                                                     |
 | -------: | :-------------------------------------------------- |
