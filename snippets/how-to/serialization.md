@@ -207,8 +207,9 @@ only the body. Set `contentType` yourself for an operation that offers more than
 
 ## Response validation
 
-Validation is off by default. Turn it on with the [`validator`](/plugins/plugin-fetch/) plugin
-option to check request and response bodies against schemas from `@kubb/plugin-zod`:
+Validation is off by default. Turn it on with the
+[`validator`](/plugins/plugin-fetch/reference/options#validator) plugin option to check request
+and response bodies against schemas from `@kubb/plugin-zod`:
 
 ```typescript
 import { pluginFetch } from '@kubb/plugin-fetch'
@@ -216,15 +217,14 @@ import { pluginFetch } from '@kubb/plugin-fetch'
 pluginFetch({ validator: 'zod' })
 ```
 
-`'zod'` validates the success response body, and the error body when a non-2xx call does not
-throw. Use the object form to opt in per direction, where `request` validates the request
-body before the call goes out:
+Use the object form to opt in per direction:
 
 ```typescript
 pluginFetch({ validator: { request: 'zod', response: 'zod' } })
 ```
 
-With a validator set, Kubb passes the matching schema to each generated call, and the runtime
+The [`validator` reference](/plugins/plugin-fetch/reference/options#validator) covers which
+bodies each form checks. With a validator set, Kubb passes the matching schema to each generated call, and the runtime
 parses the body through it. The schemas are Standard Schema compatible, so this works the same
 with Zod, valibot, and arktype. A body that does not match throws a `ParseError` carrying the
 schema's `issues`, covered in

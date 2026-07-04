@@ -95,87 +95,12 @@ export { User } from './types/User'
 export { User } from './User'
 ```
 
-```typescript [Wildcard exports]
-import { defineConfig } from 'kubb'
-
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen', barrel: { type: 'all' } },
-  plugins: [],
-})
-```
-
-```typescript [Generated output]
-// src/gen/index.ts
-export * from './api/user'
-export * from './api/post'
-export * from './api/types/User'
-export * from './hooks/useUser'
-
-// src/gen/api/index.ts
-export * from './user'
-export * from './post'
-export * from './types/User'
-
-// src/gen/api/types/index.ts
-export * from './User'
-```
-
-```typescript [Nested barrels (plugin level)]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-
-// nested lives on a plugin's output.barrel, not on the root output.barrel.
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [pluginTs({ output: { path: 'api', barrel: { type: 'all', nested: true } } })],
-})
-```
-
-```typescript [Generated output]
-// src/gen/api/index.ts re-exports its files and subdirectories
-export * from './user'
-export * from './post'
-export * from './types'
-
-// src/gen/api/types/index.ts re-exports its files
-export * from './User'
-
-// the root src/gen/index.ts still uses the config default ({ type: 'named' })
-export { getUser, User } from './api/user'
-export { getPost, Post } from './api/post'
-export { User } from './api/types/User'
-```
-
-```typescript [Disable a plugin barrel]
-import { defineConfig } from 'kubb'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginZod } from '@kubb/plugin-zod'
-
-// No zod/index.ts is created, and zod files
-// are dropped from the root index.ts.
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [pluginTs(), pluginZod({ output: { path: 'zod', barrel: false } })],
-})
-```
-
-```typescript twoslash [Disable the root barrel]
-import { defineConfig } from 'kubb'
-
-// No root index.ts. Each plugin still gets
-// its own barrel from its inherited config.
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen', barrel: false },
-  plugins: [],
-})
-```
-
 :::
+
+The [Options](/plugins/plugin-barrel/reference/options) page documents wildcard exports (`type: 'all'`) and nested barrels, with the output each one generates. The [barrel files guide](/docs/5.x/guide/going-further/barrel-files) walks through tuning barrels per plugin and disabling them.
 
 ## See Also
 
+- [Options](/plugins/plugin-barrel/reference/options)
+- [Barrel files guide](/docs/5.x/guide/going-further/barrel-files)
 - [Changelog](https://github.com/kubb-labs/kubb/blob/main/packages/plugin-barrel/CHANGELOG.md)

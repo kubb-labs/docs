@@ -315,54 +315,13 @@ export class PetStore {
 
 `mode: 'tag'` (the default) emits one class per tag, such as `PetClient` and `StoreClient`. Set `sdk.name` alongside it to also emit a composed root class that instantiates every tag client from one shared config, reached as `new PetStore(config).pet.getPetById(...)`. `mode: 'flat'` emits a single class named by `sdk.name` with every operation as a direct method. Omitting `sdk` keeps the standalone per-operation functions.
 
-Using the generated SDK works the same across modes. Construct a class with a client config (`baseURL`, `headers`, and the other `ClientConfig` fields), then call a method with the grouped options object (`{ path, query, headers, body }`) and read `data` off the result. The per-tag `PetClient` and `StoreClient` are identical with or without `sdk.name`. The name only adds a root that wires them together:
-
-::: code-group
-
-```typescript ['tag']
-import { PetClient } from './src/gen/clients/petClient'
-import { StoreClient } from './src/gen/clients/storeClient'
-
-const config = { baseURL: 'https://petstore.swagger.io/v2' }
-const pet = new PetClient(config)
-const store = new StoreClient(config)
-
-const { data } = await pet.getPetById({ path: { petId: 1 } })
-await store.placeOrder({ body: { petId: 1, quantity: 1 } })
-```
-
-```typescript ['tag' + sdk.name]
-// PetClient and StoreClient are the same as the 'tag' tab. `sdk.name` only adds
-// the PetStore root that constructs them from one shared config.
-import { PetStore } from './src/gen/clients/petStore'
-
-const api = new PetStore({ baseURL: 'https://petstore.swagger.io/v2' })
-
-const { data } = await api.pet.getPetById({ path: { petId: 1 } })
-await api.store.placeOrder({ body: { petId: 1, quantity: 1 } })
-```
-
-```typescript ['flat']
-import { PetStore } from './src/gen/clients/petStore'
-
-const api = new PetStore({ baseURL: 'https://petstore.swagger.io/v2' })
-
-const { data } = await api.getPetById({ path: { petId: 1 } })
-await api.placeOrder({ body: { petId: 1, quantity: 1 } })
-```
-
-:::
-
-Each call resolves to `{ status, data, error, contentType, request, response }`. Because `throwOnError` defaults to `true`, a resolved call means the request succeeded and `data` is set. Pass `throwOnError: false` on a call to get the discriminated union instead. Every variant is keyed on the top-level `status`, so a check on it narrows `data` on a success code and `error` on a documented error code, the same typed union you get for `data` on the success path:
+A class instance takes a client config (`baseURL`, `headers`, and the other `ClientConfig` fields), and its methods use the same grouped options object and status-keyed result as the standalone functions, including `throwOnError`. [Call operations](/plugins/plugin-fetch/guide/calling-operations) covers that calling convention:
 
 ```typescript
-const { status, data, error } = await pet.getPetById({ path: { petId: 1 }, throwOnError: false })
+import { PetStore } from './src/gen/clients/petStore'
 
-if (status === 200) {
-  console.log(data) // data is the success body, error is undefined
-} else {
-  console.error(status, error) // status is the documented error code, error is its parsed body
-}
+const api = new PetStore({ baseURL: 'https://petstore.swagger.io/v2' })
+const { data } = await api.pet.getPetById({ path: { petId: 1 } })
 ```
 
 ### include

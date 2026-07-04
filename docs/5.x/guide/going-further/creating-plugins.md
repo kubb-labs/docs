@@ -338,19 +338,18 @@ export const resolverExample = defineResolver<PluginExample>(() => ({
 
 ## The setup context
 
-`kubb:plugin:setup` receives a `KubbPluginSetupContext` that wires the plugin into the build. The full interface from [`kubb/kit`](/docs/5.x/reference/kit):
+`kubb:plugin:setup` receives a `KubbPluginSetupContext` that wires the plugin into the build. This guide uses these members:
 
 | Method / Property | Purpose                                                                           |
 | ----------------- | --------------------------------------------------------------------------------- |
 | `addGenerator`    | Register one or more [`Generator`](/docs/5.x/guide/concepts/plugins#generators)s for the AST walk. Pass them as separate arguments, or spread an existing list. |
 | `setResolver`     | Set or override the resolver (file naming and paths).                             |
 | `addMacro`        | Add a [macro](/docs/5.x/guide/going-further/macros) that rewrites AST nodes before generators. |
-| `setMacros`       | Replace this plugin's macros with a new list.                                     |
 | `setOptions`      | Provide resolved options to the build loop.                                       |
 | `injectFile`      | Inject a raw `UserFileNode` into the build, bypassing generators.                 |
-| `updateConfig`    | Merge a partial config update into the running build.                             |
 | `config`          | The resolved `Config` at setup time.                                              |
-| `options`         | The user-supplied plugin options.                                                 |
+
+The [Kit API reference](/docs/5.x/reference/kit#defineplugin) lists the full `KubbPluginSetupContext` interface, including `setMacros` and `updateConfig`.
 
 ```typescript twoslash [setup-context.ts]
 import { fileURLToPath } from 'node:url'
