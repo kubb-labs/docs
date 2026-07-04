@@ -89,12 +89,12 @@ pluginFaker({
 
 ## Printer override or macro
 
-A macro rewrites the node itself, before anything prints. Retype `integer` schemas to `string` with a macro and `plugin-ts`, `plugin-zod`, and `plugin-faker` all follow, because they print the rewritten node. A printer override changes what one plugin emits for a node type and leaves the node, and every other plugin, alone.
+A macro rewrites the node itself, before anything prints. Retype `integer` schemas to `string` with a macro and `plugin-ts`, `plugin-zod`, and `plugin-faker` all follow, because they print the rewritten node. A printer override changes what one plugin emits for a node type. The node stays as it is, and so does the output of every other plugin.
 
 Reach for a printer override when the output cannot be described as another schema node. No schema node prints as `Date`, and none carries an `.openapi(...)` call, so a macro cannot produce either.
 
 > [!TIP]
-> The two compose. The `macros` option on the same plugin rewrites nodes first, then the printer, overrides included, prints the result.
+> The two compose. The `macros` option on the same plugin rewrites nodes first, then the printer prints the result, overrides included.
 
 ## Writing your own printer
 
