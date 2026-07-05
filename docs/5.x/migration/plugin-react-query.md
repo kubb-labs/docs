@@ -120,10 +120,10 @@ The `TData` generic on `useMutation`, `useQuery`, `useInfiniteQuery`, `useSuspen
 -       AddPetResponse,
 +       AddPetStatus200,
         ResponseErrorConfig<AddPetStatus405>,
-        { data: AddPetData },
+        { data: AddPetBody },
         TContext
       > & { client?: QueryClient }
-      client?: Partial<RequestConfig<AddPetData>> & { client?: typeof client }
+      client?: Partial<RequestConfig<AddPetBody>> & { client?: typeof client }
     } = {},
   ) { /* ... */ }
 ```

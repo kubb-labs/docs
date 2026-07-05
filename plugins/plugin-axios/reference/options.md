@@ -238,7 +238,7 @@ export function addPet<ThrowOnError extends boolean = true>(
   return request({
     method: 'POST',
     url: '/pet',
-    validator: { request: addPetDataSchema, response: addPetResponseSchema, error: addPetErrorSchema },
+    validator: { request: addPetBodySchema, response: addPetResponseSchema, error: addPetErrorSchema },
     ...config,
   }) as Promise<RequestResult<AddPetResponses, ThrowOnError>>
 }

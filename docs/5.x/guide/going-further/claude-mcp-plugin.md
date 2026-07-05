@@ -196,7 +196,7 @@ This code starts an [MCP](https://modelcontextprotocol.io) server for the Swagge
 
 1. Import the MCP SDK classes, each operation handler, and the Zod input schemas.
 2. Create an MCP server named `"Swagger PetStore - OpenAPI 3.0"`.
-3. Register the `addPet` tool. It validates the input against `addPetDataSchema` from the Zod plugin, then calls `addPetHandler`.
+3. Register the `addPet` tool. It validates the input against `addPetBodySchema` from the Zod plugin, then calls `addPetHandler`.
 4. Connect the server to a `stdio` transport so it talks over standard input and output.
 
 ```typescript [src/mcp/server.ts]
@@ -204,7 +204,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio'
 
 import { addPetHandler } from './addPet'
-import { addPetDataSchema, addPetStatus200Schema } from '../zod/addPetSchema'
+import { addPetBodySchema, addPetStatus200Schema } from '../zod/addPetSchema'
 
 export function getServer() {
   const server = new McpServer({
@@ -218,7 +218,7 @@ export function getServer() {
       title: 'Add a new pet to the store',
       description: 'Add a new pet to the store',
       outputSchema: { data: addPetStatus200Schema },
-      inputSchema: { body: addPetDataSchema },
+      inputSchema: { body: addPetBodySchema },
     },
     async ({ body }, request) => {
       return addPetHandler({ body }, request)
