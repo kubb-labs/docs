@@ -216,10 +216,10 @@ import { defineResolver } from 'kubb/kit'
 import type { PluginExample } from '../types'
 
 /**
- * `defineResolver` automatically injects defaults for `default`, `resolveOptions`,
- * `resolvePath`, `resolveFile`, `resolveBanner`, and `resolveFooter`.
+ * `defineResolver` automatically injects `core` defaults for `name`, `fileName`,
+ * `options`, `path`, `file`, `banner`, and `footer`.
  * Only `name` and `pluginName` are required in the builder object.
- * Override any of the injected methods when you need custom naming or path logic.
+ * Override any of the injected helpers when you need custom naming or path logic.
  */
 export const resolverExample = defineResolver<PluginExample>(() => ({
   name: 'default',
@@ -317,7 +317,7 @@ A [resolver](/docs/5.x/reference/kit#defineresolver) decides the file names and 
 
 ### src/resolvers/resolverExample.ts
 
-`defineResolver` fills in defaults for every resolver method. Provide `name` and `pluginName` in the builder, then override the methods you want to change. Returning `null` from `resolveOptions` drops the node from generation, so return `null` only when you mean to filter a node out.
+`defineResolver` fills in defaults for every resolver method. Provide `name` and `pluginName` in the builder, then override the helpers you want to change. Returning `null` from `core.options` drops the node from generation, so return `null` only when you mean to filter a node out.
 
 ```typescript twoslash [resolvers.ts]
 import { defineResolver } from 'kubb/kit'
@@ -329,9 +329,11 @@ type PluginExample = PluginFactoryOptions<'plugin-example', object, object, Reso
 export const resolverExample = defineResolver<PluginExample>(() => ({
   name: 'default',
   pluginName: 'plugin-example',
-  // Override resolvePath to place files in a custom sub-folder.
-  resolvePath({ baseName }, { root, output }) {
-    return path.resolve(root, output.path, 'example', baseName)
+  // Override core.path to place files in a custom sub-folder.
+  core: {
+    path({ baseName }, { root, output }) {
+      return path.resolve(root, output.path, 'example', baseName)
+    },
   },
 }))
 ```
@@ -644,7 +646,7 @@ export const pluginCustom = definePlugin(() => ({
           operation(node, genCtx) {
             // Use the plugin-ts resolver for consistent naming.
             const resolver = genCtx.getResolver('plugin-ts')
-            const name = resolver.default(node.operationId, 'function')
+            const name = resolver.core.name(node.operationId)
             return [
               ast.factory.createFile({
                 baseName: `${name}.custom.ts`,

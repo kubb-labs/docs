@@ -477,7 +477,7 @@ const { data, isLoading } = useGetPets()
 
 ### resolver
 
-Changes how the plugin names generated files and symbols. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change. Anything you omit, or that returns `null` or `undefined`, falls back to the default `resolverReactQuery`. Inside a method, `this` is the full resolver, so you can call `this.default(name, 'function')` to reuse the built-in name.
+Changes how the plugin names generated files and symbols. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change. Anything you omit, or that returns `null` or `undefined`, falls back to the default `resolverReactQuery`. Inside a method, `this` is the full resolver, so you can call `this.core.name(name)` to reuse the built-in name.
 
 |          |                                                              |
 | -------: | :----------------------------------------------------------- |

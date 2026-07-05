@@ -48,7 +48,7 @@ Delete these from every plugin and set them once on adapterOas():
 - plugin-ts:    resolver: { resolveTypeName(name) { return … } }
 - plugin-zod:   resolver: { resolveSchemaName(name) { return … } }
 - all others:   resolver: { resolveName(name) { return … } }
-Inside a method, call `this.default(name, 'function')` to invoke the
+Inside a method, call `this.core.name(name)` to invoke the
 built-in logic as a fallback.
 
 ## 5. Rename transformers.schema → macros
@@ -539,7 +539,7 @@ Typed [resolver](/docs/5.x/guide/concepts/plugins#resolvers) methods replace the
 | [`@kubb/plugin-zod`](/plugins/plugin-zod/)                                                                                                                                                                                                                                                                                                                 | `resolveSchemaName(name)` |
 | [`@kubb/plugin-axios`](/plugins/plugin-axios/), [`@kubb/plugin-fetch`](/plugins/plugin-fetch/), [`@kubb/plugin-react-query`](/plugins/plugin-react-query/), [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query/), [`@kubb/plugin-msw`](/plugins/plugin-msw/), [`@kubb/plugin-faker`](/plugins/plugin-faker/), [`@kubb/plugin-cypress`](/plugins/plugin-cypress/), [`@kubb/plugin-mcp`](/plugins/plugin-mcp/) | `resolveName(name)`       |
 
-Inside a resolver method, `this` is bound to the full resolver, so `this.default(name, 'function')` falls back to the built-in logic.
+Inside a resolver method, `this` is bound to the full resolver, so `this.core.name(name)` falls back to the built-in logic.
 
 ::: code-group
 
@@ -557,7 +557,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 pluginTs({
   resolver: {
     resolveTypeName(name) {
-      return `Api${this.default(name, 'function')}`
+      return `Api${this.core.name(name)}`
     },
   },
 })
@@ -768,7 +768,7 @@ export default defineConfig({
       output: { path: 'types' },
       resolver: {
         resolveTypeName(name) {
-          return `Api${this.default(name, 'function')}`
+          return `Api${this.core.name(name)}`
         },
       },
     }),

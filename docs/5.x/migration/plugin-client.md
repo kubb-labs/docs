@@ -117,7 +117,7 @@ export const pluginClientUrl = definePlugin(() => ({
           name: 'client-url-generator',
           operation(node, genCtx) {
             const resolver = genCtx.getResolver('plugin-ts')
-            const name = `${resolver.default(node.operationId, 'function')}Url`
+            const name = `${resolver.core.name(node.operationId)}Url`
 
             return [
               ast.factory.createFile({
