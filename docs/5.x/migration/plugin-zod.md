@@ -135,11 +135,11 @@ function buildSchemaNames(node: ast.OperationNode, resolver: ResolverZod) {
   responses['default'] = resolver.resolveResponseName(node)
 
   return {
-    request: node.requestBody?.content?.[0]?.schema ? resolver.resolveDataName(node) : null,
+    request: node.requestBody?.content?.[0]?.schema ? resolver.resolveBodyName(node) : null,
     parameters: {
-      path: pathParam ? resolver.resolvePathParamsName(node, pathParam) : null,
-      query: queryParam ? resolver.resolveQueryParamsName(node, queryParam) : null,
-      header: headerParam ? resolver.resolveHeaderParamsName(node, headerParam) : null,
+      path: pathParam ? resolver.resolvePathName(node, pathParam) : null,
+      query: queryParam ? resolver.resolveQueryName(node, queryParam) : null,
+      header: headerParam ? resolver.resolveHeadersName(node, headerParam) : null,
     },
     responses,
     errors,

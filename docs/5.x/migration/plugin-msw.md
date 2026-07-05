@@ -15,14 +15,14 @@ Handlers are now typed against the request body and headers. They take an `HttpR
 
 ```diff [Generated output]
 +import type { HttpResponseResolver } from 'msw'
-+import type { CreateUserData } from '../../../models/CreateUser.ts'
++import type { CreateUserBody } from '../../../models/CreateUser.ts'
 
 export function createUserHandler(
 -  data?: string | number | boolean | null | object | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Response | Promise<Response>),
-+  data?: string | number | boolean | null | object | HttpResponseResolver<Record<string, string>, CreateUserData, any>,
++  data?: string | number | boolean | null | object | HttpResponseResolver<Record<string, string>, CreateUserBody, any>,
 ) {
 -  return http.post('http://localhost:3000/user', function handler(info) {
-+  return http.post<Record<string, string>, CreateUserData, any>(`http://localhost:3000/user`, function handler(info) {
++  return http.post<Record<string, string>, CreateUserBody, any>(`http://localhost:3000/user`, function handler(info) {
     ...
   })
 }

@@ -645,9 +645,9 @@ When an OpenAPI operation declares multiple content types for its `requestBody`,
 
 ```typescript [Generated output]
 // plugin-ts output for an operation with application/json + multipart/form-data
-export type UploadFileJsonData = { url: string }
-export type UploadFileFormData = { file: Blob }
-export type UploadFileData = UploadFileJsonData | UploadFileFormData
+export type UploadFileBodyJson = { url: string }
+export type UploadFileBodyFormData = { file: Blob }
+export type UploadFileBody = UploadFileBodyJson | UploadFileBodyFormData
 ```
 
 The generated client exposes `contentType` as a typed literal union, defaulting to the first declared content type:

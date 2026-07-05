@@ -59,8 +59,8 @@ Two things change. HTTP method constants are now uppercase (`'post'` becomes `'P
 -   return cy.request<AddPetMutationResponse>({
 -     method: 'post',
 -     url: 'http://localhost:3000/pet',
-+ import type { AddPetData, AddPetResponse } from '../../models.ts'
-+ export function addPet(data: AddPetData): Cypress.Chainable<AddPetResponse> {
++ import type { AddPetBody, AddPetResponse } from '../../models.ts'
++ export function addPet(data: AddPetBody): Cypress.Chainable<AddPetResponse> {
 +   return cy.request<AddPetResponse>({
 +     method: 'POST',
 +     url: `http://localhost:3000/pet`,
