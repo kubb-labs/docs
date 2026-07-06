@@ -7,7 +7,7 @@ description: Changes for @kubb/plugin-cypress when migrating from Kubb v4 to v5.
 
 Part of the [v4 → v5 migration guide](/docs/5.x/migration). For the full option reference, see [`@kubb/plugin-cypress`](/plugins/plugin-cypress/).
 
-[`resolver.resolveName`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`.
+[`resolver.name`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`.
 
 ## Removed: `paramsType`, `pathParamsType`, `paramsCasing`
 

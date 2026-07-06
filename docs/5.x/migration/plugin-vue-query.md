@@ -7,7 +7,7 @@ description: Configuration and generated-output changes for @kubb/plugin-vue-que
 
 Part of the [v4 → v5 migration guide](/docs/5.x/migration). For the full option reference, see [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query/).
 
-[`resolver.resolveName`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`. The v4 `transformers` object held only `name`, so that is the whole rename. To rewrite generated nodes before printing, use the new [`macros`](/plugins/plugin-vue-query/reference/options#macros) option.
+[`resolver.name`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`. The v4 `transformers` object held only `name`, so that is the whole rename. To rewrite generated nodes before printing, use the new [`macros`](/plugins/plugin-vue-query/reference/options#macros) option.
 
 ## `client` is a selector, not an object
 

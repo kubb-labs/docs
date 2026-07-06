@@ -646,7 +646,7 @@ export const pluginCustom = definePlugin(() => ({
           operation(node, genCtx) {
             // Use the plugin-ts resolver for consistent naming.
             const resolver = genCtx.getResolver('plugin-ts')
-            const name = resolver.core.name(node.operationId)
+            const name = resolver.name(node.operationId)
             return [
               ast.factory.createFile({
                 baseName: `${name}.custom.ts`,

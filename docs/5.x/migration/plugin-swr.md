@@ -7,7 +7,7 @@ description: Configuration changes for @kubb/plugin-swr when migrating from Kubb
 
 Part of the [v4 → v5 migration guide](/docs/5.x/migration). For the full option reference, see [`@kubb/plugin-swr`](/plugins/plugin-swr/).
 
-`@kubb/plugin-swr` follows the same conventions as the React Query and Vue Query plugins. [`resolver.resolveName`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`. The v4 `transformers` object held only `name`, so that is the whole rename. To rewrite generated nodes before printing, use the new [`macros`](/plugins/plugin-swr/reference/options#macros) option.
+`@kubb/plugin-swr` follows the same conventions as the React Query and Vue Query plugins. [`resolver.name`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`. The v4 `transformers` object held only `name`, so that is the whole rename. To rewrite generated nodes before printing, use the new [`macros`](/plugins/plugin-swr/reference/options#macros) option.
 
 SWR has no `enabled` option. v5 drops the param-presence guard, so the hook keys off `shouldFetch` alone (`useSWR(shouldFetch ? queryKey : null, ...)`). Set `shouldFetch` to `false` to disable the request.
 

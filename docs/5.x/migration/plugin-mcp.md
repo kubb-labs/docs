@@ -7,7 +7,7 @@ description: Changes for @kubb/plugin-mcp when migrating from Kubb v4 to v5.
 
 Part of the [v4 → v5 migration guide](/docs/5.x/migration). For the full option reference, see [`@kubb/plugin-mcp`](/plugins/plugin-mcp/).
 
-[`resolver.resolveName`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`, and the `generators` option is [gone](/docs/5.x/migration#generators-removed).
+[`resolver.name`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`, and the `generators` option is [gone](/docs/5.x/migration#generators-removed).
 
 ## `client` selects a registered client plugin
 

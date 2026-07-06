@@ -294,7 +294,7 @@ For example, `override: [{ type: 'tag', pattern: 'user', options: { baseURL: 'ht
 
 ### resolver
 
-Changes how the plugin names generated files and symbols. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change, since anything you omit keeps its default behavior. Inside a method, `this` is the full resolver, so you can call `this.core.name(name)` to reuse the built-in name.
+Changes how the plugin names generated files and symbols. Use it to add a prefix or suffix, or to swap the casing, without forking the plugin. Override only the methods you want to change, since anything you omit keeps its default behavior. Inside a method, `this` is the full resolver, so you can call `this.default.name(name)` to reuse the built-in name.
 
 |          |                                                        |
 | -------: | :----------------------------------------------------- |
@@ -303,7 +303,7 @@ Changes how the plugin names generated files and symbols. Use it to add a prefix
 > [!TIP]
 > Use `resolver` for naming and file-location tweaks. For changing the AST nodes themselves (for example stripping descriptions), use `macros` instead.
 
-For example, `resolver: { resolveName(name) { return \`api${this.core.name(name)}\` } }` prefixes every generated helper name with `api`.
+For example, `resolver: { name(name) { return \`api${this.default.name(name)}\` } }` prefixes every generated helper name with `api`.
 
 ### macros
 

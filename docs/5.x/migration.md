@@ -44,11 +44,12 @@ Delete these from every plugin and set them once on adapterOas():
   - enumSuffix      (from plugin-ts only)
   - contentType     (from plugin-ts and plugin-msw)
 
-## 4. Rename transformers.name → resolver.<resolveSpecificName>
-- plugin-ts:    resolver: { resolveTypeName(name) { return … } }
-- plugin-zod:   resolver: { resolveSchemaName(name) { return … } }
-- all others:   resolver: { resolveName(name) { return … } }
-Inside a method, call `this.core.name(name)` to invoke the
+## 4. Rename transformers.name → resolver.name
+Every plugin exposes a top-level `name(name)` method on its resolver:
+- plugin-ts:    resolver: { name(name) { return … } }
+- plugin-zod:   resolver: { name(name) { return … } }
+- all others:   resolver: { name(name) { return … } }
+Inside a method, call `this.default.name(name)` to invoke the
 built-in logic as a fallback.
 
 ## 5. Rename transformers.schema → macros
@@ -531,15 +532,9 @@ These changes apply to every plugin that used `transformers` in v4.
 
 ### `transformers.name` → `resolver`
 
-Typed [resolver](/docs/5.x/guide/concepts/plugins#resolvers) methods replace the single `transformers.name(name, type)` callback. Which method you use depends on the plugin:
+A typed [resolver](/docs/5.x/guide/concepts/plugins#resolvers) replaces the single `transformers.name(name, type)` callback. Every plugin exposes a top-level `name(name)` method that sets identifier casing, so `resolver: { name(name) { … } }` is the shape for [`@kubb/plugin-ts`](/plugins/plugin-ts/), [`@kubb/plugin-zod`](/plugins/plugin-zod/), [`@kubb/plugin-axios`](/plugins/plugin-axios/), [`@kubb/plugin-fetch`](/plugins/plugin-fetch/), [`@kubb/plugin-react-query`](/plugins/plugin-react-query/), [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query/), [`@kubb/plugin-msw`](/plugins/plugin-msw/), [`@kubb/plugin-faker`](/plugins/plugin-faker/), [`@kubb/plugin-cypress`](/plugins/plugin-cypress/), and [`@kubb/plugin-mcp`](/plugins/plugin-mcp/). Plugins that emit more than one symbol per operation add namespaced methods on top, such as `response.status` or `query.name`, documented on each plugin's reference page.
 
-| Plugin                                                                                                                                                                                                                                                                                                                                                    | Resolver method           |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| [`@kubb/plugin-ts`](/plugins/plugin-ts/)                                                                                                                                                                                                                                                                                                                   | `resolveTypeName(name)`   |
-| [`@kubb/plugin-zod`](/plugins/plugin-zod/)                                                                                                                                                                                                                                                                                                                 | `resolveSchemaName(name)` |
-| [`@kubb/plugin-axios`](/plugins/plugin-axios/), [`@kubb/plugin-fetch`](/plugins/plugin-fetch/), [`@kubb/plugin-react-query`](/plugins/plugin-react-query/), [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query/), [`@kubb/plugin-msw`](/plugins/plugin-msw/), [`@kubb/plugin-faker`](/plugins/plugin-faker/), [`@kubb/plugin-cypress`](/plugins/plugin-cypress/), [`@kubb/plugin-mcp`](/plugins/plugin-mcp/) | `resolveName(name)`       |
-
-Inside a resolver method, `this` is bound to the full resolver, so `this.core.name(name)` falls back to the built-in logic.
+Inside a resolver method, `this` is bound to the full resolver, so `this.default.name(name)` falls back to the built-in casing.
 
 ::: code-group
 
@@ -556,8 +551,8 @@ import { pluginTs } from '@kubb/plugin-ts'
 
 pluginTs({
   resolver: {
-    resolveTypeName(name) {
-      return `Api${this.core.name(name)}`
+    name(name) {
+      return `Api${this.default.name(name)}`
     },
   },
 })
@@ -767,8 +762,8 @@ export default defineConfig({
     pluginTs({
       output: { path: 'types' },
       resolver: {
-        resolveTypeName(name) {
-          return `Api${this.core.name(name)}`
+        name(name) {
+          return `Api${this.default.name(name)}`
         },
       },
     }),
