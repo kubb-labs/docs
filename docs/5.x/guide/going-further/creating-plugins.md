@@ -212,19 +212,18 @@ export function createExampleGenerator(filename: `${string}.${string}`, generate
 }
 
 // @filename: src/resolvers/resolverExample.ts
-import { defineResolver } from 'kubb/kit'
+import { createResolver } from 'kubb/kit'
 import type { PluginExample } from '../types'
 
 /**
- * `defineResolver` automatically injects `core` defaults for `name`, `fileName`,
- * `options`, `path`, `file`, `banner`, and `footer`.
- * Only `name` and `pluginName` are required in the builder object.
- * Override any of the injected helpers when you need custom naming or path logic.
+ * `createResolver` fills in the built-in machinery under `resolver.default`
+ * (`name`, `options`, `path`, `file`, `banner`, `footer`) and injects the
+ * top-level `name`/`file` entries that delegate to it. Only `pluginName` is
+ * required; override `name`/`file` when you need custom naming or file logic.
  */
-export const resolverExample = defineResolver<PluginExample>(() => ({
-  name: 'default',
+export const resolverExample = createResolver<PluginExample>({
   pluginName: 'plugin-example',
-}))
+})
 
 // @filename: src/plugin.ts
 import { definePlugin } from 'kubb/kit'
@@ -313,29 +312,29 @@ const operationGenerator = defineGenerator({
 
 ## Resolvers
 
-A [resolver](/docs/5.x/reference/kit#defineresolver) decides the file names and output paths for a plugin's files. Other plugins call `ctx.getResolver('plugin-example')` to reuse those names without hard-coding paths.
+A [resolver](/docs/5.x/reference/kit#createresolver) decides the file names and output paths for a plugin's files. Other plugins call `ctx.getResolver('plugin-example')` to reuse those names without hard-coding paths.
 
 ### src/resolvers/resolverExample.ts
 
-`defineResolver` fills in defaults for every resolver method. Provide `name` and `pluginName` in the builder, then override the helpers you want to change. Returning `null` from `core.options` drops the node from generation, so return `null` only when you mean to filter a node out.
+`createResolver` fills in the built-in machinery under `resolver.default` and injects the top-level `name`/`file` entries. Provide `pluginName`, then override `name` and/or `file` for custom identifier casing or file naming. Returning `null` from `resolver.default.options` drops the node from generation, so return `null` only when you mean to filter a node out.
 
 ```typescript twoslash [resolvers.ts]
-import { defineResolver } from 'kubb/kit'
-import path from 'node:path'
+import { createResolver } from 'kubb/kit'
 import type { PluginFactoryOptions, Resolver } from 'kubb/kit'
 
 type PluginExample = PluginFactoryOptions<'plugin-example', object, object, Resolver>
 
-export const resolverExample = defineResolver<PluginExample>(() => ({
-  name: 'default',
+export const resolverExample = createResolver<PluginExample>({
   pluginName: 'plugin-example',
-  // Override core.path to place files in a custom sub-folder.
-  core: {
-    path({ baseName }, { root, output }) {
-      return path.resolve(root, output.path, 'example', baseName)
-    },
+  // Prefix every generated identifier with `Example`.
+  name(name) {
+    return `Example${this.default.name(name)}`
   },
-}))
+  // Thread a matching caser through the built-in file builder for file names.
+  file(params, context) {
+    return this.default.file({ ...params, resolveName: (name) => `example${this.default.name(name)}` }, context)
+  },
+})
 ```
 
 ## The setup context

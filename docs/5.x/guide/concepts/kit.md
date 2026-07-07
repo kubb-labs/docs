@@ -1,13 +1,13 @@
 ---
 layout: doc
 title: Kit - The Plugin Authoring Toolkit
-description: kubb/kit groups definePlugin, defineGenerator, defineResolver, defineParser, createAdapter, createRenderer, the ast namespace, and the factory node builders behind one import, kept apart from the engine that runs them.
+description: kubb/kit groups definePlugin, defineGenerator, createResolver, defineParser, createAdapter, createRenderer, the ast namespace, and the factory node builders behind one import, kept apart from the engine that runs them.
 outline: deep
 ---
 
 # Kit: the plugin authoring toolkit
 
-`kubb/kit` contains everything you need to create your own plugin and custom logic. A plugin, a generator, a resolver, a parser, or a custom adapter or renderer all start from this one import. It groups `definePlugin`, `defineGenerator`, `defineResolver`, `defineParser`, `createAdapter`, `createRenderer`, the `ast` namespace and `factory` node builders you use to construct output, and the option and hook types that go with all of it. See [Architecture](/docs/5.x/guide/concepts/architecture) for where kit sits in the pipeline, [Plugins](/docs/5.x/guide/concepts/plugins) for what a plugin does once it is built, and [AST](/docs/5.x/guide/concepts/ast) for the tree kit's `ast` namespace wraps.
+`kubb/kit` contains everything you need to create your own plugin and custom logic. A plugin, a generator, a resolver, a parser, or a custom adapter or renderer all start from this one import. It groups `definePlugin`, `defineGenerator`, `createResolver`, `defineParser`, `createAdapter`, `createRenderer`, the `ast` namespace and `factory` node builders you use to construct output, and the option and hook types that go with all of it. See [Architecture](/docs/5.x/guide/concepts/architecture) for where kit sits in the pipeline, [Plugins](/docs/5.x/guide/concepts/plugins) for what a plugin does once it is built, and [AST](/docs/5.x/guide/concepts/ast) for the tree kit's `ast` namespace wraps.
 
 ## Why a separate surface from the engine
 
@@ -23,6 +23,6 @@ The `ast` namespace holds everything else too: the guards, the macros, the schem
 
 ## Reference
 
-The full list of exports, `definePlugin`, `defineGenerator`, `defineResolver`, `defineParser`, `createAdapter`, `createRenderer`, `createStorage`, `Diagnostics`, `memoryStorage`, `fsStorage`, the `ast` namespace, and the `kubb/kit/testing` helpers, lives in the [Kit API reference](/docs/5.x/reference/kit).
+The full list of exports, `definePlugin`, `defineGenerator`, `createResolver`, `defineParser`, `createAdapter`, `createRenderer`, `createStorage`, `Diagnostics`, `memoryStorage`, `fsStorage`, the `ast` namespace, and the `kubb/kit/testing` helpers, lives in the [Kit API reference](/docs/5.x/reference/kit).
 
 See also [Plugins](/docs/5.x/guide/concepts/plugins) for the plugin lifecycle, [AST](/docs/5.x/guide/concepts/ast) for the tree kit's `ast` namespace wraps, and [Creating your first plugin](/docs/5.x/guide/going-further/creating-plugins) for a step-by-step build.
