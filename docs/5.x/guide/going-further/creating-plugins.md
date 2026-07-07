@@ -316,7 +316,7 @@ A [resolver](/docs/5.x/reference/kit#createresolver) decides the file names and 
 
 ### src/resolvers/resolverExample.ts
 
-`createResolver` fills in the built-in machinery under `resolver.default` and injects the top-level `name`/`file` entries. Provide `pluginName`, then override `name` and/or `file` for custom identifier casing or file naming. Returning `null` from `resolver.default.options` drops the node from generation, so return `null` only when you mean to filter a node out.
+`createResolver` fills in the built-in machinery under `resolver.default` and injects the top-level `name`/`file` entries. Provide `pluginName`, then set `name` for identifier casing and `file` for file naming: `file.name` builds the base name and `file.path` returns the full path. Returning `null` from `resolver.default.options` drops the node from generation, so return `null` only when you mean to filter a node out.
 
 ```typescript twoslash [resolvers.ts]
 import { createResolver } from 'kubb/kit'
@@ -330,9 +330,11 @@ export const resolverExample = createResolver<PluginExample>({
   name(name) {
     return `Example${this.default.name(name)}`
   },
-  // Thread a matching caser through the built-in file builder for file names.
-  file(params, context) {
-    return this.default.file({ ...params, resolveName: (name) => `example${this.default.name(name)}` }, context)
+  // Give the generated files a matching base name.
+  file: {
+    name(name) {
+      return `example${this.default.name(name)}`
+    },
   },
 })
 ```
