@@ -128,7 +128,7 @@ const myGenerator = defineGenerator({
 | `ctx.plugin`          | `Plugin`                                            | The owning plugin descriptor                                         |
 | `ctx.resolver`        | `Resolver`                                          | Resolver for the current plugin                                      |
 | `ctx.driver`          | `KubbDriver`                                        | Plugin driver for cross-plugin access                                |
-| `ctx.hooks`           | `AsyncEventEmitter<KubbHooks>`                      | Event bus for `KubbHooks` events                                     |
+| `ctx.hooks`           | `Hookable<KubbHooks>`                               | Event bus for `KubbHooks` events                                     |
 | `ctx.adapter`         | `Adapter`                                           | The adapter that parsed the input spec                               |
 | `ctx.meta`            | `InputMeta`                                         | Document metadata from the adapter. Carries `title`, `version`, `baseURL`, and the pre-computed `circularNames` and `enumNames` arrays. |
 | `ctx.addFile()`       | `(...files: FileNode[]) => Promise<void>`           | Add files, skipping any that already exist                           |
@@ -1228,7 +1228,7 @@ paths.forEach((path) => console.log(`  ${path}`))
 | `.setup()`     | `() => Promise<void>`          | Initializes the driver and storage. `build()` calls this automatically.                            |
 | `.build()`     | `() => Promise<BuildOutput>`   | Runs the full pipeline and throws a `BuildError` when any diagnostic is an error.                  |
 | `.safeBuild()` | `() => Promise<BuildOutput>`   | The canonical call. Runs the full pipeline and collects problems in `BuildOutput.diagnostics` instead of throwing. |
-| `.hooks`       | `AsyncEventEmitter<KubbHooks>` | Read-only. Shared event emitter. Attach listeners before calling `build()`.                        |
+| `.hooks`       | `Hookable<KubbHooks>`          | Read-only. Shared hook emitter. Call `.hook(name, handler)` before `build()` to attach a listener. |
 | `.config`      | `Config`                       | Read-only. Resolved config, available right after `createKubb` since it resolves in the constructor. |
 | `.storage`     | `Storage`                      | Read-only getter. Final source code keyed by absolute path. Available after `setup()`, throws before. |
 | `.driver`      | read-only getter               | Advanced plugin driver handle, available after `setup()`. Throws if accessed before `setup()`.     |
