@@ -503,12 +503,12 @@ const kubb = createKubb({
 })
 
 // kubb:plugin:end receives a single KubbPluginEndContext, not two separate arguments.
-kubb.hooks.on('kubb:plugin:end', ({ plugin, duration, success }) => {
+kubb.hooks.hook('kubb:plugin:end', ({ plugin, duration, success }) => {
   console.log(`[${plugin.name}] finished in ${duration}ms (ok=${success})`)
 })
 
 // kubb:files:processing:update fires once per flush batch with an array of per-file updates.
-kubb.hooks.on('kubb:files:processing:update', ({ files }) => {
+kubb.hooks.hook('kubb:files:processing:update', ({ files }) => {
   for (const { file, processed, total, percentage } of files) {
     console.log(`[${processed}/${total}] (${percentage.toFixed(0)}%) ${file.path}`)
   }
