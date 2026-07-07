@@ -271,7 +271,7 @@ const kubb = createKubb({
   plugins: [pluginTs()],
 })
 
-kubb.hooks.on('kubb:plugin:end', ({ plugin, duration }) => {
+kubb.hooks.hook('kubb:plugin:end', ({ plugin, duration }) => {
   console.log(`${plugin.name} completed in ${duration}ms`)
 })
 
