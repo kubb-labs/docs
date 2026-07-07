@@ -59,7 +59,7 @@ The grouped object is what every generated client function, hook, and Cypress he
 
 ## Renamed: `transformers.name`
 
-[`resolver.resolveTypeName`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`.
+[`resolver.name`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`.
 
 ## Moved to `adapterOas`
 

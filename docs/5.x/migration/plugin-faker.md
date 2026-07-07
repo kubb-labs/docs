@@ -7,7 +7,7 @@ description: Configuration and generated-output changes for @kubb/plugin-faker w
 
 Part of the [v4 → v5 migration guide](/docs/5.x/migration). See the full option reference in [`@kubb/plugin-faker`](/plugins/plugin-faker/).
 
-`dateType`, `integerType`, `unknownType`, `emptySchemaType`, and `contentType` moved to [`adapterOas`](/adapters/adapter-oas/). See [Migration: @kubb/adapter-oas](/docs/5.x/migration/adapter-oas). [`resolver.resolveName`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`, and [`macros`](/docs/5.x/migration#transformersschema-macros) replace `transformers.schema`. The `generators` option is [gone](/docs/5.x/migration#generators-removed).
+`dateType`, `integerType`, `unknownType`, `emptySchemaType`, and `contentType` moved to [`adapterOas`](/adapters/adapter-oas/). See [Migration: @kubb/adapter-oas](/docs/5.x/migration/adapter-oas). [`resolver.name`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`, and [`macros`](/docs/5.x/migration#transformersschema-macros) replace `transformers.schema`. The `generators` option is [gone](/docs/5.x/migration#generators-removed).
 
 ## Removed: `paramsCasing`
 
