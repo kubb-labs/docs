@@ -197,8 +197,10 @@ export const resolver = createResolver<MyPlugin>({
 `Resolver.merge(base, patch)` returns a new resolver with `patch`'s fields layered over `base`'s and every helper re-bound. A top-level `name` replaces, while `file` and each namespace merge per member, so overriding `query.name` keeps the base `query.keyName`. Framework code uses it to apply a `setResolver` partial override over a plugin's built-in resolver, and you can call it yourself when composing resolvers. Type a patch with `ResolverPatch<T>` to keep `this` and namespace shapes checked against the target resolver.
 
 ```typescript twoslash [merge.ts]
-import { Resolver } from 'kubb/kit'
-import { resolver } from './resolver.ts'
+import { createResolver, Resolver } from 'kubb/kit'
+import type { PluginFactoryOptions } from 'kubb/kit'
+
+const resolver = createResolver<PluginFactoryOptions>({ pluginName: 'plugin-example' })
 // ---cut---
 const patched = Resolver.merge(resolver, {
   name(name) {
@@ -1182,7 +1184,7 @@ Each `Diagnostic` carries a `code`, a `severity` (`error`, `warning`, or `info`)
 `config.input` is either the `{ path: string }` form or the `{ data: string | unknown }` form. Narrow between them with an [`in` check](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#the-in-operator-narrowing):
 
 ```typescript twoslash [narrow.ts]
-import type { UserConfig } from 'kubb/kit'
+import type { UserConfig } from 'kubb'
 
 declare const input: NonNullable<UserConfig['input']>
 
