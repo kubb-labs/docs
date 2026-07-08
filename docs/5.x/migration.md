@@ -297,7 +297,7 @@ v5 adds three top-level keys that replace behavior each plugin used to carry on 
 | Option       | Package                                                     | Purpose                                       | Default                 |
 | ------------ | ----------------------------------------------------------- | --------------------------------------------- | ----------------------- |
 | `adapter`    | [`@kubb/adapter-oas`](/adapters/adapter-oas/)                | Parses the input spec into a universal AST.   | `adapterOas()`          |
-| `parsers`    | [`@kubb/parser-ts`](/parsers/parser-ts/), `@kubb/parser-md`  | Converts AST nodes to `.ts`, `.tsx`, and `.md` files. | `[parserTs, parserTsx, parserMd]` |
+| `parsers`    | [`@kubb/parser-ts`](/parsers/parser-ts/), `@kubb/parser-md`  | Converts AST nodes to `.ts`, `.tsx`, and `.md` files. | `[parserTs(), parserTsx(), parserMd()]` |
 | `plugins` (post) | [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) | Post-processes output, like barrel files.     | `[pluginBarrel()]`  |
 
 ### `@kubb/plugin-oas` removed

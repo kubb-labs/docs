@@ -88,7 +88,7 @@ layout: doc
 ---
 ```
 
-You can also call `parserMd.print` directly to build a frontmatter envelope. It accepts objects and markdown strings and joins them with blank lines, so `parserMd.print({ title: 'Pets', layout: 'doc' })` returns `---\ntitle: Pets\nlayout: doc\n---`.
+You can also call `parserMd().print` directly to build a frontmatter envelope. It accepts objects and markdown strings and joins them with blank lines, so `parserMd().print({ title: 'Pets', layout: 'doc' })` returns `---\ntitle: Pets\nlayout: doc\n---`.
 
 ## Example
 
@@ -103,7 +103,7 @@ export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   adapter: adapterOas(),
-  parsers: [parserMd],
+  parsers: [parserMd()],
   plugins: [],
 })
 ```
@@ -118,7 +118,7 @@ export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
   adapter: adapterOas(),
-  parsers: [parserTs, parserTsx, parserMd],
+  parsers: [parserTs(), parserTsx(), parserMd()],
   plugins: [],
 })
 ```

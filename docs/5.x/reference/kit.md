@@ -521,7 +521,7 @@ import { parserText } from './parserText.ts'
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
-  parsers: [parserTs, parserTsx, parserText],
+  parsers: [parserTs(), parserTsx(), parserText()],
 })
 ```
 
@@ -533,7 +533,7 @@ Every value returned from `defineParser` matches the `Parser` interface from [`k
 | ---------- | ------------------------------------------------------------------------- | -------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `name`     | `string`                                                                  | Yes      |                                              | Unique parser identifier. Convention is `parser-<id>`.                                                                                               |
 | `extNames` | `Array<FileNode['extname']> \| undefined`                                 | Yes      |                                              | File extensions this parser handles. Set to `undefined` to register a catch-all fallback.                                                            |
-| `parse`    | `(file: FileNode, options?: { extname?: FileNode['extname'] }) => string` | Yes      | By the file processor after all plugins run  | Serializes the file's staged sources into the final output string. Must return synchronously.                                                         |
+| `parse`    | `(file: FileNode) => string`                                              | Yes      | By the file processor after all plugins run  | Serializes the file's staged sources into the final output string. Must return synchronously.                                                         |
 | `print`    | `(...nodes: TNode[]) => string`                                           | Yes      | By plugins, before files are staged          | Renders compiler AST nodes to source text. The node type is parser-specific, for example `ts.Node` for `parserTs`. |
 
 > [!IMPORTANT]
@@ -581,7 +581,7 @@ export const parserCustom = defineParser({
 
 #### `@kubb/parser-ts`
 
-The default parser for TypeScript and JavaScript output. It uses the official TypeScript compiler to resolve import paths, deduplicate declarations, print JSDoc, and rewrite extensions based on `output.extension`. See the [`@kubb/parser-ts` reference](/parsers/parser-ts/) for the full option list.
+The default parser for TypeScript and JavaScript output. It uses the official TypeScript compiler to resolve import paths, deduplicate declarations, print JSDoc, and rewrite import and export extensions based on its `extension` option. See the [`@kubb/parser-ts` reference](/parsers/parser-ts/) for the full option list.
 
 ::: code-group
 
@@ -608,7 +608,7 @@ yarn add -D @kubb/parser-ts@beta
 | `parserTs`  | `.ts`, `.js`       | TypeScript and plain JavaScript output. |
 | `parserTsx` | `.tsx`, `.jsx`     | Same as `parserTs` with JSX support.    |
 
-Both expose `parse(file, options?)` and `print(...nodes: ts.Node[])`. Call `parserTs.print(node)` from a plugin to render a TypeScript compiler node to its source string before staging it on `FileNode.sources`.
+Both are factories that take an optional `extension` map and return a parser exposing `parse(file)` and `print(...nodes: ts.Node[])`. Call `parserTs().print(node)` from a plugin to render a TypeScript compiler node to its source string before staging it on `FileNode.sources`.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -617,7 +617,7 @@ import { parserTs, parserTsx } from '@kubb/parser-ts'
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
-  parsers: [parserTs, parserTsx],
+  parsers: [parserTs(), parserTsx()],
 })
 ```
 
@@ -672,7 +672,7 @@ import { parserPython } from './parserPython.ts'
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen' },
-  parsers: [parserTs, parserPython],
+  parsers: [parserTs(), parserPython()],
 })
 ```
 
@@ -1084,7 +1084,7 @@ export default defineConfig(({ watch }) => ({
 | ---------------- | ---------------------------------------- |
 | `root`           | `process.cwd()`                          |
 | `adapter`        | [`adapterOas()`](/docs/5.x/guide/concepts/adapters) |
-| `parsers`        | `[parserTs, parserTsx, parserMd]`        |
+| `parsers`        | `[parserTs(), parserTsx(), parserMd()]`        |
 | `reporters`      | `[cli, json, file]`                      |
 | `plugins`        | `pluginBarrel()` appended when not already present |
 | `output.barrel`  | `{ type: 'named' }`, only when `pluginBarrel` is in `plugins` |
@@ -1124,7 +1124,7 @@ import { pluginAxios } from '@kubb/plugin-axios'
 
 const kubb = createKubb({
   adapter: adapterOas(),
-  parsers: [parserTs, parserTsx],
+  parsers: [parserTs(), parserTsx()],
   input: { path: './petStore.yaml' },
   output: { path: './gen' },
   plugins: [pluginTs(), pluginAxios()],

@@ -517,7 +517,7 @@ describe('pluginExample', () => {
       input: { path: './test/fixtures/petStore.yaml' },
       output: { path: './dist/test' },
       adapter: adapterOas(),
-      parsers: [parserTs],
+      parsers: [parserTs()],
       plugins: [pluginExample()],
     })
 
