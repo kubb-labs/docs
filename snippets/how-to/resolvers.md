@@ -39,7 +39,7 @@ pluginTs({
 
 ## Rename and relocate files
 
-`file.baseName` builds a file's name, extension included. This override renames every Faker file to `<name>.mock.ts` instead of the plugin default.
+`file.baseName` builds a file's name, extension included. Here it renames every Faker file to `<name>.mock.ts` instead of the plugin default.
 
 ```typescript twoslash [file-name.ts]
 import { pluginFaker } from '@kubb/plugin-faker'
@@ -73,7 +73,7 @@ pluginFaker({
 
 ## Namespaced names
 
-A plugin that emits more than one symbol per operation groups the extra names under namespaces. `@kubb/plugin-react-query` names its query keys through `query.keyName`. This override shortens the default `QueryKey` suffix to `Key`, and `this.name` keeps the operation casing consistent with the rest of the plugin.
+A plugin that emits more than one symbol per operation groups the extra names under namespaces. `@kubb/plugin-react-query` names its query keys through `query.keyName`. It shortens the default `QueryKey` suffix to `Key` here, and `this.name` keeps the operation casing consistent with the rest of the plugin.
 
 ```typescript twoslash [query-key.ts]
 import { pluginReactQuery } from '@kubb/plugin-react-query'
