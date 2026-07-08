@@ -17,12 +17,12 @@ Everything Kubb does starts from `kubb.config.ts`. Begin with a minimal config t
 import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
 })
 ```
 
-A couple of details to note here. `input.path` accepts a local file path or a URL, so you can point it at a spec on disk or one served over HTTP. `output.clean: true` wipes the output directory before each run, which keeps stale files from piling up.
+A couple of details to note here. `input` accepts a local file path or a URL, so you can point it at a spec on disk or one served over HTTP, and it also takes inline OpenAPI content or a parsed object. `output.clean: true` wipes the output directory before each run, which keeps stale files from piling up.
 
 ## 2. Pick your plugins
 
@@ -35,7 +35,7 @@ import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [pluginTs({ output: { path: 'models' } })],
 })
@@ -47,7 +47,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [pluginTs({ output: { path: 'models' } }), pluginAxios({ output: { path: 'clients' } })],
 })
@@ -60,7 +60,7 @@ import { pluginAxios } from '@kubb/plugin-axios'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [pluginTs({ output: { path: 'models' } }), pluginAxios({ output: { path: 'clients' } }), pluginReactQuery({ output: { path: 'hooks' } })],
 })
@@ -75,7 +75,7 @@ import { pluginZod } from '@kubb/plugin-zod'
 import { pluginMsw } from '@kubb/plugin-msw'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [
     pluginTs({ output: { path: 'models' } }),

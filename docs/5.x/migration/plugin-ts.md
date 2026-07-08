@@ -83,7 +83,7 @@ import { defineConfig } from '@kubb/core'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen' },
   plugins: [
     pluginTs({
@@ -100,7 +100,7 @@ import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen' },
   plugins: [
     pluginTs({

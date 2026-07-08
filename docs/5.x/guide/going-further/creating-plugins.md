@@ -67,7 +67,7 @@ import { defineConfig } from 'kubb/config'
 import { pluginHello } from './my-plugin.ts'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   plugins: [pluginHello()],
 })
@@ -514,7 +514,7 @@ const pluginExample = definePlugin(() => ({
 describe('pluginExample', () => {
   it('emits one file per operation', async () => {
     const kubb = createKubb({
-      input: { path: './test/fixtures/petStore.yaml' },
+      input: './test/fixtures/petStore.yaml',
       output: { path: './dist/test' },
       adapter: adapterOas(),
       parsers: [parserTs],
@@ -537,7 +537,7 @@ import { definePlugin } from 'kubb/kit'
 import { adapterOas } from '@kubb/adapter-oas'
 
 const kubb = createKubb({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './gen' },
   adapter: adapterOas(),
   plugins: [definePlugin(() => ({ name: 'plugin-example', hooks: {} }))()],

@@ -31,7 +31,7 @@ A post-generate shell hook (`hooks.done`) exited with a non-zero status. Hooks r
 import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   hooks: {
     done: ['biome check --write ./src/gen'],

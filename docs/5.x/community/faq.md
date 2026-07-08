@@ -67,8 +67,8 @@ Yes. Pass an array to `defineConfig`. Each entry has its own `input`, `output`, 
 import { defineConfig } from 'kubb/config'
 
 export default defineConfig([
-  { input: { path: './specs/users.yaml' }, output: { path: './src/gen/users' }, plugins: [] },
-  { input: { path: './specs/orders.yaml' }, output: { path: './src/gen/orders' }, plugins: [] },
+  { input: './specs/users.yaml', output: { path: './src/gen/users' }, plugins: [] },
+  { input: './specs/orders.yaml', output: { path: './src/gen/orders' }, plugins: [] },
 ])
 ```
 

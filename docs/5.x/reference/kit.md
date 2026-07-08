@@ -258,7 +258,7 @@ import { defineConfig } from 'kubb/config'
 import { adapterCustom } from './adapterCustom.ts'
 
 export default defineConfig({
-  input: { path: './my-spec.json' },
+  input: './my-spec.json',
   output: { path: './src/gen' },
   adapter: adapterCustom({ strict: true }),
   plugins: [],
@@ -363,7 +363,7 @@ import { defineConfig } from 'kubb/config'
 import { adapterOas } from '@kubb/adapter-oas'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   adapter: adapterOas({ validate: true, dateType: 'date', server: { index: 0 } }),
 })
@@ -426,7 +426,7 @@ import { defineConfig } from 'kubb/config'
 import { adapterJsonSchema } from './adapterJsonSchema.ts'
 
 export default defineConfig({
-  input: { path: './schema.json' },
+  input: './schema.json',
   output: { path: './src/gen' },
   adapter: adapterJsonSchema({ strict: true }),
   plugins: [],
@@ -519,7 +519,7 @@ import { parserTs, parserTsx } from '@kubb/parser-ts'
 import { parserText } from './parserText.ts'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   parsers: [parserTs, parserTsx, parserText],
 })
@@ -615,7 +615,7 @@ import { defineConfig } from 'kubb/config'
 import { parserTs, parserTsx } from '@kubb/parser-ts'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   parsers: [parserTs, parserTsx],
 })
@@ -670,7 +670,7 @@ import { parserTs } from '@kubb/parser-ts'
 import { parserPython } from './parserPython.ts'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   parsers: [parserTs, parserPython],
 })
@@ -1062,7 +1062,7 @@ The engine that runs your plugins comes from the `kubb` package and its `kubb/co
 import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
 })
 ```
@@ -1073,7 +1073,7 @@ It accepts a config object, an array of configs, a Promise, or a function. The f
 import { defineConfig } from 'kubb/config'
 
 export default defineConfig(({ watch }) => ({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', clean: !watch },
 }))
 ```
@@ -1125,7 +1125,7 @@ import { pluginAxios } from '@kubb/plugin-axios'
 const kubb = createKubb({
   adapter: adapterOas(),
   parsers: [parserTs, parserTsx],
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './gen' },
   plugins: [pluginTs(), pluginAxios()],
 })
@@ -1182,17 +1182,17 @@ Each `Diagnostic` carries a `code`, a `severity` (`error`, `warning`, or `info`)
 
 ### Narrowing `config.input`
 
-`config.input` is either the `{ path: string }` form or the `{ data: string | unknown }` form. Narrow between them with an [`in` check](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#the-in-operator-narrowing):
+`config.input` is either a string (a path, a URL, or inline content) or a parsed object. Narrow between them with a [`typeof` check](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#typeof-type-guards):
 
 ```typescript twoslash [narrow.ts]
 import type { UserConfig } from 'kubb'
 
 declare const input: NonNullable<UserConfig['input']>
 
-if ('path' in input) {
-  const filePath = input.path // narrowed to string
+if (typeof input === 'string') {
+  const pathUrlOrContent = input // a path, a URL, or inline spec content
 } else {
-  const spec = input.data // narrowed to the spec object or string
+  const spec = input // the parsed spec object
 }
 ```
 

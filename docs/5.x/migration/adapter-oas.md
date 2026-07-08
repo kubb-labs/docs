@@ -32,7 +32,7 @@ import { pluginZod } from '@kubb/plugin-zod'
 import { pluginFaker } from '@kubb/plugin-faker'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen' },
   plugins: [
     pluginTs({
@@ -64,7 +64,7 @@ import { pluginZod } from '@kubb/plugin-zod'
 import { pluginFaker } from '@kubb/plugin-faker'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen' },
   adapter: adapterOas({
     dateType: 'date',
@@ -91,7 +91,7 @@ import { pluginOas } from '@kubb/plugin-oas'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen' },
   plugins: [
     pluginOas({
@@ -111,7 +111,7 @@ import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen' },
   adapter: adapterOas({
     validate: true,
@@ -134,7 +134,7 @@ import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen' },
   adapter: adapterOas({
     enums: 'root',
