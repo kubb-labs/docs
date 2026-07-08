@@ -52,7 +52,7 @@ kubb generate ./petStore.yaml
 | `--config=<path>`, `-c <path>`               |         | Path to a config file, such as `./kubb.staging.ts`.                       |
 | `--logLevel=<silent\|info\|verbose>`, `-l`   | `info`  | Set the verbosity. Use `verbose` to see plugin timings.                   |
 | `--silent`, `-s`                             | `false` | Force `logLevel` to `silent`. Suppresses output.                          |
-| `--verbose`, `-v`                            | `false` | Force `logLevel` to `verbose`. Shows slow plugins.                        |
+| `--verbose`                                  | `false` | Force `logLevel` to `verbose`. Shows slow plugins.                        |
 | `--reporter=<cli\|json\|file>`               |         | Pick which reporters to trigger, comma separated. Defaults to `cli`.      |
 | `--watch`, `-w`                              | `false` | Re-run the pipeline whenever the input spec changes.                      |
 

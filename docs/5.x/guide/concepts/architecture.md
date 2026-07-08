@@ -20,7 +20,7 @@ flowchart LR
 
 ## Config
 
-`defineConfig` from the `kubb/config` package pre-wires [`adapterOas`](/docs/5.x/guide/concepts/adapters), the default parsers [`parserTs`, `parserTsx`, `parserMd`](/docs/5.x/guide/concepts/parsers), and [`pluginBarrel`](/plugins/plugin-barrel/). A minimal config only needs `input` and `output`.
+`defineConfig` from the `kubb/config` subpath of the `kubb` package pre-wires [`adapterOas`](/docs/5.x/guide/concepts/adapters), the default parsers [`parserTs`, `parserTsx`, `parserMd`](/docs/5.x/guide/concepts/parsers), and [`pluginBarrel`](/plugins/plugin-barrel/). A minimal config only needs `input` and `output`.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -77,13 +77,12 @@ InputNode
     └── consumed by plugins          → FileNode (e.g. client functions, hooks)
 ```
 
-The [AST layer](/docs/5.x/guide/concepts/ast) ships three visitor patterns:
+The [AST layer](/docs/5.x/guide/concepts/ast) ships two visitor patterns:
 
-| Visitor                     | Purpose                                                               |
-| --------------------------- | --------------------------------------------------------------------- |
-| `walk(root, visitors)`      | Async traversal for logging, validation, and side effects.            |
-| `transform(root, visitors)` | Produces a modified copy of the tree. Return `null` to remove a node. |
-| `collect(root, visitors)`   | Gathers matching nodes into a flat array.                             |
+| Visitor                     | Purpose                                                                                             |
+| --------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `transform(root, visitors)` | Produces a modified copy of the tree. Return a new node to replace one, or leave it untouched.       |
+| `collect(root, visitors)`   | Gathers matching nodes into a flat array. Use it for logging, validation, and statistics passes too. |
 
 ## [Macros](/docs/5.x/guide/going-further/macros)
 

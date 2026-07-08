@@ -9,6 +9,9 @@ outline: deep
 
 `@kubb/plugin-vue-query` turns each operation into a composable that wraps the client function from `@kubb/plugin-axios` or `@kubb/plugin-fetch`. Read operations become `useFoo`, write operations become `useFoo` mutations, and every composable is typed from the spec.
 
+> [!IMPORTANT]
+> By default the plugin emits only the factory helpers (`queryOptions`, `mutationOptions`, `queryKey`, `mutationKey`). Set [`hooks: true`](/plugins/plugin-vue-query/reference/options#hooks) in the plugin options to also generate the `use*` composables shown below.
+
 ## Queries
 
 A query composable takes the operation's grouped request config as its first argument. Parameters accept a value, a `ref`, or a getter (`MaybeRefOrGetter`), so the query re-runs when a reactive parameter changes:

@@ -9,6 +9,9 @@ outline: deep
 
 `@kubb/plugin-react-query` turns each operation into a hook that wraps the client function from `@kubb/plugin-axios` or `@kubb/plugin-fetch`. Read operations become `useFoo`, write operations become `useFoo` mutations, and every hook is typed from the spec.
 
+> [!IMPORTANT]
+> By default the plugin emits only the factory helpers (`queryOptions`, `mutationOptions`, `queryKey`, `mutationKey`). Set [`hooks: true`](/plugins/plugin-react-query/reference/options#hooks) in the plugin options to also generate the `use*` hooks shown below.
+
 ## Queries
 
 A query hook takes the operation's grouped request config (`path`, `query`, `headers`, whichever the operation declares) as its first argument and returns a TanStack `UseQueryResult`:

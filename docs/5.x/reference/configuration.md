@@ -234,7 +234,7 @@ Rewrite the file extensions emitted in `import` and `export` statements. Keys ar
 
 |           |                                                |
 | --------: | :--------------------------------------------- |
-|     Type: | `Record<KubbFile.Extname, KubbFile.Extname \| ''>` |
+|     Type: | `Record<FileNode['extname'], FileNode['extname'] \| ''>` |
 | Required: | `false`                                        |
 |  Default: | `{ '.ts': '.ts' }`                             |
 
@@ -379,7 +379,7 @@ Array of Kubb plugins. A plugin can declare dependencies, and Kubb throws at sta
 
 |           |                         |
 | --------: | :---------------------- |
-|     Type: | `Array<KubbUserPlugin>` |
+|     Type: | `Array<Plugin>`         |
 | Required: | `false`                 |
 
 ```typescript twoslash [kubb.config.ts]

@@ -274,7 +274,6 @@ Every adapter returned from `createAdapter` matches the `Adapter` interface from
 | `parse`      | `(source: AdapterSource) => InputNode \| Promise<InputNode>`                                          | Yes      | Convert the spec into the [universal AST](/docs/5.x/guide/concepts/ast). The build driver consumes the returned `InputNode` directly.              |
 | `getImports` | `(node: SchemaNode, resolve: (name: string) => { name: string; path: string }) => Array<ImportNode>` | Yes      | Track cross-references so plugins emit correct imports. `resolve` receives the collision-corrected schema name and returns the `{ name, path }` for the import. |
 | `validate`   | `(input: string, options?: { throwOnError?: boolean }) => Promise<void>`                              | Yes      | Validate the document at a path or URL without running the full pipeline.                                                                  |
-| `stream`     | `(source: AdapterSource) => Promise<InputNode<true>>`                                                 | No       | Streaming variant of `parse()`. Returns `schemas` and `operations` as `AsyncIterable`s. The OAS adapter uses this path for every spec.                                  |
 
 `AdapterSource` takes one of two shapes. Handle every form your users may pass:
 
@@ -284,52 +283,6 @@ type AdapterSource = { type: 'path'; path: string } | { type: 'data'; data: stri
 
 > [!IMPORTANT]
 > Throw from `parse()` with a clear, user-facing message when the input is invalid. Kubb surfaces the error verbatim.
-
-### Streaming adapters
-
-`stream()` returns an `InputNode<true>` whose `schemas` and `operations` are `AsyncIterable`s instead of arrays. Each `for await` loop runs a fresh parse pass over the cached document, so plugins iterate independently and the runtime never holds every node in memory at once.
-
-The build driver prefers `stream()` when an adapter implements it. For `parse()`-only adapters, the driver wraps the result in a reusable `AsyncIterable` so the rest of the pipeline stays stream-shaped.
-
-```typescript twoslash [adapterStream.ts]
-import { ast, createAdapter } from 'kubb/kit'
-import type { AdapterFactoryOptions } from 'kubb/kit'
-
-type AdapterStream = AdapterFactoryOptions<'adapter-stream', Record<string, never>>
-
-async function* streamSchemas(): AsyncIterable<ast.SchemaNode> {
-  // yield each parsed schema as soon as it is ready
-}
-
-async function* streamOperations(): AsyncIterable<ast.OperationNode> {
-  // yield each parsed operation as soon as it is ready
-}
-
-export const adapterStream = createAdapter<AdapterStream>(() => ({
-  name: 'adapter-stream',
-  options: {},
-  document: null,
-  async parse() {
-    throw new Error('Use stream() instead. adapter-stream does not support eager parsing.')
-  },
-  async stream() {
-    return ast.factory.createInput({
-      stream: true,
-      schemas: streamSchemas(),
-      operations: streamOperations(),
-      meta: { title: 'Streamed spec', circularNames: [], enumNames: [] },
-    })
-  },
-  getImports() {
-    return []
-  },
-  async validate() {
-    // Throw or call ctx.error here when the spec is invalid.
-  },
-}))
-```
-
-Build the result with `ast.factory.createInput({ stream: true, schemas, operations, meta })` (see [AST](/docs/5.x/guide/concepts/ast)). The `meta` field is optional. Set it when you can, so plugins read `title`, `version`, and `baseURL` before the first node is yielded.
 
 ### Adapter naming convention
 
@@ -747,7 +700,7 @@ Reach for `createRenderer` when a generator needs to emit something other than p
 
 For JSX-based rendering, import `jsxRenderer` from [`kubb/jsx`](/docs/5.x/reference/jsx), backed by the internal `@kubb/renderer-jsx` package.
 
-`jsxRenderer` is a React-free recursive renderer. It walks the JSX components into `FileNode`s without a React reconciliation pass, and its `stream()` returns a synchronous `Generator<FileNode>` that skips a microtask per file. Components run as plain functions, so hooks and suspense are not available.
+`jsxRenderer` is a React-free recursive renderer. It walks the JSX components into `FileNode`s without a React reconciliation pass. Components run as plain functions, so hooks and suspense are not available.
 
 ```typescript twoslash [renderer.ts]
 import { jsxRenderer } from 'kubb/jsx'
@@ -831,7 +784,7 @@ The `Storage` interface is the shape every backend implements. A `Storage` insta
 
 ### `ast`
 
-`ast` is `kubb/kit`'s namespace for the entire AST surface, the same way TypeScript groups its node constructors under `ts.factory`. It carries the `factory` node builders, the `walk`, `transform`, and `collect` visitors, the guards, the ref and string helpers, and the macro engine. The namespace is backed by the internal `@kubb/ast` library. Always reach it through `kubb/kit`.
+`ast` is `kubb/kit`'s namespace for the entire AST surface, the same way TypeScript groups its node constructors under `ts.factory`. It carries the `factory` node builders, the `transform` and `collect` visitors, the guards, the ref and string helpers, and the macro engine. The namespace is backed by the internal `@kubb/ast` library. Always reach it through `kubb/kit`.
 
 ```typescript twoslash [ast-namespace.ts]
 import { ast } from 'kubb/kit'
@@ -927,28 +880,7 @@ The `ast.factory` namespace also provides constructors for source files and Type
 
 ### Visitors {#visitors}
 
-Three visitor functions cover the common traversal patterns. Visitor objects use lowercase, kind-style keys (`input`, `operation`, `schema`, `property`, `parameter`, `response`). To rewrite nodes inside a plugin, reach for [macros](/docs/5.x/guide/going-further/macros). They add names, ordering, and composition on top of `transform`.
-
-#### `walk`: async traversal with side effects
-
-```typescript twoslash [walk.ts]
-import { ast } from 'kubb/kit'
-
-const root = ast.factory.createInput({ schemas: [], operations: [] })
-
-await ast.walk(root, {
-  async operation(node) {
-    console.log(`Found ${node.method} ${node.path}`)
-  },
-  async schema(node) {
-    if ('deprecated' in node && node.deprecated) {
-      console.warn(`Schema ${'name' in node ? node.name : '?'} is deprecated`)
-    }
-  },
-})
-```
-
-Use `walk` to log, validate, collect statistics, or trigger a side effect per node.
+Two visitor functions cover the common traversal patterns: `transform` rewrites the tree and `collect` gathers nodes. Visitor objects use lowercase, kind-style keys (`input`, `operation`, `schema`, `property`, `parameter`, `response`). To rewrite nodes inside a plugin, reach for [macros](/docs/5.x/guide/going-further/macros). They add names, ordering, and composition on top of `transform`. For logging, validation, or statistics, `collect` the nodes you care about and loop over the result.
 
 #### `transform`: synchronous, returns a new tree
 
@@ -1020,23 +952,22 @@ import { ast } from 'kubb/kit'
 
 const root = ast.factory.createInput({ schemas: [], operations: [] })
 
-await ast.walk(root, {
-  async schema(node) {
-    const obj = ast.narrowSchema(node, 'object')
-    if (obj) {
-      console.log(`object with ${obj.properties.length} properties`)
-    }
+for (const node of ast.collect<ast.SchemaNode>(root, { schema: (node) => node })) {
+  const obj = ast.narrowSchema(node, 'object')
+  if (obj) {
+    console.log(`object with ${obj.properties.length} properties`)
+  }
 
-    if (node.type === 'ref') {
-      console.log(`reference to: ${node.ref}`)
-    }
-  },
-  async operation(node) {
-    if (ast.isHttpOperationNode(node)) {
-      console.log(`${node.method} ${node.path}`)
-    }
-  },
-})
+  if (node.type === 'ref') {
+    console.log(`reference to: ${node.ref}`)
+  }
+}
+
+for (const node of ast.collect<ast.OperationNode>(root, { operation: (node) => node })) {
+  if (ast.isHttpOperationNode(node)) {
+    console.log(`${node.method} ${node.path}`)
+  }
+}
 ```
 
 ### Refs and naming helpers

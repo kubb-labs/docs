@@ -14,7 +14,7 @@ This page walks you through getting Kubb running in your project, from the first
 Before you start, make sure your machine has these two tools installed:
 
 - [Node.js](https://nodejs.org/) 22 or higher ([Download](https://nodejs.org/en/download))
-- [TypeScript](https://www.typescriptlang.org/) 4.7 or higher, if you use a `kubb.config.ts` or import generated types
+- [TypeScript](https://www.typescriptlang.org/) 5.0 or higher, if you use a `kubb.config.ts` or import generated types
 
 ## Quick start (recommended)
 

@@ -289,7 +289,7 @@ HTTP methods treated as queries. Operations using one of these methods generate 
 |          |                 |
 | -------: | :-------------- |
 |    Type: | `Array<string>` |
-| Default: | `['get']`       |
+| Default: | `['GET']`       |
 
 #### query.importPath
 
@@ -352,7 +352,7 @@ HTTP methods treated as mutations. Operations using one of these methods generat
 |          |                                      |
 | -------: | :----------------------------------- |
 |    Type: | `Array<string>`                      |
-| Default: | `['post', 'put', 'patch', 'delete']` |
+| Default: | `['POST', 'PUT', 'PATCH', 'DELETE']` |
 
 #### mutation.importPath
 
