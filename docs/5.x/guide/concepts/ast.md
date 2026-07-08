@@ -50,4 +50,4 @@ The same tree flows through four stages, each documented on its own page:
 
 ## Reference
 
-The callable surface lives in the [Kit API reference](/docs/5.x/reference/kit#ast-and-node-builders): the `transform` and `collect` visitors, the type guards, and the naming helpers.
+The callable surface lives in the [Kit API reference](/docs/5.x/reference/kit/ast): the `transform` and `collect` visitors, the type guards, and the naming helpers.

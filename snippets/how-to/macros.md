@@ -6,7 +6,7 @@ The engine (`defineMacro`, `composeMacros`, `applyMacros`, and the `Macro` type)
 
 ## Shape
 
-A macro carries the per-kind callbacks of a [visitor](/docs/5.x/reference/kit#visitors), plus a `name`, an optional `enforce` order, and an optional `when` gate.
+A macro carries the per-kind callbacks of a [visitor](/docs/5.x/reference/kit/ast#visitors), plus a `name`, an optional `enforce` order, and an optional `when` gate.
 
 ```typescript [Type definition]
 type Macro = {
