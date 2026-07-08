@@ -66,7 +66,7 @@ export const pluginExample = definePlugin((options: { prefix?: string } = {}) =>
 | Method           | Signature                                                       | Purpose                                                       |
 | ---------------- | ----------------------------------------------------------------| ------------------------------------------------------------- |
 | `addGenerator`   | `(...generators: Array<Generator>) => void`                     | Register one or more generators for this plugin               |
-| `setResolver`    | `(resolver: Partial<Resolver>) => void`                         | Set or partially override the file naming resolver            |
+| `setResolver`    | `(resolver: ResolverOverride<Resolver>) => void`                | Set the resolver from a `createResolver` result or a partial override |
 | `addMacro`       | `(macro: Macro) => void`                                        | Add a macro that rewrites AST nodes before generators         |
 | `setMacros`      | `(macros: Array<Macro>) => void`                                | Replace this plugin's macros with a new list                  |
 | `setOptions`     | `(options: ResolvedOptions) => void`                            | Set the resolved options used by generators                   |
@@ -195,7 +195,9 @@ export const resolver = createResolver<MyPlugin>({
 
 #### `Resolver.merge`
 
-`Resolver.merge(base, patch)` returns a new resolver with `patch`'s fields layered over `base`'s, each key (`name`, `file`, a namespace) replaced wholesale and every helper re-bound. Framework code uses it to apply a `setResolver` partial override over a plugin's built-in resolver; call it yourself when composing resolvers. Type a patch with `ResolverPatch<T>` to keep `this` and namespace shapes checked against the target resolver.
+`Resolver.merge(base, patch)` returns a new resolver with `patch`'s fields layered over `base`'s, each key (`name`, `file`, a namespace) replaced wholesale and every helper re-bound. Framework code uses it to apply a `setResolver` override over a plugin's built-in resolver, and you can call it yourself when composing resolvers. Type a patch with `ResolverPatch<T>` to keep `this` and namespace shapes checked against the target resolver.
+
+A plugin `resolver` override and `setResolver` both accept `ResolverOverride<T>`, the union of a `ResolverPatch` partial and a full resolver returned by `createResolver`. Either form merges over the plugin defaults, so build the override once with `createResolver` or pass the plain params object.
 
 ```typescript twoslash [merge.ts]
 import { Resolver } from 'kubb/kit'

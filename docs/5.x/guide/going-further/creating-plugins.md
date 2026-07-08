@@ -339,6 +339,23 @@ export const resolverExample = createResolver<PluginExample>({
 })
 ```
 
+Users override a plugin's resolver through its `resolver` option in `kubb.config.ts`. The option accepts a resolver built with `createResolver` or the plain params object it takes, and either one merges over the plugin defaults. Reach for `createResolver` when you want to build the override once and reuse it.
+
+```typescript twoslash [config-resolver.ts]
+import { createResolver } from 'kubb/kit'
+import { pluginFaker, resolverFaker } from '@kubb/plugin-faker'
+import type { PluginFaker } from '@kubb/plugin-faker'
+
+pluginFaker({
+  resolver: createResolver<PluginFaker>({
+    pluginName: 'plugin-faker',
+    name(name) {
+      return `${resolverFaker.name(name)}Faker`
+    },
+  }),
+})
+```
+
 ## The setup context
 
 `kubb:plugin:setup` receives a `KubbPluginSetupContext` that wires the plugin into the build. The full interface from [`kubb/kit`](/docs/5.x/reference/kit):
@@ -346,7 +363,7 @@ export const resolverExample = createResolver<PluginExample>({
 | Method / Property | Purpose                                                                           |
 | ----------------- | --------------------------------------------------------------------------------- |
 | `addGenerator`    | Register one or more [`Generator`](/docs/5.x/guide/concepts/plugins#generators)s for the AST walk. Pass them as separate arguments, or spread an existing list. |
-| `setResolver`     | Set or override the resolver (file naming and paths).                             |
+| `setResolver`     | Set the resolver from a `createResolver` result or a partial override (file naming and paths). |
 | `addMacro`        | Add a [macro](/docs/5.x/guide/going-further/macros) that rewrites AST nodes before generators. |
 | `setMacros`       | Replace this plugin's macros with a new list.                                     |
 | `setOptions`      | Provide resolved options to the build loop.                                       |
