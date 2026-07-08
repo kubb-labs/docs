@@ -36,8 +36,7 @@ npm install -D kubb@beta
 A `SessionStart` hook checks for `kubb` when a session starts. It warns you when `kubb` is
 missing so you can install it first. It never installs anything for you.
 
-`kubb init` installs the `@kubb/plugin-*` packages you select. `kubb validate` works with just
-`kubb` installed.
+`kubb init` installs the `@kubb/plugin-*` packages you select.
 
 ## Commands
 
