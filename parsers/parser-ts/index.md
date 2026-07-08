@@ -35,7 +35,7 @@ resources:
 ---
 
 > [!TIP]
-> `parserTs` runs by default, so TypeScript output needs no setup. Add it to a custom `parsers` list only when you override the defaults and still want TypeScript output.
+> `parserTs` runs by default, so TypeScript output needs no setup. Add it back to a custom `parsers` list when you override the defaults, since a custom list replaces the whole default set.
 
 `@kubb/parser-ts` takes the `FileNode` your plugins stage and prints it as TypeScript source with the official [TypeScript compiler](https://www.typescriptlang.org/). It resolves import paths, writes the import and export statements, prints JSDoc, and rewrites import extensions based on `output.extension`.
 
