@@ -26,7 +26,7 @@ With that in place, `.tsx` files in the plugin resolve `jsx-runtime` and `jsx-de
 
 ## `jsxRenderer()`
 
-`jsxRenderer` creates a renderer instance with three members: `render`, `files`, and `stream`. Call `render` with a JSX element, then read the generated files back off `files`.
+`jsxRenderer` creates a renderer instance with two members, `render` and `files`, plus a `[Symbol.dispose]` cleanup hook. Call `render` with a JSX element, then read the generated files back off `files`.
 
 ```tsx twoslash [render.tsx]
 import { jsxRenderer } from 'kubb/jsx'
@@ -47,8 +47,6 @@ await renderer.render(
 
 const files = renderer.files
 ```
-
-Use `stream(element)` instead of `render` when you want files as they are produced rather than buffered into one array. `stream` yields each `FileNode` in turn, which suits large trees or a plugin that wants to react to files as they land.
 
 ## Built-in components
 

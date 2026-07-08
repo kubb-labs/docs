@@ -259,6 +259,10 @@ The following plugins have no v5 equivalent. Remove them from your config and un
 > [!NOTE]
 > `@kubb/plugin-swr` was unavailable during the early v5 betas but is supported again in v5. See [Migration: @kubb/plugin-swr](/docs/5.x/migration/plugin-swr).
 
+### Removed packages
+
+Two v4 support packages are gone. `@kubb/oas`, the OpenAPI parsing and schema-helper package, is replaced by [`@kubb/adapter-oas`](/adapters/adapter-oas/) and the universal [AST](/docs/5.x/guide/concepts/ast): plugins now read AST nodes instead of raw OAS objects. `@kubb/ast` merged into the `ast` namespace of `kubb/kit`. See [Authoring imports moved to `kubb/kit`](#authoring-imports-moved-to-kubb-kit).
+
 ### New packages in v5
 
 | Package                                                     | Purpose                                                                                              |
@@ -616,14 +620,16 @@ The `generators` plugin option is gone. It accepted an array of custom `Generato
 
 ### Authoring imports moved to `kubb/kit`
 
-The helpers for authoring plugins, generators, resolvers, parsers, and adapters, along with the `ast` namespace, moved out of `@kubb/core` into the new `kubb/kit` subpath of the `kubb` package. `@kubb/core` no longer exports `ast` at all.
+The helpers for authoring plugins, generators, resolvers, parsers, and adapters now live in the `kubb/kit` subpath of the `kubb` package. In v4 they were spread across `@kubb/core` (`definePlugin`), `@kubb/ast` (visitors, factory functions, guards), and `@kubb/plugin-oas` (`createGenerator`, `createReactGenerator`).
 
-The AST helpers move with the `ast` namespace. Reach them through `kubb/kit` as `ast.extractRefName` and friends. The old `/utils` and `/macros` subpaths no longer exist.
+The AST helpers move onto the `ast` namespace. Reach them through `kubb/kit` as `ast.extractRefName` and friends. The `@kubb/ast` package itself is gone, and so is its async `walk` visitor: use `ast.collect` for inspection passes and `ast.transform` for rewrites.
 
 ::: code-group
 
 ```typescript [before]
-import { ast, definePlugin, defineGenerator } from '@kubb/core'
+import { definePlugin } from '@kubb/core'
+import { collect, transform, walk } from '@kubb/ast'
+import { createReactGenerator } from '@kubb/plugin-oas'
 ```
 
 ```typescript twoslash [after]

@@ -78,5 +78,6 @@ Most MCP clients accept a JSON config with a `command` and `args`. To register t
 
 ## See also
 
-- [`@kubb/mcp`](/plugins/plugin-mcp/), the plugin docs with the full list of tools the MCP server exposes
+- [MCP integration guide](/docs/5.x/ai/mcp): connect the server to Claude Desktop, Cursor, and other clients
+- [`@kubb/plugin-mcp`](/plugins/plugin-mcp/), a different package that generates an MCP server from your OpenAPI spec
 - [Concepts: Plugins](/docs/5.x/guide/concepts/plugins): how plugins integrate with the Kubb pipeline
