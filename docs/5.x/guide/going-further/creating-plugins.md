@@ -330,10 +330,10 @@ export const resolverExample = createResolver<PluginExample>({
   name(name) {
     return `Example${this.default.name(name)}`
   },
-  // Give the generated files a matching base name.
+  // Derive the file base name from the identifier, so a config override of `name` follows through.
   file: {
     baseName({ name, extname }) {
-      return `example${this.default.name(name)}${extname}`
+      return `${this.name(name)}${extname}`
     },
   },
 })

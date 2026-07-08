@@ -195,7 +195,7 @@ export const resolver = createResolver<MyPlugin>({
 
 #### `Resolver.merge`
 
-`Resolver.merge(base, patch)` returns a new resolver with `patch`'s fields layered over `base`'s, each key (`name`, `file`, a namespace) replaced wholesale and every helper re-bound. Framework code uses it to apply a `setResolver` partial override over a plugin's built-in resolver; call it yourself when composing resolvers. Type a patch with `ResolverPatch<T>` to keep `this` and namespace shapes checked against the target resolver.
+`Resolver.merge(base, patch)` returns a new resolver with `patch`'s fields layered over `base`'s and every helper re-bound. A top-level `name` replaces, while `file` and each namespace merge per member, so overriding `query.name` keeps the base `query.keyName`. Framework code uses it to apply a `setResolver` partial override over a plugin's built-in resolver, and you can call it yourself when composing resolvers. Type a patch with `ResolverPatch<T>` to keep `this` and namespace shapes checked against the target resolver.
 
 ```typescript twoslash [merge.ts]
 import { Resolver } from 'kubb/kit'
