@@ -390,7 +390,6 @@ pluginReactQuery({
 | `setMacros`       | Replace this plugin's macros with a new list.                                     |
 | `setOptions`      | Provide resolved options to the build loop.                                       |
 | `injectFile`      | Inject a raw `UserFileNode` into the build, bypassing generators.                 |
-| `updateConfig`    | Merge a partial config update into the running build.                             |
 | `config`          | The resolved `Config` at setup time.                                              |
 | `options`         | The user-supplied plugin options.                                                 |
 
