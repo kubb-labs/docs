@@ -71,7 +71,6 @@ export const pluginExample = definePlugin((options: { prefix?: string } = {}) =>
 | `setMacros`      | `(macros: Array<Macro>) => void`                                | Replace this plugin's macros with a new list                  |
 | `setOptions`     | `(options: ResolvedOptions) => void`                            | Set the resolved options used by generators                   |
 | `injectFile`     | `(file: UserFileNode) => void`                                  | Inject a raw file into the build output, bypassing generation |
-| `updateConfig`   | `(config: Partial<Config>) => void`                             | Merge a partial config update into the current build config   |
 | `config`         | `Config`                                                        | The resolved build configuration at setup time                |
 | `options`        | `TOptions`                                                      | The plugin's own options as passed by the user                |
 
@@ -793,9 +792,6 @@ export const memoryStorage = createStorage(() => {
       if (!base) return store.clear()
       for (const k of store.keys()) if (k.startsWith(base)) store.delete(k)
     },
-    async dispose() {
-      store.clear()
-    },
   }
 })
 ```
@@ -815,7 +811,6 @@ The `Storage` interface is the shape every backend implements. A `Storage` insta
 | `removeItem()` | `key: string`                | `Promise<void>`           | Delete an item                                          |
 | `getKeys()`    | `base?: string`              | `Promise<string[]>`       | List keys, optionally filtered by prefix                |
 | `clear()`      | `base?: string`              | `Promise<void>`           | Delete all items, optionally scoped by prefix           |
-| `dispose?()`   | (none)                       | `Promise<void>`           | Optional teardown hook called after the build completes |
 
 ### `fsStorage`
 
