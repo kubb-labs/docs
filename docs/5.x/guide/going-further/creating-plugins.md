@@ -316,7 +316,7 @@ A [resolver](/docs/5.x/reference/kit#createresolver) decides the file names and 
 
 ### src/resolvers/resolverExample.ts
 
-`createResolver` fills in the built-in machinery under `resolver.default` and injects the top-level `name`/`file` entries. Provide `pluginName`, then override `name` and/or `file` for custom identifier casing or file naming. Returning `null` from `resolver.default.options` drops the node from generation, so return `null` only when you mean to filter a node out.
+`createResolver` fills in the built-in machinery under `resolver.default` and injects the top-level `name`/`file` entries. Provide `pluginName`, then set `name` for identifier casing and `file` for file naming: `file.baseName` builds the base name (extension included) and `file.path` returns the full path. Returning `null` from `resolver.default.options` drops the node from generation, so return `null` only when you mean to filter a node out.
 
 ```typescript twoslash [resolvers.ts]
 import { createResolver } from 'kubb/kit'
@@ -330,9 +330,50 @@ export const resolverExample = createResolver<PluginExample>({
   name(name) {
     return `Example${this.default.name(name)}`
   },
-  // Thread a matching caser through the built-in file builder for file names.
-  file(params, context) {
-    return this.default.file({ ...params, resolveName: (name) => `example${this.default.name(name)}` }, context)
+  // Derive the file base name from the identifier, so a config override of `name` follows through.
+  file: {
+    baseName({ name, extname }) {
+      return `${this.name(name)}${extname}`
+    },
+  },
+})
+```
+
+Users override a plugin's resolver through its `resolver` option in `kubb.config.ts`. Pass a plain object with the parts you want to change, and each part merges over the plugin defaults. The option only patches the existing resolver. To build a whole new one, write a custom plugin. Inside every method `this` is the full resolver, so you reach `this.name`, `this.file`, and the plugin's namespaces.
+
+```typescript twoslash [config-resolver.ts]
+import { pluginFaker } from '@kubb/plugin-faker'
+
+pluginFaker({
+  resolver: {
+    name(name) {
+      return `${this.default.name(name)}Faker`
+    },
+    file: {
+      baseName({ name, extname }) {
+        return `${this.name(name)}${extname}`
+      },
+    },
+  },
+})
+```
+
+Namespaces merge per method, so override a single one and the siblings keep the plugin default.
+
+```typescript twoslash [config-namespace.ts]
+import { pluginReactQuery } from '@kubb/plugin-react-query'
+
+function capitalize(text: string): string {
+  return `${text.charAt(0).toUpperCase()}${text.slice(1)}`
+}
+
+pluginReactQuery({
+  resolver: {
+    query: {
+      name(node) {
+        return `use${capitalize(this.name(node.operationId))}Hook`
+      },
+    },
   },
 })
 ```
