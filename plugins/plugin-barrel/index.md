@@ -35,7 +35,7 @@ resources:
 # @kubb/plugin-barrel
 
 > [!TIP]
-> `plugin-barrel` ships with Kubb and runs by default. Install it on its own only when you want to tune barrel behavior.
+> `pluginBarrel` runs by default, so barrel files appear with no setup. Configure `output.barrel` when you want to tune barrel behavior.
 
 `@kubb/plugin-barrel` writes the `index.ts` barrel files. It adds one barrel per plugin output directory and one root barrel at `output.path/index.ts`. This runs after the build finishes, so you import everything from one entry point, like `import { Pet, usePetByIdQuery, petMock } from './gen'`.
 
