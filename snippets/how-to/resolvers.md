@@ -105,15 +105,6 @@ pluginTs({
 })
 ```
 
-## Resolver, printer, or macro
-
-The three options change different stages. A [macro](/docs/5.x/guide/going-further/macros) rewrites the schema node itself before anything prints, so every plugin that reads the node follows. A [printer](/docs/5.x/guide/going-further/printers) changes the code one plugin emits for a node type. A resolver leaves both the node and the printed code alone and changes only the names and file paths around them.
-
-Reach for a resolver when the output is correct but the name or location is not, such as a prefix on every type, a `.mock.ts` suffix on Faker files, or a shorter query-key name. Reach for a printer or a macro when the generated code itself has to change.
-
-> [!TIP]
-> The three compose. A macro rewrites the node, the printer prints it, and the resolver names the symbol and file the result is written to.
-
 ## Writing your own resolver
 
 Plugin authors create complete resolvers with `createResolver` from `kubb/kit`. Pass at least `{ pluginName }`, set `name` and `file` for the plugin's conventions, and add namespaces for the per-operation names. The built-in machinery stays reachable under `this.default`, so an override can fall back to it.
