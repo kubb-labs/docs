@@ -33,7 +33,7 @@ export default defineConfig({
 ```
 
 > [!NOTE]
-> Reach for [`createKubb`](/docs/5.x/reference/kit#createkubb) from the `kubb` package only when you need a programmatic build or custom tooling.
+> Reach for [`createKubb`](/docs/5.x/reference/kit/engine#createkubb) from the `kubb` package only when you need a programmatic build or custom tooling.
 
 ## [Adapter](/docs/5.x/guide/concepts/adapters)
 

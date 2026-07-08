@@ -119,4 +119,4 @@ export const printerDocs = ast.createPrinter<PrinterDocs>((options) => ({
 }))
 ```
 
-See the [Kit API reference](/docs/5.x/reference/kit#printers) for the helper and [Parsers concepts](/docs/5.x/guide/concepts/parsers) for how parsers consume printers.
+See the [Kit API reference](/docs/5.x/reference/kit/ast#printers) for the helper and [Parsers concepts](/docs/5.x/guide/concepts/parsers) for how parsers consume printers.

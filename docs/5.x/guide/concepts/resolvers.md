@@ -1,0 +1,24 @@
+---
+layout: doc
+title: Resolvers - How Kubb Names Generated Files
+description: A resolver is the single source of truth for a plugin's file names and output paths. Other plugins read it by name so they can import each other's output without hard-coding paths.
+outline: deep
+---
+
+# Resolvers
+
+A resolver decides what a plugin's files are called and where they land. Every plugin has one. When a generator needs a file name or an import path, it asks the resolver instead of building the string itself, so naming stays in one place and stays consistent across the plugin's output.
+
+## Why naming is centralized
+
+Plugins depend on each other's output. A React Query hook imports the types from `@kubb/plugin-ts` and the schemas from `@kubb/plugin-zod`. If each plugin invented file names inline, that coupling would break the moment one of them changed a casing rule. The resolver removes the guesswork. A plugin reads another plugin's resolver with `ctx.getResolver('plugin-ts')` and gets the exact names that plugin will emit, so the import always points at the right file.
+
+Centralizing naming also gives users one place to override it. Setting `name` or a namespace method on a plugin's resolver changes every file that plugin writes, without touching the generators.
+
+## What a resolver controls
+
+The resolver owns identifier casing, the base file name including its extension, and the output path, with optional subdirectories per tag or per operation path. Built-in defaults handle all of this, and they sit under `resolver.default` so an override can fall back to the original behavior instead of reimplementing it. Plugins that emit more than one symbol per node add namespaced methods on top, such as `query.name` or `response.status`.
+
+## Reference
+
+`createResolver`, the auto-injected defaults, and `Resolver.merge` live in the [Kit API reference](/docs/5.x/reference/kit/resolvers). See [Plugins](/docs/5.x/guide/concepts/plugins) for how a plugin registers and overrides its resolver.
