@@ -36,7 +36,7 @@ resources:
 The parser joins a file's source blocks with blank lines to form the body. When `file.meta.frontmatter` is set, it renders those keys as a YAML frontmatter block and prepends it, so you do not add a `yaml` dependency yourself.
 
 > [!TIP]
-> `parserMd` ships with Kubb and runs by default next to `parserTs` and `parserTsx`. Add it to `parsers` yourself only when you set a custom list, since a custom `parsers` array replaces the whole default set. Files whose extension has no registered parser are written by joining their sources verbatim.
+> `parserMd` runs by default next to `parserTs` and `parserTsx`. Add it back to a custom `parsers` list when you override the defaults, since a custom `parsers` array replaces the whole default set. Files whose extension has no registered parser are written by joining their sources verbatim.
 
 ## Installation
 

@@ -146,7 +146,7 @@ Plugins with `enforce: 'post'` run after the rest and handle cross-output work l
 
 ### MCP and AI agents
 
-[`@kubb/plugin-mcp`](/plugins/plugin-mcp/) turns your spec into an MCP server, so an assistant calls your API as typed tools. orval matches this with `@orval/mcp`. HeyAPI has none. Kubb also ships `@kubb/mcp`, an MCP server for the generator itself, so Claude, Cursor, or any MCP client runs Kubb from a prompt.
+[`@kubb/plugin-mcp`](/plugins/plugin-mcp/) turns your spec into an MCP server, so an assistant calls your API as typed tools. orval matches this with `@orval/mcp`. HeyAPI has none. Kubb also ships a built-in MCP server for the generator itself, so Claude, Cursor, or any MCP client runs Kubb from a prompt.
 
 ## When not to use Kubb
 

@@ -210,4 +210,4 @@ See the [Integrations](/docs/5.x/guide/integrations/) page for setup instruction
 
 | Package                                   | Purpose                                                                                                     |
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| [`@kubb/mcp`](/docs/5.x/reference/commands/mcp) | Standalone [MCP](https://modelcontextprotocol.io) server that lets LLM clients trigger generation directly. |
+| [`kubb mcp`](/docs/5.x/reference/commands/mcp) | Built-in [MCP](https://modelcontextprotocol.io) server that lets LLM clients trigger generation directly. |
