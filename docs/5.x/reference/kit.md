@@ -211,6 +211,7 @@ const patched = Resolver.merge(resolver, {
 
 #### Related
 
+- [Override a resolver](/docs/5.x/guide/going-further/resolvers)
 - [Plugin API: resolvers](/docs/5.x/guide/concepts/plugins#resolvers)
 - [Creating plugins](/docs/5.x/guide/going-further/creating-plugins)
 

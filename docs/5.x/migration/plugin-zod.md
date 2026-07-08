@@ -240,7 +240,7 @@ The custom plugin runs after `pluginZod`, so the per-operation schemas it import
 
 ## Renamed: `transformers.name`
 
-[`resolver.name`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`. The v4 `transformers.schema` callback maps to [`macros`](/docs/5.x/migration#transformersschema-macros).
+[`resolver.name`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`, covered in full by [Override a resolver](/docs/5.x/guide/going-further/resolvers). The v4 `transformers.schema` callback maps to [`macros`](/docs/5.x/migration#transformersschema-macros).
 
 ## Moved to `adapterOas`
 

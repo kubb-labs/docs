@@ -64,4 +64,4 @@ The Kubb monorepo ships official plugins for the most common cases. Browse them 
 
 ## Next steps
 
-To build a plugin of your own, work through [Creating your first plugin](/docs/5.x/guide/going-further/creating-plugins). For the exact shape of `definePlugin`, `defineGenerator`, `createResolver`, and the context passed to each hook, read the [Kit API](/docs/5.x/reference/kit).
+To build a plugin of your own, work through [Creating your first plugin](/docs/5.x/guide/going-further/creating-plugins). For the exact shape of `definePlugin`, `defineGenerator`, `createResolver`, and the context passed to each hook, read the [Kit API](/docs/5.x/reference/kit). To retune the names and file paths a plugin produces without writing one, see [Override a resolver](/docs/5.x/guide/going-further/resolvers).
