@@ -72,4 +72,5 @@ const patched = Resolver.merge(resolver, {
 ### Related
 
 - [Resolver concepts](/docs/5.x/guide/concepts/resolvers)
+- [Override a resolver](/docs/5.x/guide/going-further/resolvers)
 - [Creating plugins](/docs/5.x/guide/going-further/creating-plugins)

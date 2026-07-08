@@ -436,6 +436,8 @@ Changes how the plugin names generated files and functions. Use it to add a pref
 
 > [!TIP]
 > Use `resolver` for naming and file-location tweaks. To change the AST nodes themselves, such as stripping descriptions, use `macros` instead.
+>
+> See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the plugin default.
 
 For example, `resolver: { name(name) { return \`api${this.default.name(name)}\` } }` prefixes every generated function name with `api`. The default resolver for this plugin is `resolverClient`, shared with `@kubb/plugin-fetch`.
 

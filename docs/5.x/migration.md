@@ -538,7 +538,7 @@ These changes apply to every plugin that used `transformers` in v4.
 
 A typed [resolver](/docs/5.x/guide/concepts/resolvers) replaces the single `transformers.name(name, type)` callback. Every plugin exposes a top-level `name(name)` method that sets identifier casing, so `resolver: { name(name) { … } }` is the shape for [`@kubb/plugin-ts`](/plugins/plugin-ts/), [`@kubb/plugin-zod`](/plugins/plugin-zod/), [`@kubb/plugin-axios`](/plugins/plugin-axios/), [`@kubb/plugin-fetch`](/plugins/plugin-fetch/), [`@kubb/plugin-react-query`](/plugins/plugin-react-query/), [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query/), [`@kubb/plugin-msw`](/plugins/plugin-msw/), [`@kubb/plugin-faker`](/plugins/plugin-faker/), [`@kubb/plugin-cypress`](/plugins/plugin-cypress/), and [`@kubb/plugin-mcp`](/plugins/plugin-mcp/). Plugins that emit more than one symbol per operation add namespaced methods on top, such as `response.status` or `query.name`, documented on each plugin's reference page.
 
-Inside a resolver method, `this` is bound to the full resolver, so `this.default.name(name)` falls back to the built-in casing.
+Inside a resolver method, `this` is bound to the full resolver, so `this.default.name(name)` falls back to the built-in casing. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the full guide, including how to rename or relocate the generated files through `file.baseName` and `file.path`.
 
 ::: code-group
 
@@ -597,7 +597,7 @@ pluginZod({
 
 ### New: `printer`
 
-Code-generating plugins now accept a `printer` option that overrides individual AST node renderers. Use it in place of the removed `mapper` option for type-level customizations.
+Code-generating plugins now accept a `printer` option that overrides individual AST node renderers. Use it in place of the removed `mapper` option for type-level customizations. See [Override a printer](/docs/5.x/guide/going-further/printers) for the handler context and how printers compose with macros.
 
 ```typescript twoslash [v5]
 import ts from 'typescript'
@@ -806,6 +806,8 @@ The output changes specific to each generator live on its [per-extension page](#
 - [Adapters](/docs/5.x/guide/concepts/adapters): how the OpenAPI input is parsed into the universal AST.
 - [Plugins](/docs/5.x/guide/concepts/plugins): lifecycle, generators, and resolvers.
 - [Parsers](/docs/5.x/guide/concepts/parsers): how AST nodes become source files.
+- [Override a resolver](/docs/5.x/guide/going-further/resolvers): rename symbols and files through the `resolver` option.
+- [Override a printer](/docs/5.x/guide/going-further/printers): change the code a plugin emits for a schema type.
 - [Barrel files](/docs/5.x/guide/going-further/barrel-files): barrel file generation with `@kubb/plugin-barrel`.
 - [Storage](/docs/5.x/guide/concepts/storage): switching between filesystem and in-memory storage.
 - [`@kubb/adapter-oas`](/adapters/adapter-oas/): every option that moved here from the plugins.

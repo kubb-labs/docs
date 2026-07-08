@@ -27,9 +27,6 @@ Start the MCP server over stdio, the transport every major LLM client speaks:
 kubb mcp
 ```
 
-> [!TIP]
-> `@kubb/mcp` ships as a dependency of the `kubb` package, so you need no extra install when you already use `kubb`.
-
 ## Transport
 
 `kubb mcp` runs over stdio. The server reads from standard input and writes to standard output, matching the [Model Context Protocol](https://modelcontextprotocol.io/) transport used by Claude Desktop, Cursor, VS Code, and other editor integrations. The client launches the server as a subprocess, so it needs no flags, port, or host.

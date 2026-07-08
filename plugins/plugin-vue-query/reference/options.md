@@ -476,6 +476,8 @@ Changes how the plugin names generated composables and files. Use it to add a pr
 
 > [!TIP]
 > Use `resolver` for naming and file-location tweaks. To change the AST nodes themselves, such as stripping descriptions, use `macros` instead.
+>
+> See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the plugin default.
 
 The default resolver is `resolverVueQuery`.
 
