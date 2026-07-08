@@ -99,4 +99,4 @@ await renderer.render(
 
 - [Kit API](/docs/5.x/reference/kit) for `defineGenerator`'s `renderer` field and the `ast.factory` alternative to JSX
 - [Creating plugins](/docs/5.x/guide/going-further/creating-plugins) for how a generator wires a renderer into its output
-- [Kit API: rendering](/docs/5.x/reference/kit#jsxrenderer-via-kubb-jsx) for how `jsxRenderer` sits next to `createRenderer`
+- [Kit API: rendering](/docs/5.x/reference/kit/renderers#jsxrenderer-via-kubb-jsx) for how `jsxRenderer` sits next to `createRenderer`

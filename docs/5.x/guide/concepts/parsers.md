@@ -23,4 +23,4 @@ Files reach the parser one at a time. The file processor pulls each emitted file
 
 ## Reference
 
-`defineParser`, the `Parser` interface, the built-in `@kubb/parser-ts`, and a worked custom-parser example live in the [Kit API reference](/docs/5.x/reference/kit#parsers).
+`defineParser`, the `Parser` interface, the built-in `@kubb/parser-ts`, and a worked custom-parser example live in the [Kit API reference](/docs/5.x/reference/kit/parsers).
