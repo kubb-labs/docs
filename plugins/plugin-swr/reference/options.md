@@ -388,6 +388,8 @@ Changes how the plugin names generated files and symbols. Use it to add a prefix
 
 > [!TIP]
 > Use `resolver` for naming and file-location tweaks. For changing the AST nodes themselves (for example stripping descriptions), use `macros` instead.
+>
+> See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the plugin default.
 
 For example, `resolver: { name(name) { return \`swr${this.default.name(name)}\` } }` prefixes every generated hook name with `swr`.
 

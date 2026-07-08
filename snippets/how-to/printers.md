@@ -91,7 +91,7 @@ pluginFaker({
 
 A macro rewrites the node itself, before anything prints. Retype `integer` schemas to `string` with a macro and `plugin-ts`, `plugin-zod`, and `plugin-faker` all follow, because they print the rewritten node. A printer override changes what one plugin emits for a node type. The node stays as it is, and so does the output of every other plugin.
 
-Reach for a printer override when the output cannot be described as another schema node. No schema node prints as `Date`, and none carries an `.openapi(...)` call, so a macro cannot produce either.
+Reach for a printer override when the output cannot be described as another schema node. No schema node prints as `Date`, and none carries an `.openapi(...)` call, so a macro cannot produce either. When the printed code is fine and only its name or file location needs to change, reach for a [resolver](/docs/5.x/guide/going-further/resolvers) instead.
 
 > [!TIP]
 > The two compose. The `macros` option on the same plugin rewrites nodes first, then the printer prints the result, overrides included.
@@ -117,6 +117,16 @@ export const printerDocs = ast.createPrinter<PrinterDocs>((options) => ({
     },
   },
 }))
+```
+
+Call the printer with a schema node to render it. `printerDocs()` returns the printer instance, and `transform` dispatches each node through the handler map, so the nested `id` and `name` properties print through the `integer` and `string` handlers.
+
+```typescript [Result]
+const printer = printerDocs()
+
+printer.transform(stringNode) // 'string'
+printer.transform(integerNode) // 'number'
+printer.transform(objectNode) // '{ id: number, name: string }'
 ```
 
 See the [Kit API reference](/docs/5.x/reference/kit#printers) for the helper and [Parsers concepts](/docs/5.x/guide/concepts/parsers) for how parsers consume printers.

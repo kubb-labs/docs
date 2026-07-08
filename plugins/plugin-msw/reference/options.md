@@ -358,6 +358,8 @@ Changes how the plugin names generated files and symbols. Use it to add a prefix
 
 > [!TIP]
 > Use `resolver` for naming and file-location tweaks. For changing the AST nodes themselves (for example stripping descriptions), use `macros` instead.
+>
+> See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the plugin default.
 
 The default resolver names every handler with a `Handler` suffix and always names the aggregate export `handlers`.
 
