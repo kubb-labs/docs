@@ -342,16 +342,16 @@ export const resolverExample = createResolver<PluginExample>({
 Users override a plugin's resolver through its `resolver` option in `kubb.config.ts`. Pass a plain object with the parts you want to change, and each part merges over the plugin defaults. The option only patches the existing resolver. To build a whole new one, write a custom plugin. Inside every method `this` is the full resolver, so you reach `this.name`, `this.file`, and the plugin's namespaces.
 
 ```typescript twoslash [config-resolver.ts]
-import { pluginFaker, resolverFaker } from '@kubb/plugin-faker'
+import { pluginFaker } from '@kubb/plugin-faker'
 
 pluginFaker({
   resolver: {
     name(name) {
-      return `${resolverFaker.name(name)}Faker`
+      return `${this.default.name(name)}Faker`
     },
     file: {
       baseName({ name, extname }) {
-        return `${resolverFaker.name(name)}Faker${extname}`
+        return `${this.name(name)}${extname}`
       },
     },
   },
