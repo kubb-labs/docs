@@ -29,7 +29,7 @@ import {
 `kubb/kit` is backed by the `@kubb/kit` package, which re-exports from the internal `@kubb/core` and `@kubb/ast` libraries. Treat both as implementation details and always import from `kubb/kit`, never from the internal packages directly.
 
 > [!TIP]
-> The build-time engine (`createKubb`) and `defineConfig` come from the `kubb` package and its `kubb/config` subpath, documented in [Engine and configuration](./engine). `kubb/kit` is the authoring side: the code you write to add a new plugin, generator, resolver, renderer, adapter, or parser.
+> The build-time engine (`createKubb`) and `defineConfig` come from the `kubb` package and its `kubb/config` subpath, documented in [Engine and configuration](./kit/engine). `kubb/kit` is the authoring side: the code you write to add a new plugin, generator, resolver, renderer, adapter, or parser.
 
 ## Big concepts
 
@@ -37,22 +37,22 @@ The seven pieces you reach for when you build something new. Each has its own pa
 
 | Concept                     | Entry point                                  | What it does                                                             |
 | --------------------------- | -------------------------------------------- | ------------------------------------------------------------------------ |
-| [Plugins](./plugins)        | `definePlugin`                               | The main extension point. Owns file naming, the output folder, and the lifecycle hooks. |
-| [Generators](./generators)  | `defineGenerator`                            | Walks the AST and emits files. A plugin registers one or more.           |
-| [Resolvers](./resolvers)    | `createResolver`                             | Decides file names and output paths. Other plugins read them by name.    |
-| [Renderers](./renderers)    | `createRenderer`, `jsxRenderer`              | Turns the elements a generator returns into `FileNode`s.                 |
-| [Adapters](./adapters)      | `createAdapter`                              | Converts an input spec into the universal AST every plugin reads.        |
-| [Parsers](./parsers)        | `defineParser`                               | Turns a `FileNode` into the source string written to disk.               |
-| [Storage](./storage)        | `createStorage`, `fsStorage`, `memoryStorage`| Decides where generated files land.                                      |
+| [Plugins](./kit/plugins)        | `definePlugin`                               | The main extension point. Owns file naming, the output folder, and the lifecycle hooks. |
+| [Generators](./kit/generators)  | `defineGenerator`                            | Walks the AST and emits files. A plugin registers one or more.           |
+| [Resolvers](./kit/resolvers)    | `createResolver`                             | Decides file names and output paths. Other plugins read them by name.    |
+| [Renderers](./kit/renderers)    | `createRenderer`, `jsxRenderer`              | Turns the elements a generator returns into `FileNode`s.                 |
+| [Adapters](./kit/adapters)      | `createAdapter`                              | Converts an input spec into the universal AST every plugin reads.        |
+| [Parsers](./kit/parsers)        | `defineParser`                               | Turns a `FileNode` into the source string written to disk.               |
+| [Storage](./kit/storage)        | `createStorage`, `fsStorage`, `memoryStorage`| Decides where generated files land.                                      |
 
 ## Other parts
 
 | Part                                       | Entry point                | What it does                                                     |
 | ------------------------------------------ | -------------------------- | --------------------------------------------------------------- |
-| [AST and node builders](./ast)             | `ast`                      | The namespace behind `factory` builders, visitors, guards, macros, and printers. |
+| [AST and node builders](./kit/ast)             | `ast`                      | The namespace behind `factory` builders, visitors, guards, macros, and printers. |
 | [Diagnostics](./diagnostics)               | `Diagnostics`              | Builds and narrows the structured errors Kubb collects during a build. |
-| [Engine and configuration](./engine)       | `defineConfig`, `createKubb` | The `kubb`-package surface that runs your plugins.            |
-| [Testing](./testing)                       | `kubb/kit/testing`         | Vitest-backed helpers for testing plugins, generators, and adapters. |
+| [Engine and configuration](./kit/engine)       | `defineConfig`, `createKubb` | The `kubb`-package surface that runs your plugins.            |
+| [Testing](./kit/testing)                       | `kubb/kit/testing`         | Vitest-backed helpers for testing plugins, generators, and adapters. |
 
 ## See also
 
