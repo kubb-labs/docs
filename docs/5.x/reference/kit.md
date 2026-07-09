@@ -495,7 +495,7 @@ A parser turns a `FileNode` into the source string written to disk. This section
 ```typescript twoslash [parserText.ts]
 import { defineParser } from 'kubb/kit'
 
-export const parserText = defineParser({
+export const parserText = defineParser(() => ({
   name: 'parser-text',
   extNames: ['.txt'],
   parse(file) {
@@ -507,7 +507,7 @@ export const parserText = defineParser({
   print(...nodes) {
     return nodes.map(String).join('\n')
   },
-})
+}))
 ```
 
 Wire it into your config:
@@ -557,12 +557,12 @@ Parsers share the layout of [plugins](/docs/5.x/guide/concepts/plugins) and [ada
 | Parser runtime name | The output language or format (lowercase)        | `'typescript'`, `'markdown'`     |
 | Factory export      | `parser<Name>` (camelCase)                       | `parserTs`, `parserMd`           |
 
-Parsers export a plain [`Parser`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineParser.ts#L7) object, not a factory function. Pass them directly to `parsers:` in `defineConfig`:
+Like plugins, parsers are factory functions. `defineParser` wraps a factory that receives the caller's options and returns a [`Parser`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineParser.ts#L7). Call it in `parsers:` on `defineConfig`:
 
 ```typescript twoslash [naming.ts]
 import { defineParser } from 'kubb/kit'
 
-export const parserCustom = defineParser({
+export const parserCustom = defineParser(() => ({
   name: 'custom',
   extNames: ['.custom'],
   parse(file) {
@@ -571,7 +571,7 @@ export const parserCustom = defineParser({
   print(...nodes) {
     return nodes.map(String).join('\n')
   },
-})
+}))
 ```
 
 > [!TIP]
@@ -626,12 +626,12 @@ export default defineConfig({
 
 ### Creating a custom parser
 
-`defineParser` is an identity wrapper that infers the parser type. It returns the object you pass in unchanged, with no per-build options:
+`defineParser` wraps a factory that returns the parser, so a custom parser can take options the same way a plugin does. Call the factory with no options to accept the defaults:
 
 ```typescript twoslash [parserPython.ts]
 import { defineParser } from 'kubb/kit'
 
-export const parserPython = defineParser({
+export const parserPython = defineParser(() => ({
   name: 'parser-python',
   extNames: ['.py', '.pyi'],
   parse(file) {
@@ -658,7 +658,7 @@ export const parserPython = defineParser({
   print(...nodes) {
     return nodes.map(String).join('\n')
   },
-})
+}))
 ```
 
 Register it alongside the built-ins:

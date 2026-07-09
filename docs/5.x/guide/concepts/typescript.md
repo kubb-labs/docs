@@ -131,7 +131,7 @@ import { ast, defineParser } from 'kubb/kit'
 
 type Meta = { language: 'ts' | 'tsx' }
 
-export const parserTyped = defineParser({
+export const parserTyped = defineParser(() => ({
   name: 'parser-typed',
   extNames: ['.ts'],
   parse(file: ast.FileNode<Meta>) {
@@ -141,7 +141,7 @@ export const parserTyped = defineParser({
   print() {
     return ''
   },
-})
+}))
 ```
 
 ## How the AST narrows
