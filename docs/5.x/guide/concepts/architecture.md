@@ -165,7 +165,7 @@ import { parserMd } from '@kubb/parser-md'
 export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen' },
-  parsers: [parserTs, parserTsx, parserMd],
+  parsers: [parserTs(), parserTsx(), parserMd()],
 })
 ```
 
