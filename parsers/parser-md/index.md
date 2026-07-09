@@ -100,7 +100,7 @@ import { adapterOas } from '@kubb/adapter-oas'
 import { parserMd } from '@kubb/parser-md'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   adapter: adapterOas(),
   parsers: [parserMd()],
@@ -115,7 +115,7 @@ import { parserMd } from '@kubb/parser-md'
 import { parserTs, parserTsx } from '@kubb/parser-ts'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   adapter: adapterOas(),
   parsers: [parserTs(), parserTsx(), parserMd()],

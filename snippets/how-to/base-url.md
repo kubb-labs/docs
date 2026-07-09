@@ -30,9 +30,7 @@ import { adapterOas } from '@kubb/adapter-oas'
 import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({
-  input: {
-    path: './petStore.yaml',
-  },
+  input: './petStore.yaml',
   output: {
     path: './src/gen',
   },
@@ -57,9 +55,7 @@ import { pluginAxios } from '@kubb/plugin-axios'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
 export default defineConfig({
-  input: {
-    path: './petStore.yaml',
-  },
+  input: './petStore.yaml',
   output: {
     path: './src/gen',
   },

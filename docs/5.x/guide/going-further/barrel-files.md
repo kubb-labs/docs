@@ -19,7 +19,7 @@ Set `output.barrel` on `defineConfig` to control the root `index.ts` and the def
 import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', barrel: { type: 'named' } },
   plugins: [],
 })
@@ -32,7 +32,7 @@ import { defineConfig } from 'kubb/config'
 import { pluginBarrel } from '@kubb/plugin-barrel'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', barrel: { type: 'named' } },
   plugins: [pluginBarrel()],
 })
@@ -71,7 +71,7 @@ import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   plugins: [pluginTs({ output: { path: 'api', barrel: { type: 'all', nested: true } } })],
 })
@@ -85,7 +85,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   plugins: [pluginTs(), pluginZod({ output: { path: 'zod', barrel: false } })],
 })
@@ -99,7 +99,7 @@ Set `barrel: false` on `defineConfig` to skip the root barrel. Every plugin with
 import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', barrel: false },
   plugins: [],
 })

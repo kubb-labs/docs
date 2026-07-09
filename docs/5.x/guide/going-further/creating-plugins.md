@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Create your first plugin
 
-A [plugin](/docs/5.x/guide/concepts/plugins) teaches Kubb to generate something new. It owns its output folder and file naming, runs [generators](/docs/5.x/guide/concepts/plugins#generators) that walk the [AST](/docs/5.x/guide/concepts/ast), and hooks into the build lifecycle. Everything this guide uses comes from [`kubb/kit`](/docs/5.x/reference/kit) and its `kubb/kit/testing` subpath, so installing `kubb` is the only setup.
+A [plugin](/docs/5.x/guide/concepts/plugins) teaches Kubb to generate something new. It owns its output folder and file naming, runs [generators](/docs/5.x/guide/concepts/generators) that walk the [AST](/docs/5.x/guide/concepts/ast), and hooks into the build lifecycle. Everything this guide uses comes from [`kubb/kit`](/docs/5.x/reference/kit) and its `kubb/kit/testing` subpath, so installing `kubb` is the only setup.
 
 This guide builds a `kubb-plugin-example` package from scratch and publishes it to npm.
 
@@ -67,7 +67,7 @@ import { defineConfig } from 'kubb/config'
 import { pluginHello } from './my-plugin.ts'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   plugins: [pluginHello()],
 })
@@ -312,7 +312,7 @@ const operationGenerator = defineGenerator({
 
 ## Resolvers
 
-A [resolver](/docs/5.x/reference/kit#createresolver) decides the file names and output paths for a plugin's files. Other plugins call `ctx.getResolver('plugin-example')` to reuse those names without hard-coding paths.
+A [resolver](/docs/5.x/reference/kit/resolvers) decides the file names and output paths for a plugin's files. Other plugins call `ctx.getResolver('plugin-example')` to reuse those names without hard-coding paths.
 
 ### src/resolvers/resolverExample.ts
 
@@ -384,7 +384,7 @@ pluginReactQuery({
 
 | Method / Property | Purpose                                                                           |
 | ----------------- | --------------------------------------------------------------------------------- |
-| `addGenerator`    | Register one or more [`Generator`](/docs/5.x/guide/concepts/plugins#generators)s for the AST walk. Pass them as separate arguments, or spread an existing list. |
+| `addGenerator`    | Register one or more [`Generator`](/docs/5.x/guide/concepts/generators)s for the AST walk. Pass them as separate arguments, or spread an existing list. |
 | `setResolver`     | Set or override the resolver (file naming and paths).                             |
 | `addMacro`        | Add a [macro](/docs/5.x/guide/going-further/macros) that rewrites AST nodes before generators. |
 | `setMacros`       | Replace this plugin's macros with a new list.                                     |
@@ -514,7 +514,7 @@ const pluginExample = definePlugin(() => ({
 describe('pluginExample', () => {
   it('emits one file per operation', async () => {
     const kubb = createKubb({
-      input: { path: './test/fixtures/petStore.yaml' },
+      input: './test/fixtures/petStore.yaml',
       output: { path: './dist/test' },
       adapter: adapterOas(),
       parsers: [parserTs()],
@@ -537,7 +537,7 @@ import { definePlugin } from 'kubb/kit'
 import { adapterOas } from '@kubb/adapter-oas'
 
 const kubb = createKubb({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './gen' },
   adapter: adapterOas(),
   plugins: [definePlugin(() => ({ name: 'plugin-example', hooks: {} }))()],

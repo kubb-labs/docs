@@ -163,6 +163,13 @@ generators as an option. To add custom output, build your own plugin.
 - Leave `plugin-msw`'s `parser` (`'data' | 'faker'`) unchanged. It is a
   different option and is not renamed.
 
+## 17. Merge input.path and input.data into input
+Replace the `input` object with a single value:
+  - input: { path: './petstore.yaml' } → input: './petstore.yaml'
+  - input: { data: spec }              → input: spec
+The value is a file path, a URL, an inline spec (JSON/YAML string), or a
+parsed object, and Kubb detects which one it is.
+
 Now migrate the following kubb.config.ts:
 ```
 
@@ -276,7 +283,7 @@ Two v4 support packages are gone. `@kubb/oas`, the OpenAPI parsing and schema-he
 
 ### Import source
 
-Import [`defineConfig`](/docs/5.x/reference/kit#defineconfig) from the top-level `kubb` package. That package wires up the OpenAPI [adapter](/docs/5.x/guide/concepts/adapters), the TypeScript [parsers](/docs/5.x/guide/concepts/parsers), and the barrel [plugin](/plugins/plugin-barrel/) for you.
+Import [`defineConfig`](/docs/5.x/reference/kit/engine#defineconfig) from the top-level `kubb` package. That package wires up the OpenAPI [adapter](/docs/5.x/guide/concepts/adapters), the TypeScript [parsers](/docs/5.x/guide/concepts/parsers), and the barrel [plugin](/plugins/plugin-barrel/) for you.
 
 ::: code-group
 
@@ -289,6 +296,23 @@ import { defineConfig } from 'kubb/config'
 ```
 
 :::
+
+### `input.path` and `input.data` → `input`
+
+The two-shape `input` object collapses into a single value. Give `input` a file path, a URL, an inline spec, or a parsed object, and Kubb works out which one it is.
+
+| v4 (old)                        | v5 (new)              |
+| ------------------------------- | --------------------- |
+| `input: { path: './api.yaml' }` | `input: './api.yaml'` |
+| `input: { data: spec }`         | `input: spec`         |
+
+```diff [kubb.config.ts]
+export default defineConfig({
+-  input: { path: './petstore.yaml' },
++  input: './petstore.yaml',
+  output: { path: './src/gen' },
+})
+```
 
 ### Layered architecture
 
@@ -312,7 +336,7 @@ import { pluginOas } from '@kubb/plugin-oas'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen' },
   plugins: [
     pluginOas({
@@ -332,7 +356,7 @@ import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen' },
   adapter: adapterOas({
     validate: true,
@@ -374,7 +398,7 @@ The string `barrelType` option becomes an object `barrel` option with a `type` f
 import { defineConfig } from '@kubb/core'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen', barrelType: 'named' },
 })
 ```
@@ -383,7 +407,7 @@ export default defineConfig({
 import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen', barrel: { type: 'named' } },
 })
 ```
@@ -397,7 +421,7 @@ import { defineConfig } from '@kubb/core'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen', barrelType: 'propagate' },
   plugins: [pluginTs()],
 })
@@ -408,7 +432,7 @@ import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen', barrel: { type: 'named', nested: true } },
   plugins: [pluginTs()],
 })
@@ -436,7 +460,7 @@ import { defineConfig } from '@kubb/core'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen' },
   plugins: [pluginTs({ output: { path: 'models.ts' } })],
 })
@@ -447,7 +471,7 @@ import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen' },
   plugins: [pluginTs({ output: { path: 'models.ts', mode: 'file' } })],
 })
@@ -474,7 +498,7 @@ import { defineConfig } from 'kubb/config'
 import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen' },
   plugins: [
     pluginAxios({
@@ -516,7 +540,7 @@ To keep certain files from being written, supply a custom [storage](/docs/5.x/gu
 +const protectedPaths = ['src/gen/.kubb/client.ts']
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
 -  output: { path: './src/gen', override: false },
 +  output: { path: './src/gen' },
 +  storage: {
@@ -536,7 +560,7 @@ These changes apply to every plugin that used `transformers` in v4.
 
 ### `transformers.name` → `resolver`
 
-A typed [resolver](/docs/5.x/guide/concepts/plugins#resolvers) replaces the single `transformers.name(name, type)` callback. Every plugin exposes a top-level `name(name)` method that sets identifier casing, so `resolver: { name(name) { … } }` is the shape for [`@kubb/plugin-ts`](/plugins/plugin-ts/), [`@kubb/plugin-zod`](/plugins/plugin-zod/), [`@kubb/plugin-axios`](/plugins/plugin-axios/), [`@kubb/plugin-fetch`](/plugins/plugin-fetch/), [`@kubb/plugin-react-query`](/plugins/plugin-react-query/), [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query/), [`@kubb/plugin-msw`](/plugins/plugin-msw/), [`@kubb/plugin-faker`](/plugins/plugin-faker/), [`@kubb/plugin-cypress`](/plugins/plugin-cypress/), and [`@kubb/plugin-mcp`](/plugins/plugin-mcp/). Plugins that emit more than one symbol per operation add namespaced methods on top, such as `response.status` or `query.name`, documented on each plugin's reference page.
+A typed [resolver](/docs/5.x/guide/concepts/resolvers) replaces the single `transformers.name(name, type)` callback. Every plugin exposes a top-level `name(name)` method that sets identifier casing, so `resolver: { name(name) { … } }` is the shape for [`@kubb/plugin-ts`](/plugins/plugin-ts/), [`@kubb/plugin-zod`](/plugins/plugin-zod/), [`@kubb/plugin-axios`](/plugins/plugin-axios/), [`@kubb/plugin-fetch`](/plugins/plugin-fetch/), [`@kubb/plugin-react-query`](/plugins/plugin-react-query/), [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query/), [`@kubb/plugin-msw`](/plugins/plugin-msw/), [`@kubb/plugin-faker`](/plugins/plugin-faker/), [`@kubb/plugin-cypress`](/plugins/plugin-cypress/), and [`@kubb/plugin-mcp`](/plugins/plugin-mcp/). Plugins that emit more than one symbol per operation add namespaced methods on top, such as `response.status` or `query.name`, documented on each plugin's reference page.
 
 Inside a resolver method, `this` is bound to the full resolver, so `this.default.name(name)` falls back to the built-in casing. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the full guide, including how to rename or relocate the generated files through `file.baseName` and `file.path`.
 
@@ -691,7 +715,7 @@ import { pluginReactQuery } from '@kubb/plugin-react-query'
 import { pluginFaker } from '@kubb/plugin-faker'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: {
     path: './src/gen',
     format: 'prettier',
@@ -749,7 +773,7 @@ import { pluginReactQuery } from '@kubb/plugin-react-query'
 import { pluginFaker } from '@kubb/plugin-faker'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: {
     path: './src/gen',
     format: 'prettier',
