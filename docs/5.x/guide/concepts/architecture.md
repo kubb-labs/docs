@@ -26,14 +26,14 @@ flowchart LR
 import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   plugins: [],
 })
 ```
 
 > [!NOTE]
-> Reach for [`createKubb`](/docs/5.x/reference/kit#createkubb) from the `kubb` package only when you need a programmatic build or custom tooling.
+> Reach for [`createKubb`](/docs/5.x/reference/kit/engine#createkubb) from the `kubb` package only when you need a programmatic build or custom tooling.
 
 ## [Adapter](/docs/5.x/guide/concepts/adapters)
 
@@ -54,7 +54,7 @@ import { defineConfig } from 'kubb/config'
 import { adapterOas } from '@kubb/adapter-oas'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   adapter: adapterOas({ validate: true, dateType: 'date' }),
 })
@@ -103,7 +103,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 import { ast } from 'kubb/kit'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   plugins: [pluginTs({ macros: [ast.macroSimplifyUnion] })],
 })
@@ -130,7 +130,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   plugins: [pluginTs(), pluginAxios()],
 })
@@ -163,9 +163,9 @@ import { parserTs, parserTsx } from '@kubb/parser-ts'
 import { parserMd } from '@kubb/parser-md'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
-  parsers: [parserTs, parserTsx, parserMd],
+  parsers: [parserTs(), parserTsx(), parserMd()],
 })
 ```
 
@@ -186,7 +186,7 @@ import { defineConfig } from 'kubb/config'
 import { memoryStorage } from 'kubb/kit'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   storage: memoryStorage(),
 })

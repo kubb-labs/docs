@@ -14,7 +14,7 @@ import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
   name: 'petStore',
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
 })
 ```
@@ -33,7 +33,7 @@ import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
   name: 'petStore',
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
 })
 ```
@@ -47,7 +47,7 @@ import { defineConfig } from 'kubb/config'
 
 export default defineConfig(({ watch, logLevel }) => ({
   name: 'petStore',
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', clean: !watch },
 }))
 ```
@@ -56,7 +56,7 @@ The context carries five parameters:
 
 |             | Type | Description |
 | ----------: | :--- | :---------- |
-|     `input` | `string` | Positional input from `kubb generate <input>`. Overrides `config.input.path` when set. |
+|     `input` | `string` | Positional input from `kubb generate <input>`. Overrides `config.input` when set. |
 |     `watch` | `boolean` | `true` in watch mode. |
 |  `logLevel` | `'silent' \| 'info' \| 'verbose'` | Current log level. |
 |    `config` | `string` | Path to the config file in use. |
@@ -73,13 +73,13 @@ import { pluginTs } from '@kubb/plugin-ts'
 export default defineConfig([
   {
     name: 'petStore',
-    input: { path: './petStore.yaml' },
+    input: './petStore.yaml',
     output: { path: './src/gen/petStore' },
     plugins: [pluginTs()],
   },
   {
     name: 'stripe',
-    input: { path: './stripe.yaml' },
+    input: './stripe.yaml',
     output: { path: './src/gen/stripe' },
     plugins: [pluginTs()],
   },
@@ -97,13 +97,13 @@ import { pluginTs } from '@kubb/plugin-ts'
 export default defineConfig(({ watch }) => [
   {
     name: 'petStore',
-    input: { path: './petStore.yaml' },
+    input: './petStore.yaml',
     output: { path: './src/gen/petStore', clean: !watch },
     plugins: [pluginTs()],
   },
   {
     name: 'stripe',
-    input: { path: './stripe.yaml' },
+    input: './stripe.yaml',
     output: { path: './src/gen/stripe', clean: !watch },
     plugins: [pluginTs()],
   },
@@ -123,28 +123,24 @@ A name for this config. The CLI prints it as `Generating <name>...`.
 
 ### `input`
 
-Where Kubb reads your spec. Set either `path` or `data`, never both. Required when an adapter is configured. Omit it in plugin-only mode, when there is no `adapter`.
+Where Kubb reads your spec. Pass a local file path, a URL, inline OpenAPI content as a JSON or YAML string, or an already-parsed object. Kubb detects which one you gave it. Required when an adapter is configured. Omit it in plugin-only mode, when there is no `adapter`.
 
-#### `input.path`
+|           |                                      |
+| --------: | :----------------------------------- |
+|     Type: | `string \| Record<string, unknown>`  |
+| Required: | `false`                              |
 
-Local path or URL to your OpenAPI document.
+A string that starts with `{` or `[`, spans multiple lines, or opens with a YAML `openapi:` or `swagger:` key is read as inline content. Anything else is a file path or a URL, and a relative path resolves against the config file.
 
-|           |          |
-| --------: | :------- |
-|     Type: | `string` |
-| Required: | `true`   |
+```typescript twoslash [kubb.config.ts]
+import { defineConfig } from 'kubb/config'
 
-#### `input.data`
-
-OpenAPI spec held in memory, as a string or a parsed object. Use it for programmatic builds.
-
-|           |                     |
-| --------: | :------------------ |
-|     Type: | `string \| unknown` |
-| Required: | `true`              |
-
-> [!NOTE]
-> When `input` is set, exactly one of `input.path` or `input.data` must be present. `input` itself is optional in plugin-only mode.
+export default defineConfig({
+  // a path, a URL, an inline JSON/YAML string, or a parsed object
+  input: './petStore.yaml',
+  output: { path: './src/gen' },
+})
+```
 
 ### `output`
 
@@ -177,7 +173,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen' },
   plugins: [
     pluginTs({ output: { path: 'types.ts', mode: 'file' } }),
@@ -241,26 +237,13 @@ Shell commands to run after the generated files are formatted and linted, such a
 import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: {
     path: './src/gen',
     postGenerate: [{ name: 'types', command: 'npm run typecheck' }, 'biome check --write ./src/gen'],
   },
 })
 ```
-
-#### `output.extension`
-
-Rewrite the file extensions emitted in `import` and `export` statements. Keys are the source extension, values are the output. An empty string drops the extension.
-
-|           |                                                |
-| --------: | :--------------------------------------------- |
-|     Type: | `Record<FileNode['extname'], FileNode['extname'] \| ''>` |
-| Required: | `false`                                        |
-|  Default: | `{ '.ts': '.ts' }`                             |
-
-> [!TIP]
-> Use `{ '.ts': '.js' }` for ESM, when the consumer transpiles to JavaScript.
 
 #### `output.barrel`
 
@@ -368,7 +351,7 @@ import { defineConfig } from 'kubb/config'
 import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   plugins: [
     pluginAxios({
@@ -408,7 +391,7 @@ import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   plugins: [
     pluginTs({
@@ -439,7 +422,7 @@ import { defineConfig } from 'kubb/config'
 import { adapterOas } from '@kubb/adapter-oas'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   adapter: adapterOas({ validate: true }),
 })
@@ -487,7 +470,7 @@ See the [Parser concept](/docs/5.x/guide/concepts/parsers) and [`@kubb/parser-ts
 | --------: | :--------------------------------------------- |
 |     Type: | `Array<Parser>`                                |
 | Required: | `false`                                        |
-|  Default: | `[parserTs, parserTsx, parserMd]` (included with `kubb`) |
+|  Default: | `[parserTs(), parserTsx(), parserMd()]` (included with `kubb`) |
 
 Import parsers explicitly to override the default set:
 
@@ -496,9 +479,9 @@ import { defineConfig } from 'kubb/config'
 import { parserTs, parserTsx } from '@kubb/parser-ts'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
-  parsers: [parserTs, parserTsx],
+  parsers: [parserTs(), parserTsx()],
 })
 ```
 
@@ -523,7 +506,7 @@ import { defineConfig } from 'kubb/config'
 import { memoryStorage } from 'kubb/kit'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   storage: memoryStorage(),
 })

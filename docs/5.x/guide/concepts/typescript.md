@@ -20,7 +20,7 @@ import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [
     pluginTs({
@@ -131,7 +131,7 @@ import { ast, defineParser } from 'kubb/kit'
 
 type Meta = { language: 'ts' | 'tsx' }
 
-export const parserTyped = defineParser({
+export const parserTyped = defineParser(() => ({
   name: 'parser-typed',
   extNames: ['.ts'],
   parse(file: ast.FileNode<Meta>) {
@@ -141,7 +141,7 @@ export const parserTyped = defineParser({
   print() {
     return ''
   },
-})
+}))
 ```
 
 ## How the AST narrows
@@ -166,7 +166,7 @@ if (ast.isHttpOperationNode(op)) {
 }
 ```
 
-These are the only two guards the [AST](/docs/5.x/reference/kit#guards-and-narrowing) exposes. Everything else narrows through the `kind` and `type` discriminants directly.
+These are the only two guards the [AST](/docs/5.x/reference/kit/ast#guards-and-narrowing) exposes. Everything else narrows through the `kind` and `type` discriminants directly.
 
 ## See also
 

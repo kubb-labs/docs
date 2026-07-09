@@ -38,7 +38,7 @@ The severity tints the `[CODE]` tag.
 
 | Code | Severity | Summary |
 | --- | --- | --- |
-| [`KUBB_INPUT_NOT_FOUND`](/docs/5.x/reference/diagnostics/kubb-input-not-found) | error | The `input.path` file could not be read. |
+| [`KUBB_INPUT_NOT_FOUND`](/docs/5.x/reference/diagnostics/kubb-input-not-found) | error | The file set as `input` could not be read. |
 | [`KUBB_INPUT_REQUIRED`](/docs/5.x/reference/diagnostics/kubb-input-required) | error | An adapter was configured without an `input`. |
 
 ## Configuration

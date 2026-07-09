@@ -14,20 +14,20 @@ An adapter is configured but no `input` was provided, so there is nothing to par
 
 ## What happened
 
-The adapter needs a source document. It reads one from `input.path` (a file or URL) or `input.data` (an inline spec). This diagnostic fires when neither is set. It also fires when merging is requested but no documents are passed.
+The adapter needs a source document. It reads one from `input`: a file path, a URL, an inline spec, or a parsed object. This diagnostic fires when `input` is not set. It also fires when merging is requested but no documents are passed.
 
 ## How to fix it
 
-Set `input.path` to a file or URL.
+Set `input` to a file path or URL.
 
 ```typescript [kubb.config.ts]
-input: { path: './petStore.yaml' }
+input: './petStore.yaml'
 ```
 
-Or pass an inline spec with `input.data`.
+Or pass an inline spec or a parsed object.
 
 ```typescript [kubb.config.ts]
-input: { data: openapiObject }
+input: openapiObject
 ```
 
 ## Example
@@ -46,7 +46,7 @@ export default defineConfig({
 
 ```text [Terminal]
 [KUBB_INPUT_REQUIRED] @kubb/adapter-oas: An adapter is configured without an input.
-  fix: Provide `input.path` (a file or URL) or `input.data` (an inline spec) in your Kubb config.
+  fix: Set `input` to a file path, a URL, an inline spec (JSON/YAML string), or a parsed object in your Kubb config.
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-input-required
 ```
 

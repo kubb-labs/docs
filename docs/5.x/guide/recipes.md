@@ -18,7 +18,7 @@ import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [pluginTs()],
 })
@@ -35,7 +35,7 @@ import { pluginAxios } from '@kubb/plugin-axios'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [pluginTs(), pluginAxios(), pluginReactQuery()],
 })
@@ -51,7 +51,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [pluginTs(), pluginVueQuery()],
 })
@@ -69,7 +69,7 @@ import { pluginFaker } from '@kubb/plugin-faker'
 import { pluginMsw } from '@kubb/plugin-msw'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [pluginTs(), pluginZod(), pluginFaker(), pluginMsw()],
 })
@@ -86,7 +86,7 @@ import { pluginZod } from '@kubb/plugin-zod'
 import { pluginFaker } from '@kubb/plugin-faker'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [pluginTs(), pluginZod(), pluginFaker()],
 })
@@ -102,7 +102,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [pluginTs(), pluginAxios()],
 })
@@ -121,13 +121,13 @@ import { pluginTs } from '@kubb/plugin-ts'
 export default defineConfig([
   {
     name: 'petStore',
-    input: { path: './petStore.yaml' },
+    input: './petStore.yaml',
     output: { path: './src/gen/petStore', clean: true },
     plugins: [pluginTs()],
   },
   {
     name: 'userApi',
-    input: { path: './userApi.yaml' },
+    input: './userApi.yaml',
     output: { path: './src/gen/userApi', clean: true },
     plugins: [pluginTs()],
   },
@@ -143,7 +143,7 @@ import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig(({ watch }) => ({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: {
     path: './src/gen',
     clean: !watch,
@@ -163,7 +163,7 @@ import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: {
     path: './src/gen',
     clean: true,
@@ -183,7 +183,7 @@ import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: {
     path: './src/gen',
     postGenerate: ['biome check --write ./src/gen'],
@@ -205,13 +205,13 @@ import { pluginReactQuery } from '@kubb/plugin-react-query'
 export default defineConfig([
   {
     name: 'public-api',
-    input: { path: './specs/public.yaml' },
+    input: './specs/public.yaml',
     output: { path: './packages/public-api/src/gen' },
     plugins: [pluginTs(), pluginAxios(), pluginReactQuery()],
   },
   {
     name: 'admin-api',
-    input: { path: './specs/admin.yaml' },
+    input: './specs/admin.yaml',
     output: { path: './packages/admin-api/src/gen' },
     plugins: [pluginTs(), pluginAxios()],
   },
@@ -231,15 +231,15 @@ const env = process.env['NODE_ENV'] ?? 'development'
 
 const envConfig = {
   development: {
-    input: { path: 'http://localhost:3000/openapi.json' },
+    input: 'http://localhost:3000/openapi.json',
     output: { path: './src/gen', clean: true },
   },
   staging: {
-    input: { path: 'https://staging-api.example.com/openapi.json' },
+    input: 'https://staging-api.example.com/openapi.json',
     output: { path: './src/gen', clean: true },
   },
   production: {
-    input: { path: './specs/production.json' },
+    input: './specs/production.json',
     output: { path: './src/gen', clean: true },
   },
 } as const
@@ -252,7 +252,7 @@ export default defineConfig({
 
 ## Programmatic build
 
-Drive Kubb from a script with [`createKubb`](/docs/5.x/reference/kit#createkubb) from the `kubb` package, paired with `Diagnostics` from `kubb/kit`. This fits monorepo orchestration and custom build pipelines.
+Drive Kubb from a script with [`createKubb`](/docs/5.x/reference/kit/engine#createkubb) from the `kubb` package, paired with `Diagnostics` from `kubb/kit`. This fits monorepo orchestration and custom build pipelines.
 
 Unlike `defineConfig`, `createKubb` adds no defaults. Pass `adapter`, `parsers`, and your plugins yourself.
 
@@ -265,8 +265,8 @@ import { pluginTs } from '@kubb/plugin-ts'
 
 const kubb = createKubb({
   adapter: adapterOas(),
-  parsers: [parserTs, parserTsx],
-  input: { path: './petStore.yaml' },
+  parsers: [parserTs(), parserTsx()],
+  input: './petStore.yaml',
   output: { path: './gen' },
   plugins: [pluginTs()],
 })
@@ -285,7 +285,7 @@ if (Diagnostics.hasError(diagnostics)) {
 console.log(`Generated ${files.length} files`)
 ```
 
-Use `.build()` instead of `.safeBuild()` if you want it to throw on errors rather than return `diagnostics`. See the [Kit API](/docs/5.x/reference/kit#createkubb) for the full `Kubb` instance API.
+Use `.build()` instead of `.safeBuild()` if you want it to throw on errors rather than return `diagnostics`. See the [Kit API](/docs/5.x/reference/kit/engine#createkubb) for the full `Kubb` instance API.
 
 ## CI validation
 
@@ -296,7 +296,7 @@ import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', clean: true, postGenerate: ['kubb validate -i ./petStore.yaml'] },
   plugins: [pluginTs()],
 })

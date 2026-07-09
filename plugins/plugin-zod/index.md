@@ -78,7 +78,7 @@ import { defineConfig } from 'kubb'
 import { pluginZod } from '@kubb/plugin-zod'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   plugins: [
     pluginZod({

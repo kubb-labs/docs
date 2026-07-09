@@ -143,4 +143,4 @@ resolverDocs.schema.name({ name: 'order' }) // 'Order'
 
 The `resolver` plugin option layers a user patch over this built-in resolver with `Resolver.merge`, which re-binds every helper and merges each namespace member by member. That is why overriding `query.keyName` keeps the default `query.name`, and why `this.default` still reaches the untouched built-ins inside an override.
 
-See the [Kit API reference](/docs/5.x/reference/kit#createresolver) for the helper and `Resolver.merge`, and [Plugin concepts](/docs/5.x/guide/concepts/plugins) for how a plugin registers its resolver.
+See the [Kit API reference](/docs/5.x/reference/kit/resolvers#createresolver) for the helper and `Resolver.merge`, and [Plugin concepts](/docs/5.x/guide/concepts/plugins) for how a plugin registers its resolver.

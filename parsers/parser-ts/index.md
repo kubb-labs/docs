@@ -37,14 +37,14 @@ resources:
 > [!TIP]
 > `parserTs` runs by default, so TypeScript output needs no setup. Add it back to a custom `parsers` list when you override the defaults, since a custom list replaces the whole default set.
 
-`@kubb/parser-ts` takes the `FileNode` your plugins stage and prints it as TypeScript source with the official [TypeScript compiler](https://www.typescriptlang.org/). It resolves import paths, writes the import and export statements, prints JSDoc, and rewrites import extensions based on `output.extension`.
+`@kubb/parser-ts` takes the `FileNode` your plugins stage and prints it as TypeScript source with the official [TypeScript compiler](https://www.typescriptlang.org/). It resolves import paths, writes the import and export statements, prints JSDoc, and rewrites import extensions based on the parser's `extension` option.
 
-The package exports two parsers, and Kubb selects one by the file extension a plugin writes:
+The package exports two parser factories, and Kubb selects one by the file extension a plugin writes:
 
-- `parserTs` handles `.ts` and `.js` files.
-- `parserTsx` handles `.tsx` and `.jsx` files. Use it for React projects so JSX in generated components is preserved.
+- `parserTs()` handles `.ts` and `.js` files.
+- `parserTsx()` handles `.tsx` and `.jsx` files. Use it for React projects so JSX in generated components is preserved.
 
-Neither parser takes configuration options. You pick the behavior by choosing which parser goes in the `parsers` array. A custom `parsers` array replaces the default set (`parserTs`, `parserTsx`, `parserMd`), and files whose extension has no registered parser are written by joining their sources verbatim, so list every parser your plugins need.
+Both accept an `extension` option that rewrites the extensions emitted in `import`/`export` statements, for example `parserTs({ extension: { '.ts': '.js' } })` to emit `.js` imports from `.ts` sources for an ESM dual package. You pick the file-type behavior by choosing which parser goes in the `parsers` array. A custom `parsers` array replaces the default set (`parserTs`, `parserTsx`, `parserMd`), and files whose extension has no registered parser are written by joining their sources verbatim, so list every parser your plugins need.
 
 ## Installation
 
@@ -78,10 +78,10 @@ import { adapterOas } from '@kubb/adapter-oas'
 import { parserTs } from '@kubb/parser-ts'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   adapter: adapterOas(),
-  parsers: [parserTs],
+  parsers: [parserTs()],
   plugins: [],
 })
 ```
@@ -92,10 +92,10 @@ import { adapterOas } from '@kubb/adapter-oas'
 import { parserTs, parserTsx } from '@kubb/parser-ts'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   adapter: adapterOas(),
-  parsers: [parserTs, parserTsx],
+  parsers: [parserTs(), parserTsx()],
   plugins: [],
 })
 ```
