@@ -67,7 +67,7 @@ const files = renderer.files
 | [`Heading`](#heading) | Markdown | Markdown |
 | [`List`](#list) | Markdown | Markdown |
 | [`Paragraph`](#paragraph) | Markdown | Markdown |
-| [`Jsx`](#jsx) | JSX | Raw JSX |
+| [`Jsx`](#jsx-component) | JSX | Raw JSX |
 
 ### Core
 
@@ -328,7 +328,7 @@ Renders a markdown paragraph. Inline markdown passes through verbatim.
 
 ### JSX
 
-#### `Jsx` {#jsx}
+#### `Jsx` {#jsx-component}
 
 Embeds a raw JSX string in the generated source, including fragments. Use it inside a `Function` to emit a component body. The children must be a plain string.
 

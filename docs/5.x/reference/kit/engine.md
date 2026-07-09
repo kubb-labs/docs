@@ -39,7 +39,7 @@ export default defineConfig(({ watch }) => ({
 | ---------------- | ---------------------------------------- |
 | `root`           | `process.cwd()`                          |
 | `adapter`        | [`adapterOas()`](/docs/5.x/guide/concepts/adapters) |
-| `parsers`        | `[parserTs, parserTsx, parserMd]`        |
+| `parsers`        | `[parserTs(), parserTsx(), parserMd()]`  |
 | `reporters`      | `[cli, json, file]`                      |
 | `plugins`        | `pluginBarrel()` appended when not already present |
 | `output.barrel`  | `{ type: 'named' }`, only when `pluginBarrel` is in `plugins` |
@@ -79,7 +79,7 @@ import { pluginAxios } from '@kubb/plugin-axios'
 
 const kubb = createKubb({
   adapter: adapterOas(),
-  parsers: [parserTs, parserTsx],
+  parsers: [parserTs(), parserTsx()],
   input: './petStore.yaml',
   output: { path: './gen' },
   plugins: [pluginTs(), pluginAxios()],

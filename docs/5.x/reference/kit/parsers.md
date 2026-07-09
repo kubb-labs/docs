@@ -19,7 +19,7 @@ A parser turns a `FileNode` into the source string written to disk. This page do
 ```typescript twoslash [parserText.ts]
 import { defineParser } from 'kubb/kit'
 
-export const parserText = defineParser({
+export const parserText = defineParser(() => ({
   name: 'parser-text',
   extNames: ['.txt'],
   parse(file) {
@@ -31,7 +31,7 @@ export const parserText = defineParser({
   print(...nodes) {
     return nodes.map(String).join('\n')
   },
-})
+}))
 ```
 
 Wire it into your config:
@@ -45,7 +45,7 @@ import { parserText } from './parserText.ts'
 export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen' },
-  parsers: [parserTs, parserTsx, parserText],
+  parsers: [parserTs(), parserTsx(), parserText()],
 })
 ```
 
@@ -57,7 +57,7 @@ Every value returned from `defineParser` matches the `Parser` interface from [`k
 | ---------- | ------------------------------------------------------------------------- | -------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `name`     | `string`                                                                  | Yes      |                                              | Unique parser identifier. Convention is `parser-<id>`.                                                                                               |
 | `extNames` | `Array<FileNode['extname']> \| undefined`                                 | Yes      |                                              | File extensions this parser handles. Set to `undefined` to register a catch-all fallback.                                                            |
-| `parse`    | `(file: FileNode, options?: { extname?: FileNode['extname'] }) => string` | Yes      | By the file processor after all plugins run  | Serializes the file's staged sources into the final output string. Must return synchronously.                                                         |
+| `parse`    | `(file: FileNode) => string`                                             | Yes      | By the file processor after all plugins run  | Serializes the file's staged sources into the final output string. Must return synchronously.                                                         |
 | `print`    | `(...nodes: TNode[]) => string`                                           | Yes      | By plugins, before files are staged          | Renders compiler AST nodes to source text. The node type is parser-specific, for example `ts.Node` for `parserTs`. |
 
 > [!IMPORTANT]
@@ -81,12 +81,12 @@ Parsers share the layout of [plugins](/docs/5.x/guide/concepts/plugins) and [ada
 | Parser runtime name | The output language or format (lowercase)        | `'typescript'`, `'markdown'`     |
 | Factory export      | `parser<Name>` (camelCase)                       | `parserTs`, `parserMd`           |
 
-Parsers export a plain [`Parser`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineParser.ts#L7) object, not a factory function. Pass them directly to `parsers:` in `defineConfig`:
+A parser is a factory function that returns a [`Parser`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineParser.ts#L7) object. Call it when you pass it to `parsers:` in `defineConfig`:
 
 ```typescript twoslash [naming.ts]
 import { defineParser } from 'kubb/kit'
 
-export const parserCustom = defineParser({
+export const parserCustom = defineParser(() => ({
   name: 'custom',
   extNames: ['.custom'],
   parse(file) {
@@ -95,7 +95,7 @@ export const parserCustom = defineParser({
   print(...nodes) {
     return nodes.map(String).join('\n')
   },
-})
+}))
 ```
 
 > [!TIP]
@@ -105,7 +105,7 @@ export const parserCustom = defineParser({
 
 ### `@kubb/parser-ts`
 
-The default parser for TypeScript and JavaScript output. It uses the official TypeScript compiler to resolve import paths, deduplicate declarations, print JSDoc, and rewrite extensions based on `output.extension`. See the [`@kubb/parser-ts` reference](/parsers/parser-ts/) for the full option list.
+The default parser for TypeScript and JavaScript output. It uses the official TypeScript compiler to resolve import paths, deduplicate declarations, print JSDoc, and rewrite extensions based on the parser's `extension` option. See the [`@kubb/parser-ts` reference](/parsers/parser-ts/) for the full option list.
 
 ::: code-group
 
@@ -132,7 +132,7 @@ yarn add -D @kubb/parser-ts@beta
 | `parserTs`  | `.ts`, `.js`       | TypeScript and plain JavaScript output. |
 | `parserTsx` | `.tsx`, `.jsx`     | Same as `parserTs` with JSX support.    |
 
-Both expose `parse(file, options?)` and `print(...nodes: ts.Node[])`. Call `parserTs.print(node)` from a plugin to render a TypeScript compiler node to its source string before staging it on `FileNode.sources`.
+Both expose `parse(file)` and `print(...nodes: ts.Node[])`. Call `parserTs().print(node)` from a plugin to render a TypeScript compiler node to its source string before staging it on `FileNode.sources`.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -141,7 +141,7 @@ import { parserTs, parserTsx } from '@kubb/parser-ts'
 export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen' },
-  parsers: [parserTs, parserTsx],
+  parsers: [parserTs(), parserTsx()],
 })
 ```
 
@@ -150,12 +150,12 @@ export default defineConfig({
 
 ## Creating a custom parser
 
-`defineParser` is an identity wrapper that infers the parser type. It returns the object you pass in unchanged, with no per-build options:
+`defineParser` wraps a factory function and infers the parser type, mirroring `definePlugin`: the factory receives the caller's options, and calling the result without options passes an empty object.
 
 ```typescript twoslash [parserPython.ts]
 import { defineParser } from 'kubb/kit'
 
-export const parserPython = defineParser({
+export const parserPython = defineParser(() => ({
   name: 'parser-python',
   extNames: ['.py', '.pyi'],
   parse(file) {
@@ -182,7 +182,7 @@ export const parserPython = defineParser({
   print(...nodes) {
     return nodes.map(String).join('\n')
   },
-})
+}))
 ```
 
 Register it alongside the built-ins:
@@ -196,7 +196,7 @@ import { parserPython } from './parserPython.ts'
 export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen' },
-  parsers: [parserTs, parserPython],
+  parsers: [parserTs(), parserPython()],
 })
 ```
 

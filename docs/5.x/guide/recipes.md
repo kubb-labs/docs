@@ -265,7 +265,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 
 const kubb = createKubb({
   adapter: adapterOas(),
-  parsers: [parserTs, parserTsx],
+  parsers: [parserTs(), parserTsx()],
   input: './petStore.yaml',
   output: { path: './gen' },
   plugins: [pluginTs()],

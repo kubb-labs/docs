@@ -224,19 +224,6 @@ Linter to run after generation.
 
 `'auto'` detects the first linter it finds ([oxlint](https://oxc.rs) then [Biome](https://biomejs.dev) then [ESLint](https://eslint.org)). A named tool forces that one. `false` skips linting.
 
-#### `output.extension`
-
-Rewrite the file extensions emitted in `import` and `export` statements. Keys are the source extension, values are the output. An empty string drops the extension.
-
-|           |                                                |
-| --------: | :--------------------------------------------- |
-|     Type: | `Record<FileNode['extname'], FileNode['extname'] \| ''>` |
-| Required: | `false`                                        |
-|  Default: | `{ '.ts': '.ts' }`                             |
-
-> [!TIP]
-> Use `{ '.ts': '.js' }` for ESM, when the consumer transpiles to JavaScript.
-
 #### `output.barrel`
 
 Behavior of the root `index.ts` barrel file at `output.path`.
@@ -462,7 +449,7 @@ See the [Parser concept](/docs/5.x/guide/concepts/parsers) and [`@kubb/parser-ts
 | --------: | :--------------------------------------------- |
 |     Type: | `Array<Parser>`                                |
 | Required: | `false`                                        |
-|  Default: | `[parserTs, parserTsx, parserMd]` (included with `kubb`) |
+|  Default: | `[parserTs(), parserTsx(), parserMd()]` (included with `kubb`) |
 
 Import parsers explicitly to override the default set:
 
@@ -473,7 +460,7 @@ import { parserTs, parserTsx } from '@kubb/parser-ts'
 export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen' },
-  parsers: [parserTs, parserTsx],
+  parsers: [parserTs(), parserTsx()],
 })
 ```
 
