@@ -224,6 +224,27 @@ Linter to run after generation.
 
 `'auto'` detects the first linter it finds ([oxlint](https://oxc.rs) then [Biome](https://biomejs.dev) then [ESLint](https://eslint.org)). A named tool forces that one. `false` skips linting.
 
+#### `output.postGenerate`
+
+Shell commands to run after the generated files are formatted and linted, such as a type check or a custom script. Commands run from the `root` directory, in sequence. Pass a command string, or `{ name, command }` to label a step in the CLI output.
+
+|           |                                                       |
+| --------: | :---------------------------------------------------- |
+|     Type: | `Array<string \| { name?: string; command: string }>` |
+| Required: | `false`                                               |
+
+```typescript twoslash [kubb.config.ts]
+import { defineConfig } from 'kubb/config'
+
+export default defineConfig({
+  input: './petStore.yaml',
+  output: {
+    path: './src/gen',
+    postGenerate: [{ name: 'types', command: 'npm run typecheck' }, 'biome check --write ./src/gen'],
+  },
+})
+```
+
 #### `output.barrel`
 
 Behavior of the root `index.ts` barrel file at `output.path`.
@@ -500,31 +521,6 @@ Project root, absolute or relative to the config file location.
 |     Type: | `string`        |
 | Required: | `false`         |
 |  Default: | `process.cwd()` |
-
-### `hooks`
-
-Lifecycle hooks that run after generation finishes.
-
-#### `hooks.done`
-
-Shell command or commands to run when the build finishes, such as a formatter or a test run. Commands run from the `root` directory, in sequence when you pass an array.
-
-|           |                           |
-| --------: | :------------------------ |
-|     Type: | `string \| Array<string>` |
-| Required: | `false`                   |
-
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb/config'
-
-export default defineConfig({
-  input: './petStore.yaml',
-  output: { path: './src/gen' },
-  hooks: {
-    done: ['biome check --write ./src/gen'],
-  },
-})
-```
 
 ### `reporters`
 

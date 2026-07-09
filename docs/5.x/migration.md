@@ -170,6 +170,15 @@ Replace the `input` object with a single value:
 The value is a file path, a URL, an inline spec (JSON/YAML string), or a
 parsed object, and Kubb detects which one it is.
 
+## 18. Rename hooks.done to output.postGenerate
+Remove the top-level `hooks` option and move its `done` commands into
+`output.postGenerate`:
+  - hooks: { done: ['npm run typecheck'] } → output: { ..., postGenerate: ['npm run typecheck'] }
+  - hooks: { done: 'npm run typecheck' }   → output: { ..., postGenerate: ['npm run typecheck'] }
+  - hooks: {}                              → remove entirely
+Each entry may also be `{ name, command }` to label the step in the CLI
+output, but do not add labels during migration unless asked to.
+
 Now migrate the following kubb.config.ts:
 ```
 
@@ -551,6 +560,23 @@ export default defineConfig({
 +    },
 +  },
   plugins: [],
+})
+```
+
+### `hooks.done` → `output.postGenerate`
+
+The top-level `hooks` option is gone. Move its `done` commands into [`output.postGenerate`](/docs/5.x/reference/configuration#output-postgenerate), next to `output.format` and `output.lint`. A single command string becomes a one-item array. Pass `{ name, command }` instead of a plain string to label a step in the CLI output. The diagnostic for a failing command is renamed `KUBB_HOOK_FAILED` → `KUBB_POST_GENERATE_FAILED`.
+
+```diff [kubb.config.ts]
+export default defineConfig({
+  input: './petstore.yaml',
+  output: {
+    path: './src/gen',
++    postGenerate: ['npm run typecheck'],
+  },
+-  hooks: {
+-    done: ['npm run typecheck'],
+-  },
 })
 ```
 

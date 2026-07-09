@@ -79,7 +79,7 @@ becomes a diagnostic and fails the run.
 | --- | --- | --- |
 | [`KUBB_FORMAT_FAILED`](/docs/5.x/reference/diagnostics/kubb-format-failed) | error | The formatter pass over the generated files failed. |
 | [`KUBB_LINT_FAILED`](/docs/5.x/reference/diagnostics/kubb-lint-failed) | error | The linter pass over the generated files failed. |
-| [`KUBB_HOOK_FAILED`](/docs/5.x/reference/diagnostics/kubb-hook-failed) | error | A post-generate `hooks.done` command exited non-zero. |
+| [`KUBB_POST_GENERATE_FAILED`](/docs/5.x/reference/diagnostics/kubb-post-generate-failed) | error | A post-generate `output.postGenerate` command exited non-zero. |
 
 ## Other
 
