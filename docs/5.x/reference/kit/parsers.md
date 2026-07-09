@@ -43,7 +43,7 @@ import { parserTs, parserTsx } from '@kubb/parser-ts'
 import { parserText } from './parserText.ts'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   parsers: [parserTs, parserTsx, parserText],
 })
@@ -139,7 +139,7 @@ import { defineConfig } from 'kubb/config'
 import { parserTs, parserTsx } from '@kubb/parser-ts'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   parsers: [parserTs, parserTsx],
 })
@@ -194,7 +194,7 @@ import { parserTs } from '@kubb/parser-ts'
 import { parserPython } from './parserPython.ts'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   parsers: [parserTs, parserPython],
 })

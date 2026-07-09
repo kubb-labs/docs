@@ -24,7 +24,7 @@ import { pluginZod } from '@kubb/plugin-zod'
 import { pluginMcp } from '@kubb/plugin-mcp'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   plugins: [
     pluginTs(),
@@ -47,7 +47,7 @@ import { pluginFetch } from '@kubb/plugin-fetch'
 import { pluginMcp } from '@kubb/plugin-mcp'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   plugins: [
     pluginTs(),

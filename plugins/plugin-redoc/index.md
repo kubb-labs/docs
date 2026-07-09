@@ -77,7 +77,7 @@ import { adapterOas } from '@kubb/adapter-oas'
 import { pluginRedoc } from '@kubb/plugin-redoc'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   adapter: adapterOas(),
   plugins: [

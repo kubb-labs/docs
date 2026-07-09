@@ -73,7 +73,7 @@ yarn add -D @kubb/plugin-barrel@beta
 import { defineConfig } from 'kubb'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   plugins: [],
 })
@@ -99,7 +99,7 @@ export { User } from './User'
 import { defineConfig } from 'kubb'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', barrel: { type: 'all' } },
   plugins: [],
 })
@@ -127,7 +127,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 
 // nested lives on a plugin's output.barrel, not on the root output.barrel.
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   plugins: [pluginTs({ output: { path: 'api', barrel: { type: 'all', nested: true } } })],
 })
@@ -156,7 +156,7 @@ import { pluginZod } from '@kubb/plugin-zod'
 // No zod/index.ts is created, and zod files
 // are dropped from the root index.ts.
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   plugins: [pluginTs(), pluginZod({ output: { path: 'zod', barrel: false } })],
 })
@@ -168,7 +168,7 @@ import { defineConfig } from 'kubb'
 // No root index.ts. Each plugin still gets
 // its own barrel from its inherited config.
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', barrel: false },
   plugins: [],
 })

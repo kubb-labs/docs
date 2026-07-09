@@ -48,7 +48,7 @@ import { defineConfig } from 'kubb/config'
 import { adapterCustom } from './adapterCustom.ts'
 
 export default defineConfig({
-  input: { path: './my-spec.json' },
+  input: './my-spec.json',
   output: { path: './src/gen' },
   adapter: adapterCustom({ strict: true }),
   plugins: [],
@@ -153,7 +153,7 @@ import { defineConfig } from 'kubb/config'
 import { adapterOas } from '@kubb/adapter-oas'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   adapter: adapterOas({ validate: true, dateType: 'date', server: { index: 0 } }),
 })
@@ -216,7 +216,7 @@ import { defineConfig } from 'kubb/config'
 import { adapterJsonSchema } from './adapterJsonSchema.ts'
 
 export default defineConfig({
-  input: { path: './schema.json' },
+  input: './schema.json',
   output: { path: './src/gen' },
   adapter: adapterJsonSchema({ strict: true }),
   plugins: [],

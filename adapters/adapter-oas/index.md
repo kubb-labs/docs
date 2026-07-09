@@ -35,7 +35,7 @@ resources:
   changelog: https://github.com/kubb-labs/kubb/blob/main/packages/adapter-oas/CHANGELOG.md
 ---
 
-The OpenAPI adapter sits between your spec and every Kubb plugin. It reads the file at `input.path`, validates it, and converts each schema and operation into Kubb's universal AST that downstream plugins consume.
+The OpenAPI adapter sits between your spec and every Kubb plugin. It reads the spec from `input`, whether that is a file, a URL, inline content, or a parsed object, validates it, and converts each schema and operation into Kubb's universal AST that downstream plugins consume.
 
 Configure it once on `defineConfig`. Its choices for date representation, integer width, and server URL apply to every plugin in the build.
 
@@ -73,7 +73,7 @@ import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen' },
   adapter: adapterOas({
     validate: true,

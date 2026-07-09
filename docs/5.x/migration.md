@@ -163,6 +163,13 @@ generators as an option. To add custom output, build your own plugin.
 - Leave `plugin-msw`'s `parser` (`'data' | 'faker'`) unchanged. It is a
   different option and is not renamed.
 
+## 17. Merge input.path and input.data into input
+Replace the `input` object with a single value:
+  - input: { path: './petstore.yaml' } → input: './petstore.yaml'
+  - input: { data: spec }              → input: spec
+The value is a file path, a URL, an inline spec (JSON/YAML string), or a
+parsed object, and Kubb detects which one it is.
+
 Now migrate the following kubb.config.ts:
 ```
 
@@ -290,6 +297,23 @@ import { defineConfig } from 'kubb/config'
 
 :::
 
+### `input.path` and `input.data` → `input`
+
+The two-shape `input` object collapses into a single value. Give `input` a file path, a URL, an inline spec, or a parsed object, and Kubb works out which one it is.
+
+| v4 (old)                        | v5 (new)              |
+| ------------------------------- | --------------------- |
+| `input: { path: './api.yaml' }` | `input: './api.yaml'` |
+| `input: { data: spec }`         | `input: spec`         |
+
+```diff [kubb.config.ts]
+export default defineConfig({
+-  input: { path: './petstore.yaml' },
++  input: './petstore.yaml',
+  output: { path: './src/gen' },
+})
+```
+
 ### Layered architecture
 
 v5 adds three top-level keys that replace behavior each plugin used to carry on its own. When you import from `kubb`, all three defaults apply automatically.
@@ -312,7 +336,7 @@ import { pluginOas } from '@kubb/plugin-oas'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen' },
   plugins: [
     pluginOas({
@@ -332,7 +356,7 @@ import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen' },
   adapter: adapterOas({
     validate: true,
@@ -374,7 +398,7 @@ The string `barrelType` option becomes an object `barrel` option with a `type` f
 import { defineConfig } from '@kubb/core'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen', barrelType: 'named' },
 })
 ```
@@ -383,7 +407,7 @@ export default defineConfig({
 import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen', barrel: { type: 'named' } },
 })
 ```
@@ -397,7 +421,7 @@ import { defineConfig } from '@kubb/core'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen', barrelType: 'propagate' },
   plugins: [pluginTs()],
 })
@@ -408,7 +432,7 @@ import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen', barrel: { type: 'named', nested: true } },
   plugins: [pluginTs()],
 })
@@ -436,7 +460,7 @@ import { defineConfig } from '@kubb/core'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen' },
   plugins: [pluginTs({ output: { path: 'models.ts' } })],
 })
@@ -447,7 +471,7 @@ import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen' },
   plugins: [pluginTs({ output: { path: 'models.ts', mode: 'file' } })],
 })
@@ -474,7 +498,7 @@ import { defineConfig } from 'kubb/config'
 import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen' },
   plugins: [
     pluginAxios({
@@ -516,7 +540,7 @@ To keep certain files from being written, supply a custom [storage](/docs/5.x/gu
 +const protectedPaths = ['src/gen/.kubb/client.ts']
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
 -  output: { path: './src/gen', override: false },
 +  output: { path: './src/gen' },
 +  storage: {
@@ -691,7 +715,7 @@ import { pluginReactQuery } from '@kubb/plugin-react-query'
 import { pluginFaker } from '@kubb/plugin-faker'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: {
     path: './src/gen',
     format: 'prettier',
@@ -749,7 +773,7 @@ import { pluginReactQuery } from '@kubb/plugin-react-query'
 import { pluginFaker } from '@kubb/plugin-faker'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: {
     path: './src/gen',
     format: 'prettier',

@@ -115,7 +115,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
   root: '.',
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [pluginTs()],
 })

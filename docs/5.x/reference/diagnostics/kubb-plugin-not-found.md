@@ -35,7 +35,7 @@ import { pluginReactQuery } from '@kubb/plugin-react-query'
 // @kubb/plugin-ts is missing, but pluginReactQuery needs it for the generated types
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen' },
   plugins: [pluginReactQuery()],
 })
