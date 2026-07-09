@@ -174,9 +174,9 @@ export default defineConfig({
 })
 ```
 
-## Run a hook after generation
+## Run a command after generation
 
-Use [`hooks.done`](/docs/5.x/reference/configuration#hooks) to run shell commands once generation finishes. Pass a single command or an array to run them in sequence. Commands run relative to the project root.
+Use [`output.postGenerate`](/docs/5.x/reference/configuration#output-postgenerate) to run shell commands once the generated files are formatted and linted. Pass a command string, or `{ name, command }` to label a step. Commands run relative to the project root, in sequence.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -184,11 +184,11 @@ import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
-  output: { path: './src/gen' },
-  plugins: [pluginTs()],
-  hooks: {
-    done: ['biome check --write ./src/gen'],
+  output: {
+    path: './src/gen',
+    postGenerate: ['biome check --write ./src/gen'],
   },
+  plugins: [pluginTs()],
 })
 ```
 
@@ -289,7 +289,7 @@ Use `.build()` instead of `.safeBuild()` if you want it to throw on errors rathe
 
 ## CI validation
 
-Validate the OpenAPI spec and fail the build on errors. Use [`hooks.done`](/docs/5.x/reference/configuration#hooks) to run [`kubb validate`](/docs/5.x/reference/commands/validate) after generation.
+Validate the OpenAPI spec and fail the build on errors. Use [`output.postGenerate`](/docs/5.x/reference/configuration#output-postgenerate) to run [`kubb validate`](/docs/5.x/reference/commands/validate) after generation.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -297,10 +297,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
-  output: { path: './src/gen', clean: true },
+  output: { path: './src/gen', clean: true, postGenerate: ['kubb validate -i ./petStore.yaml'] },
   plugins: [pluginTs()],
-  hooks: {
-    done: ['kubb validate -i ./petStore.yaml'],
-  },
 })
 ```

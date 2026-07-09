@@ -10,7 +10,7 @@ outline: [2, 3]
 `kubb`'s bundler entrypoints run code generation inside your build. You skip the separate `kubb generate` step. Pass the same config you write in `kubb.config.ts`, and Kubb runs it as part of your build instead. Each entrypoint is powered by [`unplugin-kubb`](https://www.npmjs.com/package/unplugin-kubb) under the hood, re-exported from `kubb` so you only install one package.
 
 > [!NOTE]
-> `hooks.done` runs formatters and linters after generation. It works with the [CLI](/docs/5.x/reference/commands/) only, not with unplugin. Use `kubb generate` when you need a post-generation callback.
+> `output.postGenerate` runs commands after generation. It works with the [CLI](/docs/5.x/reference/commands/) only, not with unplugin. Use `kubb generate` when you need a post-generation command.
 
 > [!IMPORTANT]
 > Vite-based bundlers ([Vite](./vite), [Nuxt](./nuxt), [Astro](./astro)) generate during a build only. They skip generation on dev server startup. Run [`kubb generate`](/docs/5.x/reference/commands/) before you start the dev server.
