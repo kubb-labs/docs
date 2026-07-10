@@ -11,7 +11,7 @@ Kubb is a meta framework for code generation. It runs a plugin-based pipeline on
 
 The default adapter reads [OpenAPI](https://www.openapis.org/) 2.0, 3.0, and 3.1. From there Kubb generates TypeScript types, React Query hooks, Zod validators, MSW mocks, or a custom output. You stop hand-maintaining generated code. The output is deterministic. The same spec always produces the same result.
 
-Follow one schema through that pipeline. The `Pet` schema enters as YAML, becomes an AST node, turns into a file node, and lands on disk as TypeScript:
+Watch that pipeline drain a spec like a work queue. Every schema and operation is its own unit of work: the adapter turns each one into an AST node, plugins turn the nodes into file nodes, and each lands on disk as its own file:
 
 <SpecJourney />
 
