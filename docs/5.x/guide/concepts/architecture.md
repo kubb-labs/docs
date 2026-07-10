@@ -5,6 +5,35 @@ description: Learn how Kubb generates code. Adapter, AST, plugins, renderer, par
 outline: [2, 3]
 ---
 
+<script setup lang="ts">
+const adapterNodes = [
+  { label: 'Input spec', sub: 'OpenAPI 2/3', color: '#10b981' },
+  { label: 'adapter.parse(source)', color: '#14b8a6' },
+  { label: 'InputNode', sub: 'schemas + operations', color: '#6366f1' },
+]
+
+const macroNodes = [
+  { label: 'InputNode', color: '#6366f1' },
+  { label: 'applyMacros(node, [...])', color: '#a855f7' },
+  { label: 'InputNode', sub: 'transformed', color: '#6366f1' },
+]
+
+const pluginNodes = [
+  { label: 'InputNode', color: '#6366f1' },
+  { label: 'Plugin', sub: 'gen.schema() / gen.operation()', color: '#f58517' },
+  { label: 'Renderer', sub: '@kubb/renderer-jsx', via: 'returns JSX', color: '#8b5cf6' },
+  { label: 'FileNode[]', sub: 'or returned directly', color: '#3178c6' },
+]
+
+const parserNodes = [
+  { label: 'FileNode[]', color: '#3178c6' },
+  { label: 'parser.parse(file)', sub: 'by file extension', color: '#8b5cf6' },
+  { label: 'source string', color: '#14b8a6' },
+  { label: 'storage.setItem()', color: '#f58517' },
+  { label: 'disk / memory', color: '#10b981' },
+]
+</script>
+
 # Architecture
 
 Kubb turns API specifications into code through a layered pipeline. The [adapter](/docs/5.x/guide/concepts/adapters) parses the spec into a universal [AST](/docs/5.x/guide/concepts/ast). [Macros](/docs/5.x/guide/going-further/macros) rewrite AST nodes before a plugin reads them. [Plugins](/plugins) walk the AST and emit `FileNode`s. [Parsers](/docs/5.x/guide/concepts/parsers) convert each `FileNode` into source code. [Storage](/docs/5.x/guide/concepts/storage) writes the result to disk.
@@ -34,11 +63,7 @@ export default defineConfig({
 
 ## [Adapter](/docs/5.x/guide/concepts/adapters)
 
-```mermaid
-flowchart LR
-    Input["Input spec\nOpenAPI 2/3"] --> Parse["adapter.parse(source)"]
-    Parse --> InputNode["InputNode\nschemas + operations"]
-```
+<FlowDiagram :nodes="adapterNodes" />
 
 An adapter converts an input specification into the universal [AST](/docs/5.x/guide/concepts/ast). `adapter.parse(source)` returns an `InputNode`, and `adapter.getImports(node, resolve)` tracks cross-references so plugins emit correct import paths.
 
@@ -83,11 +108,7 @@ The [AST layer](/docs/5.x/guide/concepts/ast) ships two visitor patterns:
 
 ## [Macros](/docs/5.x/guide/going-further/macros)
 
-```mermaid
-flowchart LR
-    InputNode["InputNode"] --> Macros["applyMacros(node, [...])"]
-    Macros --> Transformed["InputNode\ntransformed"]
-```
+<FlowDiagram :nodes="macroNodes" />
 
 Macros are the second layer of the [AST](/docs/5.x/guide/concepts/ast). They are named, composable transforms that rewrite schema and operation nodes before a plugin's generators print code. Use them to rename symbols, retype fields, or normalize shapes without forking an adapter or a generator. Because they run on the shared AST, the same macro works across every adapter and output target.
 
@@ -110,13 +131,7 @@ See [Macros](/docs/5.x/guide/going-further/macros) for writing macros, composing
 
 ## Plugins
 
-```mermaid
-flowchart LR
-    InputNode["InputNode"] --> Plugin["Plugin\ngen.schema() / gen.operation()"]
-    Plugin -->|"returns JSX"| Renderer["Renderer\n@kubb/renderer-jsx"]
-    Plugin -->|"returns FileNode[]"| Files["FileNode[]"]
-    Renderer --> Files
-```
+<FlowDiagram :nodes="pluginNodes" />
 
 Plugins walk the [AST](/docs/5.x/guide/concepts/ast) and emit `FileNode`s. They run in array order, so earlier plugins produce types that later plugins can import.
 
@@ -144,13 +159,7 @@ Plugins can use [`kubb/jsx`](/docs/5.x/reference/jsx), backed by `@kubb/renderer
 
 ## [Parsers](/docs/5.x/guide/concepts/parsers)
 
-```mermaid
-flowchart LR
-    Files["FileNode[]"] --> Parser["parser.parse(file)\nby file extension"]
-    Parser --> Source["source string"]
-    Source --> Storage["storage.setItem(path, source)"]
-    Storage --> Out[("disk / memory")]
-```
+<FlowDiagram :nodes="parserNodes" />
 
 A parser converts a `FileNode` into a source string. Each parser declares which file extensions it handles, and Kubb dispatches every emitted file to the first matching parser.
 
