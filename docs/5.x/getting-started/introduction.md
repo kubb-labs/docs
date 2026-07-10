@@ -15,14 +15,14 @@ Watch that pipeline drain a spec like a work queue. Every schema and operation i
 
 ::: details Expand kubb.config.ts
 
-```typescript [kubb.config.ts]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'
 
 export default defineConfig({
   input: './petStore.yaml',
-  output: { path: './src/gen', clean: true },
+  output: { path: './src/gen' },
   plugins: [pluginTs(), pluginZod()],
 })
 ```
