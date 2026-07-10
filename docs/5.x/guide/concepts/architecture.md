@@ -21,7 +21,7 @@ const macroNodes = [
 const pluginNodes = [
   { label: 'InputNode', color: '#6366f1', icon: 'tree', caption: 'Each plugin walks the same AST, in array order.' },
   { label: 'Plugin', sub: 'gen.schema() / gen.operation()', color: '#f58517', icon: 'plugin', caption: 'It reads schemas and operations to decide what to emit.' },
-  { label: 'Renderer', sub: '@kubb/renderer-jsx', via: 'returns JSX', color: '#8b5cf6', icon: 'code', caption: 'kubb/jsx describes files as components, or a plugin builds FileNodes directly.' },
+  { label: 'Renderer', sub: '@kubb/renderer-jsx', color: '#8b5cf6', icon: 'code', caption: 'kubb/jsx describes files as components, or a plugin builds FileNodes directly.' },
   { label: 'FileNode[]', sub: 'or returned directly', color: '#3178c6', icon: 'file', caption: 'Either way, the plugin returns FileNodes.' },
 ]
 
