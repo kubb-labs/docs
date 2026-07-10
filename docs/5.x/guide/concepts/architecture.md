@@ -7,30 +7,30 @@ outline: [2, 3]
 
 <script setup lang="ts">
 const adapterNodes = [
-  { label: 'Input spec', sub: 'OpenAPI 2/3', color: '#10b981' },
-  { label: 'adapter.parse(source)', color: '#14b8a6' },
-  { label: 'InputNode', sub: 'schemas + operations', color: '#6366f1' },
+  { label: 'Input spec', sub: 'OpenAPI 2/3', color: '#10b981', icon: 'doc', caption: 'You hand Kubb an OpenAPI 2 or 3 document.' },
+  { label: 'adapter.parse(source)', color: '#14b8a6', icon: 'transform', caption: 'The adapter reads it once, resolving refs, nullability, and dialect quirks.' },
+  { label: 'InputNode', sub: 'schemas + operations', color: '#6366f1', icon: 'tree', caption: 'Out comes a universal AST of schemas and operations, with no OpenAPI left.' },
 ]
 
 const macroNodes = [
-  { label: 'InputNode', color: '#6366f1' },
-  { label: 'applyMacros(node, [...])', color: '#a855f7' },
-  { label: 'InputNode', sub: 'transformed', color: '#6366f1' },
+  { label: 'InputNode', color: '#6366f1', icon: 'tree', caption: 'A plugin starts from the shared AST.' },
+  { label: 'applyMacros(node, [...])', color: '#a855f7', icon: 'edit', caption: 'Its macros rewrite nodes, renaming symbols or retyping fields.' },
+  { label: 'InputNode', sub: 'transformed', color: '#6366f1', icon: 'tree', caption: 'The plugin then generates from the reshaped tree.' },
 ]
 
 const pluginNodes = [
-  { label: 'InputNode', color: '#6366f1' },
-  { label: 'Plugin', sub: 'gen.schema() / gen.operation()', color: '#f58517' },
-  { label: 'Renderer', sub: '@kubb/renderer-jsx', via: 'returns JSX', color: '#8b5cf6' },
-  { label: 'FileNode[]', sub: 'or returned directly', color: '#3178c6' },
+  { label: 'InputNode', color: '#6366f1', icon: 'tree', caption: 'Each plugin walks the same AST, in array order.' },
+  { label: 'Plugin', sub: 'gen.schema() / gen.operation()', color: '#f58517', icon: 'plugin', caption: 'It reads schemas and operations to decide what to emit.' },
+  { label: 'Renderer', sub: '@kubb/renderer-jsx', via: 'returns JSX', color: '#8b5cf6', icon: 'code', caption: 'kubb/jsx describes files as components, or a plugin builds FileNodes directly.' },
+  { label: 'FileNode[]', sub: 'or returned directly', color: '#3178c6', icon: 'file', caption: 'Either way, the plugin returns FileNodes.' },
 ]
 
 const parserNodes = [
-  { label: 'FileNode[]', color: '#3178c6' },
-  { label: 'parser.parse(file)', sub: 'by file extension', color: '#8b5cf6' },
-  { label: 'source string', color: '#14b8a6' },
-  { label: 'storage.setItem()', color: '#f58517' },
-  { label: 'disk / memory', color: '#10b981' },
+  { label: 'FileNode[]', color: '#3178c6', icon: 'file', caption: 'Plugins hand their FileNodes to the file processor.' },
+  { label: 'parser.parse(file)', sub: 'by file extension', color: '#8b5cf6', icon: 'printer', caption: 'A parser is chosen by the file extension.' },
+  { label: 'source string', color: '#14b8a6', icon: 'code', caption: 'It prints the node to a source string.' },
+  { label: 'storage.setItem()', color: '#f58517', icon: 'database', caption: 'Storage writes the file to disk or memory.' },
+  { label: 'disk / memory', color: '#10b981', icon: 'drive', caption: 'Unchanged files are skipped, so only real changes are written.' },
 ]
 </script>
 
