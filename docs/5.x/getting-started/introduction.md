@@ -11,7 +11,23 @@ Kubb is a meta framework for code generation. It runs a plugin-based pipeline on
 
 The default adapter reads [OpenAPI](https://www.openapis.org/) 2.0, 3.0, and 3.1. From there Kubb generates TypeScript types, React Query hooks, Zod validators, MSW mocks, or a custom output. You stop hand-maintaining generated code. The output is deterministic. The same spec always produces the same result.
 
-Watch that pipeline drain a spec like a work queue. Every schema and operation is its own unit of work: the adapter turns each one into an AST node, plugins turn the nodes into file nodes, and each lands on disk as its own file:
+Watch that pipeline drain a spec like a work queue. Every schema and operation is its own unit of work: the adapter turns each one into an AST node, and every plugin turns that node into its own file. The run below uses this config:
+
+::: details Expand kubb.config.ts
+
+```typescript [kubb.config.ts]
+import { defineConfig } from 'kubb/config'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginZod } from '@kubb/plugin-zod'
+
+export default defineConfig({
+  input: './petStore.yaml',
+  output: { path: './src/gen', clean: true },
+  plugins: [pluginTs(), pluginZod()],
+})
+```
+
+:::
 
 <SpecJourney />
 
