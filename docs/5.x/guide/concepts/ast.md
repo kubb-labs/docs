@@ -15,13 +15,9 @@ A single `InputNode` sits at the top, holding reusable schemas and operations. O
 
 <AstTree />
 
-```text [SchemaNode types]
-SchemaNode (discriminated by `type`)
-  Structural:  object | array | tuple | union | intersection | enum
-  Scalar:      string | number | integer | bigint | boolean
-                null | any | unknown | void | never
-  Special:     ref | date | datetime | time | uuid | email | url | ipv4 | ipv6 | blob
-```
+A `SchemaNode` is discriminated by its `type`, which falls into one of three groups.
+
+<SchemaNodeTypes />
 
 Request bodies and responses hold one `ContentNode` per content type (for example `application/json`), and each content node carries its own body schema. Every child slot is a node, so a single traversal drives both `transform` and `collect` across the whole tree. Every node also carries a `kind` field as the discriminant, so `switch (node.kind)` narrows the type for you.
 

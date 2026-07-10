@@ -93,7 +93,7 @@ See [Macros](/docs/5.x/guide/going-further/macros) for writing macros, composing
 
 ## Plugins
 
-<FlowDiagram preset="plugins" />
+<PluginAnatomy />
 
 Plugins walk the [AST](/docs/5.x/guide/concepts/ast) and emit `FileNode`s. They run in array order, so earlier plugins produce types that later plugins can import.
 
