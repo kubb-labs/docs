@@ -116,7 +116,7 @@ See the [plugins catalogue](/plugins) for the full list.
 
 <FlowDiagram preset="generator" />
 
-A generator is where a plugin produces code. Each one reads a single node from the AST, a schema or an operation, and returns the files that node should become. Splitting a plugin into named generators keeps each one small and lets the engine call the right generator for every node.
+A generator is where a plugin produces code. Each one reads from the AST, a schema, a single operation, or the whole operation set at once, and returns the files those nodes should become. Splitting a plugin into named generators keeps each one small and lets the engine call the right generator for every node.
 
 ## Renderer
 
