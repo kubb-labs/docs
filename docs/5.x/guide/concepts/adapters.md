@@ -9,6 +9,8 @@ outline: deep
 
 An adapter is the front door of the pipeline. It reads your specification and converts it into the universal [AST](/docs/5.x/guide/concepts/ast). Everything downstream, every [plugin](/docs/5.x/guide/concepts/plugins) and [parser](/docs/5.x/guide/concepts/parsers), works off that AST and never touches the original spec. The adapter is the one place that knows whether the input was OpenAPI, AsyncAPI, or something you invented.
 
+<FlowDiagram preset="adapter" />
+
 ## Why adapters exist
 
 Without this boundary, every plugin would need its own OpenAPI reader, and adding a new input format would mean rewriting all of them. The adapter pulls that knowledge into a single layer. Write one adapter for a format and the entire plugin ecosystem works on top of it unchanged. That is what lets Kubb target OpenAPI today and AsyncAPI or a GraphQL schema tomorrow without touching the generators.

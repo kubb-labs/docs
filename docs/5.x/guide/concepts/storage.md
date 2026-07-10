@@ -9,6 +9,8 @@ outline: deep
 
 Storage is the layer that decides where generated files end up. The generation pipeline never writes to disk directly. It hands each file to a storage driver, and the driver decides what to do with it. That one indirection is what lets the same build target the local filesystem in development, an in-memory map during tests, or any backend you write.
 
+<FlowDiagram preset="storage" />
+
 ## Why a storage layer
 
 A code generator that wrote straight to disk would be hard to test and impossible to embed. Kubb avoids that by treating the destination as a plug-in. The driver exposes a small key-value contract (write a file, read it back, list keys, clear), so the rest of the pipeline stays agnostic about where the bytes go. Keys are root-relative paths such as `src/gen/api/getPets.ts`, which keeps the same file addressable no matter which backend is behind it.

@@ -11,6 +11,8 @@ A plugin teaches Kubb to generate something new. It owns its file naming, its ou
 
 This page is about the idea: what a plugin is, how its lifecycle runs, and how plugins work together. For the signatures (`definePlugin`, `defineGenerator`, `createResolver`, and the context tables) see the [Kit API](/docs/5.x/reference/kit). When you want to build one step by step, follow [Creating your first plugin](/docs/5.x/guide/going-further/creating-plugins).
 
+<FlowDiagram preset="plugins" />
+
 > [!TIP]
 > Need a TanStack Query client, a Zod schema set, or MSW handlers? Check the [Plugins](/plugins) registry first. Build a custom plugin only when no existing one fits.
 
