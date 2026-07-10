@@ -5,21 +5,21 @@ This repository holds the hand-written content for [kubb.dev](https://kubb.dev).
 - Found a mistake or missing information? [Open an issue](https://github.com/kubb-labs/docs/issues/new) or submit a PR.
 - Need help? Ask the community on [Discord](https://discord.gg/4dQjA6vrWX).
 
-Please read our [Code of Conduct](./CODE_OF_CONDUCT.md) before participating.
+Please read our [Code of Conduct](https://github.com/kubb-labs/kubb/blob/main/CODE_OF_CONDUCT.md) before participating.
 
 ## What lives here
 
 ```
 docs/
 ├── docs/5.x/**            # Guides, concepts, API reference, integrations
-├── plugins/*.md           # One page per plugin (metadata in frontmatter)
-├── adapters/*.md          # One page per adapter (metadata in frontmatter)
-├── parsers/*.md           # One page per parser (metadata in frontmatter)
+├── plugins/<id>/index.md  # One folder per plugin (index.md plus optional guide/reference subpages)
+├── adapters/<id>/index.md # One folder per adapter (index.md plus optional reference subpages)
+├── parsers/<id>/index.md  # One folder per parser (index.md plus optional reference subpages)
 ├── blog/*.md              # Blog posts
 └── snippets/**            # Code snippets included via <<< @/snippets/...
 ```
 
-Each plugin, adapter, and parser is a single markdown file. Its frontmatter carries the registry metadata (`name`, `category`, `type`, `npmPackage`, `repo`, `docsPath`, `featured`, `icon`, `maintainers`, `compatibility`, `tags`, `dependencies`, `resources`) that the kubb.dev fetch pipeline turns into the plugin, adapter, and parser cards and detail headers. The folder a page lives in sets its kind, and `id` matches the file name. The pipeline validates the frontmatter against `apps/kubb.dev/public/schemas/extension.json` in kubb-labs/platform.
+Each plugin, adapter, and parser is a folder with an `index.md` page, plus optional `guide/` and `reference/` subpages. The `index.md` frontmatter carries the registry metadata (`id`, `kind`, `name`, `description`, `category`, `type`, `npmPackage`, `repo`, `docsPath`, `featured`, `icon`, `maintainers`, `compatibility`, `tags`, `dependencies`, `resources`) that the kubb.dev fetch pipeline turns into the plugin, adapter, and parser cards and detail headers. The `kind` field is `plugin`, `adapter`, or `parser`, and `id` matches the folder name. The pipeline validates the frontmatter against `apps/kubb.dev/public/schemas/extension.json` in kubb-labs/platform, which requires `id`, `name`, `description`, `category`, `type`, `npmPackage`, `repo`, and `docsPath`.
 
 Do NOT edit:
 - `docs/5.x/changelog.md` — auto-synced from kubb-labs/kubb by `.github/workflows/sync-changelog.yml` after each release. To update manually, trigger that workflow with `workflow_dispatch`.
