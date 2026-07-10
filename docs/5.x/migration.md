@@ -19,165 +19,27 @@ Copy the prompt below, paste it into any LLM ([Claude](https://claude.ai), [Chat
 ::: details Expand upgrade prompt
 
 ```text [Upgrade prompt]
-You are migrating a kubb.config.ts from Kubb v4 to v5.
-Apply every rule below in order, then output the complete updated file.
+You are migrating a kubb.config.ts from Kubb v4 to v5. Apply every rule, then output the complete updated file.
 
-## 1. Import source
-- Change: import { defineConfig } from '@kubb/core'
-+ To:     import { defineConfig } from 'kubb/config'
+1. Import: `import { defineConfig } from '@kubb/core'` → `from 'kubb/config'`.
+2. Remove `pluginOas()` from `plugins[]`; move its options to a top-level `adapter: adapterOas({ … })` from `@kubb/adapter-oas`. `serverIndex`/`serverVariables` → `server: { index, variables }`; `discriminator` `'strict'`→`'preserve'`, `'inherit'`→`'propagate'`; `validate`/`contentType` unchanged. Omit `adapter` if `pluginOas` had no options.
+3. Move these schema options off every plugin onto `adapterOas()`: `dateType`, `integerType`, `unknownType`, `emptySchemaType` (ts/zod/faker), `enumSuffix` (ts), `contentType` (ts/msw).
+4. `transformers.name` → `resolver: { name(name) { return … } }` (call `this.default.name(name)` as a fallback).
+5. `transformers.schema` → `macros: [{ name, schema(node) { return … } }]`.
+6. Remove `mapper` from plugin-ts, plugin-zod, plugin-faker.
+7. plugin-zod: remove `version` and `typed`; drop `wrapOutput` and leave a `// TODO: reintroduce wrapOutput via a printer override` comment (do not invent a `printer`). Bump the `zod` package to `^4` in package.json (a dependency change, not a config option).
+8. `output.barrelType` → `output.barrel`, root and per-plugin: `'named'`→`{ type: 'named' }`, `'all'`→`{ type: 'all' }`, `'propagate'`→`{ type: 'named', nested: true }`, `false`→`false`.
+9. If a plugin's `output.path` ends in `.ts`, add `mode: 'file'` and keep the extension. Folder paths stay `mode: 'directory'` (the default).
+10. Remove entirely from every plugin: `generators`, `bundle`, `output.override` (boolean, root and per-plugin), `paramsType`, `pathParamsType`, `paramsCasing`, `dataReturnType`, `clientType`, `urlType`, `importPath`.
+11. `input: { path }` / `input: { data }` → a single `input` value (file path, URL, inline spec, or parsed object).
+12. `hooks.done` → `output.postGenerate` (array); remove the top-level `hooks`.
+13. Move `storage` from `output.storage` to a top-level `storage`, and import `memoryStorage`/`fsStorage` from `kubb/kit` (not `@kubb/core`).
+14. On plugin-axios/plugin-fetch rename `parser` → `validator` (`false` | `'zod'` | `{ request, response }`); `parser: 'client'` → `false`. On plugin-react-query/plugin-vue-query/plugin-swr delete `parser` and put `validator: 'zod'` on the client plugin. Leave plugin-msw `parser` (`'data'`/`'faker'`) unchanged.
+15. `@kubb/plugin-client` is removed: replace `pluginClient()` with `pluginAxios` (`@kubb/plugin-axios`) when its old `client` was `'axios'` or unset, or `pluginFetch` (`@kubb/plugin-fetch`) when `'fetch'`; drop `client`. `clientType: 'class'` (+ `wrapper`) → `sdk`. Query/mcp plugins select a client via `client: 'axios' | 'fetch'`.
+16. Remove these plugins and their imports (no v5 equivalent): `pluginSolidQuery` (`@kubb/plugin-solid-query`), `pluginSvelteQuery` (`@kubb/plugin-svelte-query`).
+17. Keep every other option unchanged (group, include, exclude, override array, client, infinite, suspense, query, mutation, baseURL, coercion, mini, seed, handlers, …).
 
-## 2. Remove @kubb/plugin-oas from plugins[]
-- Remove pluginOas() from the plugins array entirely.
-- Move its options to a top-level `adapter` key using adapterOas() from
-  '@kubb/adapter-oas'. The old `serverIndex` and `serverVariables` become a
-  single `server: { index, variables }` object, and `discriminator` now takes
-  `'preserve'` (was `'strict'`) or `'propagate'` (was `'inherit'`). `validate`
-  and `contentType` carry over unchanged. If no options were passed, omit the
-  adapter key (it defaults automatically when importing from `kubb`).
-
-## 3. Move per-plugin schema options to adapterOas
-Delete these from every plugin and set them once on adapterOas():
-  - dateType        (from plugin-ts, plugin-faker, and plugin-zod)
-  - integerType     (from plugin-ts, plugin-zod, plugin-faker)
-  - unknownType     (from plugin-ts, plugin-zod, plugin-faker)
-  - emptySchemaType (from plugin-ts, plugin-zod, plugin-faker)
-  - enumSuffix      (from plugin-ts only)
-  - contentType     (from plugin-ts and plugin-msw)
-
-## 4. Rename transformers.name → resolver.name
-Every plugin exposes a top-level `name(name)` method on its resolver:
-- plugin-ts:    resolver: { name(name) { return … } }
-- plugin-zod:   resolver: { name(name) { return … } }
-- all others:   resolver: { name(name) { return … } }
-Inside a method, call `this.default.name(name)` to invoke the
-built-in logic as a fallback.
-
-## 5. Rename transformers.schema → macros
-- schema transforms are now macros:
-    macros: [{ name: 'strip-descriptions', schema(node) { return … } }]
-
-## 6. plugin-ts specific
-- Remove `mapper` (use printer or macros instead).
-
-## 7. plugin-zod specific
-- Remove `version` (always Zod v4 in v5).
-- Remove `mapper` (use printer or macros instead).
-- Set zod dependency to ^4.
-
-## 7b. plugin-faker specific
-- Remove `mapper` (use printer or macros instead). A macro that rewrites the
-  property's schema to an enum of the wanted values reproduces the common case.
-
-## 8. Rename output.barrelType → output.barrel (object)
-Replace every `barrelType` string with the `barrel` object:
-  - output.barrelType: 'named'     → output.barrel: { type: 'named' }
-  - output.barrelType: 'all'       → output.barrel: { type: 'all' }
-  - output.barrelType: 'propagate' → output.barrel: { type: 'named', nested: true }
-    (or { type: 'all', nested: true } if the original intent was wildcard exports)
-  - output.barrelType: false        → output.barrel: false
-This applies at both the root output level and per-plugin output levels.
-
-## 9. Remove the `bundle` and `output.override` options
-- Remove `bundle` from the client plugin (`plugin-axios` or `plugin-fetch`) and
-  from the `client` sub-option of plugin-react-query, plugin-vue-query,
-  plugin-swr, and plugin-mcp. The client is always bundled into `.kubb/client.ts`
-  now.
-- Remove `output.override` (the boolean) from every plugin's `output` and from
-  the root `output`. It no longer exists.
-
-## 10. Remove paramsType, pathParamsType, and paramsCasing
-- Remove `paramsType` and `pathParamsType` from the client plugin
-  (`plugin-axios` or `plugin-fetch`), plugin-react-query, plugin-vue-query,
-  plugin-swr, and plugin-cypress.
-- Remove `paramsCasing` from every plugin (including the `client` sub-option of
-  the query and mcp plugins). Generated functions now always take one grouped
-  options object `{ body, path, query, headers }` with camelCase parameter
-  names, and the wire-name mapping is automatic.
-
-## 11. Remove dataReturnType and adopt the RequestResult contract
-- Remove `dataReturnType` from every plugin. It no longer exists.
-- The client plugins (`@kubb/plugin-axios`, `@kubb/plugin-fetch`) return a
-  `RequestResult` of `{ data, error, request, response }`, with `throwOnError`
-  defaulting to `true`. A `dataReturnType: 'data'` call becomes a destructure:
-  `const { data } = await getPet({ path: { petId: 1 } })`. A `dataReturnType: 'full'`
-  call becomes `throwOnError: false`, then read `error` and `response.status` off
-  the result.
-- On plugin-cypress, drop `dataReturnType`. Every helper now yields the response
-  body, typed `Cypress.Chainable<T>`.
-- plugin-mcp handlers read `res.data`, so no config change is needed beyond
-  removing the option.
-- Also remove `clientType`, `urlType`, and the custom-client `importPath`: the
-  query and mcp plugins now select a registered client plugin through
-  `client: 'axios' | 'fetch'`, and the standalone client lives in
-  `@kubb/plugin-axios` / `@kubb/plugin-fetch`. The `get<Operation>Url` helpers
-  that `urlType: 'export'` produced are gone; [rebuild them with a custom
-  plugin](/docs/5.x/migration/plugin-client#rebuild-the-url-helpers-with-a-custom-plugin)
-  if you need them.
-
-## 12. Preserve everything else
-All other plugin options (output, group, include, exclude, override (the
-per-operation array), client, infinite, suspense, query, mutation,
-baseURL, inferred,
-coercion, guidType, mini, dateParser, regexGenerator,
-seed, handlers, etc.) are unchanged.
-
-Two plugin-zod exceptions: drop `typed` (removed, it no longer does
-anything) and replace `wrapOutput` with a [printer
-override](/docs/5.x/migration/plugin-zod#removed-wrapoutput).
-
-One query-plugin exception: `parser` (and its v5 rename `validator`) is
-removed from plugin-react-query, plugin-vue-query, and plugin-swr. Set
-`validator` on the client plugin (`pluginAxios` or `pluginFetch`)
-instead.
-
-## 13. New v5 defaults (informational, do not edit the config)
-
-With `group: { type: 'tag' }`, v5 names each tag folder after the plain
-camelCased tag instead of `${tag}Controller`. Do not add `group.name`
-during migration. Mention to the user that
-`group: { type: 'tag', name: ({ group }) => `${group}Controller` }`
-restores the v4 folder layout.
-
-## 14. Single-file output now needs output.mode
-v5 no longer infers a single file from an `output.path` that ends in `.ts`.
-For every plugin whose `output.path` points at a file (ends in `.ts`), add
-`mode: 'file'` to its `output` and keep the extension in the path:
-  - output: { path: 'models.ts' } → output: { path: 'models.ts', mode: 'file' }
-The extension is required, do not drop it. Leave folder paths unchanged.
-They default to `mode: 'directory'`. `output.mode` only accepts
-`'directory'` or `'file'`.
-
-## 15. Remove the `generators` option
-Remove `generators` from every plugin. Plugins no longer accept custom
-generators as an option. To add custom output, build your own plugin.
-
-## 16. Move parser → validator to the client plugins
-- On `plugin-axios` and `plugin-fetch`, rename the `parser` option to
-  `validator`. The accepted values are `false`, `'zod'`, or
-  `{ request: 'zod', response: 'zod' }`. So `parser: 'zod'` becomes
-  `validator: 'zod'`, and a v4 `parser: 'client'` becomes the default
-  `false` (the `'client'` value is gone).
-- On `plugin-react-query`, `plugin-vue-query`, and `plugin-swr`, delete
-  `parser` entirely. Validation lives in the client operation, so set
-  `validator: 'zod'` on the client plugin instead.
-- Leave `plugin-msw`'s `parser` (`'data' | 'faker'`) unchanged. It is a
-  different option and is not renamed.
-
-## 17. Merge input.path and input.data into input
-Replace the `input` object with a single value:
-  - input: { path: './petstore.yaml' } → input: './petstore.yaml'
-  - input: { data: spec }              → input: spec
-The value is a file path, a URL, an inline spec (JSON/YAML string), or a
-parsed object, and Kubb detects which one it is.
-
-## 18. Rename hooks.done to output.postGenerate
-Remove the top-level `hooks` option and move its `done` commands into
-`output.postGenerate`:
-  - hooks: { done: ['npm run typecheck'] } → output: { ..., postGenerate: ['npm run typecheck'] }
-  - hooks: { done: 'npm run typecheck' }   → output: { ..., postGenerate: ['npm run typecheck'] }
-  - hooks: {}                              → remove entirely
-Each entry may also be `{ name, command }` to label the step in the CLI
-output, but do not add labels during migration unless asked to.
+Informational, do not edit the config: v5 defaults `output.format` and `output.lint` to `false` (were `'prettier'`/`'auto'`), and `group: { type: 'tag' }` folders drop the `Controller` suffix.
 
 Now migrate the following kubb.config.ts:
 ```
