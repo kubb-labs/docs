@@ -11,12 +11,9 @@ Kubb turns API specifications into code through a layered pipeline. The [adapter
 
 ## Pipeline overview
 
-```mermaid
-flowchart LR
-    Config["Config\nkubb.config.ts"] --> Setup["Setup\nAdapter → AST"]
-    Setup --> Build["Build\nMacros · Plugins · Renderer"]
-    Build --> FileProcessor["File processor\nParsers → Storage"]
-```
+Every run moves through four stages. Select one to see what it does, or watch it play through from spec to files.
+
+<ArchitecturePipeline />
 
 ## Config
 
