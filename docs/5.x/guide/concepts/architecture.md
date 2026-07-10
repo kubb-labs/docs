@@ -112,12 +112,26 @@ export default defineConfig({
 
 See the [plugins catalogue](/plugins) for the full list.
 
+## [Generators](/docs/5.x/guide/concepts/generators)
+
+<FlowDiagram preset="generator" />
+
+A generator is where a plugin produces code. Each one reads a single node from the AST, a schema or an operation, and returns the files that node should become. Splitting a plugin into named generators keeps each one small and lets the engine call the right generator for every node.
+
 ## Renderer
+
+<FlowDiagram preset="renderer" />
 
 Plugins can use [`kubb/jsx`](/docs/5.x/reference/jsx), backed by `@kubb/renderer-jsx`, to describe generated files as React components instead of constructing `FileNode`s by hand.
 
 > [!NOTE]
 > `kubb/jsx` is optional. Plugins that build `FileNode`s directly with the `factory` node builders from [`kubb/kit`](/docs/5.x/reference/kit) do not need it.
+
+## [Resolvers](/docs/5.x/guide/concepts/resolvers)
+
+<FlowDiagram preset="resolver" />
+
+A resolver decides what a plugin's files are called and where they land. When a generator needs a file name or an import path, it asks the resolver instead of building the string itself, so naming stays consistent and plugins can import each other's output by reading its resolver.
 
 ## [Parsers](/docs/5.x/guide/concepts/parsers)
 

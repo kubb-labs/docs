@@ -15,14 +15,7 @@ A single `InputNode` sits at the top, holding reusable schemas and operations. O
 
 <AstTree />
 
-```text [Resulting tree]
-InputNode
-├── schemas: SchemaNode[]            (named, reusable schemas)
-└── operations: OperationNode[]
-    ├── parameters: ParameterNode[]  → SchemaNode
-    ├── requestBody?: RequestBodyNode  → content: ContentNode[] → SchemaNode
-    └── responses: ResponseNode[]      → content: ContentNode[] → SchemaNode
-
+```text [SchemaNode types]
 SchemaNode (discriminated by `type`)
   Structural:  object | array | tuple | union | intersection | enum
   Scalar:      string | number | integer | bigint | boolean
