@@ -9,6 +9,8 @@ outline: deep
 
 A parser is Kubb's output layer. It turns a [`FileNode`](/docs/5.x/guide/concepts/ast) into the source string that [storage](/docs/5.x/guide/concepts/storage) writes to disk. Because the language lives in the parser and not in the plugins, the same plugins can target TypeScript today and Python or Rust tomorrow by swapping the parser.
 
+<FlowDiagram preset="parsers" />
+
 ## Two jobs: print and parse
 
 A parser splits the work of producing code across two moments in the build.

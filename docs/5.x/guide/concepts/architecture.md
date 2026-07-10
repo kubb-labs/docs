@@ -5,35 +5,6 @@ description: Learn how Kubb generates code. Adapter, AST, plugins, renderer, par
 outline: [2, 3]
 ---
 
-<script setup lang="ts">
-const adapterNodes = [
-  { label: 'Input spec', sub: 'OpenAPI 2/3', color: '#10b981', icon: 'doc', caption: 'You hand Kubb an OpenAPI 2 or 3 document.' },
-  { label: 'adapter.parse(source)', color: '#14b8a6', icon: 'transform', caption: 'The adapter reads it once, resolving refs, nullability, and dialect quirks.' },
-  { label: 'InputNode', sub: 'schemas + operations', color: '#6366f1', icon: 'tree', caption: 'Out comes a universal AST of schemas and operations, with no OpenAPI left.' },
-]
-
-const macroNodes = [
-  { label: 'InputNode', color: '#6366f1', icon: 'tree', caption: 'A plugin starts from the shared AST.' },
-  { label: 'applyMacros(node, [...])', color: '#a855f7', icon: 'edit', caption: 'Its macros rewrite nodes, renaming symbols or retyping fields.' },
-  { label: 'InputNode', sub: 'transformed', color: '#6366f1', icon: 'tree', caption: 'The plugin then generates from the reshaped tree.' },
-]
-
-const pluginNodes = [
-  { label: 'InputNode', color: '#6366f1', icon: 'tree', caption: 'Each plugin walks the same AST, in array order.' },
-  { label: 'Plugin', sub: 'gen.schema() / gen.operation()', color: '#f58517', icon: 'plugin', caption: 'It reads schemas and operations to decide what to emit.' },
-  { label: 'Renderer', sub: '@kubb/renderer-jsx', color: '#8b5cf6', icon: 'code', caption: 'kubb/jsx describes files as components, or a plugin builds FileNodes directly.' },
-  { label: 'FileNode[]', sub: 'or returned directly', color: '#3178c6', icon: 'file', caption: 'Either way, the plugin returns FileNodes.' },
-]
-
-const parserNodes = [
-  { label: 'FileNode[]', color: '#3178c6', icon: 'file', caption: 'Plugins hand their FileNodes to the file processor.' },
-  { label: 'parser.parse(file)', sub: 'by file extension', color: '#8b5cf6', icon: 'printer', caption: 'A parser is chosen by the file extension.' },
-  { label: 'source string', color: '#14b8a6', icon: 'code', caption: 'It prints the node to a source string.' },
-  { label: 'storage.setItem()', color: '#f58517', icon: 'database', caption: 'Storage writes the file to disk or memory.' },
-  { label: 'disk / memory', color: '#10b981', icon: 'drive', caption: 'Unchanged files are skipped, so only real changes are written.' },
-]
-</script>
-
 # Architecture
 
 Kubb turns API specifications into code through a layered pipeline. The [adapter](/docs/5.x/guide/concepts/adapters) parses the spec into a universal [AST](/docs/5.x/guide/concepts/ast). [Macros](/docs/5.x/guide/going-further/macros) rewrite AST nodes before a plugin reads them. [Plugins](/plugins) walk the AST and emit `FileNode`s. [Parsers](/docs/5.x/guide/concepts/parsers) convert each `FileNode` into source code. [Storage](/docs/5.x/guide/concepts/storage) writes the result to disk.
@@ -63,7 +34,7 @@ export default defineConfig({
 
 ## [Adapter](/docs/5.x/guide/concepts/adapters)
 
-<FlowDiagram :nodes="adapterNodes" />
+<FlowDiagram preset="adapter" />
 
 An adapter converts an input specification into the universal [AST](/docs/5.x/guide/concepts/ast). `adapter.parse(source)` returns an `InputNode`, and `adapter.getImports(node, resolve)` tracks cross-references so plugins emit correct import paths.
 
@@ -88,16 +59,7 @@ See [Adapters](/docs/5.x/guide/concepts/adapters) for the full list of options a
 
 The AST is the intermediate representation between the [adapter](/docs/5.x/guide/concepts/adapters) and the [plugins](/plugins). Every adapter produces an `InputNode` and every plugin consumes it. Plugins never read the raw spec, so the same plugin works with any adapter.
 
-```text [Resulting tree]
-InputNode
-├── schemas: SchemaNode[]            (named, reusable schemas)
-│   └── consumed by plugins          → FileNode (e.g. type aliases, enums)
-└── operations: OperationNode[]
-    ├── parameters: ParameterNode[]  → SchemaNode
-    ├── requestBody?: RequestBodyNode → content: ContentNode[] → SchemaNode
-    ├── responses: ResponseNode[]    → content: ContentNode[] → SchemaNode
-    └── consumed by plugins          → FileNode (e.g. client functions, hooks)
-```
+<AstTree />
 
 The [AST layer](/docs/5.x/guide/concepts/ast) ships two visitor patterns:
 
@@ -108,7 +70,7 @@ The [AST layer](/docs/5.x/guide/concepts/ast) ships two visitor patterns:
 
 ## [Macros](/docs/5.x/guide/going-further/macros)
 
-<FlowDiagram :nodes="macroNodes" />
+<FlowDiagram preset="macros" />
 
 Macros are the second layer of the [AST](/docs/5.x/guide/concepts/ast). They are named, composable transforms that rewrite schema and operation nodes before a plugin's generators print code. Use them to rename symbols, retype fields, or normalize shapes without forking an adapter or a generator. Because they run on the shared AST, the same macro works across every adapter and output target.
 
@@ -131,7 +93,7 @@ See [Macros](/docs/5.x/guide/going-further/macros) for writing macros, composing
 
 ## Plugins
 
-<FlowDiagram :nodes="pluginNodes" />
+<FlowDiagram preset="plugins" />
 
 Plugins walk the [AST](/docs/5.x/guide/concepts/ast) and emit `FileNode`s. They run in array order, so earlier plugins produce types that later plugins can import.
 
@@ -159,7 +121,7 @@ Plugins can use [`kubb/jsx`](/docs/5.x/reference/jsx), backed by `@kubb/renderer
 
 ## [Parsers](/docs/5.x/guide/concepts/parsers)
 
-<FlowDiagram :nodes="parserNodes" />
+<FlowDiagram preset="parsers" />
 
 A parser converts a `FileNode` into a source string. Each parser declares which file extensions it handles, and Kubb dispatches every emitted file to the first matching parser.
 
@@ -186,6 +148,8 @@ export default defineConfig({
 ## [Storage](/docs/5.x/guide/concepts/storage)
 
 The storage driver controls where Kubb writes generated files. The default is `fsStorage()`. Use `memoryStorage()` for testing, or implement `Storage` to target any backend.
+
+<FlowDiagram preset="storage" />
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'

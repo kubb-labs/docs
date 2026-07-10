@@ -13,6 +13,8 @@ Kubb's universal Abstract Syntax Tree is the contract between the two halves of 
 
 A single `InputNode` sits at the top, holding reusable schemas and operations. Operations point at parameters, an optional request body, and responses. Each of those connects back to schemas.
 
+<AstTree />
+
 ```text [Resulting tree]
 InputNode
 ├── schemas: SchemaNode[]            (named, reusable schemas)
