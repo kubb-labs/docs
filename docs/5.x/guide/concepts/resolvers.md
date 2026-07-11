@@ -19,7 +19,9 @@ Centralizing naming also gives users one place to override it. Setting `name` or
 
 ## What a resolver controls
 
-The resolver owns identifier casing, the base file name including its extension, and the output path, with optional subdirectories per tag or per operation path. It also resolves cross-references: [`resolver.imports`](/docs/5.x/reference/kit/resolvers#imports) turns every `$ref` in a schema tree into an import entry that follows those same naming conventions. Built-in defaults handle all of this, and they sit under `resolver.default` so an override can fall back to the original behavior instead of reimplementing it. Plugins that emit more than one symbol per node add namespaced methods on top, such as `query.name` or `response.status`.
+The resolver owns identifier casing, the base file name including its extension, and the output path, with optional subdirectories per tag or per operation path. It also resolves cross-references: [`resolver.imports`](/docs/5.x/reference/kit/resolvers#imports) turns every `$ref` in a schema tree into an import entry that follows those same naming conventions.
+
+Built-in defaults handle all of this, and they sit under `resolver.default` so an override can fall back to the original behavior instead of reimplementing it. Plugins that emit more than one symbol per node add namespaced methods on top, such as `query.name` or `response.status`.
 
 ## Reference
 
