@@ -111,9 +111,6 @@ export const adapterExample = createAdapter<AdapterExample>((options) => ({
   async parse() {
     return ast.factory.createInput()
   },
-  getImports() {
-    return []
-  },
   async validate() {
     // Throw or call ctx.error here when the spec is invalid.
   },

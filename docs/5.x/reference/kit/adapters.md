@@ -31,9 +31,6 @@ export const adapterCustom = createAdapter<AdapterCustom>((options) => ({
   async parse(_source) {
     return ast.factory.createInput({ schemas: [], operations: [] })
   },
-  getImports() {
-    return []
-  },
   async validate() {
     // Throw or call ctx.error here when the spec is invalid.
   },
@@ -65,8 +62,9 @@ Every adapter returned from `createAdapter` matches the `Adapter` interface from
 | `options`    | `TResolvedOptions`                                                                                    | Yes      | Adapter options after defaults are applied.                                                                                  |
 | `document`   | `TDocument \| null`                                                                                   | Yes      | The raw parsed source document, for plugins that need direct access. `null` before `parse()`.                                              |
 | `parse`      | `(source: AdapterSource) => InputNode \| Promise<InputNode>`                                          | Yes      | Convert the spec into the [universal AST](/docs/5.x/guide/concepts/ast). The build driver consumes the returned `InputNode` directly.              |
-| `getImports` | `(node: SchemaNode, resolve: (name: string) => { name: string; path: string }) => Array<ImportNode>` | Yes      | Track cross-references so plugins emit correct imports. `resolve` receives the collision-corrected schema name and returns the `{ name, path }` for the import. |
 | `validate`   | `(input: string, options?: { throwOnError?: boolean }) => Promise<void>`                              | Yes      | Validate the document at a path or URL without running the full pipeline.                                                                  |
+
+Cross-references need no adapter hook: every plugin resolves `$ref` imports through [`resolver.imports`](/docs/5.x/reference/kit/resolvers#imports), which defaults each ref to its pointer's last segment. An adapter that renames a schema (for example to break a name collision) stamps `targetName` on every ref node pointing at it, so `resolveRefName` and those imports pick up the emitted name. Refs that keep their segment name need no stamp.
 
 `AdapterSource` takes one of two shapes. Handle every form your users may pass:
 
@@ -104,9 +102,6 @@ export const adapterExample = createAdapter<AdapterExample>((options) => ({
   document: null,
   async parse() {
     return ast.factory.createInput()
-  },
-  getImports() {
-    return []
   },
   async validate() {
     // Throw or call ctx.error here when the spec is invalid.
@@ -194,13 +189,6 @@ export const adapterJsonSchema = createAdapter<AdapterJsonSchema>((options) => {
         operations: [],
       })
     },
-    getImports(node, resolve) {
-      if (node.type === 'ref' && node.ref) {
-        const resolved = resolve(node.ref)
-        return [ast.factory.createImport({ name: [resolved.name], path: resolved.path })]
-      }
-      return []
-    },
     async validate() {
       // Throw or call ctx.error here when the spec is invalid.
     },
@@ -259,9 +247,6 @@ export const adapterValidated = createAdapter<AdapterValidated>(() => ({
       throw new Error('Expected a .yaml input file')
     }
     return ast.factory.createInput({ schemas: [], operations: [] })
-  },
-  getImports() {
-    return []
   },
   async validate(input) {
     if (!input.endsWith('.yaml')) {
