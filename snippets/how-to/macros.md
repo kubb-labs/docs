@@ -105,18 +105,29 @@ Macros run before resolver options are computed, so a renamed `operationId` or `
 > [!TIP]
 > Keep macros pure. Build a new node and return it rather than mutating the input, since the AST is shared by reference.
 
+> [!WARNING]
+> Do not rename a schema by changing only the declaration's `name`. Every `$ref` to it still resolves to the old name, so imports and printed references point at a file the plugin no longer emits. Use [`macroRenameSchema`](#built-in-macros), which renames the declaration and retargets the refs in one pass.
+
 ## Built-in macros
 
 Kubb ships built-in macros for common schema normalizations that any adapter can apply. Import them like any macro and compose them with your own.
 
 `macroSimplifyUnion` drops union members that a broader member already covers, such as a multi-value string enum next to a plain `string`. Single-value enums stay, since they narrow the type. `macroDiscriminatorEnum` rewrites a discriminator property into a string enum of its allowed values, and `macroEnumName` names an inline enum from the schema and property it belongs to. The last two read options, so you call them to build a macro.
 
+`macroRenameSchema` renames a schema consistently: it changes the declaration's `name` and stamps `targetName` on every ref that points at the old name, so [`resolveRefName`](/docs/5.x/reference/kit/ast#refs-and-naming-helpers) and [`resolver.imports`](/docs/5.x/reference/kit/resolvers#imports) emit the new name everywhere.
+
 ```typescript twoslash [presets.ts]
 import { ast } from 'kubb/kit'
 
 const root = ast.factory.createInput({ schemas: [], operations: [] })
-const next = ast.applyMacros(root, [ast.macroSimplifyUnion, ast.macroDiscriminatorEnum({ propertyName: 'kind', values: ['cat', 'dog'] })])
+const next = ast.applyMacros(root, [
+  ast.macroSimplifyUnion,
+  ast.macroDiscriminatorEnum({ propertyName: 'kind', values: ['cat', 'dog'] }),
+  ast.macroRenameSchema({ from: 'Order', to: 'StoreOrder' }),
+])
 ```
+
+Plugins that import another plugin's output compute names from the nodes they see, so register a rename on every plugin that touches the schema, for example by passing one shared `macros` array to each plugin's options.
 
 ## Sharing macros
 

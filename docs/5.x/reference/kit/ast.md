@@ -199,11 +199,12 @@ for (const node of ast.collect<ast.OperationNode>(root, { operation: (node) => n
 
 The ref and naming helpers ship on the `ast` namespace, alongside the other string and code-building utilities. Reach them the same way you reach the guards or node types.
 
-| Helper           | Purpose                                            |
-| ---------------- | --------------------------------------------------- |
-| `extractRefName` | Turn `'#/components/schemas/Pet'` into `'Pet'`.    |
-| `childName`      | Derive a child property name from context.         |
-| `enumPropName`   | Convert an enum value into a valid property name.  |
+| Helper           | Purpose                                                             |
+| ---------------- | ------------------------------------------------------------------- |
+| `extractRefName` | Turn `'#/components/schemas/Pet'` into `'Pet'`.                     |
+| `resolveRefName` | Resolve the name a ref node emits, preferring its `targetName`.     |
+| `childName`      | Derive a child property name from context.                          |
+| `enumPropName`   | Convert an enum value into a valid property name.                   |
 
 ```typescript twoslash [refs.ts]
 import { ast } from 'kubb/kit'
