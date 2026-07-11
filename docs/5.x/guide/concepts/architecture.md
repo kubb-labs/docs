@@ -36,7 +36,7 @@ export default defineConfig({
 
 <FlowDiagram preset="adapter" />
 
-An adapter converts an input specification into the universal [AST](/docs/5.x/guide/concepts/ast). `adapter.parse(source)` returns an `InputNode`, and `adapter.getImports(node, resolve)` tracks cross-references so plugins emit correct import paths.
+An adapter converts an input specification into the universal [AST](/docs/5.x/guide/concepts/ast). `adapter.parse(source)` returns an `InputNode`, including the `meta.nameMapping` that [`resolver.imports`](/docs/5.x/reference/kit/resolvers#imports) reads to emit correct import paths for cross-references.
 
 Each adapter carries a dialect, and that dialect is the one place where spec-specific schema questions live: nullability, `$ref` resolution, discriminators, binary detection, and schema deduplication. Everything past the adapter is generic JSON Schema, so plugins and parsers never branch on the source format.
 
