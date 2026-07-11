@@ -54,7 +54,7 @@ export const resolver = createResolver<MyPlugin>({
 
 ### `resolver.imports` {#imports}
 
-`resolver.imports` builds one import entry per `$ref` in a schema tree, so a generator emits the imports for every schema the current node references. Each raw `$ref` resolves through `meta.nameMapping` (the adapter's collision renames) and falls back to the last pointer segment, and the resulting names and paths go through the resolver's own `name` and `file` conventions. `extname` defaults to `.ts`.
+`resolver.imports` builds one import entry per `$ref` in a schema tree, so a generator emits the imports for every schema the current node references. Each ref resolves through `ast.resolveRefName`, which prefers the node's `targetName` (set by the adapter for collision renames or by a rename macro) and falls back to the pointer's last segment. The resulting names and paths go through the resolver's own `name` and `file` conventions. `extname` defaults to `.ts`.
 
 ```typescript twoslash [imports.ts]
 import { ast } from 'kubb/kit'
@@ -64,7 +64,7 @@ declare const ctx: GeneratorContext<PluginFactoryOptions>
 const { resolver, root, output } = { ...ctx, output: { path: 'types' } }
 const node = ast.factory.createSchema({ type: 'ref', ref: '#/components/schemas/Pet' })
 // ---cut---
-const imports = resolver.imports({ node, meta: ctx.meta, root, output })
+const imports = resolver.imports({ node, root, output })
 // → [{ kind: 'Import', name: ['pet'], path: '/src/types/pet.ts' }]
 ```
 
@@ -80,7 +80,6 @@ const node = ast.factory.createSchema({ type: 'ref', ref: '#/components/schemas/
 // ---cut---
 const imports = resolver.imports({
   node,
-  meta: ctx.meta,
   root,
   output,
   name: (schemaName) => `${resolver.name(schemaName)}Type`,

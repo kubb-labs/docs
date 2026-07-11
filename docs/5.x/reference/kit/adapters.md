@@ -64,7 +64,7 @@ Every adapter returned from `createAdapter` matches the `Adapter` interface from
 | `parse`      | `(source: AdapterSource) => InputNode \| Promise<InputNode>`                                          | Yes      | Convert the spec into the [universal AST](/docs/5.x/guide/concepts/ast). The build driver consumes the returned `InputNode` directly.              |
 | `validate`   | `(input: string, options?: { throwOnError?: boolean }) => Promise<void>`                              | Yes      | Validate the document at a path or URL without running the full pipeline.                                                                  |
 
-Cross-references need no adapter hook: every plugin resolves `$ref` imports through [`resolver.imports`](/docs/5.x/reference/kit/resolvers#imports), which defaults each ref to its pointer's last segment. An adapter that renames a schema (for example to break a name collision) records that ref pointer and its emitted name in `meta.nameMapping` on the returned `InputNode`, so those imports point at the files it actually names. Refs that keep their segment name need no entry.
+Cross-references need no adapter hook: every plugin resolves `$ref` imports through [`resolver.imports`](/docs/5.x/reference/kit/resolvers#imports), which defaults each ref to its pointer's last segment. An adapter that renames a schema (for example to break a name collision) stamps `targetName` on every ref node pointing at it, so `resolveRefName` and those imports pick up the emitted name. Refs that keep their segment name need no stamp.
 
 `AdapterSource` takes one of two shapes. Handle every form your users may pass:
 
