@@ -17,6 +17,8 @@ outline: deep
 
 ### output.barrel
 
+<!--@include: ../../../snippets/how-to/barrel.md-->
+
 Sets the re-export style for the barrel files. Set it on `defineConfig` to control the root barrel and the default every plugin inherits. Set it on a single plugin to override that plugin's barrel.
 
 The `type` field picks the export style. A plugin's `output.barrel` also accepts `nested`, so the plugin writes an `index.ts` in every subdirectory. The root `output.barrel` has no `nested` field and always stays flat.
