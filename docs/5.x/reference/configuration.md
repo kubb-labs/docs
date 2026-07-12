@@ -184,6 +184,10 @@ export default defineConfig({
 
 This writes every type into `src/gen/types.ts` and one client file per operation, grouped by tag (`src/gen/clients/pet/`, `src/gen/clients/store/`).
 
+Switch between the modes to see where the same operations land.
+
+<GroupingDiagram />
+
 > [!TIP]
 > `mode: 'file'` forbids `group`, since a single file has nothing to group. Pairing them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
