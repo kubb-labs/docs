@@ -140,17 +140,7 @@ Splits generated files into subfolders by the operation's tag or URL path. Each 
 >
 > `group` only applies to `output.mode: 'directory'` (the default). It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
 
-With `group: { type: 'tag' }`, the generator emits one folder per tag, named after the camelCased tag:
-
-```text [Resulting tree]
-src/gen/clients/
-├── pet/
-│   ├── addPet.ts
-│   └── getPetById.ts
-└── store/
-    ├── placeOrder.ts
-    └── getInventory.ts
-```
+With `group: { type: 'tag' }`, the generator emits one folder per tag, named after the camelCased tag.
 
 Pass `group.name` to customize the folder name. For example, a `name` function that appends `Service` to the group keeps a `petService/` layout.
 
