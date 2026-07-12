@@ -155,19 +155,7 @@ Splits generated files into subfolders by the operation's first tag or first pat
 >
 > `group` only applies to `output.mode: 'directory'` (the default). It is not valid with `output.mode: 'file'`, since a single-file output has no grouping concept.
 
-With `group: { type: 'tag' }`, the generator emits one folder per tag, named after the camelCased tag:
-
-```text [Resulting tree]
-src/gen/
-├── server.ts
-├── .mcp.json
-├── pet/
-│   ├── addPetHandler.ts
-│   └── getPetByIdHandler.ts
-└── store/
-    ├── getInventoryHandler.ts
-    └── placeOrderHandler.ts
-```
+With `group: { type: 'tag' }`, the generator emits one folder per tag, named after the camelCased tag.
 
 Pass `group.name` to customize the folder name. For example, a `name` function that appends `Controller` to the group keeps the pre-v5 `petController/` layout.
 
