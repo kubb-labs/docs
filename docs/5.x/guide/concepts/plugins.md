@@ -26,6 +26,8 @@ Each plugin keeps to its own corner. It registers generators that walk the AST, 
 
 A build moves through phases in a fixed order, and plugins subscribe to the moments that matter to them. The run opens with lifecycle and generation events, then enters the part most plugins live in: setup, the per-node walk, and the closing events.
 
+<LifecycleTimeline />
+
 During setup, every plugin wires itself in once. It registers its generators, sets its resolver, adds any macros, and resolves its options. Nothing has been generated yet, so setup is the place to validate input and fail fast when a required option is missing.
 
 Then Kubb walks the AST. For each schema node it calls the schema handlers, for each operation node the operation handlers, and once after the walk it calls the operations handlers with the full list. Generators return file nodes during this phase, which is where the bulk of the output is produced.

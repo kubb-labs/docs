@@ -11,6 +11,10 @@ A barrel file is an `index.ts` that re-exports everything from a directory. Cons
 
 `@kubb/plugin-barrel` ships inside `kubb`, and `defineConfig` registers it for you. Barrels appear with no setup, using the default `output.barrel` of `{ type: 'named' }`. This guide shows how to shape that default into the barrels your project needs.
 
+Toggle the export style and barrel depth to see what each `index.ts` re-exports.
+
+<BarrelTree />
+
 ## Configure the root barrel
 
 Set `output.barrel` on `defineConfig` to control the root `index.ts` and the default every plugin inherits. The `type` field picks the export style.
