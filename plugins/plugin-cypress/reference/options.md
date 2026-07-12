@@ -56,6 +56,8 @@ How the plugin consolidates its generated code into files.
 
 #### output.barrel
 
+<!--@include: ../../../snippets/how-to/barrel.md-->
+
 Controls how the generated `index.ts` (barrel) file re-exports the plugin's output.
 
 - `{ type: 'named' }` re-exports each symbol by name. Best for tree-shaking and explicit imports.
@@ -141,6 +143,8 @@ Text added to the bottom of every generated file. It works like `banner` but for
 |    Type: | `string \| ((meta: BannerMeta) => string)` |
 
 ### group
+
+<!--@include: ../../../snippets/how-to/grouping.md-->
 
 Splits generated files into subfolders by the operation's tag or URL path. Each group gets its own directory under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`.
 

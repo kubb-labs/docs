@@ -56,6 +56,8 @@ How the plugin consolidates its generated code into files.
 
 #### output.barrel
 
+<!--@include: ../../../snippets/how-to/barrel.md-->
+
 Controls how the generated `index.ts` (barrel) file re-exports the plugin's output.
 
 - `{ type: 'named' }` re-exports each symbol by name. Best for tree-shaking and explicit imports.
@@ -139,6 +141,8 @@ When you register a single client plugin, the plugin auto-detects it, so you onl
 |    Type: | `'axios' \| 'fetch'` |
 
 ### group
+
+<!--@include: ../../../snippets/how-to/grouping.md-->
 
 Splits generated files into subfolders by the operation's first tag or first path segment. Each group gets its own directory under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`.
 
