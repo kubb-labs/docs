@@ -5,6 +5,32 @@ description: Learn how to build a Kubb plugin from scratch. Step-by-step guide c
 outline: [2, 3]
 ---
 
+<script setup>
+const pluginTree = [
+  { name: 'kubb-plugin-example', type: 'dir', children: [
+    { name: 'src', type: 'dir', children: [
+      { name: 'index.ts', comment: 'Public exports (factory, generators, resolvers, types)' },
+      { name: 'plugin.ts', comment: 'definePlugin factory + plugin<Name>Name constant' },
+      { name: 'types.ts', comment: 'PluginExample = PluginFactoryOptions<...>' },
+      { name: 'generators', type: 'dir', comment: 'One file per generator (e.g. operationsGenerator.ts)', children: [
+        { name: 'exampleGenerator.ts' },
+      ] },
+      { name: 'resolvers', type: 'dir', comment: 'One file per resolver', children: [
+        { name: 'resolverExample.ts' },
+      ] },
+      { name: 'components', type: 'dir', comment: 'Optional: JSX components when using kubb/jsx' },
+      { name: 'templates', type: 'dir', comment: 'Optional: source templates exposed at runtime' },
+    ] },
+    { name: 'mocks', type: 'dir', comment: 'OpenAPI fixtures consumed by tests', children: [
+      { name: 'petStore.yaml' },
+    ] },
+    { name: 'package.json' },
+    { name: 'tsconfig.json' },
+    { name: 'README.md' },
+  ] },
+]
+</script>
+
 # Create your first plugin
 
 A [plugin](/docs/5.x/guide/concepts/plugins) teaches Kubb to generate something new. It owns its output folder and file naming, runs [generators](/docs/5.x/guide/concepts/generators) that walk the [AST](/docs/5.x/guide/concepts/ast), and hooks into the build lifecycle. Everything this guide uses comes from [`kubb/kit`](/docs/5.x/reference/kit) and its `kubb/kit/testing` subpath, so installing `kubb` is the only setup.
@@ -18,8 +44,8 @@ This guide builds a `kubb-plugin-example` package from scratch and publishes it 
 
 You need:
 
-- Node.js 22 or higher and pnpm (or npm/yarn)
-- TypeScript knowledge
+- [Node.js](https://nodejs.org) 22 or higher and [pnpm](https://pnpm.io) (or [npm](https://www.npmjs.com)/[yarn](https://yarnpkg.com))
+- [TypeScript](https://www.typescriptlang.org) knowledge
 - A Kubb project with a valid [configuration](/docs/5.x/reference/configuration)
 - A read of the [plugin concepts](/docs/5.x/guide/concepts/plugins) page
 
@@ -83,7 +109,7 @@ kubb generate
 
 Every official Kubb plugin uses the same layout, one folder per concern: `generators/`, `resolvers/`, `components/`, and `templates/`. The reference implementation is [`@kubb/plugin-axios`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-axios). Mirror it so other contributors find their way around:
 
-<FileTree />
+<FileTree :tree="pluginTree" />
 
 > [!TIP]
 > In [`@kubb/plugin-axios`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-axios), `src/index.ts` re-exports each generator, resolver, and the plugin factory by name. `src/plugin.ts` declares a `pluginAxiosName satisfies PluginAxios['name']` constant that other plugins consume.
