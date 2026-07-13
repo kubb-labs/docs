@@ -61,7 +61,7 @@ export const pluginHello = definePlugin(() => ({
 
 Wire it into `kubb.config.ts`:
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 // @errors: 2307
 import { defineConfig } from 'kubb/config'
 import { pluginHello } from './my-plugin.ts'
