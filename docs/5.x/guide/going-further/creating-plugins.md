@@ -83,24 +83,7 @@ kubb generate
 
 Every official Kubb plugin uses the same layout, one folder per concern: `generators/`, `resolvers/`, `components/`, and `templates/`. The reference implementation is [`@kubb/plugin-axios`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-axios). Mirror it so other contributors find their way around:
 
-```text [Resulting tree]
-kubb-plugin-example/
-├── src/
-│   ├── index.ts              # Public exports (factory, generators, resolvers, types)
-│   ├── plugin.ts             # definePlugin factory + plugin<Name>Name constant
-│   ├── types.ts              # PluginExample = PluginFactoryOptions<...>
-│   ├── generators/           # One file per generator (e.g. operationsGenerator.ts)
-│   │   └── exampleGenerator.ts
-│   ├── resolvers/            # One file per resolver
-│   │   └── resolverExample.ts
-│   ├── components/           # Optional: JSX components when using kubb/jsx
-│   └── templates/            # Optional: source templates exposed at runtime
-├── mocks/                    # OpenAPI fixtures consumed by tests
-│   └── petStore.yaml
-├── package.json
-├── tsconfig.json
-└── README.md
-```
+<FileTree />
 
 > [!TIP]
 > In [`@kubb/plugin-axios`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-axios), `src/index.ts` re-exports each generator, resolver, and the plugin factory by name. `src/plugin.ts` declares a `pluginAxiosName satisfies PluginAxios['name']` constant that other plugins consume.

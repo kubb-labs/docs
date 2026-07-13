@@ -33,8 +33,4 @@ End the path with a `.html` extension. If you leave the extension off, Kubb stil
 
 With `output.path` set to `'docs.html'` and the global `output.path` set to `'./src/gen'`, the plugin writes one file:
 
-```text [Resulting tree]
-src/
-└── gen/
-    └── docs.html
-```
+<FileTree :tree="[{ name: 'src', type: 'dir', children: [{ name: 'gen', type: 'dir', children: [{ name: 'docs.html' }] }] }]" />
