@@ -122,7 +122,7 @@ A generator is where a plugin produces code. Each one reads from the AST, a sche
 
 <FlowDiagram preset="renderer" />
 
-Plugins can use [`kubb/jsx`](/docs/5.x/reference/jsx), backed by `@kubb/renderer-jsx`, to describe generated files as React components instead of constructing `FileNode`s by hand.
+Plugins can use [`kubb/jsx`](/docs/5.x/reference/jsx) to describe generated files as React components instead of constructing `FileNode`s by hand.
 
 > [!NOTE]
 > `kubb/jsx` is optional. Plugins that build `FileNode`s directly with the `factory` node builders from [`kubb/kit`](/docs/5.x/reference/kit) do not need it.
