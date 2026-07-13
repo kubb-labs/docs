@@ -41,6 +41,7 @@ The severity tints the `[CODE]` tag.
 | [`KUBB_PLUGIN_NOT_FOUND`](/docs/5.x/reference/diagnostics/kubb-plugin-not-found) | error | A required plugin is missing from the config. |
 | [`KUBB_ADAPTER_REQUIRED`](/docs/5.x/reference/diagnostics/kubb-adapter-required) | error | An action needs an adapter but none is configured. |
 | [`KUBB_PATH_TRAVERSAL`](/docs/5.x/reference/diagnostics/kubb-path-traversal) | error | A resolved path escaped the output directory. |
+| [`KUBB_CLEAN_ROOT`](/docs/5.x/reference/diagnostics/kubb-clean-root) | error | `output.clean` would delete the project root instead of only the generated code. |
 | [`KUBB_INVALID_PLUGIN_OPTIONS`](/docs/5.x/reference/diagnostics/kubb-invalid-plugin-options) | error | A plugin was configured with options that cannot be honored. |
 
 ## OpenAPI
