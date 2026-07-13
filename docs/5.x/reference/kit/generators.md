@@ -64,9 +64,6 @@ const myGenerator = defineGenerator({
 | `ctx.warn()`          | `(message: string) => void`                         | Emit a warning via the build event system                            |
 | `ctx.error()`         | `(error: string \| Error) => void`                  | Emit an error via the build event system                             |
 
-> [!TIP]
-> Return an empty array `[]` to skip a node without error. Return `void` to handle file writing manually via `ctx.upsertFile()`.
-
 ### Related
 
 - [Generator concepts](/docs/5.x/guide/concepts/generators)
