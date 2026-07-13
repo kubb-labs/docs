@@ -32,6 +32,7 @@ export const pluginExample = definePlugin((options: { prefix?: string } = {}) =>
 | -------------- | ------------------------------------ | -------- | ---------------------------------------------------------- |
 | `name`         | `string`                             | Yes      | Unique plugin identifier (e.g., `plugin-ts`)               |
 | `dependencies` | `Array<string>`                      | No       | Names of other plugins this one requires                   |
+| `enforce`      | `'pre' \| 'post'`                    | No       | Run this plugin before (`'pre'`) or after (`'post'`) the normal plugins. Dependency order still wins. |
 | `options`      | `unknown`                            | No       | User-supplied options passed through to generators         |
 | `hooks`        | `{ 'kubb:plugin:setup'?: ...; ... }` | Yes      | Lifecycle handlers (see [Plugin API](/docs/5.x/guide/concepts/plugins)) |
 

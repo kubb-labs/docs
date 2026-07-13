@@ -112,9 +112,10 @@ Macros run before resolver options are computed, so a renamed `operationId` or `
 
 Kubb ships built-in macros for common schema normalizations that any adapter can apply. Import them like any macro and compose them with your own.
 
-`macroSimplifyUnion` drops union members that a broader member already covers, such as a multi-value string enum next to a plain `string`. Single-value enums stay, since they narrow the type. `macroDiscriminatorEnum` rewrites a discriminator property into a string enum of its allowed values, and `macroEnumName` names an inline enum from the schema and property it belongs to. The last two read options, so you call them to build a macro.
-
-`macroRenameSchema` renames a schema consistently: it changes the declaration's `name` and stamps `targetName` on every ref that points at the old name, so [`resolveRefName`](/docs/5.x/reference/kit/ast#refs-and-naming-helpers) and [`resolver.imports`](/docs/5.x/reference/kit/resolvers#imports) emit the new name everywhere.
+- `macroSimplifyUnion` drops union members that a broader member already covers, such as a multi-value string enum next to a plain `string`. Single-value enums stay, since they narrow the type.
+- `macroDiscriminatorEnum` rewrites a discriminator property into a string enum of its allowed values. It reads options, so you call it to build a macro.
+- `macroEnumName` names an inline enum from the schema and property it belongs to. It reads options, so you call it to build a macro.
+- `macroRenameSchema` renames a schema consistently: it changes the declaration's `name` and stamps `targetName` on every ref that points at the old name, so [`resolveRefName`](/docs/5.x/reference/kit/ast#refs-and-naming-helpers) and [`resolver.imports`](/docs/5.x/reference/kit/resolvers#imports) emit the new name everywhere.
 
 ```typescript twoslash [presets.ts]
 import { ast } from 'kubb/kit'
