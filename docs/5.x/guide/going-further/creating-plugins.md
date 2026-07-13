@@ -277,17 +277,11 @@ Each handler can return a Promise of any of these.
 
 ### Emit roles
 
-Most generators return `Array<FileNode>` built with the `create*` factories from `kubb/kit` (`ast.factory`). That is the default. Three named roles cover the cases beyond it.
-
-A printer renders one `SchemaNode` to a string, such as a TypeScript type or a `z.object({ ... })`. A handler calls it and stages the result on a `FileNode`.
-
-A renderer turns JSX into `FileNode`s. Return an element instead of `Array<FileNode>`, set `renderer: jsxRenderer` on the generator, and `kubb/jsx` walks the JSX into the same nodes the builder produces. It is sugar over the builder, not a second pipeline.
-
-A parser handles serialization and runs last. It belongs to the build driver. Once every plugin finishes, the matching [parser](/docs/5.x/guide/concepts/parsers) writes each `FileNode` out as the final file string. Plugins never call it.
+Most generators return `Array<FileNode>` built with the `create*` factories from `kubb/kit` (`ast.factory`). That is the default. Two paths cover the rest. A printer renders one `SchemaNode` to a string, such as a TypeScript type or a `z.object({ ... })`, that a handler stages on a `FileNode`. A [renderer](/docs/5.x/guide/concepts/renderers) turns JSX into `FileNode`s when you set `renderer: jsxRenderer` and return an element instead of an array. Serialization is not your job: once every plugin finishes, the matching [parser](/docs/5.x/guide/concepts/parsers) writes each `FileNode` out as its final string.
 
 ### src/generators/exampleGenerator.ts
 
-Inside a handler, `ctx` is a `GeneratorContext`. It carries helpers such as `addFile`, `upsertFile`, `getResolver`, `requirePlugin`, `warn`, `error`, and `info`, plus the resolved `config`, `root`, `adapter`, and document `meta`. The `meta` is an `InputMeta` with `title`, `version`, `baseURL`, `circularNames`, and `enumNames`.
+Inside a handler, `ctx` is a `GeneratorContext`: file helpers like `addFile` and `upsertFile`, the cross-plugin `getResolver` and `requirePlugin`, the loggers `warn`, `error`, and `info`, and the resolved `config`, `root`, `adapter`, and document `meta`. The [generator reference](/docs/5.x/reference/kit/generators) lists every field.
 
 ```typescript twoslash [exampleGenerator.ts]
 import { ast, defineGenerator } from 'kubb/kit'

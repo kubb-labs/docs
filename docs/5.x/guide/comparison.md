@@ -134,7 +134,7 @@ A [custom adapter](/docs/5.x/guide/concepts/adapters) swaps `adapterOas` for ano
 
 ### Advanced client
 
-One client backs both [`fetch`](/plugins/plugin-fetch/) and [`axios`](/plugins/plugin-axios/). It reads `style` and `explode` for query, path, header, and cookie, picks a body encoder from the content type, and decodes the response by media type. [`codecs`](/plugins/plugin-fetch/guide/serialization#request-bodies) add a `serialize` and `deserialize` per media type, so XML or YAML round-trips without swapping the client. A call returns a status-discriminated result you narrow with one `switch`, and [`throwOnError`](/plugins/plugin-fetch/guide/error-handling) picks throw or return per call. The codecs and the full parameter-style coverage are what orval and HeyAPI do not match.
+One client backs both [`fetch`](/plugins/plugin-fetch/) and [`axios`](/plugins/plugin-axios/), covered in [Client runtime](#client-runtime) above. Its pluggable [`codecs`](/plugins/plugin-fetch/guide/serialization#request-bodies) per media type and full parameter-style coverage are what orval and HeyAPI do not match.
 
 ### Post-enforced plugins
 
