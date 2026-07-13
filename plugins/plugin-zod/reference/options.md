@@ -53,18 +53,6 @@ How the plugin consolidates generated code into files.
 
 <!--@include: ../../../snippets/how-to/barrel.md-->
 
-Controls how the generated `index.ts` (barrel) file re-exports the plugin's output.
-
-- `{ type: 'named' }` re-exports each symbol by name, best for tree-shaking.
-- `{ type: 'all' }` uses `export *`, exporting everything.
-- `{ nested: true }` adds a barrel in every subdirectory, so callers import from any depth.
-- `false` skips the barrel and excludes the plugin's files from the root `index.ts`.
-
-|          |                                                         |
-| -------: | :------------------------------------------------------ |
-|    Type: | `{ type: 'named' \| 'all', nested?: boolean } \| false` |
-| Default: | `{ type: 'named' }`                                     |
-
 #### output.banner
 
 Text added to the top of every generated file, for license headers or a `@ts-nocheck` directive. Pass a string, or a function that builds one from a `BannerMeta` object (document and per-file context like `isBarrel`), so a directive such as `'use server'` can skip barrels.

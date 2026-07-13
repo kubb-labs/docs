@@ -46,11 +46,6 @@ How the plugin consolidates its code into files, either `'directory'` or `'file'
 
 Controls how the generated `index.ts` barrel re-exports the plugin's output. It accepts `{ type: 'named' | 'all', nested?: boolean }` or `false`, defaulting to `{ type: 'named' }`.
 
-- `{ type: 'named' }` re-exports each symbol by name, favoring tree-shaking.
-- `{ type: 'all' }` uses `export *` for a smaller barrel that exports everything.
-- `{ nested: true }` adds a barrel in every subdirectory, so callers can import from any depth.
-- `false` skips the barrel and excludes the plugin's files from the root `index.ts`.
-
 #### output.banner
 
 Text added to the top of every generated file, for license headers or a `@ts-nocheck` directive. Pass a string, or a function that builds one from a `BannerMeta` object holding the document info and per-file context (`filePath`, `baseName`, `isBarrel`, `isAggregation`), so a directive such as `'use server'` can skip barrel files.

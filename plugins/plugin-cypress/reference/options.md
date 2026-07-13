@@ -42,17 +42,6 @@ How the plugin consolidates its generated code into files.
 
 Controls how the generated `index.ts` (barrel) file re-exports the plugin's output.
 
-- `{ type: 'named' }` re-exports each symbol by name, best for tree-shaking.
-- `{ type: 'all' }` uses `export *` to re-export everything.
-- `{ nested: true }` creates a barrel in every subdirectory, so callers can import from any depth.
-- `false` skips the barrel entirely, and excludes the plugin's files from the root `index.ts`.
-
-```typescript ['named' (default)]
-// src/gen/cypress/index.ts
-export { getPetById } from './getPetById'
-export { addPet } from './addPet'
-```
-
 #### output.banner
 
 Text added to the top of every generated file, such as license headers, lint disables, or a `@ts-nocheck` directive. Pass a string, or a function that receives a `BannerMeta` object (document info `title`, `description`, `version`, `baseURL` plus per-file context `filePath`, `baseName`, `isBarrel`, and `isAggregation`) and returns the text, so a directive such as `'use server'` can skip barrel files.

@@ -43,43 +43,6 @@ How generated code is consolidated into files. Defaults to `'directory'`.
 
 How the generated `index.ts` (barrel) re-exports the plugin's output. Defaults to `{ type: 'named' }`.
 
-- `{ type: 'named' }` re-exports each symbol by name, best for tree-shaking.
-- `{ type: 'all' }` uses `export *`.
-- `{ nested: true }` adds a barrel in every subdirectory, so callers can import from any depth.
-- `false` skips the barrel and excludes the plugin's files from the root `index.ts`.
-
-::: code-group
-
-```typescript ['named' (default)]
-// src/gen/types/index.ts
-export { Pet, PetStatus } from './Pet'
-export { Store } from './Store'
-```
-
-```typescript ['all']
-// src/gen/types/index.ts
-export * from './Pet'
-export * from './Store'
-```
-
-```text [nested]
-src/gen/types/
-├── index.ts          # re-exports ./pet and ./store
-├── pet/
-│   ├── index.ts      # re-exports Pet, Store, ...
-│   └── Pet.ts
-└── store/
-    ├── index.ts
-    └── Store.ts
-```
-
-```text [false]
-# No index.ts is generated for this plugin.
-# Its files are also excluded from the root index.ts.
-```
-
-:::
-
 #### output.banner
 
 Text added to the top of every generated file, such as a license header or `@ts-nocheck` directive. Pass a string, or a function `(meta: BannerMeta) => string` that receives the document info (`title`, `description`, `version`, `baseURL`) and per-file context (`filePath`, `baseName`, `isBarrel`, `isAggregation`), so a directive can skip barrel files.
