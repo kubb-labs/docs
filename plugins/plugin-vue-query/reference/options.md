@@ -182,4 +182,3 @@ Changes how composables and files are named without forking the plugin. Override
 ### macros
 
 Rewrites AST nodes before printing, to rename operation IDs, drop descriptions, or change schema metadata. Each [macro](/docs/5.x/guide/going-further/macros) callback (`schema`, `operation`, and so on) receives the node and a context, returning a new node or `undefined` to leave it unchanged. To rename generated symbols and files, use `resolver`.
-</content>
