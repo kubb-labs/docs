@@ -39,10 +39,3 @@ export default defineConfig({
 ## When to write your own
 
 Build a custom driver when the destination is neither the filesystem nor memory: an object store like S3, a virtual filesystem in the browser, or a remote service. A driver is any object that satisfies the `Storage` contract, and `createStorage` from `kubb/kit` wraps your backend into a reusable factory. The interface, the `createStorage` signature, and a worked example live in the [Kit API reference](/docs/5.x/reference/kit/storage#createstorage).
-
-## Reference
-
-- [Storage in the Kit API](/docs/5.x/reference/kit/storage): `createStorage`, `fsStorage`, and `memoryStorage`.
-- [The `Storage` interface](/docs/5.x/reference/kit/storage#storage-interface): the contract every driver implements.
-- [`storage` configuration option](/docs/5.x/reference/configuration#storage): where to set the driver.
-- [Testing plugins](/docs/5.x/guide/going-further/creating-plugins#testing): capture generated files with `memoryStorage`.

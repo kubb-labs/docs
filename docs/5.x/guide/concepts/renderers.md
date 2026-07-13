@@ -20,7 +20,3 @@ Kubb ships [`kubb/jsx`](/docs/5.x/reference/jsx) for the JSX path. Its `jsxRende
 ## When you write your own
 
 Most plugins never need a custom renderer. Reach for `createRenderer` only when a generator emits through some other templating format and needs it walked into `FileNode`s. If you are building files directly or through JSX, the shipped tools already cover you.
-
-## Reference
-
-`createRenderer` and `jsxRenderer` live in the [Kit API reference](/docs/5.x/reference/kit/renderers). The full JSX component set, the runtime subpaths, and the built-in components are in the [JSX API reference](/docs/5.x/reference/jsx). See [AST](/docs/5.x/guide/concepts/ast) for the `ast.factory` builders that are the alternative to rendering.

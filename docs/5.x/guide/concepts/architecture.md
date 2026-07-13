@@ -131,13 +131,13 @@ Plugins can use [`kubb/jsx`](/docs/5.x/reference/jsx) to describe generated file
 
 <FlowDiagram preset="resolver" />
 
-A resolver decides what a plugin's files are called and where they land. When a generator needs a file name or an import path, it asks the resolver instead of building the string itself, so naming stays consistent and plugins can import each other's output by reading its resolver.
+A resolver answers two questions for every file a plugin emits: its name and its path. When a generator needs a file name or an import path, it asks the resolver instead of building the string itself, so names and paths stay consistent and plugins can import each other's output by reading its resolver.
 
 ## [Parsers](/docs/5.x/guide/concepts/parsers)
 
 <FlowDiagram preset="parsers" />
 
-A parser converts a `FileNode` into a source string. Each parser declares which file extensions it handles, and Kubb dispatches every emitted file to the first matching parser.
+A parser converts a `FileNode` into a source string. Each parser declares which file extensions it handles, and Kubb dispatches every emitted file to the parser registered for its extension.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -152,7 +152,7 @@ export default defineConfig({
 ```
 
 > [!IMPORTANT]
-> When two parsers claim the same extension, the first one wins.
+> When two parsers claim the same extension, the last one in the `parsers` array wins.
 
 | Package                                 | Extensions                   | Description                                                                                                  |
 | --------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------ |

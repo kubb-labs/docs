@@ -32,28 +32,28 @@ The `kubb:plugin:setup` hook is where you wire generators and resolvers into the
 ```typescript twoslash [my-plugin.ts]
 import { ast, definePlugin, defineGenerator } from 'kubb/kit'
 
+const helloGenerator = defineGenerator({
+  name: 'hello-generator',
+  operation(node, ctx) {
+    return [
+      ast.factory.createFile({
+        baseName: `${node.operationId}.ts`,
+        path: `${ctx.root}/${node.operationId}.ts`,
+        sources: [
+          ast.factory.createSource({
+            nodes: [ast.factory.createText(`// ${node.method} ${node.path}\n`)],
+          }),
+        ],
+      }),
+    ]
+  },
+})
+
 export const pluginHello = definePlugin(() => ({
   name: 'plugin-hello',
   hooks: {
     'kubb:plugin:setup'(ctx) {
-      ctx.addGenerator(
-        defineGenerator({
-          name: 'hello-generator',
-          operation(node, _ctx) {
-            return [
-              ast.factory.createFile({
-                baseName: `${node.operationId}.ts`,
-                path: `${_ctx.root}/${node.operationId}.ts`,
-                sources: [
-                  ast.factory.createSource({
-                    nodes: [ast.factory.createText(`// ${node.method} ${node.path}\n`)],
-                  }),
-                ],
-              }),
-            ]
-          },
-        }),
-      )
+      ctx.addGenerator(helloGenerator)
     },
   },
 }))
@@ -130,10 +130,11 @@ export const pluginExampleName = 'plugin-example' satisfies Plugin['name']
 
 ## Plugin anatomy
 
-Four files form the skeleton. Read them in this order: types first, then the implementation, then the public entry point.
+These files form the skeleton, in reading order: the option types, then the generator and resolver that do the work, then the plugin that wires them together and the barrel that exports them.
 
-```typescript twoslash [Plugin anatomy]
-// @filename: src/types.ts
+::: code-group
+
+```typescript [src/types.ts]
 import type { PluginFactoryOptions } from 'kubb/kit'
 
 /** User-facing options for kubb-plugin-example. */
@@ -150,8 +151,9 @@ export interface PluginExampleOptions {
  * build loop share a consistent interface.
  */
 export type PluginExample = PluginFactoryOptions<'plugin-example', PluginExampleOptions, Required<PluginExampleOptions>>
+```
 
-// @filename: src/generators/exampleGenerator.ts
+```typescript [src/generators/exampleGenerator.ts]
 import { ast, defineGenerator } from 'kubb/kit'
 import type { PluginExample } from '../types'
 
@@ -200,8 +202,9 @@ export function createExampleGenerator(filename: `${string}.${string}`, generate
     },
   })
 }
+```
 
-// @filename: src/resolvers/resolverExample.ts
+```typescript [src/resolvers/resolverExample.ts]
 import { createResolver } from 'kubb/kit'
 import type { PluginExample } from '../types'
 
@@ -214,8 +217,9 @@ import type { PluginExample } from '../types'
 export const resolverExample = createResolver<PluginExample>({
   pluginName: 'plugin-example',
 })
+```
 
-// @filename: src/plugin.ts
+```typescript [src/plugin.ts]
 import { definePlugin } from 'kubb/kit'
 import type { Plugin } from 'kubb/kit'
 import type { PluginExample } from './types'
@@ -239,13 +243,16 @@ export const pluginExample = definePlugin<PluginExample>((options) => {
     },
   }
 })
+```
 
-// @filename: src/index.ts
+```typescript [src/index.ts]
 export { createExampleGenerator } from './generators/exampleGenerator'
 export { resolverExample } from './resolvers/resolverExample'
 export { pluginExample, pluginExampleName } from './plugin'
 export type { PluginExampleOptions, PluginExample } from './types'
 ```
+
+:::
 
 ## Generators
 

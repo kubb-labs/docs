@@ -22,7 +22,3 @@ A parser splits the work of producing code across two moments in the build.
 Parsers are the last transform before storage. The [AST](/docs/5.x/guide/concepts/ast) stays language-neutral all the way through generation, and the parser is the single place that commits to a concrete syntax. That boundary is what keeps a plugin like the React Query generator from caring whether the output is `.ts` or `.tsx`: it emits nodes, and the parser prints them.
 
 Files reach the parser one at a time. The file processor pulls each emitted file through `parse()` and hands the result to storage without buffering the whole build, so memory stays flat no matter how many files a spec produces.
-
-## Reference
-
-`defineParser`, the `Parser` interface, the built-in `@kubb/parser-ts`, and a worked custom-parser example live in the [Kit API reference](/docs/5.x/reference/kit/parsers).

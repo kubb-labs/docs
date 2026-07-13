@@ -38,7 +38,3 @@ The same tree flows through four stages, each documented on its own page:
 
 > [!NOTE]
 > Import the `ast` namespace and its `factory` node builders from [`kubb/kit`](/docs/5.x/guide/concepts/kit), alongside `definePlugin` and `defineGenerator`. Everything on this page, including the guards, the macros, the printer, and the visitors, comes from that same namespace. See the [Kit API reference](/docs/5.x/reference/kit) for the full list.
-
-## Reference
-
-The callable surface lives in the [Kit API reference](/docs/5.x/reference/kit/ast): the `transform` and `collect` visitors, the type guards, and the naming helpers.
