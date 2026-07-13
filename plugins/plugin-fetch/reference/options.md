@@ -17,8 +17,8 @@ Pass these options to `pluginFetch()` to control what it generates and where the
 | [`validator`](#validator) | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` | `false` | Validate request and response bodies with Zod |
 | [`sdk`](#sdk) | `{ mode?: 'tag' \| 'flat'; name?: string }` | — | Generate a class-based SDK instead of functions |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
-| [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
-| [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
+| [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
+| [`override`](#override) | `Array<Override>` | `[]` | Apply different options per pattern |
 | [`resolver`](#resolver) | `Partial<ResolverClient>` | — | Customize generated names and file paths |
 | [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
 
