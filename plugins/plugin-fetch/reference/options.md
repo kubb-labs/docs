@@ -167,7 +167,7 @@ Function that turns a group key into a folder name. The default depends on `grou
 
 ### baseURL
 
-Base URL prepended to every request the functions make. When omitted, the client falls back to the server URL the [OpenAPI adapter](/adapters/adapter-oas/) resolves, which it only does when the adapter's `server.index` points at an entry in the spec's `servers` list. Set it to point the client at a different environment, such as staging or production, than the spec.
+Base URL prepended to every request the functions make. When omitted, no host is prepended and each request uses the operation's relative path from the spec. Set it to point the client at a different environment, such as staging or production.
 
 A value containing a `${...}` interpolation is emitted as a template literal in the generated client config, so `baseURL: '${process.env.API_URL}'` reads the environment variable when the app runs instead of baking in the build-time value.
 

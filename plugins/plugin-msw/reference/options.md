@@ -182,7 +182,7 @@ For `type: 'path'` groups, the default uses the first URL segment as-is instead 
 
 ### baseURL
 
-Base URL prepended to every handler's request. When omitted, the URL comes from the adapter's server URL, usually the spec's `servers[0].url`. Set it to point at a different environment than the spec.
+Base URL prepended to every handler's request. When omitted, no host is prepended and each handler matches the operation's relative path from the spec. Set it to point at a different environment than the spec.
 
 |          |          |
 | -------: | :------- |

@@ -185,7 +185,7 @@ Function that turns a group key into a folder name. For `'tag'` groups the key i
 
 ### baseURL
 
-Base URL prepended to every request in the generated helpers. When omitted, the URL comes from the adapter's server URL, usually the spec's `servers[0].url`. Set it to point the helpers at a different environment, such as staging or production.
+Base URL prepended to every request in the generated helpers. When omitted, no host is prepended and each helper uses the operation's relative path from the spec. Set it to point the helpers at a different environment, such as staging or production.
 
 |          |          |
 | -------: | :------- |
