@@ -92,7 +92,10 @@ Text added to the bottom of every generated file (`string` or `(meta: BannerMeta
 
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
-Splits generated files into subfolders by the operation's tag or URL path, each under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`. It applies only to `output.mode: 'directory'`, and combining it with `'file'` stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
+Splits generated files into subfolders by the operation's tag or URL path, each under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`. It applies only to `output.mode: 'directory'`.
+
+> [!IMPORTANT]
+> Combining `group` with `output.mode: 'file'` stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 #### group.type
 

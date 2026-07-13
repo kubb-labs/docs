@@ -72,6 +72,9 @@ Turns a group key into a folder name, defaulting to the camelCased tag, or the f
 
 Which registered client plugin the hooks call, `'axios'` or `'fetch'`. When omitted, a single registered client plugin is auto-detected, so it is only needed to disambiguate several.
 
+> [!NOTE]
+> The hooks call a client plugin's functions, so register `@kubb/plugin-axios` or `@kubb/plugin-fetch` alongside this one.
+
 ### infinite
 
 Adds infinite-query output for pagination. Pass an object to configure the cursor, or `false` (the default) to skip. Emitted only for operations with a query parameter matching `infinite.queryParam`, and [`hooks`](#hooks) wraps it in `useInfiniteQuery`.

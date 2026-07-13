@@ -37,7 +37,8 @@ How the plugin consolidates its code into files, either `'directory'` or `'file'
 - `'directory'` writes one file per operation under `output.path`.
 - `'file'` writes everything into a single file, so `output.path` must include the extension such as `'clients.ts'`.
 
-`mode: 'file'` forbids the `group` option, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
+> [!IMPORTANT]
+> `mode: 'file'` forbids the `group` option, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 #### output.barrel
 

@@ -34,7 +34,10 @@ Folder where the plugin writes its files, resolved against the global `output.pa
 
 #### output.mode
 
-How the plugin consolidates generated code. `'directory'` (the default) writes one file per operation or schema under `output.path`. `'file'` writes everything into a single file, where `output.path` must include the extension such as `'mocks.ts'`. Pairing `mode: 'file'` with `group` is invalid and fails with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
+How the plugin consolidates generated code. `'directory'` (the default) writes one file per operation or schema under `output.path`. `'file'` writes everything into a single file, where `output.path` must include the extension such as `'mocks.ts'`.
+
+> [!IMPORTANT]
+> Pairing `mode: 'file'` with `group` is invalid and fails with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 #### output.barrel
 

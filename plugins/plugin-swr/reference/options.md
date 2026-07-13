@@ -34,7 +34,10 @@ Folder where the plugin writes its files (`string`, default `'hooks'`), resolved
 
 #### output.mode
 
-How the plugin consolidates generated code (`'directory' | 'file'`, default `'directory'`). The default writes one file per operation under `output.path` and can be grouped into subdirectories. `'file'` writes everything into a single file whose `path` must include the extension, and forbids `group` (the build fails with `KUBB_INVALID_PLUGIN_OPTIONS`).
+How the plugin consolidates generated code (`'directory' | 'file'`, default `'directory'`). The default writes one file per operation under `output.path` and can be grouped into subdirectories. `'file'` writes everything into a single file whose `path` must include the extension.
+
+> [!IMPORTANT]
+> `mode: 'file'` forbids `group`, and the build fails with `KUBB_INVALID_PLUGIN_OPTIONS`.
 
 #### output.barrel
 

@@ -50,6 +50,9 @@ Text added to the bottom of every generated file, mirroring `banner` with a stri
 
 Selects which registered client plugin the handlers call, `'fetch'` for `@kubb/plugin-fetch` or `'axios'` for `@kubb/plugin-axios`. Each handler calls that client's generated `<op>` for the operation, passing one grouped `{ path, query, headers, body }` object. A lone registered client plugin is auto-detected, so set this only to disambiguate when both are registered, and transport options such as `baseURL` live on the client plugin itself.
 
+> [!NOTE]
+> The handlers call a client plugin's functions, so register `@kubb/plugin-fetch` or `@kubb/plugin-axios` alongside this one.
+
 ### group
 
 <!--@include: ../../../snippets/how-to/grouping.md-->
