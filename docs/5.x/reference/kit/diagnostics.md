@@ -14,5 +14,7 @@ outline: [2, 3]
 | `Diagnostics.Error`     | Constructs a diagnostic-carrying error with a `code`, `severity`, and `message` |
 | `Diagnostics.hasError`  | Narrows an array of diagnostics to whether any has `severity: 'error'` |
 | `Diagnostics.isProblem` | Guards a diagnostic down to the problem kind (as opposed to `performance` or `update`) |
+| `Diagnostics.isPerformance` | Guards a diagnostic down to the `performance` kind, which carries a per-plugin `duration` |
+| `Diagnostics.isUpdate`  | Guards a diagnostic down to the `update` kind, emitted when a newer Kubb version is available |
 
 See the [Diagnostics reference](/docs/5.x/reference/diagnostics) for the full list of stable codes Kubb ships with, and how `Diagnostics.hasError` and `Diagnostics.isProblem` are used together after a build.

@@ -202,6 +202,7 @@ The ref and naming helpers ship on the `ast` namespace, alongside the other stri
 | `resolveRefName` | Resolve the name a ref node emits, preferring its `targetName`.     |
 | `childName`      | Derive a child property name from context.                          |
 | `enumPropName`   | Convert an enum value into a valid property name.                   |
+| `syncSchemaRef`  | Merge a ref node with its resolved schema, letting usage-site fields (`description`, `nullable`) override. |
 
 ```typescript twoslash [refs.ts]
 import { ast } from 'kubb/kit'
@@ -209,6 +210,26 @@ import { ast } from 'kubb/kit'
 const name = ast.extractRefName('#/components/schemas/Pet')
 //    ^?
 ```
+
+## Schema graph
+
+Analyze how schemas reference each other, to prune unused schemas or wrap circular ones in a lazy construct.
+
+| Helper                   | Purpose                                                                                            |
+| ------------------------ | ------------------------------------------------------------------------------------------------- |
+| `collectUsedSchemaNames` | Collect the names of every top-level schema transitively used by a set of operations. Pair it with `include` filters to leave unreferenced schemas ungenerated. |
+| `findCircularSchemas`    | Find every schema that takes part in a circular dependency chain, so those positions can be wrapped in a lazy getter or `z.lazy(() => …)`. |
+| `containsCircularRef`    | Report whether a schema, or anything nested inside it, references a circular schema.               |
+
+## Schema traversal
+
+Map the children of a composite schema to printer output, pairing each result with the source node. Printer overrides reach for these to recurse through their own `transform`.
+
+| Helper                | Purpose                                                                  |
+| --------------------- | ------------------------------------------------------------------------ |
+| `mapSchemaProperties` | Map each property of an object schema to its transformed output.         |
+| `mapSchemaMembers`    | Map each member of a union or intersection schema to its transformed output. |
+| `mapSchemaItems`      | Map each item of an array or tuple schema to its transformed output.     |
 
 ## Constants
 
@@ -226,6 +247,15 @@ A macro is a named, composable transform built on `transform`. Macros rewrite no
 | `composeMacros` | Fold an ordered list of macros into one visitor. |
 | `applyMacros`   | Run a list of macros over a node tree.           |
 
+Kubb also ships built-in macros for common schema normalizations that any adapter can compose with its own. See [Built-in macros](/docs/5.x/guide/going-further/macros#built-in-macros) for the full walkthrough.
+
+| Macro                    | Purpose                                                                                     |
+| ------------------------ | ------------------------------------------------------------------------------------------- |
+| `macroSimplifyUnion`     | Drop union members a broader scalar primitive already covers, such as a multi-value string enum next to `string`. |
+| `macroDiscriminatorEnum` | Replace a discriminator property's schema with a string enum of its allowed values.         |
+| `macroEnumName`          | Name an inline enum schema from its parent and property name.                               |
+| `macroRenameSchema`      | Rename a schema's declaration and retarget every ref pointing at it in one pass.            |
+
 ## Printers
 
 Lower-level helpers for parsers that turn the AST into source code:
@@ -236,4 +266,4 @@ Lower-level helpers for parsers that turn the AST into source code:
 
 `createPrinter` takes an `overrides` map to replace the handler for individual schema node types. Inside an override, `this.base(node)` runs the built-in handler the override replaced, so you can wrap its output instead of re-implementing it. Pass overrides through the `overrides` field rather than spreading them into `nodes`, otherwise `this.base` cannot find the original handler. The `printer.nodes` option on `@kubb/plugin-ts`, `@kubb/plugin-zod`, and `@kubb/plugin-faker` feeds this map. See [Override a printer](/docs/5.x/guide/going-further/printers).
 
-See [Parsers concepts](/docs/5.x/guide/concepts/parsers) for how parsers consume printers. `defineDialect` is the adapter seam for spec-specific schema behavior. It keeps the shared converters generic, so an adapter supplies only the questions that differ between specs. See [Schema dispatch and dialects](./adapters#schema-dispatch-and-dialects).
+See [Parsers concepts](/docs/5.x/guide/concepts/parsers) for how parsers consume printers.

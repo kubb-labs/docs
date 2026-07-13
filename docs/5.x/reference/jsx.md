@@ -50,7 +50,12 @@ const files = renderer.files
 
 ## Built-in components
 
-`kubb/jsx` groups its built-in components into four sets. Core covers `File` and its members, which declare an output file and the imports, exports, and source blocks that make it up. The JavaScript components `Const`, `Function`, `Function.Arrow`, and `Type` emit TypeScript. The markdown components `Callout`, `Frontmatter`, `Heading`, `List`, and `Paragraph` emit markdown. `Jsx` embeds raw JSX in the generated output.
+`kubb/jsx` groups its built-in components into four sets:
+
+- Core components (`File`, `File.Source`, `File.Import`, `File.Export`) declare an output file and the imports, exports, and source blocks that make it up.
+- JavaScript components (`Const`, `Function`, `Function.Arrow`, `Type`) emit TypeScript declarations.
+- Markdown components (`Callout`, `Frontmatter`, `Heading`, `List`, `Paragraph`) emit markdown.
+- `Jsx` embeds a raw JSX string in the generated output.
 
 | Component | Category | Emits |
 | --- | --- | --- |

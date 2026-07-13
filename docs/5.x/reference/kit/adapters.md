@@ -1,7 +1,7 @@
 ---
 layout: doc
 title: Adapters
-description: createAdapter builds an adapter that converts an input specification into the universal AST. Covers the Adapter interface, the built-in OpenAPI adapter, dialects, and writing your own.
+description: createAdapter builds an adapter that converts an input specification into the universal AST. Covers the Adapter interface, the built-in OpenAPI adapter, and writing your own.
 outline: [2, 3]
 ---
 

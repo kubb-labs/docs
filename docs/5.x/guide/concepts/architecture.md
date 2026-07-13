@@ -38,7 +38,7 @@ export default defineConfig({
 
 An adapter turns an input spec into the universal [AST](/docs/5.x/guide/concepts/ast). `adapter.parse(source)` returns an `InputNode` that already holds what the rest of Kubb needs, so nothing downstream has to read the original spec again.
 
-Every spec-specific question lives in the adapter's dialect: nullability, `$ref` resolution, discriminators, binary detection, and dedup. Past the adapter it's all plain JSON Schema, and plugins never check the source format.
+Every spec-specific question lives inside the adapter: nullability, `$ref` resolution, discriminators, and binary detection. Past the adapter it's all plain JSON Schema, and plugins never check the source format.
 
 The official adapter for OpenAPI 2.0, 3.0, and 3.1 is [`@kubb/adapter-oas`](/adapters/adapter-oas/). `defineConfig` selects it automatically.
 

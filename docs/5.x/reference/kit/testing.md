@@ -13,4 +13,14 @@ outline: [2, 3]
 import { createMockedPlugin, renderGeneratorOperation, matchFiles } from 'kubb/kit/testing'
 ```
 
-`createMockedPlugin` and `createMockedAdapter` build a minimal plugin or adapter for a test without wiring a full config. `createMockedPluginDriver` builds a driver around a set of plugins so a generator can run through its real lifecycle in isolation. `renderGeneratorSchema`, `renderGeneratorOperation`, and `renderGeneratorOperations` call a generator's `schema()`, `operation()`, or `operations()` method directly against a node fixture and return the resulting files. `matchFiles` asserts a set of generated `FileNode`s matches expected paths and contents, the assertion most generator tests end on.
+The subpath exports mocking builders, generator runners, and a snapshot matcher:
+
+| Export                      | What it does                                                                                                          |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `createMockedPlugin`        | Builds a minimal plugin for a test without wiring a full config.                                                     |
+| `createMockedAdapter`       | Builds a minimal adapter for a test without wiring a full config. `parse` returns an empty `InputNode` by default.   |
+| `createMockedPluginDriver`  | Builds a driver around a set of plugins so a generator runs through its real lifecycle in isolation.                 |
+| `renderGeneratorSchema`     | Calls a generator's `schema()` method against a `SchemaNode` fixture and collects the files it emits.                |
+| `renderGeneratorOperation`  | Calls a generator's `operation()` method against an `OperationNode` fixture and collects the files it emits.         |
+| `renderGeneratorOperations` | Calls a generator's `operations()` method against an array of `OperationNode` fixtures and collects the files it emits. |
+| `matchFiles`                | Asserts the generated `FileNode`s match expected paths and contents through file snapshots, the assertion most generator tests end on. |
