@@ -297,7 +297,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
   input: './petStore.yaml',
-  output: { path: './src/gen', clean: true, postGenerate: ['kubb validate -i ./petStore.yaml'] },
+  output: { path: './src/gen', clean: true, postGenerate: ['kubb validate ./petStore.yaml'] },
   plugins: [pluginTs()],
 })
 ```

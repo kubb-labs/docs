@@ -10,7 +10,7 @@ outline: [2, 3]
 Run `kubb validate` to check that a Swagger/OpenAPI document is valid without running the pipeline. Use it to catch errors early in CI or before you commit a spec change.
 
 ```terminal
-command: kubb validate -i ./petStore.yaml
+command: kubb validate ./petStore.yaml
 output:
   - ✅ Validation success
 ```
@@ -20,20 +20,20 @@ output:
 Validate a local OpenAPI file:
 
 ```shell [Terminal]
-kubb validate -i ./petStore.yaml
+kubb validate ./petStore.yaml
 ```
 
 Validate a remote document:
 
 ```shell [Terminal]
-kubb validate -i https://petstore3.swagger.io/api/v3/openapi.json
+kubb validate https://petstore3.swagger.io/api/v3/openapi.json
 ```
 
-## Options
+## Arguments
 
-| Option                        | Default | Required | Description                                              |
-| ----------------------------- | ------- | -------- | -------------------------------------------------------- |
-| `--input=<path>`, `-i <path>` |         | `true`   | Path or URL to the Swagger/OpenAPI document to validate. |
+| Argument  | Required | Description                                              |
+| --------- | -------- | -------------------------------------------------------- |
+| `<input>` | `true`   | Path or URL to the Swagger/OpenAPI document to validate. |
 
 > [!TIP]
 > `kubb validate` exits with a non-zero status code when the spec is invalid. Use it as a pre-commit hook or CI step to fail the build.
