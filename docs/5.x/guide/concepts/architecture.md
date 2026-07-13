@@ -36,9 +36,9 @@ export default defineConfig({
 
 <FlowDiagram preset="adapter" />
 
-An adapter converts an input specification into the universal [AST](/docs/5.x/guide/concepts/ast). `adapter.parse(source)` returns an `InputNode` whose ref nodes carry everything cross-referencing needs: a ref to a renamed schema is stamped with `targetName`, so [`resolver.imports`](/docs/5.x/reference/kit/resolvers#imports) emits correct import paths without a side channel.
+An adapter turns an input spec into the universal [AST](/docs/5.x/guide/concepts/ast). `adapter.parse(source)` returns an `InputNode` that already holds what the rest of Kubb needs, so nothing downstream has to read the original spec again.
 
-Each adapter carries a dialect, and that dialect is the one place where spec-specific schema questions live: nullability, `$ref` resolution, discriminators, binary detection, and schema deduplication. Everything past the adapter is generic JSON Schema, so plugins and parsers never branch on the source format.
+Every spec-specific question lives in the adapter's dialect: nullability, `$ref` resolution, discriminators, binary detection, and dedup. Past the adapter it's all plain JSON Schema, and plugins never check the source format.
 
 The official adapter for OpenAPI 2.0, 3.0, and 3.1 is [`@kubb/adapter-oas`](/adapters/adapter-oas/). `defineConfig` selects it automatically.
 
@@ -72,7 +72,7 @@ The [AST layer](/docs/5.x/guide/concepts/ast) ships two visitor patterns:
 
 <FlowDiagram preset="macros" />
 
-Macros are the second layer of the [AST](/docs/5.x/guide/concepts/ast). They are named, composable transforms that rewrite schema and operation nodes before a plugin's generators print code. Use them to rename symbols, retype fields, or normalize shapes without forking an adapter or a generator. Because they run on the shared AST, the same macro works across every adapter and output target.
+Macros are the second layer of the [AST](/docs/5.x/guide/concepts/ast). They are named, composable transforms that rewrite schema and operation nodes before a plugin's generators print code. Use them to rename symbols, retype fields, or normalize shapes.
 
 Macros run per plugin, so one plugin's macros never change the nodes another plugin sees. Pass them through a plugin's `macros` option, or register them from `kubb:plugin:setup` with `addMacro`.
 
