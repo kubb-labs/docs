@@ -25,6 +25,6 @@ A resolver owns the rules behind both of those questions:
 - The file name it lands in.
 - The folder that file goes to, with optional subdirectories per tag or operation path.
 
-It also turns every `$ref` in a schema into an import that follows those same rules, so a generated file points at its dependencies by the names their owners actually use.
+The same rules name the imports between files, so one generated file always refers to another by the name its owner gave it.
 
-Kubb ships defaults for all of this, so a plugin overrides only the rules it cares about and inherits the rest. See the [resolver reference](/docs/5.x/reference/kit/resolvers) for the defaults and the override API.
+Kubb ships defaults for all of this, so a plugin overrides only the rules it cares about and inherits the rest. The [resolver reference](/docs/5.x/reference/kit/resolvers) documents the defaults, the `imports` builder, and the override API.

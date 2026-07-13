@@ -19,9 +19,9 @@ A `SchemaNode` is discriminated by its `type`, which falls into one of three gro
 
 <SchemaNodeTypes />
 
-Request bodies and responses hold one `ContentNode` per content type (for example `application/json`), and each content node carries its own body schema. 
+Request bodies and responses hold one `ContentNode` per content type (for example `application/json`), and each content node carries its own body schema.
 
-- Every child slot is a node, so a single traversal drives both `transform` and `collect` across the whole tree. 
+- Every child slot is a node, so a single traversal drives both `transform` and `collect` across the whole tree.
 - Every node also carries a `kind` field as the discriminant, so `switch (node.kind)` narrows the type for you.
 
 ## Spec-agnostic by design

@@ -61,12 +61,7 @@ The AST is the intermediate representation between the [adapter](/docs/5.x/guide
 
 <AstTree />
 
-The [AST layer](/docs/5.x/guide/concepts/ast) ships two visitor patterns:
-
-| Visitor                     | Purpose                                                                                             |
-| --------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `transform(root, visitors)` | Produces a modified copy of the tree. Return a new node to replace one, or leave it untouched.       |
-| `collect(root, visitors)`   | Gathers matching nodes into a flat array. Use it for logging, validation, and statistics passes too. |
+Two visitors walk the tree: `transform` to rewrite nodes and `collect` to gather them. The [AST page](/docs/5.x/guide/concepts/ast) covers both.
 
 ## [Macros](/docs/5.x/guide/going-further/macros)
 
