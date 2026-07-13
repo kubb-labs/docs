@@ -26,7 +26,7 @@ With that in place, `.tsx` files in the plugin resolve `jsx-runtime` and `jsx-de
 
 ## `jsxRenderer()`
 
-`jsxRenderer` creates a renderer instance with two members, `render` and `files`, plus a `[Symbol.dispose]` cleanup hook. Call `render` with a JSX element, then read the generated files back off `files`.
+`jsxRenderer` creates a renderer instance with two members, `render` and `files`. Call `render` with a JSX element, then read the generated files back off `files`.
 
 ```tsx twoslash [render.tsx]
 import { jsxRenderer } from 'kubb/jsx'
@@ -341,14 +341,6 @@ Embeds a raw JSX string in the generated source, including fragments. Use it ins
   <Jsx>{'return (\n  <>\n    <div>Hello</div>\n  </>\n)'}</Jsx>
 </Function>
 ```
-
-## Types
-
-`KubbReactNode` is the JSX node type this renderer accepts. Use it to type a component's `children` or a helper that returns JSX. Each component's props type follows the `Kubb<Component>Props` convention, for example `KubbFileProps` for `File` and `KubbTypeProps` for `Type`.
-
-## Package
-
-`kubb/jsx` re-exports [`@kubb/renderer-jsx`](https://www.npmjs.com/package/@kubb/renderer-jsx). The underlying package stays directly installable and importable for projects that prefer not to depend on the `kubb` meta-package.
 
 ## See also
 

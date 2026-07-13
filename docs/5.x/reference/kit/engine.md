@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Engine and configuration
 
-The engine that runs your plugins comes from the `kubb` package and its `kubb/config` subpath, backed by the internal `@kubb/core` library. This page documents that surface: `defineConfig`, `createKubb`, and the build types they share.
+The engine that runs your plugins comes from the `kubb` package and its `kubb/config` subpath. This page documents that surface: `defineConfig`, `createKubb`, and the build types they share.
 
 ## `defineConfig`
 
@@ -135,18 +135,3 @@ Each `Diagnostic` carries a `code`, a `severity` (`error`, `warning`, or `info`)
 
 - [Programmatic usage recipe](/docs/5.x/guide/recipes#programmatic-build)
 
-## Narrowing `config.input`
-
-`config.input` is either a string (a path, a URL, or inline content) or a parsed object. Narrow between them with a [`typeof` check](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#typeof-type-guards):
-
-```typescript twoslash [narrow.ts]
-import type { UserConfig } from 'kubb'
-
-declare const input: NonNullable<UserConfig['input']>
-
-if (typeof input === 'string') {
-  const pathUrlOrContent = input // a path, a URL, or inline spec content
-} else {
-  const spec = input // the parsed spec object
-}
-```

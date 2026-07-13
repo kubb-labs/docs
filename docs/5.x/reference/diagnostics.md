@@ -17,13 +17,6 @@ your document, and a suggested fix. The CLI leads with the code and lists the de
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-ref-not-found
 ```
 
-The location is a JSON pointer into the source document. Kubb parses OpenAPI into an object model, so
-it points at the node (`#/components/schemas/Pet`) rather than a line and column.
-
-Each code is stable. You can search for it and link to its page. A run collects every diagnostic
-instead of stopping at the first, so one `kubb generate` surfaces every problem. The run fails only
-when at least one diagnostic has `error` severity. Warnings and info never fail the build.
-
 ## Severity
 
 The severity tints the `[CODE]` tag.
@@ -133,16 +126,3 @@ per-plugin durations slowest first. `name` is the config name, empty when unname
 
 The exit code is unchanged. It is non-zero on any error. See [`--reporter`](/docs/5.x/reference/commands/generate#reporters)
 for the other reporters.
-
-## Reading a diagnostic in the terminal
-
-The header reads `[CODE] plugin: message`. It shows the code in the severity color, then the plugin
-that emitted the diagnostic when known, then the message.
-
-`at:` holds the JSON pointer to the offending node. Config-level diagnostics such as
-`KUBB_PLUGIN_NOT_FOUND` have no pointer, so they skip this line.
-
-`fix:` is a suggested fix. `see:` links to the page for that code.
-
-At `--logLevel silent` Kubb suppresses the diagnostic log. The run still fails with a non-zero exit
-code, so CI keeps working without the noise.

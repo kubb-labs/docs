@@ -9,7 +9,7 @@ outline: [2, 3]
 
 ## `ast`
 
-`ast` is `kubb/kit`'s namespace for the entire AST surface, the same way TypeScript groups its node constructors under `ts.factory`. It carries the `factory` node builders, the `transform` and `collect` visitors, the guards, the ref and string helpers, and the macro engine. The namespace is backed by the internal `@kubb/ast` library. Always reach it through `kubb/kit`.
+`ast` is `kubb/kit`'s namespace for the entire AST surface, the same way TypeScript groups its node constructors under `ts.factory`. It carries the `factory` node builders, the `transform` and `collect` visitors, the guards, the ref and string helpers, and the macro engine.
 
 ```typescript twoslash [ast-namespace.ts]
 import { ast } from 'kubb/kit'
@@ -129,9 +129,6 @@ const enhanced = ast.transform(root, {
 
 Use `transform` to change AST structure, normalize inconsistencies, or annotate nodes.
 
-> [!NOTE]
-> `transform` preserves identity through structural sharing. When a visitor leaves a node and all its descendants unchanged, `transform` returns the original reference, so unchanged subtrees and their arrays are reused, not copied. Returning the same node is a no-op. Returning a new node replaces it and rebuilds only its ancestors. A no-op pass allocates nothing, and you detect whether anything changed with `result === input`.
-
 To apply a change and keep that guarantee, use the `update` factory instead of spreading by hand. It returns the same node when every field you pass already matches:
 
 ```typescript twoslash [update.ts]
@@ -240,21 +237,3 @@ Lower-level helpers for parsers that turn the AST into source code:
 `createPrinter` takes an `overrides` map to replace the handler for individual schema node types. Inside an override, `this.base(node)` runs the built-in handler the override replaced, so you can wrap its output instead of re-implementing it. Pass overrides through the `overrides` field rather than spreading them into `nodes`, otherwise `this.base` cannot find the original handler. The `printer.nodes` option on `@kubb/plugin-ts`, `@kubb/plugin-zod`, and `@kubb/plugin-faker` feeds this map. See [Override a printer](/docs/5.x/guide/going-further/printers).
 
 See [Parsers concepts](/docs/5.x/guide/concepts/parsers) for how parsers consume printers. `defineDialect` is the adapter seam for spec-specific schema behavior. It keeps the shared converters generic, so an adapter supplies only the questions that differ between specs. See [Schema dispatch and dialects](./adapters#schema-dispatch-and-dialects).
-
-## Collect every operation tag
-
-```typescript twoslash [tags.ts]
-import { ast } from 'kubb/kit'
-
-const root = ast.factory.createInput({ schemas: [], operations: [] })
-
-const tags = new Set(
-  ast.collect<string>(root, {
-    operation(node) {
-      return node.tags?.[0]
-    },
-  }),
-)
-
-console.log([...tags])
-```
