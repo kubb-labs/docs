@@ -61,7 +61,7 @@ Every value returned from `defineParser` matches the `Parser` interface from [`k
 | `print`    | `(...nodes: TNode[]) => string`                                           | Yes      | By plugins, before files are staged          | Renders compiler AST nodes to source text. The node type is parser-specific, for example `ts.Node` for `parserTs`. |
 
 > [!IMPORTANT]
-> If two parsers register the same extension, the first one in the `parsers` array wins. Order matters.
+> If two parsers register the same extension, the last one in the `parsers` array wins. Order matters.
 
 > [!NOTE]
 > `parse()` is synchronous. The file processor streams files through a synchronous pipeline, so returning a `Promise` is not supported. Do async work before the file reaches the parser and pass the result through `FileNode`.
