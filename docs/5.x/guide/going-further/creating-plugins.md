@@ -32,28 +32,28 @@ The `kubb:plugin:setup` hook is where you wire generators and resolvers into the
 ```typescript twoslash [my-plugin.ts]
 import { ast, definePlugin, defineGenerator } from 'kubb/kit'
 
+const helloGenerator = defineGenerator({
+  name: 'hello-generator',
+  operation(node, ctx) {
+    return [
+      ast.factory.createFile({
+        baseName: `${node.operationId}.ts`,
+        path: `${ctx.root}/${node.operationId}.ts`,
+        sources: [
+          ast.factory.createSource({
+            nodes: [ast.factory.createText(`// ${node.method} ${node.path}\n`)],
+          }),
+        ],
+      }),
+    ]
+  },
+})
+
 export const pluginHello = definePlugin(() => ({
   name: 'plugin-hello',
   hooks: {
     'kubb:plugin:setup'(ctx) {
-      ctx.addGenerator(
-        defineGenerator({
-          name: 'hello-generator',
-          operation(node, _ctx) {
-            return [
-              ast.factory.createFile({
-                baseName: `${node.operationId}.ts`,
-                path: `${_ctx.root}/${node.operationId}.ts`,
-                sources: [
-                  ast.factory.createSource({
-                    nodes: [ast.factory.createText(`// ${node.method} ${node.path}\n`)],
-                  }),
-                ],
-              }),
-            ]
-          },
-        }),
-      )
+      ctx.addGenerator(helloGenerator)
     },
   },
 }))
