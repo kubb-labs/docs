@@ -19,7 +19,7 @@ This guide builds a `kubb-plugin-example` package from scratch and publishes it 
 You need:
 
 - Node.js 22 or higher and pnpm (or npm/yarn)
-- Working TypeScript knowledge
+- TypeScript knowledge
 - A Kubb project with a valid [configuration](/docs/5.x/reference/configuration)
 - A read of the [plugin concepts](/docs/5.x/guide/concepts/plugins) page
 
