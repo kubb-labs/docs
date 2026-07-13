@@ -109,17 +109,6 @@ export default defineConfig({
 })
 ```
 
-## How it works
-
-`@kubb/plugin-barrel` uses `enforce: 'post'`, so it runs after all regular plugins finish. By that point the output tree is complete, so it walks the tree and writes an `index.ts` in each directory, then a root `index.ts` at the top of `output.path` that re-exports from every plugin directory.
-
-## Exports
-
-| Export             | Purpose                                                          |
-| ------------------ | --------------------------------------------------------------- |
-| `pluginBarrel`     | Plugin factory that emits barrel files based on `output.barrel`. |
-| `pluginBarrelName` | Stable string identifier (`'plugin-barrel'`).                    |
-
 ## See also
 
 - [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) for the plugin overview and examples
