@@ -80,7 +80,7 @@ Each handler now takes a second argument, the MCP `RequestHandlerExtra` object, 
 
 -export async function addPetHandler({ data }: { data: AddPetMutationRequest }): Promise<CallToolResult> {
 +export async function addPetHandler(
-+  { body }: AddPetRequestConfig,
++  { body }: AddPetOptions,
 +  request: RequestHandlerExtra<ServerRequest, ServerNotification>,
 +): Promise<CallToolResult> {
 -  const res = await fetch<AddPetMutationResponse, ResponseErrorConfig<AddPet405>, AddPetMutationRequest>({

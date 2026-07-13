@@ -21,7 +21,7 @@ These three options are gone. Each request helper now takes a single grouped opt
   })
 ```
 
-The helper signature changes from positional arguments to one object. The first argument is typed `XxxRequestConfig`, the `RequestConfig` type `@kubb/plugin-ts` generates. When an operation has a required parameter in a group, that group (`path`, `query`, or `headers`) is required too. The trailing `options` argument is unchanged.
+The helper signature changes from positional arguments to one object. The first argument is the grouped options type that `@kubb/plugin-ts` generates for the operation (for example `ShowPetByIdOptions`). When an operation has a required parameter in a group, that group (`path`, `query`, or `headers`) is required too. The trailing `options` argument, typed `Partial<Cypress.RequestOptions>`, is unchanged.
 
 ::: code-group
 
@@ -32,7 +32,7 @@ The helper signature changes from positional arguments to one object. The first 
 
 ```diff [Generated output]
 -export function showPetById(petId: number, query?: ShowPetByIdQueryParams, options = {}) {}
-+export function showPetById({ path, query }: ShowPetByIdRequestConfig, options = {}) {}
++export function showPetById({ path, query }: ShowPetByIdOptions, options = {}) {}
 ```
 
 :::
@@ -51,7 +51,7 @@ The helper signature changes from positional arguments to one object. The first 
 
 ## Generated output
 
-Two things change. HTTP method constants are now uppercase (`'post'` becomes `'POST'`), and imports follow the new `*Data` / `*Response` naming.
+Two things change. HTTP method constants are now uppercase (`'post'` becomes `'POST'`), and imports follow the new `*Options` / `*Response` naming.
 
 ```diff [Diff]
 - import type { AddPetMutationRequest, AddPetMutationResponse } from '../../models/AddPet.ts'
@@ -59,8 +59,8 @@ Two things change. HTTP method constants are now uppercase (`'post'` becomes `'P
 -   return cy.request<AddPetMutationResponse>({
 -     method: 'post',
 -     url: 'http://localhost:3000/pet',
-+ import type { AddPetBody, AddPetResponse } from '../../models.ts'
-+ export function addPet(data: AddPetBody): Cypress.Chainable<AddPetResponse> {
++ import type { AddPetOptions, AddPetResponse } from '../../models.ts'
++ export function addPet({ body }: AddPetOptions, options: Partial<Cypress.RequestOptions> = {}): Cypress.Chainable<AddPetResponse> {
 +   return cy.request<AddPetResponse>({
 +     method: 'POST',
 +     url: `http://localhost:3000/pet`,

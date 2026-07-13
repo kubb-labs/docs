@@ -94,7 +94,7 @@ useUpdatePet().mutate({ path: { petId }, body: pet })
 
 :::
 
-The first argument is typed `Omit<XxxRequestConfig, 'url'>`, the `RequestConfig` type `@kubb/plugin-ts` generates. The trailing `config` argument is unchanged.
+The first argument is the grouped options type that `@kubb/plugin-ts` generates for the operation (`{ path, query, body, headers }`, for example `GetPetByIdOptions`). The trailing `config` argument is typed `Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>`, where `RequestConfig` comes from the client plugin's `.kubb/client`.
 
 ## Generated output
 
@@ -116,14 +116,14 @@ The `TData` generic on `useMutation`, `useQuery`, `useInfiniteQuery`, `useSuspen
 ```diff [Diff]
   export function useAddPet<TContext>(
     options: {
-      mutation?: MutationObserverOptions<
+      mutation?: UseMutationOptions<
 -       AddPetResponse,
 +       AddPetStatus200,
         ResponseErrorConfig<AddPetStatus405>,
-        { data: AddPetBody },
+        AddPetOptions,
         TContext
       > & { client?: QueryClient }
-      client?: Partial<RequestConfig<AddPetBody>> & { client?: typeof client }
+      client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>
     } = {},
   ) { /* ... */ }
 ```
@@ -144,13 +144,14 @@ v4 generated an `enabled` guard from the required path and query parameters: `en
 v5 removes it. The `path`, `query`, and `headers` groups are required in the generated `queryKey`, `queryOptions`, and hook signatures whenever the operation has a required parameter in that group, and nothing emits `enabled` for you. The query key types only the groups it reads, so a required `headers` parameter never leaks onto the key.
 
 ```diff [Diff]
-  export function getPetByIdQueryOptions({ path }: Omit<GetPetByIdRequestConfig, 'url'>, config: Partial<RequestConfig> & { client?: Client } = {}) {
+  export function getPetByIdQueryOptions({ path }: GetPetByIdOptions, config: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>> = {}) {
     const queryKey = getPetByIdQueryKey({ path })
     return queryOptions<GetPetByIdStatus200, ResponseErrorConfig<GetPetByIdStatus400 | GetPetByIdStatus404>, GetPetByIdStatus200, typeof queryKey>({
 -     enabled: !!path?.petId,
       queryKey,
       queryFn: async ({ signal }) => {
-        return getPetById({ path }, { ...config, signal: config.signal ?? signal })
+        const { data } = await getPetById({ ...config, path, signal: config.signal ?? signal, throwOnError: true })
+        return data
       },
     })
   }

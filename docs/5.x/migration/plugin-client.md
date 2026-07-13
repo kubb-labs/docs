@@ -72,7 +72,7 @@ With `sdk` set, `mode: 'tag'` (the default) emits one class per tag, and a `name
 
 ## Remove `dataReturnType` and read the result
 
-`dataReturnType` is gone. Both client plugins return the shared `RequestResult` of `{ data, error, request, response }`, and `throwOnError` defaults to `true`. A `dataReturnType: 'data'` call becomes a destructure, and `dataReturnType: 'full'` becomes `throwOnError: false` so you can read `error` and `response.status`. The [main migration guide](/docs/5.x/migration#_11-remove-datareturntype-and-adopt-the-requestresult-contract) covers the full contract.
+`dataReturnType` is gone. Both client plugins return the shared `RequestResult` of `{ data, error, request, response }`, and `throwOnError` defaults to `true`. A `dataReturnType: 'data'` call becomes a destructure, and `dataReturnType: 'full'` becomes `throwOnError: false` so you can read `error` and `response.status`.
 
 ```diff [Diff]
 - const pet = await getPet(1)

@@ -21,41 +21,39 @@ Use [`printer.nodes`](/plugins/plugin-ts/reference/options#printer) to override 
 pluginTs({ paramsCasing: 'camelcase' })
 ```
 
-Parameter properties inside the generated `PathParams`, `QueryParams`, `HeaderParams`, and `RequestConfig` types are now always camelCase. In v4 they defaulted to the original spec names, and `paramsCasing: 'camelcase'` opted into the new behavior. v5 makes camelCase the only option, so drop the setting.
+Parameter properties inside the generated `Path`, `Query`, and `Headers` types are now always camelCase. In v4 they defaulted to the original spec names, and `paramsCasing: 'camelcase'` opted into the new behavior. v5 makes camelCase the only option, so drop the setting.
 
 ```typescript [Generated output]
 // OpenAPI spec uses: pet_id, X-Api-Key
-export type GetPetPathParams = { petId: string } // was { pet_id: string }
-export type GetPetHeaderParams = { xApiKey?: string } // was { 'X-Api-Key'?: string }
+export type GetPetPath = { petId: string } // was { pet_id: string }
+export type GetPetHeaders = { xApiKey?: string } // was { 'X-Api-Key'?: string }
 ```
 
-## Changed: `RequestConfig` groups request input
+## Changed: request input grouped under `Options`
 
-The generated `*RequestConfig` type now groups every request input under `{ path, query, body, headers }` so the client, query, and Cypress plugins all share one call shape. Each key holds the matching `*PathParams`, `*QueryParams`, `*Body`, or `*HeaderParams` type, or `never` when the operation has none. The `path`, `query`, and `headers` keys are required when the operation has a required parameter in that group, and the unused keys are typed `never` so passing them is a compile error.
+The generated `*Options` type groups every request input under `{ body, path, query, headers }` so the client, query, and Cypress plugins all share one call shape. Each key holds the matching `*Body`, `*Path`, `*Query`, or `*Headers` type, or `never` when the operation has none. The `body`, `path`, `query`, and `headers` keys are required when the operation has a required parameter in that group, and the unused keys are typed `never` so passing them is a compile error.
 
 ::: code-group
 
 ```typescript [Generated output]
-export type GetPetRequestConfig = {
-  path: { petId: string } // required: the operation has a required path param
-  query?: GetPetQueryParams
+export type GetPetOptions = {
   body?: never
+  path: GetPetPath // required: the operation has a required path param
+  query?: GetPetQuery
   headers?: never
-  url: '/pet/{petId}'
 }
 
-export type AddPetRequestConfig = {
+export type AddPetOptions = {
+  body: AddPetBody
   path?: never
   query?: never
-  body: AddPetBody
   headers?: never
-  url: '/pet'
 }
 ```
 
 :::
 
-The grouped object is what every generated client function, hook, and Cypress helper takes as its first argument, typed `Omit<XxxRequestConfig, 'url'>`. See the [client plugin removal note](/docs/5.x/migration/plugin-client), [plugin-react-query](/docs/5.x/migration/plugin-react-query), and [plugin-cypress](/docs/5.x/migration/plugin-cypress) pages for the call-site changes.
+The grouped `*Options` object is what every generated client function, hook, and Cypress helper takes as its first argument. See the [client plugin removal note](/docs/5.x/migration/plugin-client), [plugin-react-query](/docs/5.x/migration/plugin-react-query), and [plugin-cypress](/docs/5.x/migration/plugin-cypress) pages for the call-site changes.
 
 ## Renamed: `transformers.name`
 
