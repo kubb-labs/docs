@@ -381,7 +381,7 @@ export default defineConfig({
 
 ### Logging: `--debug` replaced by reporters
 
-The `--debug` flag and the `debug` value of `--logLevel` are gone. v5 renders a run through reporters, picked on the CLI with `--reporter` (comma-separated) or in the config with `reporters`. The CLI flag wins when both are set. Three reporters ship built in:
+The `--debug` flag and the `debug` value of `--logLevel` are gone. v5 renders a run through reporters. The CLI `--reporter` flag (comma-separated) selects which ones run, defaulting to `cli`. The config `reporters` key registers the reporters available to select from, and `defineConfig` registers the three built-ins for you. Three reporters ship built in:
 
 | Reporter          | Output                                                                  |
 | ----------------- | ----------------------------------------------------------------------- |
@@ -534,7 +534,7 @@ The `generators` plugin option is gone. It accepted an array of custom `Generato
 
 The helpers for authoring plugins, generators, resolvers, parsers, and adapters now live in the `kubb/kit` subpath of the `kubb` package. In v4 they were spread across `@kubb/core` (`definePlugin`), `@kubb/ast` (visitors, factory functions, guards), and `@kubb/plugin-oas` (`createGenerator`, `createReactGenerator`).
 
-The AST helpers move onto the `ast` namespace. Reach them through `kubb/kit` as `ast.extractRefName` and friends. The `@kubb/ast` package itself is gone, and so is its async `walk` visitor: use `ast.collect` for inspection passes and `ast.transform` for rewrites.
+The AST helpers move onto the `ast` namespace. Reach them through `kubb/kit` as `ast.extractRefName` and friends. You no longer import `@kubb/ast` directly, and its async `walk` visitor is gone: use `ast.collect` for inspection passes and `ast.transform` for rewrites.
 
 ::: code-group
 

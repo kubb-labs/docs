@@ -19,10 +19,10 @@ Handlers are now typed against the request body and headers. They take an `HttpR
 
 export function createUserHandler(
 -  data?: string | number | boolean | null | object | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Response | Promise<Response>),
-+  data?: string | number | boolean | null | object | HttpResponseResolver<Record<string, string>, CreateUserBody, any>,
++  data?: string | number | boolean | null | object | HttpResponseResolver<Record<string, string>, CreateUserBody>,
 ) {
 -  return http.post('http://localhost:3000/user', function handler(info) {
-+  return http.post<Record<string, string>, CreateUserBody, any>(`http://localhost:3000/user`, function handler(info) {
++  return http.post<Record<string, string>, CreateUserBody>(`http://localhost:3000/user`, function handler(info) {
     ...
   })
 }

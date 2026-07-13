@@ -106,4 +106,4 @@ useUpdatePet().trigger({ path: { petId }, body: pet })
 
 :::
 
-The first argument is typed `Omit<XxxRequestConfig, 'url'>`, the `RequestConfig` type `@kubb/plugin-ts` generates. The trailing `config` argument is unchanged.
+The first argument is the grouped options type that `@kubb/plugin-ts` generates for the operation (`{ path, query, body, headers }`, for example `GetPetByIdOptions`). The trailing `config` argument is typed `Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>`, where `RequestConfig` comes from the client plugin's `.kubb/client`.
