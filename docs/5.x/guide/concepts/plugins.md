@@ -24,22 +24,20 @@ Each plugin keeps to its own corner. It registers generators that walk the AST, 
 
 ## How the lifecycle runs
 
-A build moves through phases in a fixed order, and plugins subscribe to the moments that matter to them. The run opens with lifecycle and generation events, then enters the part most plugins live in: setup, the per-node walk, and the closing events.
+A build moves through phases in a fixed order, and each plugin subscribes only to the moments it cares about.
 
 <LifecycleTimeline />
 
-During setup, every plugin wires itself in once, before any code is generated. That makes setup the place to validate input and fail fast when a required option is missing.
+Setup runs first, once per plugin, before any code exists. That makes it the place to validate options and fail fast on a missing one. Kubb then walks the AST and calls your generator handlers for every schema and operation node, which is where most `FileNode`s come from.
 
-Then Kubb walks the AST, calling each plugin's generator handlers for every schema and operation node. Generators return `FileNode`s during this phase, which is where the bulk of the output is produced.
-
-When a plugin's generators finish, it gets a closing event with a snapshot of the files it produced. After every plugin has finished, a final event fires before anything is written to disk, which is the spot to inject aggregate files. Writing, formatting, and linting follow. The full event list, with the context each one carries, lives in the [Kit API](/docs/5.x/reference/kit).
+When a plugin's generators finish, a closing event hands it a snapshot of what it produced. One last event fires after every plugin is done and before anything hits disk, the spot to add aggregate files like a barrel. Writing, formatting, and linting follow. The [Kit API](/docs/5.x/reference/kit) lists every event and the context it carries.
 
 ## How plugins compose
 
 Plugins rarely work alone. A client plugin leans on the types a TypeScript plugin already generated, and a mock plugin reuses the same schemas. Kubb gives them two ways to cooperate without hard-coding paths or guessing at order:
 
 - Dependencies let a plugin name the other plugins it needs. Kubb runs those first and fails the build with a clear error when one is missing, so you never order the `plugins` array by hand.
-- Resolvers let a plugin read where another plugin's files live and what they are named. A generator asks for a sibling's resolver by plugin name and gets the same paths the owner would produce, so the two stay in sync even when naming rules change.
+- [Resolvers](/docs/5.x/guide/concepts/resolvers) let a plugin read another plugin's file names and paths by plugin name, so imports stay correct even when naming rules change.
 
 ## Post-enforced plugins
 
