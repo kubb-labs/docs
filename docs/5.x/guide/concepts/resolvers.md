@@ -15,10 +15,16 @@ A resolver answers two questions for every file a plugin emits: its name and its
 
 Plugins depend on each other's output. A React Query hook imports the types from `@kubb/plugin-ts` and the schemas from `@kubb/plugin-zod`. If each plugin invented file names inline, that coupling would break the moment one of them changed a casing rule. The resolver removes the guesswork. A plugin reads another plugin's resolver with `ctx.getResolver('plugin-ts')` and gets the exact names that plugin will emit, so the import always points at the right file.
 
-Centralizing naming also gives users one place to override it. Setting `name` or a namespace method on a plugin's resolver changes every file that plugin writes, without touching the generators.
+Centralizing naming also gives you one place to override it. Change a rule on a plugin's resolver and every file that plugin writes follows the new rule, without touching its generators.
 
 ## What a resolver controls
 
-The resolver owns identifier casing, the base file name including its extension, and the output path, with optional subdirectories per tag or per operation path. It also resolves cross-references: [`resolver.imports`](/docs/5.x/reference/kit/resolvers#imports) turns every `$ref` in a schema tree into an import entry that follows those same naming conventions.
+A resolver owns the rules behind both of those questions:
 
-Built-in defaults handle all of this, and they sit under `resolver.default` so an override can fall back to the original behavior instead of reimplementing it. Plugins that emit more than one symbol per node add namespaced methods on top, such as `query.name` or `response.status`.
+- The casing of each generated identifier.
+- The file name it lands in.
+- The folder that file goes to, with optional subdirectories per tag or operation path.
+
+It also turns every `$ref` in a schema into an import that follows those same rules, so a generated file points at its dependencies by the names their owners actually use.
+
+Kubb ships defaults for all of this, so a plugin overrides only the rules it cares about and inherits the rest. See the [resolver reference](/docs/5.x/reference/kit/resolvers) for the defaults and the override API.

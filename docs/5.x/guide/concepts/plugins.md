@@ -28,25 +28,24 @@ A build moves through phases in a fixed order, and plugins subscribe to the mome
 
 <LifecycleTimeline />
 
-During setup, every plugin wires itself in once. It registers its generators, sets its resolver, adds any macros, and resolves its options. Nothing has been generated yet, so setup is the place to validate input and fail fast when a required option is missing.
+During setup, every plugin wires itself in once, before any code is generated. That makes setup the place to validate input and fail fast when a required option is missing.
 
-Then Kubb walks the AST. For each schema node it calls the schema handlers, for each operation node the operation handlers, and once after the walk it calls the operations handlers with the full list. Generators return file nodes during this phase, which is where the bulk of the output is produced.
+Then Kubb walks the AST, calling each plugin's generator handlers for every schema and operation node. Generators return `FileNode`s during this phase, which is where the bulk of the output is produced.
 
-When a plugin's generators finish, it gets a closing event with a snapshot of the files it produced. After every plugin has finished, a final event fires before anything is written to disk, which is the spot to inject aggregate files. Writing, formatting, linting, and user hooks follow, each with its own start and end events. The full event list, with the context each one carries, lives in the [Kit API](/docs/5.x/reference/kit).
+When a plugin's generators finish, it gets a closing event with a snapshot of the files it produced. After every plugin has finished, a final event fires before anything is written to disk, which is the spot to inject aggregate files. Writing, formatting, and linting follow. The full event list, with the context each one carries, lives in the [Kit API](/docs/5.x/reference/kit).
 
 ## How plugins compose
 
-Plugins rarely work alone. A client plugin leans on the types a TypeScript plugin already generated, and a mock plugin reuses the same schemas. Kubb gives them two ways to cooperate without hard-coding paths or guessing at order.
+Plugins rarely work alone. A client plugin leans on the types a TypeScript plugin already generated, and a mock plugin reuses the same schemas. Kubb gives them two ways to cooperate without hard-coding paths or guessing at order:
 
-The first is dependencies. A plugin can name the other plugins it needs, and Kubb runs those first and fails the build with a clear error when one is missing. This frees you from ordering the `plugins` array by hand, since declaration order is fragile and easy to break.
-
-The second is resolvers. Every plugin owns a resolver that decides where its files live and what they are named. Another plugin asks for that resolver by plugin name and gets the same paths the owner would produce, so the two stay in sync even when naming rules change. A generator that needs a sibling's output looks it up through its context rather than rebuilding the path inline.
+- Dependencies let a plugin name the other plugins it needs. Kubb runs those first and fails the build with a clear error when one is missing, so you never order the `plugins` array by hand.
+- Resolvers let a plugin read where another plugin's files live and what they are named. A generator asks for a sibling's resolver by plugin name and gets the same paths the owner would produce, so the two stay in sync even when naming rules change.
 
 ## Post-enforced plugins
 
 Most plugins run in a normal pass, but some need to see what everyone else produced first. A barrel generator, for example, can only write its index files once the other plugins have emitted the files it re-exports. Setting `enforce: 'post'` moves a plugin to the end of every event it listens to, after the normal plugins have run.
 
-There is a matching `enforce: 'pre'` for plugins that need to run ahead of the pack. Both are about ordering relative to normal plugins, and neither overrides dependencies: a declared dependency always runs first. [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) is the canonical post-enforced plugin, and it is a good example to read when this pattern fits your case.
+There is a matching `enforce: 'pre'` for plugins that need to run ahead of the pack. Both are about ordering relative to normal plugins, and neither overrides dependencies: a declared dependency always runs first. [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) is the canonical post-enforced plugin to read when this pattern fits your case.
 
 ## Built-in plugins
 

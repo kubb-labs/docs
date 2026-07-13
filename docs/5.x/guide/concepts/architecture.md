@@ -151,9 +151,6 @@ export default defineConfig({
 })
 ```
 
-> [!IMPORTANT]
-> When two parsers claim the same extension, the last one in the `parsers` array wins.
-
 | Package                                 | Extensions                   | Description                                                                                                  |
 | --------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | [`@kubb/parser-ts`](/parsers/parser-ts/) | `.ts`, `.js`, `.tsx`, `.jsx` | Uses the TypeScript compiler to print, deduplicate, and resolve imports. Included automatically with `kubb`. |

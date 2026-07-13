@@ -11,11 +11,17 @@ outline: deep
 
 ## What you build with it
 
-A plugin is the usual starting point. `definePlugin` gives you the lifecycle hooks, and `defineGenerator` gives you the handlers that walk the AST and emit files. Kit covers the rest of the surface a real plugin reaches for. `createResolver` decides what your files are called and where they land, so other plugins import your output by reading that resolver instead of guessing paths. `createAdapter` teaches Kubb a new input format, `defineParser` turns the emitted nodes into a source string, `createRenderer` walks a templating format into `FileNode`s, and `createStorage` sends the result somewhere other than the filesystem.
+A plugin is the usual starting point. `definePlugin` gives you the lifecycle hooks, and `defineGenerator` gives you the handlers that walk the AST and emit files. Kit covers the rest of the surface a real plugin reaches for:
+
+- [`createResolver`](/docs/5.x/guide/concepts/resolvers) names your files and places them, so other plugins import your output instead of guessing paths.
+- [`createAdapter`](/docs/5.x/guide/concepts/adapters) teaches Kubb a new input format.
+- [`defineParser`](/docs/5.x/guide/concepts/parsers) turns the emitted nodes into a source string.
+- [`createRenderer`](/docs/5.x/guide/concepts/renderers) walks a templating format other than JSX into `FileNode`s.
+- [`createStorage`](/docs/5.x/guide/concepts/storage) sends the result somewhere other than the filesystem.
 
 ## AST helpers
 
-Most generator handlers end by building a node, so the [`ast`](/docs/5.x/guide/concepts/ast) namespace sits in the same import. It ships the `factory` builders you call to construct output, the guards that narrow a node by its kind, the macros that rewrite a tree before it prints, the printers a parser drives, and the `transform` and `collect` visitors. Pull `ast` from `kubb/kit` whether you are inside a plugin or writing a standalone script that reads a spec on its own.
+Most generator handlers end by building a node, so the [`ast`](/docs/5.x/guide/concepts/ast) namespace sits in the same import. It ships the `factory` builders, the type guards, the macros, the printers a parser drives, and the `transform` and `collect` visitors. Pull `ast` from `kubb/kit` whether you are inside a plugin or writing a standalone script that reads a spec on its own.
 
 ## Core helpers
 

@@ -7,18 +7,21 @@ outline: deep
 
 # Parsers
 
-A parser is Kubb's output layer. It turns a [`FileNode`](/docs/5.x/guide/concepts/ast) into the source string that [storage](/docs/5.x/guide/concepts/storage) writes to disk. Because the language lives in the parser and not in the plugins, the same plugins can target TypeScript today and Python or Rust tomorrow by swapping the parser.
+A parser is Kubb's output layer. It turns the language-neutral [AST](/docs/5.x/guide/concepts/ast) a plugin emits into the source string that [storage](/docs/5.x/guide/concepts/storage) writes to disk. The language lives in the parser, not in the plugins, so the same plugins target TypeScript today and Python or Rust tomorrow. You swap the parser, not the plugins.
 
 <FlowDiagram preset="parsers" />
 
+## Why the language lives here
+
+The AST stays language-neutral the whole way through generation, and the parser is the one place that commits to a concrete syntax. That boundary is what keeps a plugin like React Query from caring whether its output is `.ts` or `.tsx`. The plugin emits nodes, and the parser decides how they read as code.
+
+A parser claims a set of file extensions, and Kubb hands each generated file to the parser that owns its extension. That is how a single build writes `.ts` through the TypeScript parser and `.md` through the Markdown parser without either one knowing about the other.
+
 ## Two jobs: print and parse
 
-A parser splits the work of producing code across two moments in the build.
+A parser works at two moments in a build:
 
-`print(...nodes)` runs while plugins are still generating. A plugin calls it to render language-specific AST nodes into a string, then stages that string on `FileNode.sources`. `parse(file)` runs later, after every plugin has finished, when the file processor joins the staged sources into the final output for one file. Each parser registers the file extensions it handles, and the file processor routes each emitted file to the matching parser. When no parser claims an extension, the processor joins the file's source strings directly.
+- `print` runs while plugins are still generating. It turns their nodes into strings.
+- `parse` runs once at the end. It joins those strings into the finished file.
 
-## Where parsers sit in the pipeline
-
-Parsers are the last transform before storage. The [AST](/docs/5.x/guide/concepts/ast) stays language-neutral all the way through generation, and the parser is the single place that commits to a concrete syntax. That boundary is what keeps a plugin like the React Query generator from caring whether the output is `.ts` or `.tsx`: it emits nodes, and the parser prints them.
-
-Files reach the parser one at a time. The file processor pulls each emitted file through `parse()` and hands the result to storage without buffering the whole build, so memory stays flat no matter how many files a spec produces.
+Doing the join last is what lets a large spec generate file by file instead of holding the whole output in memory. For the `print` and `parse` signatures, the `Parser` interface, and a walkthrough of writing your own, see the [parser reference](/docs/5.x/reference/kit/parsers).
