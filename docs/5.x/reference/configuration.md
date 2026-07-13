@@ -370,7 +370,7 @@ export default defineConfig({
 
 #### `output.footer`
 
-Text appended to the end of every file a plugin generates. Mirror of [`output.banner`](#output-banner), with the same `string \| ((meta: BannerMeta) => string)` type.
+Text appended to the end of every file a plugin generates. Mirror of [`output.banner`](#output-banner), with the same `string | ((meta: BannerMeta) => string)` type.
 
 |           |                                        |
 | --------: | :------------------------------------- |
@@ -405,8 +405,6 @@ export default defineConfig({
 
 Adapter that converts your input into the universal AST. With `defineConfig` from the `kubb` package this defaults to `adapterOas()` from [`@kubb/adapter-oas`](/adapters/adapter-oas/).
 
-Omit `adapter` (and `input`) to run in plugin-only mode. Kubb skips spec parsing, but `kubb:plugin:setup` hooks still fire and `injectFile` still adds files to the build. Reach for this when a generation script doesn't consume an OpenAPI spec.
-
 See the [Adapter concept](/docs/5.x/guide/concepts/adapters) for the full picture.
 
 |           |                                       |
@@ -427,38 +425,6 @@ export default defineConfig({
   adapter: adapterOas({ validate: true }),
 })
 ```
-
-Plugin-only mode, with no spec and no adapter:
-
-```typescript twoslash [kubb.config.ts (plugin-only)]
-import { createKubb } from 'kubb'
-import { definePlugin, ast } from 'kubb/kit'
-
-const kubb = createKubb({
-  root: process.cwd(),
-  output: { path: './src/gen', format: false },
-  plugins: [
-    definePlugin(() => ({
-      name: 'my-file-injector',
-      hooks: {
-        'kubb:plugin:setup'({ injectFile }) {
-          injectFile({
-            baseName: 'hello.ts',
-            path: './src/gen/hello.ts',
-            sources: [ast.factory.createSource({ nodes: [ast.factory.createText('export const hello = "world"')] })],
-          })
-        },
-      },
-    }))(),
-  ],
-})
-await kubb.build()
-```
-
-> [!NOTE]
-> `adapterOas()` validates OpenAPI specs by default (`validate: true`). Pass `adapterOas({ validate: false })` to skip validation for faster startup or for non-conforming specs.
-
-See the [`@kubb/adapter-oas`](/adapters/adapter-oas/) reference for every adapter option (`validate`, `contentType`, `server`, `discriminator`, `dateType`, `integerType`, `unknownType`, `emptySchemaType`, `enumSuffix`, …).
 
 ### `parsers`
 
@@ -485,8 +451,6 @@ export default defineConfig({
 })
 ```
 
-Use `defineParser` from `kubb/kit` to write your own.
-
 ### `storage`
 
 Storage driver that persists generated files. Defaults to `fsStorage()` (filesystem).
@@ -499,7 +463,6 @@ See the [Storage concept](/docs/5.x/guide/concepts/storage) for the built-in dri
 | Required: | `false`                              |
 |  Default: | `fsStorage()` (included with `kubb`) |
 
-Use `createStorage` from `kubb/kit` to plug in S3, Redis, an in-memory map, or any other backend.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
