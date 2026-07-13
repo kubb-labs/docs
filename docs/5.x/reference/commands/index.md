@@ -9,30 +9,6 @@ outline: [2, 3]
 
 The `kubb` CLI is the main way to run Kubb. It reads your [configuration](/docs/5.x/reference/configuration) and runs the generation pipeline. It also scaffolds projects, validates specs, and starts a Model Context Protocol server for LLM clients.
 
-## Installation
-
-The CLI ships with the `kubb` package. After [installation](/docs/5.x/getting-started/installation) it is ready to use. To install it on its own:
-
-::: code-group
-
-```shell [bun]
-bun add -d @kubb/cli@beta
-```
-
-```shell [pnpm]
-pnpm add -D @kubb/cli@beta
-```
-
-```shell [npm]
-npm install --save-dev @kubb/cli@beta
-```
-
-```shell [yarn]
-yarn add -D @kubb/cli@beta
-```
-
-:::
-
 ## Usage
 
 ```text [Terminal]

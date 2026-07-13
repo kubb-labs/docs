@@ -27,10 +27,6 @@ Start the MCP server over stdio, the transport every major LLM client speaks:
 kubb mcp
 ```
 
-## Transport
-
-`kubb mcp` runs over stdio. The server reads from standard input and writes to standard output, matching the [Model Context Protocol](https://modelcontextprotocol.io/) transport used by Claude Desktop, Cursor, VS Code, and other editor integrations. The client launches the server as a subprocess, so it needs no flags, port, or host.
-
 ## Tools
 
 The MCP server exposes three tools to connected clients.
@@ -41,24 +37,7 @@ The MCP server exposes three tools to connected clients.
 | `validate` | Validates an OpenAPI or Swagger document at a path or URL. Needs `@kubb/adapter-oas` installed in the project.                       |
 | `init`     | Scaffolds a `kubb.config.ts` in the current directory without prompts. It does not install packages.                                |
 
-### Structured diagnostics
-
-When `generate` or `validate` hits a problem, it returns structured [diagnostics](/docs/5.x/reference/diagnostics)
-instead of a single message string. Each diagnostic keeps its stable code, source pointer,
-suggested fix, and docs link, so an assistant can act on the exact problem. The tools return a
-readable text block and a JSON payload:
-
-```text [Terminal]
-[KUBB_REF_NOT_FOUND] @kubb/plugin-zod: Could not find a definition for #/components/schemas/Pet.
-  at: #/components/schemas/Pet
-  fix: Add the schema under components.schemas, or fix the $ref.
-  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-ref-not-found
-```
-
-A missing spec passed to `validate` returns the coded [`KUBB_INPUT_NOT_FOUND`](/docs/5.x/reference/diagnostics/kubb-input-not-found)
-diagnostic, the same code the CLI reports.
-
-## Example client configuration
+## Example
 
 Most MCP clients accept a JSON config with a `command` and `args`. To register the Kubb MCP server over stdio:
 
