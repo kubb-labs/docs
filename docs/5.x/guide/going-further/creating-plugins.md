@@ -105,16 +105,6 @@ kubb-plugin-example/
 > [!TIP]
 > In [`@kubb/plugin-axios`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-axios), `src/index.ts` re-exports each generator, resolver, and the plugin factory by name. `src/plugin.ts` declares a `pluginAxiosName satisfies PluginAxios['name']` constant that other plugins consume.
 
-Scaffold the directories:
-
-```shell [Terminal]
-mkdir kubb-plugin-example && cd kubb-plugin-example
-npm init -y
-npm install --save-peer kubb@beta
-npm install --save-dev typescript @types/node vitest kubb@beta
-mkdir -p src/generators src/resolvers mocks
-```
-
 ## Naming conventions
 
 Match the package name and internal identifiers to Kubb conventions so the registry and other tooling find them.
