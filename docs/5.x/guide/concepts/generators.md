@@ -21,6 +21,6 @@ A plugin registers its generators in `kubb:plugin:setup` with `addGenerator`. Af
 
 A generator implements up to three methods, and each maps to a slice of the spec.
 
-`schema` runs once per data schema, so it is where types, validators, and mock factories come from. `operation` runs once per API operation, which is where request hooks, clients, and route handlers get built. `operations` runs a single time with every operation at once, which is what you want for an index or a router that has to see the whole set before it writes anything.
+`schema` runs once per data schema, so it is where types, validators, and mock factories come from. `operation` runs once per API operation, which is where request hooks, clients, and route handlers get built. `operations` runs a single time with the whole set at once, which is what you want for an index or a router that has to see every operation before it writes anything.
 
-Each method receives a context with the resolved config, the plugin's resolver, the adapter that parsed the spec, and helpers such as `addFile` and `getPlugin`. It can return files directly, return a renderer element, or return nothing and write through the context itself.
+Each method receives the generator context and returns the files that node becomes. It can hand back file nodes directly, return a renderer element, or write through the context and return nothing. The [generator reference](/docs/5.x/reference/kit/generators) lists every field on that context.
