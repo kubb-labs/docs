@@ -277,7 +277,12 @@ Each handler can return a Promise of any of these.
 
 ### Emit roles
 
-Most generators return `Array<FileNode>` built with the `create*` factories from `kubb/kit` (`ast.factory`). That is the default. Two paths cover the rest. A printer renders one `SchemaNode` to a string, such as a TypeScript type or a `z.object({ ... })`, that a handler stages on a `FileNode`. A [renderer](/docs/5.x/guide/concepts/renderers) turns JSX into `FileNode`s when you set `renderer: jsxRenderer` and return an element instead of an array. Serialization is not your job: once every plugin finishes, the matching [parser](/docs/5.x/guide/concepts/parsers) writes each `FileNode` out as its final string.
+Most generators return `Array<FileNode>` built with the `create*` factories from `kubb/kit` (`ast.factory`). That is the default. Two paths cover the rest:
+
+- A printer renders one `SchemaNode` to a string, such as a TypeScript type or a `z.object({ ... })`, that a handler stages on a `FileNode`.
+- A [renderer](/docs/5.x/guide/concepts/renderers) turns JSX into `FileNode`s when you set `renderer: jsxRenderer` and return an element instead of an array.
+
+Serialization is not your job: once every plugin finishes, the matching [parser](/docs/5.x/guide/concepts/parsers) writes each `FileNode` out as its final string.
 
 ### src/generators/exampleGenerator.ts
 

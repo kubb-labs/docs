@@ -7,7 +7,13 @@ outline: deep
 
 # Plugins
 
-A plugin teaches Kubb to generate something new. It owns its file naming, its output folder, the lifecycle hooks it listens to, and the [generators](/docs/5.x/reference/kit/generators) that walk the [AST](/docs/5.x/guide/concepts/ast) and emit files. Almost everything in a generated `src/gen/` folder traces back to one plugin, so how plugins behave is how Kubb behaves.
+A plugin teaches Kubb to generate something new. It owns:
+
+- its file naming and output folder
+- the lifecycle hooks it listens to
+- the [generators](/docs/5.x/reference/kit/generators) that walk the [AST](/docs/5.x/guide/concepts/ast) and emit files
+
+Almost everything in a generated `src/gen/` folder traces back to one plugin, so how plugins behave is how Kubb behaves.
 
 This page covers the idea: what a plugin is, how its lifecycle runs, and how plugins compose. For the signatures see the [Kit API](/docs/5.x/reference/kit), and to build one step by step follow [Creating your first plugin](/docs/5.x/guide/going-further/creating-plugins).
 
@@ -20,7 +26,13 @@ This page covers the idea: what a plugin is, how its lifecycle runs, and how plu
 
 A plugin is a factory. You call it in `kubb.config.ts`, and it returns an object with a `name` and a `hooks` map. The name identifies it, and the hooks decide which moments of a build it cares about.
 
-Each plugin keeps to its own corner: it registers generators, declares a resolver that names and places its files, and reads only the options it was given. That isolation is what makes a build predictable. The TypeScript plugin never touches the Zod plugin's state, and either one drops in or out without disturbing the other.
+Each plugin keeps to its own corner:
+
+- registers generators that walk the AST
+- declares a resolver that names and places its files
+- reads only the options it was given
+
+That isolation is what makes a build predictable. The TypeScript plugin never touches the Zod plugin's state, and either one drops in or out without disturbing the other.
 
 ## How the lifecycle runs
 
@@ -28,9 +40,13 @@ A build moves through phases in a fixed order, and each plugin subscribes only t
 
 <LifecycleTimeline />
 
-Setup runs first, once per plugin, before any code exists. That makes it the place to validate options and fail fast on a missing one. Kubb then walks the AST and calls your generator handlers for every schema and operation node, which is where most `FileNode`s come from.
+- Setup runs first, once per plugin, before any code exists. Validate options here and fail fast on a missing one.
+- Kubb walks the AST and calls your generator handlers for every schema and operation node. Most `FileNode`s come from here.
+- A closing event hands each plugin a snapshot of what it produced.
+- One last event fires before anything hits disk, the spot to add aggregate files like a barrel.
+- Writing, formatting, and linting follow.
 
-When a plugin's generators finish, a closing event hands it a snapshot of what it produced. One last event fires after every plugin is done and before anything hits disk, the spot to add aggregate files like a barrel. Writing, formatting, and linting follow. The [Kit API](/docs/5.x/reference/kit) lists every event and the context it carries.
+The [Kit API](/docs/5.x/reference/kit) lists every event and the context it carries.
 
 ## How plugins compose
 

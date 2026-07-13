@@ -7,7 +7,13 @@ outline: [2, 3]
 
 # Architecture
 
-Kubb turns API specifications into code through a layered pipeline. The [adapter](/docs/5.x/guide/concepts/adapters) parses the spec into a universal [AST](/docs/5.x/guide/concepts/ast). [Macros](/docs/5.x/guide/going-further/macros) rewrite AST nodes before a plugin reads them. [Plugins](/plugins) walk the AST and emit `FileNode`s. [Parsers](/docs/5.x/guide/concepts/parsers) convert each `FileNode` into source code. [Storage](/docs/5.x/guide/concepts/storage) writes the result to disk.
+Kubb turns API specifications into code through a layered pipeline:
+
+- The [adapter](/docs/5.x/guide/concepts/adapters) parses the spec into a universal [AST](/docs/5.x/guide/concepts/ast).
+- [Macros](/docs/5.x/guide/going-further/macros) rewrite AST nodes before a plugin reads them.
+- [Plugins](/plugins) walk the AST and emit `FileNode`s.
+- [Parsers](/docs/5.x/guide/concepts/parsers) convert each `FileNode` into source code.
+- [Storage](/docs/5.x/guide/concepts/storage) writes the result to disk.
 
 Each section below summarizes one layer and links to its full page. Start here for the shape of the pipeline, then follow a link when you need the detail.
 
