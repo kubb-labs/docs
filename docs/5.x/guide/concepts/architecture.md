@@ -1,13 +1,15 @@
 ---
 layout: doc
 title: Architecture
-description: Learn how Kubb generates code. Adapter, AST, plugins, renderer, parsers, and storage form one layered pipeline from spec to output files.
+description: How Kubb generates code. The adapter, AST, plugins, parsers, and storage form one layered pipeline from spec to output files.
 outline: [2, 3]
 ---
 
 # Architecture
 
 Kubb turns API specifications into code through a layered pipeline. The [adapter](/docs/5.x/guide/concepts/adapters) parses the spec into a universal [AST](/docs/5.x/guide/concepts/ast). [Macros](/docs/5.x/guide/going-further/macros) rewrite AST nodes before a plugin reads them. [Plugins](/plugins) walk the AST and emit `FileNode`s. [Parsers](/docs/5.x/guide/concepts/parsers) convert each `FileNode` into source code. [Storage](/docs/5.x/guide/concepts/storage) writes the result to disk.
+
+Each section below summarizes one layer and links to its full page. Start here for the shape of the pipeline, then follow a link when you need the detail.
 
 ## Pipeline overview
 
@@ -17,7 +19,7 @@ Every run moves through four stages. Select one to see what it does, or watch it
 
 ## Config
 
-`defineConfig` from the `kubb/config` subpath of the `kubb` package pre-wires [`adapterOas`](/docs/5.x/guide/concepts/adapters), the default parsers [`parserTs`, `parserTsx`, `parserMd`](/docs/5.x/guide/concepts/parsers), and [`pluginBarrel`](/plugins/plugin-barrel/). A minimal config only needs `input` and `output`.
+`defineConfig` from `kubb/config` pre-wires [`adapterOas`](/docs/5.x/guide/concepts/adapters), the default parsers [`parserTs`, `parserTsx`, `parserMd`](/docs/5.x/guide/concepts/parsers), and [`pluginBarrel`](/plugins/plugin-barrel/). A minimal config only needs `input` and `output`.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -30,94 +32,43 @@ export default defineConfig({
 ```
 
 > [!NOTE]
-> Reach for [`createKubb`](/docs/5.x/reference/kit/engine#createkubb) from the `kubb` package only when you need a programmatic build or custom tooling.
+> Reach for [`createKubb`](/docs/5.x/reference/kit/engine#createkubb) only when you need a programmatic build or custom tooling.
 
 ## [Adapter](/docs/5.x/guide/concepts/adapters)
 
 <FlowDiagram preset="adapter" />
 
-An adapter turns an input spec into the universal [AST](/docs/5.x/guide/concepts/ast). `adapter.parse(source)` returns an `InputNode` that already holds what the rest of Kubb needs, so nothing downstream has to read the original spec again.
-
-Every spec-specific question lives inside the adapter: nullability, `$ref` resolution, discriminators, and binary detection. Past the adapter it's all plain JSON Schema, and plugins never check the source format.
-
-The official adapter for OpenAPI 2.0, 3.0, and 3.1 is [`@kubb/adapter-oas`](/adapters/adapter-oas/). `defineConfig` selects it automatically.
-
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb/config'
-import { adapterOas } from '@kubb/adapter-oas'
-
-export default defineConfig({
-  input: './petStore.yaml',
-  output: { path: './src/gen' },
-  adapter: adapterOas({ validate: true, dateType: 'date' }),
-})
-```
-
-See [Adapters](/docs/5.x/guide/concepts/adapters) for the full list of options and details on building a custom adapter.
+The adapter reads your spec and returns an `InputNode`, so nothing downstream touches the original format. It answers every spec-specific question: nullability, `$ref` resolution, discriminators, and binary detection. [`@kubb/adapter-oas`](/adapters/adapter-oas/) covers OpenAPI 2.0, 3.0, and 3.1, and `defineConfig` selects it for you.
 
 ## [AST](/docs/5.x/guide/concepts/ast)
 
-The AST is the intermediate representation between the [adapter](/docs/5.x/guide/concepts/adapters) and the [plugins](/plugins). Every adapter produces an `InputNode` and every plugin consumes it. Plugins never read the raw spec, so the same plugin works with any adapter.
-
 <AstTree />
 
-Two visitors walk the tree: `transform` to rewrite nodes and `collect` to gather them. The [AST page](/docs/5.x/guide/concepts/ast) covers both.
+The AST is the contract between the adapter and the plugins. Every adapter produces one and every plugin reads it, so the same plugin works against any spec. Two visitors walk it: `transform` to rewrite nodes and `collect` to gather them.
 
 ## [Macros](/docs/5.x/guide/going-further/macros)
 
 <FlowDiagram preset="macros" />
 
-Macros are the second layer of the [AST](/docs/5.x/guide/concepts/ast). They are named, composable transforms that rewrite schema and operation nodes before a plugin's generators print code. Use them to rename symbols, retype fields, or normalize shapes.
+Macros are a second AST pass. They rewrite schema and operation nodes, one plugin at a time, before generators print code, so you can rename symbols or retype fields without patching the output. Pass them through a plugin's `macros` option.
 
-Macros run per plugin, so one plugin's macros never change the nodes another plugin sees. Pass them through a plugin's `macros` option, or register them from `kubb:plugin:setup` with `addMacro`.
-
-```typescript twoslash [kubb.config.ts]
-// @noErrors
-import { defineConfig } from 'kubb/config'
-import { pluginTs } from '@kubb/plugin-ts'
-import { ast } from 'kubb/kit'
-
-export default defineConfig({
-  input: './petStore.yaml',
-  output: { path: './src/gen' },
-  plugins: [pluginTs({ macros: [ast.macroSimplifyUnion] })],
-})
-```
-
-See [Macros](/docs/5.x/guide/going-further/macros) for writing macros, composing them, and the built-in presets.
-
-## Plugins
+## [Plugins](/docs/5.x/guide/concepts/plugins)
 
 <PluginAnatomy />
 
-Plugins walk the [AST](/docs/5.x/guide/concepts/ast) and emit `FileNode`s. They run in array order, so earlier plugins produce types that later plugins can import.
-
-```typescript twoslash [kubb.config.ts]
-// @noErrors
-import { defineConfig } from 'kubb/config'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginAxios } from '@kubb/plugin-axios'
-
-export default defineConfig({
-  input: './petStore.yaml',
-  output: { path: './src/gen' },
-  plugins: [pluginTs(), pluginAxios()],
-})
-```
-
-See the [plugins catalogue](/plugins) for the full list.
+A plugin walks the AST and emits `FileNode`s. Plugins run in array order, so a types plugin can run first and a client plugin after it imports those types. Browse the [plugins catalogue](/plugins) for what ships today.
 
 ## [Generators](/docs/5.x/guide/concepts/generators)
 
 <FlowDiagram preset="generator" />
 
-A generator is where a plugin produces code. Each one reads from the AST, a schema, a single operation, or the whole operation set at once, and returns the files those nodes should become. Splitting a plugin into named generators keeps each one small and lets the engine call the right generator for every node.
+A generator is where a plugin produces code. Each one reads a schema, a single operation, or the whole operation set, and returns the files those nodes become. Splitting a plugin into named generators keeps each one small and lets the engine call the right one for every node.
 
-## Renderer
+## [Renderer](/docs/5.x/guide/concepts/renderers)
 
 <FlowDiagram preset="renderer" />
 
-Plugins can use [`kubb/jsx`](/docs/5.x/reference/jsx) to describe generated files as React components instead of constructing `FileNode`s by hand.
+A generator can build `FileNode`s by hand or describe them as components, and [`kubb/jsx`](/docs/5.x/reference/jsx) is the optional JSX path for the second style.
 
 > [!NOTE]
 > `kubb/jsx` is optional. Plugins that build `FileNode`s directly with the `factory` node builders from [`kubb/kit`](/docs/5.x/reference/kit) do not need it.
@@ -126,64 +77,20 @@ Plugins can use [`kubb/jsx`](/docs/5.x/reference/jsx) to describe generated file
 
 <FlowDiagram preset="resolver" />
 
-A resolver answers two questions for every file a plugin emits: its name and its path. When a generator needs a file name or an import path, it asks the resolver instead of building the string itself, so names and paths stay consistent and plugins can import each other's output by reading its resolver.
+A resolver answers two questions for every file: its name and its path. Generators ask the resolver instead of building strings, so names stay consistent and one plugin imports another's output by reading its resolver.
 
 ## [Parsers](/docs/5.x/guide/concepts/parsers)
 
 <FlowDiagram preset="parsers" />
 
-A parser converts a `FileNode` into a source string. Each parser declares which file extensions it handles, and Kubb dispatches every emitted file to the parser registered for its extension.
-
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb/config'
-import { parserTs, parserTsx } from '@kubb/parser-ts'
-import { parserMd } from '@kubb/parser-md'
-
-export default defineConfig({
-  input: './petStore.yaml',
-  output: { path: './src/gen' },
-  parsers: [parserTs(), parserTsx(), parserMd()],
-})
-```
-
-| Package                                 | Extensions                   | Description                                                                                                  |
-| --------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| [`@kubb/parser-ts`](/parsers/parser-ts/) | `.ts`, `.js`, `.tsx`, `.jsx` | Uses the TypeScript compiler to print, deduplicate, and resolve imports. Included automatically with `kubb`. |
-| [`@kubb/parser-md`](/parsers/parser-md/) | `.md`, `.markdown`           | Writes Markdown files. Included automatically with `kubb`.                                                   |
+A parser converts a `FileNode` into a source string. Each one claims a set of file extensions, and Kubb hands every emitted file to the parser that owns its extension. [`@kubb/parser-ts`](/parsers/parser-ts/) and [`@kubb/parser-md`](/parsers/parser-md/) ship by default.
 
 ## [Storage](/docs/5.x/guide/concepts/storage)
 
-The storage driver controls where Kubb writes generated files. The default is `fsStorage()`. Use `memoryStorage()` for testing, or implement `Storage` to target any backend.
-
 <FlowDiagram preset="storage" />
 
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb/config'
-import { memoryStorage } from 'kubb/kit'
+The storage driver decides where files land. `fsStorage()` writes to disk and is the default, `memoryStorage()` keeps everything in a `Map` for tests, and a custom `Storage` targets any other backend.
 
-export default defineConfig({
-  input: './petStore.yaml',
-  output: { path: './src/gen' },
-  storage: memoryStorage(),
-})
-```
+## Integrations and AI
 
-| Driver            | Description                                                                          |
-| ----------------- | ------------------------------------------------------------------------------------ |
-| `fsStorage()`     | Writes to disk. Skips unchanged files. Default.                                      |
-| `memoryStorage()` | Stores output in a `Map`. Nothing touches disk. Ideal for tests.                     |
-| Custom            | Implement `Storage` with `createStorage` to write to S3, a database, or any backend. |
-
-## Integrations
-
-| Package                                    | Description                                                                                                                                                                                                                                                                                                           |
-| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`unplugin-kubb`](/docs/5.x/guide/integrations/) | Runs Kubb during your build via [unplugin](https://github.com/unjs/unplugin). Works with [Vite](https://vite.dev), [Rollup](https://rollupjs.org), [webpack](https://webpack.js.org), [esbuild](https://esbuild.github.io), [Rspack](https://rspack.dev), [Nuxt](https://nuxt.com), and [Astro](https://astro.build). |
-
-See the [Integrations](/docs/5.x/guide/integrations/) page for setup instructions for each build tool.
-
-## AI
-
-| Package                                   | Purpose                                                                                                     |
-| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| [`kubb mcp`](/docs/5.x/reference/commands/mcp) | Built-in [MCP](https://modelcontextprotocol.io) server that lets LLM clients trigger generation directly. |
+[`unplugin-kubb`](/docs/5.x/guide/integrations/) runs Kubb inside your build tool: Vite, Rollup, webpack, esbuild, Rspack, Nuxt, and Astro. The [`kubb mcp`](/docs/5.x/reference/commands/mcp) command exposes generation to LLM clients over [MCP](https://modelcontextprotocol.io).
