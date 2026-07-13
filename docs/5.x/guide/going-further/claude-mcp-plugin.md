@@ -6,6 +6,37 @@ description: Integrate Kubb with Claude AI for enhanced code generation. AI-powe
 outline: deep
 ---
 
+<script setup>
+const mcpTree = [
+  { name: 'src', type: 'dir', children: [
+    { name: 'gen', type: 'dir', children: [
+      { name: 'mcp', type: 'dir', children: [
+        { name: 'addPet.ts' },
+        { name: 'getPetById.ts' },
+        { name: 'mcp.json' },
+        { name: 'server.ts' },
+      ] },
+      { name: 'clients', type: 'dir', children: [
+        { name: 'addPet.ts' },
+        { name: 'getPetById.ts' },
+      ] },
+      { name: 'zod', type: 'dir', children: [
+        { name: 'addPetSchema.ts' },
+        { name: 'getPetByIdSchema.ts' },
+      ] },
+      { name: 'models', type: 'dir', children: [
+        { name: 'AddPet.ts' },
+        { name: 'GetPetById.ts' },
+      ] },
+      { name: 'index.ts' },
+    ] },
+  ] },
+  { name: 'petStore.yaml' },
+  { name: 'kubb.config.ts' },
+  { name: 'package.json' },
+]
+</script>
+
 # Set up Claude with Kubb
 
 ![Claude](/public/screenshots/claude.png)
@@ -116,29 +147,7 @@ npx kubb@beta generate
 
 The `src/mcp` folder holds the files that build an [MCP server](https://modelcontextprotocol.io) and connect [Claude](https://claude.ai/download) to your API.
 
-```text [Resulting tree]
-.
-├── src/
-│   └── gen/
-│   │   ├── mcp/
-│   │   │   ├── addPet.ts
-│   │   │   ├── getPetById.ts
-│   │   │   ├── mcp.json
-│   │   │   └── server.ts
-│   │   ├── clients/
-│   │   │   ├── addPet.ts
-│   │   │   └── getPetById.ts
-│   │   ├── zod/
-│   │   │   ├── addPetSchema.ts
-│   │   │   └── getPetByIdSchema.ts
-│   │   ├── models/
-│   │   │   ├── AddPet.ts
-│   │   │   └── GetPetById.ts
-│   │   └── index.ts
-├── petStore.yaml
-├── kubb.config.ts
-└── package.json
-```
+<FileTree :tree="mcpTree" />
 
 ### src/mcp/addPet.ts
 
