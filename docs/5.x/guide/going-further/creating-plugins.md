@@ -277,17 +277,16 @@ Each handler can return a Promise of any of these.
 
 ### Emit roles
 
-Most generators return `Array<FileNode>` built with the `create*` factories from `kubb/kit` (`ast.factory`). That is the default. Three named roles cover the cases beyond it.
+Most generators return `Array<FileNode>` built with the `create*` factories from `kubb/kit` (`ast.factory`). That is the default. Two paths cover the rest:
 
-A printer renders one `SchemaNode` to a string, such as a TypeScript type or a `z.object({ ... })`. A handler calls it and stages the result on a `FileNode`.
+- A printer renders one `SchemaNode` to a string, such as a TypeScript type or a `z.object({ ... })`, that a handler stages on a `FileNode`.
+- A [renderer](/docs/5.x/guide/concepts/renderers) turns JSX into `FileNode`s when you set `renderer: jsxRenderer` and return an element instead of an array.
 
-A renderer turns JSX into `FileNode`s. Return an element instead of `Array<FileNode>`, set `renderer: jsxRenderer` on the generator, and `kubb/jsx` walks the JSX into the same nodes the builder produces. It is sugar over the builder, not a second pipeline.
-
-A parser handles serialization and runs last. It belongs to the build driver. Once every plugin finishes, the matching [parser](/docs/5.x/guide/concepts/parsers) writes each `FileNode` out as the final file string. Plugins never call it.
+Serialization is not your job: once every plugin finishes, the matching [parser](/docs/5.x/guide/concepts/parsers) writes each `FileNode` out as its final string.
 
 ### src/generators/exampleGenerator.ts
 
-Inside a handler, `ctx` is a `GeneratorContext`. It carries helpers such as `addFile`, `upsertFile`, `getResolver`, `requirePlugin`, `warn`, `error`, and `info`, plus the resolved `config`, `root`, `adapter`, and document `meta`. The `meta` is an `InputMeta` with `title`, `version`, `baseURL`, `circularNames`, and `enumNames`.
+Inside a handler, `ctx` is a `GeneratorContext`: file helpers like `addFile` and `upsertFile`, the cross-plugin `getResolver` and `requirePlugin`, the loggers `warn`, `error`, and `info`, and the resolved `config`, `root`, `adapter`, and document `meta`. The [generator reference](/docs/5.x/reference/kit/generators) lists every field.
 
 ```typescript twoslash [exampleGenerator.ts]
 import { ast, defineGenerator } from 'kubb/kit'
@@ -345,44 +344,7 @@ export const resolverExample = createResolver<PluginExample>({
 })
 ```
 
-Users override a plugin's resolver through its `resolver` option in `kubb.config.ts`. Pass a plain object with the parts you want to change, and each part merges over the plugin defaults. The option only patches the existing resolver. To build a whole new one, write a custom plugin. Inside every method `this` is the full resolver, so you reach `this.name`, `this.file`, and the plugin's namespaces.
-
-```typescript twoslash [config-resolver.ts]
-import { pluginFaker } from '@kubb/plugin-faker'
-
-pluginFaker({
-  resolver: {
-    name(name) {
-      return `${this.default.name(name)}Faker`
-    },
-    file: {
-      baseName({ name, extname }) {
-        return `${this.name(name)}${extname}`
-      },
-    },
-  },
-})
-```
-
-Namespaces merge per method, so override a single one and the siblings keep the plugin default.
-
-```typescript twoslash [config-namespace.ts]
-import { pluginReactQuery } from '@kubb/plugin-react-query'
-
-function capitalize(text: string): string {
-  return `${text.charAt(0).toUpperCase()}${text.slice(1)}`
-}
-
-pluginReactQuery({
-  resolver: {
-    query: {
-      name(node) {
-        return `use${capitalize(this.name(node.operationId))}Hook`
-      },
-    },
-  },
-})
-```
+Users override your plugin's resolver through its `resolver` option in `kubb.config.ts`. They pass a partial patch, each part merges over your defaults, and anything left out keeps the plugin default. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the patterns.
 
 ## The setup context
 
@@ -444,7 +406,7 @@ export const pluginExample = definePlugin(() => ({
 }))
 ```
 
-Set `copy` to an absolute on-disk path and Kubb writes that file's content into the output unchanged. It applies only `banner`/`footer` and skips the language parser. This keeps a hand-authored template as a real `.ts` file (linted, type-checked, and tested) and drops it into the generated folder without inlining its source as a string. The JSX renderer takes the same field: `<File baseName="runtime.ts" path={…} copy={templatePath} />`.
+Set `copy` to an absolute path and Kubb writes that file into the output unchanged, applying only `banner`/`footer` and skipping the parser. It keeps a hand-authored template as a real, tested `.ts` file instead of an inlined string. The JSX renderer takes the same field: `<File baseName="runtime.ts" path={…} copy={templatePath} />`.
 
 ## Options
 

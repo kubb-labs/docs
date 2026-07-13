@@ -112,15 +112,7 @@ Every job in Kubb is one of three pieces: an [adapter](/docs/5.x/guide/concepts/
 
 **Plugins (artifacts)**
 
-- [`@kubb/plugin-ts`](/plugins/plugin-ts/) types, interfaces, and enums.
-- [`@kubb/plugin-zod`](/plugins/plugin-zod/) Zod v4 schemas.
-- [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and [`@kubb/plugin-axios`](/plugins/plugin-axios/) HTTP clients.
-- [`@kubb/plugin-react-query`](/plugins/plugin-react-query/), [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query/), and [`@kubb/plugin-swr`](/plugins/plugin-swr/) data-fetching hooks.
-- [`@kubb/plugin-faker`](/plugins/plugin-faker/) mock data and [`@kubb/plugin-msw`](/plugins/plugin-msw/) request handlers.
-- [`@kubb/plugin-cypress`](/plugins/plugin-cypress/) end-to-end tests.
-- [`@kubb/plugin-redoc`](/plugins/plugin-redoc/) API documentation.
-- [`@kubb/plugin-mcp`](/plugins/plugin-mcp/) an MCP server for your API.
-- [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) barrel index files.
+- Types, schemas, HTTP clients, data-fetching hooks, mocks, tests, docs, an [MCP server](/plugins/plugin-mcp/), and barrel files. The [feature table](#plugin-and-feature-coverage) above and the [plugins catalogue](/plugins) list every package.
 
 ## What sets Kubb apart
 
@@ -134,7 +126,7 @@ A [custom adapter](/docs/5.x/guide/concepts/adapters) swaps `adapterOas` for ano
 
 ### Advanced client
 
-One client backs both [`fetch`](/plugins/plugin-fetch/) and [`axios`](/plugins/plugin-axios/). It reads `style` and `explode` for query, path, header, and cookie, picks a body encoder from the content type, and decodes the response by media type. [`codecs`](/plugins/plugin-fetch/guide/serialization#request-bodies) add a `serialize` and `deserialize` per media type, so XML or YAML round-trips without swapping the client. A call returns a status-discriminated result you narrow with one `switch`, and [`throwOnError`](/plugins/plugin-fetch/guide/error-handling) picks throw or return per call. The codecs and the full parameter-style coverage are what orval and HeyAPI do not match.
+One client backs both [`fetch`](/plugins/plugin-fetch/) and [`axios`](/plugins/plugin-axios/), covered in [Client runtime](#client-runtime) above. Its pluggable [`codecs`](/plugins/plugin-fetch/guide/serialization#request-bodies) per media type and full parameter-style coverage are what orval and HeyAPI do not match.
 
 ### Post-enforced plugins
 
