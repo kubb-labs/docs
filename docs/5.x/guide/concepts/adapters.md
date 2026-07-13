@@ -20,7 +20,3 @@ Kubb ships [`@kubb/adapter-oas`](/adapters/adapter-oas/) for OpenAPI 2.0, 3.0, a
 ## Dialects keep the format-specific part small
 
 Most of an adapter's work, turning schema objects into AST nodes, is generic JSON Schema and is shared across adapters. Only a handful of decisions actually differ between specs, such as how each one marks a field nullable or describes a discriminator. Kubb isolates those decisions behind a dialect: a single object the shared converters read so they never hard-code OpenAPI assumptions. A new adapter supplies its own dialect and reuses everything else, which keeps the format-specific surface small enough to test by swapping that one object.
-
-## Reference
-
-`createAdapter`, the `Adapter` interface, the OpenAPI adapter options, and a worked custom-adapter example live in the [Kit API reference](/docs/5.x/reference/kit/adapters).
