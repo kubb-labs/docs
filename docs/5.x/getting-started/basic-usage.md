@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Basic Usage
 
-In this tutorial you start from an empty config and finish with generated types, a client, and hooks imported into your app. Work through the five steps in order. By the end you will have run Kubb once and seen real code land in `./src/gen`.
+Start from an empty config and end with generated types, a client, and hooks imported into your app. Follow the five steps in order. By the end you will have run Kubb once and seen real code land in `./src/gen`.
 
 ## 1. Create the config
 
