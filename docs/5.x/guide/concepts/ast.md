@@ -19,13 +19,14 @@ A `SchemaNode` is discriminated by its `type`, which falls into one of three gro
 
 <SchemaNodeTypes />
 
-Request bodies and responses hold one `ContentNode` per content type (for example `application/json`), and each content node carries its own body schema. Every child slot is a node, so a single traversal drives both `transform` and `collect` across the whole tree. Every node also carries a `kind` field as the discriminant, so `switch (node.kind)` narrows the type for you.
+Request bodies and responses hold one `ContentNode` per content type (for example `application/json`), and each content node carries its own body schema. 
+
+- Every child slot is a node, so a single traversal drives both `transform` and `collect` across the whole tree. 
+- Every node also carries a `kind` field as the discriminant, so `switch (node.kind)` narrows the type for you.
 
 ## Spec-agnostic by design
 
 The AST is the reason plugins stay simple. A plugin never looks at OpenAPI directly. It reads the tree the adapter produces, which is why one plugin works for OpenAPI 2.0, 3.0, 3.1, and any custom adapter.
-
-Operations keep that neutrality even for transport details. An `OperationNode` is a discriminated union keyed on `protocol`, so the model stays spec-neutral while HTTP specifics stay typed. An `HttpOperationNode` (`protocol: 'http'`) guarantees a non-nullable `method` and `path`. A `GenericOperationNode` describes a non-HTTP transport and omits both. `@kubb/adapter-oas` produces `HttpOperationNode`s, so OpenAPI output is unchanged. Narrow with `isHttpOperationNode(node)` before reading `method` or `path`.
 
 ## How the AST connects the pipeline
 

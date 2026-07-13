@@ -95,38 +95,3 @@ Reach for a printer override when the output cannot be described as another sche
 
 > [!TIP]
 > The two compose. The `macros` option on the same plugin rewrites nodes first, then the printer prints the result, overrides included.
-
-## Writing your own printer
-
-Plugin authors create complete printers with `ast.createPrinter` from `kubb/kit`. The builder receives resolved options and returns the handler map, an `overrides` field that user-supplied handlers flow into, and an optional top-level `print` that wraps the output in a declaration. Pass user overrides through `overrides` rather than spreading them into `nodes`, otherwise `this.base` cannot find the original handler.
-
-```typescript twoslash [printer.ts]
-import { ast } from 'kubb/kit'
-
-type PrinterDocs = ast.PrinterFactoryOptions<'docs', { verbose?: boolean }, string>
-
-export const printerDocs = ast.createPrinter<PrinterDocs>((options) => ({
-  name: 'docs',
-  options,
-  nodes: {
-    string: () => 'string',
-    integer: () => 'number',
-    object(node) {
-      const props = node.properties.map((p) => `${p.name}: ${this.transform(p.schema)}`).join(', ')
-      return `{ ${props} }`
-    },
-  },
-}))
-```
-
-Call the printer with a schema node to render it. `printerDocs()` returns the printer instance, and `transform` dispatches each node through the handler map, so the nested `id` and `name` properties print through the `integer` and `string` handlers.
-
-```typescript [Result]
-const printer = printerDocs()
-
-printer.transform(stringNode) // 'string'
-printer.transform(integerNode) // 'number'
-printer.transform(objectNode) // '{ id: number, name: string }'
-```
-
-See the [Kit API reference](/docs/5.x/reference/kit/ast#printers) for the helper and [Parsers concepts](/docs/5.x/guide/concepts/parsers) for how parsers consume printers.
