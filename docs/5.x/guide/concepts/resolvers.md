@@ -19,6 +19,12 @@ Centralizing naming also gives you one place to override it. Change a rule on a 
 
 ## What a resolver controls
 
-A resolver decides the casing of a generated identifier, the file name it lands in, and the folder that file goes to, with optional subdirectories per tag or operation path. It also turns every `$ref` in a schema into an import that follows those same rules, so a generated file points at its dependencies by the names their owners actually use.
+A resolver owns the rules behind both of those questions:
+
+- The casing of each generated identifier.
+- The file name it lands in.
+- The folder that file goes to, with optional subdirectories per tag or operation path.
+
+It also turns every `$ref` in a schema into an import that follows those same rules, so a generated file points at its dependencies by the names their owners actually use.
 
 Kubb ships defaults for all of this, so a plugin overrides only the rules it cares about and inherits the rest. See the [resolver reference](/docs/5.x/reference/kit/resolvers) for the defaults and the override API.
