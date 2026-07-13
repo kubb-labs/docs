@@ -36,8 +36,8 @@ export const parserText = defineParser(() => ({
 
 Wire it into your config:
 
-```typescript twoslash [kubb.config.ts]
-// @errors: 2307
+```typescript [kubb.config.ts]
+
 import { defineConfig } from 'kubb/config'
 import { parserTs, parserTsx } from '@kubb/parser-ts'
 import { parserText } from './parserText.ts'
@@ -62,12 +62,6 @@ Every value returned from `defineParser` matches the `Parser` interface from [`k
 
 > [!IMPORTANT]
 > If two parsers register the same extension, the last one in the `parsers` array wins. Order matters.
-
-> [!NOTE]
-> `parse()` is synchronous. The file processor streams files through a synchronous pipeline, so returning a `Promise` is not supported. Do async work before the file reaches the parser and pass the result through `FileNode`.
-
-> [!NOTE]
-> Formatting and linting (Prettier, Biome, oxlint) run after `parse()`. Keep `parse()` focused on producing syntactically valid output.
 
 When no parser matches a file's extension, the file processor joins the file's source strings directly.
 
@@ -100,53 +94,6 @@ export const parserCustom = defineParser(() => ({
 
 > [!TIP]
 > Parsers compose by extension. `parserTs` (`.ts`, `.js`) and `parserTsx` (`.tsx`, `.jsx`) ship in the same [`@kubb/parser-ts`](/parsers/parser-ts/) package and register side by side.
-
-## Built-in parsers
-
-### `@kubb/parser-ts`
-
-The default parser for TypeScript and JavaScript output. It uses the official TypeScript compiler to resolve import paths, deduplicate declarations, print JSDoc, and rewrite extensions based on the parser's `extension` option. See the [`@kubb/parser-ts` reference](/parsers/parser-ts/) for the full option list.
-
-::: code-group
-
-```shell [bun]
-bun add -d @kubb/parser-ts@beta
-```
-
-```shell [pnpm]
-pnpm add -D @kubb/parser-ts@beta
-```
-
-```shell [npm]
-npm install --save-dev @kubb/parser-ts@beta
-```
-
-```shell [yarn]
-yarn add -D @kubb/parser-ts@beta
-```
-
-:::
-
-| Export      | Extensions handled | Notes                                   |
-| ----------- | ------------------ | --------------------------------------- |
-| `parserTs`  | `.ts`, `.js`       | TypeScript and plain JavaScript output. |
-| `parserTsx` | `.tsx`, `.jsx`     | Same as `parserTs` with JSX support.    |
-
-Both expose `parse(file)` and `print(...nodes: ts.Node[])`. Call `parserTs().print(node)` from a plugin to render a TypeScript compiler node to its source string before staging it on `FileNode.sources`.
-
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb/config'
-import { parserTs, parserTsx } from '@kubb/parser-ts'
-
-export default defineConfig({
-  input: './petStore.yaml',
-  output: { path: './src/gen' },
-  parsers: [parserTs(), parserTsx()],
-})
-```
-
-> [!TIP]
-> `defineConfig` from the `kubb` package installs `parserTs`, `parserTsx`, and `parserMd` automatically. Set `parsers:` only when you add a custom parser or need to change the registration order.
 
 ## Creating a custom parser
 
@@ -187,8 +134,8 @@ export const parserPython = defineParser(() => ({
 
 Register it alongside the built-ins:
 
-```typescript twoslash [kubb.config.ts]
-// @errors: 2307
+```typescript [kubb.config.ts]
+
 import { defineConfig } from 'kubb/config'
 import { parserTs } from '@kubb/parser-ts'
 import { parserPython } from './parserPython.ts'
@@ -202,10 +149,3 @@ export default defineConfig({
 
 > [!TIP]
 > Set `extNames: undefined` to register a catch-all fallback that runs when no other parser matches. Useful for a default `.txt` writer or for inspecting what files the build produces.
-
-> [!NOTE]
-> `parse()` runs synchronously, so external formatting (a service call, a child process, or a worker thread) must finish before the file reaches the parser. Stage the pre-formatted output on `FileNode.sources[].nodes` inside a generator, then let the parser join it verbatim.
-
-## How the file processor runs parsers
-
-The file processor is internal to the Kubb engine and processes files one at a time. The build driver enqueues each file as plugins emit it, the processor runs it through `parse()`, and the result lands in storage without buffering the full set. Progress surfaces as `start`, `update` (with `{ file, source, processed, total, percentage }`), and `end` events on the main event bus, which the built-in reporters render. Memory stays flat regardless of build size because each file is pulled through the pipeline one at a time.

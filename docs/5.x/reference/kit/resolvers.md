@@ -9,9 +9,9 @@ outline: [2, 3]
 
 ## `createResolver`
 
-`createResolver` builds a `Resolver` instance that controls file naming and path resolution for a plugin. Pass the plugin-specific fields directly as an object; `this` inside a method reaches sibling resolver methods.
+`createResolver` builds a `Resolver` instance that controls file naming and path resolution for a plugin. Pass the plugin-specific fields directly as an object.
 
-The object must include at least `{ pluginName }`. The built-in machinery lives under `resolver.default` (`default.name`, `default.file`, `default.options`, `default.path`, `default.banner`, `default.footer`), exposed as a getter that always reaches the untouched defaults. The resolver exposes `name`, `file`, and `imports` methods that generators call, and `name` and `file` fall back to the defaults until the object overrides them. Set `name` to a function for identifier casing, and `file` to an object whose `baseName` builds the base name (extension included) and whose `path` returns the full path. Use `this` to reach sibling members, so a namespace method calls `this.name(...)` for the plugin's identifier casing.
+The object must include at least `{ pluginName }`. The resolver exposes `name`, `file`, and `imports` methods that generators call. Use `this` to reach sibling members, so a namespace method calls `this.name(...)` for the plugin's identifier casing.
 
 ```typescript twoslash [resolver.ts]
 import { createResolver } from 'kubb/kit'
@@ -54,7 +54,9 @@ export const resolver = createResolver<MyPlugin>({
 
 ### `resolver.imports` {#imports}
 
-`resolver.imports` builds one import entry per `$ref` in a schema tree, so a generator emits the imports for every schema the current node references. Each ref resolves through `ast.resolveRefName`, which prefers the node's `targetName` (set by the adapter for collision renames or by a rename macro) and falls back to the pointer's last segment. The resulting names and paths go through the resolver's own `name` and `file` conventions. `extname` defaults to `.ts`.
+`resolver.imports` builds one import entry per `$ref` in a schema tree, so a generator emits the imports for every schema the current node references. Each ref resolves through `ast.resolveRefName`, which prefers the node's `targetName` and falls back to the pointer's last segment. 
+
+The resulting names and paths go through the resolver's own `name` and `file` conventions. `extname` defaults to `.ts`.
 
 ```typescript twoslash [imports.ts]
 import { ast } from 'kubb/kit'
@@ -88,7 +90,12 @@ const imports = resolver.imports({
 
 ### `Resolver.merge`
 
-`Resolver.merge(base, patch)` returns a new resolver with `patch`'s fields layered over `base`'s and every helper re-bound. A top-level `name` replaces, while `file` and each namespace merge per member, so overriding `query.name` keeps the base `query.keyName`. Framework code uses it to apply a `setResolver` partial override over a plugin's built-in resolver, and you can call it yourself when composing resolvers. Type a patch with `ResolverPatch<T>` to keep `this` and namespace shapes checked against the target resolver.
+`Resolver.merge(base, patch)` returns a new resolver with `patch`'s fields layered over `base`'s and every helper re-bound. A top-level `name` replaces, while `file` and each namespace merge per member, so overriding `query.name` keeps the base `query.keyName`. 
+
+Framework code uses it to apply a `setResolver` partial override over a plugin's built-in resolver, and you can call it yourself when composing resolvers. 
+
+> [!TIP]
+> Type a patch with `ResolverPatch<T>` to keep `this` and namespace shapes checked against the target resolver.
 
 ```typescript twoslash [merge.ts]
 import { createResolver, Resolver } from 'kubb/kit'

@@ -11,7 +11,7 @@ A renderer turns the elements a generator returns into `FileNode`s. Kubb ships a
 
 ## `createRenderer`
 
-`createRenderer` takes a builder function and returns a factory that produces a `Renderer`, the object a generator's `renderer` field points at. It follows the same builder-to-factory shape as `createStorage`: call the builder once, get back a reusable factory, call the factory to get an instance.
+`createRenderer` takes a builder function and returns a factory that produces a `Renderer`, the object a generator's `renderer` field points at.
 
 Reach for `createRenderer` when a generator needs to emit something other than plain `FileNode` arrays or [`kubb/jsx`](/docs/5.x/reference/jsx) elements, for example a renderer that walks a different templating format into `FileNode`s. `kubb/jsx`'s own `jsxRenderer` ships as a plain factory and does not depend on `createRenderer`, so most plugin authors only need `createRenderer` when they are building an alternative to JSX rendering.
 
@@ -33,4 +33,4 @@ import { jsxRenderer } from 'kubb/jsx'
 const renderer = jsxRenderer()
 ```
 
-Set the renderer on a generator through its `renderer` field (`renderer: jsxRenderer`) to enable JSX-based output for that generator. Leave it unset, or pass `renderer: null`, to opt out of rendering. See the [JSX API reference](/docs/5.x/reference/jsx) for `File`, `Function`, `Type`, `Const`, and the `jsx-runtime` / `jsx-dev-runtime` subpaths.
+Set the renderer on a generator through its `renderer` field (`renderer: jsxRenderer`) to enable JSX-based output for that generator. Leave it unset, or pass `renderer: null`, to opt out of rendering.

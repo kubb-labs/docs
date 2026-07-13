@@ -62,7 +62,7 @@ export const pluginHello = definePlugin(() => ({
 Wire it into `kubb.config.ts`:
 
 ```typescript [kubb.config.ts]
-// @errors: 2307
+
 import { defineConfig } from 'kubb/config'
 import { pluginHello } from './my-plugin.ts'
 
@@ -479,7 +479,7 @@ Use `createKubb` from `kubb` to run an in-process build and check that your gene
 `createKubb` does not apply the default adapter or parsers, so pass `adapter: adapterOas()` and the parsers your generator emits. (The `kubb` package's `defineConfig` is what wires those up automatically.) Without an adapter, Kubb runs in plugin-only mode and the `operation` and `schema` handlers never fire.
 
 ```typescript twoslash [plugin.test.ts]
-// @errors: 2307
+
 import { describe, it, expect } from 'vitest'
 import { createKubb } from 'kubb'
 import { ast, definePlugin, defineGenerator } from 'kubb/kit'

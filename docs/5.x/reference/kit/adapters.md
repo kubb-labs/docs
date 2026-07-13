@@ -39,8 +39,8 @@ export const adapterCustom = createAdapter<AdapterCustom>((options) => ({
 
 Wire it into your config with `defineConfig` from `kubb` and pass the adapter:
 
-```typescript twoslash [kubb.config.ts]
-// @errors: 2307
+```typescript [kubb.config.ts]
+
 import { defineConfig } from 'kubb/config'
 import { adapterCustom } from './adapterCustom.ts'
 
@@ -66,14 +66,8 @@ Every adapter returned from `createAdapter` matches the `Adapter` interface from
 
 Cross-references need no adapter hook: every plugin resolves `$ref` imports through [`resolver.imports`](/docs/5.x/reference/kit/resolvers#imports), which defaults each ref to its pointer's last segment. An adapter that renames a schema (for example to break a name collision) stamps `targetName` on every ref node pointing at it, so `resolveRefName` and those imports pick up the emitted name. Refs that keep their segment name need no stamp.
 
-`AdapterSource` takes one of two shapes. Handle every form your users may pass:
-
-```typescript twoslash [AdapterSource]
-type AdapterSource = { type: 'path'; path: string } | { type: 'data'; data: string | unknown }
-```
-
 > [!IMPORTANT]
-> Throw from `parse()` with a clear, user-facing message when the input is invalid. Kubb surfaces the error verbatim.
+> Throw from `parse()` with a clear, user-facing message when the input is invalid.
 
 ## Adapter naming convention
 
@@ -108,54 +102,6 @@ export const adapterExample = createAdapter<AdapterExample>((options) => ({
   },
 }))
 ```
-
-## Built-in adapters
-
-### `@kubb/adapter-oas`
-
-Official adapter for OpenAPI 2.0 (Swagger), OpenAPI 3.0, and OpenAPI 3.1. Every official plugin is built against it. See the [`@kubb/adapter-oas` reference](/adapters/adapter-oas/) for the full option list.
-
-::: code-group
-
-```shell [bun]
-bun add -d @kubb/adapter-oas@beta
-```
-
-```shell [pnpm]
-pnpm add -D @kubb/adapter-oas@beta
-```
-
-```shell [npm]
-npm install --save-dev @kubb/adapter-oas@beta
-```
-
-```shell [yarn]
-yarn add -D @kubb/adapter-oas@beta
-```
-
-:::
-
-Key options:
-
-| Option        | Type                                                    | Default  | Purpose                                                               |
-| ------------- | ------------------------------------------------------- | -------- | --------------------------------------------------------------------- |
-| `validate`    | `boolean`                                               | `true`   | Run OpenAPI schema validation before parsing.                         |
-| `dateType`    | `false \| 'string' \| 'stringOffset' \| 'stringLocal' \| 'date'` | `'string'` | How `format: date`/`date-time` schemas are emitted in TypeScript.     |
-| `server`      | `{ index?: number; variables?: Record<string, string> }` | none     | Which `servers[]` entry to use as the base URL, and its variable overrides. |
-
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb/config'
-import { adapterOas } from '@kubb/adapter-oas'
-
-export default defineConfig({
-  input: './petStore.yaml',
-  output: { path: './src/gen' },
-  adapter: adapterOas({ validate: true, dateType: 'date', server: { index: 0 } }),
-})
-```
-
-> [!NOTE]
-> `defineConfig` from the `kubb` package uses `adapterOas()` when you omit `adapter`. Set `adapter:` only to configure `adapterOas` options or supply a different adapter.
 
 ## Creating a custom adapter
 
@@ -198,8 +144,8 @@ export const adapterJsonSchema = createAdapter<AdapterJsonSchema>((options) => {
 
 Register the adapter in `kubb.config.ts`:
 
-```typescript twoslash [kubb.config.ts]
-// @errors: 2307
+```typescript [kubb.config.ts]
+
 import { defineConfig } from 'kubb/config'
 import { adapterJsonSchema } from './adapterJsonSchema.ts'
 
@@ -210,25 +156,6 @@ export default defineConfig({
   plugins: [],
 })
 ```
-
-### Schema dispatch and dialects {#schema-dispatch-and-dialects}
-
-Turning a spec's schema objects into [`SchemaNode`](/docs/5.x/guide/concepts/ast)s is the heaviest part of an adapter. Most of that work is generic JSON Schema (`oneOf`/`anyOf`/`allOf`, `enum`, `const`, `type`, `format`, `items`, `properties`), so adapters follow one contract:
-
-```text [Conversion pipeline]
-context → [rule.match → rule.convert] → node
-```
-
-The adapter derives a small context from each schema, then runs it through an ordered table of dispatch rules that map spec shapes onto AST nodes. Only a few decisions differ between specs. Those live behind a dialect, a single object the converter pipeline reads, so it never hard-codes OpenAPI assumptions:
-
-| Decision      | OpenAPI                                              | AsyncAPI (example)            |
-| ------------- | --------------------------------------------------- | ----------------------------- |
-| nullable      | `nullable: true`, `x-nullable`, or `type: ['…','null']` | `type: ['…', 'null']`         |
-| discriminator | a structured `discriminator` object (not the Swagger 2 string form) | no discriminator object       |
-| binary        | `contentMediaType: 'application/octet-stream'`      | `contentEncoding: 'binary'`   |
-| optionality   | a parent's `required` plus the schema's `nullable` set `optional` / `nullish` | same JSON Schema `required` + `null` |
-
-`@kubb/adapter-oas` ships the OpenAPI dialect as its default. A new adapter such as `@kubb/adapter-asyncapi` reuses the same converters and dispatch table and supplies only its own dialect, so the spec-specific surface stays small. You test it by swapping that one object.
 
 ### Validate before parsing
 
