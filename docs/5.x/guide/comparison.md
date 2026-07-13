@@ -112,15 +112,7 @@ Every job in Kubb is one of three pieces: an [adapter](/docs/5.x/guide/concepts/
 
 **Plugins (artifacts)**
 
-- [`@kubb/plugin-ts`](/plugins/plugin-ts/) types, interfaces, and enums.
-- [`@kubb/plugin-zod`](/plugins/plugin-zod/) Zod v4 schemas.
-- [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and [`@kubb/plugin-axios`](/plugins/plugin-axios/) HTTP clients.
-- [`@kubb/plugin-react-query`](/plugins/plugin-react-query/), [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query/), and [`@kubb/plugin-swr`](/plugins/plugin-swr/) data-fetching hooks.
-- [`@kubb/plugin-faker`](/plugins/plugin-faker/) mock data and [`@kubb/plugin-msw`](/plugins/plugin-msw/) request handlers.
-- [`@kubb/plugin-cypress`](/plugins/plugin-cypress/) end-to-end tests.
-- [`@kubb/plugin-redoc`](/plugins/plugin-redoc/) API documentation.
-- [`@kubb/plugin-mcp`](/plugins/plugin-mcp/) an MCP server for your API.
-- [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) barrel index files.
+- Types, schemas, HTTP clients, data-fetching hooks, mocks, tests, docs, an [MCP server](/plugins/plugin-mcp/), and barrel files. The [feature table](#plugin-and-feature-coverage) above and the [plugins catalogue](/plugins) list every package.
 
 ## What sets Kubb apart
 

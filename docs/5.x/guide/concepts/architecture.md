@@ -89,8 +89,13 @@ A parser converts a `FileNode` into a source string. Each one claims a set of fi
 
 <FlowDiagram preset="storage" />
 
-The storage driver decides where files land. `fsStorage()` writes to disk and is the default, `memoryStorage()` keeps everything in a `Map` for tests, and a custom `Storage` targets any other backend.
+The storage driver decides where files land.
+
+- `fsStorage()` writes to disk and skips unchanged files. Default.
+- `memoryStorage()` keeps everything in a `Map`, ideal for tests.
+- A custom `Storage` targets any other backend.
 
 ## Integrations and AI
 
-[`unplugin-kubb`](/docs/5.x/guide/integrations/) runs Kubb inside your build tool: Vite, Rollup, webpack, esbuild, Rspack, Nuxt, and Astro. The [`kubb mcp`](/docs/5.x/reference/commands/mcp) command exposes generation to LLM clients over [MCP](https://modelcontextprotocol.io).
+- [`unplugin-kubb`](/docs/5.x/guide/integrations/) runs Kubb inside your build tool: Vite, Rollup, webpack, esbuild, Rspack, Nuxt, and Astro.
+- The [`kubb mcp`](/docs/5.x/reference/commands/mcp) command exposes generation to LLM clients over [MCP](https://modelcontextprotocol.io).

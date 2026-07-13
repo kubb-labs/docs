@@ -339,44 +339,7 @@ export const resolverExample = createResolver<PluginExample>({
 })
 ```
 
-Users override a plugin's resolver through its `resolver` option in `kubb.config.ts`. Pass a plain object with the parts you want to change, and each part merges over the plugin defaults. The option only patches the existing resolver. To build a whole new one, write a custom plugin. Inside every method `this` is the full resolver, so you reach `this.name`, `this.file`, and the plugin's namespaces.
-
-```typescript twoslash [config-resolver.ts]
-import { pluginFaker } from '@kubb/plugin-faker'
-
-pluginFaker({
-  resolver: {
-    name(name) {
-      return `${this.default.name(name)}Faker`
-    },
-    file: {
-      baseName({ name, extname }) {
-        return `${this.name(name)}${extname}`
-      },
-    },
-  },
-})
-```
-
-Namespaces merge per method, so override a single one and the siblings keep the plugin default.
-
-```typescript twoslash [config-namespace.ts]
-import { pluginReactQuery } from '@kubb/plugin-react-query'
-
-function capitalize(text: string): string {
-  return `${text.charAt(0).toUpperCase()}${text.slice(1)}`
-}
-
-pluginReactQuery({
-  resolver: {
-    query: {
-      name(node) {
-        return `use${capitalize(this.name(node.operationId))}Hook`
-      },
-    },
-  },
-})
-```
+Users override your plugin's resolver through its `resolver` option in `kubb.config.ts`. They pass a partial patch, each part merges over your defaults, and anything left out keeps the plugin default. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the patterns.
 
 ## The setup context
 
@@ -438,7 +401,7 @@ export const pluginExample = definePlugin(() => ({
 }))
 ```
 
-Set `copy` to an absolute on-disk path and Kubb writes that file's content into the output unchanged. It applies only `banner`/`footer` and skips the language parser. This keeps a hand-authored template as a real `.ts` file (linted, type-checked, and tested) and drops it into the generated folder without inlining its source as a string. The JSX renderer takes the same field: `<File baseName="runtime.ts" path={…} copy={templatePath} />`.
+Set `copy` to an absolute path and Kubb writes that file into the output unchanged, applying only `banner`/`footer` and skipping the parser. It keeps a hand-authored template as a real, tested `.ts` file instead of an inlined string. The JSX renderer takes the same field: `<File baseName="runtime.ts" path={…} copy={templatePath} />`.
 
 ## Options
 
