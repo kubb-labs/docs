@@ -3,6 +3,7 @@ layout: doc
 title: React Query live example
 description: Run the React Query example in an interactive CodeSandbox embed.
 outline: false
+aside: false
 ---
 
 # Live example
@@ -11,7 +12,7 @@ outline: false
   src="https://codesandbox.io/embed/github/kubb-labs/plugins/tree/main/examples/react-query?fontsize=14&module=%2Fkubb.config.ts&theme=dark&view=editor"
   :style="{
     width: '100%',
-    height: '700px',
+    height: '900px',
     border: 0,
     borderRadius: '4px',
     overflow: 'hidden'

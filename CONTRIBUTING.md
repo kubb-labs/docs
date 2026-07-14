@@ -29,16 +29,24 @@ A live example is a page at `plugins/<id>/example.md` that embeds a CodeSandbox 
 example: true
 ```
 
-Write the page itself as plain HTML. VitePress compiles markdown into a Vue template, so `:style` bindings work the same as anywhere else in the site:
+Write the page itself as plain HTML. VitePress compiles markdown into a Vue template, so `:style` bindings work the same as anywhere else in the site. Set `outline: false` and `aside: false` in the page's own frontmatter: the page has nothing for an on-page outline to list, and dropping the aside column removes kubb.dev's 688px prose-width cap so the embed gets the full content width instead of being squeezed into a reading column:
 
 ```md
+---
+layout: doc
+title: React Query live example
+description: Run the React Query example in an interactive CodeSandbox embed.
+outline: false
+aside: false
+---
+
 # Live example
 
 <iframe
   src="https://codesandbox.io/embed/github/kubb-labs/plugins/tree/main/examples/react-query?fontsize=14&module=%2Fkubb.config.ts&theme=dark&view=editor"
   :style="{
     width: '100%',
-    height: '700px',
+    height: '900px',
     border: 0,
     borderRadius: '4px',
     overflow: 'hidden'
