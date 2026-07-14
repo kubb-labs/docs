@@ -32,7 +32,6 @@ tags:
 dependencies:
   - plugin-ts
   - plugin-faker
-example: true
 resources:
   documentation: https://kubb.dev/plugins/plugin-msw
   repository: https://github.com/kubb-labs/plugins
