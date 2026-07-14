@@ -12,22 +12,34 @@ Please read our [Code of Conduct](https://github.com/kubb-labs/kubb/blob/main/CO
 ```
 docs/
 ├── docs/5.x/**            # Guides, concepts, API reference, integrations
-├── plugins/<id>/index.md  # One folder per plugin (index.md plus optional guide/reference subpages)
+├── plugins/<id>/index.md  # One folder per plugin (index.md plus optional guide/recipes/reference subpages)
 ├── adapters/<id>/index.md # One folder per adapter (index.md plus optional reference subpages)
 ├── parsers/<id>/index.md  # One folder per parser (index.md plus optional reference subpages)
 ├── blog/*.md              # Blog posts
 └── snippets/**            # Code snippets included via <<< @/snippets/...
 ```
 
-Each plugin, adapter, and parser is a folder with an `index.md` page, plus optional `guide/` and `reference/` subpages. The `index.md` frontmatter carries the registry metadata (`id`, `kind`, `name`, `description`, `category`, `type`, `npmPackage`, `repo`, `docsPath`, `featured`, `icon`, `maintainers`, `compatibility`, `tags`, `dependencies`, `resources`, `example`) that the kubb.dev fetch pipeline turns into the plugin, adapter, and parser cards and detail headers. The `kind` field is `plugin`, `adapter`, or `parser`, and `id` matches the folder name. The pipeline validates the frontmatter against `apps/kubb.dev/public/schemas/extension.json` in kubb-labs/platform, which requires `id`, `name`, `description`, `category`, `type`, `npmPackage`, `repo`, and `docsPath`.
+Each plugin, adapter, and parser is a folder with an `index.md` page, plus optional `guide/`, `recipes/`, and `reference/` subpages. The `index.md` frontmatter carries the registry metadata (`id`, `kind`, `name`, `description`, `category`, `type`, `npmPackage`, `repo`, `docsPath`, `featured`, `icon`, `maintainers`, `compatibility`, `tags`, `dependencies`, `resources`, `example`, `guides`, `recipes`) that the kubb.dev fetch pipeline turns into the plugin, adapter, and parser cards and detail headers. The `kind` field is `plugin`, `adapter`, or `parser`, and `id` matches the folder name. The pipeline validates the frontmatter against `apps/kubb.dev/public/schemas/extension.json` in kubb-labs/platform, which requires `id`, `name`, `description`, `category`, `type`, `npmPackage`, `repo`, and `docsPath`.
 
 ### Live examples
 
-Set `example` in the frontmatter to a CodeSandbox link and kubb.dev renders it as an inline embed at the bottom of the page. Pass an embed link or a share link — a `/p/github/...` or `/s/github/...` URL is normalized to the embed player, and the embed follows the site's light or dark theme. Point `module` at a file to open it by default:
+Set `example` in the frontmatter to a CodeSandbox link and kubb.dev renders it as an inline embed at the bottom of the page. Pass an embed link or a share link. A `/p/github/...` or `/s/github/...` URL is normalized to the embed player, and the embed follows the site's light or dark theme. Point `module` at a file to open it by default:
 
 ```yaml
 example: https://codesandbox.io/embed/github/kubb-labs/plugins/tree/main/examples/react-query?module=/kubb.config.ts
 ```
+
+### Recipes
+
+Recipes are task-focused pages that live under `plugins/<id>/recipes/<recipe-id>.md`. List them in the `index.md` frontmatter and kubb.dev builds a Recipes group in the sidebar. Each entry needs the page `id` (the file name without its extension) and the `title` shown in the sidebar.
+
+```yaml
+recipes:
+  - id: class-based-sdk
+    title: Class-based SDK
+```
+
+Guides follow the same shape under `plugins/<id>/guide/<guide-id>.md` with a `guides` array.
 
 Do NOT edit:
 - `docs/5.x/changelog.md` — auto-synced from kubb-labs/kubb by `.github/workflows/sync-changelog.yml` after each release. To update manually, trigger that workflow with `workflow_dispatch`.
