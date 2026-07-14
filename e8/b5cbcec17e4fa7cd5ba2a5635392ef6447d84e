@@ -1,0 +1,53 @@
+plugins/plugin-zod/reference/options.md
+  s_2c4cc654b94a73::t_2a38d9e18f6a0c 203-230
+  s_2c4cc654b94a73::t_e7450cb6703042 198-201
+  s_2c4cc654b94a73::t_0bf605f3dbdb0a 202
+plugins/plugin-vue-query/reference/options.md
+  s_2c4cc654b94a73::t_4332a4aa6a41d9 184-206
+  s_2c4cc654b94a73::t_e7450cb6703042 180-183
+plugins/plugin-swr/reference/options.md
+  s_2c4cc654b94a73::t_786c701087fa99 124-146
+  s_2c4cc654b94a73::t_e7450cb6703042 120-123
+plugins/plugin-faker/reference/options.md
+  s_2c4cc654b94a73::t_393718efdfdc52 122-143
+  s_2c4cc654b94a73::t_e7450cb6703042 118-121
+plugins/plugin-react-query/reference/options.md
+  s_2c4cc654b94a73::t_e7450cb6703042 152-155
+  s_2c4cc654b94a73::t_31e36e22e7ea49 156-180
+plugins/plugin-ts/reference/options.md
+  s_2c4cc654b94a73::t_c6378ffe1dc464 298-323
+  s_2c4cc654b94a73::t_e7450cb6703042 294-297
+plugins/plugin-mcp/reference/options.md
+  s_2c4cc654b94a73::t_e7450cb6703042 84-87
+  s_2c4cc654b94a73::t_e00adaed5b190b 89-100
+  s_2c4cc654b94a73::t_e697b45975b15f 88
+plugins/plugin-fetch/reference/options.md
+  s_2c4cc654b94a73::t_7b92c8758bc47b 121-133
+  s_2c4cc654b94a73::t_e7450cb6703042 117-120
+plugins/plugin-cypress/reference/options.md
+  s_2c4cc654b94a73::t_e7450cb6703042 124,127
+  s_2c4cc654b94a73::t_c95163f1e41ea3 129-138
+  s_2c4cc654b94a73::t_6ae1679c465c07 128
+plugins/plugin-axios/reference/options.md
+  s_2c4cc654b94a73::t_0c769dcf2b8b24 119-131
+  s_2c4cc654b94a73::t_e7450cb6703042 115-118
+plugins/plugin-msw/reference/options.md
+  s_2c4cc654b94a73::t_05af42736fa2ab 118-131
+  s_2c4cc654b94a73::t_e7450cb6703042 114-117
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "e8b5cbcec17e4fa7cd5ba2a5635392ef6447d84e",
+  "prompts": {},
+  "sessions": {
+    "s_2c4cc654b94a73": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b72b686d-21b4-454f-aa3b-a8ed582d679f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Stijn Van Hulle <stijn.vanhulle@robovision.eu>"
+    }
+  }
+}
