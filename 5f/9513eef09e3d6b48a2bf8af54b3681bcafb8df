@@ -1,0 +1,19 @@
+snippets/how-to/grouping.md
+  s_2c4cc654b94a73::t_d50482e7e4650e 9-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "5f9513eef09e3d6b48a2bf8af54b3681bcafb8df",
+  "prompts": {},
+  "sessions": {
+    "s_2c4cc654b94a73": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b72b686d-21b4-454f-aa3b-a8ed582d679f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Stijn Van Hulle <stijn.vanhulle@robovision.eu>"
+    }
+  }
+}
