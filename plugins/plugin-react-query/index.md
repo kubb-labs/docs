@@ -35,7 +35,7 @@ tags:
   - openapi
 dependencies:
   - plugin-ts
-example: https://codesandbox.io/embed/github/kubb-labs/plugins/tree/main/examples/react-query?module=/kubb.config.ts
+example: true
 resources:
   documentation: https://kubb.dev/plugins/plugin-react-query
   repository: https://github.com/kubb-labs/plugins

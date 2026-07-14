@@ -31,7 +31,7 @@ tags:
   - openapi
 dependencies:
   - plugin-ts
-example: https://codesandbox.io/embed/github/kubb-labs/plugins/tree/main/examples/faker?module=/kubb.config.ts
+example: true
 resources:
   documentation: https://kubb.dev/plugins/plugin-faker
   repository: https://github.com/kubb-labs/plugins
