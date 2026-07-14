@@ -117,7 +117,33 @@ Builds the SWR key for each mutation hook. Like `queryKey`, the callback receive
 
 ### resolver
 
-Changes how the plugin names generated files and symbols, to add a prefix or suffix or swap the casing without forking the plugin. Override only the methods you want, since anything you omit keeps its default. Inside a method, `this` is the full resolver, so `this.default.name(name)` reuses the built-in name (wrap it with a `swr` prefix to rename every hook). The plugin ships `resolverSwr` as its default. For changing the AST nodes themselves, use `macros` instead.
+Changes how the plugin names generated files and symbols. Pass a partial patch. Override only the members you want, and anything you omit keeps `resolverSwr`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
+
+> [!TIP]
+> Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
+
+```typescript [Partial override]
+type ResolverSwrPatch = {
+  name?(name: string): string
+  file?: {
+    baseName?(params: { name: string; extname: string }): string
+    path?(params: { baseName: string; output: Output }): string
+  }
+  query?: {
+    name?(node: OperationNode): string         // → 'useGetPetById'
+    optionsName?(node: OperationNode): string  // → 'getPetByIdQueryOptions'
+    keyName?(node: OperationNode): string       // → 'getPetByIdQueryKey'
+    keyTypeName?(node: OperationNode): string   // → 'GetPetByIdQueryKey'
+    clientName?(node: OperationNode): string    // → 'getPetById'
+  }
+  mutation?: {
+    name?(node: OperationNode): string          // → 'useUpdatePet'
+    keyName?(node: OperationNode): string        // → 'updatePetMutationKey'
+    keyTypeName?(node: OperationNode): string    // → 'UpdatePetMutationKey'
+    argTypeName?(node: OperationNode): string    // → 'UpdatePetMutationArg'
+  }
+}
+```
 
 ### macros
 

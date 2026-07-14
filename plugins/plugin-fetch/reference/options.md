@@ -114,7 +114,23 @@ if (status === 200) {
 
 ### resolver
 
-Changes how the plugin names generated files and functions. Override only the methods you want to change, since anything you omit keeps its default. Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in name. For example, `resolver: { name(name) { return \`api${this.default.name(name)}\` } }` prefixes every generated function name with `api`. To change the AST nodes themselves, use `macros` instead. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context.
+Changes how the plugin names generated files and symbols. Pass a partial patch. Override only the members you want, and anything you omit keeps `resolverClient`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
+
+> [!TIP]
+> Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
+
+```typescript [Partial override]
+type ResolverClientPatch = {
+  name?(name: string): string
+  file?: {
+    baseName?(params: { name: string; extname: string }): string
+    path?(params: { baseName: string; output: Output }): string
+  }
+  className?(name: string): string
+  groupName?(name: string): string     // → 'PetClient'
+  propertyName?(name: string): string
+}
+```
 
 ### macros
 

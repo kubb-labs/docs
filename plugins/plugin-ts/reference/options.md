@@ -291,7 +291,36 @@ export type Pet = {
 
 ### resolver
 
-Changes how the plugin names generated files and symbols without forking the plugin. Override only the methods you want to change, and the rest keep their defaults. Inside a method, `this` is the full resolver, so `this.default.name(name)` reuses the built-in name. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for how a patch layers over the default.
+Changes how the plugin names generated files and symbols. Pass a partial patch. Override only the members you want, and anything you omit keeps `resolverTs`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
+
+> [!TIP]
+> Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
+
+```typescript [Partial override]
+type ResolverTsPatch = {
+  name?(name: string): string
+  file?: {
+    baseName?(params: { name: string; extname: string }): string
+    path?(params: { baseName: string; output: Output }): string
+  }
+  param?: {
+    name?(node: OperationNode, param: ParameterNode): string    // → 'DeletePetPathPetId'
+    path?(node: OperationNode, param: ParameterNode): string     // → 'GetPetByIdPath'
+    query?(node: OperationNode, param: ParameterNode): string    // → 'FindPetsByStatusQuery'
+    headers?(node: OperationNode, param: ParameterNode): string  // → 'DeletePetHeaders'
+  }
+  response?: {
+    status?(node: OperationNode, statusCode: StatusCode): string // → 'ListPetsStatus200'
+    options?(node: OperationNode): string                        // → 'ListPetsOptions'
+    responses?(node: OperationNode): string                      // → 'ListPetsResponses'
+    response?(node: OperationNode): string                       // → 'ListPetsResponse'
+    body?(node: OperationNode): string                           // → 'CreatePetBody'
+  }
+  enum?: {
+    keyName?(node: { name?: string | null }, enumTypeSuffix?: string): string // → 'PetStatusKey'
+  }
+}
+```
 
 ### macros
 

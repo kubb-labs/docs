@@ -177,7 +177,33 @@ Controls whether `use*` composables are emitted. The default `false` writes only
 
 ### resolver
 
-Changes how composables and files are named without forking the plugin. Override only the methods you need, and call `this.name(name)` to reuse the built-in name. The default is `resolverVueQuery`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers).
+Changes how the plugin names generated files and symbols. Pass a partial patch. Override only the members you want, and anything you omit keeps `resolverVueQuery`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
+
+> [!TIP]
+> Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
+
+```typescript [Partial override]
+type ResolverVueQueryPatch = {
+  name?(name: string): string
+  file?: {
+    baseName?(params: { name: string; extname: string }): string
+    path?(params: { baseName: string; output: Output }): string
+  }
+  query?: {
+    name?(node: OperationNode): string
+    optionsName?(node: OperationNode): string
+    keyName?(node: OperationNode): string
+    keyTypeName?(node: OperationNode): string
+    clientName?(node: OperationNode): string
+  }
+  infiniteQuery?: { /* same members as query */ }
+  mutation?: {
+    name?(node: OperationNode): string
+    keyName?(node: OperationNode): string
+    typeName?(node: OperationNode): string
+  }
+}
+```
 
 ### macros
 

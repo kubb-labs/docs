@@ -149,7 +149,35 @@ When `false` (the default), only the adapter-portable factory helpers are writte
 
 ### resolver
 
-Changes how generated files and symbols are named. Override only the methods you want, and the rest keep `resolverReactQuery`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and `this.name(name)`.
+Changes how the plugin names generated files and symbols. Pass a partial patch. Override only the members you want, and anything you omit keeps `resolverReactQuery`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
+
+> [!TIP]
+> Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
+
+```typescript [Partial override]
+type ResolverReactQueryPatch = {
+  name?(name: string): string
+  file?: {
+    baseName?(params: { name: string; extname: string }): string
+    path?(params: { baseName: string; output: Output }): string
+  }
+  query?: {
+    name?(node: OperationNode): string         // → 'useGetPetById'
+    optionsName?(node: OperationNode): string  // → 'getPetByIdQueryOptions'
+    keyName?(node: OperationNode): string       // → 'getPetByIdQueryKey'
+    keyTypeName?(node: OperationNode): string   // → 'GetPetByIdQueryKey'
+    clientName?(node: OperationNode): string    // → 'getPetById'
+  }
+  suspenseQuery?: { /* same members as query */ }
+  infiniteQuery?: { /* same members as query */ }
+  suspenseInfiniteQuery?: { /* same members as query */ }
+  mutation?: {
+    name?(node: OperationNode): string          // → 'useUpdatePet'
+    optionsName?(node: OperationNode): string
+    keyName?(node: OperationNode): string
+  }
+}
+```
 
 ### macros
 

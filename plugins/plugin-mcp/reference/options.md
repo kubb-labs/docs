@@ -81,9 +81,23 @@ Function that turns a group key into the subdirectory name under `output.path`. 
 
 ### resolver
 
-Changes how the plugin names generated files and handlers, to add a prefix or suffix or swap the casing without forking the plugin. Override only the methods you want, since anything you omit keeps its default behavior, and inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in name.
+Changes how the plugin names generated files and symbols. Pass a partial patch. Override only the members you want, and anything you omit keeps `resolverMcp`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
 
-For example, `resolver: { name(name) { return \`Api${this.default.name(name)}\` } }` prefixes every generated handler name with `Api`.
+> [!TIP]
+> Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
+
+```typescript [Partial override]
+type ResolverMcpPatch = {
+  name?(name: string): string
+  file?: {
+    baseName?(params: { name: string; extname: string }): string
+    path?(params: { baseName: string; output: Output }): string
+  }
+  handler?: {
+    name?(node: OperationNode): string     // → 'showPetByIdHandler'
+  }
+}
+```
 
 ### macros
 

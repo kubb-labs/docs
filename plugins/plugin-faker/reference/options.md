@@ -115,7 +115,32 @@ Value passed to `faker.seed(...)` and emitted at the top of each generated facto
 
 ### resolver
 
-Changes how the plugin names generated files and symbols, so you can add a prefix or suffix without forking the plugin. Override only the methods you want and the rest keep their defaults. Inside a method `this` is the full resolver, so a `name` method returning `this.default.name(name) + 'Mock'` appends `Mock` to every factory name. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context. Use `macros` to change AST nodes instead of names.
+Changes how the plugin names generated files and symbols. Pass a partial patch. Override only the members you want, and anything you omit keeps `resolverFaker`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
+
+> [!TIP]
+> Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
+
+```typescript [Partial override]
+type ResolverFakerPatch = {
+  name?(name: string): string
+  file?: {
+    baseName?(params: { name: string; extname: string }): string
+    path?(params: { baseName: string; output: Output }): string
+  }
+  param?: {
+    name?(node: OperationNode, param: ParameterNode): string    // → 'showPetByIdPathPetId'
+    path?(node: OperationNode, param: ParameterNode): string     // → 'createShowPetByIdPath'
+    query?(node: OperationNode, param: ParameterNode): string    // → 'createListPetsQuery'
+    headers?(node: OperationNode, param: ParameterNode): string  // → 'createDeletePetHeaders'
+  }
+  response?: {
+    status?(node: OperationNode, statusCode: StatusCode): string // → 'listPetsStatus200'
+    body?(node: OperationNode): string                           // → 'createPetsBody'
+    response?(node: OperationNode): string                       // → 'listPetsResponse'
+    responses?(node: OperationNode): string                      // → 'listPetsResponses'
+  }
+}
+```
 
 ### macros
 

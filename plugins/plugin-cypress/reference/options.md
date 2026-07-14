@@ -121,12 +121,21 @@ export function showPetById(
 
 ### resolver
 
-Changes how the plugin names generated files and symbols, for example to add a prefix or suffix or swap the casing. Override only the methods you want, since anything you omit keeps its default behavior. Inside a method, `this` is the full resolver, so `this.default.name(name)` reuses the built-in name.
+Changes how the plugin names generated files and symbols. Pass a partial patch. Override only the members you want, and anything you omit keeps `resolverCypress`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
 
 > [!TIP]
-> For changing the AST nodes themselves instead of names, use `macros`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context.
+> Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
 
-For example, `resolver: { name(name) { return \`api${this.default.name(name)}\` } }` prefixes every generated helper name with `api`.
+```typescript [Partial override]
+type ResolverCypressPatch = {
+  name?(name: string): string
+  file?: {
+    baseName?(params: { name: string; extname: string }): string
+    path?(params: { baseName: string; output: Output }): string
+  }
+  // no extra namespaces
+}
+```
 
 ### macros
 

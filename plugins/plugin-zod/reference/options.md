@@ -195,9 +195,39 @@ For example, `override: [{ type: 'tag', pattern: 'user', options: { coercion: tr
 
 ### resolver
 
-Changes how the plugin names generated files and symbols, such as a prefix, suffix, or casing change, without forking the plugin. Override only the methods you want, since omitted ones keep their default, and `this.default.name(name)` reuses the built-in name. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and patch layering.
+Changes how the plugin names generated files and symbols. Pass a partial patch. Override only the members you want, and anything you omit keeps `resolverZod`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
 
-For example, `resolver: { name(name) { return \`${this.default.name(name)}Validator\` } }` renames every generated schema from `petSchema` to `petValidator`.
+> [!TIP]
+> Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
+
+```typescript [Partial override]
+type ResolverZodPatch = {
+  name?(name: string): string
+  file?: {
+    baseName?(params: { name: string; extname: string }): string
+    path?(params: { baseName: string; output: Output }): string
+  }
+  schema?: {
+    typeName?(name: string): string       // → 'PetSchemaType'
+    type?(name: string): string           // → 'PetSchemaType'
+    inputName?(name: string): string      // → 'orderInputSchema'
+    inputTypeName?(name: string): string  // → 'OrderInputSchemaType'
+  }
+  param?: {
+    name?(node: OperationNode, param: ParameterNode): string    // → 'deletePetPathPetIdSchema'
+    path?(node: OperationNode, param: ParameterNode): string     // → 'deletePetPathPetIdSchema'
+    query?(node: OperationNode, param: ParameterNode): string    // → 'findPetsByStatusQueryStatusSchema'
+    headers?(node: OperationNode, param: ParameterNode): string  // → 'deletePetHeaderApiKeySchema'
+  }
+  response?: {
+    status?(node: OperationNode, statusCode: StatusCode): string // → 'listPetsStatus200Schema'
+    body?(node: OperationNode): string                           // → 'createPetBodySchema'
+    responses?(node: OperationNode): string                      // → 'listPetsResponsesSchema'
+    response?(node: OperationNode): string                       // → 'listPetsResponseSchema'
+    error?(node: OperationNode): string                          // → 'listPetsErrorSchema'
+  }
+}
+```
 
 ### printer
 

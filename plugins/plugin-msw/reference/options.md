@@ -111,7 +111,24 @@ export function getPetHandler(data?: GetPetQueryResponse | ((info: Parameters<Pa
 
 ### resolver
 
-Changes how the plugin names generated files and symbols, for a prefix, suffix, or casing change without forking the plugin. Override only the methods you want, since anything you omit keeps its default behavior. Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in name. The default suffixes every handler with `Handler` and names the aggregate export `handlers`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for how a patch layers over the plugin default.
+Changes how the plugin names generated files and symbols. Pass a partial patch. Override only the members you want, and anything you omit keeps `resolverMsw`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
+
+> [!TIP]
+> Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
+
+```typescript [Partial override]
+type ResolverMswPatch = {
+  name?(name: string): string
+  file?: {
+    baseName?(params: { name: string; extname: string }): string
+    path?(params: { baseName: string; output: Output }): string
+  }
+  handler?: {
+    name?(node: OperationNode): string
+    listName?(): string
+  }
+}
+```
 
 ### macros
 

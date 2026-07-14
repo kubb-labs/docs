@@ -112,7 +112,23 @@ if (status === 200) {
 
 ### resolver
 
-Changes how the plugin names generated files and functions, so you can add a prefix or suffix or swap the casing without forking the plugin. Override only the methods you want, and inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in name. The default is `resolverClient`, shared across the client plugins. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context.
+Changes how the plugin names generated files and symbols. Pass a partial patch. Override only the members you want, and anything you omit keeps `resolverClient`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
+
+> [!TIP]
+> Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
+
+```typescript [Partial override]
+type ResolverClientPatch = {
+  name?(name: string): string
+  file?: {
+    baseName?(params: { name: string; extname: string }): string
+    path?(params: { baseName: string; output: Output }): string
+  }
+  className?(name: string): string
+  groupName?(name: string): string     // → 'PetClient'
+  propertyName?(name: string): string
+}
+```
 
 ### macros
 
