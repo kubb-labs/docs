@@ -1,0 +1,43 @@
+plugins/plugin-mcp/reference/options.md
+  s_2c4cc654b94a73::t_b565a6f99d1c6b 16
+  s_2c4cc654b94a73::t_3305a336678b68 59-64
+  s_8233f1d606675b::t_74530036e38bfc 58
+parsers/parser-md/reference/options.md
+  s_8233f1d606675b::t_c7105c008b803b 1-12
+parsers/parser-md/index.md
+  s_2c4cc654b94a73::t_268d7bba2e43d3 65-68
+parsers/parser-ts/index.md
+  s_2c4cc654b94a73::t_4b518ba0ea5eab 73-76
+plugins/plugin-zod/reference/options.md
+  s_2c4cc654b94a73::t_60f1babea3248f 27
+parsers/parser-ts/reference/options.md
+  s_8233f1d606675b::t_d6fd32f05faf62 1-30
+adapters/adapter-oas/index.md
+  s_2c4cc654b94a73::t_af83447222fc20 68-71
+plugins/plugin-react-query/reference/options.md
+  s_2c4cc654b94a73::t_bbc6f7658be7f5 28-29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "5c40ac3b670c2b9728ec8f2406f6fd19406764bc",
+  "prompts": {},
+  "sessions": {
+    "s_2c4cc654b94a73": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b72b686d-21b4-454f-aa3b-a8ed582d679f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Stijn Van Hulle <stijn.vanhulle@robovision.eu>"
+    },
+    "s_8233f1d606675b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9463e60d-9e6c-4f51-a620-c2bfe0359fcc",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Stijn Van Hulle <stijn.vanhulle@robovision.eu>"
+    }
+  }
+}
