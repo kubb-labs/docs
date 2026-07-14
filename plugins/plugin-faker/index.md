@@ -7,8 +7,10 @@ outline: deep
 recipes:
   - id: localized-mock-data
     title: Localized mock data
-  - id: real-date-objects-with-dayjs
-    title: Real Date objects with dayjs
+  - id: format-date-fields-with-dayjs
+    title: Format date fields with Day.js
+  - id: deterministic-data-with-a-seed
+    title: Deterministic data with a seed
 kind: plugin
 id: plugin-faker
 name: Faker

@@ -1,11 +1,11 @@
 ---
 layout: doc
-title: Real Date objects with dayjs
+title: Format date fields with Day.js
 description: Format generated date and time fields with Day.js by setting the dateParser option in @kubb/plugin-faker.
 outline: deep
 ---
 
-# Real Date objects with dayjs
+# Format date fields with Day.js
 
 Format string `date` and `time` fields with Day.js by setting [`dateParser`](/plugins/plugin-faker/reference/options#dateparser) to `'dayjs'`. The plugin emits `dayjs(...).format(...)` and adds the import for you, so the factories reuse the date library your project already ships.
 

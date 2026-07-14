@@ -25,7 +25,7 @@ export default defineConfig({
 ```
 
 ```typescript
-import { client } from './src/gen/clients/.kubb/client'
+import { client } from './src/gen/.kubb/client'
 
 const url = client.getUrl({ url: '/pet/{petId}', path: { petId: 1 }, query: { status: ['available'] } })
 // '/pet/1?status=available'

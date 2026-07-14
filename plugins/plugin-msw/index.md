@@ -9,6 +9,8 @@ recipes:
     title: Handlers you fill from tests
   - id: auto-generated-mock-data
     title: Auto-generated mock data
+  - id: register-handlers-with-a-server
+    title: Register handlers with a server
 kind: plugin
 id: plugin-msw
 name: MSW
