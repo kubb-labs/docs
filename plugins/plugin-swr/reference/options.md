@@ -55,10 +55,6 @@ How the plugin consolidates generated code (`'directory' | 'file'`, default `'di
 
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
-#### group.type
-
-<!--@include: ../../../snippets/how-to/group-type.md-->
-
 #### group.name
 
 Function that turns a group key into a folder or identifier name, used as the subdirectory name and as a suffix when naming aggregate files. Defaults to `({ group }) => camelCase(group)`, except `type: 'path'` groups use the first URL segment as-is.

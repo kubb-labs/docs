@@ -56,10 +56,6 @@ Folder for the plugin's files, resolved against the global `output.path` and def
 
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
-#### group.type
-
-<!--@include: ../../../snippets/how-to/group-type.md-->
-
 #### group.name
 
 Turns a group key into a folder name, defaulting to the camelCased tag, or the first URL segment for `path` groups.

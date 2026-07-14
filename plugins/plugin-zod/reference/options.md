@@ -67,10 +67,6 @@ How the plugin consolidates generated code into files.
 
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
-#### group.type
-
-<!--@include: ../../../snippets/how-to/group-type.md-->
-
 #### group.name
 
 Function that turns a group key (first tag or path segment) into a folder or identifier name, used as the subdirectory under `output.path` and a suffix for aggregate files. For `type: 'path'`, the default keeps the URL segment as-is instead of camelCasing.

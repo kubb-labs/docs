@@ -55,10 +55,6 @@ How the plugin consolidates generated code. `'directory'` (the default) writes o
 
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
-#### group.type
-
-<!--@include: ../../../snippets/how-to/group-type.md-->
-
 #### group.name
 
 Function `(context: { group: string }) => string` that turns a group key into the subdirectory name and the suffix for aggregate files. It defaults to `camelCase(group)` for tag groups, and for `type: 'path'` groups uses the path segment as-is.

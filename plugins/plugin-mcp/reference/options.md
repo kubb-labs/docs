@@ -48,10 +48,6 @@ How the plugin consolidates its generated code. `'directory'` (the default) writ
 
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
-#### group.type
-
-<!--@include: ../../../snippets/how-to/group-type.md-->
-
 #### group.name
 
 Function that turns a group key into the subdirectory name under `output.path`. It defaults to the camelCased tag for `tag` groups and the first URL segment as-is for `path` groups. The `server.ts` and `.mcp.json` files keep their fixed names at the root of `output.path`.

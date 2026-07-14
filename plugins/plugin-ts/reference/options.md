@@ -55,10 +55,6 @@ How generated code is consolidated into files. Defaults to `'directory'`.
 
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
-#### group.type
-
-<!--@include: ../../../snippets/how-to/group-type.md-->
-
 #### group.name
 
 Turns a group key into a folder or identifier name, used as the subdirectory name and as a suffix on aggregate files. Type `(context: { group: string }) => string`, default `({ group }) => camelCase(group)`, which for `type: 'path'` groups uses the first URL segment as-is instead of camelCasing.

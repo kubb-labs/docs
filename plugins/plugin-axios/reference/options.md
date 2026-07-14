@@ -53,10 +53,6 @@ Folder where the plugin writes its files, defaulting to `'clients'` and resolved
 
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
-#### group.type
-
-<!--@include: ../../../snippets/how-to/group-type.md-->
-
 #### group.name
 
 Function `(context: { group: string }) => string` that turns a group key into a folder name and wins over the default, which camelCases the tag or uses the first path segment.

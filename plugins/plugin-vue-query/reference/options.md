@@ -57,10 +57,6 @@ How generated code is consolidated, `'directory'` or `'file'`. The default `'dir
 
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
-#### group.type
-
-<!--@include: ../../../snippets/how-to/group-type.md-->
-
 #### group.name
 
 Function turning a group key into a folder or identifier name, typed `(context: { group: string }) => string`. Defaults to `({ group }) => camelCase(group)` for tag groups, while path groups use the URL segment as-is.
