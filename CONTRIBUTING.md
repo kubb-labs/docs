@@ -12,44 +12,23 @@ Please read our [Code of Conduct](https://github.com/kubb-labs/kubb/blob/main/CO
 ```
 docs/
 ├── docs/5.x/**            # Guides, concepts, API reference, integrations
-├── plugins/<id>/index.md  # One folder per plugin (index.md plus optional guide/recipes/reference/example subpages)
+├── plugins/<id>/index.md  # One folder per plugin (index.md plus optional guide/recipes/reference subpages)
 ├── adapters/<id>/index.md # One folder per adapter (index.md plus optional reference subpages)
 ├── parsers/<id>/index.md  # One folder per parser (index.md plus optional reference subpages)
 ├── blog/*.md              # Blog posts
 └── snippets/**            # Code snippets included via <<< @/snippets/...
 ```
 
-Each plugin, adapter, and parser is a folder with an `index.md` page, plus optional `guide/`, `recipes/`, `reference/`, and `example.md` subpages. The `index.md` frontmatter carries the registry metadata (`id`, `kind`, `name`, `description`, `category`, `type`, `npmPackage`, `repo`, `docsPath`, `featured`, `icon`, `maintainers`, `compatibility`, `tags`, `dependencies`, `resources`, `example`, `guides`, `recipes`) that the kubb.dev fetch pipeline turns into the plugin, adapter, and parser cards and detail headers. The `kind` field is `plugin`, `adapter`, or `parser`, and `id` matches the folder name. The pipeline validates the frontmatter against `apps/kubb.dev/public/schemas/extension.json` in kubb-labs/platform, which requires `id`, `name`, `description`, `category`, `type`, `npmPackage`, `repo`, and `docsPath`.
+Each plugin, adapter, and parser is a folder with an `index.md` page, plus optional `guide/`, `recipes/`, and `reference/` subpages. The `index.md` frontmatter carries the registry metadata (`id`, `kind`, `name`, `description`, `category`, `type`, `npmPackage`, `repo`, `docsPath`, `featured`, `icon`, `maintainers`, `compatibility`, `tags`, `dependencies`, `resources`, `guides`, `recipes`) that the kubb.dev fetch pipeline turns into the plugin, adapter, and parser cards and detail headers. The `kind` field is `plugin`, `adapter`, or `parser`, and `id` matches the folder name. The pipeline validates the frontmatter against `apps/kubb.dev/public/schemas/extension.json` in kubb-labs/platform, which requires `id`, `name`, `description`, `category`, `type`, `npmPackage`, `repo`, and `docsPath`.
 
-### Live examples
+### Live example
 
-A live example is a page at `plugins/<id>/example.md` that embeds a CodeSandbox iframe. Set `example: true` in the `index.md` frontmatter and kubb.dev adds a "Live example" link to the sidebar:
+Set `resources.codesandbox` to a CodeSandbox project link and kubb.dev adds a "Live example" link to the Resources block in the sidebar:
 
 ```yaml
-example: true
+resources:
+  codesandbox: https://codesandbox.io/p/github/kubb-labs/plugins/main/examples/react-query
 ```
-
-Write the page itself as plain HTML. VitePress compiles markdown into a Vue template, so `:style` bindings work the same as anywhere else in the site:
-
-```md
-# Live example
-
-<iframe
-  src="https://codesandbox.io/embed/github/kubb-labs/plugins/tree/main/examples/react-query?fontsize=14&module=%2Fkubb.config.ts&theme=dark&view=editor"
-  :style="{
-    width: '100%',
-    height: '700px',
-    border: 0,
-    borderRadius: '4px',
-    overflow: 'hidden'
-  }"
-  title="React Query"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-/>
-```
-
-Use the `/embed/github/...` form of the CodeSandbox URL, not a `/p/` or `/s/` share link, and point `module` at the file the embed should open.
 
 ### Recipes
 

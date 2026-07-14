@@ -30,7 +30,6 @@ tags:
   - openapi
 dependencies:
   - plugin-ts
-example: true
 resources:
   documentation: https://kubb.dev/plugins/plugin-swr
   repository: https://github.com/kubb-labs/plugins

@@ -29,7 +29,6 @@ tags:
   - codegen
   - openapi
 dependencies: []
-example: true
 resources:
   documentation: https://kubb.dev/plugins/plugin-redoc
   repository: https://github.com/kubb-labs/plugins

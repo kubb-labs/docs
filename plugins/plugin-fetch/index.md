@@ -47,7 +47,6 @@ tags:
   - validator
 dependencies:
   - plugin-ts
-example: true
 resources:
   documentation: https://kubb.dev/plugins/plugin-fetch
   repository: https://github.com/kubb-labs/plugins

@@ -34,7 +34,6 @@ tags:
   - openapi
 dependencies:
   - plugin-ts
-example: true
 resources:
   documentation: https://kubb.dev/plugins/plugin-vue-query
   repository: https://github.com/kubb-labs/plugins
