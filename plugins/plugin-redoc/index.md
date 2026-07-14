@@ -4,6 +4,9 @@ title: Kubb Redoc Plugin
 description: Generates a single-file HTML page from your OpenAPI spec with Redoc,
   rebuilt on every Kubb run so the docs match the spec your code comes from.
 outline: deep
+recipes:
+  - id: standalone-api-docs-page
+    title: Standalone API docs page
 kind: plugin
 id: plugin-redoc
 name: Redoc

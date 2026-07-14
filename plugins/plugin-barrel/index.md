@@ -5,6 +5,15 @@ description: Generates an index.ts barrel for every plugin output and one root
   barrel, so you import all generated code from a single entry point. Ships with
   Kubb and runs by default.
 outline: deep
+recipes:
+  - id: named-re-exports-for-tree-shaking
+    title: Named re-exports for tree-shaking
+  - id: one-wildcard-barrel
+    title: One wildcard barrel
+  - id: a-barrel-in-every-folder
+    title: A barrel in every folder
+  - id: turn-barrels-off
+    title: Turn barrels off
 kind: plugin
 id: plugin-barrel
 name: Barrel

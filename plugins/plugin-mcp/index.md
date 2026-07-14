@@ -4,6 +4,11 @@ title: Kubb MCP Plugin
 description: Generates a Model Context Protocol server from your OpenAPI spec, so
   AI assistants can call each operation as a typed tool.
 outline: deep
+recipes:
+  - id: a-working-mcp-server-from-a-spec
+    title: A working MCP server from a spec
+  - id: choose-the-client-when-two-are-registered
+    title: Choose the client when two are registered
 kind: plugin
 id: plugin-mcp
 name: MCP

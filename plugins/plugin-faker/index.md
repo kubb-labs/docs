@@ -4,6 +4,11 @@ title: Kubb Faker Plugin
 description: Generates a Faker.js mock-data factory for every schema in your OpenAPI spec.
   Use the factories in tests, Storybook, and local development without a running backend.
 outline: deep
+recipes:
+  - id: localized-mock-data
+    title: Localized mock data
+  - id: real-date-objects-with-dayjs
+    title: Real Date objects with dayjs
 kind: plugin
 id: plugin-faker
 name: Faker

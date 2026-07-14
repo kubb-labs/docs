@@ -6,6 +6,9 @@ outline: deep
 guides:
   - id: calling-operations
     title: Call operations
+recipes:
+  - id: skip-a-request-until-ready
+    title: Skip a request until ready
 kind: plugin
 id: plugin-swr
 name: SWR
