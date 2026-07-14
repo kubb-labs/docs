@@ -151,7 +151,7 @@ Regular cookie parameters are exposed under `headers.cookies`. OpenAPI API keys 
 
 ## Current constraints
 
-- Every response must use a numeric HTTP status code. Generation fails for `default` and other nonnumeric response keys.
+- `default` responses are omitted because Effect HttpApi contracts require concrete status codes. Generation fails for other nonnumeric response keys.
 - The plugin generates client-side security middleware, not server-side authentication handlers.
 - The generated `ApiClient` uses the `baseURL` configured during generation. It does not generate a client factory for changing the URL at runtime.
 

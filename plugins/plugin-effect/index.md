@@ -46,7 +46,7 @@ export type Pet = {
 }
 
 export const Pet = Schema.Struct({
-  id: Schema.Number.check(Schema.isFinite(), Schema.isInt()),
+  id: Schema.Int,
   name: Schema.String,
 })
 ```
@@ -108,7 +108,7 @@ export default defineConfig({
 
 OpenAPI length, range, pattern, uniqueness, and `oneOf` rules become Effect checks. OpenAPI `format` and `default` values become schema annotations. A format such as `email` does not reject a string, and a default does not fill a missing value.
 
-When the OpenAPI adapter uses `dateType: 'date'`, generated codecs decode `date-time` strings into `DateTime.Utc` values and encode them as UTC ISO strings. Date-only fields preserve their `YYYY-MM-DD` wire format, while the default string representation keeps both formats as annotated strings.
+When the OpenAPI adapter uses `dateType: 'date'`, generated codecs decode `date-time` strings into `DateTime.Utc` values and encode them as UTC ISO strings. Date-only fields preserve their `YYYY-MM-DD` wire format, while the default string representation keeps both formats as annotated strings. JSON `int64` values decode from numbers to `bigint` values.
 
 ## See also
 
