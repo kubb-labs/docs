@@ -6,8 +6,6 @@ outline: deep
 guides:
   - id: calling-operations
     title: Call operations
-  - id: macros
-    title: Write macros
 kind: plugin
 id: plugin-swr
 name: SWR

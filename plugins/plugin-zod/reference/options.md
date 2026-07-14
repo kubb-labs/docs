@@ -23,8 +23,8 @@ Options for `pluginZod`, with type and default in the table.
 | [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
 | [`resolver`](#resolver) | `ResolverPatch<ResolverZod>` | — | Customize generated names and file paths |
-| [`printer`](#printer) | `{ nodes?: PrinterZodNodes \| PrinterZodMiniNodes }` | — | Replace the handler for a schema type |
 | [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
+| [`printer`](#printer) | `{ nodes?: PrinterZodNodes \| PrinterZodMiniNodes }` | — | Replace the handler for a schema type |
 
 ### output
 

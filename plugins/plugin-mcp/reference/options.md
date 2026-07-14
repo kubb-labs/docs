@@ -12,8 +12,8 @@ Options for `@kubb/plugin-mcp`, which generates an MCP server where each OpenAPI
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
 | [`output`](#output) | `Output` | `{ path: 'mcp', barrel: { type: 'named' } }` | Where the generated handlers are written and exported |
-| [`client`](#client) | `'fetch' \| 'axios'` | — | Which registered client plugin the handlers call |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
+| [`client`](#client) | `'fetch' \| 'axios'` | — | Which registered client plugin the handlers call |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
@@ -44,13 +44,6 @@ How the plugin consolidates its generated code. `'directory'` (the default) writ
 
 <!--@include: ../../../snippets/how-to/output-footer.md-->
 
-### client
-
-Selects which registered client plugin the handlers call, `'fetch'` for `@kubb/plugin-fetch` or `'axios'` for `@kubb/plugin-axios`. Each handler calls that client's generated `<op>` for the operation, passing one grouped `{ path, query, headers, body }` object. A lone registered client plugin is auto-detected, so set this only to disambiguate when both are registered, and transport options such as `baseURL` live on the client plugin itself.
-
-> [!NOTE]
-> The handlers call a client plugin's functions, so register `@kubb/plugin-fetch` or `@kubb/plugin-axios` alongside this one.
-
 ### group
 
 <!--@include: ../../../snippets/how-to/grouping.md-->
@@ -62,6 +55,13 @@ Selects which registered client plugin the handlers call, `'fetch'` for `@kubb/p
 #### group.name
 
 Function that turns a group key into the subdirectory name under `output.path`. It defaults to the camelCased tag for `tag` groups and the first URL segment as-is for `path` groups. The `server.ts` and `.mcp.json` files keep their fixed names at the root of `output.path`.
+
+### client
+
+Selects which registered client plugin the handlers call, `'fetch'` for `@kubb/plugin-fetch` or `'axios'` for `@kubb/plugin-axios`. Each handler calls that client's generated `<op>` for the operation, passing one grouped `{ path, query, headers, body }` object. A lone registered client plugin is auto-detected, so set this only to disambiguate when both are registered, and transport options such as `baseURL` live on the client plugin itself.
+
+> [!NOTE]
+> The handlers call a client plugin's functions, so register `@kubb/plugin-fetch` or `@kubb/plugin-axios` alongside this one.
 
 ### include
 

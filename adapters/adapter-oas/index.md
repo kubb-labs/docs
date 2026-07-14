@@ -65,6 +65,10 @@ yarn add -D @kubb/adapter-oas@beta
 
 :::
 
+## Dependencies
+
+`@kubb/adapter-oas` has no plugin dependencies. It reads your OpenAPI spec and converts it into the AST that every Kubb plugin generates from, so plugins depend on it rather than the other way around.
+
 ## Example
 
 ::: code-group

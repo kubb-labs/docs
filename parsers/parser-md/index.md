@@ -62,6 +62,10 @@ yarn add -D @kubb/parser-md@beta
 
 :::
 
+## Dependencies
+
+`@kubb/parser-md` has no plugin dependencies. It is a standalone parser you register on a plugin's `output`, and needs no other Kubb plugin.
+
 ## Frontmatter
 
 `@kubb/parser-md` takes no options of its own. To add a YAML frontmatter block to a generated page, set `frontmatter` on a file's `meta` inside a plugin. The parser renders those keys and prepends them to the output. Any serializable object works.

@@ -22,11 +22,11 @@ Options for `pluginReactQuery`, with type and default in the table.
 | [`mutationKey`](#mutationkey) | `(props) => unknown[]` | `built-in` | Build the `mutationKey` for each mutation hook |
 | [`customOptions`](#customoptions) | `CustomOptions` | — | Route every hook through your own options function |
 | [`hooks`](#hooks) | `boolean` | `false` | Emit `use*` hook functions on top of the factories |
-| [`resolver`](#resolver) | `ResolverPatch<ResolverReactQuery>` | — | Customize generated names and file paths |
-| [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
+| [`resolver`](#resolver) | `ResolverPatch<ResolverReactQuery>` | — | Customize generated names and file paths |
+| [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
 
 ### output
 

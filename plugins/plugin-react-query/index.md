@@ -8,8 +8,6 @@ outline: deep
 guides:
   - id: calling-operations
     title: Call operations
-  - id: macros
-    title: Write macros
 kind: plugin
 id: plugin-react-query
 name: React Query
