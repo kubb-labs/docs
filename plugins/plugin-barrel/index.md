@@ -65,6 +65,10 @@ yarn add -D @kubb/plugin-barrel@beta
 
 :::
 
+## Dependencies
+
+`@kubb/plugin-barrel` has no plugin dependencies. It ships with Kubb and runs by default, reading the files other plugins write to build the barrels, so you never add it to `plugins` yourself.
+
 ## Example
 
 ::: code-group
@@ -176,6 +180,6 @@ export default defineConfig({
 
 :::
 
-## See Also
+## See also
 
 - [Changelog](https://github.com/kubb-labs/kubb/blob/main/packages/plugin-barrel/CHANGELOG.md)

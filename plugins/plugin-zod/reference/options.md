@@ -7,6 +7,8 @@ outline: deep
 
 # Options
 
+Options for `pluginZod`, with type and default in the table.
+
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
 | [`output`](#output) | `Output` | `{ path: 'zod', barrel: { type: 'named' } }` | Where the generated files are written and exported |
@@ -20,7 +22,7 @@ outline: deep
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
-| [`resolver`](#resolver) | `Partial<ResolverZod>` | — | Customize generated names and file paths |
+| [`resolver`](#resolver) | `ResolverPatch<ResolverZod>` | — | Customize generated names and file paths |
 | [`printer`](#printer) | `{ nodes?: PrinterZodNodes \| PrinterZodMiniNodes }` | — | Replace the handler for a schema type |
 | [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
 
@@ -55,49 +57,19 @@ How the plugin consolidates generated code into files.
 
 #### output.banner
 
-Text added to the top of every generated file, for license headers or a `@ts-nocheck` directive. Pass a string, or a function that builds one from a `BannerMeta` object (document and per-file context like `isBarrel`), so a directive such as `'use server'` can skip barrels.
-
-|          |                                          |
-| -------: | :--------------------------------------- |
-|    Type: | `string \| ((meta: BannerMeta) => string)` |
-
-```typescript
-/* eslint-disable */
-// @ts-nocheck
-import * as z from 'zod'
-
-export const petSchema = z.object({
-  name: z.string(),
-})
-```
+<!--@include: ../../../snippets/how-to/output-banner.md-->
 
 #### output.footer
 
-Bottom-of-file counterpart to `banner`, for closing comments. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a lint disable.
-
-|          |                                          |
-| -------: | :--------------------------------------- |
-|    Type: | `string \| ((meta: BannerMeta) => string)` |
+<!--@include: ../../../snippets/how-to/output-footer.md-->
 
 ### group
 
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
-Splits generated files into subfolders by the operation's tag or URL path, each under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`. It applies only to `output.mode: 'directory'` (the default).
-
-> [!IMPORTANT]
-> Combining `group` with `output.mode: 'file'` fails the build with `KUBB_INVALID_PLUGIN_OPTIONS`.
-
 #### group.type
 
-Assigns each operation to a group, required whenever `group` is set. An operation with no tag goes in the `default` group.
-
-- `'tag'` uses the operation's first tag.
-- `'path'` uses the first segment of the operation's URL, such as `pet` for `/pet/{petId}`.
-
-|          |                   |
-| -------: | :---------------- |
-|    Type: | `'tag' \| 'path'` |
+<!--@include: ../../../snippets/how-to/group-type.md-->
 
 #### group.name
 
@@ -229,6 +201,10 @@ type ResolverZodPatch = {
 }
 ```
 
+### macros
+
+<!--@include: ../../../snippets/how-to/macros-option.md-->
+
 ### printer
 
 Replaces the Zod handler for a schema type such as `'integer'` or `'string'`, each returning the Zod expression as a string and targeting the Zod Mini printer when `mini: true`. Inside a handler, `this.base(node)` returns the built-in output to wrap and `this.transform(node)` recurses into nested nodes. See the [printer guide](/docs/5.x/guide/going-further/printers).
@@ -249,7 +225,3 @@ pluginZod({
   },
 })
 ```
-
-### macros
-
-<!--@include: ../../../snippets/how-to/macros-option.md-->

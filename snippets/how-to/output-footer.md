@@ -1,0 +1,1 @@
+Text added to the bottom of every generated file (`string` or `(meta: BannerMeta) => string`), like `banner` but for closing comments. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a lint disable to the generated file.

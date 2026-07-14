@@ -17,7 +17,7 @@ Options for `@kubb/plugin-mcp`, which generates an MCP server where each OpenAPI
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
-| [`resolver`](#resolver) | `Partial<ResolverMcp>` | — | Customize generated names and file paths |
+| [`resolver`](#resolver) | `ResolverPatch<ResolverMcp>` | — | Customize generated names and file paths |
 | [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
 
 ### output
@@ -36,15 +36,13 @@ How the plugin consolidates its generated code. `'directory'` (the default) writ
 
 <!--@include: ../../../snippets/how-to/barrel.md-->
 
-Controls how the generated `index.ts` barrel re-exports the plugin's output. `{ type: 'named' }` (the default) re-exports each symbol by name for better tree-shaking, `{ type: 'all' }` uses `export *`, `{ nested: true }` adds a barrel in every subdirectory, and `false` skips the barrel and also excludes the plugin's files from the root `index.ts`.
-
 #### output.banner
 
-Text added to the top of every generated file, for license headers, lint disables, or a `@ts-nocheck` directive. Pass a fixed string, or a function that builds one from a `BannerMeta` object carrying the document info (`title`, `description`, `version`, `baseURL`) plus the per-file context `filePath`, `baseName`, `isBarrel`, and `isAggregation`, so a directive such as `'use server'` can skip barrel files.
+<!--@include: ../../../snippets/how-to/output-banner.md-->
 
 #### output.footer
 
-Text added to the bottom of every generated file, mirroring `banner` with a string or a function of the same `BannerMeta`. Pair it with `banner` to scope a lint disable to the generated file.
+<!--@include: ../../../snippets/how-to/output-footer.md-->
 
 ### client
 
@@ -57,11 +55,9 @@ Selects which registered client plugin the handlers call, `'fetch'` for `@kubb/p
 
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
-Splits generated files into subfolders by the operation's first tag or first path segment, each under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`. Grouping applies only to `output.mode: 'directory'`, so pairing it with `output.mode: 'file'` is invalid.
-
 #### group.type
 
-Property used to assign each operation to a group, required whenever `group` is set. `'tag'` uses the operation's first tag and `'path'` uses the first segment of the operation's URL, such as `pet` for `/pet/{petId}`. An operation with no tag goes in the `default` group.
+<!--@include: ../../../snippets/how-to/group-type.md-->
 
 #### group.name
 

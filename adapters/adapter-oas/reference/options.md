@@ -7,6 +7,8 @@ outline: deep
 
 # Options
 
+Options for `adapterOas`, with type and default in the table.
+
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
 | [`validate`](#validate) | `boolean` | `true` | Validate the spec before parsing |

@@ -1,0 +1,1 @@
+Text added to the top of every generated file, such as a license header or `@ts-nocheck` directive. Pass a string, or a function `(meta: BannerMeta) => string` that receives the document info (`title`, `description`, `version`, `baseURL`) and per-file context (`filePath`, `baseName`, `isBarrel`, `isAggregation`), so a directive can skip barrel files.

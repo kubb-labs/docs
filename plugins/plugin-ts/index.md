@@ -91,7 +91,7 @@ export default defineConfig({
 
 :::
 
-## See Also
+## See also
 
 - [TypeScript](https://www.typescriptlang.org/)
 - [TypeScript Compiler API](https://github.com/microsoft/TypeScript/wiki/Using-the-Compiler-API)

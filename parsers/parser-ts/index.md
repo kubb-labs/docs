@@ -34,6 +34,8 @@ resources:
   changelog: https://github.com/kubb-labs/kubb/blob/main/packages/parser-ts/CHANGELOG.md
 ---
 
+# @kubb/parser-ts
+
 > [!TIP]
 > `parserTs` runs by default, so TypeScript output needs no setup. Add it back to a custom `parsers` list when you override the defaults, since a custom list replaces the whole default set.
 

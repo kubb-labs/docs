@@ -67,6 +67,10 @@ yarn add -D @kubb/plugin-redoc@beta
 
 :::
 
+## Dependencies
+
+`@kubb/plugin-redoc` has no plugin dependencies. It reads the OpenAPI spec through `@kubb/adapter-oas` and needs no other Kubb plugin, so add it on its own whenever you want generated documentation.
+
 ## Example
 
 ::: code-group

@@ -22,7 +22,7 @@ Options for `pluginReactQuery`, with type and default in the table.
 | [`mutationKey`](#mutationkey) | `(props) => unknown[]` | `built-in` | Build the `mutationKey` for each mutation hook |
 | [`customOptions`](#customoptions) | `CustomOptions` | — | Route every hook through your own options function |
 | [`hooks`](#hooks) | `boolean` | `false` | Emit `use*` hook functions on top of the factories |
-| [`resolver`](#resolver) | `Partial<ResolverReactQuery>` | — | Customize generated names and file paths |
+| [`resolver`](#resolver) | `ResolverPatch<ResolverReactQuery>` | — | Customize generated names and file paths |
 | [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
@@ -44,25 +44,21 @@ Folder for the plugin's files, resolved against the global `output.path` and def
 
 <!--@include: ../../../snippets/how-to/barrel.md-->
 
-Controls how the generated `index.ts` (barrel) re-exports the output. Defaults to `{ type: 'named' }`, and also accepts `{ type: 'all' }`, `{ nested: true }`, or `false`.
-
 #### output.banner
 
-Text added to the top of every file, for license headers or `@ts-nocheck`. Pass a string, or a function of a `BannerMeta` object for per-file control.
+<!--@include: ../../../snippets/how-to/output-banner.md-->
 
 #### output.footer
 
-Same as `banner` but added to the bottom of every file.
+<!--@include: ../../../snippets/how-to/output-footer.md-->
 
 ### group
 
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
-Splits generated files into per-tag or per-path subfolders under `{output.path}/{groupName}/`. Applies only to `output.mode: 'directory'`.
-
 #### group.type
 
-Assigns each operation to a group, required when `group` is set. `'tag'` uses the first tag and `'path'` the first URL segment. Untagged operations use `default`.
+<!--@include: ../../../snippets/how-to/group-type.md-->
 
 #### group.name
 
@@ -147,6 +143,18 @@ Exported name of your custom-options hook, defaulting to `'useCustomHookOptions'
 
 When `false` (the default), only the adapter-portable factory helpers are written. Set `true` to also generate `useQuery`, `useSuspenseQuery`, `useInfiniteQuery`, `useSuspenseInfiniteQuery`, and `useMutation`.
 
+### include
+
+<!--@include: ../../../snippets/how-to/include.md-->
+
+### exclude
+
+<!--@include: ../../../snippets/how-to/exclude.md-->
+
+### override
+
+<!--@include: ../../../snippets/how-to/override.md-->
+
 ### resolver
 
 Changes how the plugin names generated files and symbols. Pass a partial patch. Override only the members you want, and anything you omit keeps `resolverReactQuery`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
@@ -175,6 +183,11 @@ type ResolverReactQueryPatch = {
     name?(node: OperationNode): string          // → 'useUpdatePet'
     optionsName?(node: OperationNode): string
     keyName?(node: OperationNode): string
+    typeName?(node: OperationNode): string      // → 'UpdatePet'
+  }
+  hook?: {
+    optionsName?(): string
+    customOptionsName?(): string
   }
 }
 ```
@@ -182,15 +195,3 @@ type ResolverReactQueryPatch = {
 ### macros
 
 <!--@include: ../../../snippets/how-to/macros-option.md-->
-
-### include
-
-<!--@include: ../../../snippets/how-to/include.md-->
-
-### exclude
-
-<!--@include: ../../../snippets/how-to/exclude.md-->
-
-### override
-
-<!--@include: ../../../snippets/how-to/override.md-->

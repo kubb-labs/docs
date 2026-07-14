@@ -21,7 +21,7 @@ Configuration options for `@kubb/plugin-swr`, passed to `pluginSwr({ ... })`. Ev
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
-| [`resolver`](#resolver) | `Partial<ResolverSwr>` | — | Customize generated names and file paths |
+| [`resolver`](#resolver) | `ResolverPatch<ResolverSwr>` | — | Customize generated names and file paths |
 | [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
 
 ### output
@@ -43,25 +43,21 @@ How the plugin consolidates generated code (`'directory' | 'file'`, default `'di
 
 <!--@include: ../../../snippets/how-to/barrel.md-->
 
-Controls how the generated `index.ts` re-exports the plugin's output (`{ type: 'named' | 'all', nested?: boolean } | false`, default `{ type: 'named' }`). `'named'` re-exports each symbol by name for better tree-shaking, `'all'` uses `export *`, `nested: true` adds a barrel in every subdirectory, and `false` skips the barrel and also drops these files from the root `index.ts`.
-
 #### output.banner
 
-Text added to the top of every generated file, for license headers, lint disables, or a `@ts-nocheck` directive. Pass a string, or a function `(meta: BannerMeta) => string` built from the document info and per-file context (`filePath`, `baseName`, `isBarrel`, `isAggregation`), so a directive such as `'use server'` can skip barrel files.
+<!--@include: ../../../snippets/how-to/output-banner.md-->
 
 #### output.footer
 
-Text added to the bottom of every generated file. It works like `banner` but for closing comments, taking the same string or `(meta: BannerMeta) => string` form. Pair it with `banner: '/* eslint-disable */'` to scope a lint disable to the generated file.
+<!--@include: ../../../snippets/how-to/output-footer.md-->
 
 ### group
 
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
-Splits generated files into subfolders by the operation's tag or URL path, each group under `{output.path}/{groupName}/`. It applies only to `output.mode: 'directory'`. Combine it with `output.barrel: { type: 'named', nested: true }` to get per-tag barrel files.
-
 #### group.type
 
-Property used to assign each operation to a group (`'tag' | 'path'`), required whenever `group` is set. `'tag'` uses the operation's first tag, and `'path'` uses the first URL segment, such as `pet` for `/pet/{petId}`. An operation with no tag goes in the `default` group.
+<!--@include: ../../../snippets/how-to/group-type.md-->
 
 #### group.name
 

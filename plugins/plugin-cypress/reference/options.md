@@ -7,6 +7,8 @@ outline: deep
 
 # Options
 
+Options for `pluginCypress`, with type and default in the table.
+
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
 | [`output`](#output) | `Output` | `{ path: 'cypress', barrel: { type: 'named' } }` | Where the generated files are written and exported |
@@ -15,7 +17,7 @@ outline: deep
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
-| [`resolver`](#resolver) | `Partial<ResolverCypress>` | — | Customize generated names and file paths |
+| [`resolver`](#resolver) | `ResolverPatch<ResolverCypress>` | — | Customize generated names and file paths |
 | [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
 
 ### output
@@ -40,49 +42,21 @@ How the plugin consolidates its generated code into files.
 
 <!--@include: ../../../snippets/how-to/barrel.md-->
 
-Controls how the generated `index.ts` (barrel) file re-exports the plugin's output.
-
 #### output.banner
 
-Text added to the top of every generated file, such as license headers, lint disables, or a `@ts-nocheck` directive. Pass a string, or a function that receives a `BannerMeta` object (document info `title`, `description`, `version`, `baseURL` plus per-file context `filePath`, `baseName`, `isBarrel`, and `isAggregation`) and returns the text, so a directive such as `'use server'` can skip barrel files.
-
-A static `banner: '/* eslint-disable */\n// @ts-nocheck'` lands at the top of each generated file:
-
-```typescript
-/* eslint-disable */
-// @ts-nocheck
-export function showPetById(
-  { path }: ShowPetByIdRequestConfig,
-  options: Partial<Cypress.RequestOptions> = {},
-): Cypress.Chainable<ShowPetByIdResponse> {
-  return cy
-    .request<ShowPetByIdResponse>({
-      method: 'GET',
-      url: `/pets/${path.petId}`,
-      ...options,
-    })
-    .then((res) => res.body)
-}
-```
+<!--@include: ../../../snippets/how-to/output-banner.md-->
 
 #### output.footer
 
-Text added to the bottom of every generated file. It works like `banner` but for closing comments. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a lint disable to the generated file.
+<!--@include: ../../../snippets/how-to/output-footer.md-->
 
 ### group
 
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
-Splits generated files into subfolders by the operation's tag or URL path, each under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`. Only applies to `output.mode: 'directory'` (the default).
-
 #### group.type
 
-Property used to assign each operation to a group. Required whenever `group` is set.
-
-- `'tag'` uses the operation's first tag.
-- `'path'` uses the first segment of the operation's URL, such as `pet` for `/pet/{petId}`.
-
-An operation with no tag goes in the `default` group.
+<!--@include: ../../../snippets/how-to/group-type.md-->
 
 #### group.name
 

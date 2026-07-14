@@ -31,6 +31,8 @@ resources:
   changelog: https://github.com/kubb-labs/kubb/blob/main/packages/parser-md/CHANGELOG.md
 ---
 
+# @kubb/parser-md
+
 `@kubb/parser-md` lets Kubb emit `.md` and `.markdown` files. Any plugin that writes a markdown source has its output serialized for you.
 
 The parser joins a file's source blocks with blank lines to form the body. When `file.meta.frontmatter` is set, it renders those keys as a YAML frontmatter block and prepends it, so you do not add a `yaml` dependency yourself.

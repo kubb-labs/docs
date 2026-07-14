@@ -23,7 +23,7 @@ Options for `@kubb/plugin-vue-query`, which generates TanStack Vue Query composa
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
-| [`resolver`](#resolver) | `Partial<ResolverVueQuery>` | — | Customize generated names and file paths |
+| [`resolver`](#resolver) | `ResolverPatch<ResolverVueQuery>` | — | Customize generated names and file paths |
 | [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
 
 ### output
@@ -45,25 +45,21 @@ How generated code is consolidated, `'directory'` or `'file'`. The default `'dir
 
 <!--@include: ../../../snippets/how-to/barrel.md-->
 
-Controls how the generated `index.ts` (barrel) re-exports the plugin's output. Type `{ type: 'named' | 'all', nested?: boolean } | false`. The default `{ type: 'named' }` re-exports each symbol by name for tree-shaking, `{ type: 'all' }` uses `export *`, `nested: true` adds a per-subdirectory barrel, and `false` skips the barrel and drops the files from the root `index.ts`.
-
 #### output.banner
 
-Text added to the top of every generated file, for license headers or a `@ts-nocheck` directive. Type `string | ((meta: BannerMeta) => string)`. The function form receives document info (`title`, `description`, `version`, `baseURL`) and per-file `filePath`, `baseName`, `isBarrel`, and `isAggregation`, so `'use server'` can skip barrels.
+<!--@include: ../../../snippets/how-to/output-banner.md-->
 
 #### output.footer
 
-Works like `banner` but for closing comments at the bottom of each file. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a lint disable.
+<!--@include: ../../../snippets/how-to/output-footer.md-->
 
 ### group
 
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
-Splits generated files into subfolders by the operation's tag or URL path, each under `{output.path}/{groupName}/`. It applies only to `output.mode: 'directory'`, not `'file'`.
-
 #### group.type
 
-Property that assigns each operation to a group, required when `group` is set, either `'tag'` or `'path'`. `'tag'` uses the first tag and `'path'` the first URL segment (`pet` for `/pet/{petId}`). An untagged operation lands in `default`.
+<!--@include: ../../../snippets/how-to/group-type.md-->
 
 #### group.name
 

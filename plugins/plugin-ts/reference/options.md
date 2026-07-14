@@ -7,6 +7,8 @@ outline: deep
 
 # Options
 
+Options for `pluginTs`, with type and default in the table.
+
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
 | [`output`](#output) | `Output` | `{ path: 'types', barrel: { type: 'named' } }` | Where the generated files are written and exported |
@@ -18,7 +20,7 @@ outline: deep
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
-| [`resolver`](#resolver) | `Partial<ResolverTs>` | — | Customize generated names and file paths |
+| [`resolver`](#resolver) | `ResolverPatch<ResolverTs>` | — | Customize generated names and file paths |
 | [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
 | [`printer`](#printer) | `{ nodes?: PrinterTsNodes }` | — | Replace the handler for a schema type |
 
@@ -41,31 +43,21 @@ How generated code is consolidated into files. Defaults to `'directory'`.
 
 <!--@include: ../../../snippets/how-to/barrel.md-->
 
-How the generated `index.ts` (barrel) re-exports the plugin's output. Defaults to `{ type: 'named' }`.
-
 #### output.banner
 
-Text added to the top of every generated file, such as a license header or `@ts-nocheck` directive. Pass a string, or a function `(meta: BannerMeta) => string` that receives the document info (`title`, `description`, `version`, `baseURL`) and per-file context (`filePath`, `baseName`, `isBarrel`, `isAggregation`), so a directive can skip barrel files.
+<!--@include: ../../../snippets/how-to/output-banner.md-->
 
 #### output.footer
 
-Text added to the bottom of every generated file (`string` or `(meta: BannerMeta) => string`), like `banner` but for closing comments. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a lint disable to the generated file.
+<!--@include: ../../../snippets/how-to/output-footer.md-->
 
 ### group
 
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
-Splits generated files into subfolders by the operation's tag or URL path, each under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`. It applies only to `output.mode: 'directory'`.
-
-> [!IMPORTANT]
-> Combining `group` with `output.mode: 'file'` stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
-
 #### group.type
 
-Property used to assign each operation to a group (`'tag' | 'path'`), required whenever `group` is set. An operation with no tag goes in the `default` group.
-
-- `'tag'` uses the operation's first tag.
-- `'path'` uses the first URL segment, such as `pet` for `/pet/{petId}`.
+<!--@include: ../../../snippets/how-to/group-type.md-->
 
 #### group.name
 

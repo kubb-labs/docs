@@ -19,7 +19,7 @@ Pass these options to `pluginFetch()` to control what it generates and where the
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | `[]` | Apply different options per pattern |
-| [`resolver`](#resolver) | `Partial<ResolverClient>` | — | Customize generated names and file paths |
+| [`resolver`](#resolver) | `ResolverPatch<ResolverClient>` | — | Customize generated names and file paths |
 | [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
 
 ### output
@@ -44,25 +44,21 @@ How the plugin consolidates its code into files, either `'directory'` or `'file'
 
 <!--@include: ../../../snippets/how-to/barrel.md-->
 
-Controls how the generated `index.ts` barrel re-exports the plugin's output. It accepts `{ type: 'named' | 'all', nested?: boolean }` or `false`, defaulting to `{ type: 'named' }`.
-
 #### output.banner
 
-Text added to the top of every generated file, for license headers or a `@ts-nocheck` directive. Pass a string, or a function that builds one from a `BannerMeta` object holding the document info and per-file context (`filePath`, `baseName`, `isBarrel`, `isAggregation`), so a directive such as `'use server'` can skip barrel files.
+<!--@include: ../../../snippets/how-to/output-banner.md-->
 
 #### output.footer
 
-Mirror of `banner` for closing comments such as re-enabling a lint rule, taking the same string or `BannerMeta` function. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a disable to the generated file.
+<!--@include: ../../../snippets/how-to/output-footer.md-->
 
 ### group
 
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
-Splits generated files into subfolders by the operation's tag or URL path, each group under `{output.path}/{groupName}/`. Without `group`, every file lands directly in `output.path`. It applies only to `output.mode: 'directory'` and is not valid with `output.mode: 'file'`.
-
 #### group.type
 
-Property that assigns each operation to a group, required whenever `group` is set. Use `'tag'` for the operation's first tag, or `'path'` for the first segment of the operation's URL. An operation with no tag goes in the `default` group.
+<!--@include: ../../../snippets/how-to/group-type.md-->
 
 #### group.name
 

@@ -43,25 +43,21 @@ How the plugin consolidates generated code. `'directory'` (the default) writes o
 
 <!--@include: ../../../snippets/how-to/barrel.md-->
 
-Controls how the generated `index.ts` (barrel) re-exports the plugin's output. The default `{ type: 'named' }` re-exports each symbol by name, `{ type: 'all' }` uses `export *`, `{ nested: true }` adds a barrel in every subdirectory, and `false` skips the barrel and drops the plugin's files from the root `index.ts`.
-
 #### output.banner
 
-Text added to the top of every generated file, for license headers, lint disables, or a `@ts-nocheck` directive. Pass a string, or a function that builds one from a `BannerMeta` object carrying the document info (`title`, `description`, `version`, `baseURL`) and per-file context (`filePath`, `baseName`, `isBarrel`, `isAggregation`), so a directive such as `'use server'` can skip barrel files.
+<!--@include: ../../../snippets/how-to/output-banner.md-->
 
 #### output.footer
 
-Text added to the bottom of every generated file. It mirrors `banner` for closing comments, taking the same string or `(meta: BannerMeta) => string`. Pair `banner: '/* eslint-disable */'` with `footer: '/* eslint-enable */'` to scope a lint disable.
+<!--@include: ../../../snippets/how-to/output-footer.md-->
 
 ### group
 
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
-Splits generated files into subfolders by the operation's tag or URL path, each under `{output.path}/{groupName}/`. Grouping applies only to `output.mode: 'directory'` and is invalid with `mode: 'file'`.
-
 #### group.type
 
-Property used to assign each operation to a group, required whenever `group` is set. `'tag'` uses the operation's first tag and `'path'` the first URL segment, such as `pet` for `/pet/{petId}`. An operation with no tag goes in the `default` group.
+<!--@include: ../../../snippets/how-to/group-type.md-->
 
 #### group.name
 

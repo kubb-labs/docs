@@ -17,9 +17,9 @@ Options for `@kubb/plugin-axios`, which generates a type-safe HTTP client pinned
 | [`validator`](#validator) | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` | `false` | Validate request and response bodies with Zod |
 | [`sdk`](#sdk) | `{ mode?: 'tag' \| 'flat'; name?: string }` | — | Emit a class-based SDK instead of standalone functions |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
-| [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
-| [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
-| [`resolver`](#resolver) | `Partial<ResolverClient>` | — | Customize generated names and file paths |
+| [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
+| [`override`](#override) | `Array<Override>` | `[]` | Apply different options per pattern |
+| [`resolver`](#resolver) | `ResolverPatch<ResolverClient>` | — | Customize generated names and file paths |
 | [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
 
 ### output
@@ -41,25 +41,21 @@ Folder where the plugin writes its files, defaulting to `'clients'` and resolved
 
 <!--@include: ../../../snippets/how-to/barrel.md-->
 
-Controls how the generated `index.ts` re-exports the plugin's output, typed `{ type: 'named' | 'all', nested?: boolean } | false` and defaulting to `{ type: 'named' }`. `'named'` re-exports each symbol by name, `'all'` uses `export *`, `nested: true` adds a barrel in every subdirectory, and `false` skips the barrel and drops the plugin's files from the root `index.ts`.
-
 #### output.banner
 
-Text added to the top of every generated file, for headers or lint directives. Pass a string, or a function `(meta: BannerMeta) => string` that builds one from the document info (`title`, `description`, `version`, `baseURL`) and per-file context (`filePath`, `baseName`, `isBarrel`, `isAggregation`).
+<!--@include: ../../../snippets/how-to/output-banner.md-->
 
 #### output.footer
 
-Works like `banner` but appends to the bottom of every file, taking the same `string | ((meta: BannerMeta) => string)`. Use it for closing comments such as re-enabling a lint rule.
+<!--@include: ../../../snippets/how-to/output-footer.md-->
 
 ### group
 
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
-Splits generated files into subfolders by the operation's tag or URL path, each under `{output.path}/{groupName}/`, and applies only to `output.mode: 'directory'`. Without `group`, every file lands directly in `output.path`.
-
 #### group.type
 
-Property used to assign each operation to a group, required whenever `group` is set. `'tag'` uses the operation's first tag, `'path'` the first URL segment such as `pet` for `/pet/{petId}`, and an operation with no tag goes in the `default` group.
+<!--@include: ../../../snippets/how-to/group-type.md-->
 
 #### group.name
 
