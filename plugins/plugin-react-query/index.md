@@ -8,6 +8,15 @@ outline: deep
 guides:
   - id: calling-operations
     title: Call operations
+recipes:
+  - id: infinite-scroll-query
+    title: Infinite scroll query
+  - id: custom-query-keys
+    title: Custom query keys
+  - id: wrap-hooks-with-shared-options
+    title: Wrap every hook with shared options
+  - id: suspense-hooks
+    title: Suspense hooks
 kind: plugin
 id: plugin-react-query
 name: React Query

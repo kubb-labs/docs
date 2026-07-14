@@ -4,6 +4,11 @@ title: Kubb TypeScript Plugin
 description: Generates TypeScript types and interfaces from your OpenAPI spec, the
   typed foundation the other Kubb plugins build on.
 outline: deep
+recipes:
+  - id: tree-shakeable-enums
+    title: Tree-shakeable enums
+  - id: map-spec-types-to-native-ts
+    title: Map spec types to native TS
 kind: plugin
 id: plugin-ts
 name: TypeScript

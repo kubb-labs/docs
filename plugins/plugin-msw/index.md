@@ -4,6 +4,13 @@ title: Kubb MSW Plugin
 description: Generates MSW request handlers from your OpenAPI spec so you can
   mock the API in tests and during local development.
 outline: deep
+recipes:
+  - id: handlers-you-fill-from-tests
+    title: Handlers you fill from tests
+  - id: auto-generated-mock-data
+    title: Auto-generated mock data
+  - id: register-handlers-with-a-server
+    title: Register handlers with a server
 kind: plugin
 id: plugin-msw
 name: MSW

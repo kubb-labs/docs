@@ -19,6 +19,15 @@ guides:
     title: Serialize parameters
   - id: transport
     title: Use custom transport
+recipes:
+  - id: class-based-sdk
+    title: Class-based SDK
+  - id: validate-requests-and-responses
+    title: Validate requests and responses
+  - id: build-a-url-without-sending
+    title: Build a URL without sending
+  - id: point-at-an-env-driven-host
+    title: Point at an env-driven host
 kind: plugin
 id: plugin-axios
 name: Axios

@@ -21,6 +21,17 @@ guides:
     title: Server-sent events
   - id: transport
     title: Use custom transport
+recipes:
+  - id: class-based-sdk
+    title: Class-based SDK
+  - id: validate-requests-and-responses
+    title: Validate requests and responses
+  - id: build-a-url-without-sending
+    title: Build a URL without sending
+  - id: point-at-an-env-driven-host
+    title: Point at an env-driven host
+  - id: stream-server-sent-events
+    title: Stream server-sent events
 kind: plugin
 id: plugin-fetch
 name: Fetch

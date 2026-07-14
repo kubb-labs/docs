@@ -64,7 +64,7 @@ Base URL prepended to every request in the generated helpers. When omitted, no h
 
 ```typescript [baseURL: 'https://staging.petstore.dev']
 export function showPetById(
-  { path }: ShowPetByIdRequestConfig,
+  { path }: ShowPetByIdOptions,
   options: Partial<Cypress.RequestOptions> = {},
 ): Cypress.Chainable<ShowPetByIdResponse> {
   return cy

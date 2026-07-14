@@ -7,6 +7,13 @@ outline: deep
 guides:
   - id: calling-operations
     title: Call operations
+recipes:
+  - id: infinite-scroll-query
+    title: Infinite scroll query
+  - id: custom-query-keys
+    title: Custom query keys
+  - id: reactive-params-that-refetch
+    title: Reactive params that refetch
 kind: plugin
 id: plugin-vue-query
 name: Vue Query

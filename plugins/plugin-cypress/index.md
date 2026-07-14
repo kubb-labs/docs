@@ -4,6 +4,9 @@ title: Kubb Cypress Plugin
 description: Generates a typed cy.request() wrapper per OpenAPI operation so your
   Cypress tests call the API through generated helpers and catch broken calls at compile time.
 outline: deep
+recipes:
+  - id: typed-request-helpers-against-staging
+    title: Typed request helpers against staging
 kind: plugin
 id: plugin-cypress
 name: Cypress

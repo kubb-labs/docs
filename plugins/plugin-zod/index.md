@@ -4,6 +4,15 @@ title: Kubb Zod Plugin
 description: Generates Zod v4 schemas from your OpenAPI spec so you validate API
   responses, form input, and query params at runtime.
 outline: deep
+recipes:
+  - id: zod-as-the-single-source-of-truth
+    title: Zod as the single source of truth
+  - id: tree-shakeable-schemas-with-zod-mini
+    title: Tree-shakeable schemas with Zod Mini
+  - id: coerce-query-and-form-input
+    title: Coerce query and form input
+  - id: validate-every-api-response
+    title: Validate every API response
 kind: plugin
 id: plugin-zod
 name: Zod
