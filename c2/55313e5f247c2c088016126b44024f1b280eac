@@ -1,0 +1,57 @@
+plugins/plugin-fetch/reference/options.md
+  s_2c4cc654b94a73::t_cdc74eede29ec2 121
+  s_2c4cc654b94a73::t_ec44f5143a9efe 105,109,113
+plugins/plugin-swr/reference/options.md
+  s_2c4cc654b94a73::t_0b01614057c999 124
+  s_2c4cc654b94a73::t_ec57b1a05aa9ac 108,112,116
+plugins/plugin-axios/reference/options.md
+  s_2c4cc654b94a73::t_a510b2922cc9b0 103,107,111
+  s_2c4cc654b94a73::t_41c2de5e27b2b9 119
+snippets/how-to/exclude.md
+  s_2c4cc654b94a73::t_815ed35fff8fdf 1
+plugins/plugin-vue-query/reference/options.md
+  s_2c4cc654b94a73::t_ac0cfa3b415654 184
+  s_2c4cc654b94a73::t_54a71cadc5bcda 168,172,176
+plugins/plugin-faker/reference/options.md
+  s_2c4cc654b94a73::t_b90ba377fdfa98 122
+  s_2c4cc654b94a73::t_450d6a269874b9 106,110,114
+snippets/how-to/macros-option.md
+  s_2c4cc654b94a73::t_8d0c1509040e58 1
+plugins/plugin-react-query/reference/options.md
+  s_2c4cc654b94a73::t_bcd900764f77eb 156,160,164,168
+plugins/plugin-mcp/reference/options.md
+  s_2c4cc654b94a73::t_78984c5d6aa529 90
+  s_2c4cc654b94a73::t_565202ab31702d 72,76,80
+plugins/plugin-cypress/reference/options.md
+  s_2c4cc654b94a73::t_4a4294c4eed60e 112,116,120
+  s_2c4cc654b94a73::t_7f8f4b7ed67667 133
+plugins/plugin-zod/reference/options.md
+  s_2c4cc654b94a73::t_4c38f95a32c4fb 225
+  s_2c4cc654b94a73::t_db4e78f45ffb0d 184,188,192
+plugins/plugin-msw/reference/options.md
+  s_2c4cc654b94a73::t_606504bc14554c 102,106,110
+  s_2c4cc654b94a73::t_da5ac8ce195d96 118
+snippets/how-to/override.md
+  s_2c4cc654b94a73::t_984abed417c47b 1-9
+plugins/plugin-ts/reference/options.md
+  s_2c4cc654b94a73::t_d8f07bc153c90f 298
+  s_2c4cc654b94a73::t_d9745c6b44069b 282,286,290
+snippets/how-to/include.md
+  s_2c4cc654b94a73::t_ae343a45dc6d55 1-8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "c255313e5f247c2c088016126b44024f1b280eac",
+  "prompts": {},
+  "sessions": {
+    "s_2c4cc654b94a73": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b72b686d-21b4-454f-aa3b-a8ed582d679f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Stijn Van Hulle <stijn.vanhulle@robovision.eu>"
+    }
+  }
+}
