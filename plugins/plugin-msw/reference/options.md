@@ -99,15 +99,15 @@ export function getPetHandler(data?: GetPetQueryResponse | ((info: Parameters<Pa
 
 ### include
 
-Generates only the operations that match at least one entry. Each entry filters by one `type`: `tag` (the first tag), `operationId`, `path` (such as `'/pet/{petId}'`), `method` (such as `'GET'`), `contentType` (such as `'application/json'`), or `schemaName` (a `#/components/schemas` name). `pattern` is a string for an exact match or a `RegExp` for fuzzy matches. Stack entries to narrow further, such as `{ type: 'method', pattern: 'GET' }` with `{ type: 'path', pattern: /^\/pet/ }`.
+<!--@include: ../../../snippets/how-to/include.md-->
 
 ### exclude
 
-Skips any operation that matches at least one entry, the opposite of `include`. Entries use the same `type` and `pattern`. When an operation matches both, `exclude` wins.
+<!--@include: ../../../snippets/how-to/exclude.md-->
 
 ### override
 
-Applies different plugin options to operations that match a pattern. Each entry takes the same `type` and `pattern` as `include`, plus an `options` object that accepts any plugin option except `override`, so rules cannot nest. Entries run top to bottom. The first match merges onto the plugin defaults, and later entries do not stack. For example, `override: [{ type: 'tag', pattern: 'user', options: { parser: 'faker' } }]` returns generated data for the `user` tag while the rest keeps `parser: 'data'`.
+<!--@include: ../../../snippets/how-to/override.md-->
 
 ### resolver
 
@@ -115,19 +115,4 @@ Changes how the plugin names generated files and symbols, for a prefix, suffix, 
 
 ### macros
 
-Rewrites AST nodes before they are printed to source, to rename operation IDs, drop descriptions, or change schema metadata without forking the generator. Each [macro](/docs/5.x/guide/going-further/macros) callback receives the node and a context object. Return a new node to replace it, or `undefined` to leave it as is. Callbacks you omit keep their default behavior, and macros run in order, so a later one sees an earlier one's output.
-
-```typescript [A macros array]
-import { pluginMsw } from '@kubb/plugin-msw'
-
-pluginMsw({
-  macros: [
-    {
-      name: 'prefix-operation-id',
-      operation(node) {
-        return { ...node, operationId: `api_${node.operationId}` }
-      },
-    },
-  ],
-})
-```
+<!--@include: ../../../snippets/how-to/macros-option.md-->

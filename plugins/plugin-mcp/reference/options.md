@@ -69,22 +69,15 @@ Function that turns a group key into the subdirectory name under `output.path`. 
 
 ### include
 
-Generates only the operations that match at least one entry, skipping everything else. Each entry filters by `tag`, `operationId`, `path`, `method`, `contentType`, or `schemaName`, with a `pattern` that is either a string for an exact match or a `RegExp`.
-
-```typescript [Type definition]
-export type Include = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
-  pattern: string | RegExp
-}
-```
+<!--@include: ../../../snippets/how-to/include.md-->
 
 ### exclude
 
-Skips any operation that matches at least one entry, the opposite of `include`. Entries use the same `type` and `pattern` shape, and when both `include` and `exclude` match an operation, `exclude` wins.
+<!--@include: ../../../snippets/how-to/exclude.md-->
 
 ### override
 
-Applies a different options object to the operations that match a pattern. Each entry takes the same `type` and `pattern` plus an `options` object that accepts any plugin option except `override`, so rules cannot nest. Entries run top to bottom, the first match merges onto the plugin defaults, and later matches do not stack. Because `client` resolves once at setup, it cannot be changed per override.
+<!--@include: ../../../snippets/how-to/override.md-->
 
 ### resolver
 
@@ -94,19 +87,4 @@ For example, `resolver: { name(name) { return \`Api${this.default.name(name)}\` 
 
 ### macros
 
-Rewrites AST nodes before they are printed to source, to rename operation IDs, drop descriptions, or change schema metadata without forking the generator. Each [macro](/docs/5.x/guide/going-further/macros) has a `name` and one callback per node kind (such as `operation` or `schema`) that receives the node and a context object, returning a new node to replace it or `undefined` to leave it unchanged. Macros run in order, so a later one sees the output of an earlier one.
-
-```typescript [A macros array]
-import { pluginMcp } from '@kubb/plugin-mcp'
-
-pluginMcp({
-  macros: [
-    {
-      name: 'prefix-operation-id',
-      operation(node) {
-        return { ...node, operationId: `api_${node.operationId}` }
-      },
-    },
-  ],
-})
-```
+<!--@include: ../../../snippets/how-to/macros-option.md-->

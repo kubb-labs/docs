@@ -103,15 +103,15 @@ Value passed to `faker.seed(...)` and emitted at the top of each generated facto
 
 ### include
 
-Generates only the operations and schemas that match at least one entry, skipping everything else. Each entry sets a `type` of `tag`, `operationId`, `path`, `method`, `contentType`, or `schemaName`, plus a `pattern` that is a string for an exact match or a `RegExp` for fuzzy matches. Stack entries to narrow further, such as `{ type: 'tag', pattern: 'pet' }`.
+<!--@include: ../../../snippets/how-to/include.md-->
 
 ### exclude
 
-Skips any operation or schema that matches at least one entry, the opposite of `include`. Entries use the same `type` values and `pattern` (string or `RegExp`). When an item matches both lists, `exclude` wins.
+<!--@include: ../../../snippets/how-to/exclude.md-->
 
 ### override
 
-Applies a different options object to operations that match a pattern. Each entry takes the same `type` and `pattern` as `include` and `exclude`, plus an `options` object that accepts any plugin option except `override`, so rules cannot nest. Entries run top to bottom, and only the first match applies, merging onto the plugin defaults. For example, `override: [{ type: 'tag', pattern: 'user', options: { locale: 'de' } }]` switches the `user` tag to German values.
+<!--@include: ../../../snippets/how-to/override.md-->
 
 ### resolver
 
@@ -119,28 +119,7 @@ Changes how the plugin names generated files and symbols, so you can add a prefi
 
 ### macros
 
-Rewrites AST nodes before they are printed, so you can rename operation IDs or drop descriptions without forking the generator. Each [macro](/docs/5.x/guide/going-further/macros) supplies one callback per node kind (such as `schema` or `operation`) that receives the node and returns a replacement, or `undefined` to leave it unchanged. Macros run in order, so a later one sees an earlier one's output.
-
-```typescript [A macros array]
-import { pluginFaker } from '@kubb/plugin-faker'
-
-pluginFaker({
-  macros: [
-    {
-      name: 'strip-descriptions',
-      schema(node) {
-        return { ...node, description: undefined }
-      },
-    },
-    {
-      name: 'prefix-operation-id',
-      operation(node) {
-        return { ...node, operationId: `api_${node.operationId}` }
-      },
-    },
-  ],
-})
-```
+<!--@include: ../../../snippets/how-to/macros-option.md-->
 
 ### printer
 

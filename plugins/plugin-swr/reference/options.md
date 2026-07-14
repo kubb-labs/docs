@@ -105,25 +105,15 @@ Builds the SWR key for each mutation hook. Like `queryKey`, the callback receive
 
 ### include
 
-Generates only the operations that match at least one entry, and skips everything else. Each entry filters by a `type` (`tag`, `operationId`, `path`, `method`, `contentType`, or `schemaName`) and a `pattern`, a string for an exact match or a `RegExp` for a fuzzy one. Stack entries to narrow further.
+<!--@include: ../../../snippets/how-to/include.md-->
 
 ### exclude
 
-Skips any operation that matches at least one entry, the opposite of `include`. Entries use the same `type` and `pattern`. When both `include` and `exclude` match an operation, `exclude` wins.
+<!--@include: ../../../snippets/how-to/exclude.md-->
 
 ### override
 
-Applies different plugin options to operations that match a pattern. Each entry takes the same `type` and `pattern` as `include`, plus an `options` object that accepts any plugin option except `override`, so rules cannot nest. Entries run top to bottom, and the first match merges onto the defaults without later entries stacking.
-
-```typescript [Type definition]
-export type Override = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
-  pattern: string | RegExp
-  options: Omit<Partial<Options>, 'override'>
-}
-```
-
-For example, `{ type: 'tag', pattern: 'user', options: { query: false } }` skips query generation for the `user` tag while the rest of the spec keeps the default.
+<!--@include: ../../../snippets/how-to/override.md-->
 
 ### resolver
 
@@ -131,19 +121,4 @@ Changes how the plugin names generated files and symbols, to add a prefix or suf
 
 ### macros
 
-Rewrites AST nodes before they are printed, to rename operation IDs, drop descriptions, or change schema metadata without forking the generator. Each macro callback (such as `schema` or `operation`) receives the node and a context object, and returns a new node or `undefined` to leave it as is. Macros run in order, so a later one sees the output of an earlier one.
-
-```typescript [A macros array]
-import { pluginSwr } from '@kubb/plugin-swr'
-
-pluginSwr({
-  macros: [
-    {
-      name: 'prefix-operation-id',
-      operation(node) {
-        return { ...node, operationId: `api_${node.operationId}` }
-      },
-    },
-  ],
-})
-```
+<!--@include: ../../../snippets/how-to/macros-option.md-->

@@ -181,41 +181,15 @@ z.array(z.string()).check(z.minLength(1), z.maxLength(10))
 
 ### include
 
-Generates only the operations and schemas that match at least one entry in the list, skipping everything else. Each entry filters by one `type` (`tag`, `operationId`, `path`, `method`, `contentType`, or `schemaName`), and `pattern` is a string (exact) or a `RegExp` (fuzzy).
-
-```typescript [Type definition]
-export type Include = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
-  pattern: string | RegExp
-}
-```
-
-Pass `include: [{ type: 'tag', pattern: 'pet' }]` to keep only the `pet` tag.
+<!--@include: ../../../snippets/how-to/include.md-->
 
 ### exclude
 
-Skips any operation or schema that matches at least one entry in the list, the opposite of `include`. Entries use the same `type` and `pattern`, and when both `include` and `exclude` match, `exclude` wins.
-
-```typescript [Type definition]
-export type Exclude = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
-  pattern: string | RegExp
-}
-```
-
-Pass `exclude: [{ type: 'tag', pattern: 'store' }]` to drop the `store` tag.
+<!--@include: ../../../snippets/how-to/exclude.md-->
 
 ### override
 
-Applies different plugin options to operations that match a pattern. Each entry takes the same `type` and `pattern` plus an `options` object that accepts any option except `override`, so rules cannot nest. Entries run top to bottom, the first match merges onto the defaults, and later ones do not stack.
-
-```typescript [Type definition]
-export type Override = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
-  pattern: string | RegExp
-  options: Omit<Partial<Options>, 'override'>
-}
-```
+<!--@include: ../../../snippets/how-to/override.md-->
 
 For example, `override: [{ type: 'tag', pattern: 'user', options: { coercion: true } }]` coerces input only for the `user` tag.
 
@@ -248,25 +222,4 @@ pluginZod({
 
 ### macros
 
-Rewrites AST nodes before printing, such as renaming operation IDs, dropping descriptions, or changing schema metadata without forking the generator. Each [macro](/docs/5.x/guide/going-further/macros) callback (such as `schema` or `operation`) receives the node and a context and returns a replacement node, or `undefined` to leave it. Macros run in order. For renaming generated symbols and files, use `resolver` instead.
-
-```typescript [A macros array]
-import { pluginZod } from '@kubb/plugin-zod'
-
-pluginZod({
-  macros: [
-    {
-      name: 'strip-descriptions',
-      schema(node) {
-        return { ...node, description: undefined }
-      },
-    },
-    {
-      name: 'prefix-operation-id',
-      operation(node) {
-        return { ...node, operationId: `api_${node.operationId}` }
-      },
-    },
-  ],
-})
-```
+<!--@include: ../../../snippets/how-to/macros-option.md-->

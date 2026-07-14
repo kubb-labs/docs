@@ -165,15 +165,15 @@ Controls whether `use*` composables are emitted. The default `false` writes only
 
 ### include
 
-Generates only operations matching at least one entry, skipping the rest. Each entry has a `type` (`tag`, `operationId`, `path`, `method`, `contentType`, or `schemaName`) and a `pattern`, either an exact string or a `RegExp`. Stack entries to narrow further.
+<!--@include: ../../../snippets/how-to/include.md-->
 
 ### exclude
 
-Skips any operation matching at least one entry, the opposite of `include`. Entries use the same `type` and `pattern`, and `exclude` wins when both match.
+<!--@include: ../../../snippets/how-to/exclude.md-->
 
 ### override
 
-Applies different plugin options to operations matching a pattern. Each entry takes the same `type` and `pattern` as `include` plus an `options` object accepting any option except `override`, so rules cannot nest. Entries run top to bottom and the first match wins.
+<!--@include: ../../../snippets/how-to/override.md-->
 
 ### resolver
 
@@ -181,4 +181,4 @@ Changes how composables and files are named without forking the plugin. Override
 
 ### macros
 
-Rewrites AST nodes before printing, to rename operation IDs, drop descriptions, or change schema metadata. Each [macro](/docs/5.x/guide/going-further/macros) callback (`schema`, `operation`, and so on) receives the node and a context, returning a new node or `undefined` to leave it unchanged. To rename generated symbols and files, use `resolver`.
+<!--@include: ../../../snippets/how-to/macros-option.md-->

@@ -109,45 +109,15 @@ export function showPetById(
 
 ### include
 
-Generates only the operations that match at least one entry in the list. Everything else is skipped. Each entry filters by one of:
-
-- `tag`: the operation's first tag.
-- `operationId`: the operation's `operationId`.
-- `path`: the URL path, such as `'/pet/{petId}'`.
-- `method`: the HTTP method, such as `'GET'`.
-- `contentType`: the request or response media type.
-- `schemaName`: the component schema name under `#/components/schemas`.
-
-`pattern` accepts either a string (exact match) or a `RegExp` for fuzzy matches.
-
-```typescript [Type definition]
-export type Include = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
-  pattern: string | RegExp
-}
-```
-
-Pass `include: [{ type: 'tag', pattern: 'pet' }]` to keep only the `pet` tag.
+<!--@include: ../../../snippets/how-to/include.md-->
 
 ### exclude
 
-Skips any operation that matches at least one entry, the opposite of `include`. Entries use the same `type` and `pattern` fields, and when an operation matches both `include` and `exclude`, `exclude` wins.
-
-Pass `exclude: [{ type: 'tag', pattern: 'store' }]` to drop the `store` tag.
+<!--@include: ../../../snippets/how-to/exclude.md-->
 
 ### override
 
-Applies different plugin options to operations that match a pattern. Each entry takes the same `type` and `pattern` as `include` and `exclude`, plus an `options` object that accepts any plugin option except `override`, so rules cannot nest. Entries run top to bottom, and the first match merges onto the plugin defaults while later entries do not stack.
-
-```typescript [Type definition]
-export type Override = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
-  pattern: string | RegExp
-  options: Omit<Partial<Options>, 'override'>
-}
-```
-
-For example, `override: [{ type: 'tag', pattern: 'user', options: { baseURL: 'https://users.petstore.dev' } }]` points the `user` tag at a different host.
+<!--@include: ../../../snippets/how-to/override.md-->
 
 ### resolver
 
@@ -160,19 +130,4 @@ For example, `resolver: { name(name) { return \`api${this.default.name(name)}\` 
 
 ### macros
 
-Rewrites AST nodes before printing, for example to rename operation IDs or drop descriptions. Each [macro](/docs/5.x/guide/going-further/macros) callback (such as `schema` or `operation`) receives the node and a context object and returns a replacement, or `undefined` to keep it. Omitted callbacks keep their defaults, and macros run in order so a later one sees an earlier one's output.
-
-```typescript [A macros array]
-import { pluginCypress } from '@kubb/plugin-cypress'
-
-pluginCypress({
-  macros: [
-    {
-      name: 'prefix-operation-id',
-      operation(node) {
-        return { ...node, operationId: `api_${node.operationId}` }
-      },
-    },
-  ],
-})
-```
+<!--@include: ../../../snippets/how-to/macros-option.md-->

@@ -100,15 +100,15 @@ if (status === 200) {
 
 ### include
 
-Generates only the operations that match at least one entry, skipping the rest. Each entry pairs a `pattern` (a string for an exact match, or a `RegExp`) with a `type` of `tag` (the first tag), `operationId`, `path`, `method`, `contentType`, or `schemaName` (a component under `#/components/schemas`), and entries stack to narrow further.
+<!--@include: ../../../snippets/how-to/include.md-->
 
 ### exclude
 
-Skips any operation that matches at least one entry, the opposite of `include`, using the same `type` and `pattern`. When both `include` and `exclude` match, `exclude` wins.
+<!--@include: ../../../snippets/how-to/exclude.md-->
 
 ### override
 
-Applies different plugin options to operations matching a pattern, for the few endpoints that need special treatment. Each entry takes the same `type` and `pattern` plus an `options` object that accepts any plugin option except `override`, so rules cannot nest. Entries run top to bottom, and the first match wins. For example, `{ type: 'tag', pattern: 'user', options: { validator: 'zod' } }` turns on Zod validation for the `user` tag only.
+<!--@include: ../../../snippets/how-to/override.md-->
 
 ### resolver
 
@@ -116,19 +116,4 @@ Changes how the plugin names generated files and functions, so you can add a pre
 
 ### macros
 
-Rewrites AST nodes before printing, to rename operation IDs or change schema metadata without forking the generator. Each [macro](/docs/5.x/guide/going-further/macros) callback (`schema`, `operation`, and so on) receives the node and a context object and returns a replacement node or `undefined` to keep it, and callbacks run in order. Use `resolver` instead to rename generated symbols and files.
-
-```typescript
-import { pluginAxios } from '@kubb/plugin-axios'
-
-pluginAxios({
-  macros: [
-    {
-      name: 'prefix-operation-id',
-      operation(node) {
-        return { ...node, operationId: `api_${node.operationId}` }
-      },
-    },
-  ],
-})
-```
+<!--@include: ../../../snippets/how-to/macros-option.md-->

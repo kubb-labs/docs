@@ -1,0 +1,1 @@
+Skips any operation or schema that matches at least one entry, the opposite of `include`. Entries use the same `type` and `pattern` fields as `include`, and when both options match an item, `exclude` wins.

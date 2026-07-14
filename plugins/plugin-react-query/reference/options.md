@@ -153,16 +153,16 @@ Changes how generated files and symbols are named. Override only the methods you
 
 ### macros
 
-Rewrites AST nodes before they are printed. Each [macro](/docs/5.x/guide/going-further/macros) callback receives a node and returns a replacement, or `undefined` to keep it.
+<!--@include: ../../../snippets/how-to/macros-option.md-->
 
 ### include
 
-Generates only operations matching at least one entry, filtered by `tag`, `operationId`, `path`, `method`, `contentType`, or `schemaName`. `pattern` is a string (exact) or `RegExp` (fuzzy).
+<!--@include: ../../../snippets/how-to/include.md-->
 
 ### exclude
 
-Skips any operation matching at least one entry, the opposite of `include`. Same filter kinds and `pattern`, and `exclude` wins when both match.
+<!--@include: ../../../snippets/how-to/exclude.md-->
 
 ### override
 
-Applies different options to operations matching a pattern. Each entry adds an `options` object that accepts any option except `override`, so rules cannot nest. The first matching entry wins.
+<!--@include: ../../../snippets/how-to/override.md-->

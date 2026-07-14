@@ -102,24 +102,15 @@ if (status === 200) {
 
 ### include
 
-Generates only the operations that match at least one entry. Each entry filters by one `type`:
-
-- `tag`: the operation's first tag in the OpenAPI spec.
-- `operationId`: the operation's `operationId`.
-- `path`: the URL path, such as `'/pet/{petId}'`.
-- `method`: the HTTP method, such as `'GET'`.
-- `contentType`: the request or response media type, such as `'application/json'`.
-- `schemaName`: the component schema name under `#/components/schemas`.
-
-`pattern` accepts a string for an exact match or a `RegExp` for fuzzy matches. Stack entries to narrow, such as a `method` `'GET'` entry with a `path` `/^\/pet/` entry.
+<!--@include: ../../../snippets/how-to/include.md-->
 
 ### exclude
 
-Skips any operation that matches at least one entry, the opposite of `include`. Entries use the same six `type` values and the same `pattern` (string or `RegExp`). When an operation matches both `include` and `exclude`, `exclude` wins.
+<!--@include: ../../../snippets/how-to/exclude.md-->
 
 ### override
 
-Applies different plugin options to operations that match a pattern. Each entry takes the same `type` and `pattern` as `include` and `exclude`, plus an `options` object that accepts any plugin option except `override`, so rules cannot nest. Entries run top to bottom, the first match merges onto the plugin defaults, and later entries do not stack. For example, `override: [{ type: 'tag', pattern: 'user', options: { validator: 'zod' } }]` turns on Zod validation for the `user` tag.
+<!--@include: ../../../snippets/how-to/override.md-->
 
 ### resolver
 
@@ -127,19 +118,4 @@ Changes how the plugin names generated files and functions. Override only the me
 
 ### macros
 
-Rewrites AST nodes before they are printed to source. Each [macro](/docs/5.x/guide/going-further/macros) callback (such as `schema` or `operation`) receives the node and a context object. Return a new node to replace it, or `undefined` to leave it as is. Callbacks you omit keep their default, and macros run in order so a later one sees the output of an earlier one.
-
-```typescript [A macros array]
-import { pluginFetch } from '@kubb/plugin-fetch'
-
-pluginFetch({
-  macros: [
-    {
-      name: 'prefix-operation-id',
-      operation(node) {
-        return { ...node, operationId: `api_${node.operationId}` }
-      },
-    },
-  ],
-})
-```
+<!--@include: ../../../snippets/how-to/macros-option.md-->

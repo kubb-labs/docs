@@ -279,30 +279,15 @@ export type Pet = {
 
 ### include
 
-Generates only the operations and schemas that match at least one entry, and skips the rest. Each entry filters by `tag`, `operationId`, `path`, `method`, `contentType`, or `schemaName`, with a `pattern` that is a string (exact) or a `RegExp` (fuzzy).
-
-```typescript [Type definition]
-export type Include = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
-  pattern: string | RegExp
-}
-```
+<!--@include: ../../../snippets/how-to/include.md-->
 
 ### exclude
 
-Skips any operation or schema that matches at least one entry, the opposite of `include`. Entries use the same `type` and `pattern` fields as `include`, and when both options match an item, `exclude` wins.
+<!--@include: ../../../snippets/how-to/exclude.md-->
 
 ### override
 
-Applies different plugin options to operations that match a pattern. Each entry takes the same `type` and `pattern` as `include`, plus an `options` object that accepts any plugin option except `override`, so rules cannot nest. The first matching entry merges onto the plugin defaults, and later entries do not stack.
-
-```typescript [Type definition]
-export type Override = {
-  type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
-  pattern: string | RegExp
-  options: Omit<Partial<Options>, 'override'>
-}
-```
+<!--@include: ../../../snippets/how-to/override.md-->
 
 ### resolver
 
@@ -310,28 +295,7 @@ Changes how the plugin names generated files and symbols without forking the plu
 
 ### macros
 
-Rewrites AST nodes before they are printed, without forking the generator. Each [macro](/docs/5.x/guide/going-further/macros) callback (such as `schema` or `operation`) receives the node and a context object, and returns a replacement or `undefined` to leave it as is. Omitted callbacks keep their defaults, and macros run in order.
-
-```typescript [A macros array]
-import { pluginTs } from '@kubb/plugin-ts'
-
-pluginTs({
-  macros: [
-    {
-      name: 'strip-descriptions',
-      schema(node) {
-        return { ...node, description: undefined }
-      },
-    },
-    {
-      name: 'prefix-operation-id',
-      operation(node) {
-        return { ...node, operationId: `api_${node.operationId}` }
-      },
-    },
-  ],
-})
-```
+<!--@include: ../../../snippets/how-to/macros-option.md-->
 
 ### printer
 
