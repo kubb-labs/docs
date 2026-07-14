@@ -1,0 +1,83 @@
+plugins/plugin-cypress/reference/options.md
+  s_2c4cc654b94a73::t_b2d6bf4f711d6a 10-11
+  s_2c4cc654b94a73::t_19c9e1dac6830a 20
+  s_2c4cc654b94a73::t_18996893b419b6 47,51,59
+adapters/adapter-oas/index.md
+  s_2c4cc654b94a73::t_1fba6a60f99bce 97
+  s_2c4cc654b94a73::t_4a6171e9c89d9d 38-39
+plugins/plugin-axios/reference/options.md
+  s_2c4cc654b94a73::t_8c6278638ab080 46,50,58
+  s_2c4cc654b94a73::t_19c9e1dac6830a 20-22
+snippets/how-to/grouping.md
+  s_2c4cc654b94a73::t_05a4971bc441f8 4-8
+parsers/parser-ts/index.md
+  s_2c4cc654b94a73::t_184569a611aed5 37-38
+plugins/plugin-redoc/index.md
+  s_2c4cc654b94a73::t_42a330b7426420 70-73
+plugins/plugin-ts/index.md
+  s_2c4cc654b94a73::t_50a2e0a6c2c235 94
+plugins/plugin-vue-query/reference/options.md
+  s_2c4cc654b94a73::t_19c9e1dac6830a 26
+  s_2c4cc654b94a73::t_1dec776d41a9d2 50,54,62
+snippets/how-to/barrel.md
+  s_2c4cc654b94a73::t_9a7ab852136852 4-5
+plugins/plugin-react-query/reference/options.md
+  s_2c4cc654b94a73::t_19c9e1dac6830a 25
+  s_2c4cc654b94a73::t_b4f106fa63a5f0 49,53,61
+  s_2c4cc654b94a73::t_d91c73630f1e4a 146-157
+  s_2c4cc654b94a73::t_b60fc04f3e092b 186-190
+plugins/plugin-zod/reference/options.md
+  s_2c4cc654b94a73::t_19280eb5dd1156 10-11
+  s_2c4cc654b94a73::t_19c9e1dac6830a 25
+  s_2c4cc654b94a73::t_d879460a93bd42 204-207
+  s_2c4cc654b94a73::t_dd9b8c4d98acf1 60,64,72
+plugins/plugin-redoc/reference/options.md
+  s_2c4cc654b94a73::t_b6f67a7974b5f9 10-11
+snippets/how-to/output-banner.md
+  s_2c4cc654b94a73::t_659c51419af0b4 1
+plugins/plugin-fetch/reference/options.md
+  s_2c4cc654b94a73::t_19c9e1dac6830a 22
+  s_2c4cc654b94a73::t_dcb3c723a0f4da 49,53,61
+adapters/adapter-oas/reference/options.md
+  s_2c4cc654b94a73::t_7291bbaa5e5381 10-11
+plugins/plugin-faker/reference/options.md
+  s_2c4cc654b94a73::t_dfc5e77b141ef9 48,52,60
+plugins/plugin-msw/reference/options.md
+  s_2c4cc654b94a73::t_e67a79c89639f0 46,50,58
+plugins/plugin-mcp/reference/options.md
+  s_2c4cc654b94a73::t_19c9e1dac6830a 20
+  s_2c4cc654b94a73::t_29987d8b6f94e7 41,45
+  s_2c4cc654b94a73::t_9f148d19556ae3 60
+plugins/plugin-ts/reference/options.md
+  s_2c4cc654b94a73::t_19c9e1dac6830a 23
+  s_2c4cc654b94a73::t_646a3dae63bb5e 48,52,60
+  s_2c4cc654b94a73::t_9a26b2e6b31cb9 10-11
+parsers/parser-md/index.md
+  s_2c4cc654b94a73::t_58ddca0b308509 34-35
+plugins/plugin-barrel/index.md
+  s_2c4cc654b94a73::t_efa66e073fcd75 183
+  s_2c4cc654b94a73::t_142ed7100f2b62 68-71
+snippets/how-to/group-type.md
+  s_2c4cc654b94a73::t_6e62bb595bced7 1-4
+snippets/how-to/output-footer.md
+  s_2c4cc654b94a73::t_447348fd4ee03d 1
+plugins/plugin-swr/reference/options.md
+  s_2c4cc654b94a73::t_e59dd1f9ea903d 48,52,60
+  s_2c4cc654b94a73::t_19c9e1dac6830a 24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "24a73ca670d776f7a856090db5bcdf184afdbc91",
+  "prompts": {},
+  "sessions": {
+    "s_2c4cc654b94a73": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b72b686d-21b4-454f-aa3b-a8ed582d679f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Stijn Van Hulle <stijn.vanhulle@robovision.eu>"
+    }
+  }
+}
