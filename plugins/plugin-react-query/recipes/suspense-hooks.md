@@ -30,7 +30,7 @@ export default defineConfig({
 ```
 
 ```typescript
-import { useSuspenseGetPetById } from './gen/hooks/useGetPetById'
+import { useGetPetByIdSuspense } from './src/gen/hooks/useGetPetByIdSuspense'
 
-const { data } = useSuspenseGetPetById({ path: { petId: 1 } })
+const { data } = useGetPetByIdSuspense({ path: { petId: 1 } })
 ```

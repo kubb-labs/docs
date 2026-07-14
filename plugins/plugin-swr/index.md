@@ -9,6 +9,8 @@ guides:
 recipes:
   - id: skip-a-request-until-ready
     title: Skip a request until ready
+  - id: immutable-requests
+    title: Immutable requests
 kind: plugin
 id: plugin-swr
 name: SWR
