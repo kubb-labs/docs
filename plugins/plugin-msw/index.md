@@ -32,6 +32,7 @@ tags:
 dependencies:
   - plugin-ts
   - plugin-faker
+example: https://codesandbox.io/embed/github/kubb-labs/plugins/tree/main/examples/msw?module=/kubb.config.ts
 resources:
   documentation: https://kubb.dev/plugins/plugin-msw
   repository: https://github.com/kubb-labs/plugins

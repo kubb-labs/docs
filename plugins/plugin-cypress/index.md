@@ -30,6 +30,7 @@ tags:
   - openapi
 dependencies:
   - plugin-ts
+example: https://codesandbox.io/embed/github/kubb-labs/plugins/tree/main/examples/cypress?module=/kubb.config.ts
 resources:
   documentation: https://kubb.dev/plugins/plugin-cypress
   repository: https://github.com/kubb-labs/plugins

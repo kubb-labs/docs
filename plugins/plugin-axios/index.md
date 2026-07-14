@@ -45,6 +45,7 @@ tags:
   - validator
 dependencies:
   - plugin-ts
+example: https://codesandbox.io/embed/github/kubb-labs/plugins/tree/main/examples/axios?module=/kubb.config.ts
 resources:
   documentation: https://kubb.dev/plugins/plugin-axios
   repository: https://github.com/kubb-labs/plugins
