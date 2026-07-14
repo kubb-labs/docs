@@ -28,6 +28,7 @@ tags:
   - codegen
   - openapi
 dependencies: []
+example: https://codesandbox.io/embed/github/kubb-labs/plugins/tree/main/examples/typescript?module=/kubb.config.ts
 resources:
   documentation: https://kubb.dev/plugins/plugin-ts
   repository: https://github.com/kubb-labs/plugins

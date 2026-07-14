@@ -33,6 +33,7 @@ tags:
 dependencies:
   - plugin-ts
   - plugin-zod
+example: https://codesandbox.io/embed/github/kubb-labs/plugins/tree/main/examples/mcp?module=/kubb.config.ts
 resources:
   documentation: https://kubb.dev/plugins/plugin-mcp
   repository: https://github.com/kubb-labs/plugins
