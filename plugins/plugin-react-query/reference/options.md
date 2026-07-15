@@ -32,8 +32,6 @@ Options for `pluginReactQuery`, with type and default in the table.
 
 Where the generated hooks are written and exported.
 
-<!--@include: ../../../snippets/how-to/reducing-output-size.md-->
-
 #### output.path
 
 Folder for the plugin's files, resolved against the global `output.path` and defaulting to `'hooks'`. With `output.mode: 'file'`, use a filename like `'hooks.ts'`.
