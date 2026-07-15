@@ -32,10 +32,10 @@ Folder where the plugin writes its files, defaulting to `'clients'` and resolved
 
 #### output.mode
 
-`'directory'` (the default) writes one file per operation under `output.path`. `'file'` writes everything into a single file whose `output.path` must include the extension.
+`'file'` (the default) writes everything into a single file whose `output.path` must include the extension. `'directory'` writes one file per operation under `output.path`.
 
 > [!IMPORTANT]
-> `mode: 'file'` forbids `group`, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
+> `group` requires `mode: 'directory'`. Pairing `group` with `mode: 'file'` (or leaving `mode` unset) stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 #### output.barrel
 

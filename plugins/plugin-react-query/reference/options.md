@@ -38,7 +38,7 @@ Folder for the plugin's files, resolved against the global `output.path` and def
 
 #### output.mode
 
-`'directory'` (the default) writes one file per operation. `'file'` writes a single file whose `output.path` includes the extension, and cannot be combined with `group`.
+`'file'` (the default) writes a single file whose `output.path` includes the extension, and cannot be combined with `group`. `'directory'` writes one file per operation.
 
 #### output.barrel
 

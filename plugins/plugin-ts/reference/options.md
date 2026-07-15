@@ -34,10 +34,10 @@ Folder where the plugin writes its files (`string`, default `'types'`), resolved
 
 #### output.mode
 
-How generated code is consolidated into files. Defaults to `'directory'`.
+How generated code is consolidated into files. Defaults to `'file'`.
 
-- `'directory'` writes one file per operation or schema under `output.path`.
 - `'file'` writes everything into a single file, so `output.path` needs a file extension such as `'types.ts'`.
+- `'directory'` writes one file per operation or schema under `output.path`.
 
 #### output.barrel
 

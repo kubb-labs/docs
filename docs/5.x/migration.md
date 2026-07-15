@@ -29,7 +29,7 @@ You are migrating a kubb.config.ts from Kubb v4 to v5. Apply every rule, then ou
 6. Remove `mapper` from plugin-ts, plugin-zod, plugin-faker.
 7. plugin-zod: remove `version` and `typed`; drop `wrapOutput` and leave a `// TODO: reintroduce wrapOutput via a printer override` comment (do not invent a `printer`). Bump the `zod` package to `^4` in package.json (a dependency change, not a config option).
 8. `output.barrelType` → `output.barrel`, root and per-plugin: `'named'`→`{ type: 'named' }`, `'all'`→`{ type: 'all' }`, `'propagate'`→`{ type: 'named', nested: true }`, `false`→`false`.
-9. If a plugin's `output.path` ends in `.ts`, add `mode: 'file'` and keep the extension. Folder paths stay `mode: 'directory'` (the default).
+9. If a plugin's `output.path` ends in `.ts`, keep the extension (`mode: 'file'` is now the default, so stating it is optional but fine). Folder paths need `mode: 'directory'` added explicitly, since `'directory'` is no longer the default.
 10. Remove entirely from every plugin: `generators`, `bundle`, `output.override` (boolean, root and per-plugin), `paramsType`, `pathParamsType`, `paramsCasing`, `dataReturnType`, `clientType`, `urlType`, `importPath`.
 11. `input: { path }` / `input: { data }` → a single `input` value (file path, URL, inline spec, or parsed object).
 12. `hooks.done` → `output.postGenerate` (array); remove the top-level `hooks`.
@@ -319,10 +319,10 @@ v4 chose between a folder and a single file from the `output.path` extension. A 
 
 | `output.mode` | Layout                                                            |
 | ------------- | ----------------------------------------------------------------- |
-| `'directory'` | One file per operation or schema. The default.                    |
-| `'file'`      | One file for the whole plugin.                                    |
+| `'file'`      | One file for the whole plugin. The default.                       |
+| `'directory'` | One file per operation or schema.                                 |
 
-To keep a single-file layout from v4, add `mode: 'file'`. The `output.path` must include the extension, because Kubb uses it as-is.
+A v4 config with a `.ts` `output.path` keeps working as-is, since `mode: 'file'` is now the default. A v4 config with a folder `output.path` needs `mode: 'directory'` added explicitly. The `output.path` for `mode: 'file'` must include the extension, because Kubb uses it as-is.
 
 ::: code-group
 

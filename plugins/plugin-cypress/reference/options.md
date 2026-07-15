@@ -32,8 +32,8 @@ Folder where the plugin writes its files, resolved against the global `output.pa
 
 How the plugin consolidates its generated code into files.
 
-- `'directory'` (default) writes one file per operation or schema under `output.path`.
-- `'file'` writes everything into a single file. The `output.path` must include the file extension (for example `'cypress.ts'`).
+- `'file'` (default) writes everything into a single file. The `output.path` must include the file extension (for example `'cypress.ts'`).
+- `'directory'` writes one file per operation or schema under `output.path`.
 
 > [!IMPORTANT]
 > Pairing `mode: 'file'` with the `group` option stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error, since a single file has nothing to group.
