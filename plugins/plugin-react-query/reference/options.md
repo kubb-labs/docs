@@ -15,7 +15,7 @@ Options for `pluginReactQuery`, with type and default in the table.
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`client`](#client) | `'axios' \| 'fetch'` | — | Which registered client plugin the hooks call |
 | [`infinite`](#infinite) | `Partial<Infinite> \| false` | `false` | Generate `useInfiniteQuery` hooks for pagination |
-| [`suspense`](#suspense) | `Partial<object> \| false` | `{}` | Generate `useSuspenseQuery` hooks |
+| [`suspense`](#suspense) | `Partial<object> \| false` | `false` | Generate `useSuspenseQuery` hooks |
 | [`query`](#query) | `Partial<Query> \| false` | `{ methods: ['GET'], … }` | Configure the query hooks |
 | [`queryKey`](#querykey) | `(props) => unknown[]` | `built-in` | Build the `queryKey` for each query hook |
 | [`mutation`](#mutation) | `Partial<Mutation> \| false` | `{ methods: ['POST', 'PUT', 'PATCH', 'DELETE'], … }` | Configure the mutation hooks |
@@ -31,6 +31,8 @@ Options for `pluginReactQuery`, with type and default in the table.
 ### output
 
 Where the generated hooks are written and exported.
+
+<!--@include: ../../../snippets/how-to/reducing-output-size.md-->
 
 #### output.path
 
@@ -69,7 +71,9 @@ Which registered client plugin the hooks call, `'axios'` or `'fetch'`. When omit
 
 ### infinite
 
-Adds infinite-query output for pagination. Pass an object to configure the cursor, or `false` (the default) to skip. Emitted only for operations with a query parameter matching `infinite.queryParam`, and [`hooks`](#hooks) wraps it in `useInfiniteQuery`.
+Adds infinite-query output for pagination. Pass an object to configure the cursor, or `false` (the default) to skip. Emitted only for operations with a query parameter matching `infinite.queryParam`.
+
+With [`hooks`](#hooks) at its default of `false`, setting `infinite` produces no file at all, not even the `infiniteQueryOptions` factory. Set `hooks: true` alongside `infinite` to generate the file and its `useInfiniteQuery` hook.
 
 #### infinite.queryParam
 
@@ -89,7 +93,9 @@ Path to the previous-page cursor, in the same forms. Defaults to `null`.
 
 ### suspense
 
-Adds a suspense variant alongside the regular query output, on by default. Set `false` to skip it, or [`hooks`](#hooks) to wrap it in `useSuspenseQuery`. TanStack Query v5+ only.
+Adds a suspense variant alongside the regular query output. Pass an empty object (`{}`) to enable, or leave it as `false` (the default) to skip it. TanStack Query v5+ only.
+
+With [`hooks`](#hooks) at its default of `false`, enabling `suspense` produces no file at all, not even the `suspenseQueryOptions` factory. Set `hooks: true` alongside `suspense` to generate the file and its `useSuspenseQuery` hook.
 
 ### query
 
@@ -137,7 +143,9 @@ Exported name of your custom-options hook, defaulting to `'useCustomHookOptions'
 
 ### hooks
 
-When `false` (the default), only the adapter-portable factory helpers are written. Set `true` to also generate `useQuery`, `useSuspenseQuery`, `useInfiniteQuery`, `useSuspenseInfiniteQuery`, and `useMutation`.
+When `false` (the default), only the `query` and `mutation` factory helpers are written. Set `true` to also generate `useQuery`, `useSuspenseQuery`, `useInfiniteQuery`, `useSuspenseInfiniteQuery`, and `useMutation`.
+
+[`suspense`](#suspense) and [`infinite`](#infinite) are gated on `hooks` too: with `hooks: false`, enabling either one writes nothing at all, not even the `suspenseQueryOptions` or `infiniteQueryOptions` factories.
 
 ### include
 
