@@ -21,13 +21,15 @@ Use [`printer.nodes`](/plugins/plugin-ts/reference/options#printer) to override 
 pluginTs({ paramsCasing: 'camelcase' })
 ```
 
-Parameter properties inside the generated `Path`, `Query`, and `Headers` types are now always camelCase. In v4 they defaulted to the original spec names, and `paramsCasing: 'camelcase'` opted into the new behavior. v5 makes camelCase the only option, so drop the setting.
+Parameter properties inside the generated `Path`, `Query`, and `Headers` types now keep the exact names from the OpenAPI document. In v4 they used the original spec names by default, while `paramsCasing: 'camelcase'` opted into camelCase names and runtime remapping. v5 removes both the option and the remapping, so drop the setting and use the OpenAPI names at call sites.
 
 ```typescript [Generated output]
 // OpenAPI spec uses: pet_id, X-Api-Key
-export type GetPetPath = { petId: string } // was { pet_id: string }
-export type GetPetHeaders = { xApiKey?: string } // was { 'X-Api-Key'?: string }
+export type GetPetPath = { pet_id: string }
+export type GetPetHeaders = { 'X-Api-Key'?: string }
 ```
+
+Path parameters fall back to camelCase only when the spec name is not a valid JavaScript identifier, such as `store-name`. Query and header names always keep the exact spec name and use quotes when needed.
 
 ## Changed: request input grouped under `Options`
 
