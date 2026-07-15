@@ -11,7 +11,7 @@ Options for `@kubb/plugin-mcp`, which generates an MCP server where each OpenAPI
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'mcp', barrel: { type: 'named' } }` | Where the generated handlers are written and exported |
+| [`output`](#output) | `Output` | `{ path: 'mcp' }` | Where the generated handlers are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`client`](#client) | `'fetch' \| 'axios'` | — | Which registered client plugin the handlers call |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
@@ -30,7 +30,7 @@ Folder where the plugin writes its files, resolved against the global `output.pa
 
 #### output.mode
 
-How the plugin consolidates its generated code. `'directory'` (the default) writes one file per operation under `output.path`, and `'file'` writes everything into a single file whose `output.path` must include the extension.
+How the plugin consolidates its generated code. `'file'` (the default) writes everything into a single file whose `output.path` must include the extension, and `'directory'` writes one file per operation under `output.path`.
 
 #### output.barrel
 

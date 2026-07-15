@@ -11,7 +11,7 @@ Every option below is a key on `pluginMsw({ ... })`.
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'handlers', barrel: { type: 'named' } }` | Where the generated files are written and exported |
+| [`output`](#output) | `Output` | `{ path: 'handlers' }` | Where the generated files are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`baseURL`](#baseurl) | `string` | — | Base URL prepended to every handler's request |
 | [`handlers`](#handlers) | `boolean` | `false` | Emit a `handlers.ts` that re-exports every handler |
@@ -32,10 +32,10 @@ Folder where the plugin writes its files, resolved against the global `output.pa
 
 #### output.mode
 
-How the plugin consolidates its generated code into files. `'directory'` (the default) writes one file per operation under `output.path`. `'file'` writes everything into a single file, so `output.path` must include the extension. Pair `'directory'` with `group` to organize output into subdirectories.
+How the plugin consolidates its generated code into files. `'file'` (the default) writes everything into a single file, so `output.path` must include the extension. `'directory'` writes one file per operation under `output.path`. Pair `'directory'` with `group` to organize output into subdirectories.
 
 > [!IMPORTANT]
-> `mode: 'file'` forbids `group` and stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
+> `group` requires `mode: 'directory'`. Pairing `group` with `mode: 'file'` (or leaving `mode` unset) stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 #### output.barrel
 

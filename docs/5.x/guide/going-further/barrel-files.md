@@ -9,7 +9,7 @@ outline: deep
 
 A barrel file is an `index.ts` that re-exports everything from a directory. Consumers of the generated code then import from one place instead of reaching into individual files, which keeps their imports short and stable. Kubb generates these files through [`@kubb/plugin-barrel`](/plugins/plugin-barrel/).
 
-`@kubb/plugin-barrel` ships inside `kubb`, and `defineConfig` registers it for you. Barrels appear with no setup, using the default `output.barrel` of `{ type: 'named' }`. This guide shows how to shape that default into the barrels your project needs.
+`@kubb/plugin-barrel` ships inside `kubb`, and `defineConfig` registers it for you, but `output.barrel` defaults to `false`, so it generates nothing until you opt in. This guide shows how to configure it into the barrels your project needs.
 
 Toggle the export style and barrel depth to see what each `index.ts` re-exports.
 
@@ -44,11 +44,11 @@ export default defineConfig({
 
 ## Choose an export style
 
-`type` accepts `'named'` or `'all'`. Use `'named'` (the default) to re-export each symbol by name, which keeps tree-shaking accurate and imports explicit. Use `'all'` for a smaller barrel that re-exports everything with `export *`.
+`type` is required whenever `output.barrel` is set to an object, and accepts `'named'` or `'all'`. Use `'named'` to re-export each symbol by name, which keeps tree-shaking accurate and imports explicit. Use `'all'` for a smaller barrel that re-exports everything with `export *`.
 
 ::: code-group
 
-```typescript ['named' (default)]
+```typescript ['named']
 // src/gen/index.ts
 export { getUser, User } from './api/user'
 export { getPost, Post } from './api/post'
@@ -97,7 +97,7 @@ export default defineConfig({
 
 ## Turn barrels off
 
-Set `barrel: false` on `defineConfig` to skip the root barrel. Every plugin without its own `output.barrel` inherits the `false`, while a plugin that sets its own non-false `output.barrel` keeps its barrel.
+`barrel: false` is already the default, so a fresh config needs no change. Set it explicitly on `defineConfig` to override a root barrel enabled elsewhere, for example a shared base config. Every plugin without its own `output.barrel` inherits the `false`, while a plugin that sets its own non-false `output.barrel` keeps its barrel.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'

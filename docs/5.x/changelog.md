@@ -9,6 +9,92 @@ outline: 2
 
 # Changelog
 
+## v5.0.0-beta.100 — Jul 15, 2026
+
+### @kubb/ast
+
+#### Breaking Changes
+
+- Move the schema-name and schema-graph helpers `@kubb/ast` doesn't use internally to `@kubb/kit`.
+  
+  `childName`, `enumPropName`, `extractRefName`, `isStringType`, `mergeAdjacentObjectsLazy`, `syncSchemaRef`, and `containsCircularRef` move to `@kubb/kit`, reached through `kubb/kit` like the macro presets. `resolveRefName`, `findCircularSchemas`, and `collectUsedSchemaNames` stay on `@kubb/ast` since its own node builders depend on them. `@kubb/ast` also now exports `collectLazy`'s replacement `collect` (see the companion changeset) so `containsCircularRef` can keep its early-exit behavior from `@kubb/kit`.
+  
+  ```diff
+  - import { childName, enumPropName, extractRefName, isStringType, syncSchemaRef, mergeAdjacentObjectsLazy, containsCircularRef } from '@kubb/ast'
+  + import { childName, enumPropName, extractRefName, isStringType, syncSchemaRef, mergeAdjacentObjectsLazy, containsCircularRef } from '@kubb/kit'
+  ``` ([#3794](https://github.com/kubb-labs/kubb/pull/3794), [`9fa6fba`](https://github.com/kubb-labs/kubb/commit/9fa6fba5e21bb2a3e22d8cb1162a4c6cb27aed0d))
+- Rename `@kubb/ast`'s collection passes: the lazy generator `collectLazy` is now `collect`, and the eager array form (previously `collect`) is now `collectSync`.
+  
+  ```diff
+  - import { collect } from '@kubb/ast'
+  - const types = collect<string>(root, { schema: (n) => n.type })
+  + import { collectSync } from '@kubb/ast'
+  + const types = collectSync<string>(root, { schema: (n) => n.type })
+  
+  - import { collectLazy } from '@kubb/ast'
+  - for (const id of collectLazy<string>(root, { operation: (n) => n.operationId })) { ... }
+  + import { collect } from '@kubb/ast'
+  + for (const id of collect<string>(root, { operation: (n) => n.operationId })) { ... }
+  ``` ([#3794](https://github.com/kubb-labs/kubb/pull/3794), [`9fa6fba`](https://github.com/kubb-labs/kubb/commit/9fa6fba5e21bb2a3e22d8cb1162a4c6cb27aed0d))
+- Move the macro presets from `@kubb/ast` to `@kubb/kit`, keeping the macro engine on `@kubb/ast`.
+  
+  `defineMacro`, `composeMacros`, `applyMacros`, and the `Macro` type stay on the `@kubb/ast` root export. `macroDiscriminatorEnum`, `macroEnumName`, `macroRenameSchema`, and `macroSimplifyUnion` move to `@kubb/kit`, reached through `kubb/kit` like the rest of the plugin and adapter authoring surface. `@kubb/adapter-oas` now depends on `@kubb/kit` for these presets instead of `@kubb/ast`.
+  
+  ```diff
+  - import { macroSimplifyUnion } from '@kubb/ast'
+  + import { macroSimplifyUnion } from '@kubb/kit'
+  ``` ([#3794](https://github.com/kubb-labs/kubb/pull/3794), [`9fa6fba`](https://github.com/kubb-labs/kubb/commit/9fa6fba5e21bb2a3e22d8cb1162a4c6cb27aed0d))
+
+### @kubb/parser-md
+
+#### Bug Fixes
+
+- Depend on `@kubb/kit` instead of `@kubb/ast` and `@kubb/core` directly.
+  
+  `parserMd` only ever needed `defineParser` and the `ast` namespace (for `extractStringsFromNodes` and the `CodeNode` type), both already reachable through `@kubb/kit`. No behavior change. ([#3794](https://github.com/kubb-labs/kubb/pull/3794), [`9fa6fba`](https://github.com/kubb-labs/kubb/commit/9fa6fba5e21bb2a3e22d8cb1162a4c6cb27aed0d))
+
+### @kubb/parser-ts
+
+#### Bug Fixes
+
+- Depend on `@kubb/kit` instead of `@kubb/ast` and `@kubb/core` directly.
+  
+  Both packages only ever used `defineParser` and AST node types, all reachable through `@kubb/kit`'s existing re-export surface, so no new kit exports were needed. No behavior change. ([#3794](https://github.com/kubb-labs/kubb/pull/3794), [`9fa6fba`](https://github.com/kubb-labs/kubb/commit/9fa6fba5e21bb2a3e22d8cb1162a4c6cb27aed0d))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.0.0-beta.99 — Jul 15, 2026
+
+### @kubb/core
+
+#### Breaking Changes
+
+- Flip the default `output.mode` from `'directory'` to `'file'`. A plugin that omits `output.mode` now writes a single file instead of one file per operation or schema, cutting generated file count and output size.
+  
+  `output.mode: 'directory'` is unchanged and still writes one file per operation or schema. Set it explicitly to keep today's output shape, and pair it with `group` to organize files into per-tag or per-path subdirectories, since `group` now requires `mode: 'directory'` at the type level.
+  
+  **Breaking change:** any plugin relying on the implicit `'directory'` default now needs `output.mode: 'directory'` set explicitly to avoid consolidating into a single file. A plugin combining an implicit `output.mode` with a `group` option must also add `mode: 'directory'`, since `mode: 'file'` and `group` remain mutually exclusive and fail the build with `KUBB_INVALID_PLUGIN_OPTIONS`. ([#3791](https://github.com/kubb-labs/kubb/pull/3791), [`be82ee4`](https://github.com/kubb-labs/kubb/commit/be82ee4295b2ccdebdd195bba6465c47c765c258))
+
+### @kubb/plugin-barrel
+
+#### Breaking Changes
+
+- Adjust for `@kubb/core`'s `output.mode` default flipping from `'directory'` to `'file'`.
+  
+  A plugin that omits `output.mode` now writes a single file, so `plugin-barrel` skips the per-plugin nested barrel for it (there is no directory to barrel) and re-exports that file straight from the root barrel instead. Plugins that set `output.mode: 'directory'` explicitly keep getting a nested barrel as before.
+  
+  **Breaking change:** projects that relied on the implicit `'directory'` default to get per-plugin barrel files now need `output.mode: 'directory'` set on that plugin to keep them. ([#3791](https://github.com/kubb-labs/kubb/pull/3791), [`be82ee4`](https://github.com/kubb-labs/kubb/commit/be82ee4295b2ccdebdd195bba6465c47c765c258))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
 ## v5.0.0-beta.98 — Jul 14, 2026
 
 ### @kubb/kit

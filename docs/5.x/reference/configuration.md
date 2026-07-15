@@ -161,11 +161,11 @@ How a plugin consolidates its code into files. Set it on a plugin's `output`, no
 
 |           |                          |
 | --------: | :----------------------- |
-|     Type: | `'directory' \| 'file'`  |
+|     Type: | `'file' \| 'directory'`  |
 | Required: | `false`                  |
-|  Default: | `'directory'`            |
+|  Default: | `'file'`                 |
 
-`'directory'` writes one file per operation or schema under `output.path`. `'file'` writes everything into a single file, so `output.path` must include the extension (`'types.ts'`). Pair `'directory'` with `group` to split the output into per-tag or per-path subdirectories.
+`'file'` writes everything into a single file, so `output.path` must include the extension (`'types.ts'`). `'directory'` writes one file per operation or schema under `output.path`. Pair `'directory'` with `group` to split the output into per-tag or per-path subdirectories.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -176,7 +176,7 @@ export default defineConfig({
   input: './petstore.yaml',
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({ output: { path: 'types.ts', mode: 'file' } }),
+    pluginTs({ output: { path: 'types.ts' } }),
     pluginAxios({ output: { path: 'clients', mode: 'directory' }, group: { type: 'tag' } }),
   ],
 })
@@ -185,7 +185,7 @@ export default defineConfig({
 This writes every type into `src/gen/types.ts` and one client file per operation, grouped by tag (`src/gen/clients/pet/`, `src/gen/clients/store/`).
 
 > [!TIP]
-> `mode: 'file'` forbids `group`, since a single file has nothing to group. Pairing them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
+> `group` requires `mode: 'directory'`, since a single file has nothing to group. Pairing `group` with `mode: 'file'` (or leaving `mode` unset) stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 #### `output.clean`
 
@@ -255,7 +255,7 @@ Provided by [`@kubb/plugin-barrel`](/plugins/plugin-barrel/).
 | --------: | :------------------------------------------------------ |
 |     Type: | `{ type: 'all' \| 'named' } \| false`                   |
 | Required: | `false`                                                 |
-|  Default: | `{ type: 'named' }`                                     |
+|  Default: | `false`                                                 |
 
 `{ type: 'all' }` writes `export * from '...'` for every file. `{ type: 'named' }` writes `export { … } from '...'` using each file's named exports. `false` disables the root barrel.
 
@@ -284,7 +284,7 @@ export * from './operations/getPet'
 Each plugin keeps its own `output.barrel` for its sub-folder and can override the root setting. Setting `barrel: false` on a plugin disables that plugin's barrel and drops its files from the root barrel. The `nested` flag works at the plugin level only, where `{ nested: true }` writes a barrel in every subdirectory so callers can import from any depth. The root `output.barrel` ignores `nested`.
 
 > [!NOTE]
-> The `{ type: 'named' }` default applies only when `pluginBarrel` is present in `config.plugins`. A config that omits `pluginBarrel` leaves barrel generation untouched.
+> `pluginBarrel` ships by default and generates nothing until `output.barrel` is set, root or per-plugin. A config that omits `pluginBarrel` entirely leaves barrel generation untouched.
 
 #### `output.defaultBanner`
 

@@ -11,7 +11,7 @@ Pass these options to `pluginFetch()` to control what it generates and where the
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'clients', barrel: { type: 'named' } }` | Where the generated files are written and exported |
+| [`output`](#output) | `Output` | `{ path: 'clients' }` | Where the generated files are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`baseURL`](#baseurl) | `string` | — | Base URL prepended to every request |
 | [`validator`](#validator) | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` | `false` | Validate request and response bodies with Zod |
@@ -32,13 +32,13 @@ Folder for the plugin's files, resolved against the global `output.path` on `def
 
 #### output.mode
 
-How the plugin consolidates its code into files, either `'directory'` or `'file'`, defaulting to `'directory'`.
+How the plugin consolidates its code into files, either `'file'` or `'directory'`, defaulting to `'file'`.
 
-- `'directory'` writes one file per operation under `output.path`.
 - `'file'` writes everything into a single file, so `output.path` must include the extension such as `'clients.ts'`.
+- `'directory'` writes one file per operation under `output.path`.
 
 > [!IMPORTANT]
-> `mode: 'file'` forbids the `group` option, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
+> `group` requires `mode: 'directory'`. Pairing `group` with `mode: 'file'` (or leaving `mode` unset) stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 #### output.barrel
 

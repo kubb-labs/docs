@@ -10,16 +10,16 @@ outline: [2, 3]
 Code: `KUBB_INVALID_PLUGIN_OPTIONS`
 Level: error
 
-A plugin was given options that cannot be honored together. The main case is `output.mode: 'file'` paired with a `group` option. A single-file output has nothing to split into groups, so the build stops instead of producing a layout the options do not describe.
+A plugin was given options that cannot be honored together. The main case is `output.mode: 'file'` (the default) paired with a `group` option. A single-file output has nothing to split into groups, so the build stops instead of producing a layout the options do not describe.
 
 ## What happened
 
-`output.mode: 'file'` writes everything into one file at `output.path`. The `group` option splits output into per-tag or per-path subdirectories, which only applies to `output.mode: 'directory'`. The two contradict each other. Kubb reports the config as invalid at plugin setup rather than guessing a layout. The TypeScript types catch the same mistake at compile time, but a config written in JavaScript or cast to `any` only surfaces it here.
+`output.mode: 'file'` writes everything into one file at `output.path`. The `group` option splits output into per-tag or per-path subdirectories, which only applies to `output.mode: 'directory'`. The two contradict each other. Kubb reports the config as invalid at plugin setup rather than guessing a layout. The TypeScript types catch the same mistake at compile time, but a config written in JavaScript or cast to `any` only surfaces it here. Since `output.mode` defaults to `'file'`, adding `group` without also setting `mode: 'directory'` triggers this diagnostic.
 
 ## How to fix it
 
 - Remove the `group` option when you want a single file.
-- Or switch to `output.mode: 'directory'` (the default, one file per operation or schema) and keep `group` to organize that output into subdirectories.
+- Or add `output.mode: 'directory'` (one file per operation or schema) and keep `group` to organize that output into subdirectories.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'

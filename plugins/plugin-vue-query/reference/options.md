@@ -11,7 +11,7 @@ Options for `@kubb/plugin-vue-query`, which generates TanStack Vue Query composa
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'hooks', barrel: { type: 'named' } }` | Where the generated composables are written and exported |
+| [`output`](#output) | `Output` | `{ path: 'hooks' }` | Where the generated composables are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`client`](#client) | `'axios' \| 'fetch'` | — | Which registered client plugin the composables call |
 | [`infinite`](#infinite) | `Partial<Infinite> \| false` | `false` | Add `useInfiniteQuery` composables for paginated reads |
@@ -28,7 +28,7 @@ Options for `@kubb/plugin-vue-query`, which generates TanStack Vue Query composa
 
 ### output
 
-Where the generated composables are written and how they are exported. Defaults to `{ path: 'hooks', barrel: { type: 'named' } }`.
+Where the generated composables are written and how they are exported. Defaults to `{ path: 'hooks' }`.
 
 #### output.path
 
@@ -36,10 +36,10 @@ Folder the plugin writes to, resolved against the global `output.path` and defau
 
 #### output.mode
 
-How generated code is consolidated, `'directory'` or `'file'`. The default `'directory'` writes one file per operation and pairs with `group` for subdirectories. `'file'` writes a single file, so `output.path` needs an extension.
+How generated code is consolidated, `'file'` or `'directory'`. The default `'file'` writes a single file, so `output.path` needs an extension. `'directory'` writes one file per operation and pairs with `group` for subdirectories.
 
 > [!IMPORTANT]
-> `mode: 'file'` forbids `group`, and combining them stops the build with `KUBB_INVALID_PLUGIN_OPTIONS`.
+> `group` requires `mode: 'directory'`. Pairing `group` with `mode: 'file'` (or leaving `mode` unset) stops the build with `KUBB_INVALID_PLUGIN_OPTIONS`.
 
 #### output.barrel
 

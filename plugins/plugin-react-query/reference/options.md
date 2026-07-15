@@ -11,7 +11,7 @@ Options for `pluginReactQuery`, with type and default in the table.
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'hooks', barrel: { type: 'named' } }` | Where the generated hooks are written and exported |
+| [`output`](#output) | `Output` | `{ path: 'hooks' }` | Where the generated hooks are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`client`](#client) | `'axios' \| 'fetch'` | — | Which registered client plugin the hooks call |
 | [`infinite`](#infinite) | `Partial<Infinite> \| false` | `false` | Generate `useInfiniteQuery` hooks for pagination |
@@ -38,7 +38,7 @@ Folder for the plugin's files, resolved against the global `output.path` and def
 
 #### output.mode
 
-`'directory'` (the default) writes one file per operation. `'file'` writes a single file whose `output.path` includes the extension, and cannot be combined with `group`.
+`'file'` (the default) writes a single file whose `output.path` includes the extension, and cannot be combined with `group`. `'directory'` writes one file per operation.
 
 #### output.barrel
 

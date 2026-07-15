@@ -28,8 +28,8 @@ You are migrating a kubb.config.ts from Kubb v4 to v5. Apply every rule, then ou
 5. `transformers.schema` → `macros: [{ name, schema(node) { return … } }]`.
 6. Remove `mapper` from plugin-ts, plugin-zod, plugin-faker.
 7. plugin-zod: remove `version` and `typed`; drop `wrapOutput` and leave a `// TODO: reintroduce wrapOutput via a printer override` comment (do not invent a `printer`). Bump the `zod` package to `^4` in package.json (a dependency change, not a config option).
-8. `output.barrelType` → `output.barrel`, root and per-plugin: `'named'`→`{ type: 'named' }`, `'all'`→`{ type: 'all' }`, `'propagate'`→`{ type: 'named', nested: true }`, `false`→`false`.
-9. If a plugin's `output.path` ends in `.ts`, add `mode: 'file'` and keep the extension. Folder paths stay `mode: 'directory'` (the default).
+8. `output.barrelType` → `output.barrel`, root and per-plugin: `'named'`→`{ type: 'named' }`, `'all'`→`{ type: 'all' }`, `'propagate'`→`{ type: 'named', nested: true }`, `false`→`false`. If a v4 config never set `barrelType` (relying on its `'named'` default), add `barrel: { type: 'named' }` explicitly, since v5 defaults `output.barrel` to `false`.
+9. If a plugin's `output.path` ends in `.ts`, keep the extension (`mode: 'file'` is now the default, so stating it is optional but fine). Folder paths need `mode: 'directory'` added explicitly, since `'directory'` is no longer the default.
 10. Remove entirely from every plugin: `generators`, `bundle`, `output.override` (boolean, root and per-plugin), `paramsType`, `pathParamsType`, `paramsCasing`, `dataReturnType`, `clientType`, `urlType`, `importPath`.
 11. `input: { path }` / `input: { data }` → a single `input` value (file path, URL, inline spec, or parsed object).
 12. `hooks.done` → `output.postGenerate` (array); remove the top-level `hooks`.
@@ -45,6 +45,21 @@ Now migrate the following kubb.config.ts:
 ```
 
 :::
+
+## Defaults that changed
+
+Every default that behaves differently in v5, in one table instead of scattered across this guide and the per-extension pages. Each row links to the section with the full explanation and a before/after example.
+
+| Option | v4 default | v5 default | Details |
+| --- | --- | --- | --- |
+| `output.format` | `'prettier'` | `false` | [`output.format` and `output.lint`](#output-format-and-output-lint-new-defaults-and-detection-order) |
+| `output.lint` | `'auto'` | `false` | [`output.format` and `output.lint`](#output-format-and-output-lint-new-defaults-and-detection-order) |
+| `output.barrel` (`barrelType` in v4) | `'named'` | `false` | [`output.barrelType` → `output.barrel`](#output-barreltype-output-barrel) |
+| `output.mode` | Guessed from the `output.path` extension | `'file'` | [Folder output needs an explicit `output.mode`](#folder-output-needs-an-explicit-output-mode) |
+| `group: { type: 'tag' }` folder name | `<tag>Controller` | `<tag>` | [Group folders use the plain tag](#group-folders-use-the-plain-tag) |
+| `pluginReactQuery`/`pluginVueQuery` `hooks` | `true` | `false` | [`@kubb/plugin-react-query`](/docs/5.x/migration/plugin-react-query#hooks-defaults-to-false), [`@kubb/plugin-vue-query`](/docs/5.x/migration/plugin-vue-query#hooks-defaults-to-false) |
+| `pluginAxios`/`pluginFetch` `throwOnError` | Errors returned on the result, never thrown | `true` | [`@kubb/plugin-client` removed](/docs/5.x/migration/plugin-client) |
+| `pluginSwr` mutation trigger shape (`mutation.paramsToTrigger` in v4) | Off, option opt-in | Always on, option removed | [`@kubb/plugin-swr`](/docs/5.x/migration/plugin-swr) |
 
 ## Performance
 
@@ -263,6 +278,9 @@ The string `barrelType` option becomes an object `barrel` option with a `type` f
 | `'propagate'` _(plugin only)_ | `{ type: 'named', nested: true }` |
 | `false`                       | `false`                           |
 
+> [!IMPORTANT]
+> `output.barrel` also defaults to `false` in v5, where v4's `barrelType` defaulted to `'named'`. A v4 config that never set `barrelType` generated a barrel by relying on that default. Add `output.barrel: { type: 'named' }` explicitly to keep generating one, or drop it if nothing imports through the barrel, since each plugin's own output is already directly importable.
+
 ::: code-group
 
 ```typescript [v4 kubb.config.ts]
@@ -313,16 +331,16 @@ export default defineConfig({
 
 See [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) for the full `barrel` option reference.
 
-### Single-file output uses `output.mode`
+### Folder output needs an explicit `output.mode`
 
 v4 chose between a folder and a single file from the `output.path` extension. A path ending in `.ts` produced one file, anything else a folder. v5 drops that guess and asks you to state the layout with `output.mode`.
 
 | `output.mode` | Layout                                                            |
 | ------------- | ----------------------------------------------------------------- |
-| `'directory'` | One file per operation or schema. The default.                    |
-| `'file'`      | One file for the whole plugin.                                    |
+| `'file'`      | One file for the whole plugin. The default.                       |
+| `'directory'` | One file per operation or schema.                                 |
 
-To keep a single-file layout from v4, add `mode: 'file'`. The `output.path` must include the extension, because Kubb uses it as-is.
+A v4 config with a `.ts` `output.path` needs no change, since `mode: 'file'` is now the default. A v4 config with a folder `output.path` needs `mode: 'directory'` added explicitly, or the output silently consolidates into a single file.
 
 ::: code-group
 
@@ -333,7 +351,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 export default defineConfig({
   input: './petstore.yaml',
   output: { path: './src/gen' },
-  plugins: [pluginTs({ output: { path: 'models.ts' } })],
+  plugins: [pluginTs({ output: { path: 'types' } })],
 })
 ```
 
@@ -344,7 +362,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 export default defineConfig({
   input: './petstore.yaml',
   output: { path: './src/gen' },
-  plugins: [pluginTs({ output: { path: 'models.ts', mode: 'file' } })],
+  plugins: [pluginTs({ output: { path: 'types', mode: 'directory' } })],
 })
 ```
 
@@ -373,11 +391,14 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginAxios({
+      output: { mode: 'directory' },
       group: { type: 'tag', name: ({ group }) => `${group}Controller` },
     }),
   ],
 })
 ```
+
+`group` requires `output.mode: 'directory'`, since v5 now defaults to `'file'`.
 
 ### Logging: `--debug` replaced by reporters
 
@@ -665,6 +686,7 @@ export default defineConfig({
   output: {
     path: './src/gen',
     format: 'prettier',
+    barrel: { type: 'named' },
   },
   storage: memoryStorage(),
   adapter: adapterOas({
@@ -678,7 +700,7 @@ export default defineConfig({
   }),
   plugins: [
     pluginTs({
-      output: { path: 'types' },
+      output: { path: 'types', mode: 'directory' },
       resolver: {
         name(name) {
           return `Api${this.default.name(name)}`
@@ -686,23 +708,25 @@ export default defineConfig({
       },
     }),
     pluginZod({
-      output: { path: 'zod' },
+      output: { path: 'zod', mode: 'directory' },
     }),
     pluginAxios({
-      output: { path: 'clients' },
+      output: { path: 'clients', mode: 'directory' },
     }),
     pluginReactQuery({
-      output: { path: 'hooks' },
+      output: { path: 'hooks', mode: 'directory' },
       client: 'axios',
     }),
     pluginFaker({
-      output: { path: 'mocks' },
+      output: { path: 'mocks', mode: 'directory' },
     }),
   ],
 })
 ```
 
 :::
+
+Every plugin above adds `mode: 'directory'` to keep v4's one-file-per-operation layout. Omit it to consolidate each plugin's output into a single file instead, which is the v5 default. The root `output.barrel` is set explicitly to keep v4's barrel, since v5 no longer generates one by default.
 
 ## Generated output
 

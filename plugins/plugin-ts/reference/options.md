@@ -11,7 +11,7 @@ Options for `pluginTs`, with type and default in the table.
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'types', barrel: { type: 'named' } }` | Where the generated files are written and exported |
+| [`output`](#output) | `Output` | `{ path: 'types' }` | Where the generated files are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`enum`](#enum) | `EnumOptions` | `{ type: 'asConst', … }` | How enums are generated and cased |
 | [`syntaxType`](#syntaxtype) | `'type' \| 'interface'` | `'type'` | Emit object schemas as type aliases or interfaces |
@@ -34,10 +34,10 @@ Folder where the plugin writes its files (`string`, default `'types'`), resolved
 
 #### output.mode
 
-How generated code is consolidated into files. Defaults to `'directory'`.
+How generated code is consolidated into files. Defaults to `'file'`.
 
-- `'directory'` writes one file per operation or schema under `output.path`.
 - `'file'` writes everything into a single file, so `output.path` needs a file extension such as `'types.ts'`.
+- `'directory'` writes one file per operation or schema under `output.path`.
 
 #### output.barrel
 

@@ -11,7 +11,7 @@ Options for `pluginZod`, with type and default in the table.
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'zod', barrel: { type: 'named' } }` | Where the generated files are written and exported |
+| [`output`](#output) | `Output` | `{ path: 'zod' }` | Where the generated files are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`importPath`](#importpath) | `string` | `mini ? 'zod/mini' : 'zod'` | Module the generated files import `z` from |
 | [`inferred`](#inferred) | `boolean` | `false` | Emit a `z.infer` alias next to each schema |
@@ -43,8 +43,8 @@ Folder where the plugin writes its files, resolved against the global `output.pa
 
 How the plugin consolidates generated code into files.
 
-- `'directory'` (default) writes one file per operation or schema under `output.path`.
-- `'file'` writes everything into a single file, so `output.path` must include the file extension (for example `'zod.ts'`).
+- `'file'` (default) writes everything into a single file, so `output.path` must include the file extension (for example `'zod.ts'`).
+- `'directory'` writes one file per operation or schema under `output.path`.
 
 |          |                         |
 | -------: | :---------------------- |
