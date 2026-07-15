@@ -1,0 +1,109 @@
+plugins/plugin-faker/recipes/format-date-fields-with-dayjs.md
+  s_c34372df207859::t_7850b03b8aa7ae 28-61
+plugins/plugin-swr/recipes/immutable-requests.md
+  s_c34372df207859::t_b3385df58555ec 30-64
+plugins/plugin-swr/recipes/skip-a-request-until-ready.md
+  s_c34372df207859::t_6edac3b19d2b80 35-69
+plugins/plugin-msw/recipes/handlers-you-fill-from-tests.md
+  s_c34372df207859::t_4e5e56239551f8 28-53
+plugins/plugin-msw/recipes/register-handlers-with-a-server.md
+  s_c34372df207859::t_45eea2b66c8fae 37-66
+plugins/plugin-zod/recipes/coerce-query-and-form-input.md
+  s_c34372df207859::t_75c61b6b00940a 26
+  s_c34372df207859::t_67a6f9f4cc9bd8 10
+  s_c34372df207859::t_7997c02bcf0748 34-55
+plugins/plugin-zod/recipes/validate-every-api-response.md
+  s_c34372df207859::t_842408a4dd3b19 30-50
+  s_c34372df207859::t_1e1a96bdcef513 51-52
+plugins/plugin-ts/recipes/strip-descriptions-with-a-macro.md
+  s_c34372df207859::t_2bb4720dbb794d 1-45
+  s_c34372df207859::t_e1cbd12a75aa76 46
+plugins/plugin-axios/recipes/class-based-sdk.md
+  s_c34372df207859::t_5ef131ab3140fb 28-56
+plugins/plugin-react-query/recipes/custom-query-keys.md
+  s_c34372df207859::t_4fd58dc0d94477 32-62
+plugins/plugin-faker/recipes/localized-mock-data.md
+  s_c34372df207859::t_cf231030a944c9 28-59
+plugins/plugin-zod/recipes/tree-shakeable-schemas-with-zod-mini.md
+  s_c34372df207859::t_ef395b74217fc2 26-49
+plugins/plugin-ts/recipes/tree-shakeable-enums.md
+  s_c34372df207859::t_b350102b167f0b 26-52
+plugins/plugin-fetch/recipes/build-a-url-without-sending.md
+  s_c34372df207859::t_7997912eb33e55 27-29,31-33,35-39
+plugins/plugin-cypress/recipes/typed-request-helpers-against-staging.md
+  s_c34372df207859::t_ea0612e2a31dbf 36-37
+  s_c34372df207859::t_bc70ad84b72a3d 41-65
+  s_c34372df207859::t_f86a9656e69437 38-40
+plugins/plugin-zod/recipes/zod-as-the-single-source-of-truth.md
+  s_c34372df207859::t_98a89651b13a74 26-46
+plugins/plugin-react-query/recipes/wrap-hooks-with-shared-options.md
+  s_c34372df207859::t_32dc776fe120e2 34-69
+plugins/plugin-axios/recipes/point-at-an-env-driven-host.md
+  s_c34372df207859::t_72a82d89edd282 31
+  s_c34372df207859::t_aded8327e967ec 28-30,32-39
+plugins/plugin-fetch/recipes/stream-server-sent-events.md
+  s_c34372df207859::t_6624478b42ca0e 21-47
+plugins/plugin-react-query/recipes/infinite-scroll-query.md
+  s_c34372df207859::t_5047cd74b37f25 34-36,38-67
+  s_c34372df207859::t_cc53aa19b9cb78 37
+  s_c34372df207859::t_37009518322ec4 10
+plugins/plugin-vue-query/recipes/custom-query-keys.md
+  s_c34372df207859::t_db298db54ccb86 32-57
+plugins/plugin-ts/recipes/map-spec-types-to-native-ts.md
+  s_c34372df207859::t_29a76c1ea07f24 36-56
+plugins/plugin-fetch/recipes/class-based-sdk.md
+  s_c34372df207859::t_dd45aac6527d98 28-58
+plugins/plugin-fetch/recipes/validate-requests-and-responses.md
+  s_c34372df207859::t_0d427cdee06f9b 30-63
+plugins/plugin-mcp/recipes/a-working-mcp-server-from-a-spec.md
+  s_c34372df207859::t_b4eb9cf26c6edc 30-51,53-55
+  s_c34372df207859::t_24f6784694cff3 52
+plugins/plugin-zod/recipes/prefix-every-schema-type-name.md
+  s_c34372df207859::t_7d5d160d61f884 1-47
+  s_c34372df207859::t_5cdaf8764e874b 48-51
+plugins/plugin-ts/recipes/prefix-every-generated-type-name.md
+  s_c34372df207859::t_ecbb7f42bbded1 59
+  s_c34372df207859::t_a9673b42b238ff 1-57
+  s_c34372df207859::t_3a9b68e1116cf2 58
+plugins/plugin-axios/recipes/validate-requests-and-responses.md
+  s_c34372df207859::t_c2c17d5167d341 30-61
+plugins/plugin-msw/recipes/auto-generated-mock-data.md
+  s_c34372df207859::t_02408fbc87724c 30-56
+plugins/plugin-mcp/recipes/choose-the-client-when-two-are-registered.md
+  s_c34372df207859::t_80efcfa8cdfaec 10,26-27
+  s_c34372df207859::t_b89ec1d1e7bc0b 54
+  s_c34372df207859::t_d9b07bd874f280 32-53,55-57
+plugins/plugin-fetch/recipes/point-at-an-env-driven-host.md
+  s_c34372df207859::t_7dd470a0ba5d47 28-30,32-37
+  s_c34372df207859::t_b45f7c68997819 31
+plugins/plugin-faker/recipes/deterministic-data-with-a-seed.md
+  s_c34372df207859::t_546b79312294d9 28-60
+plugins/plugin-react-query/recipes/suspense-hooks.md
+  s_c34372df207859::t_44850ed694714f 36-62
+  s_c34372df207859::t_879bf1ffa6d018 35
+plugins/plugin-vue-query/recipes/infinite-scroll-query.md
+  s_c34372df207859::t_03687dd1214396 34-63
+  s_c34372df207859::t_2dc7a450617337 26
+plugins/plugin-zod/recipes/downgrade-int64-to-a-plain-number.md
+  s_c34372df207859::t_0d935edbe5e5e8 1-49
+plugins/plugin-vue-query/recipes/reactive-params-that-refetch.md
+  s_c34372df207859::t_5e8ddaacb9df74 32-54
+plugins/plugin-zod/recipes/strip-descriptions-with-a-macro.md
+  s_c34372df207859::t_233db1f49f299c 1-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "324ad22d4a1f58ae6f96afc5ab18225e72c0875e",
+  "prompts": {},
+  "sessions": {
+    "s_c34372df207859": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0085fe8a-92fe-4c73-a3e1-ec415dd3879c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Stijn Van Hulle <stijn.vanhulle@robovision.eu>"
+    }
+  }
+}
