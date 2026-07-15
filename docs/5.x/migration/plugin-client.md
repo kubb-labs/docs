@@ -27,7 +27,7 @@ pluginClient({ client: 'axios', output: { path: 'clients' } })
 ```typescript [v5 kubb.config.ts]
 import { pluginAxios } from '@kubb/plugin-axios'
 
-pluginAxios({ output: { path: 'clients' } })
+pluginAxios({ output: { path: 'clients', mode: 'directory' } })
 ```
 
 :::
@@ -43,7 +43,7 @@ pluginClient({ client: 'fetch', output: { path: 'clients' } })
 ```typescript [v5 kubb.config.ts]
 import { pluginFetch } from '@kubb/plugin-fetch'
 
-pluginFetch({ output: { path: 'clients' } })
+pluginFetch({ output: { path: 'clients', mode: 'directory' } })
 ```
 
 :::

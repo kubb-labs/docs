@@ -102,7 +102,7 @@ The `hooks` option controls whether `use*` composables are emitted alongside the
 
 ```diff [kubb.config.ts]
   pluginVueQuery({
-    output: { path: './hooks' },
+    output: { path: './hooks', mode: 'directory' },
 +   hooks: true,
   })
 ```

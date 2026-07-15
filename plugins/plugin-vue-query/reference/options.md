@@ -36,10 +36,10 @@ Folder the plugin writes to, resolved against the global `output.path` and defau
 
 #### output.mode
 
-How generated code is consolidated, `'directory'` or `'file'`. The default `'directory'` writes one file per operation and pairs with `group` for subdirectories. `'file'` writes a single file, so `output.path` needs an extension.
+How generated code is consolidated, `'file'` or `'directory'`. The default `'file'` writes a single file, so `output.path` needs an extension. `'directory'` writes one file per operation and pairs with `group` for subdirectories.
 
 > [!IMPORTANT]
-> `mode: 'file'` forbids `group`, and combining them stops the build with `KUBB_INVALID_PLUGIN_OPTIONS`.
+> `group` requires `mode: 'directory'`. Pairing `group` with `mode: 'file'` (or leaving `mode` unset) stops the build with `KUBB_INVALID_PLUGIN_OPTIONS`.
 
 #### output.barrel
 

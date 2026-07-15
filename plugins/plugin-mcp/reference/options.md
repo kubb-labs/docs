@@ -30,7 +30,7 @@ Folder where the plugin writes its files, resolved against the global `output.pa
 
 #### output.mode
 
-How the plugin consolidates its generated code. `'directory'` (the default) writes one file per operation under `output.path`, and `'file'` writes everything into a single file whose `output.path` must include the extension.
+How the plugin consolidates its generated code. `'file'` (the default) writes everything into a single file whose `output.path` must include the extension, and `'directory'` writes one file per operation under `output.path`.
 
 #### output.barrel
 

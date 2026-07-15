@@ -173,7 +173,7 @@ The `hooks` option controls whether `use*` functions are emitted alongside the f
 
 ```diff [kubb.config.ts]
   pluginReactQuery({
-    output: { path: './hooks' },
+    output: { path: './hooks', mode: 'directory' },
 +   hooks: true,
   })
 ```

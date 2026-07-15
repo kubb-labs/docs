@@ -43,8 +43,8 @@ Folder where the plugin writes its files, resolved against the global `output.pa
 
 How the plugin consolidates generated code into files.
 
-- `'directory'` (default) writes one file per operation or schema under `output.path`.
-- `'file'` writes everything into a single file, so `output.path` must include the file extension (for example `'zod.ts'`).
+- `'file'` (default) writes everything into a single file, so `output.path` must include the file extension (for example `'zod.ts'`).
+- `'directory'` writes one file per operation or schema under `output.path`.
 
 |          |                         |
 | -------: | :---------------------- |
