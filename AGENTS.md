@@ -14,9 +14,9 @@ This is a content-only repository:
 ```
 docs/
 ├── docs/5.x/**            # Hand-written guide and reference pages
-├── plugins/*.md           # Plugin documentation pages
-├── adapters/*.md          # Adapter documentation pages
-├── parsers/*.md           # Parser documentation pages
+├── plugins/<id>/          # One folder per plugin: index.md plus optional guide/recipes/reference subpages
+├── adapters/<id>/         # One folder per adapter: index.md plus optional subpages
+├── parsers/<id>/          # One folder per parser: index.md plus optional subpages
 ├── blog/*.md              # Blog posts
 ├── snippets/**            # Code snippets included via <<< @/snippets/...
 ├── CONTRIBUTING.md        # Contributing guide
@@ -52,6 +52,6 @@ rtk git log -10
 
 You have new skills. If any skill might be relevant then you MUST read it.
 
-- [documentation](.agents/skills/documentation/SKILL.md) - Use when writing blog posts or documentation markdown files - provides writing style guide (active voice, present tense), content structure patterns, and SEO optimization. Overrides brevity rules for proper grammar.
+- [documentation](.agents/skills/documentation/SKILL.md) - Use when writing blog posts or documentation markdown files - provides writing style guide (active voice, present tense), content structure patterns, and SEO optimization.
 - [humanizer](.agents/skills/humanizer/SKILL.md) - Remove AI writing patterns to make documentation sound natural, specific, and human. Covers content patterns, language patterns, style patterns, and communication patterns.
 </skills>

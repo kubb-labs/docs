@@ -9,17 +9,8 @@ Please read our [Code of Conduct](https://github.com/kubb-labs/kubb/blob/main/CO
 
 ## What lives here
 
-```
-docs/
-├── docs/5.x/**            # Guides, concepts, API reference, integrations
-├── plugins/<id>/index.md  # One folder per plugin (index.md plus optional guide/recipes/reference subpages)
-├── adapters/<id>/index.md # One folder per adapter (index.md plus optional reference subpages)
-├── parsers/<id>/index.md  # One folder per parser (index.md plus optional reference subpages)
-├── blog/*.md              # Blog posts
-└── snippets/**            # Code snippets included via <<< @/snippets/...
-```
-
-Each plugin, adapter, and parser is a folder with an `index.md` page, plus optional `guide/`, `recipes/`, and `reference/` subpages. The `index.md` frontmatter carries the registry metadata (`id`, `kind`, `name`, `description`, `category`, `type`, `npmPackage`, `repo`, `docsPath`, `featured`, `icon`, `maintainers`, `compatibility`, `tags`, `dependencies`, `resources`, `guides`, `recipes`) that the kubb.dev fetch pipeline turns into the plugin, adapter, and parser cards and detail headers. The `kind` field is `plugin`, `adapter`, or `parser`, and `id` matches the folder name. The pipeline validates the frontmatter against `apps/kubb.dev/public/schemas/extension.json` in kubb-labs/platform, which requires `id`, `name`, `description`, `category`, `type`, `npmPackage`, `repo`, and `docsPath`.
+See the repository layout in `AGENTS.md`. Each plugin, adapter, and parser is a folder with an
+`index.md` page, plus optional `guide/`, `recipes/`, and `reference/` subpages. The `index.md` frontmatter carries the registry metadata (`id`, `kind`, `name`, `description`, `category`, `type`, `npmPackage`, `repo`, `docsPath`, `featured`, `icon`, `maintainers`, `compatibility`, `tags`, `dependencies`, `resources`, `guides`, `recipes`) that the kubb.dev fetch pipeline turns into the plugin, adapter, and parser cards and detail headers. The `kind` field is `plugin`, `adapter`, or `parser`, and `id` matches the folder name. The pipeline validates the frontmatter against `apps/kubb.dev/public/schemas/extension.json` in kubb-labs/platform, which requires `id`, `name`, `description`, `category`, `type`, `npmPackage`, `repo`, and `docsPath`.
 
 ### Live example
 
@@ -56,13 +47,12 @@ This repo contains only content — no build step, no npm install, no test suite
 
 ## Writing guidelines
 
-- Use USA English (`color`, `license`, `serialize`, `canceled`).
 - Write in active voice, present tense.
 - Keep paragraphs short — 2-3 sentences.
 - Explain before showing code.
-- Run a humanizer pass over any prose you write to remove AI patterns.
 
-See `.agents/skills/documentation/SKILL.md` for the full writing guide.
+See `.agents/skills/documentation/SKILL.md` for the full writing guide, and `.claude/rules/` for
+the USA English and humanizer conventions.
 
 ## Updating plugin documentation
 

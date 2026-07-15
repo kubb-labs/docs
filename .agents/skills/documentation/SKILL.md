@@ -1,6 +1,6 @@
 ---
 name: documentation
-description: Use when writing blog posts or documentation markdown files - provides writing style guide (active voice, present tense), content structure patterns, and SEO optimization. Overrides brevity rules for proper grammar.
+description: Use when writing blog posts or documentation markdown files - provides writing style guide (active voice, present tense), content structure patterns, and SEO optimization.
 ---
 
 # Documentation Skill
@@ -23,8 +23,6 @@ This skill provides comprehensive guidelines for AI coding assistants working on
 
 ## Writing Standard
 
-**Override**: When writing documentation, maintain proper grammar and complete sentences. The "sacrifice grammar for brevity" rule does NOT apply here.
-
 Documentation must be:
 
 - Grammatically correct
@@ -33,10 +31,6 @@ Documentation must be:
 - Complete sentences (not fragments)
 
 Brevity is still valued, but never at the cost of clarity or correctness.
-
-## Language and Tone
-
-- Use the US spelling. For example, use license, not licence.
 
 ## Naming Conventions
 
@@ -89,4 +83,3 @@ Brevity is still valued, but never at the cost of clarity or correctness.
 - [ ] 2-3 sentences per paragraph
 - [ ] Explanation before code
 - [ ] Validate frontmatter syntax
-- [ ] Run humanizer pass: remove AI patterns, add voice and specific details
