@@ -67,9 +67,9 @@ Selects which registered client plugin the composables call: `'axios'` for `@kub
 
 ### infinite
 
-Adds infinite-query output for cursor- or page-based pagination. Pass an object to configure how the cursor is read, or `false` (the default) to skip. Output is emitted for an operation only when it declares a query parameter matching `infinite.queryParam` (default `'id'`). Set [`hooks`](#hooks) to wrap it in `useInfiniteQuery`.
+Adds infinite-query output for cursor- or page-based pagination. Pass an object to configure how the cursor is read, or `false` (the default) to skip. Output is emitted for an operation only when it declares a query parameter matching `infinite.queryParam` (default `'id'`), and only when [`hooks`](#hooks) is also `true`.
 
-Setting `infinite: {}` adds a `getPetsInfiniteQueryOptions` factory beside the regular `getPetsQueryOptions`:
+With [`hooks`](#hooks) at its default of `false`, setting `infinite` produces no file at all, not the factory or the composable. Set `hooks: true` alongside `infinite` to generate the file and its `useInfiniteQuery` composable:
 
 ::: code-group
 
@@ -79,9 +79,13 @@ export function getPetsQueryOptions(/* ... */) {
 }
 ```
 
-```typescript [infinite: {}]
+```typescript [infinite: {}, hooks: true]
 export function getPetsInfiniteQueryOptions(/* ... */) {
   return infiniteQueryOptions({ queryKey, queryFn, initialPageParam, getNextPageParam })
+}
+
+export function useGetPetsInfiniteQuery(/* ... */) {
+  return useInfiniteQuery(getPetsInfiniteQueryOptions(/* ... */))
 }
 ```
 
@@ -153,7 +157,9 @@ Builds the `mutationKey` for each mutation composable, useful for batching inval
 
 ### hooks
 
-Controls whether `use*` composables are emitted. The default `false` writes only the factory helpers `queryOptions`, `queryKey`, and `mutationKey`. Set `true` to also generate `useQuery`, `useInfiniteQuery`, and `useMutation`.
+Controls whether `use*` composables are emitted. The default `false` writes only the `queryOptions`, `queryKey`, and `mutationKey` factory helpers for plain queries and mutations. Set `true` to also generate `useQuery`, `useInfiniteQuery`, and `useMutation`.
+
+The [`infinite`](#infinite) factory and composable are gated on `hooks` too: with `hooks: false`, setting `infinite` writes nothing at all, not even `infiniteQueryOptions`.
 
 ### include
 
