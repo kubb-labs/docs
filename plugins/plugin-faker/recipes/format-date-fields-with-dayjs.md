@@ -25,3 +25,37 @@ export default defineConfig({
   ],
 })
 ```
+
+## Output example
+
+```typescript twoslash [src/gen/mocks/createOrder.ts]
+import dayjs from 'dayjs'
+import type { Order } from '../types/Order'
+import { fakerEN as faker } from '@faker-js/faker'
+
+export function createOrder<TData extends Partial<Order> = object>(data?: TData)
+{
+  const defaultFakeData = {
+  id: faker.number.bigInt(),
+  petId: faker.number.bigInt(),
+  quantity: faker.number.int(),
+  shipDateTime: faker.date.anytime().toISOString(),
+  shipDate: dayjs(faker.date.anytime()).format("YYYY-MM-DD"),
+  shipTime: dayjs(faker.date.anytime()).format("HH:mm:ss"),
+  status: faker.helpers.arrayElement<NonNullable<Order>["status"]>(['placed', 'approved', 'delivered']),
+  complete: faker.datatype.boolean(),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
+}
+```
+
+```typescript twoslash [usage.ts]
+import { createOrder } from './src/gen/mocks/createOrder'
+
+// shipDate/shipTime are formatted with dayjs, shipDateTime keeps the plain ISO string
+const order = createOrder()
+console.log(order.shipDate) // '2024-03-11'
+```

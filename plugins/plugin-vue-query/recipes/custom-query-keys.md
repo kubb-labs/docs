@@ -29,3 +29,29 @@ export default defineConfig({
 ```
 
 This turns `getUserByName`'s key into a fixed `['getUserByName'] as const`, independent of its call arguments.
+
+## Output example
+
+```typescript twoslash [src/gen/hooks/useGetUserByName.ts]
+export const getUserByNameQueryKey = ({ path }: { path: MaybeRefOrGetter<Omit<GetUserByNameOptions, 'headers'>['path']> }) => ["getUserByName"] as const
+
+export type GetUserByNameQueryKey = ReturnType<typeof getUserByNameQueryKey>
+
+export function getUserByNameQueryOptions({ path }: { path: MaybeRefOrGetter<GetUserByNameOptions['path']> }, config: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>> = {}) {
+  const queryKey = getUserByNameQueryKey({ path })
+  return queryOptions<GetUserByNameStatus200, ResponseErrorConfig<GetUserByNameStatus400 | GetUserByNameStatus404>, GetUserByNameStatus200>({
+   queryKey,
+   queryFn: async ({ signal }) => {
+      const { data } = await getUserByName({ ...config, path: toValue(path), signal: config.signal ?? signal, throwOnError: true })
+      return data
+   },
+  })
+}
+```
+
+```typescript twoslash [usage.ts]
+import { useQuery } from '@tanstack/vue-query'
+import { getUserByNameQueryOptions } from './gen/hooks/useGetUserByName'
+
+const { data } = useQuery(getUserByNameQueryOptions({ path: { name: 'kubb' } }))
+```

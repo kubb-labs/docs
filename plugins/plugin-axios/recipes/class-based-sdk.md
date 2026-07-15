@@ -25,3 +25,32 @@ export default defineConfig({
   ],
 })
 ```
+
+## Output example
+
+```typescript twoslash [src/gen/clients/petClient.ts]
+import type { ClientConfig, ClientInstance, Options, RequestResult } from '../.kubb/client'
+import type { GetPetByIdOptions, GetPetByIdResponses } from '../types/GetPetById'
+import { createClient } from '../.kubb/client'
+
+export class PetClient {
+  private readonly client: ClientInstance
+
+  constructor(config: ClientConfig = {}) {
+    this.client = createClient(config)
+  }
+
+  public getPetById<ThrowOnError extends boolean = true>(options: Options<GetPetByIdOptions, ThrowOnError>): Promise<RequestResult<GetPetByIdResponses, ThrowOnError>> {
+    const { client: request = this.client, ...config } = options
+
+    return request({ method: 'GET', url: '/pet/{petId}', ...config }) as Promise<RequestResult<GetPetByIdResponses, ThrowOnError>>
+  }
+}
+```
+
+```typescript twoslash [usage.ts]
+import { PetClient } from './src/gen/clients/petClient'
+
+const pet = new PetClient({ baseURL: 'https://petstore.swagger.io/v2' })
+const { data } = await pet.getPetById({ path: { petId: 1 } })
+```

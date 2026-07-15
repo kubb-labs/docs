@@ -7,7 +7,7 @@ outline: deep
 
 # Coerce query and form input
 
-Coercion suits string sources like query params and form data. Scope it to one tag with [`override`](/plugins/plugin-zod/reference/options#override), which merges its `options` onto the plugin defaults for matching operations, so only the `user` tag wraps its schemas in `z.coerce`.
+Coercion suits string sources like query params and form data. Scope it to one tag with [`override`](/plugins/plugin-zod/reference/options#override), which merges its `options` onto the plugin defaults for matching operations, so only the `store` tag wraps its schemas in `z.coerce`.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -23,11 +23,33 @@ export default defineConfig({
       override: [
         {
           type: 'tag',
-          pattern: 'user',
+          pattern: 'store',
           options: { coercion: true },
         },
       ],
     }),
   ],
 })
+```
+
+## Output example
+
+```typescript twoslash [src/gen/zod/getOrderByIdSchema.ts]
+import * as z from 'zod'
+import { orderSchema } from './orderSchema'
+
+export const getOrderByIdPathOrderIdSchema = z.coerce.bigint().describe('ID of order that needs to be fetched')
+
+export const getOrderByIdStatus200SchemaJson = orderSchema
+
+export const getOrderByIdStatus200SchemaXml = orderSchema
+
+export const getOrderByIdStatus200Schema = z.union([getOrderByIdStatus200SchemaJson, getOrderByIdStatus200SchemaXml])
+```
+
+```typescript twoslash [usage.ts]
+import { getOrderByIdPathOrderIdSchema } from './src/gen/zod/getOrderByIdSchema'
+
+// coerces the raw route param string into a bigint before validating
+const orderId = getOrderByIdPathOrderIdSchema.parse('1000')
 ```

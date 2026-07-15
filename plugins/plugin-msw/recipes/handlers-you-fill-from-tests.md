@@ -25,3 +25,29 @@ export default defineConfig({
   ],
 })
 ```
+
+## Output example
+
+```typescript twoslash [src/gen/handlers/getPetByIdHandler.ts]
+import type { GetPetByIdResponse } from '../types/GetPetById'
+import { http } from 'msw'
+
+export function getPetByIdHandler(data?: GetPetByIdResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Response | Promise<Response>)) {
+  return http.get(`/pet/:petId\\:search`, function handler(info) {
+    if (typeof data === 'function') return data(info)
+
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  })
+}
+```
+
+```typescript twoslash [usage.ts]
+import { setupServer } from 'msw/node'
+import { getPetByIdHandler } from './src/gen/handlers/getPetByIdHandler'
+
+// Each test supplies its own payload for the typed response.
+const server = setupServer(getPetByIdHandler({ id: 1, name: 'Rex' }))
+```

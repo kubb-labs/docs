@@ -34,3 +34,33 @@ import { handlers } from './src/gen/handlers/handlers'
 
 export const server = setupServer(...handlers)
 ```
+
+## Output example
+
+```typescript twoslash [src/gen/handlers/handlers.ts]
+import { addPetHandler } from './addPetHandler'
+import { deleteOrderHandler } from './deleteOrderHandler'
+import { deletePetHandler } from './deletePetHandler'
+import { findPetsByStatusHandler } from './findPetsByStatusHandler'
+import { getPetByIdHandler } from './getPetByIdHandler'
+import { placeOrderHandler } from './placeOrderHandler'
+import { updatePetHandler } from './updatePetHandler'
+
+export const handlers = [
+  updatePetHandler(),
+  addPetHandler(),
+  findPetsByStatusHandler(),
+  getPetByIdHandler(),
+  deletePetHandler(),
+  placeOrderHandler(),
+  deleteOrderHandler(),
+] as const
+```
+
+```typescript twoslash [usage.ts]
+import { setupWorker } from 'msw/browser'
+import { handlers } from './src/gen/handlers/handlers'
+
+// Same collection, wired into a browser worker instead of a Node server.
+export const worker = setupWorker(...handlers)
+```

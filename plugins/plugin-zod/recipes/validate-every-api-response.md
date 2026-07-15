@@ -27,3 +27,26 @@ export default defineConfig({
   ],
 })
 ```
+
+## Output example
+
+```typescript twoslash [src/gen/clients/findPetsByStatus.ts]
+import type { Options, RequestResult } from '../.kubb/client'
+import type { FindPetsByStatusOptions, FindPetsByStatusResponses } from '../types/FindPetsByStatus'
+import { client } from '../.kubb/client'
+import { findPetsByStatusResponseSchema, findPetsByStatusErrorSchema } from '../zod/findPetsByStatusSchema'
+
+export function findPetsByStatus<ThrowOnError extends boolean = true>(options: Options<FindPetsByStatusOptions, ThrowOnError> = {}): Promise<RequestResult<FindPetsByStatusResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
+
+  return request({ method: 'GET', url: '/pet/findByStatus', validator: { response: findPetsByStatusResponseSchema, error: findPetsByStatusErrorSchema }, ...config }) as Promise<RequestResult<FindPetsByStatusResponses, ThrowOnError>>
+}
+```
+
+```typescript twoslash [usage.ts]
+import { findPetsByStatus } from './src/gen/clients/findPetsByStatus'
+
+// throws if the response body fails findPetsByStatusResponseSchema.parse(...)
+const { data } = await findPetsByStatus({ query: { status: ['available'] } })
+```
+

@@ -23,3 +23,24 @@ export default defineConfig({
   ],
 })
 ```
+
+## Output example
+
+```typescript twoslash [src/gen/zod/categorySchema.ts]
+import * as z from 'zod'
+
+export const categorySchema = z.object({
+  id: z.bigint().optional().meta({ examples: [1] }),
+  name: z.string().optional().meta({ examples: ['Dogs'] }),
+  get parent() { return categorySchema.optional() },
+})
+
+export type CategorySchemaType = z.infer<typeof categorySchema>
+```
+
+```typescript twoslash [usage.ts]
+import { categorySchema, type CategorySchemaType } from './src/gen/zod/categorySchema'
+
+// no import from @kubb/plugin-ts needed, the type comes from the schema
+const category: CategorySchemaType = categorySchema.parse({ name: 'Dogs' })
+```

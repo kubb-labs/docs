@@ -18,3 +18,30 @@ for await (const event of stream) {
   console.info(event.data)
 }
 ```
+
+## Output example
+
+Generated from a `text/event-stream` operation (not part of `petStore.yaml`, added here to
+demonstrate the shape), since the concept only shows up when the spec has a streaming response.
+
+```typescript twoslash [src/gen/clients/streamEvents.ts]
+import type { Options, EventStreamResult, SuccessOf } from '../.kubb/client'
+import type { StreamEventsOptions, StreamEventsResponses } from '../types/StreamEvents'
+import { client, toEventStream } from '../.kubb/client'
+
+export function streamEvents<ThrowOnError extends boolean = true>(options: Options<StreamEventsOptions, ThrowOnError> = {}): Promise<EventStreamResult<SuccessOf<StreamEventsResponses>>> {
+  const { client: request = client, ...config } = options
+
+  return toEventStream<SuccessOf<StreamEventsResponses>>(request({ method: 'GET', url: '/stream/events', responseType: 'stream', ...config }))
+}
+```
+
+```typescript twoslash [usage.ts]
+import { streamEvents } from './src/gen/clients/streamEvents'
+
+const { stream } = await streamEvents({})
+
+for await (const event of stream) {
+  console.info(event.data) // typed from the operation's response schema
+}
+```

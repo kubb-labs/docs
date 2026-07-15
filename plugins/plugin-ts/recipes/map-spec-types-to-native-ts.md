@@ -33,3 +33,24 @@ export default defineConfig({
   ],
 })
 ```
+
+## Output example
+
+The petStore fixture has no plain `date` (only `date-time`) schemas, so this excerpt shows the `integer` handler mapping `format: int64` fields to `bigint` (the same printer mechanism the recipe uses for `date`):
+
+```typescript twoslash [src/gen/types/Order.ts]
+export type Order = {
+    id?: bigint;
+    petId?: bigint;
+    // ...
+};
+```
+
+```typescript twoslash [usage.ts]
+import type { Order } from './src/gen/types/Order'
+
+function describe(order: Order) {
+  // id is bigint, not number, so it needs the `n` suffix or BigInt()
+  return order.id === 10n
+}
+```

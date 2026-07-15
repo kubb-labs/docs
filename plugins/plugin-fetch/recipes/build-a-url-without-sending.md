@@ -24,9 +24,17 @@ export default defineConfig({
 })
 ```
 
-```typescript
-import { client } from './src/gen/.kubb/client'
+## Output example
 
-const url = client.getUrl({ url: '/pet/{petId}', path: { petId: 1 }, query: { status: ['available'] } })
-// '/pet/1?status=available'
+```typescript twoslash [usage.ts]
+import { client } from './src/gen/.kubb/client'
+import { getPetById } from './src/gen/clients/getPetById'
+
+const cacheKey = client.getUrl({ url: '/pet/{petId}', path: { petId: 1 } })
+
+const cached = cache.get(cacheKey)
+if (!cached) {
+  const { data } = await getPetById({ path: { petId: 1 } })
+  cache.set(cacheKey, data)
+}
 ```

@@ -27,3 +27,37 @@ export default defineConfig({
   ],
 })
 ```
+
+## Output example
+
+```typescript twoslash [src/gen/clients/addPet.ts]
+import type { Options, RequestResult } from '../.kubb/client'
+import type { AddPetOptions, AddPetResponses } from '../types/AddPet'
+import { client } from '../.kubb/client'
+import { addPetResponseSchema, addPetErrorSchema, addPetBodySchema } from '../zod/addPetSchema'
+
+export function addPet<ThrowOnError extends boolean = true>(options: Options<AddPetOptions, ThrowOnError>): Promise<RequestResult<AddPetResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
+
+  return request({
+    method: 'POST',
+    url: '/pet',
+    validator: { request: addPetBodySchema, response: addPetResponseSchema, error: addPetErrorSchema },
+    ...config,
+  }) as Promise<RequestResult<AddPetResponses, ThrowOnError>>
+}
+```
+
+```typescript twoslash [usage.ts]
+import { ParseError } from './src/gen/.kubb/standardSchema'
+import { addPet } from './src/gen/clients/addPet'
+
+try {
+  const { data } = await addPet({ body: { name: 'Fido', photoUrls: [] } })
+  console.log(data)
+} catch (error) {
+  if (error instanceof ParseError) {
+    console.error('request or response failed validation', error.issues)
+  }
+}
+```

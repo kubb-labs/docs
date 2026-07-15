@@ -32,3 +32,38 @@ const { data } = useGetPetById(
   { shouldFetch: petId != null },
 )
 ```
+
+## Output example
+
+```typescript twoslash [src/gen/hooks/useGetPetById.ts]
+export function useGetPetById({ path }: GetPetByIdOptions, options: {
+  query?: SWRConfiguration<GetPetByIdResponse, ResponseErrorConfig<GetPetByIdStatus400 | GetPetByIdStatus404>>,
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+  shouldFetch?: boolean,
+  immutable?: boolean
+} = {}) {
+  const { query: queryOptions, client: config = {}, shouldFetch = true, immutable } = options ?? {}
+
+  const queryKey = getPetByIdQueryKey({ path })
+
+  return useSWR<GetPetByIdResponse, ResponseErrorConfig<GetPetByIdStatus400 | GetPetByIdStatus404>, GetPetByIdQueryKey | null>(
+   shouldFetch ? queryKey : null,
+   {
+     ...getPetByIdQueryOptions({ path }, config),
+     ...queryOptions,
+   }
+  )
+}
+```
+
+```typescript twoslash [usage.ts]
+import { useGetPetById } from './gen/hooks/useGetPetById'
+
+const petId: number | undefined = undefined
+
+// shouldFetch: false turns the SWR key into null, so the request is skipped
+const { data } = useGetPetById(
+  { path: { petId: petId ?? 0 } },
+  { shouldFetch: petId != null },
+)
+```

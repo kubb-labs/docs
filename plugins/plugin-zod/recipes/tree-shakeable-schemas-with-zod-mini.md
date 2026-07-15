@@ -23,3 +23,27 @@ export default defineConfig({
   ],
 })
 ```
+
+## Output example
+
+```typescript twoslash [src/gen/zod/petSchema.ts]
+import * as z from 'zod/mini'
+import { categorySchema } from './categorySchema'
+import { tagSchema } from './tagSchema'
+
+export const petSchema = z.object({
+  id: z.optional(z.bigint()),
+  name: z.string(),
+  get category() { return z.optional(categorySchema) },
+  photoUrls: z.array(z.string()),
+  tags: z.optional(z.array(tagSchema)),
+  status: z.optional(z.enum(['available', 'pending', 'sold'])),
+})
+```
+
+```typescript twoslash [usage.ts]
+import { petSchema } from './src/gen/zod/petSchema'
+
+// only the validators actually imported end up in the bundle
+const pet = petSchema.parse({ name: 'Rex', photoUrls: [] })
+```

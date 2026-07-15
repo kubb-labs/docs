@@ -7,7 +7,7 @@ outline: deep
 
 # Choose the client when two are registered
 
-Set [`client`](/plugins/plugin-mcp/reference/options#client) to `'axios'` or `'fetch'` when both client plugins are present, so the handlers know which one to call.
+Set [`client`](/plugins/plugin-mcp/reference/options#client) to `'axios'` or `'fetch'` when both client plugins are present, so the handlers know which one to call. `pluginAxios` and `pluginFetch` both default `output.path` to `clients`, so give each its own path here too, otherwise the second one registered overwrites the first's generated files.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -23,9 +23,35 @@ export default defineConfig({
   plugins: [
     pluginTs(),
     pluginZod(),
-    pluginAxios({ baseURL: 'https://petstore.swagger.io/v2' }),
-    pluginFetch({ baseURL: 'https://petstore.swagger.io/v2' }),
+    pluginAxios({ output: { path: './clients-axios' }, baseURL: 'https://petstore.swagger.io/v2' }),
+    pluginFetch({ output: { path: './clients-fetch' }, baseURL: 'https://petstore.swagger.io/v2' }),
     pluginMcp({ client: 'axios' }),
   ],
 })
+```
+
+## Output example
+
+```typescript twoslash [src/gen/mcp/getPetById.ts]
+import type { GetPetByIdOptions } from '../types/GetPetById'
+import type { RequestHandlerExtra } from '@modelcontextprotocol/sdk/shared/protocol'
+import type { CallToolResult, ServerNotification, ServerRequest } from '@modelcontextprotocol/sdk/types'
+import { getPetById } from '../clients-axios/getPetById'
+
+export async function getPetByIdHandler({ path }: GetPetByIdOptions, request: RequestHandlerExtra<ServerRequest, ServerNotification>): Promise<Promise<CallToolResult>> {
+  const res = await getPetById({ path })
+
+  return {
+    content: [{ type: 'text', text: JSON.stringify(res.data) }],
+    structuredContent: { data: res.data },
+  }
+}
+```
+
+Even with `pluginFetch` also registered, the handler imports from `clients-axios`, the path given to `pluginAxios`, because `client: 'axios'` picked it.
+
+```typescript twoslash [usage.ts]
+import { startServer } from './src/gen/mcp/server'
+
+await startServer()
 ```
