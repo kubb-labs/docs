@@ -42,7 +42,7 @@ export default defineConfig(({ watch }) => ({
 | `parsers`        | `[parserTs(), parserTsx(), parserMd()]`  |
 | `reporters`      | `[cli, json, file]`                      |
 | `plugins`        | `pluginBarrel()` appended when not already present |
-| `output.barrel`  | `false`                                  |
+| `output.barrel`  | `{ type: 'named' }`, only when `pluginBarrel` is in `plugins` |
 | `output.format`  | `false`                                  |
 | `output.lint`    | `false`                                  |
 
