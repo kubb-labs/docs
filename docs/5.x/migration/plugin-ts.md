@@ -21,7 +21,9 @@ Use [`printer.nodes`](/plugins/plugin-ts/reference/options#printer) to override 
 pluginTs({ paramsCasing: 'camelcase' })
 ```
 
-Parameter properties inside the generated `Path`, `Query`, and `Headers` types now keep the exact names from the OpenAPI document. In v4 they used the original spec names by default, while `paramsCasing: 'camelcase'` opted into camelCase names and runtime remapping. v5 removes both the option and the remapping, so drop the setting and use the OpenAPI names at call sites.
+`paramsCasing` is no longer configurable in v5. Generated `Path`, `Query`, and `Headers` properties keep the exact names from the OpenAPI document.
+
+In v4, the default behavior already preserved those names. If you used `paramsCasing: 'camelcase'`, remove the option and update your call sites to use the OpenAPI names. v5 no longer remaps those parameters at runtime.
 
 ```typescript [Generated output]
 // OpenAPI spec uses: pet_id, X-Api-Key
@@ -29,7 +31,7 @@ export type GetPetPath = { pet_id: string }
 export type GetPetHeaders = { 'X-Api-Key'?: string }
 ```
 
-Path parameters fall back to camelCase only when the spec name is not a valid JavaScript identifier, such as `store-name`. Query and header names always keep the exact spec name and use quotes when needed.
+Kubb only falls back to camelCase when a path parameter name is not a valid JavaScript identifier, such as `store-name`. It preserves query and header names exactly and quotes them when needed.
 
 ## Changed: request input grouped under `Options`
 
