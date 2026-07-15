@@ -38,7 +38,7 @@ How the plugin consolidates its code into files, either `'file'` or `'directory'
 - `'directory'` writes one file per operation under `output.path`.
 
 > [!IMPORTANT]
-> `mode: 'file'` forbids the `group` option, and combining them stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
+> `group` requires `mode: 'directory'`. Pairing `group` with `mode: 'file'` (or leaving `mode` unset) stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 #### output.barrel
 

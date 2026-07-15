@@ -313,7 +313,7 @@ export default defineConfig({
 
 See [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) for the full `barrel` option reference.
 
-### Single-file output uses `output.mode`
+### Folder output needs an explicit `output.mode`
 
 v4 chose between a folder and a single file from the `output.path` extension. A path ending in `.ts` produced one file, anything else a folder. v5 drops that guess and asks you to state the layout with `output.mode`.
 
@@ -322,7 +322,7 @@ v4 chose between a folder and a single file from the `output.path` extension. A 
 | `'file'`      | One file for the whole plugin. The default.                       |
 | `'directory'` | One file per operation or schema.                                 |
 
-A v4 config with a `.ts` `output.path` keeps working as-is, since `mode: 'file'` is now the default. A v4 config with a folder `output.path` needs `mode: 'directory'` added explicitly. The `output.path` for `mode: 'file'` must include the extension, because Kubb uses it as-is.
+A v4 config with a `.ts` `output.path` needs no change, since `mode: 'file'` is now the default. A v4 config with a folder `output.path` needs `mode: 'directory'` added explicitly, or the output silently consolidates into a single file.
 
 ::: code-group
 
@@ -333,7 +333,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 export default defineConfig({
   input: './petstore.yaml',
   output: { path: './src/gen' },
-  plugins: [pluginTs({ output: { path: 'models.ts' } })],
+  plugins: [pluginTs({ output: { path: 'types' } })],
 })
 ```
 
@@ -344,7 +344,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 export default defineConfig({
   input: './petstore.yaml',
   output: { path: './src/gen' },
-  plugins: [pluginTs({ output: { path: 'models.ts', mode: 'file' } })],
+  plugins: [pluginTs({ output: { path: 'types', mode: 'directory' } })],
 })
 ```
 
@@ -373,11 +373,14 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginAxios({
+      output: { mode: 'directory' },
       group: { type: 'tag', name: ({ group }) => `${group}Controller` },
     }),
   ],
 })
 ```
+
+`group` requires `output.mode: 'directory'`, since v5 now defaults to `'file'`.
 
 ### Logging: `--debug` replaced by reporters
 
@@ -678,7 +681,7 @@ export default defineConfig({
   }),
   plugins: [
     pluginTs({
-      output: { path: 'types' },
+      output: { path: 'types', mode: 'directory' },
       resolver: {
         name(name) {
           return `Api${this.default.name(name)}`
@@ -686,23 +689,25 @@ export default defineConfig({
       },
     }),
     pluginZod({
-      output: { path: 'zod' },
+      output: { path: 'zod', mode: 'directory' },
     }),
     pluginAxios({
-      output: { path: 'clients' },
+      output: { path: 'clients', mode: 'directory' },
     }),
     pluginReactQuery({
-      output: { path: 'hooks' },
+      output: { path: 'hooks', mode: 'directory' },
       client: 'axios',
     }),
     pluginFaker({
-      output: { path: 'mocks' },
+      output: { path: 'mocks', mode: 'directory' },
     }),
   ],
 })
 ```
 
 :::
+
+Every plugin above adds `mode: 'directory'` to keep v4's one-file-per-operation layout. Omit it to consolidate each plugin's output into a single file instead, which is the v5 default.
 
 ## Generated output
 

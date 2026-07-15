@@ -36,7 +36,7 @@ How the plugin consolidates its generated code into files.
 - `'directory'` writes one file per operation or schema under `output.path`.
 
 > [!IMPORTANT]
-> Pairing `mode: 'file'` with the `group` option stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error, since a single file has nothing to group.
+> `group` requires `mode: 'directory'`. Pairing `group` with `mode: 'file'` (or leaving `mode` unset) stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error, since a single file has nothing to group.
 
 #### output.barrel
 
