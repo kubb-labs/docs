@@ -11,7 +11,7 @@ Configuration options for `@kubb/plugin-swr`, passed to `pluginSwr({ ... })`. Ev
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'hooks', barrel: { type: 'named' } }` | Where the generated hooks are written and exported |
+| [`output`](#output) | `Output` | `{ path: 'hooks' }` | Where the generated hooks are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`client`](#client) | `'fetch' \| 'axios'` | — | Which registered client plugin the hooks call |
 | [`query`](#query) | `Partial<Query> \| false` | `{ methods: ['GET'], importPath: 'swr' }` | Configure the `useSWR` hooks, or turn them off |
@@ -26,7 +26,7 @@ Configuration options for `@kubb/plugin-swr`, passed to `pluginSwr({ ... })`. Ev
 
 ### output
 
-Where the generated `.ts` files are written and how they are exported. Defaults to `{ path: 'hooks', barrel: { type: 'named' } }`.
+Where the generated `.ts` files are written and how they are exported. Defaults to `{ path: 'hooks' }`.
 
 #### output.path
 

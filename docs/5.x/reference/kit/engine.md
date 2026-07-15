@@ -50,7 +50,7 @@ export default defineConfig(({ watch }) => ({
 > `defineConfig` comes from the `kubb` package. Import it from `kubb` or the `kubb/config` subpath.
 
 > [!TIP]
-> The `output.barrel` default of `{ type: 'named' }` applies only when `pluginBarrel` is present in `plugins`. A plugins list without `pluginBarrel` leaves barrel generation untouched.
+> `pluginBarrel` generates nothing until `output.barrel` is set, root or per-plugin. A plugins list without `pluginBarrel` leaves barrel generation untouched.
 
 ### Related
 
