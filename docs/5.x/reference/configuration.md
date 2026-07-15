@@ -255,7 +255,7 @@ Provided by [`@kubb/plugin-barrel`](/plugins/plugin-barrel/).
 | --------: | :------------------------------------------------------ |
 |     Type: | `{ type: 'all' \| 'named' } \| false`                   |
 | Required: | `false`                                                 |
-|  Default: | `{ type: 'named' }`                                     |
+|  Default: | `false`                                                 |
 
 `{ type: 'all' }` writes `export * from '...'` for every file. `{ type: 'named' }` writes `export { … } from '...'` using each file's named exports. `false` disables the root barrel.
 
@@ -284,7 +284,7 @@ export * from './operations/getPet'
 Each plugin keeps its own `output.barrel` for its sub-folder and can override the root setting. Setting `barrel: false` on a plugin disables that plugin's barrel and drops its files from the root barrel. The `nested` flag works at the plugin level only, where `{ nested: true }` writes a barrel in every subdirectory so callers can import from any depth. The root `output.barrel` ignores `nested`.
 
 > [!NOTE]
-> The `{ type: 'named' }` default applies only when `pluginBarrel` is present in `config.plugins`. A config that omits `pluginBarrel` leaves barrel generation untouched.
+> `pluginBarrel` ships by default and generates nothing until `output.barrel` is set, root or per-plugin. A config that omits `pluginBarrel` entirely leaves barrel generation untouched.
 
 #### `output.defaultBanner`
 

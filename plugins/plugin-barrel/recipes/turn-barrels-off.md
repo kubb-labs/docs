@@ -1,13 +1,13 @@
 ---
 layout: doc
 title: Turn barrels off
-description: Set output.barrel to false so no root index.ts is written and every plugin without its own output.barrel inherits the false.
+description: output.barrel already defaults to false. Set it explicitly to override a barrel enabled elsewhere, like a shared base config.
 outline: deep
 ---
 
 # Turn barrels off
 
-Set [`output.barrel`](/plugins/plugin-barrel/reference/options#output-barrel) to `false` so no root `index.ts` is written and every plugin without its own `output.barrel` inherits the `false`.
+[`output.barrel`](/plugins/plugin-barrel/reference/options#output-barrel) already defaults to `false`, so a fresh config needs nothing here. Set it explicitly to override a root barrel enabled elsewhere, for example a shared base config: no root `index.ts` is written, and every plugin without its own `output.barrel` inherits the `false`.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'

@@ -28,7 +28,7 @@ You are migrating a kubb.config.ts from Kubb v4 to v5. Apply every rule, then ou
 5. `transformers.schema` → `macros: [{ name, schema(node) { return … } }]`.
 6. Remove `mapper` from plugin-ts, plugin-zod, plugin-faker.
 7. plugin-zod: remove `version` and `typed`; drop `wrapOutput` and leave a `// TODO: reintroduce wrapOutput via a printer override` comment (do not invent a `printer`). Bump the `zod` package to `^4` in package.json (a dependency change, not a config option).
-8. `output.barrelType` → `output.barrel`, root and per-plugin: `'named'`→`{ type: 'named' }`, `'all'`→`{ type: 'all' }`, `'propagate'`→`{ type: 'named', nested: true }`, `false`→`false`.
+8. `output.barrelType` → `output.barrel`, root and per-plugin: `'named'`→`{ type: 'named' }`, `'all'`→`{ type: 'all' }`, `'propagate'`→`{ type: 'named', nested: true }`, `false`→`false`. If a v4 config never set `barrelType` (relying on its `'named'` default), add `barrel: { type: 'named' }` explicitly, since v5 defaults `output.barrel` to `false`.
 9. If a plugin's `output.path` ends in `.ts`, keep the extension (`mode: 'file'` is now the default, so stating it is optional but fine). Folder paths need `mode: 'directory'` added explicitly, since `'directory'` is no longer the default.
 10. Remove entirely from every plugin: `generators`, `bundle`, `output.override` (boolean, root and per-plugin), `paramsType`, `pathParamsType`, `paramsCasing`, `dataReturnType`, `clientType`, `urlType`, `importPath`.
 11. `input: { path }` / `input: { data }` → a single `input` value (file path, URL, inline spec, or parsed object).
@@ -45,6 +45,21 @@ Now migrate the following kubb.config.ts:
 ```
 
 :::
+
+## Defaults that changed
+
+Every default that behaves differently in v5, in one table instead of scattered across this guide and the per-extension pages. Each row links to the section with the full explanation and a before/after example.
+
+| Option | v4 default | v5 default | Details |
+| --- | --- | --- | --- |
+| `output.format` | `'prettier'` | `false` | [`output.format` and `output.lint`](#output-format-and-output-lint-new-defaults-and-detection-order) |
+| `output.lint` | `'auto'` | `false` | [`output.format` and `output.lint`](#output-format-and-output-lint-new-defaults-and-detection-order) |
+| `output.barrel` (`barrelType` in v4) | `'named'` | `false` | [`output.barrelType` → `output.barrel`](#output-barreltype-output-barrel) |
+| `output.mode` | Guessed from the `output.path` extension | `'file'` | [Folder output needs an explicit `output.mode`](#folder-output-needs-an-explicit-output-mode) |
+| `group: { type: 'tag' }` folder name | `<tag>Controller` | `<tag>` | [Group folders use the plain tag](#group-folders-use-the-plain-tag) |
+| `pluginReactQuery`/`pluginVueQuery` `hooks` | `true` | `false` | [`@kubb/plugin-react-query`](/docs/5.x/migration/plugin-react-query#hooks-defaults-to-false), [`@kubb/plugin-vue-query`](/docs/5.x/migration/plugin-vue-query#hooks-defaults-to-false) |
+| `pluginAxios`/`pluginFetch` `throwOnError` | Errors returned on the result, never thrown | `true` | [`@kubb/plugin-client` removed](/docs/5.x/migration/plugin-client) |
+| `pluginSwr` mutation trigger shape (`mutation.paramsToTrigger` in v4) | Off, option opt-in | Always on, option removed | [`@kubb/plugin-swr`](/docs/5.x/migration/plugin-swr) |
 
 ## Performance
 
@@ -262,6 +277,9 @@ The string `barrelType` option becomes an object `barrel` option with a `type` f
 | `'all'`                       | `{ type: 'all' }`                 |
 | `'propagate'` _(plugin only)_ | `{ type: 'named', nested: true }` |
 | `false`                       | `false`                           |
+
+> [!IMPORTANT]
+> `output.barrel` also defaults to `false` in v5, where v4's `barrelType` defaulted to `'named'`. A v4 config that never set `barrelType` generated a barrel by relying on that default. Add `output.barrel: { type: 'named' }` explicitly to keep generating one, or drop it if nothing imports through the barrel, since each plugin's own output is already directly importable.
 
 ::: code-group
 
@@ -668,6 +686,7 @@ export default defineConfig({
   output: {
     path: './src/gen',
     format: 'prettier',
+    barrel: { type: 'named' },
   },
   storage: memoryStorage(),
   adapter: adapterOas({
@@ -707,7 +726,7 @@ export default defineConfig({
 
 :::
 
-Every plugin above adds `mode: 'directory'` to keep v4's one-file-per-operation layout. Omit it to consolidate each plugin's output into a single file instead, which is the v5 default.
+Every plugin above adds `mode: 'directory'` to keep v4's one-file-per-operation layout. Omit it to consolidate each plugin's output into a single file instead, which is the v5 default. The root `output.barrel` is set explicitly to keep v4's barrel, since v5 no longer generates one by default.
 
 ## Generated output
 

@@ -3,7 +3,7 @@ layout: doc
 title: Kubb Barrel Plugin
 description: Generates an index.ts barrel for every plugin output and one root
   barrel, so you import all generated code from a single entry point. Ships with
-  Kubb and runs by default.
+  Kubb, but only generates barrels once output.barrel is configured.
 outline: deep
 recipes:
   - id: named-re-exports-for-tree-shaking
@@ -44,11 +44,11 @@ resources:
 # @kubb/plugin-barrel
 
 > [!TIP]
-> `pluginBarrel` runs by default, so barrel files appear with no setup. Set `output.barrel` to change how they are generated.
+> `pluginBarrel` is registered by default, but generates nothing until you set `output.barrel`.
 
 `@kubb/plugin-barrel` writes the `index.ts` barrel files. It adds one barrel per plugin output directory and one root barrel at `output.path/index.ts`. This runs after the build finishes, so you import everything from one entry point, like `import { Pet, usePetByIdQuery, petMock } from './gen'`.
 
-The plugin is registered by default in `defineConfig`, so barrels appear with no setup. When it runs, the default `output.barrel` is `{ type: 'named' }`.
+The plugin is registered by default in `defineConfig`, but `output.barrel` defaults to `false`, so no barrels are written until you set it, root or per-plugin.
 
 A plugin inherits `output.barrel` from `config.output.barrel` when it sets none of its own. Set `barrel: false` on a plugin to skip its barrel and drop its files from the root barrel.
 
@@ -82,12 +82,12 @@ yarn add -D @kubb/plugin-barrel@beta
 
 ::: code-group
 
-```typescript [Named exports (default)]
+```typescript [Named exports]
 import { defineConfig } from 'kubb'
 
 export default defineConfig({
   input: './petStore.yaml',
-  output: { path: './src/gen' },
+  output: { path: './src/gen', barrel: { type: 'named' } },
   plugins: [],
 })
 ```
@@ -141,7 +141,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 // nested lives on a plugin's output.barrel, not on the root output.barrel.
 export default defineConfig({
   input: './petStore.yaml',
-  output: { path: './src/gen' },
+  output: { path: './src/gen', barrel: { type: 'named' } },
   plugins: [pluginTs({ output: { path: 'api', barrel: { type: 'all', nested: true } } })],
 })
 ```
@@ -155,7 +155,7 @@ export * from './types'
 // src/gen/api/types/index.ts re-exports its files
 export * from './User'
 
-// the root src/gen/index.ts still uses the config default ({ type: 'named' })
+// the root src/gen/index.ts still uses the root's own output.barrel ({ type: 'named' })
 export { getUser, User } from './api/user'
 export { getPost, Post } from './api/post'
 export { User } from './api/types/User'
@@ -170,20 +170,21 @@ import { pluginZod } from '@kubb/plugin-zod'
 // are dropped from the root index.ts.
 export default defineConfig({
   input: './petStore.yaml',
-  output: { path: './src/gen' },
+  output: { path: './src/gen', barrel: { type: 'named' } },
   plugins: [pluginTs(), pluginZod({ output: { path: 'zod', barrel: false } })],
 })
 ```
 
 ```typescript twoslash [Disable the root barrel]
 import { defineConfig } from 'kubb'
+import { pluginTs } from '@kubb/plugin-ts'
 
-// No root index.ts. Each plugin still gets
-// its own barrel from its inherited config.
+// No root index.ts. The pluginTs barrel below still
+// generates from its own output.barrel.
 export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen', barrel: false },
-  plugins: [],
+  plugins: [pluginTs({ output: { barrel: { type: 'named' } } })],
 })
 ```
 
