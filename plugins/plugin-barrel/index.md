@@ -12,8 +12,8 @@ recipes:
     title: One wildcard barrel
   - id: a-barrel-in-every-folder
     title: A barrel in every folder
-  - id: turn-barrels-off
-    title: Turn barrels off
+  - id: turn-barrels-on
+    title: Turn barrels on
 kind: plugin
 id: plugin-barrel
 name: Barrel
