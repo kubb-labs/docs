@@ -30,7 +30,7 @@ The seven pieces you reach for when you build something new. Each has its own pa
 | [AST and node builders](./kit/ast)             | `ast`                      | The namespace behind `factory` builders, visitors, guards, macros, and printers. |
 | [Diagnostics](./diagnostics)               | `Diagnostics`              | Builds and narrows the structured errors Kubb collects during a build. |
 | [Engine and configuration](./kit/engine)       | `defineConfig`, `createKubb` | The `kubb`-package surface that runs your plugins.            |
-| [Lifecycle events](./kit/events)               | `KubbHooks`                | Every `kubb:*` event a build emits, its payload, and when it fires. |
+| [Lifecycle hooks](./kit/hooks)                 | `KubbHooks`                | Every `kubb:*` hook a build fires, its payload, and when it fires. |
 | [Testing](./kit/testing)                       | `kubb/kit/testing`         | Vitest-backed helpers for testing plugins, generators, and adapters. |
 
 ## See also

@@ -1,19 +1,19 @@
 ---
 layout: doc
-title: Lifecycle events
-description: Every kubb:* event a build emits, the payload each carries, and the order they fire in. Listen with kubb.hooks.hook(name, handler) or from a plugin's hooks map.
+title: Lifecycle hooks
+description: Every kubb:* hook a build fires, the payload each carries, and the order they fire in. Listen with kubb.hooks.hook(name, handler) or from a plugin's hooks map.
 outline: [2, 3]
 ---
 
-# Lifecycle events
+# Lifecycle hooks
 
-Kubb runs on one shared, typed event emitter, and every phase of a build emits a `kubb:*` event on it. Plugins subscribe through their [`hooks`](./plugins) map. Outside code subscribes through `kubb.hooks`.
+Kubb runs on one shared, typed hook emitter, and every phase of a build fires a `kubb:*` hook on it. Plugins subscribe through their [`hooks`](./plugins) map. Outside code subscribes through `kubb.hooks`.
 
-The event names and their payloads are the `KubbHooks` type. Handlers may be async, and Kubb awaits each one before moving on.
+The hook names and their payloads are the `KubbHooks` type. Handlers may be async, and Kubb awaits each one before moving on.
 
 ## Listening
 
-Attach a listener with `kubb.hooks.hook(name, handler)` before you run the build. A plugin listens by adding the event to its `hooks` map instead.
+Attach a listener with `kubb.hooks.hook(name, handler)` before you run the build. A plugin listens by adding the hook to its `hooks` map instead.
 
 ```ts
 import { createKubb } from 'kubb'
@@ -34,15 +34,17 @@ kubb.hooks.hook('kubb:build:end', ({ files }) => {
 await kubb.build()
 ```
 
-## What emits which events
+## What fires which hooks
 
-The events split into two groups by where they come from. Build pipeline events fire whenever the pipeline runs, including a direct [`.build()` or `.safeBuild()`](./engine#createkubb): `kubb:build:*`, `kubb:plugin:*`, `kubb:plugins:end`, `kubb:generate:*`, and `kubb:files:processing:*`. Generation-run events wrap the pipeline with setup and the output passes, so they fire only during a full generation run, which the CLI, the bundler plugin, and the MCP tool drive: `kubb:generation:*`, `kubb:setup:*`, `kubb:format:*`, `kubb:lint:*`, and `kubb:hooks:*` / `kubb:hook:*`. `kubb:lifecycle:*` wraps the whole run and comes from the bundler plugin.
+The hooks split into two groups by where they come from. Build pipeline hooks fire whenever the pipeline runs, including a direct [`.build()` or `.safeBuild()`](./engine#createkubb): `kubb:build:*`, `kubb:plugin:*`, `kubb:plugins:end`, `kubb:generate:*`, and `kubb:files:processing:*`. Generation-run hooks wrap the pipeline with setup and the output passes, so they fire only during a full generation run, which the CLI, the bundler plugin, and the MCP tool drive: `kubb:generation:*`, `kubb:setup:*`, `kubb:format:*`, `kubb:lint:*`, and `kubb:hooks:*` / `kubb:hook:*`. `kubb:lifecycle:*` wraps the whole run and comes from the bundler plugin.
 
-The messaging events (`kubb:info`, `kubb:success`, `kubb:warn`, `kubb:error`, `kubb:diagnostic`) can fire at any point.
+The messaging hooks (`kubb:info`, `kubb:success`, `kubb:warn`, `kubb:error`, `kubb:diagnostic`) can fire at any point.
 
 ## Firing order
 
-For a full generation run the events fire in this order:
+<LifecycleTimeline />
+
+For a full generation run the hooks fire in this order:
 
 1. `kubb:lifecycle:start` (bundler plugin only)
 2. `kubb:generation:start`
@@ -56,13 +58,11 @@ For a full generation run the events fire in this order:
 10. `kubb:generation:end`
 11. `kubb:lifecycle:end` (bundler plugin only)
 
-See the [lifecycle timeline](/docs/5.x/guide/concepts/plugins#how-the-lifecycle-runs) for the same sequence as prose.
-
 ## Generation run
 
 These wrap a full run. A direct `.build()` or `.safeBuild()` does not fire them.
 
-| Event                    | Payload                                                        | When it fires                                          |
+| Hook                     | Payload                                                        | When it fires                                          |
 | ------------------------ | ------------------------------------------------------------- | ------------------------------------------------------ |
 | `kubb:lifecycle:start`   | `{ version }`                                                 | The bundler plugin starts, before anything else        |
 | `kubb:generation:start`  | `{ config }`                                                  | A run begins, before setup                             |
@@ -75,7 +75,7 @@ These wrap a full run. A direct `.build()` or `.safeBuild()` does not fire them.
 
 These come from the pipeline itself, so a direct `.build()` or `.safeBuild()` fires them too.
 
-| Event                    | Payload                                                        | When it fires                                          |
+| Hook                     | Payload                                                        | When it fires                                          |
 | ------------------------ | ------------------------------------------------------------- | ------------------------------------------------------ |
 | `kubb:plugin:setup`      | `KubbPluginSetupContext`                                      | Once per plugin during setup, to register generators, resolvers, macros, and options |
 | `kubb:build:start`       | `{ config, adapter, meta, getPlugin, files, upsertFile }`     | The AST is ready, before plugins run. Skipped when no adapter parsed input |
@@ -94,7 +94,7 @@ These come from the pipeline itself, so a direct `.build()` or `.safeBuild()` fi
 
 These run after a successful build, only during a full generation run.
 
-| Event                | Payload                              | When it fires                                    |
+| Hook                 | Payload                              | When it fires                                    |
 | -------------------- | ------------------------------------ | ------------------------------------------------ |
 | `kubb:format:start`  | none                                 | Before the formatter runs                        |
 | `kubb:format:end`    | none                                 | After formatting                                 |
@@ -110,7 +110,7 @@ These run after a successful build, only during a full generation run.
 
 These carry log messages and diagnostics, and can fire at any point in a run.
 
-| Event             | Payload                     | When it fires                                        |
+| Hook              | Payload                     | When it fires                                        |
 | ----------------- | --------------------------- | ---------------------------------------------------- |
 | `kubb:info`       | `{ message, info }`         | An informational message                             |
 | `kubb:success`    | `{ message, info }`         | A step completed successfully                        |
