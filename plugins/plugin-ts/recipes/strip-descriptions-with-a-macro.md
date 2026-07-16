@@ -9,7 +9,7 @@ outline: deep
 
 Pass a [macro](/plugins/plugin-ts/reference/options#macros) that clears `description` on every schema node. Macros run on the shared AST before a plugin prints code, so this keeps the generated types free of the spec's prose without touching the OpenAPI document.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { ast } from 'kubb/kit'

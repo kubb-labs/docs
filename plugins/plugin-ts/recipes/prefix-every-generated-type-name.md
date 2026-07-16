@@ -9,7 +9,7 @@ outline: deep
 
 Set [`resolver.name`](/plugins/plugin-ts/reference/options#resolver) to patch the casing rule plugin-ts uses for every symbol. This override prefixes each generated type with `Api`, so generated names never collide with hand-written types of the same domain concept.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 

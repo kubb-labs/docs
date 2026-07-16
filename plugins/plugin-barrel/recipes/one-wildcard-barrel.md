@@ -9,7 +9,7 @@ outline: deep
 
 Set [`type`](/plugins/plugin-barrel/reference/options#type) to `'all'` so each barrel uses `export *`, a smaller barrel that re-exports everything.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 

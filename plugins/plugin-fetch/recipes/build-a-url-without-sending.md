@@ -9,7 +9,7 @@ outline: deep
 
 The bundled `client`, written under [`output`](/plugins/plugin-fetch/reference/options#output), exposes `getUrl` to build an operation's final URL without sending the request, useful for cache keys, prefetch, and links.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginFetch } from '@kubb/plugin-fetch'

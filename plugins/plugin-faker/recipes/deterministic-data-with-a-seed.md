@@ -9,7 +9,7 @@ outline: deep
 
 Set [`seed`](/plugins/plugin-faker/reference/options#seed) so the factories call `faker.seed(...)` and return the same values on every run. This keeps snapshot tests stable and makes a failing case reproducible.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginFaker } from '@kubb/plugin-faker'

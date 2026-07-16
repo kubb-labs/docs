@@ -9,7 +9,7 @@ outline: deep
 
 `@kubb/plugin-swr` generates a `useFoo` hook whose second argument accepts a Kubb-specific `immutable` switch. Set it to `true` for data that never changes once loaded, so SWR fetches the resource once and skips revalidation on stale, focus, and reconnect.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginFetch } from '@kubb/plugin-fetch'

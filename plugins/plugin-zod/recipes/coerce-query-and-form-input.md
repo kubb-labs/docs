@@ -9,7 +9,7 @@ outline: deep
 
 Coercion suits string sources like query params and form data. Scope it to one tag with [`override`](/plugins/plugin-zod/reference/options#override), which merges its `options` onto the plugin defaults for matching operations, so only the `store` tag wraps its schemas in `z.coerce`.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'

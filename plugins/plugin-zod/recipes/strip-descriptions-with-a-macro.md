@@ -9,7 +9,7 @@ outline: deep
 
 Pass a [macro](/plugins/plugin-zod/reference/options#macros) that clears `description` on every schema node. Macros run on the shared AST before a plugin prints code, so this keeps generated schemas free of the spec's prose without touching the OpenAPI document, and the same macro works for `@kubb/plugin-ts` too since both read the same AST.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginZod } from '@kubb/plugin-zod'
 import { ast } from 'kubb/kit'

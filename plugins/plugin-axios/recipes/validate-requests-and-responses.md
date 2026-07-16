@@ -9,7 +9,7 @@ outline: deep
 
 Set [`validator`](/plugins/plugin-axios/reference/options#validator) to `{ request: 'zod', response: 'zod' }` so the client checks both request and response bodies against the generated schemas at runtime, and add `@kubb/plugin-zod` to the plugins list. The `'zod'` shorthand covers responses only, so name both directions to validate requests too.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'

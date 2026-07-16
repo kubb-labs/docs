@@ -9,7 +9,7 @@ outline: deep
 
 Generate the Zod schemas, then point a client at them. Setting the Fetch client's [`validator`](/plugins/plugin-fetch/reference/options#validator) to `'zod'` runs every response body through the matching schema at runtime. To validate request bodies too, use the object form `{ request: 'zod', response: 'zod' }`.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'

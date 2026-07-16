@@ -9,7 +9,7 @@ outline: deep
 
 Turn on [`inferred`](/plugins/plugin-zod/reference/options#inferred) to export a `z.infer` alias next to every schema. The schemas then carry the types too, so you drop `@kubb/plugin-ts` from the config.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginZod } from '@kubb/plugin-zod'
 
