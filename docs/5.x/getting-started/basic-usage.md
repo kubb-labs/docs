@@ -133,7 +133,7 @@ Now for the payoff. Import the generated code into your app. The import paths fo
 
 ::: code-group
 
-```typescript twoslash [Types]
+```typescript [Types]
 // @filename: src/gen/models/Pet.ts
 export type Pet = { id: number; name: string }
 // @filename: src/app.ts

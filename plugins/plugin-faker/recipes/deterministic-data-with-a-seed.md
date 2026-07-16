@@ -28,7 +28,7 @@ export default defineConfig({
 
 ## Output example
 
-```typescript twoslash [src/gen/mocks/createPet.ts]
+```typescript [src/gen/mocks/createPet.ts]
 import type { Pet } from '../types/Pet'
 import { createCategory } from './createCategory'
 import { createTag } from './createTag'
@@ -52,7 +52,7 @@ export function createPet<TData extends Partial<Pet> = object>(data?: TData)
 }
 ```
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 import { createPet } from './src/gen/mocks/createPet'
 
 const pet = createPet()

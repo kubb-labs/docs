@@ -32,7 +32,7 @@ export default defineConfig({
 
 ## Output example
 
-```typescript twoslash [src/gen/zod/petSchema.ts]
+```typescript [src/gen/zod/petSchema.ts]
 export const petSchema = z.object({
   id: z.number().optional().meta({ examples: [10] }),
   // ...
@@ -41,7 +41,7 @@ export const petSchema = z.object({
 
 Without the override, that same field prints `id: z.bigint().optional()`. The `integer` node (for 32-bit `format: int32` fields) is a separate handler from `bigint`, so overriding one does not affect the other.
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 import { petSchema } from './src/gen/zod/petSchema'
 
 // id now parses as a JS number, not a bigint

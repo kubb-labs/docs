@@ -37,7 +37,7 @@ export const server = setupServer(...handlers)
 
 ## Output example
 
-```typescript twoslash [src/gen/handlers/handlers.ts]
+```typescript [src/gen/handlers/handlers.ts]
 import { addPetHandler } from './addPetHandler'
 import { deleteOrderHandler } from './deleteOrderHandler'
 import { deletePetHandler } from './deletePetHandler'
@@ -57,7 +57,7 @@ export const handlers = [
 ] as const
 ```
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 import { setupWorker } from 'msw/browser'
 import { handlers } from './src/gen/handlers/handlers'
 

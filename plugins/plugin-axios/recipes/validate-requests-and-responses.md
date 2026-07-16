@@ -30,7 +30,7 @@ export default defineConfig({
 
 ## Output example
 
-```typescript twoslash [src/gen/clients/addPet.ts]
+```typescript [src/gen/clients/addPet.ts]
 import type { Options, RequestResult } from '../.kubb/client'
 import type { AddPetOptions, AddPetResponses } from '../types/AddPet'
 import { client } from '../.kubb/client'
@@ -48,7 +48,7 @@ export function addPet<ThrowOnError extends boolean = true>(options: Options<Add
 }
 ```
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 import { addPet } from './src/gen/clients/addPet'
 
 try {

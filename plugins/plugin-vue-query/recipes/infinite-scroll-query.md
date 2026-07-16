@@ -34,7 +34,7 @@ export default defineConfig({
 
 ## Output example
 
-```typescript twoslash [src/gen/hooks/useFindPetsByTagsInfinite.ts]
+```typescript [src/gen/hooks/useFindPetsByTagsInfinite.ts]
 export function findPetsByTagsInfiniteQueryOptions({ query }: { query?: MaybeRefOrGetter<FindPetsByTagsOptions['query']> } = {}, config: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>> = {}) {
   const queryKey = findPetsByTagsInfiniteQueryKey({ query })
   return infiniteQueryOptions<FindPetsByTagsStatus200, ResponseErrorConfig<FindPetsByTagsStatus400>, InfiniteData<FindPetsByTagsStatus200>, QueryKey, NonNullable<FindPetsByTagsQuery['page']>>({
@@ -53,7 +53,7 @@ export function findPetsByTagsInfiniteQueryOptions({ query }: { query?: MaybeRef
 }
 ```
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 import { useInfiniteQuery } from '@tanstack/vue-query'
 import { findPetsByTagsInfiniteQueryOptions } from './gen/hooks/useFindPetsByTagsInfinite'
 

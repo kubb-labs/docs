@@ -292,7 +292,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [v5 kubb.config.ts]
+```typescript twoslash [v5 kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
@@ -316,7 +316,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [v5 kubb.config.ts]
+```typescript twoslash [v5 kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -355,7 +355,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [v5 kubb.config.ts]
+```typescript twoslash [v5 kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -382,7 +382,7 @@ v4: src/gen/clients/petController/  →  v5: src/gen/clients/pet/
 
 To keep the v4 layout, set `group.name` on the plugin:
 
-```typescript [v5 kubb.config.ts]
+```typescript twoslash [v5 kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginAxios } from '@kubb/plugin-axios'
 
@@ -532,7 +532,7 @@ pluginZod({
 
 Code-generating plugins now accept a `printer` option that overrides individual AST node renderers. Use it in place of the removed `mapper` option for type-level customizations. See [Override a printer](/docs/5.x/guide/going-further/printers) for the handler context and how printers compose with macros.
 
-```typescript twoslash [v5]
+```typescript [v5]
 import ts from 'typescript'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -559,7 +559,7 @@ The AST helpers move onto the `ast` namespace. Reach them through `kubb/kit` as 
 
 ::: code-group
 
-```typescript [before]
+```typescript twoslash [before]
 import { definePlugin } from '@kubb/core'
 import { collect, transform, walk } from '@kubb/ast'
 import { createReactGenerator } from '@kubb/plugin-oas'

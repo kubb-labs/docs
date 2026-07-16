@@ -30,7 +30,7 @@ export default defineConfig({
 
 ## Output example
 
-```typescript twoslash [src/gen/mcp/getPetById.ts]
+```typescript [src/gen/mcp/getPetById.ts]
 import type { GetPetByIdOptions } from '../types/GetPetById'
 import type { RequestHandlerExtra } from '@modelcontextprotocol/sdk/shared/protocol'
 import type { CallToolResult, ServerNotification, ServerRequest } from '@modelcontextprotocol/sdk/types'
@@ -48,7 +48,7 @@ export async function getPetByIdHandler({ path }: GetPetByIdOptions, request: Re
 
 The handler calls `getPetById` from the Axios client the plugin auto-detected, and `server.ts` registers a matching tool with Zod input and output schemas, so the same file also exports a ready-to-run server.
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 import { startServer } from './src/gen/mcp/server'
 
 await startServer()

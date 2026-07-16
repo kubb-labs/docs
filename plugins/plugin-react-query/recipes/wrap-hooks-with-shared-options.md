@@ -36,7 +36,7 @@ export default defineConfig({
 
 Every generated hook calls `useCustomHookOptions({ hookName, operationId })` and spreads the result into its query/mutation options, and the barrel re-exports your `HookOptions` type so a typed wrapper stays in sync:
 
-```typescript twoslash [src/gen/hooks/useGetPetById.ts]
+```typescript [src/gen/hooks/useGetPetById.ts]
 import { useCustomHookOptions } from './useCustomHookOptions'
 import { getPetById } from '../clients/getPetById'
 import { queryOptions, useQuery } from '@tanstack/react-query'
@@ -56,7 +56,7 @@ export function useGetPetById({ path }, options = {}) {
 }
 ```
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 // ./useCustomHookOptions.ts
 import type { HookOptions } from './src/gen'
 

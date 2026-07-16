@@ -32,7 +32,7 @@ Each plugin runs against the AST and can fail on a specific schema or operation.
 
 `ctx.error` reports a `KUBB_PLUGIN_FAILED` and fails the build. For a structured diagnostic with a stable code and a source pointer, call `Diagnostics.report(...)` or throw a `DiagnosticError` instead.
 
-```typescript [plugin.ts]
+```typescript twoslash [plugin.ts]
 import { Diagnostics } from 'kubb/kit'
 
 Diagnostics.report({

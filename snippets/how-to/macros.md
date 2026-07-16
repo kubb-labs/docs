@@ -2,7 +2,7 @@
 
 A macro is a named, composable transform over Kubb's [AST](/docs/5.x/guide/concepts/ast). It rewrites the schema and operation nodes that adapters produce before generators print code, so you can rename a symbol, retype a field, strip metadata, or normalize a shape without forking an adapter or a generator. Because macros run on the shared AST, the same macro works across every input adapter (OpenAPI, AsyncAPI, JSON Schema) and every output target (TypeScript, Zod, and any [printer](/docs/5.x/guide/going-further/printers) a plugin supplies).
 
-The engine (`defineMacro`, `composeMacros`, `applyMacros`, and the `Macro` type) and the built-in macro presets come with the `ast` namespace from `kubb/kit`, next to the node tree they transform.
+The engine (`defineMacro`, `composeMacros`, `applyMacros`, and the `Macro` type) comes with the `ast` namespace from `kubb/kit`, next to the node tree it transforms. The built-in macro presets are named exports of `kubb/kit` itself.
 
 ## Shape
 
@@ -118,13 +118,13 @@ Kubb ships built-in macros for common schema normalizations that any adapter can
 - `macroRenameSchema` renames a schema consistently: it changes the declaration's `name` and stamps `targetName` on every ref that points at the old name, so [`resolveRefName`](/docs/5.x/reference/kit/ast#refs-and-naming-helpers) and [`resolver.imports`](/docs/5.x/reference/kit/resolvers#imports) emit the new name everywhere.
 
 ```typescript twoslash [presets.ts]
-import { ast } from 'kubb/kit'
+import { ast, macroSimplifyUnion, macroDiscriminatorEnum, macroRenameSchema } from 'kubb/kit'
 
 const root = ast.factory.createInput({ schemas: [], operations: [] })
 const next = ast.applyMacros(root, [
-  ast.macroSimplifyUnion,
-  ast.macroDiscriminatorEnum({ propertyName: 'kind', values: ['cat', 'dog'] }),
-  ast.macroRenameSchema({ from: 'Order', to: 'StoreOrder' }),
+  macroSimplifyUnion,
+  macroDiscriminatorEnum({ propertyName: 'kind', values: ['cat', 'dog'] }),
+  macroRenameSchema({ from: 'Order', to: 'StoreOrder' }),
 ])
 ```
 

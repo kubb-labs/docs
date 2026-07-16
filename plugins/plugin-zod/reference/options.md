@@ -205,7 +205,7 @@ type ResolverZodPatch = {
 
 Replaces the Zod handler for a schema type such as `'integer'` or `'string'`, each returning the Zod expression as a string and targeting the Zod Mini printer when `mini: true`. Inside a handler, `this.base(node)` returns the built-in output to wrap and `this.transform(node)` recurses into nested nodes. See the [printer guide](/docs/5.x/guide/going-further/printers).
 
-```typescript
+```typescript twoslash
 import { pluginZod } from '@kubb/plugin-zod'
 
 pluginZod({

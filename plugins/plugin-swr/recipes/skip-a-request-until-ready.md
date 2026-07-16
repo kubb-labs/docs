@@ -35,7 +35,7 @@ const { data } = useGetPetById(
 
 ## Output example
 
-```typescript twoslash [src/gen/hooks/useGetPetById.ts]
+```typescript [src/gen/hooks/useGetPetById.ts]
 export function useGetPetById({ path }: GetPetByIdOptions, options: {
   query?: SWRConfiguration<GetPetByIdResponse, ResponseErrorConfig<GetPetByIdStatus400 | GetPetByIdStatus404>>,
   client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
@@ -56,7 +56,7 @@ export function useGetPetById({ path }: GetPetByIdOptions, options: {
 }
 ```
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 import { useGetPetById } from './gen/hooks/useGetPetById'
 
 const petId: number | undefined = undefined

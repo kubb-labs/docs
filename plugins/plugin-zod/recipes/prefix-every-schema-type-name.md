@@ -33,13 +33,13 @@ export default defineConfig({
 
 ## Output example
 
-```typescript twoslash [src/gen/zod/petSchema.ts]
+```typescript [src/gen/zod/petSchema.ts]
 export const petSchema = z.object({ /* ... */ })
 
 export type ApiPet = z.infer<typeof petSchema>
 ```
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 import { petSchema, type ApiPet } from './src/gen/zod/petSchema'
 
 const pet: ApiPet = petSchema.parse({ name: 'Rex', photoUrls: [] })

@@ -32,7 +32,7 @@ const { data, error, isLoading } = useFindPetsByTags({ query: () => ({ tags: tag
 
 ## Output example
 
-```typescript twoslash [src/gen/hooks/useFindPetsByTags.ts]
+```typescript [src/gen/hooks/useFindPetsByTags.ts]
 export function useFindPetsByTags<TData = FindPetsByTagsStatus200, TQueryData = FindPetsByTagsStatus200, TQueryKey extends QueryKey = FindPetsByTagsQueryKey>({ query }: { query?: MaybeRefOrGetter<FindPetsByTagsOptions['query']> } = {}, options: {
   query?: Partial<UseQueryOptions<FindPetsByTagsStatus200, ResponseErrorConfig<FindPetsByTagsStatus400>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>
@@ -44,7 +44,7 @@ export function useFindPetsByTags<TData = FindPetsByTagsStatus200, TQueryData = 
 }
 ```
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 import { ref } from 'vue'
 import { useFindPetsByTags } from './gen/hooks/useFindPetsByTags'
 

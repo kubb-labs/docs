@@ -37,7 +37,7 @@ yarn add -D kubb@beta
 
 Add the plugin to your `rollup.config.ts` and pass it your Kubb config.
 
-```typescript [rollup.config.ts]
+```typescript twoslash [rollup.config.ts]
 import kubb from 'kubb/rollup'
 import { pluginTs } from '@kubb/plugin-ts'
 

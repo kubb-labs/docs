@@ -78,7 +78,7 @@ yarn add -D @kubb/parser-ts@beta
 
 ::: code-group
 
-```typescript [TypeScript (default)]
+```typescript twoslash [TypeScript (default)]
 import { defineConfig } from 'kubb'
 import { adapterOas } from '@kubb/adapter-oas'
 import { parserTs } from '@kubb/parser-ts'

@@ -30,7 +30,7 @@ export default defineConfig({
 
 ## Output example
 
-```typescript twoslash [src/gen/clients/findPetsByStatus.ts]
+```typescript [src/gen/clients/findPetsByStatus.ts]
 import type { Options, RequestResult } from '../.kubb/client'
 import type { FindPetsByStatusOptions, FindPetsByStatusResponses } from '../types/FindPetsByStatus'
 import { client } from '../.kubb/client'
@@ -43,7 +43,7 @@ export function findPetsByStatus<ThrowOnError extends boolean = true>(options: O
 }
 ```
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 import { findPetsByStatus } from './src/gen/clients/findPetsByStatus'
 
 // throws if the response body fails findPetsByStatusResponseSchema.parse(...)

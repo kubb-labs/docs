@@ -24,7 +24,7 @@ import { pluginClient } from '@kubb/plugin-client'
 pluginClient({ client: 'axios', output: { path: 'clients' } })
 ```
 
-```typescript [v5 kubb.config.ts]
+```typescript twoslash [v5 kubb.config.ts]
 import { pluginAxios } from '@kubb/plugin-axios'
 
 pluginAxios({ output: { path: 'clients', mode: 'directory' } })
@@ -40,7 +40,7 @@ import { pluginClient } from '@kubb/plugin-client'
 pluginClient({ client: 'fetch', output: { path: 'clients' } })
 ```
 
-```typescript [v5 kubb.config.ts]
+```typescript twoslash [v5 kubb.config.ts]
 import { pluginFetch } from '@kubb/plugin-fetch'
 
 pluginFetch({ output: { path: 'clients', mode: 'directory' } })
@@ -60,7 +60,7 @@ import { pluginClient } from '@kubb/plugin-client'
 pluginClient({ clientType: 'class', wrapper: { className: 'PetStore' } })
 ```
 
-```typescript [v5 kubb.config.ts]
+```typescript twoslash [v5 kubb.config.ts]
 import { pluginAxios } from '@kubb/plugin-axios'
 
 pluginAxios({ sdk: { name: 'petStore' } })
@@ -156,7 +156,7 @@ import { pluginMcp } from '@kubb/plugin-mcp'
 pluginMcp({ client: { client: 'fetch', baseURL: 'https://api.example.com' } })
 ```
 
-```typescript [v5 kubb.config.ts]
+```typescript twoslash [v5 kubb.config.ts]
 import { pluginFetch } from '@kubb/plugin-fetch'
 import { pluginMcp } from '@kubb/plugin-mcp'
 

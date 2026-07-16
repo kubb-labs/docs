@@ -26,7 +26,7 @@ export default defineConfig({
 
 ## Output example
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 import { client } from './src/gen/.kubb/client'
 import { getPetById } from './src/gen/clients/getPetById'
 

@@ -143,7 +143,7 @@ These files form the skeleton, in reading order: the option types, then the gene
 
 ::: code-group
 
-```typescript [src/types.ts]
+```typescript twoslash [src/types.ts]
 import type { PluginFactoryOptions } from 'kubb/kit'
 
 /** User-facing options for kubb-plugin-example. */
@@ -449,7 +449,7 @@ Use `createKubb` from `kubb` to run an in-process build and check that your gene
 
 `createKubb` does not apply the default adapter or parsers, so pass `adapter: adapterOas()` and the parsers your generator emits. (The `kubb` package's `defineConfig` is what wires those up automatically.) Without an adapter, Kubb runs in plugin-only mode and the `operation` and `schema` handlers never fire.
 
-```typescript twoslash [plugin.test.ts]
+```typescript [plugin.test.ts]
 
 import { describe, it, expect } from 'vitest'
 import { createKubb } from 'kubb'

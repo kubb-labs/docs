@@ -37,7 +37,7 @@ const { data } = useGetPetByIdSuspense({ path: { petId: 1n } })
 
 ## Output example
 
-```typescript twoslash [src/gen/hooks/useGetPetByIdSuspense.ts]
+```typescript [src/gen/hooks/useGetPetByIdSuspense.ts]
 import type { GetPetByIdOptions, GetPetByIdStatus200, GetPetByIdStatus400, GetPetByIdStatus404 } from '../types/GetPetById'
 import type { QueryKey, QueryClient, UseSuspenseQueryOptions, UseSuspenseQueryResult } from '@tanstack/react-query'
 import { getPetById } from '../clients/getPetById'
@@ -53,7 +53,7 @@ export function useGetPetByIdSuspense<TData = GetPetByIdStatus200, TQueryKey ext
 }
 ```
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 import { useGetPetByIdSuspense } from './src/gen/hooks/useGetPetByIdSuspense'
 import { useGetPetById } from './src/gen/hooks/useGetPetById'
 

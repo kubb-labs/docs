@@ -42,7 +42,7 @@ describe('Pet API', () => {
 
 ## Output example
 
-```typescript twoslash [src/gen/cypress/getPetById.ts]
+```typescript [src/gen/cypress/getPetById.ts]
 import type { GetPetByIdOptions, GetPetByIdResponse } from '../types/GetPetById'
 
 export function getPetById({ path }: GetPetByIdOptions, options: Partial<Cypress.RequestOptions> = {}): Cypress.Chainable<GetPetByIdResponse> {
@@ -56,7 +56,7 @@ export function getPetById({ path }: GetPetByIdOptions, options: Partial<Cypress
 
 The `baseURL` is inlined directly into the template literal, so every helper resolves against `staging.example.com` without any extra runtime configuration.
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 import { getPetById } from '../src/gen/cypress'
 
 describe('Pet API', () => {

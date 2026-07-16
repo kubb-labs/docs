@@ -82,7 +82,7 @@ yarn add -D @kubb/plugin-barrel@beta
 
 ::: code-group
 
-```typescript [Named exports]
+```typescript twoslash [Named exports]
 import { defineConfig } from 'kubb'
 
 export default defineConfig({
@@ -108,7 +108,7 @@ export { User } from './types/User'
 export { User } from './User'
 ```
 
-```typescript [Wildcard exports]
+```typescript twoslash [Wildcard exports]
 import { defineConfig } from 'kubb'
 
 export default defineConfig({
@@ -134,7 +134,7 @@ export * from './types/User'
 export * from './User'
 ```
 
-```typescript [Nested barrels (plugin level)]
+```typescript twoslash [Nested barrels (plugin level)]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -161,7 +161,7 @@ export { getPost, Post } from './api/post'
 export { User } from './api/types/User'
 ```
 
-```typescript [Disable a plugin barrel]
+```typescript twoslash [Disable a plugin barrel]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'

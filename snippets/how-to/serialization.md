@@ -210,7 +210,7 @@ only the body. Set `contentType` yourself for an operation that offers more than
 Validation is off by default. Turn it on with the [`validator`](/plugins/plugin-fetch/) plugin
 option to check request and response bodies against schemas from `@kubb/plugin-zod`:
 
-```typescript
+```typescript twoslash
 import { pluginFetch } from '@kubb/plugin-fetch'
 
 pluginFetch({ validator: 'zod' })

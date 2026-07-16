@@ -32,7 +32,7 @@ This turns `getUserByName`'s key into a fixed `['getUserByName'] as const`, inde
 
 ## Output example
 
-```typescript twoslash [src/gen/hooks/useGetUserByName.ts]
+```typescript [src/gen/hooks/useGetUserByName.ts]
 import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
 import type { GetUserByNameOptions, GetUserByNameStatus200, GetUserByNameStatus400, GetUserByNameStatus404 } from '../types/GetUserByName'
 import { getUserByName } from '../clients/getUserByName'
@@ -54,7 +54,7 @@ export function getUserByNameQueryOptions({ path }: GetUserByNameOptions, config
 }
 ```
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 import { useQuery } from '@tanstack/react-query'
 import { getUserByNameQueryOptions } from './src/gen/hooks/useGetUserByName'
 

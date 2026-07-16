@@ -100,7 +100,7 @@ You can also call `parserMd().print` directly to build a frontmatter envelope. I
 
 ::: code-group
 
-```typescript [Standalone markdown]
+```typescript twoslash [Standalone markdown]
 import { defineConfig } from 'kubb'
 import { adapterOas } from '@kubb/adapter-oas'
 import { parserMd } from '@kubb/parser-md'

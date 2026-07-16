@@ -34,7 +34,7 @@ export default defineConfig({
 
 ## Output example
 
-```typescript twoslash [src/gen/zod/petSchema.ts]
+```typescript [src/gen/zod/petSchema.ts]
 export const petSchema = z.object({
   status: z.enum(['available', 'pending', 'sold']).optional(),
 })

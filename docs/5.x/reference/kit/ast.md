@@ -247,7 +247,7 @@ A macro is a named, composable transform built on `transform`. Macros rewrite no
 | `composeMacros` | Fold an ordered list of macros into one visitor. |
 | `applyMacros`   | Run a list of macros over a node tree.           |
 
-Kubb also ships built-in macros for common schema normalizations that any adapter can compose with its own. See [Built-in macros](/docs/5.x/guide/going-further/macros#built-in-macros) for the full walkthrough.
+Kubb also ships built-in macros for common schema normalizations that any adapter can compose with its own. These are named exports of `kubb/kit` itself, not members of the `ast` namespace. See [Built-in macros](/docs/5.x/guide/going-further/macros#built-in-macros) for the full walkthrough.
 
 | Macro                    | Purpose                                                                                     |
 | ------------------------ | ------------------------------------------------------------------------------------------- |

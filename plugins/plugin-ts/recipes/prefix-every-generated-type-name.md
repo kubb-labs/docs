@@ -30,7 +30,7 @@ export default defineConfig({
 
 ## Output example
 
-```typescript twoslash [src/gen/types/Pet.ts]
+```typescript [src/gen/types/Pet.ts]
 import type { ApiCat } from './Cat'
 import type { ApiCategory } from './Category'
 import type { ApiDog } from './Dog'
@@ -47,7 +47,7 @@ export type ApiPet = (((ApiDog & {
 });
 ```
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 import type { ApiPet } from './src/gen/types/Pet'
 
 function describe(pet: ApiPet) {

@@ -20,7 +20,7 @@ Handlers run with a `this` context, so write them as regular functions rather th
 
 `@kubb/plugin-ts` builds TypeScript AST nodes, so a handler returns a `ts.TypeNode` created with the compiler's factory. This override prints `date` schemas as the JavaScript `Date` object instead of `string`.
 
-```typescript twoslash [date.ts]
+```typescript [date.ts]
 import ts from 'typescript'
 import { pluginTs } from '@kubb/plugin-ts'
 

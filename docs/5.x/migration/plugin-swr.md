@@ -30,7 +30,7 @@ export default defineConfig({
 })
 ```
 
-```typescript [v5 kubb.config.ts]
+```typescript twoslash [v5 kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginAxios } from '@kubb/plugin-axios'

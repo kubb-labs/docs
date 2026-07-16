@@ -28,7 +28,7 @@ export default defineConfig({
 
 ## Output example
 
-```typescript twoslash [src/gen/clients/petClient.ts]
+```typescript [src/gen/clients/petClient.ts]
 import type { ClientConfig, ClientInstance, Options, RequestResult } from '../.kubb/client'
 import type { GetPetByIdOptions, GetPetByIdResponses } from '../types/GetPetById'
 import { createClient } from '../.kubb/client'
@@ -48,7 +48,7 @@ export class PetClient {
 }
 ```
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 import { PetClient } from './src/gen/clients/petClient'
 
 const pet = new PetClient({ baseURL: 'https://petstore.swagger.io/v2' })

@@ -26,7 +26,7 @@ export default defineConfig({
 
 ## Output example
 
-```typescript twoslash [src/gen/types/Pet.ts]
+```typescript [src/gen/types/Pet.ts]
 export const petTypeEnum = {
     dog: "dog",
     cat: "cat"
@@ -43,7 +43,7 @@ export const petStatusEnum = {
 export type PetStatusEnumKey = (typeof petStatusEnum)[keyof typeof petStatusEnum];
 ```
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 import { petStatusEnum, type PetStatusEnumKey } from './src/gen/types/Pet'
 
 function isAvailable(status: PetStatusEnumKey) {

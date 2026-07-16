@@ -32,7 +32,7 @@ This turns `getUserByName`'s key into a fixed `['getUserByName'] as const`, inde
 
 ## Output example
 
-```typescript twoslash [src/gen/hooks/useGetUserByName.ts]
+```typescript [src/gen/hooks/useGetUserByName.ts]
 export const getUserByNameQueryKey = ({ path }: { path: MaybeRefOrGetter<Omit<GetUserByNameOptions, 'headers'>['path']> }) => ["getUserByName"] as const
 
 export type GetUserByNameQueryKey = ReturnType<typeof getUserByNameQueryKey>
@@ -49,7 +49,7 @@ export function getUserByNameQueryOptions({ path }: { path: MaybeRefOrGetter<Get
 }
 ```
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 import { useQuery } from '@tanstack/vue-query'
 import { getUserByNameQueryOptions } from './gen/hooks/useGetUserByName'
 

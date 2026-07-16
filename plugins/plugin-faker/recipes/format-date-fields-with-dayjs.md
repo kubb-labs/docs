@@ -28,7 +28,7 @@ export default defineConfig({
 
 ## Output example
 
-```typescript twoslash [src/gen/mocks/createOrder.ts]
+```typescript [src/gen/mocks/createOrder.ts]
 import dayjs from 'dayjs'
 import type { Order } from '../types/Order'
 import { fakerEN as faker } from '@faker-js/faker'
@@ -52,7 +52,7 @@ export function createOrder<TData extends Partial<Order> = object>(data?: TData)
 }
 ```
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 import { createOrder } from './src/gen/mocks/createOrder'
 
 // shipDate/shipTime are formatted with dayjs, shipDateTime keeps the plain ISO string

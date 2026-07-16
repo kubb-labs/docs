@@ -34,7 +34,7 @@ export default defineConfig({
 
 ## Output example
 
-```typescript twoslash [src/gen/types/Pet.ts]
+```typescript [src/gen/types/Pet.ts]
 export type Pet = {
     /**
      * @type string | undefined

@@ -70,7 +70,7 @@ A plugin inherits `output.barrel` from `config.output.barrel` when it sets none 
 
 Set `barrel: { type, nested: true }` on a plugin to write an `index.ts` in every subdirectory, so callers can import from any depth. The root `output.barrel` has no `nested` field and always stays flat.
 
-```typescript [Nested barrels]
+```typescript twoslash [Nested barrels]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -83,7 +83,7 @@ export default defineConfig({
 
 Set `barrel: false` on a plugin to skip its barrel and drop its files from the root barrel.
 
-```typescript [Disable a plugin barrel]
+```typescript twoslash [Disable a plugin barrel]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'

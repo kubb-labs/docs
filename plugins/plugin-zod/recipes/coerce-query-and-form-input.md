@@ -34,7 +34,7 @@ export default defineConfig({
 
 ## Output example
 
-```typescript twoslash [src/gen/zod/getOrderByIdSchema.ts]
+```typescript [src/gen/zod/getOrderByIdSchema.ts]
 import * as z from 'zod'
 import { orderSchema } from './orderSchema'
 
@@ -47,7 +47,7 @@ export const getOrderByIdStatus200SchemaXml = orderSchema
 export const getOrderByIdStatus200Schema = z.union([getOrderByIdStatus200SchemaJson, getOrderByIdStatus200SchemaXml])
 ```
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 import { getOrderByIdPathOrderIdSchema } from './src/gen/zod/getOrderByIdSchema'
 
 // coerces the raw route param string into a bigint before validating

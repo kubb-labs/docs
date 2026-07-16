@@ -36,7 +36,7 @@ export default defineConfig({
 
 The PetStore fixture's `findPetsByTags` operation has a `page` query parameter, not `next_page`, so the snippet below uses `queryParam: 'page'` to actually trigger infinite-hook generation for it. Pick whatever name matches your own schema.
 
-```typescript twoslash [src/gen/hooks/useFindPetsByTagsInfinite.ts]
+```typescript [src/gen/hooks/useFindPetsByTagsInfinite.ts]
 import type { FindPetsByTagsOptions, FindPetsByTagsQuery, FindPetsByTagsStatus200, FindPetsByTagsStatus400 } from '../types/FindPetsByTags'
 import type { InfiniteData } from '@tanstack/react-query'
 import { findPetsByTags } from '../clients/findPetsByTags'
@@ -59,7 +59,7 @@ export function findPetsByTagsInfiniteQueryOptions({ query }: FindPetsByTagsOpti
 }
 ```
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { findPetsByTagsInfiniteQueryOptions } from './src/gen/hooks/useFindPetsByTagsInfinite'
 

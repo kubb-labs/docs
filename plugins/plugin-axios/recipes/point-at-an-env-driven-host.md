@@ -30,7 +30,7 @@ export default defineConfig({
 
 The literal template string above is what Kubb writes into the client's setup call, so `process.env.API_URL` is read at runtime rather than substituted at build time:
 
-```typescript twoslash [usage.ts]
+```typescript [usage.ts]
 process.env.API_URL = 'https://petstore.swagger.io/v2'
 
 import { getPetById } from './src/gen/clients/getPetById'

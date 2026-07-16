@@ -60,7 +60,7 @@ kubb generate
 
 Kubb writes one file per schema per plugin into `./src/gen`. Import a type and the editor knows your API:
 
-```typescript twoslash
+```typescript
 // @filename: src/gen/types/Pet.ts
 export type Pet = { id: number; name: string }
 // @filename: src/app.ts
