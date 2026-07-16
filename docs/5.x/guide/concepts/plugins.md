@@ -46,7 +46,7 @@ A build moves through phases in a fixed order, and each plugin subscribes only t
 - One last event fires before anything hits disk, the spot to add aggregate files like a barrel.
 - Writing, formatting, and linting follow.
 
-The [Kit API](/docs/5.x/reference/kit) lists every event and the context it carries.
+The [lifecycle events reference](/docs/5.x/reference/kit/events) lists every event, its payload, and when it fires.
 
 ## How plugins compose
 
