@@ -1,0 +1,150 @@
+docs/5.x/reference/kit/ast.md
+  s_716b6ac3b9b758::t_8686d6c518eb45 250
+snippets/how-to/macros.md
+  s_716b6ac3b9b758::t_6b4fb75a4d2a1b 5
+  s_716b6ac3b9b758::t_6b7308862dce3f 121,125-127
+blog/v5.md
+  s_716b6ac3b9b758::t_d4be6f331cefd8 85
+docs/5.x/getting-started/basic-usage.md
+  s_f1b0b70d0225e4::t_456321451df867 136
+docs/5.x/getting-started/introduction.md
+  s_f1b0b70d0225e4::t_e13dbd233e6cb9 63
+docs/5.x/guide/going-further/barrel-files.md
+  s_f1b0b70d0225e4::t_430d6a80b465dd 73,86
+docs/5.x/guide/going-further/creating-plugins.md
+  s_f1b0b70d0225e4::t_168548b758b270 146,452
+docs/5.x/guide/integrations/nuxt.md
+  s_f1b0b70d0225e4::t_97fa22db6ff2a1 40
+docs/5.x/guide/integrations/rollup.md
+  s_f1b0b70d0225e4::t_7bc86872f77ce1 40
+docs/5.x/migration.md
+  s_716b6ac3b9b758::t_4664120e757eff 295,319,358,385,535,562
+docs/5.x/migration/plugin-client.md
+  s_716b6ac3b9b758::t_98b92db7f28325 27,43,63,159
+docs/5.x/migration/plugin-mcp.md
+  s_716b6ac3b9b758::t_50d51d0bc92e3a 42
+docs/5.x/migration/plugin-react-query.md
+  s_716b6ac3b9b758::t_bd6bcf7fdc296d 31
+docs/5.x/migration/plugin-swr.md
+  s_716b6ac3b9b758::t_170a2299d51ede 33
+docs/5.x/migration/plugin-ts.md
+  s_716b6ac3b9b758::t_293c42be85a455 100
+docs/5.x/migration/plugin-vue-query.md
+  s_716b6ac3b9b758::t_325f30b5e67c8c 31
+docs/5.x/migration/plugin-zod.md
+  s_f1b0b70d0225e4::t_48d78764b5984c 74
+docs/5.x/reference/diagnostics/kubb-plugin-failed.md
+  s_f1b0b70d0225e4::t_de7fd28ac4ea53 35
+parsers/parser-md/index.md
+  s_f1b0b70d0225e4::t_10e49d62950e6f 103
+parsers/parser-ts/index.md
+  s_f1b0b70d0225e4::t_38eaff0655163a 81
+plugins/plugin-axios/recipes/class-based-sdk.md
+  s_716b6ac3b9b758::t_a8ee9067df6d24 31,51
+plugins/plugin-axios/recipes/point-at-an-env-driven-host.md
+  s_716b6ac3b9b758::t_2169d1a5551013 33
+plugins/plugin-axios/recipes/validate-requests-and-responses.md
+  s_716b6ac3b9b758::t_378fdf4300f0af 33,51
+plugins/plugin-barrel/index.md
+  s_f1b0b70d0225e4::t_211d74249940bc 85,111,137,164
+plugins/plugin-cypress/recipes/typed-request-helpers-against-staging.md
+  s_716b6ac3b9b758::t_554aa3a5310aa1 45,59
+plugins/plugin-faker/recipes/deterministic-data-with-a-seed.md
+  s_716b6ac3b9b758::t_1f8d9f456e793d 31,55
+plugins/plugin-faker/recipes/format-date-fields-with-dayjs.md
+  s_716b6ac3b9b758::t_5db3cffd338f69 31,55
+plugins/plugin-faker/recipes/localized-mock-data.md
+  s_716b6ac3b9b758::t_ec530fbc13e9fd 31,54
+plugins/plugin-faker/reference/options.md
+  s_f1b0b70d0225e4::t_23363ad4aeedaa 145
+plugins/plugin-fetch/recipes/build-a-url-without-sending.md
+  s_716b6ac3b9b758::t_52a2d5edbf4a93 29
+plugins/plugin-fetch/recipes/class-based-sdk.md
+  s_716b6ac3b9b758::t_9bbe6c8f0eadd1 31,51
+plugins/plugin-fetch/recipes/point-at-an-env-driven-host.md
+  s_716b6ac3b9b758::t_45ae87fa89007f 33
+plugins/plugin-fetch/recipes/stream-server-sent-events.md
+  s_f1b0b70d0225e4::t_4fc1fe7b505c63 27,39
+plugins/plugin-fetch/recipes/validate-requests-and-responses.md
+  s_716b6ac3b9b758::t_e0271460d6383b 33,51
+plugins/plugin-mcp/recipes/a-working-mcp-server-from-a-spec.md
+  s_716b6ac3b9b758::t_98a6d7d0deb2c8 33,51
+plugins/plugin-mcp/recipes/choose-the-client-when-two-are-registered.md
+  s_716b6ac3b9b758::t_078e9a8974ccfe 35,53
+plugins/plugin-msw/recipes/auto-generated-mock-data.md
+  s_716b6ac3b9b758::t_9c2e7d1999d0e4 33,50
+plugins/plugin-msw/recipes/handlers-you-fill-from-tests.md
+  s_716b6ac3b9b758::t_8781ba471b77ef 31,47
+plugins/plugin-msw/recipes/register-handlers-with-a-server.md
+  s_716b6ac3b9b758::t_ea8ea06f520b35 40,60
+plugins/plugin-react-query/recipes/custom-query-keys.md
+  s_716b6ac3b9b758::t_1146535235c263 35,57
+plugins/plugin-react-query/recipes/infinite-scroll-query.md
+  s_716b6ac3b9b758::t_a12bb49cada2b2 39,62
+plugins/plugin-react-query/recipes/suspense-hooks.md
+  s_716b6ac3b9b758::t_14b2fd802893f5 40,56
+plugins/plugin-react-query/recipes/wrap-hooks-with-shared-options.md
+  s_716b6ac3b9b758::t_51c3870c6b32a9 39,59
+plugins/plugin-swr/recipes/immutable-requests.md
+  s_716b6ac3b9b758::t_6be29c928c956f 33,59
+plugins/plugin-swr/recipes/skip-a-request-until-ready.md
+  s_716b6ac3b9b758::t_8d2e3732482401 38,59
+plugins/plugin-ts/recipes/prefix-every-generated-type-name.md
+  s_716b6ac3b9b758::t_5cbb9c01adc11b 33,50
+plugins/plugin-ts/recipes/strip-descriptions-with-a-macro.md
+  s_716b6ac3b9b758::t_e9a4c0cf82252e 37
+plugins/plugin-ts/recipes/tree-shakeable-enums.md
+  s_716b6ac3b9b758::t_95fcb99a15e7eb 29,46
+plugins/plugin-vue-query/recipes/custom-query-keys.md
+  s_716b6ac3b9b758::t_13acfef9a8ff9b 35,52
+plugins/plugin-vue-query/recipes/infinite-scroll-query.md
+  s_716b6ac3b9b758::t_4d9d5259265a77 37,56
+plugins/plugin-vue-query/recipes/reactive-params-that-refetch.md
+  s_716b6ac3b9b758::t_0078025e221005 35,47
+plugins/plugin-zod/recipes/coerce-query-and-form-input.md
+  s_716b6ac3b9b758::t_512e90fdcc4a89 37,50
+plugins/plugin-zod/recipes/downgrade-int64-to-a-plain-number.md
+  s_716b6ac3b9b758::t_f0452ed8dc11e9 35,44
+plugins/plugin-zod/recipes/prefix-every-schema-type-name.md
+  s_716b6ac3b9b758::t_014c4dfe0573c7 36,42
+plugins/plugin-zod/recipes/strip-descriptions-with-a-macro.md
+  s_716b6ac3b9b758::t_eec5c2708bba0d 37
+plugins/plugin-zod/recipes/tree-shakeable-schemas-with-zod-mini.md
+  s_716b6ac3b9b758::t_9f14b6554c0b34 29,44
+plugins/plugin-zod/recipes/validate-every-api-response.md
+  s_716b6ac3b9b758::t_4d82e9727e201c 33,46
+plugins/plugin-zod/recipes/zod-as-the-single-source-of-truth.md
+  s_716b6ac3b9b758::t_810fcc63430e3a 29,41
+plugins/plugin-zod/reference/options.md
+  s_f1b0b70d0225e4::t_24fa4a211a21e9 208
+snippets/how-to/printers.md
+  s_f1b0b70d0225e4::t_0b18bff2de0a98 23
+snippets/how-to/serialization.md
+  s_f1b0b70d0225e4::t_bb7c16c4d1060e 213
+plugins/plugin-ts/recipes/map-spec-types-to-native-ts.md
+  s_716b6ac3b9b758::t_1b75797df12455 41,49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "ae634e39b48a9d3f7d3fac43cf4cd61b5c34e836",
+  "prompts": {},
+  "sessions": {
+    "s_716b6ac3b9b758": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bd9f23ef-71a2-4007-af04-2370d46a0225",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Stijn Van Hulle <stijn.vanhulle@robovision.eu>"
+    },
+    "s_f1b0b70d0225e4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b660555b-d4e5-43f7-929c-1f678d4ac12e",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Stijn Van Hulle <stijn.vanhulle@robovision.eu>"
+    }
+  }
+}
