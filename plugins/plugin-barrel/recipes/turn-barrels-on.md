@@ -9,7 +9,7 @@ outline: deep
 
 [`output.barrel`](/plugins/plugin-barrel/reference/options#output-barrel) defaults to `false`, so no barrel is generated until you set it. Set it on `defineConfig` to enable a root barrel and the default every plugin without its own `output.barrel` inherits.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 

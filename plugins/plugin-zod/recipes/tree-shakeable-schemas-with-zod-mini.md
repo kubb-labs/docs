@@ -9,7 +9,7 @@ outline: deep
 
 Set [`mini`](/plugins/plugin-zod/reference/options#mini) to `true` to generate Zod Mini schemas that use the functional API, so bundlers tree-shake the validators you never call. This also defaults the import to `'zod/mini'`.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginZod } from '@kubb/plugin-zod'
 

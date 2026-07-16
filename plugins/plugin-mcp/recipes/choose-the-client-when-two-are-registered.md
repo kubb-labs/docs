@@ -9,7 +9,7 @@ outline: deep
 
 Set [`client`](/plugins/plugin-mcp/reference/options#client) to `'axios'` or `'fetch'` when both client plugins are present, so the handlers know which one to call. `pluginAxios` and `pluginFetch` both default `output.path` to `clients`, so give each its own path here too, otherwise the second one registered overwrites the first's generated files.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'

@@ -9,7 +9,7 @@ outline: deep
 
 Kubb maps an OpenAPI `integer` with `format: int64` to the `bigint` schema kind, and plugin-zod's default [printer](/plugins/plugin-zod/reference/options#printer) turns that into `z.bigint()`. Override the `bigint` node to emit `z.number()` instead, useful when the rest of a codebase treats large IDs as plain numbers.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginZod } from '@kubb/plugin-zod'
 

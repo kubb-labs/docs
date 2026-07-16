@@ -9,7 +9,7 @@ outline: deep
 
 Set [`sdk`](/plugins/plugin-fetch/reference/options#sdk) to emit a class-based client, one class per tag with `mode: 'tag'` or a single flat class with `mode: 'flat'`.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginFetch } from '@kubb/plugin-fetch'

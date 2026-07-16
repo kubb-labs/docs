@@ -9,7 +9,7 @@ outline: deep
 
 Set [`nested`](/plugins/plugin-barrel/reference/options#nested) to `true` on a plugin's `output.barrel` so it writes an `index.ts` in every subdirectory, letting callers import from any depth. This field works on a plugin's `output.barrel` only, not on the root one.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 

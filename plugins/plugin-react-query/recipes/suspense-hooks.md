@@ -9,7 +9,7 @@ outline: deep
 
 [`suspense`](/plugins/plugin-react-query/reference/options#suspense) is on by default and adds a suspense variant next to each query. Set [`hooks: true`](/plugins/plugin-react-query/reference/options#hooks) to generate `useSuspenseQuery` alongside `useQuery`. This needs TanStack Query v5 or later.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginFetch } from '@kubb/plugin-fetch'

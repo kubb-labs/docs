@@ -9,7 +9,7 @@ outline: deep
 
 Set [`hooks: true`](/plugins/plugin-vue-query/reference/options#hooks) to generate `use*` composables. Their parameters accept a plain value, a `ref`, or a getter (`MaybeRefOrGetter`), so passing a getter makes the query re-run whenever the value it reads changes.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginFetch } from '@kubb/plugin-fetch'

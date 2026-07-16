@@ -9,7 +9,7 @@ outline: deep
 
 Generate values that read as German by setting [`locale`](/plugins/plugin-faker/reference/options#locale) to `'de'`. The plugin switches the Faker import to `fakerDE`, so names, addresses, and phone numbers match that region.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginFaker } from '@kubb/plugin-faker'

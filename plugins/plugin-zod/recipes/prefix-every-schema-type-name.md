@@ -9,7 +9,7 @@ outline: deep
 
 Set [`resolver.schema.typeName`](/plugins/plugin-zod/reference/options#resolver) to patch the name plugin-zod gives the `z.infer` alias it exports next to each schema, alongside [`inferred`](/plugins/plugin-zod/reference/options#inferred). This prefixes every inferred type with `Api`, so it never collides with a hand-written type of the same name.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginZod } from '@kubb/plugin-zod'
 

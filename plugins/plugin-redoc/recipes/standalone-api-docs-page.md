@@ -9,7 +9,7 @@ outline: deep
 
 Generate a single HTML file with the spec embedded inline. Drop it on any static host, no build step. Point [`output.path`](/plugins/plugin-redoc/reference/options#output) at a filename ending in `.html`, resolved against the top-level `output.path`.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginRedoc } from '@kubb/plugin-redoc'
 

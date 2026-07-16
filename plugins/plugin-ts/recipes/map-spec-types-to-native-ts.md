@@ -9,7 +9,7 @@ outline: deep
 
 Use [`printer.nodes`](/plugins/plugin-ts/reference/options#printer) to replace the handler for a schema type with one that builds its own TypeScript AST node. This config maps the `date` type to a `Date` type reference and `integer` to the `bigint` keyword.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import ts from 'typescript'
 import { pluginTs } from '@kubb/plugin-ts'

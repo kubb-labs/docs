@@ -9,7 +9,7 @@ outline: deep
 
 Set [`handlers`](/plugins/plugin-msw/reference/options#handlers) to `true` so the plugin writes a `handlers.ts` file that re-exports every generated handler in operation order. Pass the collection to `setupServer` in Node tests or `setupWorker` in the browser.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginMsw } from '@kubb/plugin-msw'

@@ -9,7 +9,7 @@ outline: deep
 
 Point the generated helpers at a non-production host with [`baseURL`](/plugins/plugin-cypress/reference/options#baseurl), so every `cy.request()` runs against staging. Keep `pluginTs()` in the array for the request and response types.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'

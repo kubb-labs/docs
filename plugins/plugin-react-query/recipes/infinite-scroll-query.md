@@ -9,7 +9,7 @@ outline: deep
 
 Set [`infinite`](/plugins/plugin-react-query/reference/options#infinite) to generate `useInfiniteQuery` hooks, naming the cursor query parameter, the first page value, and the path to the next cursor on the response. Infinite hooks are only emitted for operations whose query parameters actually contain `infinite.queryParam` by name, so pick a value that matches a real parameter in your schema.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginFetch } from '@kubb/plugin-fetch'

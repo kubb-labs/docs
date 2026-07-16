@@ -9,7 +9,7 @@ outline: deep
 
 `@kubb/plugin-swr` generates a `useFoo` hook whose second argument accepts a Kubb-specific `shouldFetch` switch. Set it to `false` to make the key `null`, so SWR skips the request until the value the hook depends on is ready.
 
-```typescript twoslash [kubb.config.ts]
+```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginFetch } from '@kubb/plugin-fetch'
