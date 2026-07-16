@@ -495,36 +495,9 @@ describe('pluginExample', () => {
 })
 ```
 
-### Observing lifecycle events
+### Observing lifecycle hooks
 
-Subscribe to `kubb.hooks` before you call `build()` to trace plugin activity or collect metrics. Each hook receives one typed context object.
-
-```typescript twoslash [lifecycle.ts]
-import { createKubb } from 'kubb'
-import { definePlugin } from 'kubb/kit'
-import { adapterOas } from '@kubb/adapter-oas'
-
-const kubb = createKubb({
-  input: './petStore.yaml',
-  output: { path: './gen' },
-  adapter: adapterOas(),
-  plugins: [definePlugin(() => ({ name: 'plugin-example', hooks: {} }))()],
-})
-
-// kubb:plugin:end receives a single KubbPluginEndContext, not two separate arguments.
-kubb.hooks.hook('kubb:plugin:end', ({ plugin, duration, success }) => {
-  console.log(`[${plugin.name}] finished in ${duration}ms (ok=${success})`)
-})
-
-// kubb:files:processing:update fires once per flush batch with an array of per-file updates.
-kubb.hooks.hook('kubb:files:processing:update', ({ files }) => {
-  for (const { file, processed, total, percentage } of files) {
-    console.log(`[${processed}/${total}] (${percentage.toFixed(0)}%) ${file.path}`)
-  }
-})
-
-await kubb.build()
-```
+Subscribe to `kubb.hooks` before you call `build()` to trace plugin activity or collect metrics. The [lifecycle hooks reference](/docs/5.x/reference/kit/hooks) lists every hook, its payload, and a subscription example.
 
 ## Publishing your plugin
 
