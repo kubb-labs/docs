@@ -42,7 +42,7 @@ export default defineConfig(({ watch }) => ({
 | `parsers`        | `[parserTs(), parserTsx(), parserMd()]`  |
 | `reporters`      | `[cli, json, file]`                      |
 | `plugins`        | `pluginBarrel()` appended when not already present |
-| `output.barrel`  | `{ type: 'named' }`, only when `pluginBarrel` is in `plugins` |
+| `output.barrel`  | `false` (barrel generation is opt-in, even with `pluginBarrel` in `plugins`) |
 | `output.format`  | `false`                                  |
 | `output.lint`    | `false`                                  |
 
@@ -112,7 +112,7 @@ paths.forEach((path) => console.log(`  ${path}`))
 | `.setup()`     | `() => Promise<void>`          | Initializes the driver and storage. `build()` calls this automatically.                            |
 | `.build()`     | `() => Promise<BuildOutput>`   | Runs the full pipeline and throws a `BuildError` when any diagnostic is an error.                  |
 | `.safeBuild()` | `() => Promise<BuildOutput>`   | The canonical call. Runs the full pipeline and collects problems in `BuildOutput.diagnostics` instead of throwing. |
-| `.hooks`       | `Hookable<KubbHooks>`          | Read-only. Shared hook emitter. Call `.hook(name, handler)` before `build()` to attach a listener. |
+| `.hooks`       | `Hookable<KubbHooks>`          | Read-only. Shared hook emitter. Call `.hook(name, handler)` before `build()` to attach a listener. See [lifecycle hooks](./hooks). |
 | `.config`      | `Config`                       | Read-only. Resolved config, available right after `createKubb` since it resolves in the constructor. |
 | `.storage`     | `Storage`                      | Read-only getter. Final source code keyed by absolute path. Available after `setup()`, throws before. |
 | `.driver`      | read-only getter               | Advanced plugin driver handle, available after `setup()`. Throws if accessed before `setup()`.     |
