@@ -67,20 +67,6 @@ These plugins have no v5 equivalent. Remove them from your config and uninstall 
 | `@kubb/plugin-solid-query`  |
 | `@kubb/plugin-svelte-query` |
 
-### Renamed and new packages
-
-`@kubb/oas`, the v4 OpenAPI parsing and schema-helper package, is gone. [`@kubb/adapter-oas`](/adapters/adapter-oas/) and the universal [AST](/docs/5.x/guide/concepts/ast) replace it: plugins now read AST nodes instead of raw OAS objects. `@kubb/plugin-oas` is gone too, replaced by the same adapter. `@kubb/ast` still ships as a package, but you no longer import it directly. Reach its helpers through the `ast` namespace of `kubb/kit`. See [Plugin authoring](#authoring-imports-moved-to-kubb-kit).
-
-The packages below are new in v5. Importing `defineConfig` from `kubb` wires them in with working defaults, so most projects never name them directly.
-
-| Package                                                     | Purpose                                                                                              |
-| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| [`@kubb/adapter-oas`](/adapters/adapter-oas/)                | Replaces `@kubb/plugin-oas`. See [Adapters](/docs/5.x/guide/concepts/adapters).                            |
-| [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) | Barrel-file generation, auto-included via `kubb`. See [Barrel files](/docs/5.x/guide/going-further/barrel-files). |
-| [`@kubb/parser-ts`](/parsers/parser-ts/)                     | TypeScript and TSX printer, auto-included via `kubb`. See [Parsers](/docs/5.x/guide/concepts/parsers).     |
-| [`@kubb/parser-md`](/parsers/parser-md/)                     | Markdown printer, auto-included via `kubb`. See [Parsers](/docs/5.x/guide/concepts/parsers).               |
-| [`@kubb/kit`](/docs/5.x/reference/kit)                       | The plugin, generator, resolver, parser, and adapter authoring toolkit. Re-exported through `kubb/kit`. See [Kit](/docs/5.x/guide/concepts/kit). |
-
 ## Pick your upgrade path
 
 Two ways to migrate `kubb.config.ts`: run the automated prompt, or follow the manual checklist. Either way, [Migrate the config](#migrate-the-config) explains each change and [verify](#verify-the-upgrade) confirms the result.
