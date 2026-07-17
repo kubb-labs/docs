@@ -90,6 +90,7 @@ export default defineConfig({
     pluginCypress({
       output: {
         path: './cypress',
+        mode: 'directory',
         barrel: { type: 'named' },
         banner: '/* eslint-disable */',
       },

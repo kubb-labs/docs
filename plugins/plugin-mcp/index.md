@@ -107,7 +107,7 @@ export default defineConfig({
     pluginAxios({ baseURL: 'https://petstore.swagger.io/v2' }),
     pluginZod(),
     pluginMcp({
-      output: { path: 'mcp', barrel: { type: 'named' } },
+      output: { path: 'mcp', mode: 'directory', barrel: { type: 'named' } },
       group: {
         type: 'tag',
         name: ({ group }) => `${group}Handlers`,

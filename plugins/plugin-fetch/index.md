@@ -151,7 +151,7 @@ export default defineConfig({
   plugins: [
     pluginTs(),
     pluginFetch({
-      output: { path: 'clients', barrel: { type: 'named' } },
+      output: { path: 'clients', mode: 'directory', barrel: { type: 'named' } },
       baseURL: 'https://petstore.swagger.io/v2',
       group: {
         type: 'tag',

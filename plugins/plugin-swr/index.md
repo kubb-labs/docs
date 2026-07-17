@@ -99,7 +99,7 @@ export default defineConfig({
     pluginTs(),
     pluginFetch(),
     pluginSwr({
-      output: { path: './hooks' },
+      output: { path: './hooks', mode: 'directory' },
       group: { type: 'tag', name: ({ group }) => `${group}Hooks` },
       client: 'fetch',
       query: { methods: ['GET'], importPath: 'swr' },

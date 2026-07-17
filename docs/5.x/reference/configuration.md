@@ -357,6 +357,7 @@ export default defineConfig({
     pluginAxios({
       output: {
         path: './clients',
+        mode: 'directory',
         banner: (meta) => (meta.isBarrel || meta.isAggregation ? '' : "'use server'"),
       },
       group: { type: 'tag' },

@@ -108,7 +108,7 @@ export default defineConfig({
     pluginTs(),
     pluginFetch(),
     pluginReactQuery({
-      output: { path: './hooks' },
+      output: { path: './hooks', mode: 'directory' },
       group: {
         type: 'tag',
         name: ({ group }) => `${group}Hooks`,
