@@ -30,7 +30,7 @@ You are migrating a kubb.config.ts from Kubb v4 to v5. Apply every rule, then ou
 7. plugin-zod: remove `version` and `typed`; drop `wrapOutput` and leave a `// TODO: reintroduce wrapOutput via a printer override` comment (do not invent a `printer`). Bump the `zod` package to `^4` in package.json (a dependency change, not a config option).
 8. `output.barrelType` → `output.barrel`, root and per-plugin: `'named'`→`{ type: 'named' }`, `'all'`→`{ type: 'all' }`, `'propagate'`→`{ type: 'named', nested: true }`, `false`→`false`. If a v4 config never set `barrelType` (relying on its `'named'` default), add `barrel: { type: 'named' }` explicitly, since v5 defaults `output.barrel` to `false`.
 9. If a plugin's `output.path` ends in `.ts`, keep the extension (`mode: 'file'` is now the default, so stating it is optional but fine). Folder paths need `mode: 'directory'` added explicitly, since `'directory'` is no longer the default.
-10. Remove entirely from every plugin: `generators`, `bundle`, `output.override` (boolean, root and per-plugin), `paramsType`, `pathParamsType`, `paramsCasing`, `dataReturnType`, `clientType`, `urlType`, `importPath`.
+10. Remove entirely from every plugin: `generators`, `bundle`, `output.override` (boolean, root and per-plugin), `paramsType`, `pathParamsType`, `paramsCasing`, `dataReturnType`, `clientType` (except on `pluginClient`, handled by rule 15), `urlType`, `importPath`.
 11. `input: { path }` / `input: { data }` → a single `input` value (file path, URL, inline spec, or parsed object).
 12. `hooks.done` → `output.postGenerate` (array); remove the top-level `hooks`.
 13. Move `storage` from `output.storage` to a top-level `storage`, and import `memoryStorage`/`fsStorage` from `kubb/kit` (not `@kubb/core`).
@@ -106,33 +106,33 @@ Update your CI pipelines, the `engines` field in `package.json`, and any `Docker
 
 ### Plugins moved to a separate repository
 
-In v4, the code-generating plugins lived in [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb). v5 moves them into [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins). The npm package names stay the same, so you do not need to rename anything. The infrastructure packages that `kubb` wires in for you, `@kubb/adapter-oas`, `@kubb/parser-ts`, and `@kubb/plugin-barrel`, stay in `kubb-labs/kubb`.
+In v4, the code-generating plugins lived in [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb). v5 moves them into [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins). The npm package names stay the same, so you do not need to rename anything. The infrastructure packages that `kubb` wires in for you, `@kubb/adapter-oas`, `@kubb/parser-ts`, `@kubb/parser-md`, and `@kubb/plugin-barrel`, stay in `kubb-labs/kubb`.
 
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta \
+bun add -d @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta @kubb/plugin-fetch@beta \
             @kubb/plugin-react-query@beta @kubb/plugin-vue-query@beta @kubb/plugin-swr@beta \
             @kubb/plugin-faker@beta @kubb/plugin-msw@beta \
             @kubb/plugin-mcp@beta @kubb/plugin-cypress@beta @kubb/plugin-redoc@beta
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta \
+pnpm add -D @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta @kubb/plugin-fetch@beta \
             @kubb/plugin-react-query@beta @kubb/plugin-vue-query@beta @kubb/plugin-swr@beta \
             @kubb/plugin-faker@beta @kubb/plugin-msw@beta \
             @kubb/plugin-mcp@beta @kubb/plugin-cypress@beta @kubb/plugin-redoc@beta
 ```
 
 ```shell [npm]
-npm install -D @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta \
+npm install -D @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta @kubb/plugin-fetch@beta \
                @kubb/plugin-react-query@beta @kubb/plugin-vue-query@beta @kubb/plugin-swr@beta \
                @kubb/plugin-faker@beta @kubb/plugin-msw@beta \
                @kubb/plugin-mcp@beta @kubb/plugin-cypress@beta @kubb/plugin-redoc@beta
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta \
+yarn add -D @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta @kubb/plugin-fetch@beta \
             @kubb/plugin-react-query@beta @kubb/plugin-vue-query@beta @kubb/plugin-swr@beta \
             @kubb/plugin-faker@beta @kubb/plugin-msw@beta \
             @kubb/plugin-mcp@beta @kubb/plugin-cypress@beta @kubb/plugin-redoc@beta
@@ -154,7 +154,7 @@ The following plugins have no v5 equivalent. Remove them from your config and un
 
 ### Removed packages
 
-Two v4 support packages are gone. `@kubb/oas`, the OpenAPI parsing and schema-helper package, is replaced by [`@kubb/adapter-oas`](/adapters/adapter-oas/) and the universal [AST](/docs/5.x/guide/concepts/ast): plugins now read AST nodes instead of raw OAS objects. `@kubb/ast` merged into the `ast` namespace of `kubb/kit`. See [Authoring imports moved to `kubb/kit`](#authoring-imports-moved-to-kubb-kit).
+`@kubb/oas`, the v4 OpenAPI parsing and schema-helper package, is gone. [`@kubb/adapter-oas`](/adapters/adapter-oas/) and the universal [AST](/docs/5.x/guide/concepts/ast) replace it: plugins now read AST nodes instead of raw OAS objects. `@kubb/ast` still ships as a package, but you no longer import it directly. Reach its helpers through the `ast` namespace of `kubb/kit`. See [Authoring imports moved to `kubb/kit`](#authoring-imports-moved-to-kubb-kit).
 
 ### New packages in v5
 
@@ -163,6 +163,7 @@ Two v4 support packages are gone. `@kubb/oas`, the OpenAPI parsing and schema-he
 | [`@kubb/adapter-oas`](/adapters/adapter-oas/)                | Replaces `@kubb/plugin-oas`. See [Adapters](/docs/5.x/guide/concepts/adapters).                            |
 | [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) | Barrel-file generation, auto-included via `kubb`. See [Barrel files](/docs/5.x/guide/going-further/barrel-files). |
 | [`@kubb/parser-ts`](/parsers/parser-ts/)                     | TypeScript and TSX printer, auto-included via `kubb`. See [Parsers](/docs/5.x/guide/concepts/parsers).     |
+| [`@kubb/parser-md`](/parsers/parser-md/)                     | Markdown printer, auto-included via `kubb`. See [Parsers](/docs/5.x/guide/concepts/parsers).               |
 | [`@kubb/kit`](/docs/5.x/reference/kit)                       | The plugin, generator, resolver, parser, and adapter authoring toolkit. Re-exported through `kubb/kit`. See [Kit](/docs/5.x/guide/concepts/kit). |
 
 ## Core configuration
@@ -255,6 +256,8 @@ export default defineConfig({
 
 :::
 
+The `discriminator` values were also renamed: `'strict'` → `'preserve'` (now the default) and `'inherit'` → `'propagate'`.
+
 > [!NOTE]
 > Uninstall `@kubb/plugin-oas`. The `adapter` defaults to `adapterOas()` when importing from `kubb`, so the `adapter:` line is only required when you pass options.
 
@@ -267,7 +270,7 @@ Both options default to `false` in v5, so generation skips formatting and lintin
 | `output.format` | `'prettier'` | `false`    | [oxfmt](https://oxc.rs) → [biome](https://biomejs.dev) → [prettier](https://prettier.io) |
 | `output.lint`   | `'auto'`     | `false`    | [oxlint](https://oxc.rs) → [biome](https://biomejs.dev) → [eslint](https://eslint.org)   |
 
-### `output.barrelType` → `output.barrel`
+### `output.barrelType` → `output.barrel` {#output-barreltype-output-barrel}
 
 The string `barrelType` option becomes an object `barrel` option with a `type` field. At the plugin level, a `nested` flag replaces the old `'propagate'` string.
 
@@ -311,8 +314,8 @@ import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
   input: './petstore.yaml',
-  output: { path: './src/gen', barrelType: 'propagate' },
-  plugins: [pluginTs()],
+  output: { path: './src/gen' },
+  plugins: [pluginTs({ output: { barrelType: 'propagate' } })],
 })
 ```
 
@@ -322,8 +325,8 @@ import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
   input: './petstore.yaml',
-  output: { path: './src/gen', barrel: { type: 'named', nested: true } },
-  plugins: [pluginTs()],
+  output: { path: './src/gen' },
+  plugins: [pluginTs({ output: { barrel: { type: 'named', nested: true } } })],
 })
 ```
 
@@ -424,8 +427,7 @@ The `output.override` boolean is gone, both on the root `output` and on each plu
 To keep certain files from being written, supply a custom [storage](/docs/5.x/guide/concepts/storage) that no-ops `setItem` for the paths you want to protect. The storage owns every write, so this is the single place that decides what lands on disk:
 
 ```diff [kubb.config.ts]
--import { defineConfig } from 'kubb/config'
-+import { defineConfig } from 'kubb/config'
+ import { defineConfig } from 'kubb/config'
 +import { fsStorage } from 'kubb/kit'
 
 +const base = fsStorage()
@@ -467,9 +469,9 @@ export default defineConfig({
 
 These changes apply to every plugin that used `transformers` in v4.
 
-### `transformers.name` → `resolver`
+### `transformers.name` → `resolver` {#transformersname-resolver}
 
-A typed [resolver](/docs/5.x/guide/concepts/resolvers) replaces the single `transformers.name(name, type)` callback. Every plugin exposes a top-level `name(name)` method that sets identifier casing, so `resolver: { name(name) { … } }` is the shape for [`@kubb/plugin-ts`](/plugins/plugin-ts/), [`@kubb/plugin-zod`](/plugins/plugin-zod/), [`@kubb/plugin-axios`](/plugins/plugin-axios/), [`@kubb/plugin-fetch`](/plugins/plugin-fetch/), [`@kubb/plugin-react-query`](/plugins/plugin-react-query/), [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query/), [`@kubb/plugin-msw`](/plugins/plugin-msw/), [`@kubb/plugin-faker`](/plugins/plugin-faker/), [`@kubb/plugin-cypress`](/plugins/plugin-cypress/), and [`@kubb/plugin-mcp`](/plugins/plugin-mcp/). Plugins that emit more than one symbol per operation add namespaced methods on top, such as `response.status` or `query.name`, documented on each plugin's reference page.
+A typed [resolver](/docs/5.x/guide/concepts/resolvers) replaces the single `transformers.name(name, type)` callback. Every plugin exposes a top-level `name(name)` method that sets identifier casing, so `resolver: { name(name) { … } }` is the shape for [`@kubb/plugin-ts`](/plugins/plugin-ts/), [`@kubb/plugin-zod`](/plugins/plugin-zod/), [`@kubb/plugin-axios`](/plugins/plugin-axios/), [`@kubb/plugin-fetch`](/plugins/plugin-fetch/), [`@kubb/plugin-react-query`](/plugins/plugin-react-query/), [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query/), [`@kubb/plugin-swr`](/plugins/plugin-swr/), [`@kubb/plugin-msw`](/plugins/plugin-msw/), [`@kubb/plugin-faker`](/plugins/plugin-faker/), [`@kubb/plugin-cypress`](/plugins/plugin-cypress/), and [`@kubb/plugin-mcp`](/plugins/plugin-mcp/). Plugins that emit more than one symbol per operation add namespaced methods on top, such as `response.status` or `query.name`, documented on each plugin's reference page.
 
 Resolver methods bind `this` to the full resolver. `this.default.name(name)` always applies Kubb's core `camelCase` default, not the plugin preset's casing. Call an exported preset such as `resolverTs.name(name)` when you need to wrap that preset. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the full guide, including how to rename or relocate the generated files through `file.baseName` and `file.path`.
 
@@ -497,7 +499,7 @@ pluginTs({
 
 :::
 
-### `transformers.schema` → `macros`
+### `transformers.schema` → `macros` {#transformersschema-macros}
 
 Schema-level transformations move to [macros](/docs/5.x/guide/going-further/macros). Returning `null` or `undefined` from a macro callback falls back to the built-in behavior.
 
@@ -528,9 +530,9 @@ pluginZod({
 
 :::
 
-### New: `printer`
+### `mapper` removed
 
-Code-generating plugins now accept a `printer` option that overrides individual AST node renderers. Use it in place of the removed `mapper` option for type-level customizations. See [Override a printer](/docs/5.x/guide/going-further/printers) for the handler context and how printers compose with macros.
+The `mapper` option is gone from every code-generating plugin. Override individual AST node renderers with the `printer` option for type-level customizations, or rewrite nodes with [`macros`](#transformersschema-macros). See [Override a printer](/docs/5.x/guide/going-further/printers) for the handler context and how printers compose with macros.
 
 ```typescript [v5]
 import ts from 'typescript'
@@ -572,25 +574,6 @@ import { ast, definePlugin, defineGenerator } from 'kubb/kit'
 :::
 
 See [Kit](/docs/5.x/guide/concepts/kit) and the [Kit reference](/docs/5.x/reference/kit), which also covers the full AST surface.
-
-## Multiple content types
-
-When an OpenAPI operation declares multiple content types for its `requestBody`, v5 generates one type per content type plus a union alias. v4 used only the first content type.
-
-```typescript [Generated output]
-// plugin-ts output for an operation with application/json + multipart/form-data
-export type UploadFileBodyJson = { url: string }
-export type UploadFileBodyFormData = { file: Blob }
-export type UploadFileBody = UploadFileBodyJson | UploadFileBodyFormData
-```
-
-The generated client exposes `contentType` as a typed literal union, defaulting to the first declared content type:
-
-```typescript [Generated output]
-uploadFile({ path: { petId }, body }, { contentType: 'multipart/form-data' })
-```
-
-Single-content-type operations are unchanged.
 
 ## Per-extension changes
 
@@ -651,7 +634,7 @@ export default defineConfig({
     pluginZod({
       output: { path: 'zod' },
       version: '3', // removed (always Zod v4 in v5)
-      dateType: 'string', // → adapterOas
+      dateType: 'date', // → adapterOas
       integerType: 'number', // → adapterOas
       mapper: {}, // removed
     }),
@@ -734,6 +717,8 @@ v5 also changes what the generators emit, so update any code that imports from t
 
 - The banner (`/* Generated by Kubb */`) is controlled by [`output.defaultBanner`](/docs/5.x/reference/configuration#output-defaultbanner) on the root config (default `'simple'`). Use [`output.banner`](/docs/5.x/reference/configuration#output-banner) (and [`output.footer`](/docs/5.x/reference/configuration#output-footer)) on individual plugins to override the text for one plugin's files. A string applies to every file. A function receives per-file context (`isBarrel`, `isAggregation`, `filePath`, `baseName`), which lets you skip the banner on re-export files, for example to add `'use server'` to source files but not to barrel or group aggregation files.
 - Response status types now carry a `Status<code>` suffix.
+
+Operations that declare more than one `requestBody` content type now generate one type per content type plus a union alias, and the generated client takes a typed `contentType` argument. v4 used only the first content type, so single-content-type operations are unchanged.
 
 The output changes specific to each generator live on its [per-extension page](#per-extension-changes).
 

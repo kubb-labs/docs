@@ -7,11 +7,11 @@ description: Changes for @kubb/plugin-cypress when migrating from Kubb v4 to v5.
 
 Part of the [v4 → v5 migration guide](/docs/5.x/migration). For the full option reference, see [`@kubb/plugin-cypress`](/plugins/plugin-cypress/).
 
-[`resolver.name`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`.
+[`resolver.name`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`. The `generators` option is [gone](/docs/5.x/migration#generators-removed).
 
 ## Removed: `paramsType`, `pathParamsType`, `paramsCasing`
 
-These three options are gone. Each request helper now takes a single grouped options object shaped as `{ body, path, query, headers }` with camelCase property names. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
+These three options are gone. Each request helper now takes a single grouped options object shaped as `{ body, path, query, headers }`. Its `path`, `query`, and `headers` members are the `@kubb/plugin-ts` `*Options` sub-types, so their property names are the ones from the OpenAPI document.
 
 ```diff [Diff]
   pluginCypress({
@@ -32,7 +32,7 @@ The helper signature changes from positional arguments to one object. The first 
 
 ```diff [Generated output]
 -export function showPetById(petId: number, query?: ShowPetByIdQueryParams, options = {}) {}
-+export function showPetById({ path, query }: ShowPetByIdOptions, options = {}) {}
++export function showPetById({ path, query }: ShowPetByIdOptions, options: Partial<Cypress.RequestOptions> = {}) {}
 ```
 
 :::

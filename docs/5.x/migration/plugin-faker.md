@@ -11,7 +11,7 @@ Part of the [v4 → v5 migration guide](/docs/5.x/migration). See the full optio
 
 ## Removed: `paramsCasing`
 
-Properties inside the generated path, query, and header mocks are now always camelCase, so drop the option. This keeps the mocks assignable to the types from `@kubb/plugin-ts`, which also camelCases parameters.
+Parameter property names in the generated path, query, and header mocks come straight from the OpenAPI document, through the shared `buildParams` helper in `@kubb/plugin-ts`. They match the plugin-ts `*Path`, `*Query`, and `*Headers` types exactly, so `paramsCasing` had nothing left to configure.
 
 ```typescript [v4 kubb.config.ts]
 pluginFaker({ paramsCasing: 'camelcase' })

@@ -18,7 +18,7 @@ v4 repeated the same schema-level options on every plugin. In v5 they live on [`
 | `unknownType`     | `plugin-ts`, `plugin-zod`, `plugin-faker` | `adapterOas({ unknownType })`     |
 | `emptySchemaType` | `plugin-ts`, `plugin-zod`, `plugin-faker` | `adapterOas({ emptySchemaType })` |
 | `enumSuffix`      | `plugin-ts`                               | `adapterOas({ enumSuffix })`      |
-| `contentType`     | `plugin-ts`, `plugin-msw`                 | `adapterOas({ contentType })`     |
+| `contentType`     | `plugin-ts`, `plugin-zod`, `plugin-msw`   | `adapterOas({ contentType })`     |
 
 > [!IMPORTANT]
 > The default `integerType` changed from `'number'` to `'bigint'`. OpenAPI `int64` fields now map to `bigint`. Set `integerType: 'number'` on `adapterOas` to keep the old output.
@@ -123,22 +123,3 @@ export default defineConfig({
 ```
 
 :::
-
-## New `enums` option
-
-v5 adds `enums` to `adapterOas` to control where inline enums live. The default `'inline'` keeps each enum on the property that declares it, which matches v4 output, so you can ignore this option unless you want the new behavior. Set `enums: 'root'` to lift every inline enum to a reusable top-level schema named after its context, such as `PetStatusEnum`, and reference it everywhere it appears.
-
-```typescript twoslash [v5 kubb.config.ts]
-import { defineConfig } from 'kubb/config'
-import { adapterOas } from '@kubb/adapter-oas'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: './petstore.yaml',
-  output: { path: './src/gen' },
-  adapter: adapterOas({
-    enums: 'root',
-  }),
-  plugins: [pluginTs()],
-})
-```
