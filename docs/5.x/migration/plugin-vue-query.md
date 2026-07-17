@@ -7,7 +7,7 @@ description: Configuration and generated-output changes for @kubb/plugin-vue-que
 
 Part of the [v4 → v5 migration guide](/docs/5.x/migration). For the full option reference, see [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query/).
 
-[`resolver.name`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`. The v4 `transformers` object held only `name`, so that is the whole rename. To rewrite generated nodes before printing, use the new [`macros`](/plugins/plugin-vue-query/reference/options#macros) option.
+[`resolver.name`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`. The v4 `transformers` object held only `name`, so that is the whole rename. To rewrite generated nodes before printing, use the new [`macros`](/plugins/plugin-vue-query/reference/options#macros) option. The `generators` option is [gone](/docs/5.x/migration#generators-removed).
 
 ## `client` is a selector, not an object
 
@@ -49,52 +49,11 @@ export default defineConfig({
 
 ## Removed: `parser`
 
-The v4 `parser` option is gone, and so is its v5 rename `validator`: this plugin never applies validation itself. The hooks call the client operation, and the client plugin bakes the validation into that operation. Set `validator: 'zod'` on `pluginAxios` or `pluginFetch` instead.
-
-```diff [Diff]
-  pluginVueQuery({
--   parser: 'zod',
-  })
-  pluginAxios({
-+   validator: 'zod',
-  })
-```
-
-## Removed: `generators`
-
-The `generators` option is gone. Plugins no longer accept extra generators inline. Move custom output into your own plugin. See [Creating plugins](/docs/5.x/guide/going-further/creating-plugins).
+As on [React Query](/docs/5.x/migration/plugin-react-query#removed-parser), the `parser` option is gone; set `validator: 'zod'` on the client plugin (`pluginAxios`/`pluginFetch`) instead.
 
 ## Removed: `paramsType`, `pathParamsType`, `paramsCasing`
 
-These three options are gone, including `client.paramsCasing`. Each composable now takes its parameters as a single grouped options object shaped as `{ path, query, body, headers }`. Its property names come from the `@kubb/plugin-ts` `*Options` type, so they match the names in your OpenAPI document, the same shape `@kubb/plugin-fetch` already used. Query params move under `query`, path params under `path`, the request body under `body`, and header params under `headers`.
-
-```diff [Diff]
-  pluginVueQuery({
--   paramsType: 'object',
--   pathParamsType: 'object',
--   paramsCasing: 'camelcase',
-  })
-```
-
-Update the call sites. Query params move into `query`, and path params move into `path`. When an operation has a required parameter in a group, that group (`path`, `query`, or `headers`) is required too, so an incomplete call fails to compile.
-
-::: code-group
-
-```typescript [v4 call site]
-useFindPets({ status: 'available' })
-useGetPet(petId)
-useUpdatePet().mutate({ petId, data: pet })
-```
-
-```typescript [v5 call site]
-useFindPets({ query: { status: 'available' } })
-useGetPet({ path: { petId } })
-useUpdatePet().mutate({ path: { petId }, body: pet })
-```
-
-:::
-
-The first argument is the grouped options type that `@kubb/plugin-ts` generates for the operation (`{ path, query, body, headers }`, for example `FindPetsByTagsOptions`), with each group wrapped in `MaybeRefOrGetter` so refs and getters resolve. The trailing `config` argument is typed `Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>`, where `RequestConfig` comes from the client plugin's `.kubb/client`.
+Same grouped-options change as [React Query](/docs/5.x/migration/plugin-react-query#removed-paramstype-pathparamstype-paramscasing): each composable takes one `{ path, query, body, headers }` object (property names from the `@kubb/plugin-ts` `*Options` type) instead of positional params. Vue Query wraps each group in `MaybeRefOrGetter`, so refs and getters resolve.
 
 ## `hooks` defaults to `false`
 

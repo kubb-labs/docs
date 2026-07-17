@@ -7,7 +7,7 @@ description: Configuration and generated-output changes for @kubb/plugin-react-q
 
 Part of the [v4 → v5 migration guide](/docs/5.x/migration). For the full option reference, see [`@kubb/plugin-react-query`](/plugins/plugin-react-query/).
 
-[`resolver.name`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`. The v4 `transformers` object held only `name`, so that is the whole rename. To rewrite generated nodes before printing, use the new [`macros`](/plugins/plugin-react-query/reference/options#macros) option.
+[`resolver.name`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`. The v4 `transformers` object held only `name`, so that is the whole rename. To rewrite generated nodes before printing, use the new [`macros`](/plugins/plugin-react-query/reference/options#macros) option. The `generators` option is [gone](/docs/5.x/migration#generators-removed).
 
 ## `client` is a selector, not an object
 
@@ -59,10 +59,6 @@ The v4 `parser` option is gone, and so is its v5 rename `validator`: this plugin
 +   validator: 'zod',
   })
 ```
-
-## Removed: `generators`
-
-The `generators` option is gone. Plugins no longer accept extra generators inline. Move custom output into your own plugin. See [Creating plugins](/docs/5.x/guide/going-further/creating-plugins).
 
 ## Removed: `paramsType`, `pathParamsType`, `paramsCasing`
 
