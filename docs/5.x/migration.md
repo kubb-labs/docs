@@ -709,32 +709,6 @@ Once the config compiles, confirm the output:
 - Watch for a `KUBB_INVALID_PLUGIN_OPTIONS` error, which usually means a plugin pairs `mode: 'file'` with `group`.
 - Update imports of renamed symbols: response types now carry a `Status<code>` suffix, and Zod inferred types end in `Type`.
 
-## Plugin authoring
-
-For people who write custom plugins, generators, or resolvers. Application configs can skip this section.
-
-### Authoring imports moved to `kubb/kit` {#authoring-imports-moved-to-kubb-kit}
-
-The helpers for authoring plugins, generators, resolvers, parsers, and adapters now live in the `kubb/kit` subpath. In v4 they were spread across `@kubb/core` (`definePlugin`), `@kubb/ast` (visitors, factory functions, guards), and `@kubb/plugin-oas` (`createGenerator`, `createReactGenerator`).
-
-The AST helpers move onto the `ast` namespace. Reach them through `kubb/kit` as `ast.extractRefName` and friends. You no longer import `@kubb/ast` directly, and its async `walk` visitor is gone: use `ast.collect` for inspection passes and `ast.transform` for rewrites.
-
-::: code-group
-
-```typescript twoslash [before]
-import { definePlugin } from '@kubb/core'
-import { collect, transform, walk } from '@kubb/ast'
-import { createReactGenerator } from '@kubb/plugin-oas'
-```
-
-```typescript twoslash [after]
-import { ast, definePlugin, defineGenerator } from 'kubb/kit'
-```
-
-:::
-
-See [Kit](/docs/5.x/guide/concepts/kit) and the [Kit reference](/docs/5.x/reference/kit), which also covers the full AST surface.
-
 ## Performance
 
 v5 generates code faster than v4. The benchmarks compare `@kubb/core@4.37.8` with the v5 `kubb` meta-package, with file writing disabled so the numbers reflect the generation pipeline alone.
