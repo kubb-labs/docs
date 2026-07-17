@@ -91,7 +91,7 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginZod({
-      output: { path: './zod' },
+      output: { path: './zod', mode: 'directory' },
       group: { type: 'tag', name: ({ group }) => `${group}Schemas` },
       inferred: true,
       importPath: 'zod',

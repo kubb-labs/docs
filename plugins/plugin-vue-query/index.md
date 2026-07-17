@@ -105,7 +105,7 @@ export default defineConfig({
     pluginTs(),
     pluginAxios(),
     pluginVueQuery({
-      output: { path: './hooks' },
+      output: { path: './hooks', mode: 'directory' },
       group: {
         type: 'tag',
         name: ({ group }) => `${group}Hooks`,

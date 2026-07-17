@@ -96,7 +96,7 @@ export default defineConfig({
   plugins: [
     pluginTs(),
     pluginMsw({
-      output: { path: './mocks' },
+      output: { path: './mocks', mode: 'directory' },
       group: {
         type: 'tag',
         name: ({ group }) => `${group}Service`,

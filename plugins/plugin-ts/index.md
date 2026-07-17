@@ -84,7 +84,7 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs({
-      output: { path: './types' },
+      output: { path: './types', mode: 'directory' },
       exclude: [{ type: 'tag', pattern: 'store' }],
       group: { type: 'tag' },
       enum: { type: 'asConst' },
