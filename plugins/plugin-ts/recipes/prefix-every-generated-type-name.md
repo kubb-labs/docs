@@ -11,7 +11,7 @@ Set [`resolver.name`](/plugins/plugin-ts/reference/options#resolver) to patch th
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginTs, resolverTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
   input: './petStore.yaml',
@@ -20,7 +20,7 @@ export default defineConfig({
     pluginTs({
       resolver: {
         name(name) {
-          return `Api${name}`
+          return `Api${resolverTs.name(name)}`
         },
       },
     }),
@@ -56,4 +56,4 @@ function describe(pet: ApiPet) {
 ```
 
 > [!TIP]
-> The `name` callback receives the type name already cased, so returning `` `Api${name}` `` is enough. The general [resolver guide](/docs/5.x/guide/going-further/resolvers) shows this same pattern wrapped in `this.default.name(name)`, reusing the built-in casing, but that call re-lowercases the first letter instead (`ApiCat` becomes `Apicat`), so this recipe skips it and prefixes the incoming name directly.
+> `resolverTs.name(name)` applies the plugin's preset `PascalCase` before adding the prefix. `this.default.name(name)` would apply Kubb's core `camelCase` default instead. Concatenating the raw name can also leave multiword or operation-derived names uncased.

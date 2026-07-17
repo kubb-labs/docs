@@ -24,7 +24,7 @@ You are migrating a kubb.config.ts from Kubb v4 to v5. Apply every rule, then ou
 1. Import: `import { defineConfig } from '@kubb/core'` → `from 'kubb/config'`.
 2. Remove `pluginOas()` from `plugins[]`; move its options to a top-level `adapter: adapterOas({ … })` from `@kubb/adapter-oas`. `serverIndex`/`serverVariables` → `server: { index, variables }`; `discriminator` `'strict'`→`'preserve'`, `'inherit'`→`'propagate'`; `validate`/`contentType` unchanged. Omit `adapter` if `pluginOas` had no options.
 3. Move these schema options off every plugin onto `adapterOas()`: `dateType`, `integerType`, `unknownType`, `emptySchemaType` (ts/zod/faker), `enumSuffix` (ts), `contentType` (ts/msw).
-4. `transformers.name` → `resolver: { name(name) { return … } }` (call `this.default.name(name)` as a fallback).
+4. `transformers.name` → `resolver: { name(name) { return … } }` (call an exported preset such as `resolverTs.name(name)` to wrap its casing; `this.default.name(name)` always uses the core `camelCase` default).
 5. `transformers.schema` → `macros: [{ name, schema(node) { return … } }]`.
 6. Remove `mapper` from plugin-ts, plugin-zod, plugin-faker.
 7. plugin-zod: remove `version` and `typed`; drop `wrapOutput` and leave a `// TODO: reintroduce wrapOutput via a printer override` comment (do not invent a `printer`). Bump the `zod` package to `^4` in package.json (a dependency change, not a config option).
@@ -471,7 +471,7 @@ These changes apply to every plugin that used `transformers` in v4.
 
 A typed [resolver](/docs/5.x/guide/concepts/resolvers) replaces the single `transformers.name(name, type)` callback. Every plugin exposes a top-level `name(name)` method that sets identifier casing, so `resolver: { name(name) { … } }` is the shape for [`@kubb/plugin-ts`](/plugins/plugin-ts/), [`@kubb/plugin-zod`](/plugins/plugin-zod/), [`@kubb/plugin-axios`](/plugins/plugin-axios/), [`@kubb/plugin-fetch`](/plugins/plugin-fetch/), [`@kubb/plugin-react-query`](/plugins/plugin-react-query/), [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query/), [`@kubb/plugin-msw`](/plugins/plugin-msw/), [`@kubb/plugin-faker`](/plugins/plugin-faker/), [`@kubb/plugin-cypress`](/plugins/plugin-cypress/), and [`@kubb/plugin-mcp`](/plugins/plugin-mcp/). Plugins that emit more than one symbol per operation add namespaced methods on top, such as `response.status` or `query.name`, documented on each plugin's reference page.
 
-Inside a resolver method, `this` is bound to the full resolver, so `this.default.name(name)` falls back to the built-in casing. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the full guide, including how to rename or relocate the generated files through `file.baseName` and `file.path`.
+Resolver methods bind `this` to the full resolver. `this.default.name(name)` always applies Kubb's core `camelCase` default, not the plugin preset's casing. Call an exported preset such as `resolverTs.name(name)` when you need to wrap that preset. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the full guide, including how to rename or relocate the generated files through `file.baseName` and `file.path`.
 
 ::: code-group
 
@@ -484,12 +484,12 @@ pluginTs({
 ```
 
 ```typescript twoslash [v5]
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginTs, resolverTs } from '@kubb/plugin-ts'
 
 pluginTs({
   resolver: {
     name(name) {
-      return `Api${this.default.name(name)}`
+      return `Api${resolverTs.name(name)}`
     },
   },
 })
@@ -675,7 +675,7 @@ export default defineConfig({
 import { defineConfig } from 'kubb/config'
 import { memoryStorage } from 'kubb/kit'
 import { adapterOas } from '@kubb/adapter-oas'
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginTs, resolverTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'
 import { pluginAxios } from '@kubb/plugin-axios'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
@@ -703,7 +703,7 @@ export default defineConfig({
       output: { path: 'types', mode: 'directory' },
       resolver: {
         name(name) {
-          return `Api${this.default.name(name)}`
+          return `Api${resolverTs.name(name)}`
         },
       },
     }),

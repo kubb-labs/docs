@@ -19,19 +19,21 @@ type ResolverPatch = {
 }
 ```
 
-Methods run with a `this` context bound to the full resolver, so write them as regular functions rather than arrow functions. `this.default.name(name)` runs the built-in casing your override replaced, so you can wrap it instead of rebuilding it. `this.name(name)` runs the plugin's own casing, which is what a namespaced method calls to stay in step with the top-level names.
+Methods run with a `this` context bound to the full, merged resolver, so write them as regular functions rather than arrow functions. `this.default.name(name)` always applies Kubb's core `camelCase` default. The plugin preset's `name` method remains separate.
+
+From a namespaced method, `this.name(name)` calls the active top-level `name` method and follows any user override. Calling `this.name` from the top-level `name` method itself recurses, so call an exported preset resolver when you want to wrap its casing.
 
 ## Rename identifiers
 
-`name` sets the casing for every symbol the plugin generates. This override prefixes each TypeScript type with `Api` and reuses the built-in PascalCase through `this.default.name`.
+`name` replaces the casing rule for every symbol the plugin generates. This override prefixes each TypeScript type with `Api` and calls `resolverTs.name` to keep the plugin's preset `PascalCase`, including for raw multiword and operation-derived names.
 
 ```typescript twoslash [prefix.ts]
-import { pluginTs } from '@kubb/plugin-ts'
+import { pluginTs, resolverTs } from '@kubb/plugin-ts'
 
 pluginTs({
   resolver: {
     name(name) {
-      return `Api${this.default.name(name)}`
+      return `Api${resolverTs.name(name)}`
     },
   },
 })

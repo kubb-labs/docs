@@ -43,9 +43,9 @@ export const resolver = createResolver<MyPlugin>({
 
 | Method           | Default behavior                                                        |
 | ---------------- | ---------------------------------------------------------------------- |
-| `name`           | Top-level identifier casing, delegates to `default.name`               |
+| `name`           | Active top-level identifier casing; delegates to `default.name` when omitted |
 | `file`           | Top-level `FileNode` builder, delegates to `default.file`              |
-| `default.name`   | The built-in generated-identifier casing                               |
+| `default.name`   | The core `camelCase` generated-identifier casing                       |
 | `default.options`| Applies `exclude`, `include`, and `override` filters                   |
 | `default.path`   | Resolves to `output.path`, with optional tag/path-based subdirectories |
 | `default.file`   | Constructs a full `FileNode` using the resolver's `file.baseName` casing (default `toFilePath`) |
@@ -92,7 +92,7 @@ const imports = resolver.imports({
 
 `Resolver.merge(base, patch)` returns a new resolver with `patch`'s fields layered over `base`'s and every helper re-bound. A top-level `name` replaces, while `file` and each namespace merge per member, so overriding `query.name` keeps the base `query.keyName`. 
 
-Framework code uses it to apply a `setResolver` partial override over a plugin's built-in resolver, and you can call it yourself when composing resolvers. 
+Framework code uses it to apply a `setResolver` partial override over a plugin's built-in resolver, and you can call it yourself when composing resolvers.
 
 > [!TIP]
 > Type a patch with `ResolverPatch<T>` to keep `this` and namespace shapes checked against the target resolver.
