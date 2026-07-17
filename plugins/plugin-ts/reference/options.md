@@ -17,6 +17,7 @@ Options for `pluginTs`, with type and default in the table.
 | [`syntaxType`](#syntaxtype) | `'type' \| 'interface'` | `'type'` | Emit object schemas as type aliases or interfaces |
 | [`optionalType`](#optionaltype) | `'questionToken' \| 'undefined' \| 'questionTokenAndUndefined'` | `'questionToken'` | How optional properties are written |
 | [`arrayType`](#arraytype) | `'array' \| 'generic'` | `'array'` | `Type[]` or `Array<Type>` |
+| [`operationTypes`](#operationtypes) | `boolean` | `true` | Reference base component types instead of per-operation aliases |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
@@ -260,6 +261,36 @@ export type Pet = {
 ```typescript ['generic']
 export type Pet = {
   tags: Array<string>
+}
+```
+
+:::
+
+### operationTypes
+
+Whether to keep the per-operation alias layer or reference base component types directly. Defaults to `true`.
+
+With `operationTypes: false`, a request body or response backed by a single `$ref` resolves to the referenced component (for example `Pet`) instead of the `AddPetData` or `AddPetStatus200` alias, and those aliases are no longer emitted. Inline, array, union, multiple-content-type, and `Omit`-based schemas keep their per-operation alias, since no single base type exists.
+
+The option is carried by the plugin-ts resolver, so consumer plugins (the client plugins, React Query, Vue Query, SWR, Faker, MSW, Cypress) inherit the inlining and import each base component from its own file.
+
+::: code-group
+
+```typescript ['true' (default)]
+import type { AddPetData, AddPetStatus200 } from '../models/AddPet'
+
+export async function addPet(data?: AddPetData) {
+  const res = await request<AddPetData>({ /* ... */ })
+  return res.data
+}
+```
+
+```typescript ['false']
+import type { Pet } from '../models/Pet'
+
+export async function addPet(data?: Pet) {
+  const res = await request<Pet>({ /* ... */ })
+  return res.data
 }
 ```
 
