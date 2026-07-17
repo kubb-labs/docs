@@ -9,6 +9,8 @@ Part of the [v4 → v5 migration guide](/docs/5.x/migration). See the full optio
 
 `@kubb/plugin-oas` is gone. When you import `defineConfig` from `kubb`, the OpenAPI adapter is applied for you, so most projects never name it. Set `adapter: adapterOas({ ... })` only when you want to change its options.
 
+## Move schema options to the adapter
+
 v4 repeated the same schema-level options on every plugin. In v5 they live on [`adapterOas`](/adapters/adapter-oas/) and apply once across all plugins. Remove them from each plugin and set them on the adapter.
 
 | Option            | Removed from                              | v5 location                       |
@@ -78,6 +80,8 @@ export default defineConfig({
 ```
 
 :::
+
+## `pluginOas` options move to the adapter
 
 `pluginOas()` no longer belongs in `plugins`. Its `validate`, `discriminator`, and `contentType` options move to the same `adapter` key, and the old `serverIndex` and `serverVariables` become a single `server: { index, variables }` object. See [`@kubb/plugin-oas` removed](/docs/5.x/migration#kubb-plugin-oas-removed) on the main guide. `validate` still defaults to `true`.
 

@@ -11,7 +11,7 @@ Part of the [v4 → v5 migration guide](/docs/5.x/migration). For the full optio
 
 ## `client` is a selector, not an object
 
-In v4 the `client` option carried the whole client config, including `dataReturnType`, `clientType`, `baseURL`, `bundle`, and the custom `importPath`. v5 drops the object form. The hooks no longer emit their own client. They call a registered client plugin instead, so you register [`@kubb/plugin-axios`](/plugins/plugin-axios/) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and point `client` at it with the string `'axios'` or `'fetch'`. When exactly one client plugin is registered, leave `client` off and the plugin picks it up. Set the string only to disambiguate when both are registered.
+In v4 `client` was an object that carried the whole client config (`dataReturnType`, `clientType`, `baseURL`, `bundle`, `importPath`). In v5 it is a string that names a registered client plugin, and the hooks call that plugin instead of emitting their own. See [Query and MCP plugins select a client](/docs/5.x/migration#client-becomes-a-selector) for the shared rules, then register [`@kubb/plugin-axios`](/plugins/plugin-axios/) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and point `client` at it.
 
 ::: code-group
 
@@ -66,7 +66,7 @@ The `generators` option is gone. Plugins no longer accept extra generators inlin
 
 ## Removed: `paramsType`, `pathParamsType`, `paramsCasing`
 
-These three options are gone, including `client.paramsCasing`. Each hook now takes its parameters as a single grouped options object shaped as `{ path, query, body, headers }`, with camelCase property names. This matches the shape `@kubb/plugin-fetch` already used. Query params move under `query`, path params under `path`, the request body under `body`, and header params under `headers`.
+These three options are gone, including `client.paramsCasing`. Each hook now takes its parameters as a single grouped options object shaped as `{ path, query, body, headers }`. Its property names come from the `@kubb/plugin-ts` `*Options` type, so they match the names in your OpenAPI document, the same shape `@kubb/plugin-fetch` already used. Query params move under `query`, path params under `path`, the request body under `body`, and header params under `headers`.
 
 ```diff [Diff]
   pluginReactQuery({
