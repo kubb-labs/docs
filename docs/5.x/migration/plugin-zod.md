@@ -35,7 +35,7 @@ yarn add zod@^4
 
 ## Removed: `mapper`
 
-Use [`macros`](/plugins/plugin-zod/reference/options#macros) or [`printer`](/plugins/plugin-zod/reference/options#printer) instead.
+v5 removes `mapper` with no drop-in replacement. Customize schema naming through the [`resolver`](/docs/5.x/guide/going-further/resolvers) option, or rewrite a schema before printing with [`macros`](/plugins/plugin-zod/reference/options#macros).
 
 ## Removed: `typed`
 
@@ -243,26 +243,6 @@ The custom plugin runs after `pluginZod`, so the per-operation schemas it import
 
 `dateType`, `integerType`, `unknownType`, and `emptySchemaType` moved to [`adapterOas`](/adapters/adapter-oas/). See [Migration: @kubb/adapter-oas](/docs/5.x/migration/adapter-oas).
 
-## New: `regexType`
-
-Pick how an OpenAPI `pattern` is emitted inside `.regex(...)`. The default `'literal'` keeps a regex literal, while `'constructor'` switches to the `RegExp` constructor. Use the constructor form when a regex literal trips up your build pipeline or when you need the pattern as a string.
-
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb/config'
-import { pluginZod } from '@kubb/plugin-zod'
-
-export default defineConfig({
-  input: './petstore.yaml',
-  output: { path: './src/gen' },
-  plugins: [pluginZod({ regexType: 'constructor' })],
-})
-```
-
-```diff [Generated output]
--slug: z.string().regex(/^[a-z]+$/),
-+slug: z.string().regex(new RegExp('^[a-z]+$')),
-```
-
 ## Changed: inferred type names end with `Type`
 
 With `inferred: true`, the `z.infer<typeof schema>` alias now carries a `SchemaType` suffix. `petSchema` exports `PetSchemaType` instead of `PetSchema`.
@@ -288,6 +268,15 @@ Update any imports that referenced the old name:
 
 ## Generated output
 
+### Response schema names gain a `Status<code>` segment
+
+Response schema names now include a `Status<code>` segment. `listPets200Schema` becomes `listPetsStatus200Schema`. Update any imports that referenced the old name.
+
+```diff [Update imports]
+-import { listPets200Schema } from './gen/zod'
++import { listPetsStatus200Schema } from './gen/zod'
+```
+
 ### Chained syntax instead of functional wrappers
 
 v5 prefers the chained Zod 4 syntax. `.optional()` sits at the end of the chain, right before `.describe()`.
@@ -301,7 +290,7 @@ v5 prefers the chained Zod 4 syntax. `.optional()` sits at the end of the chain,
 +status: z.enum(['placed', 'approved']).optional().describe('Order Status'),
 ```
 
-The functional form (`z.optional(...)`) is now reserved for `mini: true` output, which lives in its own `output.path`.
+The functional form (`z.optional(...)`) is now reserved for `mini: true` output, which imports from `zod/mini`.
 
 ### Self-referencing getters only for true cycles
 
