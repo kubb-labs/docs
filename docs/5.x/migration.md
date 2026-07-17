@@ -67,9 +67,6 @@ These plugins have no v5 equivalent. Remove them from your config and uninstall 
 | `@kubb/plugin-solid-query`  |
 | `@kubb/plugin-svelte-query` |
 
-> [!NOTE]
-> `@kubb/plugin-swr` was unavailable during the early v5 betas but is supported again in v5. See [Migration: @kubb/plugin-swr](/docs/5.x/migration/plugin-swr).
-
 ### Renamed and new packages
 
 `@kubb/oas`, the v4 OpenAPI parsing and schema-helper package, is gone. [`@kubb/adapter-oas`](/adapters/adapter-oas/) and the universal [AST](/docs/5.x/guide/concepts/ast) replace it: plugins now read AST nodes instead of raw OAS objects. `@kubb/plugin-oas` is gone too, replaced by the same adapter. `@kubb/ast` still ships as a package, but you no longer import it directly. Reach its helpers through the `ast` namespace of `kubb/kit`. See [Plugin authoring](#authoring-imports-moved-to-kubb-kit).
