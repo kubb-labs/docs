@@ -699,7 +699,11 @@ v5 generates code faster than v4, and the gap widens as the spec grows. The numb
 [`scripts/benchmark/v4-vs-v5`](https://github.com/kubb-labs/kubb/tree/main/scripts/benchmark/v4-vs-v5)
 in the kubb repository, a harness anyone can run and reproduce. It benchmarks `@kubb/core@4.39.2`
 against the v5 beta (`@kubb/core@5.0.0-beta.104`, plugins at `5.0.0-beta.103`), median of three runs
-per configuration, both versions writing to a fresh directory so the comparison stays apples-to-apples.
+per configuration, both versions writing to a fresh directory. Every plugin runs in directory mode
+(one file per schema or operation, `output.mode: 'directory'`) on both versions, so the comparison
+stays apples-to-apples. Output mode changes the numbers substantially: switching both versions to
+kubb's default file mode instead makes both v4 and v5 slower, but it costs v5 disproportionately
+more, so the speedup shrinks to a smaller, flatter number that no longer grows with spec size.
 
 <SpeedComparison />
 
