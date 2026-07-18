@@ -50,7 +50,7 @@ pluginZod({
 
 ## Removed: `wrapOutput`
 
-The `wrapOutput` callback only fired on object property values, so a top-level string, enum, or union schema was never wrapped. v5 removes it in favor of a [`printer`](/plugins/plugin-zod/reference/options#printer) override, which targets any node type, including the whole schema. Inside an override, `this.base(node)` returns what the built-in handler would have emitted, so you wrap it instead of rebuilding it.
+The `wrapOutput` callback only fired on object property values, so a top-level string, enum, or union was never wrapped. v5 removes it for a [`printer`](/plugins/plugin-zod/reference/options#printer) override, which targets any node type.
 
 ```diff [kubb.config.ts]
 pluginZod({
@@ -67,7 +67,9 @@ pluginZod({
 
 ## Removed: `operations`
 
-The `operations` option is gone, so `plugin-zod` no longer emits an `operations.ts` file with the `operations` and `paths` maps. If you wired that file into a server framework, add a small custom plugin that rebuilds it. The plugin reuses the Zod resolver, so the generated schema names stay in sync with the rest of the output. See [Creating plugins](/docs/5.x/guide/going-further/creating-plugins) for the plugin API.
+The `operations` option is gone, so `plugin-zod` no longer emits an `operations.ts` file with the `operations` and `paths` maps. To rebuild it, add a small custom plugin that reuses the Zod resolver, so schema names stay in sync. See [Creating plugins](/docs/5.x/guide/going-further/creating-plugins) for the plugin API.
+
+:::: details Show the operations rebuild plugin
 
 ::: code-group
 
@@ -233,6 +235,8 @@ export default defineConfig({
 
 :::
 
+::::
+
 The custom plugin runs after `pluginZod`, so the per-operation schemas it imports already exist.
 
 ## Renamed: `transformers.name`
@@ -247,7 +251,7 @@ The custom plugin runs after `pluginZod`, so the per-operation schemas it import
 
 With `inferred: true`, the `z.infer<typeof schema>` alias now carries a `SchemaType` suffix. `petSchema` exports `PetSchemaType` instead of `PetSchema`.
 
-In v4 the schema value and its inferred type differed only by casing (`petSchema` and `PetSchema`). An all-uppercase name such as `SUV`, `URL`, or `API` produced the same identifier for both, so the barrel re-exported it twice and failed with `TS2300: Duplicate identifier`. The `Type` suffix keeps the value and type apart at any casing.
+In v4 the value and its inferred type differed only by casing (`petSchema` / `PetSchema`), so an all-uppercase name like `SUV`, `URL`, or `API` produced the same identifier for both. The barrel then re-exported it twice and failed with `TS2300: Duplicate identifier`. The `Type` suffix keeps them apart at any casing.
 
 ```diff [zod/petSchema.ts]
 export const petSchema = z.object({

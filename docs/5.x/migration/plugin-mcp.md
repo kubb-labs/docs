@@ -11,7 +11,7 @@ Part of the [v4 → v5 migration guide](/docs/5.x/migration). For the full optio
 
 ## `client` selects a registered client plugin
 
-In v4, `client` was an object that configured a bundled client: `clientType`, `dataReturnType`, `baseURL`, `bundle`, `importPath`, and `paramsCasing`. v5 drops all of those. The handlers now call a registered client plugin, so `client` is a single string that picks which one: `'axios'` or `'fetch'`. Register [`@kubb/plugin-axios`](/plugins/plugin-axios/) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) in `plugins`, and set `baseURL` there instead of on `pluginMcp`. When exactly one client plugin is registered, Kubb auto-detects it and the string is optional.
+In v4, `client` was an object that configured a bundled client (`clientType`, `dataReturnType`, `baseURL`, `bundle`, `importPath`, `paramsCasing`). In v5 it is a string that names a registered client plugin. See [Query and MCP plugins select a client](/docs/5.x/migration#client-becomes-a-selector) for the shared rules, then register [`@kubb/plugin-axios`](/plugins/plugin-axios/) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) in `plugins` and set `baseURL` there instead of on `pluginMcp`.
 
 `pluginMcp` also depends on [`@kubb/plugin-ts`](/plugins/plugin-ts/) and [`@kubb/plugin-zod`](/plugins/plugin-zod/), so register both alongside the client plugin.
 
@@ -66,7 +66,7 @@ export default defineConfig({
 pluginMcp({ paramsCasing: 'camelcase' })
 ```
 
-Parameter properties in the generated handlers are now always camelCase, including the `client.paramsCasing` sub-option, so drop both. The HTTP layer still uses the original spec names, and Kubb writes the mapping for you.
+Parameter properties in the generated handlers come from the `@kubb/plugin-ts` `*Options` type, so they match the names in your OpenAPI document. The `client.paramsCasing` sub-option is gone too, so drop both.
 
 ## Generated output
 

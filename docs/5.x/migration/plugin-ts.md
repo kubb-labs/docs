@@ -31,8 +31,6 @@ export type GetPetPath = { pet_id: string }
 export type GetPetHeaders = { 'X-Api-Key'?: string }
 ```
 
-Kubb only falls back to camelCase when a path parameter name is not a valid JavaScript identifier, such as `store-name`. It preserves query and header names exactly and quotes them when needed.
-
 ## Changed: request input grouped under `Options`
 
 The generated `*Options` type groups every request input under `{ body, path, query, headers }` so the client, query, and Cypress plugins all share one call shape. Each key holds the matching `*Body`, `*Path`, `*Query`, or `*Headers` type, or `never` when the operation has none. The `body`, `path`, `query`, and `headers` keys are required when the operation has a required parameter in that group, and the unused keys are typed `never` so passing them is a compile error.

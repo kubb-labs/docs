@@ -7,13 +7,13 @@ description: Configuration changes for @kubb/plugin-swr when migrating from Kubb
 
 Part of the [v4 → v5 migration guide](/docs/5.x/migration). For the full option reference, see [`@kubb/plugin-swr`](/plugins/plugin-swr/).
 
-`@kubb/plugin-swr` follows the same conventions as the React Query and Vue Query plugins. [`resolver.name`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`. The v4 `transformers` object held only `name`, so that is the whole rename. To rewrite generated nodes before printing, use the new [`macros`](/plugins/plugin-swr/reference/options#macros) option.
+`@kubb/plugin-swr` follows the same conventions as the React Query and Vue Query plugins. [`resolver.name`](/docs/5.x/migration#transformersname-resolver) replaces `transformers.name`. The v4 `transformers` object held only `name`, so that is the whole rename. To rewrite generated nodes before printing, use the new [`macros`](/plugins/plugin-swr/reference/options#macros) option. The `generators` option is [gone](/docs/5.x/migration#generators-removed).
 
 SWR has no `enabled` option. v5 drops the param-presence guard, so the hook keys off `shouldFetch` alone (`useSWR(shouldFetch ? queryKey : null, ...)`). Set `shouldFetch` to `false` to disable the request.
 
 ## `client` is a selector, not an object
 
-In v4 the `client` option carried the whole client config, including `dataReturnType`, `clientType`, `baseURL`, `bundle`, and the custom `importPath`. v5 drops the object form. The hooks no longer emit their own client. They call a registered client plugin instead, so you register [`@kubb/plugin-axios`](/plugins/plugin-axios/) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and point `client` at it with the string `'axios'` or `'fetch'`. When exactly one client plugin is registered, leave `client` off and the plugin picks it up. Set the string only to disambiguate when both are registered.
+In v4 `client` was an object that carried the whole client config (`dataReturnType`, `clientType`, `baseURL`, `bundle`, `importPath`). In v5 it is a string that names a registered client plugin, and the hooks call that plugin instead of emitting their own. See [Query and MCP plugins select a client](/docs/5.x/migration#client-becomes-a-selector) for the shared rules, then register [`@kubb/plugin-axios`](/plugins/plugin-axios/) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and point `client` at it.
 
 ::: code-group
 
@@ -47,20 +47,9 @@ export default defineConfig({
 
 :::
 
-`dataReturnType` has no replacement on the query plugin. The client plugin returns the response body, so the hooks read `res.data`. Move `baseURL` to the client plugin, and see [Migration: @kubb/plugin-client removed](/docs/5.x/migration/plugin-client) for the `clientType`, `bundle`, and `importPath` options that went with it.
-
 ## Removed: `parser`
 
-The v4 `parser` option is gone, and so is its v5 rename `validator`: this plugin never applies validation itself. The hooks call the client operation, and the client plugin bakes the validation into that operation. Set `validator: 'zod'` on `pluginAxios` or `pluginFetch` instead.
-
-```diff [Diff]
-  pluginSwr({
--   parser: 'zod',
-  })
-  pluginAxios({
-+   validator: 'zod',
-  })
-```
+As on [React Query](/docs/5.x/migration/plugin-react-query#removed-parser), the `parser` option is gone; set `validator: 'zod'` on the client plugin (`pluginAxios`/`pluginFetch`) instead.
 
 ## Removed: `mutation.paramsToTrigger`
 
@@ -72,38 +61,12 @@ v4 gated the trigger-based mutation shape behind `mutation.paramsToTrigger`, off
   })
 ```
 
-## Removed: `generators`
-
-The `generators` option is gone. Plugins no longer accept extra generators inline. Move custom output into your own plugin. See [Creating plugins](/docs/5.x/guide/going-further/creating-plugins).
-
 ## Removed: `paramsType`, `pathParamsType`, `paramsCasing`
 
-These three options are gone, including `client.paramsCasing`. Each hook now takes its parameters as a single grouped options object shaped as `{ path, query, body, headers }`, with camelCase property names. This matches the shape `@kubb/plugin-fetch` already used. Query params move under `query`, path params under `path`, the request body under `body`, and header params under `headers`.
-
-```diff [Diff]
-  pluginSwr({
--   paramsType: 'object',
--   pathParamsType: 'object',
--   paramsCasing: 'camelcase',
-  })
-```
-
-Update the call sites. Query params move into `query`, and path params move into `path`. When an operation has a required parameter in a group, that group (`path`, `query`, or `headers`) is required too, so an incomplete call fails to compile.
-
-::: code-group
-
-```typescript [v4 call site]
-useFindPets({ status: 'available' })
-useGetPet(petId)
-useUpdatePet().trigger({ petId, data: pet })
-```
+Same grouped-options change as [React Query](/docs/5.x/migration/plugin-react-query#removed-paramstype-pathparamstype-paramscasing): each hook takes one `{ path, query, body, headers }` object (property names from the `@kubb/plugin-ts` `*Options` type). The mutation form passes it through `trigger()`:
 
 ```typescript [v5 call site]
 useFindPets({ query: { status: 'available' } })
 useGetPet({ path: { petId } })
 useUpdatePet().trigger({ path: { petId }, body: pet })
 ```
-
-:::
-
-The first argument is the grouped options type that `@kubb/plugin-ts` generates for the operation (`{ path, query, body, headers }`, for example `GetPetByIdOptions`). The trailing `config` argument is typed `Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>`, where `RequestConfig` comes from the client plugin's `.kubb/client`.
