@@ -735,6 +735,137 @@ The gap widens on bigger specs. In v4, every plugin bootstrapped its own `plugin
 parsing ran once per plugin. In v5, `adapterOas` parses the spec once and shares the result across
 all plugins.
 
+## Compared to other codegen tools
+
+How does v5 compare outside the kubb family, against `@hey-api/openapi-ts` and `orval`, the two
+other TypeScript OpenAPI generators most teams evaluate against kubb? The numbers below add kubb
+v4, `@hey-api/openapi-ts@0.99.0`, and `orval@8.22.0` to the same harness. All four tools generate
+TypeScript types, an axios client, and Zod schemas, each in its own default output mode, across
+three specs of increasing size. The harness lives at
+[`scripts/benchmark/kubb-vs-heyapi`](https://github.com/kubb-labs/kubb/tree/main/scripts/benchmark/kubb-vs-heyapi)
+in the kubb repository.
+
+### Benchmark machine
+
+| | |
+| --- | --- |
+| OS | Linux 6.18.5 |
+| CPU | Intel(R) Xeon(R) Processor @ 2.10GHz |
+| Cores | 4 |
+| Memory | 15.7 GB |
+| Node | v22.22.2 |
+
+<script setup>
+const toolColors = {
+  'kubb-v4': 'var(--kubb-viz-green)',
+  'kubb-v5': 'var(--kubb-viz-orange)',
+  'hey-api': 'var(--kubb-viz-blue)',
+  orval: 'var(--kubb-viz-purple)',
+}
+const toolLabels = {
+  'kubb-v4': 'kubb v4',
+  'kubb-v5': 'kubb v5',
+  'hey-api': 'hey-api',
+  orval: 'orval',
+}
+function toSpecs(rows) {
+  return rows.map(([name, operations, values]) => ({
+    name,
+    operations,
+    tools: Object.entries(values).map(([key, value]) => ({
+      key,
+      label: toolLabels[key],
+      value,
+      color: toolColors[key],
+    })),
+  }))
+}
+const timeSpecs = toSpecs([
+  ['small.yaml', 19, { 'kubb-v4': 549, 'kubb-v5': 301, 'hey-api': 215, orval: 328 }],
+  ['twitter.json', 80, { 'kubb-v4': 3324, 'kubb-v5': 1201, 'hey-api': 724, orval: 1134 }],
+  ['openai.yaml', 281, { 'kubb-v4': 27005, 'kubb-v5': 10516, 'hey-api': 2708, orval: 9604 }],
+])
+const memorySpecs = toSpecs([
+  ['small.yaml', 19, { 'kubb-v4': 202.2, 'kubb-v5': 163.9, 'hey-api': 163.5, orval: 126.3 }],
+  ['twitter.json', 80, { 'kubb-v4': 361.2, 'kubb-v5': 204.0, 'hey-api': 209.7, orval: 174.9 }],
+  ['openai.yaml', 281, { 'kubb-v4': 1281.6, 'kubb-v5': 296.7, 'hey-api': 340.9, orval: 380.3 }],
+])
+const fileSpecs = toSpecs([
+  ['small.yaml', 19, { 'kubb-v4': 12, 'kubb-v5': 6, 'hey-api': 17, orval: 20 }],
+  ['twitter.json', 80, { 'kubb-v4': 241, 'kubb-v5': 6, 'hey-api': 17, orval: 474 }],
+  ['openai.yaml', 281, { 'kubb-v4': 1379, 'kubb-v5': 6, 'hey-api': 17, orval: 3081 }],
+])
+const outputSpecs = toSpecs([
+  ['small.yaml', 19, { 'kubb-v4': 0.05, 'kubb-v5': 0.08, 'hey-api': 0.08, orval: 0.04 }],
+  ['twitter.json', 80, { 'kubb-v4': 7.2, 'kubb-v5': 0.7, 'hey-api': 0.46, orval: 2.92 }],
+  ['openai.yaml', 281, { 'kubb-v4': 31.67, 'kubb-v5': 2.53, 'hey-api': 1.99, orval: 9.33 }],
+])
+
+const scoreMetrics = [
+  { key: 'time', label: 'Time', suffix: ' ms' },
+  { key: 'memory', label: 'Memory', suffix: ' MB' },
+  { key: 'files', label: 'Files', suffix: '' },
+  { key: 'size', label: 'Size', suffix: ' MB' },
+]
+const scoreTools = [
+  { key: 'kubb-v4', label: 'kubb v4', color: toolColors['kubb-v4'], values: { time: 27005, memory: 1281.6, files: 1379, size: 31.67 } },
+  { key: 'kubb-v5', label: 'kubb v5', color: toolColors['kubb-v5'], values: { time: 10516, memory: 296.7, files: 6, size: 2.53 } },
+  { key: 'hey-api', label: 'hey-api', color: toolColors['hey-api'], values: { time: 2708, memory: 340.9, files: 17, size: 1.99 } },
+  { key: 'orval', label: 'orval', color: toolColors.orval, values: { time: 9604, memory: 380.3, files: 3081, size: 9.33 } },
+]
+</script>
+
+### Generation time
+
+<ToolComparison :specs="timeSpecs" suffix=" ms" headline-label="spread between the fastest and slowest tool, on the big spec" />
+
+hey-api is the fastest tool at every spec size tested, and its lead over kubb v5 grows with the
+spec: v5 is 1.4x slower than hey-api on the small spec and 3.9x slower on the big one. Kubb v5
+still pulls ahead of v4 and orval as the spec grows, finishing the big spec 2.6x faster than v4.
+
+### Peak memory
+
+<ToolComparison :specs="memorySpecs" suffix=" MB" headline-label="spread between the fastest and slowest tool, on the big spec" />
+
+Kubb v4's peak memory grows linearly with the plugin count and the spec size, reaching 1.28 GB on
+the big spec. Kubb v5, hey-api, and orval all stay under 400 MB on the same input.
+
+### Files generated
+
+<ToolComparison :specs="fileSpecs" headline-label="spread between the fewest and most files, on the big spec" />
+
+Kubb v5 writes 6 files (one per plugin for types, client, and schemas, plus 3 shared runtime
+helpers under `.kubb/`) regardless of spec size, since file mode is its default. hey-api's bundled
+output stays flat too. Kubb v4 and orval both write one file per schema by default, so their file
+counts scale with the spec: orval writes 3,081 files for the big spec, kubb v4 writes 1,379.
+
+### Output size
+
+<ToolComparison :specs="outputSpecs" suffix=" MB" headline-label="spread between the smallest and largest output, on the big spec" />
+
+Kubb v4's exploded file layout carries per-file boilerplate (imports, banners) that a single
+consolidated file doesn't, so it produces the largest output on the medium and big specs even
+though it isn't generating more actual types. The small spec doesn't have enough content to spread
+that per-file overhead across, so kubb v5's output ends up fractionally larger than v4's there.
+
+### Overall, on the big spec
+
+<ToolScorecard :metrics="scoreMetrics" :tools="scoreTools" caption="openai.yaml, 281 operations. Shorter bars win; every bar shares the same scale as its row." />
+
+Ranking each tool 1st through 4th on every metric and summing the placements (1 point for 1st,
+4 for 4th, lowest total wins):
+
+| Rank | Tool | Points | Wins |
+| --- | --- | --- | --- |
+| 1 | hey-api | 6 | Time, output size |
+| 2 | kubb v5 | 7 | Memory, files |
+| 3 | orval | 12 | — |
+| 4 | kubb v4 | 15 | — |
+
+hey-api and kubb v5 trade the lead depending on the metric: hey-api generates faster and produces
+smaller output, kubb v5 uses less memory and writes fewer files. Both clear orval and kubb v4 by a
+wide margin overall.
+
 ## See also
 
 - [Adapters](/docs/5.x/guide/concepts/adapters): how the OpenAPI input is parsed into the universal AST.
