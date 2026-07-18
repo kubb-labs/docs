@@ -26,3 +26,7 @@ A generator implements up to three methods, and each maps to a slice of the spec
 - `operations` runs a single time with the whole set at once. Reach for it when an index or a router has to see every operation before it writes anything.
 
 Each method receives the generator context and returns the files that node becomes. It can hand back file nodes directly, return a renderer element, or write through the context and return nothing. The [generator reference](/docs/5.x/reference/kit/generators) lists every field on that context.
+
+## Scoping a generator with `match`
+
+A plugin sometimes registers several generators for the same node type, where only one should run per node, for example one hook generator per query variant. Give a generator a `match(node, ctx)` predicate to declare that scope: when it returns `false`, the engine skips `schema` or `operation` for that node entirely, instead of calling the generator and having it classify the node and bail out itself. See the [generator reference](/docs/5.x/reference/kit/generators#match) for the full signature.

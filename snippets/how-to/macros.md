@@ -6,13 +6,13 @@ The engine (`defineMacro`, `composeMacros`, `applyMacros`, and the `Macro` type)
 
 ## Shape
 
-A macro carries the per-kind callbacks of a [visitor](/docs/5.x/reference/kit/ast#visitors), plus a `name`, an optional `enforce` order, and an optional `when` gate.
+A macro carries the per-kind callbacks of a [visitor](/docs/5.x/reference/kit/ast#visitors), plus a `name`, an optional `enforce` order, and an optional `match` predicate.
 
 ```typescript [Type definition]
 type Macro = {
   name: string
   enforce?: 'pre' | 'post'
-  when?: (node: Node) => boolean
+  match?: (node: Node) => boolean
   schema?(node: SchemaNode, context): SchemaNode | null | undefined
   operation?(node: OperationNode, context): OperationNode | null | undefined
   // input, output, property, parameter, response
@@ -36,7 +36,7 @@ const macroIntegerToString = ast.defineMacro({
 })
 ```
 
-The `when` gate skips a macro for nodes it does not care about, and `enforce` places a macro before or after the unmarked ones.
+The `match` predicate skips a macro for nodes it does not care about, and `enforce` places a macro before or after the unmarked ones.
 
 ```typescript twoslash [enforce.ts]
 import { ast } from 'kubb/kit'
@@ -44,7 +44,7 @@ import { ast } from 'kubb/kit'
 const macroUntagged = ast.defineMacro({
   name: 'untagged',
   enforce: 'post',
-  when: (node) => node.kind === 'Operation',
+  match: (node) => node.kind === 'Operation',
   operation(node) {
     return node.tags?.length ? undefined : { ...node, tags: ['untagged'] }
   },
