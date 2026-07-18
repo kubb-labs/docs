@@ -23,7 +23,7 @@ export default defineConfig({
     pluginTs(),
     pluginZod(),
     pluginAxios({ baseURL: 'https://petstore.swagger.io/v2' }),
-    pluginMcp(),
+    pluginMcp({ output: { path: 'mcp', mode: 'directory' } }),
   ],
 })
 ```

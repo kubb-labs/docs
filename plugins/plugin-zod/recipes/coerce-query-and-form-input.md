@@ -20,6 +20,7 @@ export default defineConfig({
   plugins: [
     pluginTs(),
     pluginZod({
+      output: { path: 'zod', mode: 'directory' },
       override: [
         {
           type: 'tag',

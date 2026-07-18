@@ -22,6 +22,7 @@ export default defineConfig({
     pluginTs(),
     pluginFetch(),
     pluginVueQuery({
+      output: { path: 'hooks', mode: 'directory' },
       queryKey: ({ node }) => [JSON.stringify(node.operationId)],
     }),
   ],

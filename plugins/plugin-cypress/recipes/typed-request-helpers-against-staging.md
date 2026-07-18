@@ -20,6 +20,7 @@ export default defineConfig({
   plugins: [
     pluginTs(),
     pluginCypress({
+      output: { path: 'cypress', mode: 'directory' },
       baseURL: 'https://staging.example.com',
     }),
   ],

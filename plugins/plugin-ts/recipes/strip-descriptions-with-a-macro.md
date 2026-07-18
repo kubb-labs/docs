@@ -26,6 +26,7 @@ export default defineConfig({
   output: { path: './src/gen', clean: true },
   plugins: [
     pluginTs({
+      output: { path: 'types', mode: 'directory' },
       macros: [macroDropDescriptions],
     }),
   ],

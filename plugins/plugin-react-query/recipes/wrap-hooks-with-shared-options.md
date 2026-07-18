@@ -22,6 +22,7 @@ export default defineConfig({
     pluginTs(),
     pluginFetch(),
     pluginReactQuery({
+      output: { path: 'hooks', mode: 'directory' },
       hooks: true,
       customOptions: {
         importPath: './useCustomHookOptions',

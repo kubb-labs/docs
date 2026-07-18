@@ -20,6 +20,7 @@ export default defineConfig({
   plugins: [
     pluginTs(),
     pluginAxios({
+      output: { path: 'clients', mode: 'directory' },
       sdk: { mode: 'tag' },
     }),
   ],
