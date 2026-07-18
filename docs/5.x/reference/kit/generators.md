@@ -42,6 +42,27 @@ const myGenerator = defineGenerator({
 | `operation()`  | `OperationNode` (per API operation)     | `TElement \| Array<FileNode> \| void` | Generate hooks, clients, handlers. Called once per operation     |
 | `operations()` | `Array<OperationNode>` (all operations) | `TElement \| Array<FileNode> \| void` | Generate index or barrel files. Called once after all operations |
 
+### Scoping with `match` {#match}
+
+Add a `match(node, ctx)` predicate to skip `schema` or `operation` for nodes a generator does not apply to. When `match` returns `false`, the engine skips that node entirely: no context work beyond what it already builds per node, and no call to `schema`/`operation`. Omit `match` to run for every node, the default when it is unset. `match` does not gate `operations()`, which already runs once on the full batch rather than per node.
+
+This is useful when a plugin registers several generators for the same node type and only one should run per node, for example one hook generator per query variant in `@kubb/plugin-react-query`. Without `match`, every generator runs for every node and has to classify and bail out on its own.
+
+```typescript twoslash [scoped-generator.ts]
+import { ast, defineGenerator } from 'kubb/kit'
+
+const getOnlyGenerator = defineGenerator({
+  name: 'get-only-generator',
+  match(node, ctx) {
+    return ast.isHttpOperationNode(node) && node.method.toLowerCase() === 'get'
+  },
+  operation(node, ctx) {
+    // node is already known to be a GET operation here
+    return null
+  },
+})
+```
+
 ### `GeneratorContext` properties (the `ctx` argument passed to each method)
 
 | Property              | Type                                                | Purpose                                                              |
