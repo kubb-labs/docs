@@ -45,8 +45,6 @@ export default defineConfig({
 
 :::
 
-`dataReturnType` has no replacement on the query plugin. The client plugin returns the response body, so the composables read `res.data`. Move `baseURL` to the client plugin, and see [Migration: @kubb/plugin-client removed](/docs/5.x/migration/plugin-client) for the `clientType`, `bundle`, and `importPath` options that went with it.
-
 ## Removed: `parser`
 
 As on [React Query](/docs/5.x/migration/plugin-react-query#removed-parser), the `parser` option is gone; set `validator: 'zod'` on the client plugin (`pluginAxios`/`pluginFetch`) instead.

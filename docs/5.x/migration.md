@@ -462,6 +462,8 @@ A typed [resolver](/docs/5.x/guide/concepts/resolvers) replaces the single `tran
 
 Resolver methods bind `this` to the full resolver. `this.default.name(name)` always applies Kubb's core `camelCase` default, not the plugin preset's casing, so call an exported preset like `resolverTs.name(name)` to wrap that preset. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for renaming or relocating files through `file.baseName` and `file.path`.
 
+After porting a `transformers.name` callback, verify the generated identifiers: a v5 resolver can receive a differently-cased input than v4, so a custom transform may produce different names.
+
 ::: code-group
 
 ```typescript [v4]
@@ -542,7 +544,7 @@ The `generators` plugin option is gone. It accepted an array of custom `Generato
 
 ### Query and MCP plugins select a client {#client-becomes-a-selector}
 
-In v4, the `client` option on `pluginReactQuery`, `pluginVueQuery`, `pluginSwr`, and `pluginMcp` was an object that configured a bundled client (`clientType`, `dataReturnType`, `baseURL`, `bundle`, `importPath`). In v5 those plugins call a registered client plugin instead, so `client` is a single string that names it: `'axios'` or `'fetch'`. Register [`@kubb/plugin-axios`](/plugins/plugin-axios/) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch/), set `baseURL` there, and point `client` at it. When exactly one client plugin is registered, Kubb auto-detects it and the string is optional. Each plugin's page shows the before/after for its own config.
+In v4, the `client` option on `pluginReactQuery`, `pluginVueQuery`, `pluginSwr`, and `pluginMcp` was an object that configured a bundled client (`clientType`, `dataReturnType`, `baseURL`, `bundle`, `importPath`). In v5 those plugins call a registered client plugin instead, so `client` is a single string that names it: `'axios'` or `'fetch'`. Register [`@kubb/plugin-axios`](/plugins/plugin-axios/) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch/), set `baseURL` there, and point `client` at it. The client plugin returns the response body, so the generated code reads `res.data` and there is no `dataReturnType`. When exactly one client plugin is registered, Kubb auto-detects it and the string is optional. Each plugin's page shows the before/after for its own config.
 
 ## What hasn't changed
 
