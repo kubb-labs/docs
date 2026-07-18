@@ -18,6 +18,7 @@ export default defineConfig({
   output: { path: './src/gen', clean: true },
   plugins: [
     pluginTs({
+      output: { path: 'types', mode: 'directory' },
       resolver: {
         name(name) {
           return `Api${resolverTs.name(name)}`

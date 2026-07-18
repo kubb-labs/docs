@@ -22,6 +22,7 @@ export default defineConfig({
     pluginTs(),
     pluginZod(),
     pluginAxios({
+      output: { path: 'clients', mode: 'directory' },
       validator: { request: 'zod', response: 'zod' },
     }),
   ],

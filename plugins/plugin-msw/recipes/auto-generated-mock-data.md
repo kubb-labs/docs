@@ -22,6 +22,7 @@ export default defineConfig({
     pluginTs(),
     pluginFaker(),
     pluginMsw({
+      output: { path: 'handlers', mode: 'directory' },
       parser: 'faker',
     }),
   ],

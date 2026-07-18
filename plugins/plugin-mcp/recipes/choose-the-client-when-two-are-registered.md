@@ -25,7 +25,7 @@ export default defineConfig({
     pluginZod(),
     pluginAxios({ output: { path: './clients-axios' }, baseURL: 'https://petstore.swagger.io/v2' }),
     pluginFetch({ output: { path: './clients-fetch' }, baseURL: 'https://petstore.swagger.io/v2' }),
-    pluginMcp({ client: 'axios' }),
+    pluginMcp({ output: { path: 'mcp', mode: 'directory' }, client: 'axios' }),
   ],
 })
 ```

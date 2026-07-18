@@ -20,6 +20,7 @@ export default defineConfig({
   plugins: [
     pluginTs(),
     pluginFaker({
+      output: { path: 'mocks', mode: 'directory' },
       seed: [100],
     }),
   ],

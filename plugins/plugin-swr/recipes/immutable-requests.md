@@ -18,7 +18,7 @@ import { pluginSwr } from '@kubb/plugin-swr'
 export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
-  plugins: [pluginTs(), pluginFetch(), pluginSwr()],
+  plugins: [pluginTs(), pluginFetch(), pluginSwr({ output: { path: 'hooks', mode: 'directory' } })],
 })
 ```
 

@@ -20,6 +20,7 @@ export default defineConfig({
   plugins: [
     pluginTs(),
     pluginMsw({
+      output: { path: 'handlers', mode: 'directory' },
       parser: 'data',
     }),
   ],

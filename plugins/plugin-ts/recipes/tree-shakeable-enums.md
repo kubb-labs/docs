@@ -18,6 +18,7 @@ export default defineConfig({
   output: { path: './src/gen', clean: true },
   plugins: [
     pluginTs({
+      output: { path: 'types', mode: 'directory' },
       enum: { type: 'asConst' },
     }),
   ],

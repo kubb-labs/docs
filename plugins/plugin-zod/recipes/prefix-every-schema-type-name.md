@@ -18,6 +18,7 @@ export default defineConfig({
   output: { path: './src/gen', clean: true },
   plugins: [
     pluginZod({
+      output: { path: 'zod', mode: 'directory' },
       inferred: true,
       resolver: {
         schema: {
@@ -45,7 +46,7 @@ import { petSchema, type ApiPet } from './src/gen/zod/petSchema'
 const pet: ApiPet = petSchema.parse({ name: 'Rex', photoUrls: [] })
 ```
 
-Only `resolver.schema.typeName` renames the inferred type. The schema constant itself (`petSchema`) keeps its default name unless `resolver.schema.type` is patched too.
+Only `resolver.schema.typeName` renames the inferred type. The schema constant itself (`petSchema`) keeps its default name unless `resolver.name` is patched too.
 
 > [!TIP]
 > `name` arrives already cased, so the override only needs the prefix. There is no `this.default.schema.typeName(name)` to reuse here (`this.default` only carries the top-level `name`), and `this.name(name)` inside a `schema` method calls the schema constant's own casing (for example `orderSchema`), not the type name's, so it is the wrong thing to wrap even if it did not throw.

@@ -26,6 +26,7 @@ export default defineConfig({
   output: { path: './src/gen', clean: true },
   plugins: [
     pluginZod({
+      output: { path: 'zod', mode: 'directory' },
       macros: [macroDropDescriptions],
     }),
   ],

@@ -78,7 +78,7 @@ Source of the response body each handler returns. `'data'` (the default) returns
 
 ```typescript ['faker']
 export function getPetHandler(data?: GetPetQueryResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Response | Promise<Response>)) {
-  return http.get(`/pet/:petId`, function handler(info) {
+  return http.get('/pet/:petId', function handler(info) {
     if (typeof data === 'function') return data(info)
 
     return new Response(JSON.stringify(data || getPetQueryResponse(data)), {

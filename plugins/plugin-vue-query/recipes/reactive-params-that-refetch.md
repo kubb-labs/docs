@@ -18,7 +18,7 @@ import { pluginVueQuery } from '@kubb/plugin-vue-query'
 export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
-  plugins: [pluginTs(), pluginFetch(), pluginVueQuery({ hooks: true })],
+  plugins: [pluginTs(), pluginFetch(), pluginVueQuery({ output: { path: 'hooks', mode: 'directory' }, hooks: true })],
 })
 ```
 
