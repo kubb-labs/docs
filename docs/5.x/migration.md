@@ -703,9 +703,19 @@ per configuration, both versions writing to a fresh directory so the comparison 
 
 <SpeedComparison />
 
+### Benchmark machine
+
+| | |
+| --- | --- |
+| OS | Linux 6.18.5 |
+| CPU | Intel(R) Xeon(R) Processor @ 2.10GHz |
+| Cores | 4 |
+| Memory | 15.7 GB |
+| Node | v22.22.2 |
+
 > [!NOTE]
-> Measured on the CI runner that generated this page. Absolute milliseconds and megabytes are
-> hardware-dependent. Treat the speedup and memory-reduction percentages as the portable takeaway.
+> Absolute milliseconds and megabytes are hardware-dependent. Treat the speedup and
+> memory-reduction percentages as the portable takeaway.
 
 **`petStore.yaml`**, 21 operations
 
