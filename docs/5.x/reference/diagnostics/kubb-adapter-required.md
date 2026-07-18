@@ -14,7 +14,7 @@ An action needs an adapter but none is configured.
 
 ## What happened
 
-The adapter turns your spec into the AST that plugins generate from. It has to be set before any plugin runs. This diagnostic fires when the config has no `adapter`.
+The adapter turns your spec into the AST that plugins generate from. It has to be set before any plugin runs. This diagnostic is defined in Kubb's diagnostic catalog, but no code path in the current source reports it. `defineConfig` (the standard entry point, used in the example below) always fills in a default adapter (`adapterOas()`) when `adapter` is omitted, so a config without an explicit `adapter` does not trigger this diagnostic today.
 
 ## How to fix it
 

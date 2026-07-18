@@ -27,7 +27,7 @@ It is informational, so no action is required.
 ## Example output
 
 ```text [Terminal]
-[KUBB_PLUGIN_INFO] @kubb/plugin-fetch: Using fetch as the HTTP client.
+[KUBB_PLUGIN_INFO] plugin-fetch: Using fetch as the HTTP client.
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-plugin-info
 ```
 

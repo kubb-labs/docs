@@ -11,7 +11,7 @@ When a build fails, Kubb prints a diagnostic. It carries a stable code, the mess
 your document, and a suggested fix. The CLI leads with the code and lists the details below it:
 
 ```text [Terminal]
-[KUBB_REF_NOT_FOUND] @kubb/plugin-zod: Could not find a definition for #/components/schemas/Pet.
+[KUBB_REF_NOT_FOUND]: Could not find a definition for #/components/schemas/Pet.
   at: #/components/schemas/Pet
   fix: Add the schema under components.schemas, or fix the $ref.
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-ref-not-found
@@ -102,12 +102,12 @@ without scraping the terminal:
   {
     "name": "",
     "status": "failed",
-    "plugins": { "passed": 2, "failed": ["@kubb/plugin-zod"], "total": 3 },
+    "plugins": { "passed": 2, "failed": ["plugin-zod"], "total": 3 },
     "counts": { "errors": 1, "warnings": 0, "infos": 0 },
     "filesCreated": 0,
     "durationMs": 312,
     "output": "/project/src/gen",
-    "timings": [{ "plugin": "@kubb/plugin-ts", "durationMs": 84 }],
+    "timings": [{ "plugin": "plugin-ts", "durationMs": 84 }],
     "diagnostics": [
       {
         "code": "KUBB_REF_NOT_FOUND",

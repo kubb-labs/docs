@@ -64,7 +64,7 @@ yarn add -D @kubb/parser-md@beta
 
 ## Dependencies
 
-`@kubb/parser-md` has no plugin dependencies. It is a standalone parser you register on a plugin's `output`, and needs no other Kubb plugin.
+`@kubb/parser-md` has no plugin dependencies. It is a standalone parser you register on `defineConfig`'s `parsers` array, and needs no other Kubb plugin.
 
 ## Frontmatter
 

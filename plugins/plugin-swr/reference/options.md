@@ -26,7 +26,7 @@ Configuration options for `@kubb/plugin-swr`, passed to `pluginSwr({ ... })`. Ev
 
 ### output
 
-Where the generated `.ts` files are written and how they are exported. Defaults to `{ path: 'hooks' }`.
+Where the generated `.ts` files are written and how they are exported. Defaults to `{ path: 'hooks', barrel: { type: 'named' } }`.
 
 #### output.path
 

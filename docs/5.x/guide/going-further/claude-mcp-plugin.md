@@ -13,7 +13,7 @@ const mcpTree = [
       { name: 'mcp', type: 'dir', children: [
         { name: 'addPet.ts' },
         { name: 'getPetById.ts' },
-        { name: 'mcp.json' },
+        { name: '.mcp.json' },
         { name: 'server.ts' },
       ] },
       { name: 'clients', type: 'dir', children: [
@@ -24,7 +24,7 @@ const mcpTree = [
         { name: 'addPetSchema.ts' },
         { name: 'getPetByIdSchema.ts' },
       ] },
-      { name: 'models', type: 'dir', children: [
+      { name: 'types', type: 'dir', children: [
         { name: 'AddPet.ts' },
         { name: 'GetPetById.ts' },
       ] },
@@ -154,13 +154,13 @@ The `src/mcp` folder holds the files that build an [MCP server](https://modelcon
 The `addPetHandler` function takes the pet body and calls the generated `addPet` client function. It returns the response as a JSON text message that [MCP](https://modelcontextprotocol.io) uses in conversations.
 
 ```typescript [src/mcp/addPet.ts]
-import type { AddPetRequestConfig } from '../models/ts/AddPet'
+import type { AddPetOptions } from '../types/AddPet'
 import type { RequestHandlerExtra } from '@modelcontextprotocol/sdk/shared/protocol'
 import type { CallToolResult, ServerNotification, ServerRequest } from '@modelcontextprotocol/sdk/types'
 import { addPet } from '../clients/addPet'
 
 export async function addPetHandler(
-  { body }: AddPetRequestConfig,
+  { body }: AddPetOptions,
   request: RequestHandlerExtra<ServerRequest, ServerNotification>,
 ): Promise<Promise<CallToolResult>> {
   const res = await addPet({ body })
@@ -177,19 +177,19 @@ export async function addPetHandler(
 }
 ```
 
-### src/mcp/mcp.json
+### src/mcp/.mcp.json
 
 This config registers an [MCP](https://modelcontextprotocol.io) server named `"Swagger PetStore - OpenAPI 3.0"`. The name comes from `info.title` in your OpenAPI file.
 
 It runs the TypeScript server (`server.ts`) through `tsx`, so [MCP](https://modelcontextprotocol.io) handles tool calls over standard input and output.
 
-```json [src/mcp/mcp.json]
+```json [src/mcp/.mcp.json]
 {
   "mcpServers": {
     "Swagger PetStore - OpenAPI 3.0": {
       "type": "stdio",
       "command": "npx",
-      "args": ["tsx", "/mcp/src/gen/mcp/server.ts"]
+      "args": ["tsx", "server.ts"]
     }
   }
 }
@@ -252,7 +252,7 @@ startServer()
 
 ## Start Claude with the MCP server
 
-Point [Claude](https://claude.ai) at your [MCP](https://modelcontextprotocol.io) server config (`src/mcp/mcp.json`). Open Claude desktop and go to settings.
+Point [Claude](https://claude.ai) at your [MCP](https://modelcontextprotocol.io) server config (`src/mcp/.mcp.json`). Open Claude desktop and go to settings.
 
 ![Claude setup 1](/public/screenshots/claude-setup1.png)
 
@@ -266,7 +266,7 @@ In the settings panel, open the `developer` section and click `edit config`. A w
 
 ![Claude setup 2](/public/screenshots/claude-setup2.png)
 
-Copy the content of `src/mcp/mcp.json` so [Claude](https://claude.ai) picks up your [MCP](https://modelcontextprotocol.io) server.
+Copy the content of `src/mcp/.mcp.json` so [Claude](https://claude.ai) picks up your [MCP](https://modelcontextprotocol.io) server.
 
 > [!TIP]
 > With multiple MCP servers, append your entry instead of overwriting the file.

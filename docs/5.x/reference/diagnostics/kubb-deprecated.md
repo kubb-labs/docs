@@ -36,7 +36,7 @@ components:
 ## Example output
 
 ```text [Terminal]
-[KUBB_DEPRECATED] @kubb/adapter-oas: This schema is marked as deprecated.
+[KUBB_DEPRECATED]: This schema is marked as deprecated.
   at: #/components/schemas/Pet
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-deprecated
 ```

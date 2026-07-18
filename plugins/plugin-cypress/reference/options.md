@@ -11,7 +11,7 @@ Options for `pluginCypress`, with type and default in the table.
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'cypress' }` | Where the generated files are written and exported |
+| [`output`](#output) | `Output` | `{ path: 'cypress', barrel: { type: 'named' } }` | Where the generated files are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`baseURL`](#baseurl) | `string` | — | Base URL prepended to every request |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |

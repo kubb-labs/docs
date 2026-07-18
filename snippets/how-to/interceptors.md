@@ -95,7 +95,9 @@ client.interceptors.error.use((error) => {
 The fetch handler receives the `ResponseError`, the axios handler an `AxiosError`. This channel
 only fires on the throw path. When you read with `throwOnError: false`, a documented non-2xx
 response resolves and no error interceptor runs, so inspect the returned `error` on the result
-instead. A transport failure (no response at all) still throws and still fires the channel. See
+instead. A transport failure (no response at all) still throws on both. On axios the channel still
+fires, since it is wired directly into axios's own rejection handling. On fetch the channel does
+not fire, since there is no result to hand the interceptor stacks. See
 [error handling](/plugins/plugin-fetch/guide/error-handling) for that path.
 
 ## Add, replace, and remove handlers

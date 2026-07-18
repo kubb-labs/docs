@@ -28,7 +28,7 @@ Options for `@kubb/plugin-vue-query`, which generates TanStack Vue Query composa
 
 ### output
 
-Where the generated composables are written and how they are exported. Defaults to `{ path: 'hooks' }`.
+Where the generated composables are written and how they are exported. Defaults to `{ path: 'hooks', barrel: { type: 'named' } }`.
 
 #### output.path
 

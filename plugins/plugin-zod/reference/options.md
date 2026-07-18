@@ -11,7 +11,7 @@ Options for `pluginZod`, with type and default in the table.
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'zod' }` | Where the generated files are written and exported |
+| [`output`](#output) | `Output` | `{ path: 'zod', barrel: { type: 'named' } }` | Where the generated files are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`importPath`](#importpath) | `string` | `mini ? 'zod/mini' : 'zod'` | Module the generated files import `z` from |
 | [`inferred`](#inferred) | `boolean` | `false` | Emit a `z.infer` alias next to each schema |
@@ -74,7 +74,7 @@ Function that turns a group key (first tag or path segment) into a folder or ide
 |          |                                          |
 | -------: | :--------------------------------------- |
 |    Type: | `(context: { group: string }) => string` |
-| Default: | `({ group }) => camelCase(group)` |
+| Default: | `'tag'`: `({ group }) => camelCase(group)`; `'path'`: the raw URL segment, uncased |
 
 ### importPath
 
@@ -193,6 +193,7 @@ type ResolverZodPatch = {
     responses?(node: OperationNode): string                      // → 'listPetsResponsesSchema'
     response?(node: OperationNode): string                       // → 'listPetsResponseSchema'
     error?(node: OperationNode): string                          // → 'listPetsErrorSchema'
+    options?(node: OperationNode): string                        // → 'ListPetsOptionsSchemaType'
   }
 }
 ```

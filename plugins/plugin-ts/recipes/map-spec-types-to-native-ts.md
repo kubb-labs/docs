@@ -37,12 +37,13 @@ export default defineConfig({
 
 ## Output example
 
-The petStore fixture has no plain `date` (only `date-time`) schemas, so this excerpt shows the `integer` handler mapping `format: int64` fields to `bigint` (the same printer mechanism the recipe uses for `date`):
+The petStore fixture has no plain `date` (only `date-time`) schemas. `format: int64` fields like `id` and `petId` are already `bigint` by default (the adapter's `integerType` option defaults to `'bigint'`), so the override has no effect on them. It does affect `format: int32` fields such as `quantity`, which becomes `bigint` only because of the `integer` handler override (the same printer mechanism the recipe uses for `date`):
 
 ```typescript [src/gen/types/Order.ts]
 export type Order = {
     id?: bigint;
     petId?: bigint;
+    quantity?: bigint;
     // ...
 };
 ```

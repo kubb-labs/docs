@@ -37,9 +37,6 @@ export default defineConfig({
 
 ```typescript [src/gen/types/Pet.ts]
 export type Pet = {
-    /**
-     * @type string | undefined
-    */
     status?: PetStatusEnumKey;
 };
 ```

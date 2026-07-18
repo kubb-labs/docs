@@ -6,7 +6,7 @@ Set it at build time or at runtime. At build time you read it from the servers l
 
 ## Read it from the spec
 
-When you set no `baseURL` on the client plugin, the client falls back to the server URL the [OpenAPI adapter](/adapters/adapter-oas/) resolves. The adapter resolves one only when you point its `server.index` at an entry in the spec's `servers` array, so set `adapter: adapterOas({ server: { index: 0 } })` to use the first entry. Add `variables` to fill in any `{variable}` placeholders in the chosen URL. Leave `server` unset and the spec contributes no `baseURL`.
+Kubb never sets the generated client's `baseURL` for you. Setting `adapter: adapterOas({ server: { index: 0 } })` only resolves a server URL onto the document's metadata (`meta.baseURL`), which a custom `banner` or `footer` function can read. It does not reach the client. Pass [`baseURL`](#use-the-baseurl-option) to the client plugin yourself to prepend a host to every request.
 
 ::: code-group
 

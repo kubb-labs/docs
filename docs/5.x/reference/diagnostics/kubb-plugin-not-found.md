@@ -44,8 +44,8 @@ export default defineConfig({
 ## Example output
 
 ```text [Terminal]
-[KUBB_PLUGIN_NOT_FOUND]: Plugin "@kubb/plugin-ts" is required but not found. Make sure it is included in your Kubb config.
-  fix: Add "@kubb/plugin-ts" to the plugins array in kubb.config.ts, or remove the dependency on it.
+[KUBB_PLUGIN_NOT_FOUND]: Plugin "plugin-ts" is required but not found. Make sure it is included in your Kubb config.
+  fix: Add "plugin-ts" to the plugins array in kubb.config.ts, or remove the dependency on it.
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-plugin-not-found
 ```
 

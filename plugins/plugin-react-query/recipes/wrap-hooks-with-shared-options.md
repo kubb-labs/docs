@@ -44,16 +44,21 @@ import { queryOptions, useQuery } from '@tanstack/react-query'
 
 export function useGetPetById({ path }, options = {}) {
   const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
   const resolvedParams = { path: typeof path === 'function' ? path() : path }
-  const queryKey = getPetByIdQueryKey(resolvedParams)
+  const queryKey = resolvedOptions?.queryKey ?? getPetByIdQueryKey(resolvedParams)
   const customOptions = useCustomHookOptions({ hookName: 'useGetPetById', operationId: 'getPetById' })
 
-  return useQuery({
+  const queryResult = useQuery({
     ...getPetByIdQueryOptions(resolvedParams, config),
     ...customOptions,
-    ...queryConfig,
+    ...resolvedOptions,
     queryKey,
-  })
+  }, queryClient)
+
+  queryResult.queryKey = queryKey
+
+  return queryResult
 }
 ```
 

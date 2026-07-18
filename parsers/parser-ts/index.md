@@ -72,7 +72,7 @@ yarn add -D @kubb/parser-ts@beta
 
 ## Dependencies
 
-`@kubb/parser-ts` has no plugin dependencies. It is a standalone parser you register on a plugin's `output`, and needs no other Kubb plugin.
+`@kubb/parser-ts` has no plugin dependencies. It is a standalone parser you register on `defineConfig`'s `parsers` array, and needs no other Kubb plugin.
 
 ## Example
 
