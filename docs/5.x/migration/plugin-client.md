@@ -102,43 +102,7 @@ Drop these `plugin-client` options from your config:
 
 ## Rebuild the URL helpers with a custom plugin
 
-`urlType: 'export'` used to emit one `get<Operation>Url` function per operation that returned the URL without sending the request. The client plugins no longer generate those. If you relied on them, generate the same helpers from your own plugin. The URL lives on each operation node as `node.path`, so a small `operation` generator covers it.
-
-```typescript twoslash [pluginClientUrl.ts]
-import { ast, definePlugin, defineGenerator } from 'kubb/kit'
-
-export const pluginClientUrl = definePlugin(() => ({
-  name: 'plugin-client-url',
-  dependencies: ['plugin-ts'],
-  hooks: {
-    'kubb:plugin:setup'(ctx) {
-      ctx.addGenerator(
-        defineGenerator({
-          name: 'client-url-generator',
-          operation(node, genCtx) {
-            const resolver = genCtx.getResolver('plugin-ts')
-            const name = `${resolver.name(node.operationId)}Url`
-
-            return [
-              ast.factory.createFile({
-                baseName: `${name}.ts`,
-                path: `${genCtx.root}/${name}.ts`,
-                sources: [
-                  ast.factory.createSource({
-                    nodes: [ast.factory.createText(`export function ${name}() {\n  return \`${node.path}\` as const\n}\n`)],
-                  }),
-                ],
-              }),
-            ]
-          },
-        }),
-      )
-    },
-  },
-}))
-```
-
-Register it alongside `pluginTs` and your client plugin. For a full walk-through of the plugin anatomy and how to read names off the `plugin-ts` resolver, see [Creating plugins](/docs/5.x/guide/going-further/creating-plugins).
+`urlType: 'export'` used to emit one `get<Operation>Url` function per operation that returned the URL without sending the request. The client plugins no longer generate those. To keep them, build the same helpers from a small `operation` generator in your own plugin. See [Creating plugins](/docs/5.x/guide/going-further/creating-plugins).
 
 ## Query plugins keep `client`
 

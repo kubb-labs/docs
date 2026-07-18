@@ -50,7 +50,7 @@ pluginZod({
 
 ## Removed: `wrapOutput`
 
-The `wrapOutput` callback only fired on object property values, so a top-level string, enum, or union was never wrapped. v5 removes it for a [`printer`](/plugins/plugin-zod/reference/options#printer) override, which targets any node type. Inside an override, `this.base(node)` returns the built-in output, so you wrap it instead of rebuilding it.
+The `wrapOutput` callback only fired on object property values, so a top-level string, enum, or union was never wrapped. v5 removes it for a [`printer`](/plugins/plugin-zod/reference/options#printer) override, which targets any node type.
 
 ```diff [kubb.config.ts]
 pluginZod({

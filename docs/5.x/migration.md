@@ -458,9 +458,9 @@ These changes apply to every plugin that used `transformers` in v4, plus the way
 
 ### `transformers.name` becomes `resolver` {#transformersname-resolver}
 
-A typed [resolver](/docs/5.x/guide/concepts/resolvers) replaces the single `transformers.name(name, type)` callback. Every plugin exposes a top-level `name(name)` method that sets identifier casing, so `resolver: { name(name) { … } }` is the shape for [`@kubb/plugin-ts`](/plugins/plugin-ts/), [`@kubb/plugin-zod`](/plugins/plugin-zod/), [`@kubb/plugin-axios`](/plugins/plugin-axios/), [`@kubb/plugin-fetch`](/plugins/plugin-fetch/), [`@kubb/plugin-react-query`](/plugins/plugin-react-query/), [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query/), [`@kubb/plugin-swr`](/plugins/plugin-swr/), [`@kubb/plugin-msw`](/plugins/plugin-msw/), [`@kubb/plugin-faker`](/plugins/plugin-faker/), [`@kubb/plugin-cypress`](/plugins/plugin-cypress/), and [`@kubb/plugin-mcp`](/plugins/plugin-mcp/). Plugins that emit more than one symbol per operation add namespaced methods on top, such as `response.status` or `query.name`, documented on each plugin's reference page.
+A typed [resolver](/docs/5.x/guide/concepts/resolvers) replaces the single `transformers.name(name, type)` callback. Every plugin exposes a top-level `name(name)` method that sets identifier casing, so `resolver: { name(name) { … } }` is the shape for [`@kubb/plugin-ts`](/plugins/plugin-ts/), [`@kubb/plugin-zod`](/plugins/plugin-zod/), [`@kubb/plugin-axios`](/plugins/plugin-axios/), [`@kubb/plugin-fetch`](/plugins/plugin-fetch/), [`@kubb/plugin-react-query`](/plugins/plugin-react-query/), [`@kubb/plugin-vue-query`](/plugins/plugin-vue-query/), [`@kubb/plugin-swr`](/plugins/plugin-swr/), [`@kubb/plugin-msw`](/plugins/plugin-msw/), [`@kubb/plugin-faker`](/plugins/plugin-faker/), [`@kubb/plugin-cypress`](/plugins/plugin-cypress/), and [`@kubb/plugin-mcp`](/plugins/plugin-mcp/). Plugins that emit multiple symbols per operation add more resolver methods, listed on each plugin's reference page.
 
-Resolver methods bind `this` to the full resolver. `this.default.name(name)` always applies Kubb's core `camelCase` default, not the plugin preset's casing, so call an exported preset like `resolverTs.name(name)` to wrap that preset. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for renaming or relocating files through `file.baseName` and `file.path`.
+Call the plugin's exported preset (`resolverTs.name`, `resolverZod.name`, and so on) to keep the default casing. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for renaming and relocating generated files.
 
 After porting a `transformers.name` callback, verify the generated identifiers: a v5 resolver can receive a differently-cased input than v4, so a custom transform may produce different names.
 
@@ -490,7 +490,7 @@ pluginTs({
 
 ### `transformers.schema` becomes `macros` {#transformersschema-macros}
 
-Schema-level transformations move to [macros](/docs/5.x/guide/going-further/macros). Returning `null` or `undefined` from a macro callback falls back to the built-in behavior.
+Schema-level transformations move to [macros](/docs/5.x/guide/going-further/macros).
 
 ::: code-group
 
@@ -521,34 +521,15 @@ pluginZod({
 
 ### `mapper` is removed {#mapper-removed}
 
-The `mapper` option is gone from every code-generating plugin. Override individual AST node renderers with the `printer` option for type-level customizations, or rewrite nodes with [`macros`](#transformersschema-macros). See [Override a printer](/docs/5.x/guide/going-further/printers) for the handler context.
-
-```typescript [v5]
-import ts from 'typescript'
-import { pluginTs } from '@kubb/plugin-ts'
-
-pluginTs({
-  printer: {
-    nodes: {
-      date() {
-        return ts.factory.createTypeReferenceNode('Date', [])
-      },
-    },
-  },
-})
-```
+The `mapper` option is gone from every code-generating plugin. Override a node renderer with the `printer` option or rewrite nodes with [`macros`](#transformersschema-macros) instead. See [Override a printer](/docs/5.x/guide/going-further/printers).
 
 ### `generators` is removed {#generators-removed}
 
-The `generators` plugin option is gone. It accepted an array of custom `Generator` objects that ran next to the built-in ones. To add custom output, build your own plugin. See [Creating plugins](/docs/5.x/guide/going-further/creating-plugins).
+The `generators` plugin option is gone. To add custom output, build your own plugin. See [Creating plugins](/docs/5.x/guide/going-further/creating-plugins).
 
 ### Query and MCP plugins select a client {#client-becomes-a-selector}
 
 In v4, the `client` option on `pluginReactQuery`, `pluginVueQuery`, `pluginSwr`, and `pluginMcp` was an object that configured a bundled client (`clientType`, `dataReturnType`, `baseURL`, `bundle`, `importPath`). In v5 those plugins call a registered client plugin instead, so `client` is a single string that names it: `'axios'` or `'fetch'`. Register [`@kubb/plugin-axios`](/plugins/plugin-axios/) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch/), set `baseURL` there, and point `client` at it. The client plugin returns the response body, so the generated code reads `res.data` and there is no `dataReturnType`. When exactly one client plugin is registered, Kubb auto-detects it and the string is optional. Each plugin's page shows the before/after for its own config.
-
-## What hasn't changed
-
-Leave these as they are. The npm package names are the same, so no renames in `package.json` beyond the version bump. `adapterOas` still validates by default. plugin-msw keeps its `parser` (`'data'`/`'faker'`). And these options carry over untouched: `group`, `include`, `exclude`, the array form of `override`, `client`, `infinite`, `suspense`, `query`, `mutation`, `baseURL`, `coercion`, `mini`, `seed`, and `handlers`.
 
 ## Per-extension changes
 
@@ -572,7 +553,7 @@ Open the page for each extension you use. The table lists the headline change so
 
 v5 also changes what the generators emit, so update code that imports the generated files. Two changes apply to every generator:
 
-- The banner (`/* Generated by Kubb */`) is set by [`output.defaultBanner`](/docs/5.x/reference/configuration#output-defaultbanner) on the root config (default `'simple'`). Override it per plugin with [`output.banner`](/docs/5.x/reference/configuration#output-banner) and [`output.footer`](/docs/5.x/reference/configuration#output-footer): a string applies to every file, while a function receives per-file context (`isBarrel`, `isAggregation`, `filePath`, `baseName`) so you can skip re-export files, for example adding `'use server'` to source files but not barrels.
+- The banner (`/* Generated by Kubb */`) is set by [`output.defaultBanner`](/docs/5.x/reference/configuration#output-defaultbanner) on the root config (default `'simple'`). Override it per plugin with [`output.banner`](/docs/5.x/reference/configuration#output-banner) and [`output.footer`](/docs/5.x/reference/configuration#output-footer), each taking a string or a per-file function.
 - Response status types now carry a `Status<code>` suffix.
 
 Operations that declare more than one `requestBody` content type now generate one type per content type plus a union alias, and the generated client takes a typed `contentType` argument. v4 used only the first content type, so single-content-type operations are unchanged.
