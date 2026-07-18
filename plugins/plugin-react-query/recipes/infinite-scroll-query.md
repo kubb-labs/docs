@@ -22,6 +22,7 @@ export default defineConfig({
     pluginTs(),
     pluginFetch(),
     pluginReactQuery({
+      hooks: true,
       infinite: {
         queryParam: 'next_page',
         initialPageParam: 0,

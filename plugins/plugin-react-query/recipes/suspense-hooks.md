@@ -7,7 +7,7 @@ outline: deep
 
 # Suspense hooks
 
-[`suspense`](/plugins/plugin-react-query/reference/options#suspense) is on by default and adds a suspense variant next to each query. Set [`hooks: true`](/plugins/plugin-react-query/reference/options#hooks) to generate `useSuspenseQuery` alongside `useQuery`. This needs TanStack Query v5 or later.
+[`suspense`](/plugins/plugin-react-query/reference/options#suspense) adds a suspense variant next to each query. It is off by default, so set `suspense: {}` to turn it on, and pair it with [`hooks: true`](/plugins/plugin-react-query/reference/options#hooks) to generate `useSuspenseQuery` alongside `useQuery`. This needs TanStack Query v5 or later.
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'

@@ -49,7 +49,7 @@ How the plugin consolidates generated code into files.
 |          |                         |
 | -------: | :---------------------- |
 |    Type: | `'directory' \| 'file'` |
-| Default: | `'directory'`           |
+| Default: | `'file'`                |
 
 #### output.barrel
 
@@ -183,9 +183,9 @@ type ResolverZodPatch = {
   }
   param?: {
     name?(node: OperationNode, param: ParameterNode): string    // → 'deletePetPathPetIdSchema'
-    path?(node: OperationNode, param: ParameterNode): string     // → 'deletePetPathPetIdSchema'
-    query?(node: OperationNode, param: ParameterNode): string    // → 'findPetsByStatusQueryStatusSchema'
-    headers?(node: OperationNode, param: ParameterNode): string  // → 'deletePetHeaderApiKeySchema'
+    path?(node: OperationNode, param: ParameterNode): string     // → 'deletePetPathSchema'
+    query?(node: OperationNode, param: ParameterNode): string    // → 'findPetsByStatusQuerySchema'
+    headers?(node: OperationNode, param: ParameterNode): string  // → 'deletePetHeadersSchema'
   }
   response?: {
     status?(node: OperationNode, statusCode: StatusCode): string // → 'listPetsStatus200Schema'

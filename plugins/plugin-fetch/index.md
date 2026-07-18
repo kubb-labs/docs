@@ -76,10 +76,10 @@ From your spec, the generated client gives you:
 - A [status-keyed result](/plugins/plugin-fetch/guide/error-handling) on every call, or a thrown `ResponseError`.
 - [Auth](/plugins/plugin-fetch/guide/authentication) resolved from your OpenAPI security schemes.
 - [Serialization](/plugins/plugin-fetch/guide/serialization) of parameters and bodies across content types, including `multipart/form-data` uploads and binary downloads.
-- Runtime [validation](#validator) against [`@kubb/plugin-zod`](/plugins/plugin-zod/) schemas.
+- Runtime [validation](/plugins/plugin-fetch/reference/options#validator) against [`@kubb/plugin-zod`](/plugins/plugin-zod/) schemas.
 - Typed [server-sent events](/plugins/plugin-fetch/guide/server-sent-events) you read with `for await`.
 - [Interceptors](/plugins/plugin-fetch/guide/interceptors) and a [custom transport](/plugins/plugin-fetch/guide/transport) for the send.
-- Standalone functions or a class-based [SDK](#sdk).
+- Standalone functions or a class-based [SDK](/plugins/plugin-fetch/reference/options#sdk).
 
 It builds on `@kubb/plugin-ts` for the types, so add that to your config. The client uses the built-in `fetch`, so there is no extra HTTP dependency to install.
 
