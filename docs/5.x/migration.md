@@ -733,19 +733,7 @@ per configuration, both versions writing to a fresh directory so the comparison 
 
 The gap widens on bigger specs. In v4, every plugin bootstrapped its own `pluginOas` instance, so
 parsing ran once per plugin. In v5, `adapterOas` parses the spec once and shares the result across
-all plugins, which is why memory stays close to flat for v5 as the spec grows while v4's climbs with
-every additional plugin.
-
-Memory is more nuanced than speed. On the small `petStore.yaml` spec, v5 actually uses more memory
-than v4. The shared adapter and its AST layer carry fixed overhead that a 21-operation spec is too
-small to amortize. That overhead shrinks in relative terms as the spec grows: at 80 operations, v5
-already uses less memory than v4, and by 281 operations v5 holds a roughly flat memory footprint
-while v4's grows linearly with the plugin count. The memory savings compound alongside the speed
-gains.
-
-The `openai.yaml` operation count above reflects the spec's current size, and will keep growing since
-the harness fetches it live from the upstream repository. Re-running the benchmark later means
-comparing against a bigger spec than this page shows, which is expected.
+all plugins.
 
 ## See also
 
