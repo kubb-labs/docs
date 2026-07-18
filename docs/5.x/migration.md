@@ -392,7 +392,7 @@ export default defineConfig({
 
 The `output.override` boolean is gone from the root and every plugin's `output`. It was meant to skip existing files, but v5 never read it, so remove it.
 
-To keep certain files from being written, and to move `storage` from `output.storage` to the top-level `storage` key, supply a custom [storage](/docs/5.x/guide/concepts/storage) that no-ops `setItem` for the paths you protect. Storage owns every write, so it is the single place that decides what lands on disk:
+To keep certain files from being written, and to move `storage` from `output.storage` to the top-level `storage` key, supply a custom [storage](/docs/5.x/guide/concepts/storage) that no-ops `setItem` for the paths you protect:
 
 ```diff [kubb.config.ts]
  import { defineConfig } from 'kubb/config'
