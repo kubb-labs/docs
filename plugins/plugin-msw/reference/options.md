@@ -55,7 +55,7 @@ How the plugin consolidates its generated code into files. `'file'` (the default
 
 #### group.name
 
-Function that turns a group key into the subdirectory name, used also as a suffix when naming aggregate files. It defaults to `({ group }) => camelCase(group)` for tag groups, while `type: 'path'` groups use the first URL segment as-is.
+Function that turns a group key into the subdirectory name. It defaults to `({ group }) => camelCase(group)` for tag groups, while `type: 'path'` groups default to the raw first URL segment, uncased.
 
 ### baseURL
 
@@ -81,7 +81,7 @@ export function getPetHandler(data?: GetPetQueryResponse | ((info: Parameters<Pa
   return http.get('/pet/:petId', function handler(info) {
     if (typeof data === 'function') return data(info)
 
-    return new Response(JSON.stringify(data || getPetQueryResponse(data)), {
+    return new Response(JSON.stringify(data || createGetPetQueryResponse(data)), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     })

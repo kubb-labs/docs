@@ -10,7 +10,7 @@ Every generated function already carries the operation's security, derived from 
 
 ```typescript
 export function addPet<ThrowOnError extends boolean = true>(
-  options: Options<AddPetRequestConfig, ThrowOnError>,
+  options: Options<AddPetOptions, ThrowOnError>,
 ): Promise<RequestResult<AddPetResponses, ThrowOnError>> {
   const { client: request = client, ...config } = options
 

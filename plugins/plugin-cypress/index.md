@@ -45,7 +45,7 @@ resources:
 
 `@kubb/plugin-cypress` turns your OpenAPI operations into typed `cy.request()` wrappers, one helper per operation. Each helper types its path params, body, query, and response, so a broken API call fails at compile time instead of in the test runner. Use the helpers in `before` and `beforeEach` hooks to seed data, in custom commands, or in API-only tests.
 
-Each helper takes its parameters as a single grouped options object shaped as `{ body, path, query, headers }`, with camelCase property names. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you. A helper resolves to the response body and its return type is `Cypress.Chainable<{Operation}Response>`.
+Each helper takes its parameters as a single grouped options object shaped as `{ body, path, query, headers }`. Property names inside each group match the OpenAPI spec exactly, including snake_case or quoted names, and Kubb forwards that object straight into `cy.request()` with no extra mapping. A helper resolves to the response body and its return type is `Cypress.Chainable<{Operation}Response>`.
 
 ## Installation
 
@@ -108,8 +108,8 @@ import { getPetById } from '../gen/cypress/petRequests'
 
 describe('Pet API', () => {
   it('returns the pet by id', () => {
-    getPetById({ path: { petId: 1 } }).then((pet) => {
-      expect(pet.id).to.eq(1)
+    getPetById({ path: { petId: 1n } }).then((pet) => {
+      expect(pet.id).to.eq(1n)
     })
   })
 })

@@ -194,7 +194,7 @@ for (const node of ast.collect<ast.OperationNode>(root, { operation: (node) => n
 
 ## Refs and naming helpers
 
-The ref and naming helpers ship on the `ast` namespace, alongside the other string and code-building utilities. Reach them the same way you reach the guards or node types.
+The ref and naming helpers split across two surfaces. `resolveRefName` ships on the `ast` namespace, reached the same way you reach the guards or node types. `extractRefName`, `childName`, `enumPropName`, and `syncSchemaRef` are named exports of `kubb/kit` itself, not members of the `ast` namespace (the same split as the built-in macros below).
 
 | Helper           | Purpose                                                             |
 | ---------------- | ------------------------------------------------------------------- |
@@ -205,31 +205,21 @@ The ref and naming helpers ship on the `ast` namespace, alongside the other stri
 | `syncSchemaRef`  | Merge a ref node with its resolved schema, letting usage-site fields (`description`, `nullable`) override. |
 
 ```typescript twoslash [refs.ts]
-import { ast } from 'kubb/kit'
+import { extractRefName } from 'kubb/kit'
 
-const name = ast.extractRefName('#/components/schemas/Pet')
+const name = extractRefName('#/components/schemas/Pet')
 //    ^?
 ```
 
 ## Schema graph
 
-Analyze how schemas reference each other, to prune unused schemas or wrap circular ones in a lazy construct.
+Analyze how schemas reference each other, to prune unused schemas or wrap circular ones in a lazy construct. `collectUsedSchemaNames` and `findCircularSchemas` ship on the `ast` namespace. `containsCircularRef` is a named export of `kubb/kit` itself, not a member of the `ast` namespace.
 
 | Helper                   | Purpose                                                                                            |
 | ------------------------ | ------------------------------------------------------------------------------------------------- |
 | `collectUsedSchemaNames` | Collect the names of every top-level schema transitively used by a set of operations. Pair it with `include` filters to leave unreferenced schemas ungenerated. |
 | `findCircularSchemas`    | Find every schema that takes part in a circular dependency chain, so those positions can be wrapped in a lazy getter or `z.lazy(() => …)`. |
-| `containsCircularRef`    | Report whether a schema, or anything nested inside it, references a circular schema.               |
-
-## Schema traversal
-
-Map the children of a composite schema to printer output, pairing each result with the source node. Printer overrides reach for these to recurse through their own `transform`.
-
-| Helper                | Purpose                                                                  |
-| --------------------- | ------------------------------------------------------------------------ |
-| `mapSchemaProperties` | Map each property of an object schema to its transformed output.         |
-| `mapSchemaMembers`    | Map each member of a union or intersection schema to its transformed output. |
-| `mapSchemaItems`      | Map each item of an array or tuple schema to its transformed output.     |
+| `containsCircularRef`    | Report whether a schema, or anything nested inside it, references a circular schema. Import it from `kubb/kit` directly, not through `ast`.  |
 
 ## Constants
 

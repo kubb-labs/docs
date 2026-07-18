@@ -31,9 +31,9 @@ kubb generate --verbose
 Duration  81ms
   Output  ./src/gen
  Timings
-          • @kubb/plugin-react-query ████ 42ms
-          • @kubb/plugin-zod         ██ 21ms
-          • @kubb/plugin-ts          ██ 18ms
+          • plugin-react-query █ 42ms
+          • plugin-zod         █ 21ms
+          • plugin-ts          █ 18ms
 ```
 
 The total is the sum of plugin timings, so it counts generation only. It leaves out the config load, the formatter, the linter, and post-generate hooks.

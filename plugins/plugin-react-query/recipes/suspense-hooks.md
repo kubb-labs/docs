@@ -39,6 +39,7 @@ const { data } = useGetPetByIdSuspense({ path: { petId: 1n } })
 ## Output example
 
 ```typescript [src/gen/hooks/useGetPetByIdSuspense.ts]
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
 import type { GetPetByIdOptions, GetPetByIdStatus200, GetPetByIdStatus400, GetPetByIdStatus404 } from '../types/GetPetById'
 import type { QueryKey, QueryClient, UseSuspenseQueryOptions, UseSuspenseQueryResult } from '@tanstack/react-query'
 import { getPetById } from '../clients/getPetById'
@@ -46,9 +47,11 @@ import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 
 export const getPetByIdSuspenseQueryKey = ({ path }: Omit<GetPetByIdOptions, 'headers'>) => [{ url: '/pet/:petId', params: path }] as const
 
-export function useGetPetByIdSuspense<TData = GetPetByIdStatus200, TQueryKey extends QueryKey = ReturnType<typeof getPetByIdSuspenseQueryKey>>(
+type GetPetByIdSuspenseQueryKey = ReturnType<typeof getPetByIdSuspenseQueryKey>
+
+export function useGetPetByIdSuspense<TData = GetPetByIdStatus200, TQueryKey extends QueryKey = GetPetByIdSuspenseQueryKey>(
   { path }: { path: GetPetByIdOptions['path'] | (() => GetPetByIdOptions['path']) },
-  options: { query?: Partial<UseSuspenseQueryOptions<GetPetByIdStatus200, ResponseErrorConfig<GetPetByIdStatus400 | GetPetByIdStatus404>, TData, TQueryKey>> & { client?: QueryClient }, client?: object } = {},
+  options: { query?: Partial<UseSuspenseQueryOptions<GetPetByIdStatus200, ResponseErrorConfig<GetPetByIdStatus400 | GetPetByIdStatus404>, TData, TQueryKey>> & { client?: QueryClient }, client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>> } = {},
 ) {
   // ...builds queryKey/queryOptions, then calls useSuspenseQuery(...)
 }

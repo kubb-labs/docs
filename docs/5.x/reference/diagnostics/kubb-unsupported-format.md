@@ -42,7 +42,7 @@ components:
 ## Example output
 
 ```text [Terminal]
-[KUBB_UNSUPPORTED_FORMAT] @kubb/adapter-oas: Kubb does not map the format "snowflake" to a specific type, so it falls back to the base type.
+[KUBB_UNSUPPORTED_FORMAT]: Kubb does not map the format "snowflake" to a specific type, so it falls back to the base type.
   at: #/components/schemas/Pet/properties/id
   fix: Use a format Kubb supports, or handle "snowflake" with a custom parser or plugin.
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-unsupported-format

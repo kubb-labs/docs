@@ -609,7 +609,7 @@ export const schemaGenerator = defineGenerator({
 
 ### Extending an existing plugin
 
-Declare `dependencies` when your plugin must run after another. Kubb verifies the dependency at startup and throws when it is missing:
+Declare `dependencies` when your plugin must run after another, to control run order. Kubb does not verify a missing dependency at startup: it silently ignores the dependency while ordering plugins, and the error only surfaces when a generator calls `ctx.requirePlugin('plugin-ts')`, which throws naming the plugin that required it:
 
 ```typescript twoslash [plugin-with-dep.ts]
 import { ast, definePlugin, defineGenerator } from 'kubb/kit'

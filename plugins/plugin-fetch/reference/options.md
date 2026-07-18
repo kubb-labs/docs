@@ -11,7 +11,7 @@ Pass these options to `pluginFetch()` to control what it generates and where the
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'clients' }` | Where the generated files are written and exported |
+| [`output`](#output) | `Output` | `{ path: 'clients', barrel: { type: 'named' } }` | Where the generated files are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`baseURL`](#baseurl) | `string` | — | Base URL prepended to every request |
 | [`validator`](#validator) | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` | `false` | Validate request and response bodies with Zod |

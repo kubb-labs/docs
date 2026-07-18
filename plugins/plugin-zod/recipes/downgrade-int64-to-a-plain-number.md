@@ -40,7 +40,7 @@ export const petSchema = z.object({
 })
 ```
 
-Without the override, that same field prints `id: z.bigint().optional()`. The `integer` node (for 32-bit `format: int32` fields) is a separate handler from `bigint`, so overriding one does not affect the other.
+Without the override, that same field prints `id: z.bigint().optional().meta({ examples: [10] })`. The `integer` node (for 32-bit `format: int32` fields) is a separate handler from `bigint`, so overriding one does not affect the other.
 
 ```typescript [usage.ts]
 import { petSchema } from './src/gen/zod/petSchema'

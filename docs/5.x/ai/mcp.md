@@ -9,7 +9,7 @@ outline: [2, 3]
 
 Kubb ships a [Model Context Protocol](https://modelcontextprotocol.io/) server. It exposes
 code-generation tools to any MCP-capable client. Once connected, your editor or agent runs Kubb
-generation, validates schemas, and inspects configuration from the chat.
+generation, validates schemas, and scaffolds configuration from the chat.
 
 > [!IMPORTANT]
 > The built-in MCP server needs Kubb v5 or higher.

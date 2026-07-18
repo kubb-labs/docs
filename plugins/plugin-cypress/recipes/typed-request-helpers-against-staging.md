@@ -18,7 +18,7 @@ export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [
-    pluginTs(),
+    pluginTs({ output: { path: 'models.ts', mode: 'file' } }),
     pluginCypress({
       output: { path: 'cypress', mode: 'directory' },
       baseURL: 'https://staging.example.com',
@@ -44,7 +44,7 @@ describe('Pet API', () => {
 ## Output example
 
 ```typescript [src/gen/cypress/getPetById.ts]
-import type { GetPetByIdOptions, GetPetByIdResponse } from '../types/GetPetById'
+import type { GetPetByIdOptions, GetPetByIdResponse } from '../models'
 
 export function getPetById({ path }: GetPetByIdOptions, options: Partial<Cypress.RequestOptions> = {}): Cypress.Chainable<GetPetByIdResponse> {
   return cy.request<GetPetByIdResponse>({

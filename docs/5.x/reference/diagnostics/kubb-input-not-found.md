@@ -31,7 +31,7 @@ Kubb resolves a file `input` relative to the config file, then confirms the file
 ## Example output
 
 ```text [Terminal]
-[KUBB_INPUT_NOT_FOUND] @kubb/adapter-oas: Cannot read the file set as `input` (or via `kubb generate PATH`): ./petStore.yaml
+[KUBB_INPUT_NOT_FOUND]: Cannot read the file set as `input` (or via `kubb generate PATH`): ./petStore.yaml
   fix: Check that the path exists and is readable, then set it as `input` or pass it as `kubb generate PATH`.
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-input-not-found
 ```
