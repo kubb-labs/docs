@@ -20,8 +20,8 @@ generation, validates schemas, and scaffolds configuration from the chat.
 
 ## Starting the server
 
-Run the server with one command. It communicates over stdio, the transport that every major LLM
-client speaks.
+Run the server with one command. See [`kubb mcp`](/docs/5.x/reference/commands/mcp#usage) for the
+stdio transport it uses.
 
 ```shell [Terminal]
 kubb mcp

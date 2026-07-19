@@ -7,7 +7,7 @@ outline: deep
 
 # Wrap every hook with shared options
 
-Set [`customOptions`](/plugins/plugin-react-query/reference/options#customoptions) to route every generated hook through your own function, so shared behavior like `onSuccess` or `select` stays in one place instead of repeated per call. The plugin also emits a `HookOptions` type so your wrapper stays in sync with the generated hooks.
+Set [`customOptions`](/plugins/plugin-react-query/reference/options#customoptions) to route every generated hook through your own function, so shared behavior like `onSuccess` or `select` stays in one place instead of repeated per call. It also emits a `HookOptions` type, used below to type the wrapper's return value.
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'

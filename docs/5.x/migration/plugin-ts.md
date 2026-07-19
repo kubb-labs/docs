@@ -113,20 +113,13 @@ export default defineConfig({
 :::
 
 > [!TIP]
-> Set `constCasing: 'pascalCase'` with `typeSuffix: ''` to emit a const and a type that share the schema's exact name. Most hand-written codebases use this convention, so existing annotations and value references keep working.
+> Set `constCasing: 'pascalCase'` with `typeSuffix: ''` to emit a const and a type that share the schema's exact name, the convention most hand-written codebases already use, so existing annotations and value references keep working.
 >
 > ```typescript [v5 kubb.config.ts]
 > pluginTs({ enum: { type: 'asConst', constCasing: 'pascalCase', typeSuffix: '' } })
 > ```
 >
-> ```typescript [Generated output]
-> export const VehicleType = {
->   Sedan: 'Sedan',
->   SUV: 'SUV',
-> } as const
->
-> export type VehicleType = (typeof VehicleType)[keyof typeof VehicleType]
-> ```
+> See [`enum.typeSuffix`](/plugins/plugin-ts/reference/options#enum-typesuffix) for why an empty suffix merges the const and type names.
 
 ## Generated output
 

@@ -15,7 +15,7 @@ A renderer is the step between what a generator returns and the `FileNode`s the 
 
 Building files by hand with `ast.factory` is precise, but it gets verbose once a file has imports, several declarations, and JSDoc. JSX reads better for that, letting a generator describe output as components and nesting instead of a flat list of `create*` calls. Keeping the renderer separate means the generator does not care which style produced the file, since the engine gets `FileNode`s either way.
 
-Kubb ships [`kubb/jsx`](/docs/5.x/reference/jsx) for the JSX path. Its `jsxRenderer` is React-free: components run as plain functions, so hooks and suspense are not available. A generator turns it on by setting its `renderer` field.
+Kubb ships [`kubb/jsx`](/docs/5.x/reference/jsx) for the JSX path, turned on per generator through its `renderer` field. See [`jsxRenderer`](/docs/5.x/reference/kit/renderers#jsxrenderer-via-kubb-jsx) for why it runs without React.
 
 ## When you write your own
 

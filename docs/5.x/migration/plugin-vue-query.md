@@ -55,7 +55,7 @@ Same grouped-options change as [React Query](/docs/5.x/migration/plugin-react-qu
 
 ## `hooks` defaults to `false`
 
-As on [React Query](/docs/5.x/migration/plugin-react-query#hooks-defaults-to-false), the `hooks` default changed from `true` to `false`. Set `hooks: true` to keep the `use*` composables. With the default, Vue Query still emits `queryOptions`, `queryKey`, and `mutationKey`, skipping only the `useQuery`, `useInfiniteQuery`, and `useMutation` composables.
+As on [React Query](/docs/5.x/migration/plugin-react-query#hooks-defaults-to-false), the `hooks` default changed from `true` to `false`, so existing configs that relied on generated composables must now opt in with `hooks: true`. See [`hooks`](/plugins/plugin-vue-query/reference/options#hooks) for exactly which composables each setting emits.
 
 ## Generated output
 

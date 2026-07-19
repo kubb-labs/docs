@@ -86,7 +86,7 @@ This plugin needs three other plugins. `@kubb/plugin-ts` and `@kubb/plugin-zod` 
 - [`@kubb/plugin-zod`](/plugins/plugin-zod/) for the schemas that validate each tool call.
 - [`@kubb/plugin-axios`](/plugins/plugin-axios/) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) for the HTTP client the handlers call.
 
-A client plugin is required, since the handlers call its generated functions. Register one of them and set [`client`](#client) only when both are present.
+A client plugin is required, since the handlers call its generated functions. Register one of them and set [`client`](/plugins/plugin-mcp/reference/options#client) only when both are present.
 
 ## Example
 

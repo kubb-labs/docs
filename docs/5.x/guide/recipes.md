@@ -176,7 +176,7 @@ export default defineConfig({
 
 ## Run a command after generation
 
-Use [`output.postGenerate`](/docs/5.x/reference/configuration#output-postgenerate) to run shell commands once the generated files are formatted and linted. Pass a command string, or `{ name, command }` to label a step. Commands run relative to the project root, in sequence.
+Use [`output.postGenerate`](/docs/5.x/reference/configuration#output-postgenerate) to run shell commands, such as a formatter pass or a type check, once the generated files are formatted and linted.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -252,9 +252,7 @@ export default defineConfig({
 
 ## Programmatic build
 
-Drive Kubb from a script with [`createKubb`](/docs/5.x/reference/kit/engine#createkubb) from the `kubb` package, paired with `Diagnostics` from `kubb/kit`. This fits monorepo orchestration and custom build pipelines.
-
-Unlike `defineConfig`, `createKubb` adds no defaults. Pass `adapter`, `parsers`, and your plugins yourself.
+Drive Kubb from a script with [`createKubb`](/docs/5.x/reference/kit/engine#createkubb) from the `kubb` package, paired with `Diagnostics` from `kubb/kit`. This fits monorepo orchestration and custom build pipelines. Unlike `defineConfig`, `createKubb` takes no defaults, so the script below passes `adapter`, `parsers`, and plugins explicitly.
 
 ```typescript twoslash [generate.ts]
 import { createKubb } from 'kubb'

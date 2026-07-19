@@ -107,7 +107,7 @@ See the [plugins](/plugins) page for a complete list.
 
 ### 3. Create `kubb.config.ts`
 
-Create a `kubb.config.ts` file in your project root. The config points Kubb at your spec and your output directory, and `defineConfig` wires up the OpenAPI adapter, the default parsers, and a barrel plugin for you. Here is a minimal starting point:
+Create a `kubb.config.ts` file in your project root. The config points Kubb at your spec and your output directory, and `defineConfig` wires up the [OpenAPI adapter, the default parsers, and a barrel plugin](/docs/5.x/reference/kit/engine#defaults-applied-for-omitted-fields) for you. Here is a minimal starting point:
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'

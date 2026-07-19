@@ -61,16 +61,9 @@ Yes. Each plugin exposes a `resolver` option to rename operations and types, and
 
 ### Can I run multiple configs in one command?
 
-Yes. Pass an array to `defineConfig`. Each entry has its own `input`, `output`, and `plugins`.
-
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb/config'
-
-export default defineConfig([
-  { input: './specs/users.yaml', output: { path: './src/gen/users' }, plugins: [] },
-  { input: './specs/orders.yaml', output: { path: './src/gen/orders' }, plugins: [] },
-])
-```
+Yes. Pass an array to `defineConfig` and each entry generates from its own `input`, `output`, and
+`plugins`. See [multiple configurations](/docs/5.x/reference/configuration#multiple-configurations-array)
+for the shape and how to combine it with the function form.
 
 ### Does Kubb work inside a bundler (Vite, webpack, etc.)?
 

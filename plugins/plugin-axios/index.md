@@ -72,10 +72,10 @@ From your spec, the generated client gives you:
 - A [status-keyed result](/plugins/plugin-axios/guide/error-handling) on every call, or a thrown `ResponseError`.
 - [Auth](/plugins/plugin-axios/guide/authentication) resolved from your OpenAPI security schemes.
 - [Serialization](/plugins/plugin-axios/guide/serialization) of parameters and bodies across content types, including `multipart/form-data` uploads and binary downloads.
-- Runtime [validation](#validator) against [`@kubb/plugin-zod`](/plugins/plugin-zod/) schemas.
+- Runtime [validation](/plugins/plugin-axios/reference/options#validator) against [`@kubb/plugin-zod`](/plugins/plugin-zod/) schemas.
 - Typed [server-sent events](/plugins/plugin-fetch/guide/server-sent-events) you read with `for await`.
 - [Interceptors](/plugins/plugin-axios/guide/interceptors) and a [custom transport](/plugins/plugin-axios/guide/transport) for the send.
-- Standalone functions or a class-based [SDK](#sdk).
+- Standalone functions or a class-based [SDK](/plugins/plugin-axios/reference/options#sdk).
 
 It builds on `@kubb/plugin-ts` for the types, so add that to your config, and axios is a runtime dependency to install next to your app.
 

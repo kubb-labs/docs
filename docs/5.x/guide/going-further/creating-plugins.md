@@ -273,7 +273,7 @@ A generator walks the [AST](/docs/5.x/guide/concepts/ast) produced by the [adapt
 | `operation`  | Each `OperationNode` in the AST                         | `Array<FileNode>`, an element, or `null`/`undefined` |
 | `operations` | Once with all `OperationNode`s after the operation walk | `Array<FileNode>`, an element, or `null`/`undefined` |
 
-Each handler can return a Promise of any of these.
+Each handler can return a Promise of any of these. See the [generator methods table](/docs/5.x/reference/kit/generators#generator-methods) for the full reference entry.
 
 ### Emit roles
 
@@ -360,6 +360,8 @@ Users override your plugin's resolver through its `resolver` option in `kubb.con
 | `injectFile`      | Inject a raw `UserFileNode` into the build, bypassing generators.                 |
 | `config`          | The resolved `Config` at setup time.                                              |
 | `options`         | The user-supplied plugin options.                                                 |
+
+See the [`KubbPluginSetupContext` methods table](/docs/5.x/reference/kit/plugins#kubbpluginsetupcontext-methods-passed-to-kubb-plugin-setup) for the full reference entry.
 
 ```typescript twoslash [setup-context.ts]
 import { fileURLToPath } from 'node:url'

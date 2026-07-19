@@ -7,7 +7,7 @@ outline: deep
 
 # Custom query keys
 
-Pass a [`queryKey`](/plugins/plugin-vue-query/reference/options#querykey) builder to control the array TanStack Query uses to cache and invalidate a hook's data. The callback receives the operation node and returns the key array, and string values are inlined verbatim, so wrap a literal in `JSON.stringify(...)`.
+Pass a [`queryKey`](/plugins/plugin-vue-query/reference/options#querykey) builder to control the array TanStack Query uses to cache and invalidate a hook's data, wrapping string literals in `JSON.stringify(...)` since the builder inlines values verbatim.
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'

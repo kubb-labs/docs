@@ -22,7 +22,7 @@ export default defineConfig({
 })
 ```
 
-`input` accepts a local file path, a URL, inline OpenAPI content, or a parsed object. `output.clean: true` wipes the output directory before each run, so stale files don't pile up.
+[`input`](/docs/5.x/reference/configuration#input) accepts a file path, URL, inline spec, or parsed object, and [`output.clean: true`](/docs/5.x/reference/configuration#output-clean) wipes the output directory before each run so stale files don't pile up.
 
 ## 2. Pick your plugins
 
