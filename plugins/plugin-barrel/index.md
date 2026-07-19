@@ -48,9 +48,7 @@ resources:
 
 `@kubb/plugin-barrel` writes the `index.ts` barrel files. It adds one barrel per plugin output directory and one root barrel at `output.path/index.ts`. This runs after the build finishes, so you import everything from one entry point, like `import { Pet, usePetByIdQuery, petMock } from './gen'`.
 
-The plugin is registered by default in `defineConfig`, but `output.barrel` defaults to `false`, so no barrels are written until you set it, root or per-plugin.
-
-A plugin inherits `output.barrel` from `config.output.barrel` when it sets none of its own. Set `barrel: false` on a plugin to skip its barrel and drop its files from the root barrel.
+The plugin is registered by default in `defineConfig`, but `output.barrel` defaults to `false`, so no barrels are written until you set it, root or per-plugin. A plugin inherits `output.barrel` from `config.output.barrel` when it sets none of its own. Set `barrel: false` on a plugin to skip its barrel and drop its files from the root barrel.
 
 ## Installation
 

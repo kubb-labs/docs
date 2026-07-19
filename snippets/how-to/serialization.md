@@ -4,8 +4,7 @@
 Between the typed parameters you pass and the typed result you read, the client does the encoding
 and decoding. It reads each parameter's OpenAPI `style` and `explode` from your spec, picks a body
 encoder from the request content type, and decodes the response by its media type. Most of this
-needs no configuration: Kubb bakes the per-parameter metadata into each generated function. This
-page covers what it does by default and how to override each step.
+needs no configuration: Kubb bakes the per-parameter metadata into each generated function.
 
 The behavior is identical for [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and [`@kubb/plugin-axios`](/plugins/plugin-axios/).
 
@@ -89,8 +88,8 @@ client.setConfig({
 })
 ```
 
-A serializer set this way runs for every call. Pass `serializer` on a single call to override just
-that request.
+A serializer set this way runs for every call, but you can pass `serializer` on a single call to
+override just that request.
 
 ## Request bodies
 
@@ -99,12 +98,6 @@ common types: a plain object becomes JSON, `multipart/form-data` becomes `FormDa
 `application/x-www-form-urlencoded` becomes `URLSearchParams`. Binary and already-encoded bodies
 (`FormData`, `URLSearchParams`, `Blob`, `ArrayBuffer`, typed arrays, and strings) pass through
 untouched.
-
-```typescript
-// body { name: 'odie' }                                    -> {"name":"odie"}
-// body { field: 'x' }, multipart/form-data                 -> FormData
-// body { plan: 'pro' }, application/x-www-form-urlencoded  -> URLSearchParams
-```
 
 When an operation declares a single request content type, Kubb sets it on the generated function,
 so you pass only the body. For an operation that accepts more than one, set
@@ -171,8 +164,8 @@ For `responseType: 'stream'`, see [server-sent events](/plugins/plugin-fetch/gui
 To talk XML in both directions, register one codec for the media type with both halves. `serialize`
 turns the request object into XML, `deserialize` turns the XML response back into data, and
 `contentType` sets the request `Content-Type` and the `Accept` header so the server answers in XML.
-The example below uses `fast-xml-parser` for plain-object data, where the `DOMParser` deserializer
-above returns a DOM `Document` instead:
+The example below uses `fast-xml-parser` for plain-object data. The earlier `DOMParser`
+deserializer returns a DOM `Document` instead:
 
 ```typescript
 import { client } from './gen/clients/.kubb/client'
@@ -201,9 +194,6 @@ const { data } = await updatePet({
 })
 // the body is built to XML, and data is parsed from the XML response
 ```
-
-When the spec already types an operation as XML, Kubb sets the content type for you and you pass
-only the body. Set `contentType` yourself for an operation that offers more than one media type.
 
 ## Response validation
 

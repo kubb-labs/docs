@@ -35,7 +35,7 @@ export default defineConfig({
 
 ## Output example
 
-Every generated hook calls `useCustomHookOptions({ hookName, operationId })` and spreads the result into its query/mutation options, and the barrel re-exports your `HookOptions` type so a typed wrapper stays in sync:
+Every generated hook calls `useCustomHookOptions({ hookName, operationId })` and spreads the result into its query/mutation options. The barrel also re-exports your `HookOptions` type:
 
 ```typescript [src/gen/hooks/useGetPetById.ts]
 import { useCustomHookOptions } from './useCustomHookOptions'

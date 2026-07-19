@@ -8,7 +8,6 @@ cuts across every request, such as a trace header, request logging, or a token r
 The channels carry a different payload on each transport. [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) hands you the
 resolved request and result as plain objects, while [`@kubb/plugin-axios`](/plugins/plugin-axios/) wraps axios's own
 interceptor managers, so a handler there receives the native axios config, response, and error.
-The examples below show both.
 
 ## Run before the send
 
@@ -44,8 +43,8 @@ so headers go through `AxiosHeaders` and the body is on `data`.
 
 ## Run after the send
 
-A response interceptor sees every result before the call resolves, so it is the place to log,
-collect metrics, or reshape a body across the board. On fetch it runs before the success or error
+A response interceptor sees every result before the call resolves, so use it to log, collect
+metrics, or reshape a body across the board. On fetch it runs before the success or error
 split and before any deserializer, so `result.data` is still the raw body.
 
 ::: code-group
@@ -92,20 +91,20 @@ client.interceptors.error.use((error) => {
 
 :::
 
-The fetch handler receives the `ResponseError`, the axios handler an `AxiosError`. This channel
-only fires on the throw path. When you read with `throwOnError: false`, a documented non-2xx
-response resolves and no error interceptor runs, so inspect the returned `error` on the result
-instead. A transport failure (no response at all) still throws on both. On axios the channel still
-fires, since it is wired directly into axios's own rejection handling. On fetch the channel does
-not fire, since there is no result to hand the interceptor stacks. See
+The fetch handler receives the `ResponseError`, the axios handler an `AxiosError`, and this
+channel only fires on the throw path. When you read with `throwOnError: false`, a documented
+non-2xx response resolves and no error interceptor runs, so inspect the returned `error` on the
+result instead. A transport failure (no response at all) still throws on both, but only axios
+fires the error channel for it, since the channel is wired directly into its own rejection
+handling, while fetch has no result to hand the interceptor stacks. See
 [error handling](/plugins/plugin-fetch/guide/error-handling) for that path.
 
 ## Add, replace, and remove handlers
 
 `use` registers a handler and returns an id. Pass that id to `eject` to remove it, or to `update`
-to swap its function in place. Response and error handlers run in the order they were registered.
-Request handlers do too on `plugin-fetch`, but `plugin-axios` delegates to axios, which runs
-request handlers in reverse registration order.
+to swap its function in place. Response and error handlers run in the order they were registered,
+and so do request handlers on `plugin-fetch`, but `plugin-axios` delegates to axios, which runs
+them in reverse registration order.
 
 ```typescript
 const id = client.interceptors.request.use((request) => request)

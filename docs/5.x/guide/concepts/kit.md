@@ -21,7 +21,7 @@ A plugin is the usual starting point. `definePlugin` gives you the lifecycle hoo
 
 ## AST helpers
 
-Most generator handlers end by building a node, so the [`ast`](/docs/5.x/guide/concepts/ast) namespace sits in the same import. It ships the `factory` builders, the type guards, the macros, the printers a parser drives, and the `transform` and `collect` visitors. Pull `ast` from `kubb/kit` whether you are inside a plugin or writing a standalone script that reads a spec on its own.
+Most generator handlers end by building a node, so the [`ast`](/docs/5.x/guide/concepts/ast) namespace sits in the same import. It ships the `factory` builders, the type guards, the macros, the printers a parser drives, and the `transform` and `collect` visitors. Pull `ast` from `kubb/kit` whether you are inside a plugin or writing a standalone script that reads a spec.
 
 ## Core helpers
 

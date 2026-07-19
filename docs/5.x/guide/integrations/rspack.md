@@ -35,7 +35,7 @@ yarn add -D kubb@beta
 
 ## Configure
 
-Add the plugin to your `rspack.config.js` and pass it your Kubb config.
+Add the plugin to your `rspack.config.js`:
 
 ```javascript [rspack.config.js]
 const kubb = require('kubb/rspack')

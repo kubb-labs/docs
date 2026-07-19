@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Installation
 
-This page walks you through getting Kubb running in your project, from the first install to your first generated files. Pick the quick start if you want the wizard to set everything up for you, or follow the manual steps to see each piece.
+Get Kubb running in your project, from the first install to your first generated files. Pick the quick start for the wizard to set everything up, or follow the manual steps to see each piece.
 
 ## Prerequisites
 
@@ -32,15 +32,15 @@ Once the wizard finishes, generate your files:
 npx kubb@beta generate
 ```
 
-That is all you need to get started. If you would rather set things up by hand, the manual steps below walk through the same result one piece at a time.
+That is all you need to get started. To set things up by hand, the manual steps below walk through the same result one piece at a time.
 
 ## Manual installation
 
-Prefer to do it yourself? These five steps install Kubb, add the plugins you want, write a config, and run your first generation.
+These five steps install Kubb, add the plugins you want, write a config, and run your first generation.
 
 ### 1. Install Kubb
 
-Start by adding the `kubb` package as a dev dependency. Use the tab for your package manager:
+Add the `kubb` package as a dev dependency. Use the tab for your package manager:
 
 ::: code-group
 
@@ -67,7 +67,7 @@ yarn add -D kubb@beta
 
 ### 2. Add plugins
 
-Each output format is its own package, so you install only what you need. The example below adds TypeScript types, an Axios client, and React Query hooks, but you can swap in any plugins from the table that follows:
+Each output format is its own package, so you install only what you need. The example below adds TypeScript types, an Axios client, and React Query hooks, but you can swap in any plugin from the table that follows:
 
 ::: code-group
 
@@ -107,7 +107,7 @@ See the [plugins](/plugins) page for a complete list.
 
 ### 3. Create `kubb.config.ts`
 
-Next, create a `kubb.config.ts` file in your project root. The config points Kubb at your spec and your output directory, and `defineConfig` wires up the OpenAPI adapter, the default parsers, and a barrel plugin for you. Here is a minimal starting point:
+Create a `kubb.config.ts` file in your project root. The config points Kubb at your spec and your output directory, and `defineConfig` wires up the OpenAPI adapter, the default parsers, and a barrel plugin for you. Here is a minimal starting point:
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -128,7 +128,7 @@ Kubb looks for `kubb.config.ts` in the project root and the `.config/` and `conf
 
 ### 4. Add a script
 
-To save typing, add a `generate` script to your `package.json` so you can run generation with one command:
+Add a `generate` script to your `package.json` to run generation with one command:
 
 ```json [package.json]
 {
@@ -140,7 +140,7 @@ To save typing, add a `generate` script to your `package.json` so you can run ge
 
 ### 5. Generate
 
-You are ready for the payoff. Run the script to generate your files:
+Run the script to generate your files:
 
 ```shell [Terminal]
 npm run generate
@@ -148,4 +148,4 @@ npm run generate
 
 Your generated files appear under `output.path`. Re-run this command whenever your spec changes, and the output updates to match.
 
-Nice work, your project is set up. Continue to [Basic Usage](./basic-usage) to write a full config with multiple plugins. Jump to [Configuration](/docs/5.x/reference/configuration) for every option. To run generation from your bundler, see [Integrations](/docs/5.x/guide/integrations/).
+Your project is set up. Continue to [Basic Usage](./basic-usage) to write a full config with multiple plugins. Jump to [Configuration](/docs/5.x/reference/configuration) for every option. To run generation from your bundler, see [Integrations](/docs/5.x/guide/integrations/).

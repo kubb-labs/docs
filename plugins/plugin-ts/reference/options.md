@@ -7,8 +7,6 @@ outline: deep
 
 # Options
 
-Options for `pluginTs`, with type and default in the table.
-
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
 | [`output`](#output) | `Output` | `{ path: 'types' }` | Where the generated files are written and exported |
@@ -144,7 +142,7 @@ export type PetStatusKey = (typeof PetStatus)[keyof typeof PetStatus]
 
 #### enum.typeSuffix
 
-Suffix on the type alias generated when `type` is `'asConst'` (`string`, default `'Key'`). The const object name is unaffected, so only the companion type alias is renamed. Set it to `''` to drop the suffix, which with `constCasing: 'pascalCase'` merges the const and type under one name.
+Suffix on the type alias generated when `type` is `'asConst'` (`string`, default `'Key'`), applied only to the companion type alias, not the const object name. Set it to `''` to drop the suffix, which with `constCasing: 'pascalCase'` merges the const and type under one name.
 
 ::: code-group
 
@@ -194,7 +192,7 @@ Casing applied to enum key names, `'none'` by default (the raw value from the sp
 
 ### syntaxType
 
-Whether object schemas are emitted as `type` aliases or `interface` declarations. `type` is the safer default. Pick `interface` only when consumers need declaration merging, which is rare for generated code and covered in [Type vs Interface](https://www.totaltypescript.com/type-vs-interface-which-should-you-use).
+Whether object schemas are emitted as `type` aliases or `interface` declarations, with `type` as the safer default. Pick `interface` only when consumers need declaration merging, which is rare for generated code and covered in [Type vs Interface](https://www.totaltypescript.com/type-vs-interface-which-should-you-use).
 
 ::: code-group
 

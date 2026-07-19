@@ -14,7 +14,7 @@ The linter pass over the generated files failed. Linting runs after generation. 
 
 ## What happened
 
-When `output.lint` is set, Kubb runs the configured linter (oxlint, biome, or eslint) over the output directory. A non-zero exit from the linter shows up here, in the summary, and in `--reporter json`. It fails the run. Earlier versions swallowed it.
+When `output.lint` is set, Kubb runs the configured linter (oxlint, biome, or eslint) over the output directory. A non-zero exit from the linter shows up here, in the summary, and in `--reporter json`. Earlier versions swallowed it.
 
 ## How to fix it
 

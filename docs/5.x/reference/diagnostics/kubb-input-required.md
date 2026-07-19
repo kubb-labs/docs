@@ -14,7 +14,7 @@ An adapter is configured but no `input` was provided, so there is nothing to par
 
 ## What happened
 
-The adapter needs a source document. It reads one from `input`: a file path, a URL, an inline spec, or a parsed object. This diagnostic fires when `input` is not set. It also fires when merging is requested but no documents are passed.
+The adapter needs a source document, read from `input`: a file path, a URL, an inline spec, or a parsed object. This diagnostic fires when `input` is not set, or when merging is requested but no documents are passed.
 
 ## How to fix it
 

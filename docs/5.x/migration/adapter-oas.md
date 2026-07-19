@@ -85,7 +85,7 @@ export default defineConfig({
 
 `pluginOas()` no longer belongs in `plugins`. Its `validate`, `discriminator`, and `contentType` options move to the same `adapter` key, and the old `serverIndex` and `serverVariables` become a single `server: { index, variables }` object. See [`@kubb/plugin-oas` removed](/docs/5.x/migration#kubb-plugin-oas-removed) on the main guide. `validate` still defaults to `true`.
 
-The `discriminator` values are also renamed. Use `'preserve'` in place of `'strict'`, and `'propagate'` in place of `'inherit'`. The default is `'preserve'`, so drop the option unless you want the old `'inherit'` behavior.
+The `discriminator` values are also renamed: `'strict'` → `'preserve'` and `'inherit'` → `'propagate'`. The default is `'preserve'`, so drop the option unless you want the old `'inherit'` behavior.
 
 ::: code-group
 

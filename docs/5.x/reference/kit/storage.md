@@ -62,11 +62,11 @@ The `Storage` interface is the shape every backend implements. A `Storage` insta
 
 ## `fsStorage`
 
-`fsStorage` is the built-in filesystem storage backend. Kubb uses it by default when no `storage` option is set in the config. It creates output directories automatically and respects `output.path`.
+`fsStorage` is the built-in filesystem storage backend, used by default when no `storage` option is set in the config. It creates output directories automatically and respects `output.path`.
 
 ## `memoryStorage`
 
-`memoryStorage` is the built-in in-memory storage backend. It writes nothing to disk, so it suits plugin tests, CI validation, and dry runs.
+`memoryStorage` is the built-in in-memory storage backend that writes nothing to disk, so it suits plugin tests, CI validation, and dry runs.
 
 > [!NOTE]
 > Both `fsStorage` and `memoryStorage` are exported from `kubb/kit` and can be passed directly to the `storage` field at the root of your config.

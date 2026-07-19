@@ -34,7 +34,7 @@ Preferred media type when an operation defines several. Without a value, Kubb fa
 
 Selects which entry in the spec's `servers` array Kubb resolves into the document `baseURL`, filling in any `{variable}` placeholders. `server.index` points at one of the spec's servers, usually `0` for the primary one. `server.variables` supplies placeholder values, falling back to each variable's `default` from the spec. Omit `server` and `baseURL` resolves to `null`.
 
-The resolved `baseURL` reaches banner functions through `BannerMeta.baseURL`. It does not set request URLs on its own. To change where a generated client sends requests, use that plugin's own `baseURL` option ([`@kubb/plugin-fetch`](/plugins/plugin-fetch/), [`@kubb/plugin-axios`](/plugins/plugin-axios/), [`@kubb/plugin-msw`](/plugins/plugin-msw/)).
+The resolved `baseURL` reaches banner functions through `BannerMeta.baseURL` but does not set request URLs on its own. To change where a generated client sends requests, use that plugin's own `baseURL` option ([`@kubb/plugin-fetch`](/plugins/plugin-fetch/), [`@kubb/plugin-axios`](/plugins/plugin-axios/), [`@kubb/plugin-msw`](/plugins/plugin-msw/)).
 
 With a spec server of `https://api.{env}.example.com`, `server: { index: 0, variables: { env: 'prod' } }` resolves `baseURL` to `https://api.prod.example.com`.
 
@@ -42,7 +42,7 @@ With a spec server of `https://api.{env}.example.com`, `server: { index: 0, vari
 
 How `discriminator` fields on `oneOf`/`anyOf` schemas are interpreted.
 
-- `'preserve'` (default) keeps child schemas exactly as written. The discriminator narrows types at the call site, but child shapes stay the same.
+- `'preserve'` (default) keeps child schemas exactly as written, though the discriminator still narrows types at the call site.
 - `'propagate'` pushes the discriminator property with its literal value into each child schema, so each branch's `type` field is precisely typed.
 
 ::: code-group

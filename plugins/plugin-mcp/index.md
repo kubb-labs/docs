@@ -48,11 +48,11 @@ resources:
 
 # @kubb/plugin-mcp
 
-`@kubb/plugin-mcp` turns your OpenAPI spec into a [Model Context Protocol](https://modelcontextprotocol.io/introduction) server. Each operation becomes one MCP tool. AI assistants like Claude Desktop and Claude Code call those tools to reach your API. The plugin generates the tool handlers plus a `server.ts` and `.mcp.json`, and validates each call with the schemas from `@kubb/plugin-zod`.
+`@kubb/plugin-mcp` turns your OpenAPI spec into a [Model Context Protocol](https://modelcontextprotocol.io/introduction) server, with each operation becoming an MCP tool that AI assistants like Claude Desktop and Claude Code can call to reach your API. The plugin generates the tool handlers, a `server.ts`, and a `.mcp.json`, and validates each call with the schemas from `@kubb/plugin-zod`.
 
-Each handler calls a registered client plugin, so you must add `@kubb/plugin-axios` or `@kubb/plugin-fetch` alongside `@kubb/plugin-ts` and `@kubb/plugin-zod`. Without a client plugin, the build stops with a setup error.
+Each handler calls a registered client plugin, so add `@kubb/plugin-axios` or `@kubb/plugin-fetch` alongside `@kubb/plugin-ts` and `@kubb/plugin-zod`. Without a client plugin, the build stops with a setup error.
 
-This plugin generates an MCP server from your spec. It is not the same as the built-in `kubb mcp` server that exposes the Kubb CLI itself, which is documented under [AI / MCP](/docs/5.x/ai/mcp).
+This plugin generates an MCP server from your spec, distinct from the built-in `kubb mcp` server that exposes the Kubb CLI itself, documented under [AI / MCP](/docs/5.x/ai/mcp).
 
 The [Connect Claude to a remote MCP server](https://modelcontextprotocol.io/docs/tools/claude-desktop) guide explains how to register the generated server with an assistant.
 
@@ -86,7 +86,7 @@ This plugin needs three other plugins. `@kubb/plugin-ts` and `@kubb/plugin-zod` 
 - [`@kubb/plugin-zod`](/plugins/plugin-zod/) for the schemas that validate each tool call.
 - [`@kubb/plugin-axios`](/plugins/plugin-axios/) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) for the HTTP client the handlers call.
 
-A client plugin is required. The handlers call its generated functions, so the build stops with a setup error when no client plugin is registered. Register one of them and set [`client`](#client) only when both are present.
+A client plugin is required, since the handlers call its generated functions. Register one of them and set [`client`](#client) only when both are present.
 
 ## Example
 

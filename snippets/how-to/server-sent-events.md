@@ -3,7 +3,7 @@
 
 An operation that returns `text/event-stream` streams its response instead of resolving to one
 body. Kubb generates a function for it that hands back a typed event stream you read with
-`for await`, rather than the usual `RequestResult`. The events stay typed from the spec, and the
+`for await`, rather than the usual `RequestResult`. Events are typed from the spec, and the
 native response stays reachable alongside them.
 
 Both [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and [`@kubb/plugin-axios`](/plugins/plugin-axios/) support this. On axios, streaming needs the
@@ -37,7 +37,7 @@ type ServerSentEvent<TData> = {
 ```
 
 The runtime parses each event's `data` as JSON when it is valid and keeps it as the raw string
-otherwise, so a stream of JSON payloads arrives already decoded.
+otherwise.
 
 ## Stop early
 
@@ -67,7 +67,7 @@ controller.abort()
 ## Read the response
 
 The native `response` sits next to the stream, so status and headers are there before you start
-reading events. This is the place to check a header the server sets when the stream opens:
+reading events. Check it for a header the server sets when the stream opens:
 
 ```typescript
 const { stream, response } = await streamEvents({})

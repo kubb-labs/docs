@@ -15,7 +15,7 @@ Kubb turns API specifications into code through a layered pipeline:
 - [Parsers](/docs/5.x/guide/concepts/parsers) convert each `FileNode` into source code.
 - [Storage](/docs/5.x/guide/concepts/storage) writes the result to disk.
 
-Each section below summarizes one layer and links to its full page. Start here for the shape of the pipeline, then follow a link when you need the detail.
+Each section below summarizes one layer and links to its full page for more detail.
 
 ## Pipeline overview
 

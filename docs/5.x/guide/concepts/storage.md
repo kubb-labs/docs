@@ -7,7 +7,7 @@ outline: deep
 
 # Storage
 
-Storage is the layer that decides where generated files end up. The generation pipeline never writes to disk directly. It hands each file to a storage driver, and the driver decides what to do with it. That one indirection is what lets the same build target the local filesystem in development, an in-memory map during tests, or any backend you write.
+Storage is the layer that decides where generated files end up. The generation pipeline never writes to disk directly. It hands each file to a storage driver instead. That one indirection is what lets the same build target the local filesystem in development, an in-memory map during tests, or any backend you write.
 
 <FlowDiagram preset="storage" />
 

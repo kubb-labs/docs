@@ -1,12 +1,11 @@
 # Call operations
 
 [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and [`@kubb/plugin-axios`](/plugins/plugin-axios/) turn each operation in your OpenAPI spec into a
-typed function. The two plugins generate different transports but share one calling convention, so
-the code on this page reads the same whichever you pick. Swap the import and the examples still
-hold.
+typed function that takes a single grouped options object and returns one `RequestResult`. The two
+plugins generate different transports but share this calling convention, so swap the import and the
+examples on this page still hold.
 
-Every operation takes a single grouped options object and returns one `RequestResult`. The
-parameters are typed from the spec, and the result carries the status, the parsed body, and the
+The parameters are typed from the spec, and the result carries the status, the parsed body, and the
 native request and response.
 
 ## Call an operation
@@ -79,7 +78,7 @@ console.info(response.headers.get('x-ratelimit-remaining'))
 ```
 
 When an operation documents more than one success status, narrow on `status` to reach the body
-for that case. TypeScript follows the check:
+for that case, and TypeScript follows the check:
 
 ```typescript
 const result = await getPetById({ path: { petId: 1 } })
@@ -151,8 +150,7 @@ const staging = createClient({ baseURL: 'https://staging.example.com/v1' })
 await getPetById({ path: { petId: 1 }, client: staging })
 ```
 
-The configuration object is the same `ClientConfig` in both cases. `baseURL`, `auth`, and the
-transport each have their own guide, linked below.
+The configuration object is the same `ClientConfig` in both cases.
 
 ## Build a URL without sending
 

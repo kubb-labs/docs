@@ -67,9 +67,7 @@ Selects which registered client plugin the composables call: `'axios'` for `@kub
 
 ### infinite
 
-Adds infinite-query output for cursor- or page-based pagination. Pass an object to configure how the cursor is read, or `false` (the default) to skip. Output is emitted for an operation only when it declares a query parameter matching `infinite.queryParam` (default `'id'`), and only when [`hooks`](#hooks) is also `true`.
-
-With [`hooks`](#hooks) at its default of `false`, setting `infinite` produces no file at all, not the factory or the composable. Set `hooks: true` alongside `infinite` to generate the file and its `useInfiniteQuery` composable:
+Adds infinite-query output for cursor- or page-based pagination. Pass an object to configure how the cursor is read, or `false` (the default) to skip. Output is emitted for an operation only when it declares a query parameter matching `infinite.queryParam` (default `'id'`) and [`hooks`](#hooks) is also `true`. Without `hooks: true`, `infinite` produces no file at all, not even the factory:
 
 ::: code-group
 
@@ -153,13 +151,13 @@ Module specifier for the generated `import { useMutation } from '...'`, emitted 
 
 ### mutationKey
 
-Builds the `mutationKey` for each mutation composable, useful for batching invalidations. It takes the same `{ node, casing }` props as `queryKey` and inlines strings verbatim, so wrap literals in `JSON.stringify(...)`. Defaults to the built-in `mutationKeyTransformer`.
+Builds the `mutationKey` for each mutation composable, useful for batching invalidations. It takes the same `{ node, casing }` props as `queryKey`, inlines strings the same way (wrap literals in `JSON.stringify(...)`), and defaults to the built-in `mutationKeyTransformer`.
 
 ### hooks
 
 Controls whether `use*` composables are emitted. The default `false` writes only the `queryOptions`, `queryKey`, and `mutationKey` factory helpers for plain queries and mutations. Set `true` to also generate `useQuery`, `useInfiniteQuery`, and `useMutation`.
 
-The [`infinite`](#infinite) factory and composable are gated on `hooks` too: with `hooks: false`, setting `infinite` writes nothing at all, not even `infiniteQueryOptions`.
+[`infinite`](#infinite) is gated on `hooks` too, writing nothing while `hooks` is `false`.
 
 ### include
 

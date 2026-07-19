@@ -14,7 +14,7 @@ An adapter converts an input specification into the universal [AST](/docs/5.x/gu
 
 ## `createAdapter`
 
-`createAdapter` builds adapters that translate specs into Kubb's universal AST. Write a custom adapter when your source is something Kubb does not parse yet, such as a GraphQL schema, a gRPC definition, an AsyncAPI spec, or your own domain-specific language.
+`createAdapter` builds adapters that translate specs into Kubb's universal AST. Reach for it when your source is something Kubb doesn't already parse, such as your own domain-specific language.
 
 A minimal adapter declares a name and returns an empty [`InputNode`](/docs/5.x/guide/concepts/ast). An empty AST emits nothing, so fill `schemas` and `operations` from your spec next.
 

@@ -7,8 +7,8 @@ outline: [2, 3]
 
 # Diagnostics
 
-When a build fails, Kubb prints a diagnostic. It carries a stable code, the message, the location in
-your document, and a suggested fix. The CLI leads with the code and lists the details below it:
+When a build fails, Kubb prints a diagnostic with a stable code, the message, the location in your
+document, and a suggested fix. The CLI leads with the code and lists the details below it:
 
 ```text [Terminal]
 [KUBB_REF_NOT_FOUND]: Could not find a definition for #/components/schemas/Pet.
@@ -56,7 +56,7 @@ The severity tints the `[CODE]` tag.
 ## Plugins
 
 These carry whatever a plugin reports through its generator context (`ctx.error`, `ctx.warn`,
-`ctx.info`). Each one is attributed to the plugin that reported it.
+`ctx.info`), attributed to the plugin that reported it.
 
 | Code | Severity | Summary |
 | --- | --- | --- |
@@ -67,7 +67,7 @@ These carry whatever a plugin reports through its generator context (`ctx.error`
 ## Output pipeline
 
 The formatter, linter, and post-generate hooks run after generation. A failure in any of them
-becomes a diagnostic and fails the run.
+becomes a diagnostic that fails the run.
 
 | Code | Severity | Summary |
 | --- | --- | --- |
@@ -83,8 +83,8 @@ becomes a diagnostic and fails the run.
 
 ## Bookkeeping
 
-These are not problems. They carry run metadata and never fail the build. The CLI uses them for the
-summary and notices, not the diagnostic log.
+These are not problems. They carry run metadata, never fail the build, and feed the CLI's summary
+and notices rather than the diagnostic log.
 
 | Code | Severity | Summary |
 | --- | --- | --- |
@@ -125,5 +125,5 @@ without scraping the terminal:
 Each config emits one report. `counts` totals the `problem` diagnostics by severity. `timings` lists
 per-plugin durations slowest first. `name` is the config name, empty when unnamed.
 
-The exit code is unchanged. It is non-zero on any error. See [`--reporter`](/docs/5.x/reference/commands/generate#reporters)
+The exit code is unchanged: non-zero on any error. See [`--reporter`](/docs/5.x/reference/commands/generate#reporters)
 for the other reporters.

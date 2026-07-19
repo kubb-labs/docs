@@ -35,7 +35,7 @@ yarn add -D kubb@beta
 
 ## Configure
 
-Add the plugin to the `plugins` array in your build script and pass it your Kubb config.
+Add the plugin to the `plugins` array in your build script:
 
 ```typescript [build.ts]
 import { build } from 'esbuild'

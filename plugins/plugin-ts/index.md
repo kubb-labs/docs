@@ -43,7 +43,7 @@ resources:
 
 # @kubb/plugin-ts
 
-`@kubb/plugin-ts` turns your OpenAPI schemas into TypeScript types and interfaces. Most other Kubb plugins build on it. Clients, query hooks, mocks, and validators reuse the names it generates. That way every request, response, parameter, and enum is checked at compile time.
+`@kubb/plugin-ts` turns your OpenAPI schemas into TypeScript types and interfaces that other Kubb plugins build on. Clients, query hooks, mocks, and validators reuse the names it generates, so every request, response, parameter, and enum is checked at compile time.
 
 ## Installation
 
@@ -69,7 +69,7 @@ yarn add -D @kubb/plugin-ts@beta
 
 ## Dependencies
 
-`@kubb/plugin-ts` has no plugin dependencies. It reads the OpenAPI spec through `@kubb/adapter-oas` and produces the type names every other plugin reuses, so add it whenever a client, query, mock, or validator plugin needs typed output.
+`@kubb/plugin-ts` has no plugin dependencies. It reads the OpenAPI spec through `@kubb/adapter-oas`, so add it whenever a client, query, mock, or validator plugin needs typed output.
 
 ## Example
 

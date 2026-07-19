@@ -51,9 +51,9 @@ resources:
 
 # @kubb/plugin-vue-query
 
-`@kubb/plugin-vue-query` turns each OpenAPI operation into a [TanStack Query](https://tanstack.com/query) composable for Vue. Read operations become `useFoo`, with an optional `useFooInfinite` variant. Write operations become `useFoo` mutations. Every composable is typed: query keys, input variables, response data, and error shape all come from the spec.
+`@kubb/plugin-vue-query` turns each OpenAPI operation into a [TanStack Query](https://tanstack.com/query) composable for Vue. Read operations become `useFoo`, with an optional `useFooInfinite` variant, and write operations become `useFoo` mutations. Every composable is typed: query keys, input variables, response data, and error shape all come from the spec.
 
-The composables call an HTTP client, so a client plugin must be registered. Add `@kubb/plugin-ts` for the types and either `@kubb/plugin-axios` or `@kubb/plugin-fetch` for the client. Generation errors out when no client plugin is present.
+The composables call an HTTP client, so a client plugin must be registered: add `@kubb/plugin-ts` for the types and either `@kubb/plugin-axios` or `@kubb/plugin-fetch` for the client.
 
 Each composable takes its parameters as a single grouped options object shaped as `{ body, path, query, headers }`, with camelCase property names. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
 

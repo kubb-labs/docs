@@ -7,11 +7,9 @@ outline: [2, 3]
 
 # LLMS.txt
 
-Kubb generates an `llms.txt` file at build time. It follows the [llms.txt standard](https://llmstxt.org/).
-The file gives LLMs a compact, machine-readable index of the whole documentation. With it, they
-answer questions about Kubb without inventing outdated or missing details.
-
-The sections below list the available files and show how to point an AI assistant at them.
+Kubb generates an `llms.txt` file at build time. It follows the [llms.txt standard](https://llmstxt.org/)
+and gives LLMs a compact, machine-readable index of the whole documentation, so they answer
+questions about Kubb without inventing outdated or missing details.
 
 ## Available files
 

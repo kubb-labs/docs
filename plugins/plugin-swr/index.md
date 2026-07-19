@@ -47,7 +47,7 @@ resources:
 
 `@kubb/plugin-swr` turns each OpenAPI operation into an [SWR](https://swr.vercel.app) hook. Read operations become `useSWR` hooks. Write operations become `useSWRMutation` hooks. Every hook is typed: keys, input variables, response data, and error shape all come from the spec.
 
-The hooks call an HTTP client, so a client plugin must be registered. Add `@kubb/plugin-ts` for the types and either `@kubb/plugin-axios` or `@kubb/plugin-fetch` for the client. Generation errors out when no client plugin is present.
+The hooks call an HTTP client, so add `@kubb/plugin-ts` for the types and either `@kubb/plugin-axios` or `@kubb/plugin-fetch` for the client. Generation errors out when no client plugin is registered.
 
 Query hooks take the grouped request config (`{ path, query, headers }`, camelCase property names) as their first argument. Mutation hooks take only an options object, and you pass the grouped config through `trigger(...)` instead. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
 

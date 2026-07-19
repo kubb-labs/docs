@@ -55,7 +55,7 @@ pluginFaker({
 
 ### Generic return type and intermediate variable
 
-The `create` prefix stays, so `createPet` is still `createPet`. The signature and internal structure change. The factory now takes a generic `TData` and lifts the fake values into a `defaultFakeData` variable before the spread.
+The `create` prefix stays, so `createPet` is still `createPet`, but the factory now takes a generic `TData` and lifts the fake values into a `defaultFakeData` variable before the spread.
 
 ```diff [Diff]
 - export function createPet(data?: Partial<Pet>): Pet {

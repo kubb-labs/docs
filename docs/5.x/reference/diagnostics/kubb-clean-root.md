@@ -10,11 +10,11 @@ outline: [2, 3]
 Code: `KUBB_CLEAN_ROOT`
 Level: error
 
-`output.clean` removes generated code before a build. This diagnostic fires when `output.path` resolves to the project root or a parent of it, so cleaning would delete `kubb.config` and every source file. Kubb stops the build instead of wiping your project.
+`output.clean` removes generated code before a build. Kubb stops the build instead of wiping your project when `output.path` resolves to the project root or a parent of it, which would delete `kubb.config` and every source file.
 
 ## What happened
 
-Before a build, `output.clean` empties the output directory. Kubb resolves `output.path` against `root` and checks the result. When that path is the project root itself, or a directory that contains it (for example `path: '.'`, `'./'`, or `'..'`), the clean would remove more than generated code, so the build stops here.
+Before a build, `output.clean` empties the output directory. Kubb resolves `output.path` against `root` and checks whether the result is the project root itself, or a directory that contains it (for example `path: '.'`, `'./'`, or `'..'`). If so, the clean would remove more than generated code, so the build stops here.
 
 ## How to fix it
 

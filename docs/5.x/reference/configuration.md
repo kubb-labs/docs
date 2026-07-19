@@ -24,8 +24,6 @@ export default defineConfig({
 
 ## Config formats
 
-`defineConfig` accepts an object, a function, or an array.
-
 ### Single config object
 
 ```typescript twoslash [kubb.config.ts]
@@ -123,7 +121,7 @@ A name for this config. The CLI prints it as `Generating <name>...`.
 
 ### `input`
 
-Where Kubb reads your spec. Pass a local file path, a URL, inline OpenAPI content as a JSON or YAML string, or an already-parsed object. Kubb detects which one you gave it. Required when an adapter is configured. Omit it in plugin-only mode, when there is no `adapter`.
+Where Kubb reads your spec: a local file path, a URL, inline OpenAPI content as a JSON or YAML string, or an already-parsed object. Kubb detects which one you gave it. Required when an adapter is configured. Omit it in plugin-only mode, when there is no `adapter`.
 
 |           |                                      |
 | --------: | :----------------------------------- |
@@ -281,10 +279,10 @@ export * from './operations/getPet'
 
 :::
 
-Each plugin keeps its own `output.barrel` for its sub-folder and can override the root setting. Setting `barrel: false` on a plugin disables that plugin's barrel and drops its files from the root barrel. The `nested` flag works at the plugin level only, where `{ nested: true }` writes a barrel in every subdirectory so callers can import from any depth. The root `output.barrel` ignores `nested`.
+Each plugin keeps its own `output.barrel` for its sub-folder and can override the root setting. Setting `barrel: false` on a plugin disables that plugin's barrel and drops its files from the root barrel. The `nested` flag works at the plugin level only: `{ nested: true }` writes a barrel in every subdirectory so callers can import from any depth. The root `output.barrel` ignores it.
 
 > [!NOTE]
-> `pluginBarrel` ships by default and generates nothing until `output.barrel` is set, root or per-plugin. A config that omits `pluginBarrel` entirely leaves barrel generation untouched.
+> `pluginBarrel` ships by default and generates nothing until `output.barrel` is set, root or per-plugin.
 
 #### `output.defaultBanner`
 
@@ -487,12 +485,10 @@ Project root, absolute or relative to the config file location.
 
 ### `reporters`
 
-Reporters available to the run, registered as instances. `defineConfig` registers the built-in `cli`, `json`, and `file` reporters by default. The CLI [`--reporter`](/docs/5.x/reference/commands/generate#reporters) flag picks which ones fire by name, defaulting to `cli` when omitted. `cli` writes the end-of-run summary to the terminal. `json` writes a machine-readable report to stdout for CI. `file` writes the run's diagnostics to `.kubb/kubb-<name>-<timestamp>.log`.
+Reporters available to the run, registered as instances. `defineConfig` registers the built-in `cli`, `json`, and `file` reporters by default, so most configs never set this option. Pick which ones fire by name with the CLI [`--reporter`](/docs/5.x/reference/commands/generate#reporters) flag, defaulting to `cli` when omitted. See that page for what each reporter outputs.
 
 |           |                                             |
 | --------: | :------------------------------------------ |
 |     Type: | `Array<Reporter>`                           |
 |  Default: | `[cli, json, file]`                         |
 | Required: | `false`                                     |
-
-The built-in reporters are registered by default. Pick which ones fire by name on the CLI with `--reporter <name>`, so most configs never set this option.

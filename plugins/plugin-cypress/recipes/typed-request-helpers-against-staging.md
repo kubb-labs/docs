@@ -27,20 +27,6 @@ export default defineConfig({
 })
 ```
 
-Import a helper into a spec and assert on the resolved response body.
-
-```typescript
-import { getPetById } from '../src/gen/cypress'
-
-describe('Pet API', () => {
-  it('returns the pet by id', () => {
-    getPetById({ path: { petId: 1n } }).then((res) => {
-      expect(res.id).to.eq(1n)
-    })
-  })
-})
-```
-
 ## Output example
 
 ```typescript [src/gen/cypress/getPetById.ts]

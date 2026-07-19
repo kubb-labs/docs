@@ -53,7 +53,7 @@ As on [React Query](/docs/5.x/migration/plugin-react-query#removed-parser), the 
 
 ## Removed: `mutation.paramsToTrigger`
 
-v4 gated the trigger-based mutation shape behind `mutation.paramsToTrigger`, off by default. v5 removes the flag and makes that shape the default, so mutation parameters always pass through `trigger()`. Drop `paramsToTrigger` from your config.
+v4 gated the trigger-based mutation shape behind `mutation.paramsToTrigger`, off by default. v5 removes the flag and makes that shape the default, so mutation parameters always pass through `trigger()`.
 
 ```diff [Diff]
   pluginSwr({

@@ -23,7 +23,7 @@ COMMANDS
 Use kubb <command> --help for more information about a command.
 ```
 
-Run `kubb` with no command and it runs `kubb generate`. It reads your config and generates code.
+Run `kubb` with no command and it runs `kubb generate`.
 
 ## Available commands
 

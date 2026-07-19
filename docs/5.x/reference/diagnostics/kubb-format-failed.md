@@ -14,7 +14,7 @@ The formatter pass over the generated files failed. Formatting runs after genera
 
 ## What happened
 
-When `output.format` is set, Kubb runs the configured formatter (oxfmt, biome, or prettier) over the output directory. A non-zero exit from the formatter shows up here, in the summary, and in `--reporter json`. It fails the run. Earlier versions swallowed it, so a broken formatter config went unnoticed.
+When `output.format` is set, Kubb runs the configured formatter (oxfmt, biome, or prettier) over the output directory. A non-zero exit from the formatter shows up here, in the summary, and in `--reporter json`. Earlier versions swallowed it, so a broken formatter config went unnoticed.
 
 ## How to fix it
 

@@ -13,7 +13,7 @@ A parser is Kubb's output layer. It turns the language-neutral [AST](/docs/5.x/g
 
 ## Why the language lives here
 
-The AST stays language-neutral the whole way through generation, and the parser is the one place that commits to a concrete syntax. That boundary is what keeps a plugin like React Query from caring whether its output is `.ts` or `.tsx`. The plugin emits nodes, and the parser decides how they read as code.
+The AST stays language-neutral the whole way through generation. The parser is the one place that commits to a concrete syntax, which is why a plugin like React Query never cares whether its output is `.ts` or `.tsx`: it emits nodes, and the parser decides how they read as code.
 
 A parser claims a set of file extensions, and Kubb hands each generated file to the parser that owns its extension. That is how a single build writes `.ts` through the TypeScript parser and `.md` through the Markdown parser without either one knowing about the other.
 
