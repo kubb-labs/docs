@@ -1,6 +1,6 @@
 # Override a printer
 
-A printer is the last step of Kubb's pipeline. Adapters turn a spec into the [AST](/docs/5.x/guide/concepts/ast), [macros](/docs/5.x/guide/going-further/macros) rewrite the nodes, and a printer turns each schema node into code for one output target. `@kubb/plugin-ts` prints TypeScript type nodes, `@kubb/plugin-zod` prints Zod expressions, and `@kubb/plugin-faker` prints Faker expressions.
+A printer runs inside a plugin's generator, not at the end of the pipeline. The [adapter](/docs/5.x/guide/concepts/adapters) turns a spec into the [AST](/docs/5.x/guide/concepts/ast), [macros](/docs/5.x/guide/going-further/macros) rewrite the nodes, and a printer turns each schema node into code for one output target. `@kubb/plugin-ts` prints TypeScript type nodes, `@kubb/plugin-zod` prints Zod expressions, and `@kubb/plugin-faker` prints Faker expressions. A [parser](/docs/5.x/guide/concepts/parsers) still has to turn the assembled file into source text, and [storage](/docs/5.x/guide/concepts/storage) writes it to disk, before the CLI's formatter, linter, and `postGenerate` commands run.
 
 These three plugins expose their printer through a `printer.nodes` option, a partial map of schema types to handlers. A handler replaces the built-in output for one schema type, so you can print a `date` schema as the JavaScript `Date` object or append `.openapi(...)` metadata to every Zod object without forking the plugin.
 
