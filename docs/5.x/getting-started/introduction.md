@@ -9,7 +9,7 @@ outline: [2, 3]
 
 Kubb is a meta framework for code generation. It runs a plugin-based pipeline on top of any API specification. An [adapter](/adapters) reads your spec. [Parsers](/parsers) turn the [AST](/docs/5.x/guide/concepts/ast) into source files. [Plugins](/plugins) generate the output. The pipeline writes, formats, and lints the result, all from a single config file.
 
-The default adapter reads [OpenAPI](https://www.openapis.org/) 2.0, 3.0, and 3.1. From there Kubb generates TypeScript types, React Query hooks, Zod validators, MSW mocks, or a custom output. You stop hand-maintaining generated code. The output is deterministic. The same spec always produces the same result.
+The default adapter reads [OpenAPI](https://www.openapis.org/) 2.0, 3.0, and 3.1. From there Kubb generates TypeScript types, React Query hooks, Zod validators, MSW mocks, or a custom output. You stop hand-maintaining generated code, and the output is deterministic: the same spec always produces the same result.
 
 ## Features
 
@@ -20,7 +20,7 @@ The default adapter reads [OpenAPI](https://www.openapis.org/) 2.0, 3.0, and 3.1
 - Generate [Cypress](/plugins/plugin-cypress/) tests and a [Model Context Protocol server](/plugins/plugin-mcp/), or [write your own plugin](/docs/5.x/guide/going-further/creating-plugins).
 - Run generation in [Vite](/docs/5.x/guide/integrations/vite), [Nuxt](/docs/5.x/guide/integrations/nuxt), and other bundlers with `unplugin-kubb`, or from [AI assistants](/docs/5.x/ai/mcp) and [Claude Code](/docs/5.x/ai/claude).
 
-Ready for more? Read [Installation](./installation) and [Basic Usage](./basic-usage), then reach for [Configuration](/docs/5.x/reference/configuration), [Recipes](/docs/5.x/guide/recipes), and [Integrations](/docs/5.x/guide/integrations/) when you need them.
+Read [Installation](./installation) and [Basic Usage](./basic-usage) next, then reach for [Configuration](/docs/5.x/reference/configuration), [Recipes](/docs/5.x/guide/recipes), and [Integrations](/docs/5.x/guide/integrations/) when you need them.
 
 ## See it work
 

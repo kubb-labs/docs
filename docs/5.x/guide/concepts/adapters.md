@@ -13,6 +13,6 @@ An adapter is the front door of the pipeline. It reads your specification and co
 
 ## Why adapters exist
 
-Without this boundary, every plugin would need its own OpenAPI reader, and adding a new input format would mean rewriting all of them. The adapter pulls that knowledge into a single layer. Write one adapter for a format and the entire plugin ecosystem works on top of it unchanged. That is what lets Kubb target OpenAPI today and AsyncAPI or a GraphQL schema tomorrow without touching the generators.
+Without this boundary, every plugin would need its own OpenAPI reader, and adding a new input format would mean rewriting all of them. The adapter pulls that knowledge into a single layer, so writing one adapter for a format lets the entire plugin ecosystem work on top of it unchanged. That is what lets Kubb target OpenAPI today and AsyncAPI or a GraphQL schema tomorrow without touching the generators.
 
 Kubb ships [`@kubb/adapter-oas`](/adapters/adapter-oas/) for OpenAPI 2.0, 3.0, and 3.1, and picks it for you when you import `defineConfig` from the `kubb` package. You write a custom adapter only when your source is a format Kubb does not parse yet.

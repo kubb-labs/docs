@@ -14,7 +14,7 @@ A post-generate command (`output.postGenerate`) exited with a non-zero status. T
 
 ## What happened
 
-`output.postGenerate` runs shell commands once the generated files are formatted and linted, for example a formatter or a `tsc` check. A command that exits non-zero shows up here, in the summary, and in `--reporter json`. It fails the run. Earlier versions only logged a line and moved on.
+`output.postGenerate` runs shell commands once the generated files are formatted and linted, for example a formatter or a `tsc` check. A command that exits non-zero shows up here, in the summary, and in `--reporter json`. Earlier versions only logged a line and moved on.
 
 ## Common causes
 

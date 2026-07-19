@@ -23,7 +23,7 @@ pluginTs({ paramsCasing: 'camelcase' })
 
 `paramsCasing` is no longer configurable in v5. Generated `Path`, `Query`, and `Headers` properties keep the exact names from the OpenAPI document.
 
-In v4, the default behavior already preserved those names. If you used `paramsCasing: 'camelcase'`, remove the option and update your call sites to use the OpenAPI names. v5 no longer remaps those parameters at runtime.
+In v4, the default behavior already preserved those names. If you used `paramsCasing: 'camelcase'`, remove the option and update your call sites to use the OpenAPI names.
 
 ```typescript [Generated output]
 // OpenAPI spec uses: pet_id, X-Api-Key

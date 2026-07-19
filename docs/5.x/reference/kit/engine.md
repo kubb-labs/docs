@@ -66,7 +66,7 @@ Reach for `createKubb` when you orchestrate several builds, inspect diagnostics,
 
 Import `createKubb` from the `kubb` package. Unlike `defineConfig`, `createKubb` adds no defaults, so pass `adapter`, `parsers`, and your plugins yourself.
 
-`createKubb` takes a plain config object, the same shape `defineConfig` produces in `kubb.config.ts`. It is not a fluent builder. The config stays plain serializable data so Kubb can validate it against the shipped JSON schema.
+`createKubb` takes a plain config object, the same shape `defineConfig` produces in `kubb.config.ts`, not a fluent builder. The config stays plain, serializable data so Kubb can validate it against the shipped JSON schema.
 
 ```typescript twoslash [build.ts]
 // @module: esnext

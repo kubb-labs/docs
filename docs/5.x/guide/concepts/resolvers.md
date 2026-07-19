@@ -7,7 +7,7 @@ outline: deep
 
 # Resolvers
 
-A resolver answers two questions for every file a plugin emits: its name and its path. Every plugin has one. When a generator needs a file name or an import path, it asks the resolver instead of building the string itself, so names and paths stay in one place and stay consistent across the plugin's output.
+A resolver answers two questions for every file a plugin emits: its name and its path. Every plugin has one. When a generator needs a file name or an import path, it asks the resolver instead of building the string itself, so names and paths stay consistent across the plugin's output.
 
 <FlowDiagram preset="resolver" />
 

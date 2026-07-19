@@ -43,7 +43,7 @@ const mcpTree = [
 
 [Kubb](https://kubb.dev) and [Claude](https://claude.ai) connect over [MCP](https://modelcontextprotocol.io), the Model Context Protocol. Claude calls your API through plain conversation.
 
-Kubb generates type-safe code from your OpenAPI spec. That includes the API client files, the Zod schemas, and an MCP server. Claude reads the MCP server and runs the matching API calls as you chat. You describe what you want, Claude makes the call.
+Kubb generates type-safe code from your OpenAPI spec, including the API client files, the Zod schemas, and an MCP server. Claude reads the MCP server and runs the matching API calls as you chat.
 
 ```mermaid
 graph TD
@@ -78,9 +78,7 @@ flowchart LR
 
 ## Installation
 
-First, install [Claude desktop](https://claude.ai/download) and work through the [user quickstart](https://modelcontextprotocol.io/quickstart/user).
-
-Then install Kubb with the [MCP plugin](/plugins/plugin-mcp/).
+Install [Claude desktop](https://claude.ai/download) and work through the [user quickstart](https://modelcontextprotocol.io/quickstart/user), then install Kubb with the [MCP plugin](/plugins/plugin-mcp/).
 
 > [!TIP]
 > The MCP plugin builds on the [OpenAPI adapter](/adapters/adapter-oas/), the [TypeScript](/plugins/plugin-ts/) and [Zod](/plugins/plugin-zod/) plugins, and a client plugin ([axios](/plugins/plugin-axios/) or [fetch](/plugins/plugin-fetch/)) to generate every file it needs.

@@ -28,7 +28,7 @@ export default defineConfig({
 
 ## Output example
 
-The literal template string above is what Kubb writes into the client's setup call, so `process.env.API_URL` is read at runtime rather than substituted at build time:
+The template literal above reads `process.env.API_URL` at runtime rather than substituting it at build time:
 
 ```typescript [usage.ts]
 import { getPetById } from './src/gen/clients/getPetById'

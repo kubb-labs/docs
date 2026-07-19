@@ -79,7 +79,7 @@ A `SchemaNode` is discriminated by its `type`. The values fall into three famili
 
 ## Factory functions
 
-Factories return defaulted, fully typed nodes. Use them in adapters and inside generator handlers. Never build AST literals by hand.
+Factories return defaulted, fully typed nodes for adapters and generator handlers. Never build AST literals by hand.
 
 ```typescript twoslash [factories.ts]
 import { ast } from 'kubb/kit'
@@ -105,7 +105,7 @@ The `ast.factory` namespace also provides constructors for source files and Type
 
 ## Visitors {#visitors}
 
-Two visitor functions cover the common traversal patterns: `transform` rewrites the tree and `collect` gathers nodes. Visitor objects use lowercase, kind-style keys (`input`, `operation`, `schema`, `property`, `parameter`, `response`). To rewrite nodes inside a plugin, reach for [macros](/docs/5.x/guide/going-further/macros). They add names, ordering, and composition on top of `transform`. For logging, validation, or statistics, `collect` the nodes you care about and loop over the result.
+Two visitor functions cover the common traversal patterns: `transform` rewrites the tree and `collect` gathers nodes. Visitor objects use lowercase, kind-style keys (`input`, `operation`, `schema`, `property`, `parameter`, `response`). To rewrite nodes inside a plugin, reach for [macros](/docs/5.x/guide/going-further/macros), which add names, ordering, and composition on top of `transform`. For logging, validation, or statistics, `collect` the nodes you care about.
 
 ### `transform`: synchronous, returns a new tree
 
@@ -194,7 +194,7 @@ for (const node of ast.collect<ast.OperationNode>(root, { operation: (node) => n
 
 ## Refs and naming helpers
 
-The ref and naming helpers split across two surfaces. `resolveRefName` ships on the `ast` namespace, reached the same way you reach the guards or node types. `extractRefName`, `childName`, `enumPropName`, and `syncSchemaRef` are named exports of `kubb/kit` itself, not members of the `ast` namespace (the same split as the built-in macros below).
+The ref and naming helpers split across two surfaces. `resolveRefName` ships on the `ast` namespace, like the guards and node types. `extractRefName`, `childName`, `enumPropName`, and `syncSchemaRef` are named exports of `kubb/kit` itself, not members of the `ast` namespace (the same split as the built-in macros below).
 
 | Helper           | Purpose                                                             |
 | ---------------- | ------------------------------------------------------------------- |
@@ -229,7 +229,7 @@ Analyze how schemas reference each other, to prune unused schemas or wrap circul
 
 ## Macros
 
-A macro is a named, composable transform built on `transform`. Macros rewrite nodes before printing, with ordering, gating, and reuse that a bare visitor does not give you. See [Macros concepts](/docs/5.x/guide/going-further/macros).
+A macro is a named, composable transform built on `transform` that rewrites nodes before printing, adding ordering, gating, and reuse a bare visitor doesn't give you. See [Macros concepts](/docs/5.x/guide/going-further/macros).
 
 | Export          | Purpose                                          |
 | --------------- | ------------------------------------------------ |

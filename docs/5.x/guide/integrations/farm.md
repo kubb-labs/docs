@@ -35,7 +35,7 @@ yarn add -D kubb@beta
 
 ## Configure
 
-Add the plugin to your `farm.config.ts` and pass it your Kubb config.
+Add the plugin to your `farm.config.ts`:
 
 ```typescript [farm.config.ts]
 import { defineConfig } from '@farmfe/core'

@@ -35,7 +35,7 @@ yarn add -D kubb@beta
 
 ## Configure
 
-Add the plugin to your `webpack.config.js` and pass it your Kubb config.
+Add the plugin to your `webpack.config.js`:
 
 ```javascript [webpack.config.js]
 const kubb = require('kubb/webpack')

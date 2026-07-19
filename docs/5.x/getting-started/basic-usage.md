@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Basic Usage
 
-Start from an empty config and end with generated types, a client, and hooks imported into your app. Follow the five steps in order. By the end you will have run Kubb once and seen real code land in `./src/gen`.
+Start from an empty config and end with generated types, a client, and hooks imported into your app. Follow the five steps in order, and by the end you will have run Kubb once and seen real code land in `./src/gen`.
 
 ## 1. Create the config
 
@@ -22,7 +22,7 @@ export default defineConfig({
 })
 ```
 
-A couple of details to note here. `input` accepts a local file path or a URL, so you can point it at a spec on disk or one served over HTTP, and it also takes inline OpenAPI content or a parsed object. `output.clean: true` wipes the output directory before each run, which keeps stale files from piling up.
+`input` accepts a local file path, a URL, inline OpenAPI content, or a parsed object. `output.clean: true` wipes the output directory before each run, so stale files don't pile up.
 
 ## 2. Pick your plugins
 
@@ -89,8 +89,6 @@ export default defineConfig({
 
 :::
 
-Here is what each plugin in those examples gives you.
-
 | Plugin                                            | Package                    | Generates                                          |
 | ------------------------------------------------- | -------------------------- | -------------------------------------------------- |
 | [`pluginTs`](/plugins/plugin-ts/)                  | `@kubb/plugin-ts`          | TypeScript types and interfaces                    |
@@ -106,7 +104,7 @@ See the [plugins catalogue](/plugins) for the full list.
 
 ## 3. Run generate
 
-With the config saved, run the generate command. You should see each plugin report in turn and a summary at the end.
+Run the generate command. Each plugin reports in turn, followed by a summary.
 
 ```terminal
 command: kubb generate
@@ -129,7 +127,7 @@ Kubb creates one folder per plugin under `output.path`, so the layout mirrors th
 
 ## 4. Use the generated code
 
-Now for the payoff. Import the generated code into your app. The import paths follow the `output.path` values you set for each plugin, so a plugin pointed at `models` lives under `gen/models`.
+Import the generated code into your app. The import paths follow the `output.path` values you set for each plugin, so a plugin pointed at `models` lives under `gen/models`.
 
 ::: code-group
 

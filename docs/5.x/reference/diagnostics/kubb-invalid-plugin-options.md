@@ -14,7 +14,7 @@ A plugin was given options that cannot be honored together. The main case is `ou
 
 ## What happened
 
-`output.mode: 'file'` writes everything into one file at `output.path`. The `group` option splits output into per-tag or per-path subdirectories, which only applies to `output.mode: 'directory'`. The two contradict each other. Kubb reports the config as invalid at plugin setup rather than guessing a layout. The TypeScript types catch the same mistake at compile time, but a config written in JavaScript or cast to `any` only surfaces it here. Since `output.mode` defaults to `'file'`, adding `group` without also setting `mode: 'directory'` triggers this diagnostic.
+`output.mode: 'file'` writes everything into one file at `output.path`. The `group` option splits output into per-tag or per-path subdirectories, which only applies to `output.mode: 'directory'`. Kubb reports the contradiction as invalid at plugin setup rather than guessing a layout. The TypeScript types catch the same mistake at compile time, but a config written in JavaScript or cast to `any` only surfaces it here. Since `output.mode` defaults to `'file'`, adding `group` without also setting `mode: 'directory'` triggers this diagnostic.
 
 ## How to fix it
 

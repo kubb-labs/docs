@@ -7,7 +7,7 @@ outline: deep
 
 # Register handlers with a server
 
-Set [`handlers`](/plugins/plugin-msw/reference/options#handlers) to `true` so the plugin writes a `handlers.ts` file that re-exports every generated handler in operation order. Pass the collection to `setupServer` in Node tests or `setupWorker` in the browser.
+Set [`handlers`](/plugins/plugin-msw/reference/options#handlers) to `true` so the plugin writes a `handlers.ts` file that re-exports every generated handler in operation order.
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'

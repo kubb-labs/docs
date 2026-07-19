@@ -26,7 +26,7 @@ Request bodies and responses hold one `ContentNode` per content type (for exampl
 
 ## Spec-agnostic by design
 
-The AST is the reason plugins stay simple. A plugin never looks at OpenAPI directly. It reads the tree the adapter produces, which is why one plugin works for OpenAPI 2.0, 3.0, 3.1, and any custom adapter.
+A plugin never looks at OpenAPI directly. It reads the tree the adapter produces, which is why the same plugin works for OpenAPI 2.0, 3.0, 3.1, and any custom adapter you write.
 
 ## How the AST connects the pipeline
 

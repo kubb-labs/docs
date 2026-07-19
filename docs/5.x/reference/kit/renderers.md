@@ -13,7 +13,7 @@ A renderer turns the elements a generator returns into `FileNode`s. Kubb ships a
 
 `createRenderer` takes a builder function and returns a factory that produces a `Renderer`, the object a generator's `renderer` field points at.
 
-Reach for `createRenderer` when a generator needs to emit something other than plain `FileNode` arrays or [`kubb/jsx`](/docs/5.x/reference/jsx) elements, for example a renderer that walks a different templating format into `FileNode`s. `kubb/jsx`'s own `jsxRenderer` ships as a plain factory and does not depend on `createRenderer`, so most plugin authors only need `createRenderer` when they are building an alternative to JSX rendering.
+`kubb/jsx`'s own `jsxRenderer` ships as a plain factory and does not depend on `createRenderer`, so most plugin authors only reach for `createRenderer` when building an alternative to JSX rendering, for example a renderer that walks a different templating format into `FileNode`s.
 
 ### Related
 

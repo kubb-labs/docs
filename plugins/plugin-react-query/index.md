@@ -56,7 +56,7 @@ resources:
 
 `@kubb/plugin-react-query` turns each OpenAPI operation into a [TanStack Query](https://tanstack.com/query) hook for React. Read operations become `useFoo`, with `useFooSuspense` and `useFooInfinite` variants. Write operations become `useFoo` mutations. Every hook is typed: query keys, input variables, response data, and error shape all come from the spec.
 
-The hooks call an HTTP client, so a client plugin must be registered. Add `@kubb/plugin-ts` for the types and either `@kubb/plugin-axios` or `@kubb/plugin-fetch` for the client. Generation errors out when no client plugin is present.
+The hooks call an HTTP client, so a client plugin must be registered: `@kubb/plugin-ts` for the types, plus either `@kubb/plugin-axios` or `@kubb/plugin-fetch` for the client.
 
 Each hook takes its parameters as a single grouped options object shaped as `{ body, path, query, headers }`, with camelCase property names. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
 

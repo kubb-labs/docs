@@ -86,7 +86,7 @@ pnpm run test
 
 ## Kubb plugins
 
-Contribute a plugin in two ways. Build a community plugin in your own repository, or propose an official one in the core monorepo.
+Build a community plugin in your own repository, or propose an official one in the core monorepo.
 
 ### Build a community plugin
 

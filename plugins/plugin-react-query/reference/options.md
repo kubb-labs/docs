@@ -7,7 +7,7 @@ outline: deep
 
 # Options
 
-Options for `pluginReactQuery`, with type and default in the table.
+Options for `pluginReactQuery`.
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |

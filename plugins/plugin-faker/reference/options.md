@@ -107,7 +107,7 @@ Value passed to `faker.seed(...)` and emitted at the top of each generated facto
 
 ### resolver
 
-Changes how the plugin names generated files and symbols. Pass a partial patch. Override only the members you want, and anything you omit keeps `resolverFaker`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
+Changes how the plugin names generated files and symbols. Pass a partial patch: override only the members you want, and anything you omit keeps `resolverFaker`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
 
 > [!TIP]
 > Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.

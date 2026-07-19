@@ -39,7 +39,7 @@ The MCP server exposes three tools to connected clients.
 
 ## Example
 
-Most MCP clients accept a JSON config with a `command` and `args`. To register the Kubb MCP server over stdio:
+Most MCP clients accept a JSON config with `command` and `args`. Register the Kubb MCP server over stdio:
 
 ```json [mcp.json]
 {

@@ -7,15 +7,13 @@ outline: deep
 
 # Options
 
-Options for `pluginRedoc`, with type and default in the table.
-
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
 | [`output`](#output) | `{ path: string }` | `{ path: 'docs.html' }` | Where the generated HTML file is written |
 
 ### output
 
-Where the generated Redoc HTML file is written. The path is resolved against the global `output.path` on `defineConfig`.
+Where the generated Redoc HTML file is written.
 
 |          |                         |
 | -------: | :---------------------- |

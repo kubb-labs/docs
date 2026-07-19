@@ -34,7 +34,7 @@ Folder for the plugin's files, resolved against the global `output.path` on `def
 
 How the plugin consolidates its code into files, either `'file'` or `'directory'`, defaulting to `'file'`.
 
-- `'file'` writes everything into a single file, so `output.path` must include the extension such as `'clients.ts'`.
+- `'file'` writes everything into a single file, so `output.path` must include the extension (see above).
 - `'directory'` writes one file per operation under `output.path`.
 
 > [!IMPORTANT]
@@ -106,7 +106,7 @@ if (status === 200) {
 
 ### resolver
 
-Changes how the plugin names generated files and symbols. Pass a partial patch. Override only the members you want, and anything you omit keeps `resolverClient`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
+Changes how the plugin names generated files and symbols by accepting a partial patch. Override only the members you want, and anything you omit keeps `resolverClient`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
 
 > [!TIP]
 > Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.

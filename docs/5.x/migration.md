@@ -124,7 +124,7 @@ The highest-impact edits, in order. Each step links to its full explanation belo
 
 ## Defaults that changed
 
-The most dangerous changes are the silent ones: options whose default flipped, so the same config produces different output. Each row links to the section with the full explanation and a before/after example.
+The most dangerous changes are silent: a default flips, so the same config produces different output. Each row links to the full explanation and a before/after example.
 
 | Option | v4 default | v5 default | Details |
 | --- | --- | --- | --- |
@@ -160,7 +160,7 @@ import { defineConfig } from 'kubb/config'
 
 ### Give `input` a single value
 
-The two-shape `input` object collapses into a single value. Give `input` a file path, a URL, an inline spec, or a parsed object, and Kubb works out which one it is.
+The two-shape `input` object collapses into a single value: a file path, a URL, an inline spec, or a parsed object. Kubb works out which one it is.
 
 | v4 (old)                        | v5 (new)              |
 | ------------------------------- | --------------------- |
@@ -289,7 +289,7 @@ export default defineConfig({
 
 :::
 
-The plugin-level `'propagate'` string becomes `{ type: 'named', nested: true }` on that plugin's own `output`:
+The same change applies at the plugin level, on that plugin's own `output`:
 
 ::: code-group
 
@@ -360,9 +360,7 @@ export default defineConfig({
 
 ### Group folders drop the `Controller` suffix
 
-With `group: { type: 'tag' }`, each tag now writes to a folder named after the camelCased tag. v4 appended a `Controller` suffix (`Requests` for Cypress and MCP), so `pet` operations landed in `petController/`. v5 uses `pet/`. Nothing referenced the suffix, so only the folder layout changes.
-
-Your config stays the same. Only the output folders change:
+With `group: { type: 'tag' }`, each tag now writes to a folder named after the camelCased tag. v4 appended a `Controller` suffix (`Requests` for Cypress and MCP), so `pet` operations landed in `petController/`. v5 uses `pet/` instead, and nothing else changes: your config stays the same, only the output folders do.
 
 ```text [Output folders]
 v4: src/gen/clients/petController/  →  v5: src/gen/clients/pet/

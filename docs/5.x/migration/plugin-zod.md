@@ -39,7 +39,7 @@ v5 removes `mapper` with no drop-in replacement. Customize schema naming through
 
 ## Removed: `typed`
 
-In v4, `typed: true` annotated each schema with a `ToZod` type from the matching `@kubb/plugin-ts` output. v5 removes the option. Delete `typed` from your `pluginZod` options. To keep a type next to each schema, use [`inferred: true`](/plugins/plugin-zod/reference/options#inferred), which exports a `z.infer` alias instead.
+In v4, `typed: true` annotated each schema with a `ToZod` type from the matching `@kubb/plugin-ts` output. v5 removes the option. To keep a type next to each schema, use [`inferred: true`](/plugins/plugin-zod/reference/options#inferred), which exports a `z.infer` alias instead.
 
 ```diff [kubb.config.ts]
 pluginZod({

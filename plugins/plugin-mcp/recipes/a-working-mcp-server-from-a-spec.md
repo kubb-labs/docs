@@ -46,7 +46,7 @@ export async function getPetByIdHandler({ path }: GetPetByIdOptions, request: Re
 }
 ```
 
-The handler calls `getPetById` from the Axios client the plugin auto-detected, and `server.ts` registers a matching tool with Zod input and output schemas, so the same file also exports a ready-to-run server.
+The handler calls `getPetById` from the auto-detected Axios client, and `server.ts` registers a matching tool with Zod input and output schemas, plus a ready-to-run `startServer` export.
 
 ```typescript [usage.ts]
 import { startServer } from './src/gen/mcp/server'

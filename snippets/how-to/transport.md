@@ -1,9 +1,9 @@
 
 # Use a custom transport
 
-The client Kubb generates splits into two layers. A shared core builds the URL, serializes the query and body, resolves auth, and runs the interceptors. The transport is the last step: it takes the finished request and sends it. Swap the transport and you change how a request leaves your app without touching anything the core already handled.
+The client Kubb generates splits into two layers: a shared core that builds the URL, serializes the query and body, resolves auth, and runs the interceptors, and a transport that takes the finished request and sends it last. Swap the transport and you change how a request leaves your app without touching anything the core already handled.
 
-You set the transport at runtime on the client, not in `kubb.config.ts`. Plugin options control what gets generated. The transport controls how those generated functions reach the network. The two client plugins expose it differently, so each section below covers its own shape.
+You set the transport at runtime on the client, not in `kubb.config.ts`. Plugin options control what gets generated, while the transport controls how those generated functions reach the network.
 
 - [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) takes a transport function.
 - [`@kubb/plugin-axios`](/plugins/plugin-axios/) takes an axios instance.
@@ -49,7 +49,7 @@ type TransportResult<TData = unknown> = {
 }
 ```
 
-The core hands you a `ResolvedRequest` with the URL already built, the query serialized, the body serialized, and the auth headers in place. Your function sends it and returns the parsed `data` along with the native `request` and `response`, so status, headers, and the raw body stay reachable on the result.
+The core hands you a `ResolvedRequest` with the URL built, the query and body serialized, and auth headers set. Return the parsed `data` along with the native `request` and `response`, so status, headers, and the raw body stay reachable on the result.
 
 ### Wrap the default send
 
@@ -171,7 +171,7 @@ export const apiClient = createClient({ transport: instance })
 
 ## Where to set it
 
-A transport rides the same `ClientConfig` as `baseURL` and `auth`, so you set it the same three ways. Pick the one that matches the scope you need.
+A transport rides the same `ClientConfig` as `baseURL` and `auth`, so you set it the same three ways.
 
 Call `client.setConfig({ transport })` to cover the whole app at once, since every generated function imports the shared `client`. Call `createClient({ transport })` for an isolated client you pass on the `client` option or hand to a query plugin, which suits tests and talking to more than one backend. Pass the `transport` option on a single request to override both for that one call.
 

@@ -19,8 +19,6 @@ outline: deep
 
 <!--@include: ../../../snippets/how-to/barrel.md-->
 
-Sets the re-export style for the barrel files. Set it on `defineConfig` to control the root barrel and the default every plugin inherits. Set it on a single plugin to override that plugin's barrel.
-
 The `type` field picks the export style. A plugin's `output.barrel` also accepts `nested`, so the plugin writes an `index.ts` in every subdirectory. The root `output.barrel` has no `nested` field and always stays flat.
 
 `output.barrel` defaults to `false`, so no barrel is generated until you set it. Set `barrel: { type: 'named' | 'all' }` on `defineConfig` to enable barrels everywhere: a root barrel, and the default every plugin without its own `output.barrel` inherits. A plugin that sets its own `output.barrel` overrides that inherited value, including back to `false`, which also drops its files from the root barrel.
@@ -29,8 +27,6 @@ The `type` field picks the export style. A plugin's `output.barrel` also accepts
 | -------: | :----------------------------------------------------- |
 |    Type: | `{ type: 'all' \| 'named', nested?: boolean } \| false` |
 | Default: | `false`                                                |
-
-A plugin with no `output.barrel` of its own inherits `config.output.barrel`, which itself falls back to `false`.
 
 ### type
 

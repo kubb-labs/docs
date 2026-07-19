@@ -15,7 +15,7 @@ A plugin teaches Kubb to generate something new. It owns:
 
 Almost everything in a generated `src/gen/` folder traces back to one plugin, so how plugins behave is how Kubb behaves.
 
-This page covers the idea: what a plugin is, how its lifecycle runs, and how plugins compose. For the signatures see the [Kit API](/docs/5.x/reference/kit), and to build one step by step follow [Creating your first plugin](/docs/5.x/guide/going-further/creating-plugins).
+For the signatures see the [Kit API](/docs/5.x/reference/kit), and to build one step by step follow [Creating your first plugin](/docs/5.x/guide/going-further/creating-plugins).
 
 <PluginAnatomy />
 
@@ -79,4 +79,4 @@ The Kubb monorepo ships official plugins for the most common cases. Browse them 
 
 ## Next steps
 
-To build a plugin of your own, work through [Creating your first plugin](/docs/5.x/guide/going-further/creating-plugins). For the exact shape of `definePlugin`, `defineGenerator`, `createResolver`, and the context passed to each hook, read the [Kit API](/docs/5.x/reference/kit). To retune the names and file paths a plugin produces without writing one, see [Override a resolver](/docs/5.x/guide/going-further/resolvers).
+To build a plugin, work through [Creating your first plugin](/docs/5.x/guide/going-further/creating-plugins). For the exact shape of `definePlugin`, `defineGenerator`, `createResolver`, and the context passed to each hook, read the [Kit API](/docs/5.x/reference/kit). To retune the names and file paths a plugin produces without writing one, see [Override a resolver](/docs/5.x/guide/going-further/resolvers).

@@ -35,7 +35,7 @@ yarn add -D kubb@beta
 
 ## Configure
 
-Add the integration to your `astro.config.mjs` and pass it your Kubb config.
+Add the integration to your `astro.config.mjs`:
 
 ```typescript [astro.config.mjs]
 import { defineConfig } from 'astro/config'
@@ -55,4 +55,4 @@ export default defineConfig({
 ```
 
 > [!NOTE]
-> The Astro integration runs through Vite with `apply: 'build'`. Generation runs during `astro build` only. Run [`kubb generate`](/docs/5.x/reference/commands/) before you start the dev server.
+> The Astro integration runs through Vite with `apply: 'build'`, so generation runs during `astro build` only. Run [`kubb generate`](/docs/5.x/reference/commands/) before you start the dev server.

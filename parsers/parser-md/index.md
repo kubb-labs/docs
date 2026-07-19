@@ -35,7 +35,7 @@ resources:
 
 `@kubb/parser-md` lets Kubb emit `.md` and `.markdown` files. Any plugin that writes a markdown source has its output serialized for you.
 
-The parser joins a file's source blocks with blank lines to form the body. When `file.meta.frontmatter` is set, it renders those keys as a YAML frontmatter block and prepends it, so you do not add a `yaml` dependency yourself.
+The parser joins a file's source blocks with blank lines to form the body, and prepends a YAML frontmatter block when `file.meta.frontmatter` is set, so you never add a `yaml` dependency yourself.
 
 > [!TIP]
 > `parserMd` runs by default next to `parserTs` and `parserTsx`. Add it back to a custom `parsers` list when you override the defaults, since a custom `parsers` array replaces the whole default set. Files whose extension has no registered parser are written by joining their sources verbatim.

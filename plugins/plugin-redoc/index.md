@@ -44,9 +44,9 @@ resources:
 
 `@kubb/plugin-redoc` turns your OpenAPI spec into a static HTML documentation page with [Redoc](https://redocly.com/). The output is a single file with the spec embedded inline, so you can drop it on any static host without a build step. The page loads the Redoc bundle and fonts from a CDN when viewed, so rendering needs network access.
 
-Kubb rebuilds the file on every run. Your docs stay in step with the spec your code was generated from.
+Kubb rebuilds the file on every run, keeping your docs in step with the spec your code was generated from.
 
-This plugin reads the OpenAPI adapter. Kubb uses `adapterOas()` by default, so it works out of the box. You set `adapter` yourself only if you replaced that default with another adapter.
+This plugin reads the OpenAPI adapter, which Kubb sets to `adapterOas()` by default, so it works out of the box. Set `adapter` yourself only if you replaced that default.
 
 ## Installation
 
@@ -72,7 +72,7 @@ yarn add -D @kubb/plugin-redoc@beta
 
 ## Dependencies
 
-`@kubb/plugin-redoc` has no plugin dependencies. It reads the OpenAPI spec through `@kubb/adapter-oas` and needs no other Kubb plugin, so add it on its own whenever you want generated documentation.
+`@kubb/plugin-redoc` has no plugin dependencies. It reads the OpenAPI spec through `@kubb/adapter-oas`, so add it on its own whenever you want generated documentation.
 
 ## Example
 

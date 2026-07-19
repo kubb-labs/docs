@@ -8,8 +8,8 @@ outline: [2, 3]
 # Set up the Claude Code plugin
 
 Kubb ships a [Claude Code](https://code.claude.com) plugin. It adds slash commands and an agent
-that generate code from an OpenAPI spec. The commands run the `kubb` CLI. A build you start in the
-chat matches the one you run in a terminal.
+that generate code from an OpenAPI spec. The commands run the `kubb` CLI, so a build you start in
+the chat matches the one you run in a terminal.
 
 > [!IMPORTANT]
 > The plugin needs Kubb v5 or higher. It targets the v5 CLI and the built-in MCP server.
@@ -27,20 +27,20 @@ The Kubb repository is also a plugin marketplace. Add it, then install the plugi
 /plugin install kubb@kubb
 ```
 
-The commands run `npx kubb`, so install Kubb yourself. Install it in the project or globally:
+The commands run `npx kubb`, so install Kubb yourself, either in the project or globally:
 
 ```shell [Terminal]
 npm install -D kubb@beta
 ```
 
-A `SessionStart` hook checks for `kubb` when a session starts. It warns you when `kubb` is
-missing so you can install it first. It never installs anything for you.
+A `SessionStart` hook checks for `kubb` at session start and warns you if it's missing, but it
+never installs anything for you.
 
 `kubb init` installs the `@kubb/plugin-*` packages you select.
 
 ## Commands
 
-The commands mirror the Kubb CLI. They are namespaced under `kubb:`.
+The commands mirror the Kubb CLI, namespaced under `kubb:`.
 
 | Command | What it does |
 | --- | --- |

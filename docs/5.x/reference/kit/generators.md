@@ -44,7 +44,7 @@ const myGenerator = defineGenerator({
 
 ### Scoping with `match` {#match}
 
-Add a `match(node, ctx)` predicate to skip `schema` or `operation` for nodes a generator does not apply to. When `match` returns `false`, the engine skips that node entirely: no context work beyond what it already builds per node, and no call to `schema`/`operation`. Omit `match` to run for every node, the default when it is unset. `match` does not gate `operations()`, which already runs once on the full batch rather than per node.
+Add a `match(node, ctx)` predicate to skip `schema` or `operation` for nodes a generator does not apply to. When `match` returns `false`, the engine skips that node entirely: no context work beyond what it already builds per node, and no call to `schema`/`operation`. Omitting `match` runs the generator for every node. `match` does not gate `operations()`, which already runs once on the full batch rather than per node.
 
 This is useful when a plugin registers several generators for the same node type and only one should run per node, for example one hook generator per query variant in `@kubb/plugin-react-query`. Without `match`, every generator runs for every node and has to classify and bail out on its own.
 

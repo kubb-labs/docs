@@ -35,7 +35,7 @@ yarn add -D kubb@beta
 
 ## Configure
 
-Add the plugin to your `rolldown.config.ts` and pass it your Kubb config.
+Add the plugin to your `rolldown.config.ts`:
 
 ```typescript [rolldown.config.ts]
 import kubb from 'kubb/rolldown'

@@ -7,7 +7,7 @@ outline: deep
 
 # Infinite scroll query
 
-Set [`infinite`](/plugins/plugin-react-query/reference/options#infinite) to generate `useInfiniteQuery` hooks, naming the cursor query parameter, the first page value, and the path to the next cursor on the response. Infinite hooks are only emitted for operations whose query parameters actually contain `infinite.queryParam` by name, so pick a value that matches a real parameter in your schema.
+Set [`infinite`](/plugins/plugin-react-query/reference/options#infinite) to generate `useInfiniteQuery` hooks, naming the cursor query parameter, the first page value, and the path to the next cursor on the response. Infinite hooks are only emitted for operations whose query parameters contain `infinite.queryParam` by name, so pick a value that matches a real parameter in your schema.
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -36,7 +36,7 @@ export default defineConfig({
 
 ## Output example
 
-The PetStore fixture's `findPetsByTags` operation has a `page` query parameter, not `next_page`, so the snippet below uses `queryParam: 'page'` to actually trigger infinite-hook generation for it. Pick whatever name matches your own schema.
+The PetStore fixture's `findPetsByTags` operation has a `page` query parameter, not `next_page`, so the snippet below uses `queryParam: 'page'` to trigger infinite-hook generation for it.
 
 ```typescript [src/gen/hooks/useFindPetsByTagsInfinite.ts]
 import type { ResponseErrorConfig } from '../.kubb/client'

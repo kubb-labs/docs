@@ -1,6 +1,6 @@
 # Authenticate your API client
 
-To add authentication to your generated client, give the client one `auth` resolver. Kubb reads the security schemes from your spec and attaches them to every generated call, and the runtime adds the token to each request that needs it. Until you set a resolver the calls stay unauthenticated.
+To add authentication to your generated client, give the client one `auth` resolver. Kubb attaches each operation's security schemes from your spec, and the runtime adds the token to requests that need it. Calls stay unauthenticated until you set a resolver.
 
 Follow the same steps for [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and [`@kubb/plugin-axios`](/plugins/plugin-axios/).
 
@@ -33,7 +33,7 @@ client.setConfig({
 })
 ```
 
-The resolver is a token string or a function that returns one, and the function can be async. Return `undefined` to skip a scheme. When an operation accepts more than one scheme, the runtime tries each in turn until one hands back a token.
+The resolver is a token string, or a function (which can be async) that returns one or `undefined` to skip a scheme. When an operation accepts more than one scheme, the runtime tries each in turn until one hands back a token.
 
 ## Return the right token per scheme
 
@@ -73,7 +73,7 @@ client.setConfig({
 
 ## Use a separate client per environment
 
-To give each environment its own token, build an isolated client with `createClient`. This fits a multi-tenant app where each tenant carries a different token:
+To give each environment its own token, such as one per tenant in a multi-tenant app, build an isolated client with `createClient`:
 
 ```typescript
 import { createClient } from './gen/clients/.kubb/client'
@@ -101,7 +101,7 @@ client.interceptors.request.use((request) => {
 })
 ```
 
-Use an interceptor to sign a request or attach a credential the spec does not declare. To refresh a token after a `401`, read the new token from a response or error interceptor and let the request interceptor pick it up on the next call. For a standard bearer, basic, or apiKey scheme, the `auth` resolver stays the simpler path. The [interceptors guide](/plugins/plugin-fetch/guide/interceptors) covers the response and error channels and the full handler lifecycle.
+For a standard bearer, basic, or apiKey scheme, the `auth` resolver stays the simpler path. To refresh a token after a `401`, read the new token from a response or error interceptor and let the request interceptor pick it up on the next call.
 
 ## See also
 

@@ -7,7 +7,7 @@ outline: deep
 
 # Options
 
-Options for `pluginZod`, with type and default in the table.
+Options for `pluginZod`.
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
@@ -163,7 +163,7 @@ For example, `override: [{ type: 'tag', pattern: 'user', options: { coercion: tr
 
 ### resolver
 
-Changes how the plugin names generated files and symbols. Pass a partial patch. Override only the members you want, and anything you omit keeps `resolverZod`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
+Changes how the plugin names generated files and symbols. Pass a partial patch: override only the members you want, and anything you omit keeps `resolverZod`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
 
 > [!TIP]
 > Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.

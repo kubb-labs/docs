@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # JSX renderer
 
-`kubb/jsx` is Kubb's JSX-based renderer, an alternative to building files with the `ast.factory` node builders from [`kubb/kit`](/docs/5.x/reference/kit). It provides a JSX runtime and a set of built-in components so a generator can emit files and markdown through JSX instead of composing AST nodes by hand.
+`kubb/jsx` is Kubb's JSX-based renderer, an alternative to building files with the `ast.factory` node builders from [`kubb/kit`](/docs/5.x/reference/kit). It provides a JSX runtime and a set of built-in components so a generator can emit files and markdown through JSX.
 
 ## Setup
 

@@ -62,7 +62,7 @@ The v4 `parser` option is gone, and so is its v5 rename `validator`: this plugin
 
 ## Removed: `paramsType`, `pathParamsType`, `paramsCasing`
 
-These three options are gone, including `client.paramsCasing`. Each hook now takes its parameters as a single grouped options object shaped as `{ path, query, body, headers }`. Its property names come from the `@kubb/plugin-ts` `*Options` type, so they match the names in your OpenAPI document, the same shape `@kubb/plugin-fetch` already used. Query params move under `query`, path params under `path`, the request body under `body`, and header params under `headers`.
+These three options are gone, including `client.paramsCasing`. Each hook now takes its parameters as a single grouped options object shaped as `{ path, query, body, headers }`. Its property names come from the `@kubb/plugin-ts` `*Options` type, so they match the names in your OpenAPI document, the same shape `@kubb/plugin-fetch` already used.
 
 ```diff [Diff]
   pluginReactQuery({
@@ -72,7 +72,7 @@ These three options are gone, including `client.paramsCasing`. Each hook now tak
   })
 ```
 
-Update the call sites. Query params move into `query`, and path params move into `path`. When an operation has a required parameter in a group, that group (`path`, `query`, or `headers`) is required too, so an incomplete call fails to compile.
+Update the call sites. When an operation has a required parameter in a group, that group (`path`, `query`, or `headers`) is required too, so an incomplete call fails to compile.
 
 ::: code-group
 
@@ -131,7 +131,7 @@ const pet = await mutateAsync({ body: { name: 'Rex' } })
 pet.id // typed as Pet.id, no narrowing required
 ```
 
-The change covers `queryFn`, `queryOptions`, and the hook generics together. No config flag brings back the old behavior. If your client returns non-`2xx` bodies as resolved data instead of throwing, wrap it to throw so TanStack Query's `error` / `onError` path fires. The previous typing was silently broken at runtime.
+The change covers `queryFn`, `queryOptions`, and the hook generics together, and no config flag brings back the old behavior. If your client returns non-`2xx` bodies as resolved data instead of throwing, wrap it to throw so TanStack Query's `error` / `onError` path fires. The previous typing was silently broken at runtime.
 
 ### No auto `enabled` guard
 

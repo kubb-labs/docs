@@ -7,9 +7,9 @@ outline: deep
 
 # Add barrel files support
 
-A barrel file is an `index.ts` that re-exports everything from a directory. Consumers of the generated code then import from one place instead of reaching into individual files, which keeps their imports short and stable. Kubb generates these files through [`@kubb/plugin-barrel`](/plugins/plugin-barrel/).
+A barrel file is an `index.ts` that re-exports everything from a directory. Consumers then import from one place instead of reaching into individual files, keeping imports short and stable. Kubb generates these files through [`@kubb/plugin-barrel`](/plugins/plugin-barrel/).
 
-`@kubb/plugin-barrel` ships inside `kubb`, and `defineConfig` registers it for you, but `output.barrel` defaults to `false`, so it generates nothing until you opt in. This guide shows how to configure it into the barrels your project needs.
+`@kubb/plugin-barrel` ships inside `kubb`, and `defineConfig` registers it for you, but `output.barrel` defaults to `false`, so it generates nothing until you opt in.
 
 Toggle the export style and barrel depth to see what each `index.ts` re-exports.
 

@@ -56,7 +56,7 @@ When the wizard finishes, you have:
 | `--output`, `-o` |         | Output directory for generated files. Bypasses the output directory prompt.                                                                                                                                                                                         |
 | `--plugins`      |         | Comma-separated list of plugins to install. Bypasses the plugin selection prompt. Valid values: `plugin-ts`, `plugin-axios`, `plugin-fetch`, `plugin-react-query`, `plugin-vue-query`, `plugin-zod`, `plugin-faker`, `plugin-msw`, `plugin-cypress`, `plugin-mcp`, `plugin-redoc`. |
 
-Each flag skips only its own prompt and works alongside `--yes`. Pass all three value flags and the wizard runs without any prompts, no `--yes` needed.
+Each flag skips only its own prompt and combines with `--yes`. Pass all three value flags and the wizard runs without prompts, no `--yes` needed.
 
 ## Examples
 
