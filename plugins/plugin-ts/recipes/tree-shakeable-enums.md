@@ -7,7 +7,7 @@ outline: deep
 
 # Tree-shakeable enums
 
-Set [`enum.type`](/plugins/plugin-ts/reference/options#enum-type) to `'asConst'` to emit each enum as an `as const` object plus a companion key type. The object carries no runtime beyond its values, so bundlers drop what you do not use. Switch the value to `'enum'`, `'literal'`, or `'inlineLiteral'` for the other shapes.
+Set [`enum.type`](/plugins/plugin-ts/reference/options#enum-type) to `'asConst'` to emit each enum as an `as const` object plus a companion key type. The object carries no runtime beyond its values, so bundlers drop what you do not use. See the [option reference](/plugins/plugin-ts/reference/options#enum-type) for the other representations `enum.type` can produce.
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'

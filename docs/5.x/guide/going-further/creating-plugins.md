@@ -265,15 +265,7 @@ export type { PluginExampleOptions, PluginExample } from './types'
 
 ## Generators
 
-A generator walks the [AST](/docs/5.x/guide/concepts/ast) produced by the [adapter](/docs/5.x/guide/concepts/adapters) and emits `FileNode`s. Register generators in `kubb:plugin:setup` with `ctx.addGenerator`. Each generator implements any combination of three handlers:
-
-| Handler      | Called for                                              | Return type                                       |
-| ------------ | ------------------------------------------------------- | ------------------------------------------------- |
-| `schema`     | Each `SchemaNode` in the AST                            | `Array<FileNode>`, an element, or `null`/`undefined` |
-| `operation`  | Each `OperationNode` in the AST                         | `Array<FileNode>`, an element, or `null`/`undefined` |
-| `operations` | Once with all `OperationNode`s after the operation walk | `Array<FileNode>`, an element, or `null`/`undefined` |
-
-Each handler can return a Promise of any of these.
+A generator walks the [AST](/docs/5.x/guide/concepts/ast) produced by the [adapter](/docs/5.x/guide/concepts/adapters) and emits `FileNode`s. Register generators in `kubb:plugin:setup` with `ctx.addGenerator`. Each generator implements any combination of three handlers (`schema`, `operation`, and `operations`), and each can return files, a renderer element, nothing, or a Promise of any of those. See the [generator methods table](/docs/5.x/reference/kit/generators#generator-methods) for what each handler receives and exactly when it runs.
 
 ### Emit roles
 
@@ -348,18 +340,7 @@ Users override your plugin's resolver through its `resolver` option in `kubb.con
 
 ## The setup context
 
-`kubb:plugin:setup` receives a `KubbPluginSetupContext` that wires the plugin into the build. The full interface from [`kubb/kit`](/docs/5.x/reference/kit):
-
-| Method / Property | Purpose                                                                           |
-| ----------------- | --------------------------------------------------------------------------------- |
-| `addGenerator`    | Register one or more [`Generator`](/docs/5.x/guide/concepts/generators)s for the AST walk. Pass them as separate arguments, or spread an existing list. |
-| `setResolver`     | Set or override the resolver (file naming and paths).                             |
-| `addMacro`        | Add a [macro](/docs/5.x/guide/going-further/macros) that rewrites AST nodes before generators. |
-| `setMacros`       | Replace this plugin's macros with a new list.                                     |
-| `setOptions`      | Provide resolved options to the build loop.                                       |
-| `injectFile`      | Inject a raw `UserFileNode` into the build, bypassing generators.                 |
-| `config`          | The resolved `Config` at setup time.                                              |
-| `options`         | The user-supplied plugin options.                                                 |
+`kubb:plugin:setup` receives a `KubbPluginSetupContext` that wires the plugin into the build: `addGenerator` and `setResolver` register the pieces built above, `addMacro`/`setMacros` attach [macros](/docs/5.x/guide/going-further/macros), `setOptions` hands resolved options to the build loop, and `injectFile` writes a raw file straight through, bypassing generators. See the [`KubbPluginSetupContext` methods table](/docs/5.x/reference/kit/plugins#kubbpluginsetupcontext-methods-passed-to-kubb-plugin-setup) for every method's signature.
 
 ```typescript twoslash [setup-context.ts]
 import { fileURLToPath } from 'node:url'

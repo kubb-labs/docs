@@ -65,7 +65,7 @@ A reporter decides how a run is rendered. The config registers available reporte
 | Reporter | Output                                                                          |
 | -------- | ------------------------------------------------------------------------------- |
 | `cli`    | The end-of-run summary in the terminal. This runs when you pass no flag.        |
-| `json`   | A machine-readable report on stdout (`status`, `counts`, `timings`, `diagnostics`) for CI. |
+| `json`   | A machine-readable report on stdout for CI. See [Diagnostics](/docs/5.x/reference/diagnostics#machine-readable-output) for the full JSON shape. |
 | `file`   | The run's diagnostics, written to `.kubb/kubb-<name>-<timestamp>.log`.          |
 
 Write a log file:

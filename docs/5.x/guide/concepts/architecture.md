@@ -25,7 +25,7 @@ Every run moves through four stages. Select one to see what it does, or watch it
 
 ## Config
 
-`defineConfig` from `kubb/config` pre-wires [`adapterOas`](/docs/5.x/guide/concepts/adapters), the default parsers [`parserTs`, `parserTsx`, `parserMd`](/docs/5.x/guide/concepts/parsers), and [`pluginBarrel`](/plugins/plugin-barrel/). A minimal config only needs `input` and `output`.
+`defineConfig` from `kubb/config` pre-wires the [adapter](/docs/5.x/guide/concepts/adapters), the default [parsers](/docs/5.x/guide/concepts/parsers), and the [barrel plugin](/plugins/plugin-barrel/), so a minimal config only needs `input` and `output`. See the [defaults table](/docs/5.x/reference/kit/engine#defaults-applied-for-omitted-fields) for exactly what each field resolves to.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'

@@ -68,7 +68,7 @@ pluginAxios({ sdk: { name: 'petStore' } })
 
 :::
 
-With `sdk` set, `mode: 'tag'` (the default) emits one class per tag, and a `name` composes them into a root class that builds every tag client from one config. Use `mode: 'flat'` for a single class with every operation as a direct method.
+`sdk.mode: 'tag'` (the default) emits one class per tag, and adding `sdk.name` composes them into a root class that builds every tag client from one config. See [`sdk`](/plugins/plugin-axios/reference/options#sdk) for the full option, including the single-class `mode: 'flat'`.
 
 ## Remove `dataReturnType` and read the result
 
@@ -81,7 +81,7 @@ With `sdk` set, `mode: 'tag'` (the default) emits one class per tag, and a `name
 
 ## `parser` is renamed to `validator`
 
-v4 `parser` took `'client'` or `'zod'` and defaulted to `'client'`. v5 renames the option to `validator`. It defaults to `false` and accepts `'zod'` or `{ request, response }` to validate request and response bodies with schemas from `@kubb/plugin-zod`. The `'client'` value is gone, so `parser: 'zod'` becomes `validator: 'zod'`, and `parser: 'client'` becomes the default `false`.
+v4 `parser` took `'client'` or `'zod'` and defaulted to `'client'`. v5 renames the option to `validator`, drops the `'client'` value, and defaults to `false`: `parser: 'zod'` becomes `validator: 'zod'`, and `parser: 'client'` becomes the default `false`. See [`validator`](/plugins/plugin-axios/reference/options#validator) (the same option on `@kubb/plugin-fetch`) for what `'zod'` and the per-direction `{ request, response }` form check.
 
 ## Authentication comes from the spec
 

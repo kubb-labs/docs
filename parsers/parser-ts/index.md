@@ -46,7 +46,7 @@ The package exports two parser factories, and Kubb selects one by the file exten
 - `parserTs()` handles `.ts` and `.js` files.
 - `parserTsx()` handles `.tsx` and `.jsx` files. Use it for React projects so JSX in generated components is preserved.
 
-Both accept an `extension` option that rewrites the extensions emitted in `import`/`export` statements, for example `parserTs({ extension: { '.ts': '.js' } })` to emit `.js` imports from `.ts` sources for an ESM dual package. A custom `parsers` array replaces the default set (`parserTs`, `parserTsx`, `parserMd`), and files whose extension has no registered parser are written by joining their sources verbatim, so list every parser your plugins need.
+Both accept the same [`extension`](/parsers/parser-ts/reference/options#extension) option to rewrite the import and export extensions they emit, for example to emit `.js` imports from `.ts` sources in an ESM dual package. A custom `parsers` array replaces the default set (`parserTs`, `parserTsx`, `parserMd`), and files whose extension has no registered parser are written by joining their sources verbatim, so list every parser your plugins need.
 
 ## Installation
 

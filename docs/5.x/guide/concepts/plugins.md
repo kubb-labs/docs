@@ -57,7 +57,7 @@ Plugins rarely work alone. A client plugin leans on the types a TypeScript plugi
 
 ## Post-enforced plugins
 
-Most plugins run in one normal pass, but some need to see what everyone else produced first. A barrel generator can only write its index files once the other plugins have emitted what it re-exports. `enforce: 'post'` moves a plugin to the end of every event it listens to, and `enforce: 'pre'` moves it to the front. Neither overrides dependencies: a declared dependency always runs first. [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) is the one to read when this fits your case.
+Most plugins run in one normal pass, but some need to see what everyone else produced first. A barrel generator can only write its index files once the other plugins have emitted what it re-exports. Setting a plugin's [`enforce`](/docs/5.x/reference/kit/plugins#plugin-shape) field moves it to the front or the back of every event it listens to, though a declared dependency always runs first regardless. [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) is the one to read when this fits your case.
 
 ## Built-in plugins
 

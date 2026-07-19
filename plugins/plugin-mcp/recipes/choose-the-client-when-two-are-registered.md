@@ -7,7 +7,7 @@ outline: deep
 
 # Choose the client when two are registered
 
-Set [`client`](/plugins/plugin-mcp/reference/options#client) to `'axios'` or `'fetch'` when both client plugins are present, so the handlers know which one to call. `pluginAxios` and `pluginFetch` both default `output.path` to `clients`, so give each its own path here too, otherwise the second one registered overwrites the first's generated files.
+Set [`client`](/plugins/plugin-mcp/reference/options#client) to `'axios'` or `'fetch'` when both client plugins are present, so the handlers know which one to call. [`pluginAxios`](/plugins/plugin-axios/reference/options#output-path) and [`pluginFetch`](/plugins/plugin-fetch/reference/options#output-path) both default `output.path` to `clients`, so give each its own path here too, otherwise the second one registered overwrites the first's generated files.
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'

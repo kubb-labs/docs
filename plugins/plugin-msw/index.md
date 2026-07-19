@@ -51,7 +51,7 @@ resources:
 
 `@kubb/plugin-msw` turns your OpenAPI spec into [MSW](https://mswjs.io/) request handlers you drop into a test setup or a service worker to mock the API. Each handler matches the spec's path, method, status, and response body.
 
-By default a handler returns an empty typed payload you fill in from tests. Set `parser: 'faker'` to return generated data from `@kubb/plugin-faker` instead.
+By default a handler returns an empty typed payload you fill in from tests. Set [`parser: 'faker'`](/plugins/plugin-msw/reference/options#parser) to return generated data from `@kubb/plugin-faker` instead.
 
 ## Installation
 

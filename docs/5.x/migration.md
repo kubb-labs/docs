@@ -246,12 +246,12 @@ The [adapter page](/docs/5.x/migration/adapter-oas) has the full table and befor
 
 ### Formatting and linting are off by default
 
-`output.format` and `output.lint` both default to `false` in v5, so generation skips formatting and linting unless you opt in (v4 defaulted `format` to `'prettier'` and `lint` to `'auto'`). The accepted values are unchanged (`'auto'`, `'prettier'`, `'biome'`, `'oxfmt'`, `false` for format; `'auto'`, `'eslint'`, `'biome'`, `'oxlint'`, `false` for lint), but `'auto'` now prefers the oxc tools first.
+`output.format` and `output.lint` both default to `false` in v5, so generation skips formatting and linting unless you opt in (v4 defaulted `format` to `'prettier'` and `lint` to `'auto'`). The accepted values are unchanged, but `'auto'` now prefers the oxc tools first. See [`output.format`](/docs/5.x/reference/configuration#output-format) and [`output.lint`](/docs/5.x/reference/configuration#output-lint) for the full value lists and detection order.
 
-| Option          | v4 default   | v5 default | `'auto'` detection order                                                                 |
-| --------------- | ------------ | ---------- | ---------------------------------------------------------------------------------------- |
-| `output.format` | `'prettier'` | `false`    | [oxfmt](https://oxc.rs) → [biome](https://biomejs.dev) → [prettier](https://prettier.io) |
-| `output.lint`   | `'auto'`     | `false`    | [oxlint](https://oxc.rs) → [biome](https://biomejs.dev) → [eslint](https://eslint.org)   |
+| Option          | v4 default   | v5 default |
+| --------------- | ------------ | ---------- |
+| `output.format` | `'prettier'` | `false`    |
+| `output.lint`   | `'auto'`     | `false`    |
 
 ### `output.barrelType` → `output.barrel` {#output-barreltype-output-barrel}
 
@@ -435,13 +435,7 @@ export default defineConfig({
 
 ### `--debug` becomes reporters
 
-The `--debug` flag and the `debug` value of `--logLevel` are gone. v5 renders a run through reporters. The `--reporter` flag (comma-separated) selects which run, defaulting to `cli`, and the config `reporters` key registers the ones available. `defineConfig` registers the three built-ins for you.
-
-| Reporter          | Output                                                                  |
-| ----------------- | ----------------------------------------------------------------------- |
-| `cli` _(default)_ | The end-of-run summary in the terminal.                                 |
-| `json`            | A stable machine-readable report on stdout, for CI.                     |
-| `file`            | A log written to `.kubb/kubb-<name>-<timestamp>.log`. This replaces `--debug`. |
+The `--debug` flag and the `debug` value of `--logLevel` are gone. v5 renders a run through reporters instead, registered by the config `reporters` key (`defineConfig` registers the three built-ins for you) and selected at the CLI with `--reporter`, defaulting to `cli`. The `file` reporter replaces `--debug`, writing the same kind of log to `.kubb/kubb-<name>-<timestamp>.log`. See [Reporters](/docs/5.x/reference/commands/generate#reporters) for what `cli`, `json`, and `file` each output.
 
 ```diff [Terminal]
 -kubb generate --debug

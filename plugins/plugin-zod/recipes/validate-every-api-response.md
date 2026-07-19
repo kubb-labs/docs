@@ -7,7 +7,7 @@ outline: deep
 
 # Validate every API response
 
-Generate the Zod schemas, then point a client at them. Setting the Fetch client's [`validator`](/plugins/plugin-fetch/reference/options#validator) to `'zod'` runs every response body through the matching schema at runtime. To validate request bodies too, use the object form `{ request: 'zod', response: 'zod' }`.
+Generate the Zod schemas, then point a client at them. Setting the Fetch client's [`validator`](/plugins/plugin-fetch/reference/options#validator) to `'zod'` runs every response body through the matching schema at runtime. The option also accepts an object form to validate request bodies too.
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'

@@ -19,11 +19,7 @@ A plugin registers its generators during [plugin setup](/docs/5.x/guide/concepts
 
 ## What each method handles
 
-A generator implements up to three methods, and each maps to a slice of the spec:
-
-- `schema` runs once per data schema. It is where types, validators, and mock factories come from.
-- `operation` runs once per API operation. It builds request hooks, clients, and route handlers.
-- `operations` runs a single time with the whole set at once. Reach for it when an index or a router has to see every operation before it writes anything.
+A generator implements up to three methods, each for a different slice of the spec: `schema` for one data schema at a time, `operation` for one API operation at a time, and `operations` once with the whole set, for output like an index or a router that needs to see everything before it writes anything. See the [generator methods table](/docs/5.x/reference/kit/generators#generator-methods) for what each one returns and exactly when it runs.
 
 Each method receives the generator context and returns the files that node becomes. It can hand back file nodes directly, return a renderer element, or write through the context and return nothing. The [generator reference](/docs/5.x/reference/kit/generators) lists every field on that context.
 

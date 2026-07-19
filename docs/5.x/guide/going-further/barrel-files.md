@@ -44,7 +44,7 @@ export default defineConfig({
 
 ## Choose an export style
 
-`type` is required whenever `output.barrel` is set to an object, and accepts `'named'` or `'all'`. Use `'named'` to re-export each symbol by name, which keeps tree-shaking accurate and imports explicit. Use `'all'` for a smaller barrel that re-exports everything with `export *`.
+`type` picks the export style: `'named'` re-exports each symbol by name for accurate tree-shaking, `'all'` re-exports everything with `export *`. See [`type`](/plugins/plugin-barrel/reference/options#type) for when it's required and its full type.
 
 ::: code-group
 
@@ -68,7 +68,7 @@ export * from './api/types/User'
 
 A plugin inherits `output.barrel` from `config.output.barrel` when it sets none of its own. Override it on the plugin to change or drop that plugin's barrel.
 
-Set `barrel: { type, nested: true }` on a plugin to write an `index.ts` in every subdirectory, so callers can import from any depth. The root `output.barrel` has no `nested` field and always stays flat.
+Set `barrel: { type, nested: true }` on a plugin to write an `index.ts` in every subdirectory instead of one flat barrel. See [`nested`](/plugins/plugin-barrel/reference/options#nested) for what each barrel re-exports at that setting. The root `output.barrel` has no `nested` field.
 
 ```typescript twoslash [Nested barrels]
 import { defineConfig } from 'kubb/config'
@@ -97,7 +97,7 @@ export default defineConfig({
 
 ## Turn barrels off
 
-`barrel: false` is already the default, so a fresh config needs no change. Set it explicitly on `defineConfig` to override a root barrel enabled elsewhere, for example a shared base config. Every plugin without its own `output.barrel` inherits the `false`, while a plugin that sets its own non-false `output.barrel` keeps its barrel.
+`barrel: false` is already the default, so a fresh config needs no change. Set it explicitly on `defineConfig` to override a root barrel enabled elsewhere, for example a shared base config. See [`output.barrel`](/plugins/plugin-barrel/reference/options#output-barrel) for how a plugin's own setting overrides that inherited value.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
