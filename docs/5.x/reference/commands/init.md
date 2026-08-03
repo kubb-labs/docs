@@ -47,6 +47,8 @@ When the wizard finishes, you have:
 - A `package.json` with `kubb` and the chosen plugins added as dependencies.
 - All selected dependencies installed.
 
+The wizard installs `kubb` at the exact version of the CLI you ran and takes the plugins from that same release channel, so `npx kubb@beta init` scaffolds a beta project and a stable CLI scaffolds a stable one.
+
 ## Options
 
 | Option           | Default | Description                                                                                                                                                                                                                                                         |
