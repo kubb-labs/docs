@@ -18,7 +18,7 @@ pass it on.
 ::: code-group
 
 ```typescript [Fetch]
-import { client } from './gen/clients/.kubb/client'
+import { client } from './gen/.kubb/client'
 
 client.interceptors.request.use((request) => {
   request.headers['X-Request-ID'] = crypto.randomUUID()
@@ -27,7 +27,7 @@ client.interceptors.request.use((request) => {
 ```
 
 ```typescript [Axios]
-import { client } from './gen/clients/.kubb/client'
+import { client } from './gen/.kubb/client'
 
 client.interceptors.request.use((request) => {
   request.headers.set('X-Request-ID', crypto.randomUUID())

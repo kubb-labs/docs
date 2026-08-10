@@ -81,7 +81,7 @@ The `baseURL` rides the same `ClientConfig` as `auth` and the [transport](/plugi
 Call `client.setConfig({ baseURL })` to point the whole app at one URL. Every generated function imports the shared `client`, so the change reaches each call at once. This fits reading the URL from an environment variable on startup:
 
 ```typescript
-import { client } from './gen/clients/.kubb/client'
+import { client } from './gen/.kubb/client'
 
 client.setConfig({ baseURL: import.meta.env.VITE_API_URL })
 ```
@@ -89,7 +89,7 @@ client.setConfig({ baseURL: import.meta.env.VITE_API_URL })
 Call `createClient({ baseURL })` for an isolated client with its own URL, which fits a multi-tenant app or talking to more than one backend. Pass it on the `client` option of a call, or hand it to a query plugin:
 
 ```typescript
-import { createClient } from './gen/clients/.kubb/client'
+import { createClient } from './gen/.kubb/client'
 import { getPetById } from './gen/clients/getPetById'
 
 const staging = createClient({ baseURL: 'https://staging.petstore.swagger.io/v2' })
@@ -112,7 +112,7 @@ A `baseURL` set on the call wins over `createClient`, which wins over `setConfig
 A request interceptor sees the final request before it is sent, so it can rewrite the URL per call from logic the static options cannot express, such as routing a path to a different host:
 
 ```typescript
-import { client } from './gen/clients/.kubb/client'
+import { client } from './gen/.kubb/client'
 
 client.interceptors.request.use((request) => {
   const { pathname } = new URL(request.url, 'http://placeholder')

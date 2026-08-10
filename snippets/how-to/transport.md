@@ -56,7 +56,7 @@ The core hands you a `ResolvedRequest` with the URL built, the query and body se
 A custom transport can delegate to `fetch` and add behavior around it. This one retries a failed `GET` with exponential backoff:
 
 ```typescript
-import { client, type Transport } from './gen/clients/.kubb/client'
+import { client, type Transport } from './gen/.kubb/client'
 
 const withRetry: Transport = async (request) => {
   const maxAttempts = 3
@@ -95,7 +95,7 @@ client.setConfig({ transport: withRetry })
 Because the transport is the only piece that touches the network, a test can replace it with a function that returns a fixed result:
 
 ```typescript
-import { createClient } from './gen/clients/.kubb/client'
+import { createClient } from './gen/.kubb/client'
 import { getPetById } from './gen/clients/getPetById'
 
 const testClient = createClient({
@@ -134,7 +134,7 @@ Give the client an instance with a timeout, default headers, and a logging inter
 
 ```typescript
 import axios from 'axios'
-import { client } from './gen/clients/.kubb/client'
+import { client } from './gen/.kubb/client'
 
 const instance = axios.create({
   timeout: 10_000,
@@ -161,7 +161,7 @@ Because the transport is a real axios instance, axios plugins work on it. Wire u
 ```typescript
 import axios from 'axios'
 import axiosRetry from 'axios-retry'
-import { createClient } from './gen/clients/.kubb/client'
+import { createClient } from './gen/.kubb/client'
 
 const instance = axios.create({ baseURL: 'https://petstore.swagger.io/v2' })
 axiosRetry(instance, { retries: 3, retryDelay: axiosRetry.exponentialDelay })

@@ -87,7 +87,7 @@ where a failed handshake surfaces. Wrap it to catch a non-2xx or a connection th
 established:
 
 ```typescript
-import { ResponseError } from './gen/clients/.kubb/client'
+import { ResponseError } from './gen/.kubb/client'
 
 try {
   const { stream } = await streamEvents({})

@@ -437,7 +437,7 @@ export default defineConfig({
 
 ### `--debug` becomes reporters
 
-The `--debug` flag and the `debug` value of `--logLevel` are gone. v5 renders a run through reporters instead, registered by the config `reporters` key (`defineConfig` registers the three built-ins for you) and selected at the CLI with `--reporter`, defaulting to `cli`. The `file` reporter replaces `--debug`, writing the same kind of log to `.kubb/kubb-<name>-<timestamp>.log`. See [Reporters](/docs/5.x/reference/commands/generate#reporters) for what `cli`, `json`, and `file` each output.
+The `--debug` flag and the `debug` value of `--logLevel` are gone. v5 renders a run through reporters instead, registered by the config `reporters` key (`defineConfig` registers the three built-ins for you) and selected at the CLI with `--reporter`, defaulting to `cli`. The `file` reporter replaces `--debug`, writing the same kind of log to `.kubb/kubb[-<name>]-<timestamp>.log`. See [Reporters](/docs/5.x/reference/commands/generate#reporters) for what `cli`, `json`, and `file` each output.
 
 ```diff [Terminal]
 -kubb generate --debug

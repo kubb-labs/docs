@@ -78,7 +78,7 @@ To change how a location is encoded across the board, pass your own serializer o
 default when omitted:
 
 ```typescript
-import { client } from './gen/clients/.kubb/client'
+import { client } from './gen/.kubb/client'
 import qs from 'qs'
 
 client.setConfig({
@@ -114,7 +114,7 @@ type. `codecs` is keyed by content type, and each entry holds a `serialize` for 
 and a `deserialize` for the response, so either half is optional:
 
 ```typescript
-import { client } from './gen/clients/.kubb/client'
+import { client } from './gen/.kubb/client'
 import { stringify } from 'yaml'
 
 client.setConfig({
@@ -136,7 +136,7 @@ receives the raw body and the content type and returns the parsed value, and run
 validation, so a custom format is transformed first and then checked against its schema:
 
 ```typescript
-import { client } from './gen/clients/.kubb/client'
+import { client } from './gen/.kubb/client'
 
 client.setConfig({
   codecs: {
@@ -168,7 +168,7 @@ The example below uses `fast-xml-parser` for plain-object data. The earlier `DOM
 deserializer returns a DOM `Document` instead:
 
 ```typescript
-import { client } from './gen/clients/.kubb/client'
+import { client } from './gen/.kubb/client'
 import { XMLBuilder, XMLParser } from 'fast-xml-parser'
 
 const builder = new XMLBuilder()
