@@ -175,6 +175,8 @@ export default defineConfig({
 })
 ```
 
+Leaving the wrapper in place fails the run with [`KUBB_LEGACY_INPUT`](/docs/5.x/reference/diagnostics/kubb-legacy-input). Earlier v5 betas read it as a parsed document, generated nothing, and still exited `0`. If you migrated against one of those, re-run on a current version and check the file count.
+
 ### Adopt the layered keys
 
 v5 adds three top-level keys that replace behavior each plugin used to carry itself. Importing from `kubb` applies all three defaults, so set them only to change the defaults.
