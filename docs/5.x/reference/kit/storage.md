@@ -11,7 +11,7 @@ Storage backends decide where generated files are written. Kubb ships a filesyst
 
 ## `createStorage`
 
-`createStorage` takes a builder function `(options: TOptions) => StorageDefinition` and returns a factory `(options?: TOptions) => Storage`. Call the returned factory to instantiate the storage, optionally with options.
+`createStorage` takes a builder function `(options: TOptions) => Storage` and returns a factory `(options?: TOptions) => Storage`. Call the returned factory to instantiate the storage, optionally with options.
 
 ```typescript twoslash [memory-storage.ts]
 import { createStorage } from 'kubb/kit'
@@ -44,7 +44,7 @@ export const memoryStorage = createStorage(() => {
 })
 ```
 
-Method names follow Node's filesystem vocabulary, so `readItem` reads like `readFile`, `writeItem` like `writeFile`, and `ensureItem` like fs-extra's `ensureFile`.
+Method names follow Node's filesystem vocabulary, so `readItem` reads like `readFile` and `writeItem` like `writeFile`.
 
 > [!TIP]
 > Use `memoryStorage` for tests and dry runs. Use `fsStorage` for normal development and CI/CD.
@@ -53,17 +53,16 @@ Method names follow Node's filesystem vocabulary, so `readItem` reads like `read
 
 The `Storage` interface is the shape every backend implements. A `Storage` instance is what the engine consumes at build time and returns from `driver.storage`.
 
-| Method         | Params                                            | Returns                   | Purpose                                       |
-| -------------- | ------------------------------------------------- | ------------------------- | --------------------------------------------- |
-| `existsItem()` | `key: string`                                     | `Promise<boolean>`        | Check whether an item exists                  |
-| `readItem()`   | `key: string`                                     | `Promise<string \| null>` | Retrieve an item's content                    |
-| `writeItem()`  | `key: string, value: string`                      | `Promise<void>`           | Write an item                                 |
-| `ensureItem()` | `key: string, factory: () => string \| Promise<string>` | `Promise<string>`   | Read an item, writing the factory result first when it is missing |
-| `removeItem()` | `key: string`                                     | `Promise<void>`           | Delete an item                                |
-| `readKeys()`   | `base?: string`                                   | `Promise<string[]>`       | List keys, optionally filtered by prefix      |
-| `empty()`      | `base?: string`                                   | `Promise<void>`           | Delete all items, optionally scoped by prefix |
+| Method         | Params                       | Returns                   | Purpose                                       |
+| -------------- | ---------------------------- | ------------------------- | --------------------------------------------- |
+| `existsItem()` | `key: string`                | `Promise<boolean>`        | Check whether an item exists                  |
+| `readItem()`   | `key: string`                | `Promise<string \| null>` | Retrieve an item's content                    |
+| `writeItem()`  | `key: string, value: string` | `Promise<void>`           | Write an item                                 |
+| `removeItem()` | `key: string`                | `Promise<void>`           | Delete an item                                |
+| `readKeys()`   | `base?: string`              | `Promise<string[]>`       | List keys, optionally filtered by prefix      |
+| `empty()`      | `base?: string`              | `Promise<void>`           | Delete all items, optionally scoped by prefix |
 
-`ensureItem` is the one method a backend can leave out. The builder returns a `StorageDefinition`, where `ensureItem` is optional, and `createStorage` derives one from `readItem` and `writeItem` when it is missing. A stored empty string counts as present, so the factory runs only when the key holds nothing at all. Implement it yourself when the backend can do the read and the conditional write in one atomic operation.
+Every method is required. There is no read-through helper here on purpose: skipping a write because the key already exists would leave stale generated code in place, and `fsStorage` already skips the write when the content on disk is identical.
 
 ## `fsStorage`
 
