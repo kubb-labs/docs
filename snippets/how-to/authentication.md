@@ -26,7 +26,7 @@ export function addPet<ThrowOnError extends boolean = true>(
 Set the resolver on the client and every guarded call picks up the token:
 
 ```typescript
-import { client } from './gen/clients/.kubb/client'
+import { client } from './gen/.kubb/client'
 
 client.setConfig({
   auth: () => localStorage.getItem('token') ?? undefined,
@@ -76,7 +76,7 @@ client.setConfig({
 To give each environment its own token, such as one per tenant in a multi-tenant app, build an isolated client with `createClient`:
 
 ```typescript
-import { createClient } from './gen/clients/.kubb/client'
+import { createClient } from './gen/.kubb/client'
 
 const tenant = createClient({
   baseURL: 'https://tenant.example.com',
@@ -93,7 +93,7 @@ To override the client for one request, pass `auth` on that single call, which s
 For anything an OpenAPI security scheme cannot describe, reach for a request interceptor. It runs on every call and sees the final request before it is sent, so it can set or rewrite any header without touching the spec.
 
 ```typescript
-import { client } from './gen/clients/.kubb/client'
+import { client } from './gen/.kubb/client'
 
 client.interceptors.request.use((request) => {
   request.headers.Authorization = `Bearer ${getToken()}`

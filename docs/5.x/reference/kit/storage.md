@@ -62,6 +62,8 @@ The `Storage` interface is the shape every backend implements. A `Storage` insta
 | `readKeys()`   | `base?: string`              | `Promise<string[]>`       | List keys, optionally filtered by prefix      |
 | `empty()`      | `base?: string`              | `Promise<void>`           | Delete all items, optionally scoped by prefix |
 
+Omitting `base` on `empty()` is implementation-defined. `memoryStorage` wipes every entry, while the filesystem-backed `fsStorage` treats a missing `base` as a no-op and deletes nothing.
+
 Every method is required. There is no read-through helper here on purpose: skipping a write because the key already exists would leave stale generated code in place, and `fsStorage` already skips the write when the content on disk is identical.
 
 ## `fsStorage`

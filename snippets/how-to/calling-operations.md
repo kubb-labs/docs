@@ -129,7 +129,7 @@ Every generated function imports a shared `client`. Call `setConfig` once at sta
 call picks up the change:
 
 ```typescript
-import { client } from './gen/clients/.kubb/client'
+import { client } from './gen/.kubb/client'
 
 client.setConfig({
   baseURL: 'https://api.example.com/v1',
@@ -142,7 +142,7 @@ For an isolated client that does not touch the shared one, build a separate inst
 more than one backend:
 
 ```typescript
-import { createClient } from './gen/clients/.kubb/client'
+import { createClient } from './gen/.kubb/client'
 import { getPetById } from './gen/clients/getPetById'
 
 const staging = createClient({ baseURL: 'https://staging.example.com/v1' })
@@ -159,7 +159,7 @@ The configuration object is the same `ClientConfig` in both cases.
 link or logging the target ahead of a request:
 
 ```typescript
-import { client } from './gen/clients/.kubb/client'
+import { client } from './gen/.kubb/client'
 
 const url = client.getUrl({
   url: '/pets/{petId}',

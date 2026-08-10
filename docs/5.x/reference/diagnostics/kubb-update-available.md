@@ -13,12 +13,24 @@ Level: info
 A newer Kubb version is published on npm than the one running.
 
 ```text [Terminal]
-[KUBB_UPDATE_AVAILABLE] Update available: v5.0.0 → v5.1.0. Run `npm install -g @kubb/cli` to update.
+╭─────── Update available for `Kubb` ───────╮
+│                                           │
+│           `v5.0.0` → `v5.1.0`             │
+│  Run `npm install -g @kubb/cli` to update │
+│                                           │
+╰───────────────────────────────────────────╯
 ```
 
 ## What happened
 
 Before generating, the CLI checks npm for a newer release. When one exists, it reports this notice. It is informational and never fails the build. The check is skipped when you are offline.
+
+This is the one diagnostic the interactive logger renders as a framed box rather than a code-tagged line. When output is not a TTY, such as in CI, it falls back to the standard diagnostic format:
+
+```text [Terminal]
+[KUBB_UPDATE_AVAILABLE]: Update available: v5.0.0 → v5.1.0. Run `npm install -g @kubb/cli` to update.
+  see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-update-available
+```
 
 ## How to fix it
 

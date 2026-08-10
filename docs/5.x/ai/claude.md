@@ -61,6 +61,15 @@ A typical first run:
 The `kubb-expert` agent handles "add Kubb to my project" from start to finish. It validates the
 spec, picks plugins, scaffolds the config, and runs generation.
 
+## Skills
+
+Two skills load on their own when the work calls for them, so you never invoke them directly.
+
+| Skill | When it loads |
+| --- | --- |
+| `config` | Authoring a `kubb.config.ts`, picking `@kubb/plugin-*` packages, or debugging generated output. |
+| `output` | Writing app or test code that imports the generated types, clients, hooks, schemas, and mocks. |
+
 ## Conversational generation
 
 The plugin also wires in the Kubb MCP server (`kubb mcp`). Describe what you want instead of

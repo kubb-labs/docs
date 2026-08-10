@@ -42,7 +42,8 @@ export default defineConfig({
 ## Example output
 
 ```text [Terminal]
-[KUBB_POST_GENERATE_FAILED]: Post-generate command failed
+[KUBB_POST_GENERATE_FAILED]: Post-generate command failed: Command failed with exit code 1
+  fix: Check that the tool is installed and that the command and its config are correct.
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-post-generate-failed
 ```
 

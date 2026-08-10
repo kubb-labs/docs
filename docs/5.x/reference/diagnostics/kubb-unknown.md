@@ -24,7 +24,7 @@ Kubb wraps every failure in a diagnostic. When the underlying error has no struc
 
 ## How to fix it
 
-- Re-run with `kubb generate --reporter file` to write a log to `.kubb/kubb-<timestamp>.log`, or `--verbose` for more detail in the terminal.
+- Re-run with `kubb generate --reporter file` to write a log to `.kubb/kubb[-<name>]-<timestamp>.log`, or `--verbose` for more detail in the terminal. The `<name>` segment is dropped when the config has no `name`.
 - Check the message and stack for the failing plugin or input.
 - If the cause is unclear, open a [GitHub issue](https://github.com/kubb-labs/kubb/issues) with the message and the `Environment:` block from the failure summary.
 

@@ -54,5 +54,5 @@ export function getUserByNameQueryOptions({ path }: { path: MaybeRefOrGetter<Get
 import { useQuery } from '@tanstack/vue-query'
 import { getUserByNameQueryOptions } from './gen/hooks/useGetUserByName'
 
-const { data } = useQuery(getUserByNameQueryOptions({ path: { name: 'kubb' } }))
+const { data } = useQuery(getUserByNameQueryOptions({ path: { username: 'kubb' } }))
 ```

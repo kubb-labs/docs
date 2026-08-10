@@ -41,7 +41,7 @@ export const pluginExample = definePlugin((options: { prefix?: string } = {}) =>
 | Method           | Signature                                                       | Purpose                                                       |
 | ---------------- | ----------------------------------------------------------------| ------------------------------------------------------------- |
 | `addGenerator`   | `(...generators: Array<Generator>) => void`                     | Register one or more generators for this plugin               |
-| `setResolver`    | `(resolver: Partial<Resolver>) => void`                         | Set or partially override the file naming resolver            |
+| `setResolver`    | `(resolver: ResolverPatch<Resolver> \| Resolver) => void`       | Set or partially override the file naming resolver            |
 | `addMacro`       | `(macro: Macro) => void`                                        | Add a macro that rewrites AST nodes before generators         |
 | `setMacros`      | `(macros: Array<Macro>) => void`                                | Replace this plugin's macros with a new list                  |
 | `setOptions`     | `(options: ResolvedOptions) => void`                            | Set the resolved options used by generators                   |

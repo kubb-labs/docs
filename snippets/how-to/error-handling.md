@@ -15,7 +15,7 @@ and read the parsed body and status off the error:
 
 ```typescript
 import { getPetById } from './gen/clients/getPetById'
-import { ResponseError } from './gen/clients/.kubb/client'
+import { ResponseError } from './gen/.kubb/client'
 
 try {
   const { data } = await getPetById({ path: { petId: 1 } })
@@ -85,7 +85,7 @@ config, then the built-in default of `true`. Set it on the client to flip the de
 whole app while keeping the per-call override:
 
 ```typescript
-import { client } from './gen/clients/.kubb/client'
+import { client } from './gen/.kubb/client'
 
 client.setConfig({ throwOnError: false })
 
@@ -129,7 +129,7 @@ that does not match its schema throws a `ParseError` instead of returning. It ca
 `issues` from the schema, so the same handling works across Zod, valibot, and arktype:
 
 ```typescript
-import { ParseError } from './gen/clients/.kubb/standardSchema'
+import { ParseError } from './gen/.kubb/standardSchema'
 
 try {
   const { data } = await getPetById({ path: { petId: 1 } })
