@@ -140,7 +140,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen', barrel: { type: 'named' } },
-  plugins: [pluginTs({ output: { path: 'api', barrel: { type: 'all', nested: true } } })],
+  plugins: [pluginTs({ output: { path: 'api', mode: 'directory', barrel: { type: 'all', nested: true } } })],
 })
 ```
 
@@ -182,7 +182,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen', barrel: false },
-  plugins: [pluginTs({ output: { barrel: { type: 'named' } } })],
+  plugins: [pluginTs({ output: { path: 'types', mode: 'directory', barrel: { type: 'named' } } })],
 })
 ```
 

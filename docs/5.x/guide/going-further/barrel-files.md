@@ -70,6 +70,8 @@ A plugin inherits `output.barrel` from `config.output.barrel` when it sets none 
 
 Set `barrel: { type, nested: true }` on a plugin to write an `index.ts` in every subdirectory instead of one flat barrel. See [`nested`](/plugins/plugin-barrel/reference/options#nested) for what each barrel re-exports at that setting. The root `output.barrel` has no `nested` field.
 
+A plugin only gets its own barrel under `output.mode: 'directory'`. At the default `'file'` mode the plugin writes a single file, so there is no directory to walk and the plugin-level `barrel` is skipped.
+
 ```typescript twoslash [Nested barrels]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
@@ -77,7 +79,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen' },
-  plugins: [pluginTs({ output: { path: 'api', barrel: { type: 'all', nested: true } } })],
+  plugins: [pluginTs({ output: { path: 'api', mode: 'directory', barrel: { type: 'all', nested: true } } })],
 })
 ```
 
