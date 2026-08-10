@@ -18,7 +18,7 @@ export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [
-    pluginTs(),
+    pluginTs({ output: { path: 'types', mode: 'directory' } }),
     pluginAxios({
       output: { path: 'clients', mode: 'directory' },
       sdk: { mode: 'tag' },

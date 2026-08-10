@@ -125,8 +125,8 @@ export default defineConfig({
     path: './src/gen',
   },
   plugins: [
-    pluginTs(),
-    pluginZod(),
+    pluginTs({ output: { path: 'types', mode: 'directory' } }),
+    pluginZod({ output: { path: 'zod', mode: 'directory' } }),
     pluginAxios({
 +      baseURL: 'https://petstore.swagger.io/v2',
     }),

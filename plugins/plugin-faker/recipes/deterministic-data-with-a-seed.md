@@ -18,7 +18,7 @@ export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [
-    pluginTs(),
+    pluginTs({ output: { path: 'types', mode: 'directory' } }),
     pluginFaker({
       output: { path: 'mocks', mode: 'directory' },
       seed: [100],

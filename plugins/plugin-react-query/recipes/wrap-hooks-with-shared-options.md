@@ -20,7 +20,7 @@ export default defineConfig({
   output: { path: './src/gen', clean: true },
   plugins: [
     pluginTs(),
-    pluginFetch(),
+    pluginFetch({ output: { path: 'clients', mode: 'directory' } }),
     pluginReactQuery({
       output: { path: 'hooks', mode: 'directory' },
       hooks: true,

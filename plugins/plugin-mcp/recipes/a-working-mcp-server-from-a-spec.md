@@ -7,7 +7,7 @@ outline: deep
 
 # A working MCP server from a spec
 
-Register `pluginTs()`, `pluginZod()`, and one client plugin alongside `pluginMcp()`, so the handlers get their types, validation schemas, and an HTTP client. With a single client registered the plugin detects it, so [`output`](/plugins/plugin-mcp/reference/options#output) is the only thing left to tune.
+Register `pluginTs({ output: { path: 'types', mode: 'directory' } })`, `pluginZod()`, and one client plugin alongside `pluginMcp()`, so the handlers get their types, validation schemas, and an HTTP client. With a single client registered the plugin detects it, so [`output`](/plugins/plugin-mcp/reference/options#output) is the only thing left to tune.
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -20,7 +20,7 @@ export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [
-    pluginTs(),
+    pluginTs({ output: { path: 'types', mode: 'directory' } }),
     pluginZod(),
     pluginAxios({ baseURL: 'https://petstore.swagger.io/v2' }),
     pluginMcp({ output: { path: 'mcp', mode: 'directory' } }),
