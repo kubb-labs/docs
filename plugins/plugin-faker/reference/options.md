@@ -11,15 +11,15 @@ Configure `@kubb/plugin-faker` by passing these options to `pluginFaker()`, all 
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'mocks' }` | Where the generated files are written and exported |
+| [`output`](#output) | `Output` | `{ path: 'mocks', barrel: { type: 'named' } }` | Where the generated files are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`dateParser`](#dateparser) | `'faker' \| 'dayjs' \| 'moment' \| string` | `'faker'` | Library that formats string date and time fields |
 | [`regexGenerator`](#regexgenerator) | `'faker' \| 'randexp'` | `'faker'` | Library that turns a regex `pattern` into a string |
 | [`locale`](#locale) | `string` | `'en'` | Faker locale code for the generated values |
 | [`seed`](#seed) | `number \| number[]` | — | Value passed to `faker.seed(...)` for deterministic output |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
-| [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
-| [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
+| [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
+| [`override`](#override) | `Array<Override>` | `[]` | Apply different options per pattern |
 | [`resolver`](#resolver) | `ResolverPatch<ResolverFaker>` | — | Customize generated names and file paths |
 | [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
 | [`printer`](#printer) | `{ nodes?: PrinterFakerNodes }` | — | Replace the handler for a schema type |

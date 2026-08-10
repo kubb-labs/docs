@@ -11,14 +11,14 @@ Every option below is a key on `pluginMsw({ ... })`.
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'handlers' }` | Where the generated files are written and exported |
+| [`output`](#output) | `Output` | `{ path: 'handlers', barrel: { type: 'named' } }` | Where the generated files are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`baseURL`](#baseurl) | `string` | — | Base URL prepended to every handler's request |
 | [`handlers`](#handlers) | `boolean` | `false` | Emit a `handlers.ts` that re-exports every handler |
 | [`parser`](#parser) | `'data' \| 'faker'` | `'data'` | Source of the response body each handler returns |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
-| [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
-| [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
+| [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
+| [`override`](#override) | `Array<Override>` | `[]` | Apply different options per pattern |
 | [`resolver`](#resolver) | `ResolverPatch<ResolverMsw>` | — | Customize generated names and file paths |
 | [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
 

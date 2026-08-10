@@ -21,7 +21,9 @@ outline: deep
 
 The `type` field picks the export style. A plugin's `output.barrel` also accepts `nested`, so the plugin writes an `index.ts` in every subdirectory. The root `output.barrel` has no `nested` field and always stays flat.
 
-`output.barrel` defaults to `false`, so no barrel is generated until you set it. Set `barrel: { type: 'named' | 'all' }` on `defineConfig` to enable barrels everywhere: a root barrel, and the default every plugin without its own `output.barrel` inherits. A plugin that sets its own `output.barrel` overrides that inherited value, including back to `false`, which also drops its files from the root barrel.
+Call a plugin with no `output` at all and it uses its own default, which already sets `barrel: { type: 'named' }`. The moment you pass an `output` object of your own, that default is replaced whole, so a plugin configured as `pluginTs({ output: { path: 'types' } })` has no `barrel` of its own and falls back to `config.output.barrel`, which is `false` unless you set it.
+
+Set `barrel: { type: 'named' | 'all' }` on `defineConfig` to enable barrels everywhere: a root barrel, and the default every plugin without its own `output.barrel` inherits. A plugin that sets its own `output.barrel` overrides that inherited value, including back to `false`, which also drops its files from the root barrel.
 
 |          |                                                        |
 | -------: | :----------------------------------------------------- |

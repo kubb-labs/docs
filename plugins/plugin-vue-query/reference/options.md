@@ -11,7 +11,7 @@ Options for `@kubb/plugin-vue-query`, which generates TanStack Vue Query composa
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'hooks' }` | Where the generated composables are written and exported |
+| [`output`](#output) | `Output` | `{ path: 'hooks', barrel: { type: 'named' } }` | Where the generated composables are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`client`](#client) | `'axios' \| 'fetch'` | — | Which registered client plugin the composables call |
 | [`infinite`](#infinite) | `Partial<Infinite> \| false` | `false` | Add `useInfiniteQuery` composables for paginated reads |
@@ -21,8 +21,8 @@ Options for `@kubb/plugin-vue-query`, which generates TanStack Vue Query composa
 | [`mutationKey`](#mutationkey) | `(props) => Array<unknown>` | `built-in` | Build the `mutationKey` for each mutation composable |
 | [`hooks`](#hooks) | `boolean` | `false` | Emit `use*` composables on top of the factory helpers |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
-| [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
-| [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
+| [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
+| [`override`](#override) | `Array<Override>` | `[]` | Apply different options per pattern |
 | [`resolver`](#resolver) | `ResolverPatch<ResolverVueQuery>` | — | Customize generated names and file paths |
 | [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
 

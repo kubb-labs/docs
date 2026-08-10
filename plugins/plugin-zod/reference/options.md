@@ -20,8 +20,8 @@ Options for `pluginZod`.
 | [`regexType`](#regextype) | `'literal' \| 'constructor'` | `'literal'` | How an OpenAPI `pattern` is written |
 | [`mini`](#mini) | `boolean` | `false` | Generate Zod Mini schemas |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
-| [`exclude`](#exclude) | `Array<Exclude>` | — | Skip operations that match |
-| [`override`](#override) | `Array<Override>` | — | Apply different options per pattern |
+| [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
+| [`override`](#override) | `Array<Override>` | `[]` | Apply different options per pattern |
 | [`resolver`](#resolver) | `ResolverPatch<ResolverZod>` | — | Customize generated names and file paths |
 | [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
 | [`printer`](#printer) | `{ nodes?: PrinterZodNodes \| PrinterZodMiniNodes }` | — | Replace the handler for a schema type |
