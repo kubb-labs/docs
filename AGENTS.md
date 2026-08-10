@@ -18,7 +18,7 @@ docs/
 ├── adapters/<id>/         # One folder per adapter: index.md plus optional subpages
 ├── parsers/<id>/          # One folder per parser: index.md plus optional subpages
 ├── blog/*.md              # Blog posts
-├── snippets/**            # Code snippets included via <<< @/snippets/...
+├── snippets/**            # Code snippets included via <!--@include: ../snippets/...-->
 ├── CONTRIBUTING.md        # Contributing guide
 └── README.md              # Overview and authoring reference
 ```
