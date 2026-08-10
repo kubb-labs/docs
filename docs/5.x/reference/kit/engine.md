@@ -101,7 +101,7 @@ for (const { plugin, duration } of diagnostics.filter(Diagnostics.isPerformance)
   console.log(`${plugin}: ${duration}ms`)
 }
 console.log(`Generated ${files.length} files`)
-const paths = await storage.getKeys()
+const paths = await storage.readKeys()
 paths.forEach((path) => console.log(`  ${path}`))
 ```
 
