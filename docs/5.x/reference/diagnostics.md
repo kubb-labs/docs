@@ -33,6 +33,7 @@ The severity tints the `[CODE]` tag.
 | --- | --- | --- |
 | [`KUBB_INPUT_NOT_FOUND`](/docs/5.x/reference/diagnostics/kubb-input-not-found) | error | The file set as `input` could not be read. |
 | [`KUBB_INPUT_REQUIRED`](/docs/5.x/reference/diagnostics/kubb-input-required) | error | An adapter was configured without an `input`. |
+| [`KUBB_LEGACY_INPUT`](/docs/5.x/reference/diagnostics/kubb-legacy-input) | error | `input` uses the v4 `{ path }` / `{ data }` wrapper. |
 
 ## Configuration
 
@@ -48,6 +49,7 @@ The severity tints the `[CODE]` tag.
 
 | Code | Severity | Summary |
 | --- | --- | --- |
+| [`KUBB_INVALID_DOCUMENT`](/docs/5.x/reference/diagnostics/kubb-invalid-document) | error | The resolved `input` declares no `openapi` or `swagger` version. |
 | [`KUBB_REF_NOT_FOUND`](/docs/5.x/reference/diagnostics/kubb-ref-not-found) | error | A `$ref` could not be resolved in the document. |
 | [`KUBB_INVALID_SERVER_VARIABLE`](/docs/5.x/reference/diagnostics/kubb-invalid-server-variable) | error | A server variable value is not allowed by its `enum`. |
 | [`KUBB_UNSUPPORTED_FORMAT`](/docs/5.x/reference/diagnostics/kubb-unsupported-format) | warning | A schema `format` has no specific type mapping, so it falls back to the base type. |
