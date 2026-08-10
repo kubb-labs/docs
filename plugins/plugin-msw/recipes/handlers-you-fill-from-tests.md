@@ -18,7 +18,7 @@ export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [
-    pluginTs(),
+    pluginTs({ output: { path: 'types', mode: 'directory' } }),
     pluginMsw({
       output: { path: 'handlers', mode: 'directory' },
       parser: 'data',

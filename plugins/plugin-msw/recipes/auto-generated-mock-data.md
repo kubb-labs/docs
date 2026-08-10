@@ -7,7 +7,7 @@ outline: deep
 
 # Auto-generated mock data
 
-Fill each handler with generated data by setting [`parser`](/plugins/plugin-msw/reference/options#parser) to `'faker'`. This value comes from `@kubb/plugin-faker`, so add `pluginFaker()` to the plugins array alongside `pluginTs()`.
+Fill each handler with generated data by setting [`parser`](/plugins/plugin-msw/reference/options#parser) to `'faker'`. This value comes from `@kubb/plugin-faker`, so add `pluginFaker({ output: { path: 'mocks', mode: 'directory' } })` to the plugins array alongside `pluginTs({ output: { path: 'types', mode: 'directory' } })`.
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -19,8 +19,8 @@ export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [
-    pluginTs(),
-    pluginFaker(),
+    pluginTs({ output: { path: 'types', mode: 'directory' } }),
+    pluginFaker({ output: { path: 'mocks', mode: 'directory' } }),
     pluginMsw({
       output: { path: 'handlers', mode: 'directory' },
       parser: 'faker',

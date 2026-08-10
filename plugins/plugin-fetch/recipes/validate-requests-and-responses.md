@@ -19,8 +19,8 @@ export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [
-    pluginTs(),
-    pluginZod(),
+    pluginTs({ output: { path: 'types', mode: 'directory' } }),
+    pluginZod({ output: { path: 'zod', mode: 'directory' } }),
     pluginFetch({
       output: { path: 'clients', mode: 'directory' },
       validator: { request: 'zod', response: 'zod' },

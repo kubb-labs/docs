@@ -19,8 +19,8 @@ export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [
-    pluginTs(),
-    pluginFetch(),
+    pluginTs({ output: { path: 'types', mode: 'directory' } }),
+    pluginFetch({ output: { path: 'clients', mode: 'directory' } }),
     pluginReactQuery({
       output: { path: 'hooks', mode: 'directory' },
       queryKey: ({ node }) => [JSON.stringify(node.operationId)],

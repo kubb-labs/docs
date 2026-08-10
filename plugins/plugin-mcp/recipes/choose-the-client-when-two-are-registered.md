@@ -21,10 +21,10 @@ export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [
-    pluginTs(),
-    pluginZod(),
-    pluginAxios({ output: { path: './clients-axios' }, baseURL: 'https://petstore.swagger.io/v2' }),
-    pluginFetch({ output: { path: './clients-fetch' }, baseURL: 'https://petstore.swagger.io/v2' }),
+    pluginTs({ output: { path: 'types', mode: 'directory' } }),
+    pluginZod({ output: { path: 'zod', mode: 'directory' } }),
+    pluginAxios({ output: { path: './clients-axios', mode: 'directory' }, baseURL: 'https://petstore.swagger.io/v2' }),
+    pluginFetch({ output: { path: './clients-fetch', mode: 'directory' }, baseURL: 'https://petstore.swagger.io/v2' }),
     pluginMcp({ output: { path: 'mcp', mode: 'directory' }, client: 'axios' }),
   ],
 })
