@@ -23,6 +23,7 @@ export default defineConfig({
     pluginFetch(),
     pluginVueQuery({
       output: { path: 'hooks', mode: 'directory' },
+      hooks: true,
       infinite: {
         queryParam: 'page',
         initialPageParam: 0,

@@ -104,18 +104,18 @@ See the [plugins catalogue](/plugins) for the full list.
 
 ## 3. Run generate
 
-Run the generate command. Each plugin reports in turn, followed by a summary.
+Run the generate command. An interactive terminal renders the plugins on a shared progress bar, so the transcript below is what a non-TTY run prints, such as CI or output piped to a file. Each plugin reports in turn, followed by a summary.
 
 ```terminal
 command: kubb generate
 output:
-  - ◆  Generation started
-  - ◇  @kubb/plugin-ts          completed in 98ms
-  - ◇  @kubb/plugin-axios       completed in 77ms
-  - ◇  @kubb/plugin-react-query completed in 201ms
-  - ◇  @kubb/plugin-zod         completed in 134ms
-  - ◇  @kubb/plugin-msw         completed in 63ms
-  - ◇  Generation completed
+  - Generation started ./petStore.yaml
+  - plugin-ts completed in 98ms
+  - plugin-axios completed in 77ms
+  - plugin-react-query completed in 201ms
+  - plugin-zod completed in 134ms
+  - plugin-msw completed in 63ms
+  - Generation completed
   -
   -  Plugins  5 passed (5)
   -    Files  156 generated

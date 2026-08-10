@@ -31,7 +31,8 @@ When `output.format` is set, Kubb runs the configured formatter (oxfmt, biome, o
 ## Example output
 
 ```text [Terminal]
-[KUBB_FORMAT_FAILED]: formatter failed
+[KUBB_FORMAT_FAILED]: formatter failed: Cannot find module 'oxfmt'
+  fix: Check that the tool is installed and that the command and its config are correct.
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-format-failed
 ```
 

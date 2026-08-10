@@ -25,7 +25,7 @@ export default defineConfig({
       output: { path: 'hooks', mode: 'directory' },
       hooks: true,
       infinite: {
-        queryParam: 'next_page',
+        queryParam: 'page',
         initialPageParam: 0,
         nextParam: 'pagination.next.cursor',
       },
@@ -36,7 +36,7 @@ export default defineConfig({
 
 ## Output example
 
-The PetStore fixture's `findPetsByTags` operation has a `page` query parameter, not `next_page`, so the snippet below uses `queryParam: 'page'` to trigger infinite-hook generation for it.
+The PetStore fixture's `findPetsByTags` operation has a `page` query parameter, which is why the config above sets `queryParam: 'page'`. Name a parameter the operation does not declare and no infinite hook is generated for it.
 
 ```typescript [src/gen/hooks/useFindPetsByTagsInfinite.ts]
 import type { ResponseErrorConfig } from '../.kubb/client'

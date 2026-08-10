@@ -31,7 +31,8 @@ When `output.lint` is set, Kubb runs the configured linter (oxlint, biome, or es
 ## Example output
 
 ```text [Terminal]
-[KUBB_LINT_FAILED]: linter failed
+[KUBB_LINT_FAILED]: linter failed: Cannot find module 'oxlint'
+  fix: Check that the tool is installed and that the command and its config are correct.
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-lint-failed
 ```
 

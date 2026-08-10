@@ -105,7 +105,7 @@ The `ast.factory` namespace also provides constructors for source files and Type
 
 ## Visitors {#visitors}
 
-Two visitor functions cover the common traversal patterns: `transform` rewrites the tree and `collect` gathers nodes. Visitor objects use lowercase, kind-style keys (`input`, `operation`, `schema`, `property`, `parameter`, `response`). To rewrite nodes inside a plugin, reach for [macros](/docs/5.x/guide/going-further/macros), which add names, ordering, and composition on top of `transform`. For logging, validation, or statistics, `collect` the nodes you care about.
+Two visitor functions cover the common traversal patterns: `transform` rewrites the tree and `collect` gathers nodes. Visitor objects use lowercase, kind-style keys (`input`, `output`, `operation`, `schema`, `property`, `parameter`, `response`). To rewrite nodes inside a plugin, reach for [macros](/docs/5.x/guide/going-further/macros), which add names, ordering, and composition on top of `transform`. For logging, validation, or statistics, `collect` the nodes you care about.
 
 ### `transform`: synchronous, returns a new tree
 
@@ -142,18 +142,20 @@ ast.factory.update(node, { name: 'Animal' }) // -> new node with `name` replaced
 
 ### `collect`: gather matching nodes
 
+`collect` is a generator function, so it yields matches lazily and you consume it with `for...of` or spread it into an array. When you want the array up front, call `collectSync`, which is the eager counterpart and returns `Array<T>`.
+
 ```typescript twoslash [collect.ts]
 import { ast } from 'kubb/kit'
 
 const root = ast.factory.createInput({ schemas: [], operations: [] })
 
-const mutations = ast.collect<ast.OperationNode>(root, {
+const mutations = ast.collectSync<ast.OperationNode>(root, {
   operation(node) {
     return node.method === 'POST' ? node : undefined
   },
 })
 
-const deprecated = ast.collect<ast.SchemaNode>(root, {
+const deprecated = ast.collectSync<ast.SchemaNode>(root, {
   schema(node) {
     return 'deprecated' in node && node.deprecated ? node : undefined
   },
@@ -163,7 +165,7 @@ console.log(`POST operations: ${mutations.length}`)
 console.log(`Deprecated schemas: ${deprecated.length}`)
 ```
 
-Use `collect` to find specific nodes, filter by a criterion, or build a list for later processing.
+Use `collect` to stream matches as you find them, and `collectSync` to find specific nodes, filter by a criterion, or build a list for later processing.
 
 ## Guards and narrowing {#guards-and-narrowing}
 

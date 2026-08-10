@@ -459,7 +459,7 @@ See the [Storage concept](/docs/5.x/guide/concepts/storage) for the built-in dri
 | --------: | :----------------------------------- |
 |     Type: | `Storage`                            |
 | Required: | `false`                              |
-|  Default: | `fsStorage()` (included with `kubb`) |
+|  Default: | `fsStorage()`                        |
 
 
 ```typescript twoslash [kubb.config.ts]

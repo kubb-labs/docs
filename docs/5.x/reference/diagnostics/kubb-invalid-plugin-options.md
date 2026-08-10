@@ -40,6 +40,7 @@ export default defineConfig({
 ## Common causes
 
 - A plugin sets `output: { mode: 'file' }` but also passes a sibling `group` option.
+- Two plugins list each other in `dependencies`, so the graph has a cycle and the plugins cannot be ordered. The message names the cycle: `Plugin dependencies form a cycle: plugin-a → plugin-b → plugin-a.` Remove one of the `dependencies` entries to break it.
 
 ## Example output
 

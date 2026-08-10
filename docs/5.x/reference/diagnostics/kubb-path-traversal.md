@@ -16,6 +16,8 @@ A resolved output path escaped the output directory. Kubb refuses to write outsi
 
 Every generated file resolves to a path under `output.path`. This diagnostic fires when a resolved path lands outside that directory. Kubb treats this as a path-traversal attempt rather than a warning.
 
+The same code guards a second, wider boundary. When a plugin resolver's `file.path` override resolves outside the project `root`, the build stops with `Resolved path "<path>" is outside the project root "<root>".` and the fix `A resolver 'file.path' must return a path inside the project root.`
+
 ## How to fix it
 
 - Keep generated paths within the output directory. Review the `group.name` function so it returns a plain name, not a path.
@@ -25,6 +27,7 @@ Every generated file resolves to a path under `output.path`. This diagnostic fir
 
 - A `group.name` function that returns `..` segments or an absolute path.
 - Operation or tag names from an untrusted spec that contain path separators or `..`.
+- A plugin resolver's `file.path` override that resolves outside the project root.
 
 ## Example output
 

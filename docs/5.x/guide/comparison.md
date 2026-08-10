@@ -134,7 +134,7 @@ Plugins with `enforce: 'post'` run after the rest and handle cross-output work l
 
 ### Bundler integration
 
-[`unplugin-kubb`](/docs/5.x/guide/integrations/) runs generation inside Vite, Rollup, Webpack, esbuild, Nuxt, and Astro. HeyAPI ships a Vite plugin and a Nuxt module. orval has no bundler integration.
+[`unplugin-kubb`](/docs/5.x/guide/integrations/) runs generation inside Vite, Rollup, Rolldown, webpack, Rspack, esbuild, Farm, Nuxt, and Astro. HeyAPI ships a Vite plugin and a Nuxt module. orval has no bundler integration.
 
 ### MCP and AI agents
 
