@@ -267,11 +267,11 @@ export type Pet = {
 
 How much of each OpenAPI `description` reaches the JSDoc above generated types. Defaults to `'brief'`.
 
-- `'brief'` keeps the opening sentence, capped at 120 characters. Every other tag stays, so each type keeps its documentation. Abbreviations such as `e.g.` and unclosed brackets are not mistaken for the end of a sentence.
+- `'brief'` keeps the opening sentence. Every other tag stays, so each type keeps its documentation. Abbreviations such as `e.g.` and unclosed brackets are not mistaken for the end of a sentence. A description that runs on for 150 characters without one is cut at the last word before 120 and ends with an ellipsis. The cut moves back further when it would leave a markdown link or code span half written.
 - `'full'` emits every description in full, however many paragraphs the spec carries.
 - `'none'` emits no JSDoc. The generated-by banner at the top of each file is unaffected.
 
-Descriptions are where the bytes go on a large spec. Generating the OpenAI API leaves JSDoc as a third of everything Kubb writes, so `'brief'` trims about 199 KB and `'none'` about 1 MB of a 2.76 MB output. Choose `'full'` when editor hovers matter more than the size of the generated tree.
+Descriptions are where the bytes go on a large spec. Generating the OpenAI API leaves JSDoc as a third of everything Kubb writes, so `'brief'` trims about 197 KB and `'none'` about 1 MB of a 2.76 MB output. Choose `'full'` when editor hovers matter more than the size of the generated tree.
 
 ::: code-group
 

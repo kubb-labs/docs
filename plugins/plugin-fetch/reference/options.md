@@ -76,7 +76,7 @@ Add `@kubb/plugin-zod` to the plugins list when either direction is `'zod'`. Wit
 
 ### comments
 
-How much of each OpenAPI `description` reaches the JSDoc above each generated operation. Defaults to `'brief'`, which keeps the opening sentence and caps it at 120 characters, leaving every other tag such as `@summary` and the `{@link}` in place. `'full'` emits every description in full, however many paragraphs the spec carries. `'none'` emits no JSDoc, leaving the generated-by banner untouched. Descriptions are a third of the output on a large spec, which is why `'brief'` is the default. Pick `'full'` when editor hovers matter more than file size.
+How much of each OpenAPI `description` reaches the JSDoc above each generated operation. Defaults to `'brief'`, which keeps the opening sentence and leaves every other tag such as `@summary` and the `{@link}` in place. A description that runs on for 150 characters without a sentence ending is cut at the last word before 120 and ends with an ellipsis. `'full'` emits every description in full, however many paragraphs the spec carries. `'none'` emits no JSDoc, leaving the generated-by banner untouched. Descriptions are a third of the output on a large spec, which is why `'brief'` is the default. Pick `'full'` when editor hovers matter more than file size.
 
 ### sdk
 
