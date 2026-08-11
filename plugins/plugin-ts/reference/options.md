@@ -263,6 +263,40 @@ export type Pet = {
 
 :::
 
+### comments
+
+How much of each OpenAPI `description` reaches the JSDoc above generated types. Defaults to `'brief'`.
+
+- `'brief'` keeps the opening sentence, capped at 120 characters. Every other tag stays, so each type keeps its documentation. Abbreviations such as `e.g.` and unclosed brackets are not mistaken for the end of a sentence.
+- `'full'` emits every description in full, however many paragraphs the spec carries.
+- `'none'` emits no JSDoc. The generated-by banner at the top of each file is unaffected.
+
+Descriptions are where the bytes go on a large spec. On the OpenAPI description of the OpenAI API, JSDoc is a third of everything Kubb writes, so `'brief'` trims about 199 KB and `'none'` about 1 MB of a 2.76 MB output. Choose `'full'` when editor hovers matter more than the size of the generated tree.
+
+::: code-group
+
+```typescript ['brief' (default)]
+/**
+ * @description The identifier, which can be referenced in API endpoints.
+ * @type string
+ */
+id: string
+```
+
+```typescript ['full']
+/**
+ * @description The identifier, which can be referenced in API endpoints. Treat it as opaque, since the format changes between releases.
+ * @type string
+ */
+id: string
+```
+
+```typescript ['none']
+id: string
+```
+
+:::
+
 ### include
 
 <!--@include: ../../../snippets/how-to/include.md-->

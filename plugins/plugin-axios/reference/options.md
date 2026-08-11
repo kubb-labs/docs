@@ -65,6 +65,10 @@ Base URL prepended to every request. When omitted, no host is prepended and each
 
 Validates request and response bodies with schemas from `@kubb/plugin-zod`, which you add to the plugins list when either direction is `'zod'`. `false` (the default) skips validation and returns the response cast to the generated type. `'zod'` validates the success response body, plus the error body when a non-2xx call does not throw. `{ request?: 'zod', response?: 'zod' }` opts in per direction, and with validation on the generated function throws a `ParseError` on invalid data.
 
+### comments
+
+How much of each OpenAPI `description` reaches the JSDoc above each generated operation. Defaults to `'brief'`, which keeps the opening sentence and caps it at 120 characters, leaving every other tag such as `@summary` and the `{@link}` in place. `'full'` emits every description in full, however many paragraphs the spec carries. `'none'` emits no JSDoc, leaving the generated-by banner untouched. Descriptions dominate generated output on a large spec, so `'brief'` is the default; pick `'full'` when editor hovers matter more than file size.
+
 ### sdk
 
 Generates a class-based SDK instead of standalone functions, where each tag client is an instance class whose constructor takes a client config and builds its own client, so every environment is a separate instance. `mode: 'tag'` (the default) emits one class per tag such as `PetClient` and `StoreClient`. Add `sdk.name` to also emit a composed root that instantiates every tag client from one shared config, reached as `new PetStore(config).pet.getPetById(...)`. `mode: 'flat'` emits a single class named by `sdk.name` with every operation as a direct method. Leave `sdk` unset to keep the per-operation functions the query plugins consume.

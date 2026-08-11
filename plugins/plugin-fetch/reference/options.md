@@ -74,6 +74,10 @@ Runtime validator applied to request and response bodies using schemas from `@ku
 
 Add `@kubb/plugin-zod` to the plugins list when either direction is `'zod'`. With validation on the generated function throws a `ParseError` when a body fails its schema.
 
+### comments
+
+How much of each OpenAPI `description` reaches the JSDoc above each generated operation. Defaults to `'brief'`, which keeps the opening sentence and caps it at 120 characters, leaving every other tag such as `@summary` and the `{@link}` in place. `'full'` emits every description in full, however many paragraphs the spec carries. `'none'` emits no JSDoc, leaving the generated-by banner untouched. Descriptions dominate generated output on a large spec, so `'brief'` is the default; pick `'full'` when editor hovers matter more than file size.
+
 ### sdk
 
 Generates a class-based SDK instead of standalone functions, accepting `{ mode?: 'tag' | 'flat'; name?: string }`. Each tag client is an instance class whose constructor takes a client config and builds its own client, so every environment is a separate instance. Leave `sdk` unset to keep the per-operation functions that the query plugins consume.
