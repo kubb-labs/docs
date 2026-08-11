@@ -15,6 +15,7 @@ Options for `@kubb/plugin-axios`, which generates a type-safe HTTP client pinned
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`baseURL`](#baseurl) | `string` | — | Base URL prepended to every request |
 | [`validator`](#validator) | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` | `false` | Validate request and response bodies with Zod |
+| [`comments`](#comments) | `'full' \| 'brief' \| 'none'` | `'full'` | How much of each description reaches the JSDoc |
 | [`sdk`](#sdk) | `{ mode?: 'tag' \| 'flat'; name?: string }` | — | Emit a class-based SDK instead of standalone functions |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
@@ -67,7 +68,7 @@ Validates request and response bodies with schemas from `@kubb/plugin-zod`, whic
 
 ### comments
 
-How much of each OpenAPI `description` reaches the JSDoc above each generated operation. Defaults to `'brief'`, which keeps the opening sentence and leaves every other tag such as `@summary` and the `{@link}` in place. A description that runs on for 150 characters without a sentence ending is cut at the last word before 120 and ends with an ellipsis. `'full'` emits every description in full, however many paragraphs the spec carries. `'none'` emits no JSDoc, leaving the generated-by banner untouched. Descriptions are a third of the output on a large spec, which is why `'brief'` is the default. Pick `'full'` when editor hovers matter more than file size.
+How much of each OpenAPI `description` reaches the JSDoc above each generated operation. Defaults to `'full'`, which emits every description in full, however many paragraphs the spec carries. `'brief'` keeps the opening sentence and leaves every other tag such as `@summary` and the `{@link}` in place, cutting a description that runs on for 150 characters without a sentence ending at the last word before 120. `'none'` emits no JSDoc, leaving the generated-by banner untouched. Descriptions are a third of the output on a large spec, so pick `'brief'` or `'none'` when file size matters more than editor hovers.
 
 ### sdk
 
