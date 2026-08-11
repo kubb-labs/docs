@@ -67,7 +67,7 @@ Validates request and response bodies with schemas from `@kubb/plugin-zod`, whic
 
 ### comments
 
-How much of each OpenAPI `description` reaches the JSDoc above each generated operation. Defaults to `'brief'`, which keeps the opening sentence and caps it at 120 characters, leaving every other tag such as `@summary` and the `{@link}` in place. `'full'` emits every description in full, however many paragraphs the spec carries. `'none'` emits no JSDoc, leaving the generated-by banner untouched. Descriptions dominate generated output on a large spec, so `'brief'` is the default; pick `'full'` when editor hovers matter more than file size.
+How much of each OpenAPI `description` reaches the JSDoc above each generated operation. Defaults to `'brief'`, which keeps the opening sentence and caps it at 120 characters, leaving every other tag such as `@summary` and the `{@link}` in place. `'full'` emits every description in full, however many paragraphs the spec carries. `'none'` emits no JSDoc, leaving the generated-by banner untouched. Descriptions are a third of the output on a large spec, which is why `'brief'` is the default. Pick `'full'` when editor hovers matter more than file size.
 
 ### sdk
 

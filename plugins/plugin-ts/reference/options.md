@@ -271,7 +271,7 @@ How much of each OpenAPI `description` reaches the JSDoc above generated types. 
 - `'full'` emits every description in full, however many paragraphs the spec carries.
 - `'none'` emits no JSDoc. The generated-by banner at the top of each file is unaffected.
 
-Descriptions are where the bytes go on a large spec. On the OpenAPI description of the OpenAI API, JSDoc is a third of everything Kubb writes, so `'brief'` trims about 199 KB and `'none'` about 1 MB of a 2.76 MB output. Choose `'full'` when editor hovers matter more than the size of the generated tree.
+Descriptions are where the bytes go on a large spec. Generating the OpenAI API leaves JSDoc as a third of everything Kubb writes, so `'brief'` trims about 199 KB and `'none'` about 1 MB of a 2.76 MB output. Choose `'full'` when editor hovers matter more than the size of the generated tree.
 
 ::: code-group
 
