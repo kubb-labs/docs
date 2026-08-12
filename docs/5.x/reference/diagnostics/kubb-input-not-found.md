@@ -14,7 +14,7 @@ The file set as `input` (or passed as `kubb generate PATH`) could not be read. T
 
 ## What happened
 
-Kubb resolves a file `input` relative to the config file, then confirms the file exists before reading it. This diagnostic fires when nothing is there. URLs skip this check, so a remote spec surfaces its own fetch error instead.
+Kubb resolves a file `input` relative to the config file, then confirms the file exists before reading it. This diagnostic fires when nothing is there. URLs skip this check and report on the request instead: [`KUBB_INPUT_REQUEST_FAILED`](/docs/5.x/reference/diagnostics/kubb-input-request-failed) for a 4xx or 5xx status, and [`KUBB_INPUT_UNREACHABLE`](/docs/5.x/reference/diagnostics/kubb-input-unreachable) when the host never answers.
 
 ## Common causes
 
@@ -38,6 +38,8 @@ Kubb resolves a file `input` relative to the config file, then confirms the file
 
 ## See also
 
+- [`KUBB_INPUT_REQUEST_FAILED`](/docs/5.x/reference/diagnostics/kubb-input-request-failed)
+- [`KUBB_INPUT_UNREACHABLE`](/docs/5.x/reference/diagnostics/kubb-input-unreachable)
 - [Configuration](/docs/5.x/reference/configuration)
 - [`kubb generate`](/docs/5.x/reference/commands/generate)
 - [Diagnostics reference](/docs/5.x/reference/diagnostics)

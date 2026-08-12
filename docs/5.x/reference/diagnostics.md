@@ -32,6 +32,8 @@ The severity tints the `[CODE]` tag.
 | Code | Severity | Summary |
 | --- | --- | --- |
 | [`KUBB_INPUT_NOT_FOUND`](/docs/5.x/reference/diagnostics/kubb-input-not-found) | error | The file set as `input` could not be read. |
+| [`KUBB_INPUT_REQUEST_FAILED`](/docs/5.x/reference/diagnostics/kubb-input-request-failed) | error | A URL set as `input` answered with a 4xx or 5xx status. |
+| [`KUBB_INPUT_UNREACHABLE`](/docs/5.x/reference/diagnostics/kubb-input-unreachable) | error | A URL set as `input` never answered. |
 | [`KUBB_INPUT_REQUIRED`](/docs/5.x/reference/diagnostics/kubb-input-required) | error | An adapter was configured without an `input`. |
 | [`KUBB_LEGACY_INPUT`](/docs/5.x/reference/diagnostics/kubb-legacy-input) | error | `input` uses the v4 `{ path }` / `{ data }` wrapper. |
 
