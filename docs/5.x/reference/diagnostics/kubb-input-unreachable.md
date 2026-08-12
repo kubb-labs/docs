@@ -10,24 +10,24 @@ outline: [2, 3]
 Code: `KUBB_INPUT_UNREACHABLE`
 Level: error
 
-A URL set as `input` never answered. The request failed before a status came back, so there is no response to read.
+A URL set as `input` never answered, so the request failed before a status came back.
 
 ## What happened
 
-When `input` is a URL, Kubb fetches it before parsing. This diagnostic covers every failure that happens before the server answers: a refused connection, an unknown host, an expired or untrusted certificate, and a timeout. The message carries the underlying reason, such as `connect ECONNREFUSED 127.0.0.1:8000`, which the runtime otherwise hides behind a bare `fetch failed`.
+When `input` is a URL, Kubb fetches it before parsing. This diagnostic covers every failure that happens before the server answers: a refused connection, an unknown host, an untrusted certificate, and a timeout. The message carries the reason, such as `connect ECONNREFUSED 127.0.0.1:8000`, which the runtime otherwise hides behind a bare `fetch failed`.
 
 Once a server does answer, a 4xx or 5xx status reports [`KUBB_INPUT_REQUEST_FAILED`](/docs/5.x/reference/diagnostics/kubb-input-request-failed) instead.
 
 ## Common causes
 
-- The local API server is not running, or listens on a different port than the one in `input`.
-- A typo in the host name, or a host that only resolves inside a VPN.
-- A proxy or firewall between the machine and the host drops the connection.
+- The API server is not running, or it listens on a different port than the one in `input`.
+- A typo in the host name, or a host that only resolves over a VPN.
+- A proxy or firewall drops the connection before it reaches the host.
 
 ## How to fix it
 
-- Start the server and confirm the port matches the one in `input`.
-- Fetch the URL from the same machine with `curl` to confirm it is reachable.
+- Start the server, and check that the port in `input` matches the one it listens on.
+- Fetch the URL with `curl` from the machine running Kubb.
 - For a host behind a VPN or proxy, connect first, or download the document and point `input` at the local file.
 
 ## Example output
