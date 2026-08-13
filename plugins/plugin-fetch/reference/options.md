@@ -15,6 +15,7 @@ Pass these options to `pluginFetch()` to control what it generates and where the
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`baseURL`](#baseurl) | `string` | — | Base URL prepended to every request |
 | [`validator`](#validator) | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` | `false` | Validate request and response bodies with Zod |
+| [`comments`](#comments) | `'full' \| 'brief' \| 'none'` | `'full'` | How much of each description reaches the JSDoc |
 | [`sdk`](#sdk) | `{ mode?: 'tag' \| 'flat'; name?: string }` | — | Generate a class-based SDK instead of functions |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
@@ -73,6 +74,10 @@ Runtime validator applied to request and response bodies using schemas from `@ku
 - `{ request?: 'zod', response?: 'zod' }` opts in per direction, validating the request body before the call and the response body after.
 
 Add `@kubb/plugin-zod` to the plugins list when either direction is `'zod'`. With validation on the generated function throws a `ParseError` when a body fails its schema.
+
+### comments
+
+How much of each OpenAPI `description` reaches the JSDoc above each generated operation. Defaults to `'full'`, which emits every description in full, however many paragraphs the spec carries. `'brief'` keeps the opening sentence and leaves every other tag such as `@summary` and the `{@link}` in place, cutting a description that runs on for 150 characters without a sentence ending at the last word before 120. `'none'` emits no JSDoc, leaving the generated-by banner untouched. Descriptions are a third of the output on a large spec, so pick `'brief'` or `'none'` when file size matters more than editor hovers.
 
 ### sdk
 

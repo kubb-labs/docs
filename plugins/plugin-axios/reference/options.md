@@ -15,6 +15,7 @@ Options for `@kubb/plugin-axios`, which generates a type-safe HTTP client pinned
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`baseURL`](#baseurl) | `string` | — | Base URL prepended to every request |
 | [`validator`](#validator) | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` | `false` | Validate request and response bodies with Zod |
+| [`comments`](#comments) | `'full' \| 'brief' \| 'none'` | `'full'` | How much of each description reaches the JSDoc |
 | [`sdk`](#sdk) | `{ mode?: 'tag' \| 'flat'; name?: string }` | — | Emit a class-based SDK instead of standalone functions |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
@@ -64,6 +65,10 @@ Base URL prepended to every request. When omitted, no host is prepended and each
 ### validator
 
 Validates request and response bodies with schemas from `@kubb/plugin-zod`, which you add to the plugins list when either direction is `'zod'`. `false` (the default) skips validation and returns the response cast to the generated type. `'zod'` validates the success response body, plus the error body when a non-2xx call does not throw. `{ request?: 'zod', response?: 'zod' }` opts in per direction, and with validation on the generated function throws a `ParseError` on invalid data.
+
+### comments
+
+How much of each OpenAPI `description` reaches the JSDoc above each generated operation. Defaults to `'full'`, which emits every description in full, however many paragraphs the spec carries. `'brief'` keeps the opening sentence and leaves every other tag such as `@summary` and the `{@link}` in place, cutting a description that runs on for 150 characters without a sentence ending at the last word before 120. `'none'` emits no JSDoc, leaving the generated-by banner untouched. Descriptions are a third of the output on a large spec, so pick `'brief'` or `'none'` when file size matters more than editor hovers.
 
 ### sdk
 

@@ -15,6 +15,7 @@ outline: deep
 | [`syntaxType`](#syntaxtype) | `'type' \| 'interface'` | `'type'` | Emit object schemas as type aliases or interfaces |
 | [`optionalType`](#optionaltype) | `'questionToken' \| 'undefined' \| 'questionTokenAndUndefined'` | `'questionToken'` | How optional properties are written |
 | [`arrayType`](#arraytype) | `'array' \| 'generic'` | `'array'` | `Type[]` or `Array<Type>` |
+| [`comments`](#comments) | `'full' \| 'brief' \| 'none'` | `'full'` | How much of each description reaches the JSDoc |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | `[]` | Apply different options per pattern |
@@ -259,6 +260,40 @@ export type Pet = {
 export type Pet = {
   tags: Array<string>
 }
+```
+
+:::
+
+### comments
+
+How much of each OpenAPI `description` reaches the JSDoc above generated types. Defaults to `'full'`.
+
+- `'full'` emits every description in full, however many paragraphs the spec carries.
+- `'brief'` keeps the opening sentence. Every other tag stays, so each type keeps its documentation. Abbreviations such as `e.g.` and unclosed brackets are not mistaken for the end of a sentence. A description that runs on for 150 characters without one is cut at the last word before 120 and ends with an ellipsis. The cut moves back further when it would leave a markdown link or code span half written.
+- `'none'` emits no JSDoc. The generated-by banner at the top of each file is unaffected.
+
+Descriptions are where the bytes go on a large spec. Generating the OpenAI API leaves JSDoc as a third of everything Kubb writes, so `'brief'` trims about 197 KB and `'none'` about 1 MB of a 2.76 MB output. Reach for one of those when the size of the generated tree matters more than editor hovers.
+
+::: code-group
+
+```typescript ['full' (default)]
+/**
+ * @description The identifier, which can be referenced in API endpoints. Treat it as opaque, since the format changes between releases.
+ * @type string
+ */
+id: string
+```
+
+```typescript ['brief']
+/**
+ * @description The identifier, which can be referenced in API endpoints.
+ * @type string
+ */
+id: string
+```
+
+```typescript ['none']
+id: string
 ```
 
 :::
