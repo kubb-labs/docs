@@ -658,10 +658,10 @@ Once the config compiles, confirm the output:
 ## Performance
 
 v5 generates code faster than v4, and the gap widens as the spec grows. The numbers below benchmark
-`@kubb/core@4.39.3` against the v5 beta (`kubb@5.0.0-beta.109`, plugins at `5.0.0-beta.108`),
-median of five runs per configuration after a discarded warmup, both versions writing to a fresh
-directory with formatting, linting, and barrel files disabled so the comparison stays
-apples-to-apples.
+`@kubb/core@4.39.3` against the v5 beta, where `kubb` and every plugin share the same
+`5.0.0-beta.109` version, median of five runs per configuration after a discarded warmup, both
+versions writing to a fresh directory with formatting, linting, and barrel files disabled so the
+comparison stays apples-to-apples.
 
 Each timing covers a full `kubb generate`, from process start to the last file written.
 
@@ -672,7 +672,7 @@ Each timing covers a full `kubb generate`, from process start to the last file w
 | | |
 | --- | --- |
 | OS | Linux 6.18.5 |
-| CPU | Intel(R) Xeon(R) Processor @ 2.80GHz |
+| CPU | Intel(R) Xeon(R) Processor @ 2.10GHz |
 | Cores | 4 |
 | Memory | 15.7 GB |
 | Node | v22.22.2 |
@@ -686,32 +686,35 @@ Each timing covers a full `kubb generate`, from process start to the last file w
 
 | Plugins                                                      | v4 time  | v5 time  | Speedup  | v4 memory | v5 memory | Memory   |
 | ------------------------------------------------------------- | -------- | -------- | -------- | --------- | --------- | -------- |
-| `plugin-ts`                                                    | 1,565 ms | 936 ms   | **+67%** | 219.6 MB  | 161.8 MB  | **+36%** |
-| `plugin-ts` + `plugin-axios`                                   | 1,633 ms | 991 ms   | **+65%** | 220.6 MB  | 163.4 MB  | **+35%** |
-| `plugin-ts` + `plugin-axios` + `plugin-zod` + `plugin-faker`   | 1,895 ms | 1,059 ms | **+79%** | 222.6 MB  | 170.1 MB  | **+31%** |
+| `plugin-ts`                                                    | 1,296 ms | 788 ms   | **+64%** | 219.9 MB  | 162.2 MB  | **+36%** |
+| `plugin-ts` + `plugin-axios`                                   | 1,366 ms | 777 ms   | **+76%** | 221.5 MB  | 164.2 MB  | **+35%** |
+| `plugin-ts` + `plugin-axios` + `plugin-zod` + `plugin-faker`   | 1,387 ms | 845 ms   | **+64%** | 223.0 MB  | 167.3 MB  | **+33%** |
 
 **`twitter.json`**, 80 operations, 374 KB
 
 | Plugins                                                      | v4 time  | v5 time  | Speedup   | v4 memory | v5 memory | Memory   |
 | ------------------------------------------------------------- | -------- | -------- | --------- | --------- | --------- | -------- |
-| `plugin-ts`                                                    | 3,111 ms | 1,793 ms | **+74%**  | 251.4 MB  | 212.0 MB  | **+19%** |
-| `plugin-ts` + `plugin-axios`                                   | 3,648 ms | 1,903 ms | **+92%**  | 254.8 MB  | 213.3 MB  | **+19%** |
-| `plugin-ts` + `plugin-axios` + `plugin-zod` + `plugin-faker`   | 6,209 ms | 2,364 ms | **+163%** | 276.0 MB  | 219.9 MB  | **+26%** |
+| `plugin-ts`                                                    | 2,202 ms | 1,113 ms | **+98%**  | 253.8 MB  | 179.4 MB  | **+41%** |
+| `plugin-ts` + `plugin-axios`                                   | 2,680 ms | 1,160 ms | **+131%** | 255.9 MB  | 180.1 MB  | **+42%** |
+| `plugin-ts` + `plugin-axios` + `plugin-zod` + `plugin-faker`   | 4,646 ms | 1,526 ms | **+205%** | 270.9 MB  | 188.3 MB  | **+44%** |
 
 **`openai.json`**, 288 operations, 2.9 MB ([openai/openai-openapi](https://github.com/openai/openai-openapi))
 
 | Plugins                                                      | v4 time   | v5 time  | Speedup   | v4 memory | v5 memory | Memory    |
 | ------------------------------------------------------------- | --------- | -------- | --------- | --------- | --------- | --------- |
-| `plugin-ts`                                                    | 10,222 ms | 4,119 ms | **+148%** | 350.7 MB  | 386.7 MB  | -9%       |
-| `plugin-ts` + `plugin-axios`                                   | 11,971 ms | 4,380 ms | **+173%** | 410.5 MB  | 388.7 MB  | **+6%**   |
-| `plugin-ts` + `plugin-axios` + `plugin-zod` + `plugin-faker`   | 25,979 ms | 5,870 ms | **+343%** | 833.1 MB  | 413.1 MB  | **+102%** |
+| `plugin-ts`                                                    | 7,499 ms  | 2,164 ms | **+247%** | 352.7 MB  | 198.8 MB  | **+77%**  |
+| `plugin-ts` + `plugin-axios`                                   | 8,731 ms  | 2,311 ms | **+278%** | 408.8 MB  | 201.8 MB  | **+103%** |
+| `plugin-ts` + `plugin-axios` + `plugin-zod` + `plugin-faker`   | 18,371 ms | 3,382 ms | **+443%** | 649.9 MB  | 223.9 MB  | **+190%** |
 
 The OpenAI rows read the spec as JSON converted from the published YAML, since v4's `yaml`
 dependency rejects the document with a mapping indentation error. v5 reads either form.
 
-The gap widens on bigger specs. In v4, every plugin bootstrapped its own `pluginOas` instance, so
-parsing ran once per plugin and each copy stayed in memory. In v5, `adapterOas` parses the spec
-once and shares the result across all plugins.
+The gap widens on bigger specs. In v4, every plugin bootstraps its own `pluginOas` instance, so
+parsing runs once per plugin and each copy stays in memory. In v5, `adapterOas` parses the spec
+once and shares the result across all plugins. v5's input loading also gets cheaper as a spec
+grows: it parses JSON with `JSON.parse` instead of always routing it through the YAML parser, and
+once it confirms every `$ref` already points inside the document, it skips bundling instead of
+walking the whole tree to find that out.
 
 ## See also
 
