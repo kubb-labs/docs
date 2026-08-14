@@ -313,7 +313,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 export default defineConfig({
   input: './petstore.yaml',
   output: { path: './src/gen' },
-  plugins: [pluginTs({ output: { barrel: { type: 'named', nested: true } } })],
+  plugins: [pluginTs({ output: { path: 'types', mode: 'directory', barrel: { type: 'named', nested: true } } })],
 })
 ```
 
@@ -379,7 +379,7 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginAxios({
-      output: { mode: 'directory' },
+      output: { path: 'clients', mode: 'directory' },
       group: { type: 'tag', name: ({ group }) => `${group}Controller` },
     }),
   ],
