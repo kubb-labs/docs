@@ -311,7 +311,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 export default defineConfig({
   input: './petstore.yaml',
   output: { path: './src/gen' },
-  plugins: [pluginTs({ output: { barrel: { type: 'named', nested: true } } })],
+  plugins: [pluginTs({ output: { path: 'types', barrel: { type: 'named', nested: true } } })],
 })
 ```
 
@@ -349,6 +349,7 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginAxios({
+      output: { path: 'clients' },
       group: { type: 'tag', name: ({ group }) => `${group}Controller` },
     }),
   ],
