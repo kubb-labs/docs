@@ -37,6 +37,8 @@ import { pluginAxios } from '@kubb/plugin-axios'
 import { pluginSwr } from '@kubb/plugin-swr'
 
 export default defineConfig({
+  input: './petstore.yaml',
+  output: { path: './src/gen' },
   plugins: [
     pluginTs(),
     pluginAxios({ baseURL: 'https://api.example.com' }),
