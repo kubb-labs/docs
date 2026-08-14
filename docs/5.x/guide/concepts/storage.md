@@ -19,8 +19,10 @@ A code generator that wrote straight to disk would be hard to test and impossibl
 
 Kubb ships two drivers and uses `fsStorage` when you set no `storage` option:
 
-- `fsStorage` writes to the local filesystem. It skips writes when the content on disk is already identical and creates missing parent directories, so a normal `kubb generate` run needs no extra setup.
+- `fsStorage` writes to the local filesystem and creates missing parent directories, so a normal `kubb generate` run needs no extra setup.
 - `memoryStorage` keeps everything in a `Map` and writes nothing to disk. That makes it the driver to reach for in tests, CI validation, and dry runs, where you want to inspect the output without touching the working tree. After a build you read the result back through the [storage API](/docs/5.x/reference/kit/storage#storage-interface).
+
+Whichever driver you use, Kubb reads a file back before writing and skips the write when the content already matches, so a rebuild that generates identical output leaves the destination untouched.
 
 Swapping the driver is a single field in [`kubb.config.ts`](/docs/5.x/reference/configuration#storage):
 

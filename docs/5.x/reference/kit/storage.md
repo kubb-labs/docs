@@ -64,7 +64,7 @@ The `Storage` interface is the shape every backend implements. A `Storage` insta
 
 Omitting `base` on `empty()` is implementation-defined. `memoryStorage` wipes every entry, while the filesystem-backed `fsStorage` treats a missing `base` as a no-op and deletes nothing.
 
-Every method is required. There is no read-through helper here on purpose: skipping a write because the key already exists would leave stale generated code in place, and `fsStorage` already skips the write when the content on disk is identical.
+Every method is required. Before each write Kubb calls `readItem` and skips `writeItem` when the stored content already matches, ignoring surrounding whitespace. So `readItem` has to return `null` for a missing key rather than throw, and `writeItem` is not a signal that a file was generated, because an unchanged file never reaches it.
 
 ## `fsStorage`
 
