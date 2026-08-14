@@ -313,7 +313,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 export default defineConfig({
   input: './petstore.yaml',
   output: { path: './src/gen' },
-  plugins: [pluginTs({ output: { path: 'types', barrel: { type: 'named', nested: true } } })],
+  plugins: [pluginTs({ output: { path: 'types', mode: 'directory', barrel: { type: 'named', nested: true } } })],
 })
 ```
 
