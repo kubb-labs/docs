@@ -33,13 +33,15 @@ Folder for the plugin's files, resolved against the global `output.path` on `def
 
 #### output.mode
 
-How the plugin consolidates its code into files, either `'file'` or `'directory'`, defaulting to `'file'`.
+How the plugin consolidates its code into files, either `'file'` or `'directory'`.
 
 - `'file'` writes everything into a single file, so `output.path` must include the extension (see above).
 - `'directory'` writes one file per operation under `output.path`.
 
+Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
+
 > [!IMPORTANT]
-> `group` requires `mode: 'directory'`. Pairing `group` with `mode: 'file'` (or leaving `mode` unset) stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
+> `group` requires `mode: 'directory'` spelled out, since the types only allow the two together. Pairing `group` with `mode: 'file'` stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
 
 #### output.barrel
 

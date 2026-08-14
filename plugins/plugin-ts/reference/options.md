@@ -33,10 +33,12 @@ Folder where the plugin writes its files (`string`, default `'types'`), resolved
 
 #### output.mode
 
-How generated code is consolidated into files. Defaults to `'file'`.
+How generated code is consolidated into files.
 
 - `'file'` writes everything into a single file, so `output.path` needs a file extension such as `'types.ts'`.
 - `'directory'` writes one file per operation or schema under `output.path`.
+
+Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 
 #### output.barrel
 

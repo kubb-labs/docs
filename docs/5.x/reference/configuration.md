@@ -157,13 +157,15 @@ Directory for generated files, absolute or relative to `root`.
 
 How a plugin consolidates its code into files. Set it on a plugin's `output`, not on the root `output`.
 
-|           |                          |
-| --------: | :----------------------- |
-|     Type: | `'file' \| 'directory'`  |
-| Required: | `false`                  |
-|  Default: | `'file'`                 |
+|           |                                       |
+| --------: | :------------------------------------ |
+|     Type: | `'file' \| 'directory'`               |
+| Required: | `false`                               |
+|  Default: | follows the shape of `output.path`    |
 
 `'file'` writes everything into a single file, so `output.path` must include the extension (`'types.ts'`). `'directory'` writes one file per operation or schema under `output.path`. Pair `'directory'` with `group` to split the output into per-tag or per-path subdirectories.
+
+You rarely need to set this. Leave it out and Kubb reads `output.path`: a path with an extension means one file, a path without one means a directory. Every plugin ships an extensionless default such as `'types'` or `'clients'`, so `pluginTs()` writes a directory without any configuration.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -183,7 +185,7 @@ export default defineConfig({
 This writes every type into `src/gen/types.ts` and one client file per operation, grouped by tag (`src/gen/clients/pet/`, `src/gen/clients/store/`).
 
 > [!TIP]
-> `group` requires `mode: 'directory'`, since a single file has nothing to group. Pairing `group` with `mode: 'file'` (or leaving `mode` unset) stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error.
+> `group` is the one case that still needs `mode: 'directory'` spelled out, since the types only allow the two together. Pairing `group` with `mode: 'file'` stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error, because a single file has nothing to group.
 
 #### `output.clean`
 

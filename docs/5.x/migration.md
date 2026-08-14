@@ -89,7 +89,7 @@ Config:
 
 Output:
 6. `output.barrelType` → `output.barrel`, at root and per plugin: `'named'`→`{type:'named'}`, `'all'`→`{type:'all'}`, `'propagate'`→`{type:'named',nested:true}`, `false`→`false`. v5 defaults `output.barrel` to `false`, so add `barrel:{type:'named'}` at the root if v4 relied on the old `'named'` default.
-7. On each plugin, an `output.path` ending in `.ts` keeps the default `mode:'file'`; a folder path needs `mode:'directory'`. The root `output` takes no `mode`.
+7. Leave `output.mode` alone: v5 reads it off the `output.path` extension exactly as v4 did. The root `output` takes no `mode`.
 8. `output.format`/`output.lint` now default to `false` (were `'prettier'`/`'auto'`); keep any explicit value.
 
 Remove `output.override` (root and per-plugin). Remove from every plugin: `generators`, `bundle`, `paramsType`, `pathParamsType`, `paramsCasing`, `dataReturnType`, `urlType`, `importPath`, `mapper` — and on plugin-swr also `mutation.paramsToTrigger`.
@@ -116,11 +116,10 @@ The highest-impact edits, in order. Each step links to its full explanation belo
 4. Remove `pluginOas()` and [move its options to `adapter: adapterOas(...)`](#kubb-plugin-oas-removed), along with the [schema options](#move-schema-options-to-the-adapter) that lived on each plugin.
 5. Replace `pluginClient` with [`pluginAxios` or `pluginFetch`](/docs/5.x/migration/plugin-client), and point query and MCP plugins at a client with [`client: 'axios' | 'fetch'`](#client-becomes-a-selector).
 6. Convert [`output.barrelType` to `output.barrel`](#output-barreltype-output-barrel), and add `barrel: { type: 'named' }` if you relied on the old default.
-7. Add [`mode: 'directory'`](#set-output-mode-for-folder-output) to every plugin that writes a folder.
-8. Replace [`transformers.name` with `resolver`](#transformersname-resolver) and [`transformers.schema` with `macros`](#transformersschema-macros); remove [`mapper`](#mapper-removed) and [`generators`](#generators-removed).
-9. Move [`hooks.done` to `output.postGenerate`](#move-hooks-done-to-output-postgenerate) and [`storage`](#replace-output-override-with-storage) to the top level.
-10. Bump the `zod` dependency to `^4` (see [Migration: @kubb/plugin-zod](/docs/5.x/migration/plugin-zod)).
-11. Opt back into [formatting, linting](#formatting-and-linting-are-off-by-default), and a [barrel](#output-barreltype-output-barrel) if you want them, since all three now default to off.
+7. Replace [`transformers.name` with `resolver`](#transformersname-resolver) and [`transformers.schema` with `macros`](#transformersschema-macros); remove [`mapper`](#mapper-removed) and [`generators`](#generators-removed).
+8. Move [`hooks.done` to `output.postGenerate`](#move-hooks-done-to-output-postgenerate) and [`storage`](#replace-output-override-with-storage) to the top level.
+9. Bump the `zod` dependency to `^4` (see [Migration: @kubb/plugin-zod](/docs/5.x/migration/plugin-zod)).
+10. Opt back into [formatting, linting](#formatting-and-linting-are-off-by-default), and a [barrel](#output-barreltype-output-barrel) if you want them, since all three now default to off.
 
 ## Defaults that changed
 
@@ -131,7 +130,6 @@ The most dangerous changes are silent: a default flips, so the same config produ
 | `output.format` | `'prettier'` | `false` | [Formatting and linting are off by default](#formatting-and-linting-are-off-by-default) |
 | `output.lint` | `'auto'` | `false` | [Formatting and linting are off by default](#formatting-and-linting-are-off-by-default) |
 | `output.barrel` (`barrelType` in v4) | `'named'` | `false` | [`output.barrelType` → `output.barrel`](#output-barreltype-output-barrel) |
-| `output.mode` | Guessed from the `output.path` extension | `'file'` | [Set `output.mode` for folder output](#set-output-mode-for-folder-output) |
 | `group: { type: 'tag' }` folder name | `<tag>Controller` | `<tag>` | [Group folders drop the `Controller` suffix](#group-folders-drop-the-controller-suffix) |
 | `pluginReactQuery`/`pluginVueQuery` `hooks` | `true` | `false` | [`@kubb/plugin-react-query`](/docs/5.x/migration/plugin-react-query#hooks-defaults-to-false), [`@kubb/plugin-vue-query`](/docs/5.x/migration/plugin-vue-query#hooks-defaults-to-false) |
 | `pluginAxios`/`pluginFetch` `throwOnError` | Errors returned on the result, never thrown | `true` | [`@kubb/plugin-client` removed](/docs/5.x/migration/plugin-client) |
@@ -321,44 +319,16 @@ export default defineConfig({
 
 See [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) for the full `barrel` option reference.
 
-### Set `output.mode` for folder output
+### `output.mode` still follows `output.path`
 
-v4 guessed the layout from the `output.path` extension: `.ts` meant one file, anything else a folder. v5 drops the guess, so state the layout with `output.mode`.
+Nothing to change here. Like v4, v5 reads the layout off the `output.path` extension: `.ts` means one file, anything else a folder.
 
-| `output.mode` | Layout                                                            |
-| ------------- | ----------------------------------------------------------------- |
-| `'file'`      | One file for the whole plugin. The default.                       |
-| `'directory'` | One file per operation or schema.                                 |
+| `output.mode` | Layout                            |
+| ------------- | --------------------------------- |
+| `'file'`      | One file for the whole plugin.    |
+| `'directory'` | One file per operation or schema. |
 
-A `.ts` `output.path` needs no change, since `mode: 'file'` is the default. A folder `output.path` needs `mode: 'directory'` added, or the output silently consolidates into one file.
-
-::: code-group
-
-```typescript [v4 kubb.config.ts]
-import { defineConfig } from '@kubb/core'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: './petstore.yaml',
-  output: { path: './src/gen' },
-  plugins: [pluginTs({ output: { path: 'types' } })],
-})
-```
-
-```typescript twoslash [v5 kubb.config.ts]
-import { defineConfig } from 'kubb/config'
-import { pluginTs } from '@kubb/plugin-ts'
-
-export default defineConfig({
-  input: './petstore.yaml',
-  output: { path: './src/gen' },
-  plugins: [pluginTs({ output: { path: 'types', mode: 'directory' } })],
-})
-```
-
-:::
-
-`mode: 'file'` forbids `group`, since a single file has nothing to group, and pairing them stops the build with `KUBB_INVALID_PLUGIN_OPTIONS`. To organize `'directory'` output into per-tag or per-path subfolders, keep `mode: 'directory'` and add `group` (covered next).
+Set `mode` when you want to override that, such as writing a folder called `models.ts`. The one case that needs it spelled out is `group`, which the types only accept alongside `mode: 'directory'`. Pairing `group` with `mode: 'file'` stops the build with `KUBB_INVALID_PLUGIN_OPTIONS`, since a single file has nothing to group.
 
 ### Group folders drop the `Controller` suffix
 
@@ -386,7 +356,7 @@ export default defineConfig({
 })
 ```
 
-`group` requires `output.mode: 'directory'`, since v5 now defaults to `'file'`.
+`group` requires `output.mode: 'directory'` spelled out, since the types only allow the two together.
 
 ### Replace `output.override` with storage
 
@@ -648,7 +618,7 @@ export default defineConfig({
   }),
   plugins: [
     pluginTs({
-      output: { path: 'types', mode: 'directory' },
+      output: { path: 'types' },
       resolver: {
         name(name) {
           return `Api${resolverTs.name(name)}`
@@ -656,17 +626,17 @@ export default defineConfig({
       },
     }),
     pluginZod({
-      output: { path: 'zod', mode: 'directory' },
+      output: { path: 'zod' },
     }),
     pluginAxios({
-      output: { path: 'clients', mode: 'directory' },
+      output: { path: 'clients' },
     }),
     pluginReactQuery({
-      output: { path: 'hooks', mode: 'directory' },
+      output: { path: 'hooks' },
       client: 'axios',
     }),
     pluginFaker({
-      output: { path: 'mocks', mode: 'directory' },
+      output: { path: 'mocks' },
     }),
   ],
 })
@@ -676,7 +646,7 @@ export default defineConfig({
 
 ::::
 
-Every plugin adds `mode: 'directory'` to keep v4's one-file-per-operation layout. Omit it to consolidate into a single file, the v5 default. The root `output.barrel` is set explicitly to keep v4's barrel.
+Every plugin keeps an extensionless `output.path`, which writes one file per operation. Give `path` a name ending in `.ts` to consolidate into a single file. The root `output.barrel` is set explicitly to keep v4's barrel.
 
 ## Verify the upgrade
 
@@ -691,10 +661,12 @@ Once the config compiles, confirm the output:
 
 v5 generates code faster than v4, and the gap widens as the spec grows. The numbers below come from
 [`scripts/benchmark/v4-vs-v5`](https://github.com/kubb-labs/kubb/tree/main/scripts/benchmark/v4-vs-v5)
-in the kubb repository, a harness anyone can run and reproduce. It benchmarks `@kubb/core@4.39.2`
-against the v5 beta (`@kubb/core@5.0.0-beta.106`, plugins at `5.0.0-beta.106`), median of three runs
-per configuration, both versions writing to a fresh directory with formatting and linting disabled
-so the comparison stays apples-to-apples.
+in the kubb repository, a harness anyone can run and reproduce. It benchmarks `@kubb/core@4.39.3`
+against the v5 beta (`kubb@5.0.0-beta.109`, plugins at `5.0.0-beta.108`), median of five runs per
+configuration after a discarded warmup, both versions writing to a fresh directory with formatting,
+linting, and barrel files disabled so the comparison stays apples-to-apples.
+
+Each timing covers a full `kubb generate`, from process start to the last file written.
 
 <SpeedComparison />
 
@@ -709,41 +681,40 @@ so the comparison stays apples-to-apples.
 | Node | v22.22.2 |
 
 > [!NOTE]
-> Absolute milliseconds are hardware-dependent. Treat the speedup percentages as the portable
-> takeaway. Memory figures below are carried over from the previous benchmark round and were not
-> re-profiled in this pass.
+> Absolute milliseconds and megabytes are hardware-dependent. Treat the speedup percentages as the
+> portable takeaway. Memory is peak resident set size for the whole Node process, so it counts the
+> runtime baseline and not only the heap.
 
 **`petStore.yaml`**, 21 operations
 
-| Plugins                                                      | v4 time | v5 time | Speedup   | v4 memory | v5 memory | Memory     |
-| ------------------------------------------------------------- | ------- | ------- | --------- | --------- | --------- | ---------- |
-| `plugin-ts`                                                    | 2,027 ms | 1,363 ms | **+49%**  | 13.0 MB   | 23.4 MB   | -80%       |
-| `plugin-ts` + `plugin-axios`                                   | 2,231 ms | 1,413 ms | **+58%**  | 15.8 MB   | 24.5 MB   | -55%       |
-| `plugin-ts` + `plugin-axios` + `plugin-zod` + `plugin-faker`   | 2,575 ms | 1,425 ms | **+81%** | 19.5 MB   | 25.1 MB   | -29%       |
+| Plugins                                                      | v4 time  | v5 time  | Speedup  | v4 memory | v5 memory | Memory   |
+| ------------------------------------------------------------- | -------- | -------- | -------- | --------- | --------- | -------- |
+| `plugin-ts`                                                    | 1,565 ms | 936 ms   | **+67%** | 219.6 MB  | 161.8 MB  | **+36%** |
+| `plugin-ts` + `plugin-axios`                                   | 1,633 ms | 991 ms   | **+65%** | 220.6 MB  | 163.4 MB  | **+35%** |
+| `plugin-ts` + `plugin-axios` + `plugin-zod` + `plugin-faker`   | 1,895 ms | 1,059 ms | **+79%** | 222.6 MB  | 170.1 MB  | **+31%** |
 
 **`twitter.json`**, 80 operations, 374 KB
 
-| Plugins                                                      | v4 time  | v5 time  | Speedup    | v4 memory | v5 memory | Memory |
-| ------------------------------------------------------------- | -------- | -------- | ---------- | --------- | --------- | ------ |
-| `plugin-ts`                                                    | 4,174 ms | 1,933 ms | **+116%**  | 110.6 MB  | 60.2 MB   | **+46%** |
-| `plugin-ts` + `plugin-axios`                                   | 5,255 ms | 2,111 ms | **+149%**  | 115.5 MB  | 59.7 MB   | **+48%** |
-| `plugin-ts` + `plugin-axios` + `plugin-zod` + `plugin-faker`   | 7,445 ms | 2,439 ms | **+205%**  | 179.3 MB  | 68.5 MB   | **+62%** |
+| Plugins                                                      | v4 time  | v5 time  | Speedup   | v4 memory | v5 memory | Memory   |
+| ------------------------------------------------------------- | -------- | -------- | --------- | --------- | --------- | -------- |
+| `plugin-ts`                                                    | 3,111 ms | 1,793 ms | **+74%**  | 251.4 MB  | 212.0 MB  | **+19%** |
+| `plugin-ts` + `plugin-axios`                                   | 3,648 ms | 1,903 ms | **+92%**  | 254.8 MB  | 213.3 MB  | **+19%** |
+| `plugin-ts` + `plugin-axios` + `plugin-zod` + `plugin-faker`   | 6,209 ms | 2,364 ms | **+163%** | 276.0 MB  | 219.9 MB  | **+26%** |
 
-**`openai.yaml`**, 288 operations, 2.7 MB ([openai/openai-openapi](https://github.com/openai/openai-openapi))
+**`openai.json`**, 288 operations, 2.9 MB ([openai/openai-openapi](https://github.com/openai/openai-openapi))
 
-| Plugins                                                      | v4 time   | v5 time  | Speedup    | v4 memory | v5 memory | Memory |
-| ------------------------------------------------------------- | --------- | -------- | ---------- | --------- | --------- | ------ |
-| `plugin-ts`                                                    | 17,985 ms | 4,523 ms | **+298%**  | 442.4 MB  | 146.3 MB  | **+67%** |
-| `plugin-ts` + `plugin-axios`                                   | 17,196 ms | 4,585 ms | **+275%**  | 501.8 MB  | 148.0 MB  | **+70%** |
-| `plugin-ts` + `plugin-axios` + `plugin-zod` + `plugin-faker`   | 30,714 ms | 6,165 ms | **+398%**  | 898.0 MB  | 149.3 MB  | **+83%** |
+| Plugins                                                      | v4 time   | v5 time  | Speedup   | v4 memory | v5 memory | Memory    |
+| ------------------------------------------------------------- | --------- | -------- | --------- | --------- | --------- | --------- |
+| `plugin-ts`                                                    | 10,222 ms | 4,119 ms | **+148%** | 350.7 MB  | 386.7 MB  | -9%       |
+| `plugin-ts` + `plugin-axios`                                   | 11,971 ms | 4,380 ms | **+173%** | 410.5 MB  | 388.7 MB  | **+6%**   |
+| `plugin-ts` + `plugin-axios` + `plugin-zod` + `plugin-faker`   | 25,979 ms | 5,870 ms | **+343%** | 833.1 MB  | 413.1 MB  | **+102%** |
 
-The OpenAI spec grew from 281 to 288 operations upstream since the previous benchmark round. This
-run parses it as JSON, converted from the published YAML, to sidestep a block-scalar edge case
-that trips up v4's older `yaml` dependency. v5 parses the same spec as YAML without issue.
+The OpenAI rows read the spec as JSON converted from the published YAML, since v4's `yaml`
+dependency rejects the document with a mapping indentation error. v5 reads either form.
 
 The gap widens on bigger specs. In v4, every plugin bootstrapped its own `pluginOas` instance, so
-parsing ran once per plugin. In v5, `adapterOas` parses the spec once and shares the result across
-all plugins.
+parsing ran once per plugin and each copy stayed in memory. In v5, `adapterOas` parses the spec
+once and shares the result across all plugins.
 
 ## See also
 
