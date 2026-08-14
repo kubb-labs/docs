@@ -185,7 +185,7 @@ export default defineConfig({
 This writes every type into `src/gen/types.ts` and one client file per operation, grouped by tag (`src/gen/clients/pet/`, `src/gen/clients/store/`).
 
 > [!TIP]
-> `group` is the one case that still needs `mode: 'directory'` spelled out, since the types only allow the two together. Pairing `group` with `mode: 'file'` stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error, because a single file has nothing to group.
+> `group` works with the inferred directory mode, no `mode` needed. Set `mode: 'directory'` yourself only to override the inference, such as a directory name that carries a dot (`path: 'clients.v2'`). An explicit `mode: 'file'` still forbids `group` and stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error, because a single file has nothing to group.
 
 #### `output.clean`
 

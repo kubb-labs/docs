@@ -38,7 +38,7 @@ How the plugin consolidates its generated code into files.
 Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 
 > [!IMPORTANT]
-> `group` requires `mode: 'directory'` spelled out, since the types only allow the two together. Pairing `group` with `mode: 'file'` stops the build with a `KUBB_INVALID_PLUGIN_OPTIONS` error, since a single file has nothing to group.
+> `group` works with the inferred directory mode, no `mode` needed. Set `mode: 'directory'` yourself only to override the inference, such as a directory name that carries a dot (`path: 'clients.v2'`). An explicit `mode: 'file'` still forbids `group` and stops the build with `KUBB_INVALID_PLUGIN_OPTIONS`, since a single file has nothing to group.
 
 #### output.barrel
 

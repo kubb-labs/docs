@@ -328,7 +328,7 @@ Nothing to change here. Like v4, v5 reads the layout off the `output.path` exten
 | `'file'`      | One file for the whole plugin.    |
 | `'directory'` | One file per operation or schema. |
 
-Set `mode` when you want to override that, such as writing a folder called `models.ts`. The one case that needs it spelled out is `group`, which the types only accept alongside `mode: 'directory'`. Pairing `group` with `mode: 'file'` stops the build with `KUBB_INVALID_PLUGIN_OPTIONS`, since a single file has nothing to group.
+Set `mode` when you want to override that, such as writing a folder called `models.ts`. `group` works with the inferred directory mode too, no `mode` needed alongside it. Pairing `group` with `mode: 'file'` stops the build with `KUBB_INVALID_PLUGIN_OPTIONS`, since a single file has nothing to group.
 
 ### Group folders drop the `Controller` suffix
 
@@ -349,14 +349,11 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginAxios({
-      output: { mode: 'directory' },
       group: { type: 'tag', name: ({ group }) => `${group}Controller` },
     }),
   ],
 })
 ```
-
-`group` requires `output.mode: 'directory'` spelled out, since the types only allow the two together.
 
 ### Replace `output.override` with storage
 
@@ -654,17 +651,16 @@ Once the config compiles, confirm the output:
 
 - Run `kubb generate` and review the diff against your previous output.
 - Type-check the generated code, and wire that check into [`output.postGenerate`](#move-hooks-done-to-output-postgenerate) so it runs on every generate.
-- Watch for a `KUBB_INVALID_PLUGIN_OPTIONS` error, which usually means a plugin pairs `mode: 'file'` with `group`.
+- Watch for a `KUBB_INVALID_PLUGIN_OPTIONS` error, which usually means a plugin's `output.path` resolves to a file (an extension, or an explicit `mode: 'file'`) while `group` is also set.
 - Update imports of renamed symbols: response types now carry a `Status<code>` suffix, and Zod inferred types end in `Type`.
 
 ## Performance
 
-v5 generates code faster than v4, and the gap widens as the spec grows. The numbers below come from
-[`scripts/benchmark/v4-vs-v5`](https://github.com/kubb-labs/kubb/tree/main/scripts/benchmark/v4-vs-v5)
-in the kubb repository, a harness anyone can run and reproduce. It benchmarks `@kubb/core@4.39.3`
-against the v5 beta (`kubb@5.0.0-beta.109`, plugins at `5.0.0-beta.108`), median of five runs per
-configuration after a discarded warmup, both versions writing to a fresh directory with formatting,
-linting, and barrel files disabled so the comparison stays apples-to-apples.
+v5 generates code faster than v4, and the gap widens as the spec grows. The numbers below benchmark
+`@kubb/core@4.39.3` against the v5 beta (`kubb@5.0.0-beta.109`, plugins at `5.0.0-beta.108`),
+median of five runs per configuration after a discarded warmup, both versions writing to a fresh
+directory with formatting, linting, and barrel files disabled so the comparison stays
+apples-to-apples.
 
 Each timing covers a full `kubb generate`, from process start to the last file written.
 

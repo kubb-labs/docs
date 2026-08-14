@@ -37,7 +37,7 @@ Folder where the plugin writes its files (`string`, default `'hooks'`), resolved
 How the plugin consolidates generated code (`'file' | 'directory'`). `'file'` writes everything into a single file whose `path` must include the extension. `'directory'` writes one file per operation under `output.path` and can be grouped into subdirectories. Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 
 > [!IMPORTANT]
-> `group` requires `mode: 'directory'` spelled out, since the types only allow the two together. Pairing `group` with `mode: 'file'` fails the build with `KUBB_INVALID_PLUGIN_OPTIONS`.
+> `group` works with the inferred directory mode, no `mode` needed. Set `mode: 'directory'` yourself only to override the inference, such as a directory name that carries a dot (`path: 'clients.v2'`). An explicit `mode: 'file'` still forbids `group` and stops the build with `KUBB_INVALID_PLUGIN_OPTIONS`, since a single file has nothing to group.
 
 #### output.barrel
 
