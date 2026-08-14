@@ -10,16 +10,18 @@ outline: [2, 3]
 Code: `KUBB_INVALID_PLUGIN_OPTIONS`
 Level: error
 
-A plugin was given options that cannot be honored together. The main case is `output.mode: 'file'` (the default) paired with a `group` option. A single-file output has nothing to split into groups, so the build stops instead of producing a layout the options do not describe.
+A plugin was given options that cannot be honored together. The main case is `output.mode` resolving to `'file'` while a `group` option is also set. A single-file output has nothing to split into groups, so the build stops instead of producing a layout the options do not describe.
 
 ## What happened
 
-`output.mode: 'file'` writes everything into one file at `output.path`. The `group` option splits output into per-tag or per-path subdirectories, which only applies to `output.mode: 'directory'`. Kubb reports the contradiction as invalid at plugin setup rather than guessing a layout. The TypeScript types catch the same mistake at compile time, but a config written in JavaScript or cast to `any` only surfaces it here. Since `output.mode` defaults to `'file'`, adding `group` without also setting `mode: 'directory'` triggers this diagnostic.
+`output.mode: 'file'` writes everything into one file at `output.path`. The `group` option splits output into per-tag or per-path subdirectories, which only applies to `output.mode: 'directory'`. Kubb reports the contradiction as invalid at plugin setup rather than guessing a layout.
+
+An unset `output.mode` follows `output.path`: an extension means `'file'`, anything else `'directory'`. So this fires whenever `path` resolves to a file, whether `mode: 'file'` was set directly or `path` names a file such as `'clients.ts'`. The TypeScript types catch an explicit `mode: 'file'` paired with `group` at compile time, but the inferred case (an extension in `path`, no `mode` set) only surfaces here, along with any config written in JavaScript or cast to `any`.
 
 ## How to fix it
 
 - Remove the `group` option when you want a single file.
-- Or add `output.mode: 'directory'` (one file per operation or schema) and keep `group` to organize that output into subdirectories.
+- Or give `output.path` an extensionless name (the default for most plugins) so it resolves to `'directory'` and keep `group` to organize that output into subdirectories. Set `output.mode: 'directory'` explicitly only if the directory name itself carries a dot, such as `'clients.v2'`.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -30,7 +32,7 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginAxios({
-      output: { path: 'clients', mode: 'directory' },
+      output: { path: 'clients' },
       group: { type: 'tag' },
     }),
   ],
@@ -39,14 +41,14 @@ export default defineConfig({
 
 ## Common causes
 
-- A plugin sets `output: { mode: 'file' }` but also passes a sibling `group` option.
+- A plugin's `output.path` names a file (an extension, or an explicit `mode: 'file'`) while a sibling `group` option is also set.
 - Two plugins list each other in `dependencies`, so the graph has a cycle and the plugins cannot be ordered. The message names the cycle: `Plugin dependencies form a cycle: plugin-a → plugin-b → plugin-a.` Remove one of the `dependencies` entries to break it.
 
 ## Example output
 
 ```text [Terminal]
-[KUBB_INVALID_PLUGIN_OPTIONS] plugin-axios: Plugin "plugin-axios" sets `output.mode: 'file'` but also configures a `group` option.
-  fix: A single-file output has nothing to group. Remove the `group` option, or use `output.mode: 'directory'` to organize files into subdirectories.
+[KUBB_INVALID_PLUGIN_OPTIONS] plugin-axios: Plugin "plugin-axios" resolves `output.mode` to 'file' but also configures a `group` option.
+  fix: A single-file output has nothing to group. Remove the `group` option, give `output.path` an extensionless directory name, or set `output.mode: 'directory'` explicitly.
   see: https://kubb.dev/docs/5.x/reference/diagnostics/kubb-invalid-plugin-options
 ```
 

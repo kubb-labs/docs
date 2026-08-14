@@ -30,7 +30,7 @@ Folder where the plugin writes its files, resolved against the global `output.pa
 
 #### output.mode
 
-How the plugin consolidates its generated code. `'file'` (the default) writes everything into a single file whose `output.path` must include the extension, and `'directory'` writes one file per operation under `output.path`.
+How the plugin consolidates its generated code. `'file'` writes everything into a single file whose `output.path` must include the extension, and `'directory'` writes one file per operation under `output.path`. Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 
 #### output.barrel
 

@@ -43,13 +43,15 @@ Folder where the plugin writes its files, resolved against the global `output.pa
 
 How the plugin consolidates generated code into files.
 
-- `'file'` (default) writes everything into a single file, so `output.path` must include the file extension (for example `'zod.ts'`).
+- `'file'` writes everything into a single file, so `output.path` must include the file extension (for example `'zod.ts'`).
 - `'directory'` writes one file per operation or schema under `output.path`.
 
-|          |                         |
-| -------: | :---------------------- |
-|    Type: | `'directory' \| 'file'` |
-| Default: | `'file'`                |
+Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
+
+|          |                                    |
+| -------: | :--------------------------------- |
+|    Type: | `'directory' \| 'file'`            |
+| Default: | follows the shape of `output.path` |
 
 #### output.barrel
 
