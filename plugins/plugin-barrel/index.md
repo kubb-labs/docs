@@ -55,19 +55,19 @@ The plugin is registered by default in `defineConfig`, but barrels stay off unti
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-barrel@beta
+bun add -d @kubb/plugin-barrel@5.0.0
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-barrel@beta
+pnpm add -D @kubb/plugin-barrel@5.0.0
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/plugin-barrel@beta
+npm install --save-dev @kubb/plugin-barrel@5.0.0
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-barrel@beta
+yarn add -D @kubb/plugin-barrel@5.0.0
 ```
 
 :::

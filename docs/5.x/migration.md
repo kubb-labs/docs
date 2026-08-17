@@ -29,31 +29,31 @@ In v4, the code-generating plugins lived in [`kubb-labs/kubb`](https://github.co
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta @kubb/plugin-fetch@beta \
-            @kubb/plugin-react-query@beta @kubb/plugin-vue-query@beta @kubb/plugin-swr@beta \
-            @kubb/plugin-faker@beta @kubb/plugin-msw@beta \
-            @kubb/plugin-mcp@beta @kubb/plugin-cypress@beta @kubb/plugin-redoc@beta
+bun add -d @kubb/plugin-ts@5.0.0 @kubb/plugin-zod@5.0.0 @kubb/plugin-axios@5.0.0 @kubb/plugin-fetch@5.0.0 \
+            @kubb/plugin-react-query@5.0.0 @kubb/plugin-vue-query@5.0.0 @kubb/plugin-swr@5.0.0 \
+            @kubb/plugin-faker@5.0.0 @kubb/plugin-msw@5.0.0 \
+            @kubb/plugin-mcp@5.0.0 @kubb/plugin-cypress@5.0.0 @kubb/plugin-redoc@5.0.0
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta @kubb/plugin-fetch@beta \
-            @kubb/plugin-react-query@beta @kubb/plugin-vue-query@beta @kubb/plugin-swr@beta \
-            @kubb/plugin-faker@beta @kubb/plugin-msw@beta \
-            @kubb/plugin-mcp@beta @kubb/plugin-cypress@beta @kubb/plugin-redoc@beta
+pnpm add -D @kubb/plugin-ts@5.0.0 @kubb/plugin-zod@5.0.0 @kubb/plugin-axios@5.0.0 @kubb/plugin-fetch@5.0.0 \
+            @kubb/plugin-react-query@5.0.0 @kubb/plugin-vue-query@5.0.0 @kubb/plugin-swr@5.0.0 \
+            @kubb/plugin-faker@5.0.0 @kubb/plugin-msw@5.0.0 \
+            @kubb/plugin-mcp@5.0.0 @kubb/plugin-cypress@5.0.0 @kubb/plugin-redoc@5.0.0
 ```
 
 ```shell [npm]
-npm install -D @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta @kubb/plugin-fetch@beta \
-               @kubb/plugin-react-query@beta @kubb/plugin-vue-query@beta @kubb/plugin-swr@beta \
-               @kubb/plugin-faker@beta @kubb/plugin-msw@beta \
-               @kubb/plugin-mcp@beta @kubb/plugin-cypress@beta @kubb/plugin-redoc@beta
+npm install -D @kubb/plugin-ts@5.0.0 @kubb/plugin-zod@5.0.0 @kubb/plugin-axios@5.0.0 @kubb/plugin-fetch@5.0.0 \
+               @kubb/plugin-react-query@5.0.0 @kubb/plugin-vue-query@5.0.0 @kubb/plugin-swr@5.0.0 \
+               @kubb/plugin-faker@5.0.0 @kubb/plugin-msw@5.0.0 \
+               @kubb/plugin-mcp@5.0.0 @kubb/plugin-cypress@5.0.0 @kubb/plugin-redoc@5.0.0
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta @kubb/plugin-fetch@beta \
-            @kubb/plugin-react-query@beta @kubb/plugin-vue-query@beta @kubb/plugin-swr@beta \
-            @kubb/plugin-faker@beta @kubb/plugin-msw@beta \
-            @kubb/plugin-mcp@beta @kubb/plugin-cypress@beta @kubb/plugin-redoc@beta
+yarn add -D @kubb/plugin-ts@5.0.0 @kubb/plugin-zod@5.0.0 @kubb/plugin-axios@5.0.0 @kubb/plugin-fetch@5.0.0 \
+            @kubb/plugin-react-query@5.0.0 @kubb/plugin-vue-query@5.0.0 @kubb/plugin-swr@5.0.0 \
+            @kubb/plugin-faker@5.0.0 @kubb/plugin-msw@5.0.0 \
+            @kubb/plugin-mcp@5.0.0 @kubb/plugin-cypress@5.0.0 @kubb/plugin-redoc@5.0.0
 ```
 
 :::
@@ -110,7 +110,7 @@ Now migrate the following kubb.config.ts:
 
 The highest-impact edits, in order. Each step links to its full explanation below.
 
-1. Bump Node to 22 and [install the v5 packages](#install-the-v5-packages) at `@beta`.
+1. Bump Node to 22 and [install the v5 packages](#install-the-v5-packages) at `@5.0.0`.
 2. Change the import from `@kubb/core` to [`kubb/config`](#import-defineconfig-from-kubb-config).
 3. Give [`input`](#give-input-a-single-value) a single value instead of `{ path }` / `{ data }`.
 4. Remove `pluginOas()` and [move its options to `adapter: adapterOas(...)`](#kubb-plugin-oas-removed), along with the [schema options](#move-schema-options-to-the-adapter) that lived on each plugin.

@@ -53,19 +53,19 @@ This plugin reads the OpenAPI adapter, which Kubb sets to `adapterOas()` by defa
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-redoc@beta
+bun add -d @kubb/plugin-redoc@5.0.0
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-redoc@beta
+pnpm add -D @kubb/plugin-redoc@5.0.0
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/plugin-redoc@beta
+npm install --save-dev @kubb/plugin-redoc@5.0.0
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-redoc@beta
+yarn add -D @kubb/plugin-redoc@5.0.0
 ```
 
 :::

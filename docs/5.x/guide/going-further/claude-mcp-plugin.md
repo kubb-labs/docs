@@ -86,19 +86,19 @@ Install [Claude desktop](https://claude.ai/download) and work through the [user 
 ::: code-group
 
 ```shell [bun]
-bun add -d kubb@beta @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta @kubb/plugin-mcp@beta
+bun add -d kubb@5.0.0 @kubb/plugin-ts@5.0.0 @kubb/plugin-zod@5.0.0 @kubb/plugin-axios@5.0.0 @kubb/plugin-mcp@5.0.0
 ```
 
 ```shell [pnpm]
-pnpm add -D kubb@beta @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta @kubb/plugin-mcp@beta
+pnpm add -D kubb@5.0.0 @kubb/plugin-ts@5.0.0 @kubb/plugin-zod@5.0.0 @kubb/plugin-axios@5.0.0 @kubb/plugin-mcp@5.0.0
 ```
 
 ```shell [npm]
-npm install --save-dev kubb@beta @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta @kubb/plugin-mcp@beta
+npm install --save-dev kubb@5.0.0 @kubb/plugin-ts@5.0.0 @kubb/plugin-zod@5.0.0 @kubb/plugin-axios@5.0.0 @kubb/plugin-mcp@5.0.0
 ```
 
 ```shell [yarn]
-yarn add -D kubb@beta @kubb/plugin-ts@beta @kubb/plugin-zod@beta @kubb/plugin-axios@beta @kubb/plugin-mcp@beta
+yarn add -D kubb@5.0.0 @kubb/plugin-ts@5.0.0 @kubb/plugin-zod@5.0.0 @kubb/plugin-axios@5.0.0 @kubb/plugin-mcp@5.0.0
 ```
 
 :::
@@ -138,7 +138,7 @@ export default defineConfig({
 ## Generate MCP files
 
 ```shell [Terminal]
-npx kubb@beta generate
+npx kubb@5.0.0 generate
 ```
 
 ## Inspect the generated files

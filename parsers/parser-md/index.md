@@ -45,19 +45,19 @@ The parser joins a file's source blocks with blank lines to form the body, and p
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/parser-md@beta
+bun add -d @kubb/parser-md@5.0.0
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/parser-md@beta
+pnpm add -D @kubb/parser-md@5.0.0
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/parser-md@beta
+npm install --save-dev @kubb/parser-md@5.0.0
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/parser-md@beta
+yarn add -D @kubb/parser-md@5.0.0
 ```
 
 :::

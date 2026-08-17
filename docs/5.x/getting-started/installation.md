@@ -23,13 +23,13 @@ The fastest way to start is the `kubb init` wizard. It detects your package mana
 Run the wizard and answer its prompts:
 
 ```shell [Terminal]
-npx kubb@beta init
+npx kubb@5.0.0 init
 ```
 
 Once the wizard finishes, generate your files:
 
 ```shell [Terminal]
-npx kubb@beta generate
+npx kubb@5.0.0 generate
 ```
 
 That is all you need to get started. To set things up by hand, the manual steps below walk through the same result one piece at a time.
@@ -45,19 +45,19 @@ Add the `kubb` package as a dev dependency. Use the tab for your package manager
 ::: code-group
 
 ```shell [bun]
-bun add -d kubb@beta
+bun add -d kubb@5.0.0
 ```
 
 ```shell [pnpm]
-pnpm add -D kubb@beta
+pnpm add -D kubb@5.0.0
 ```
 
 ```shell [npm]
-npm install --save-dev kubb@beta
+npm install --save-dev kubb@5.0.0
 ```
 
 ```shell [yarn]
-yarn add -D kubb@beta
+yarn add -D kubb@5.0.0
 ```
 
 :::
@@ -72,19 +72,19 @@ Each output format is its own package, so you install only what you need. The ex
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-ts@beta @kubb/plugin-axios@beta @kubb/plugin-react-query@beta
+bun add -d @kubb/plugin-ts@5.0.0 @kubb/plugin-axios@5.0.0 @kubb/plugin-react-query@5.0.0
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-ts@beta @kubb/plugin-axios@beta @kubb/plugin-react-query@beta
+pnpm add -D @kubb/plugin-ts@5.0.0 @kubb/plugin-axios@5.0.0 @kubb/plugin-react-query@5.0.0
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/plugin-ts@beta @kubb/plugin-axios@beta @kubb/plugin-react-query@beta
+npm install --save-dev @kubb/plugin-ts@5.0.0 @kubb/plugin-axios@5.0.0 @kubb/plugin-react-query@5.0.0
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-ts@beta @kubb/plugin-axios@beta @kubb/plugin-react-query@beta
+yarn add -D @kubb/plugin-ts@5.0.0 @kubb/plugin-axios@5.0.0 @kubb/plugin-react-query@5.0.0
 ```
 
 :::
