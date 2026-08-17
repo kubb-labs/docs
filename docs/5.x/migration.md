@@ -110,7 +110,7 @@ Now migrate the following kubb.config.ts:
 
 The highest-impact edits, in order. Each step links to its full explanation below.
 
-1. Bump Node to 22 and [install the v5 packages](#install-the-v5-packages) at `@5.0.0`.
+1. Bump Node to 22 and [install the v5 packages](#install-the-v5-packages) at `5.0.0`.
 2. Change the import from `@kubb/core` to [`kubb/config`](#import-defineconfig-from-kubb-config).
 3. Give [`input`](#give-input-a-single-value) a single value instead of `{ path }` / `{ data }`.
 4. Remove `pluginOas()` and [move its options to `adapter: adapterOas(...)`](#kubb-plugin-oas-removed), along with the [schema options](#move-schema-options-to-the-adapter) that lived on each plugin.
