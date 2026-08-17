@@ -30,7 +30,7 @@ The Kubb repository is also a plugin marketplace. Add it, then install the plugi
 The commands run `npx kubb`, so install Kubb yourself, either in the project or globally:
 
 ```shell [Terminal]
-npm install -D kubb@beta
+npm install -D kubb@5.0.0
 ```
 
 A `SessionStart` hook checks for `kubb` at session start and warns you if it's missing, but it

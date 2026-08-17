@@ -37,13 +37,13 @@ This is the one diagnostic the interactive logger renders as a framed box rather
 Update the `@kubb/*` packages to pick up the latest fixes.
 
 ```shell [Terminal]
-npm install -g @kubb/cli@beta
+npm install -g @kubb/cli@5.0.0
 ```
 
 Update the per-project plugins through your package manager as well, for example.
 
 ```shell [Terminal]
-npm install @kubb/adapter-oas@beta @kubb/plugin-ts@beta
+npm install @kubb/adapter-oas@5.0.0 @kubb/plugin-ts@5.0.0
 ```
 
 ## See also

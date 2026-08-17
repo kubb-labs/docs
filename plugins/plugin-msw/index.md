@@ -58,19 +58,19 @@ By default a handler returns an empty typed payload you fill in from tests. Set 
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-msw@beta
+bun add -d @kubb/plugin-msw@5.0.0
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-msw@beta
+pnpm add -D @kubb/plugin-msw@5.0.0
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/plugin-msw@beta
+npm install --save-dev @kubb/plugin-msw@5.0.0
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-msw@beta
+yarn add -D @kubb/plugin-msw@5.0.0
 ```
 
 :::

@@ -52,19 +52,19 @@ Each helper takes its parameters as a single grouped options object shaped as `{
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-cypress@beta
+bun add -d @kubb/plugin-cypress@5.0.0
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-cypress@beta
+pnpm add -D @kubb/plugin-cypress@5.0.0
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/plugin-cypress@beta
+npm install --save-dev @kubb/plugin-cypress@5.0.0
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-cypress@beta
+yarn add -D @kubb/plugin-cypress@5.0.0
 ```
 
 :::

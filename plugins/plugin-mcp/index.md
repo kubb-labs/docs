@@ -61,19 +61,19 @@ The [Connect Claude to a remote MCP server](https://modelcontextprotocol.io/docs
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-mcp@beta
+bun add -d @kubb/plugin-mcp@5.0.0
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-mcp@beta
+pnpm add -D @kubb/plugin-mcp@5.0.0
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/plugin-mcp@beta
+npm install --save-dev @kubb/plugin-mcp@5.0.0
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-mcp@beta
+yarn add -D @kubb/plugin-mcp@5.0.0
 ```
 
 :::

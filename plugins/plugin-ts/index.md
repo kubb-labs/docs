@@ -50,19 +50,19 @@ resources:
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-ts@beta
+bun add -d @kubb/plugin-ts@5.0.0
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-ts@beta
+pnpm add -D @kubb/plugin-ts@5.0.0
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/plugin-ts@beta
+npm install --save-dev @kubb/plugin-ts@5.0.0
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-ts@beta
+yarn add -D @kubb/plugin-ts@5.0.0
 ```
 
 :::

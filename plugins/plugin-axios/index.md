@@ -108,19 +108,19 @@ For cross-cutting concerns like retries and interceptors, reach for a [custom tr
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-axios@beta
+bun add -d @kubb/plugin-axios@5.0.0
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-axios@beta
+pnpm add -D @kubb/plugin-axios@5.0.0
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/plugin-axios@beta
+npm install --save-dev @kubb/plugin-axios@5.0.0
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-axios@beta
+yarn add -D @kubb/plugin-axios@5.0.0
 ```
 
 :::

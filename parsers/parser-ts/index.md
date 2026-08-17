@@ -53,19 +53,19 @@ Both accept the same [`extension`](/parsers/parser-ts/reference/options#extensio
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/parser-ts@beta
+bun add -d @kubb/parser-ts@5.0.0
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/parser-ts@beta
+pnpm add -D @kubb/parser-ts@5.0.0
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/parser-ts@beta
+npm install --save-dev @kubb/parser-ts@5.0.0
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/parser-ts@beta
+yarn add -D @kubb/parser-ts@5.0.0
 ```
 
 :::

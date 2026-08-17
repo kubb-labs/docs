@@ -57,19 +57,19 @@ Pair it with a client plugin (`@kubb/plugin-axios` or `@kubb/plugin-fetch`) and 
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-zod@beta
+bun add -d @kubb/plugin-zod@5.0.0
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-zod@beta
+pnpm add -D @kubb/plugin-zod@5.0.0
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/plugin-zod@beta
+npm install --save-dev @kubb/plugin-zod@5.0.0
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-zod@beta
+yarn add -D @kubb/plugin-zod@5.0.0
 ```
 
 :::

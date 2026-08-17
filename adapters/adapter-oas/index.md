@@ -48,19 +48,19 @@ See [Options](/adapters/adapter-oas/reference/options) for the full configuratio
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/adapter-oas@beta
+bun add -d @kubb/adapter-oas@5.0.0
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/adapter-oas@beta
+pnpm add -D @kubb/adapter-oas@5.0.0
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/adapter-oas@beta
+npm install --save-dev @kubb/adapter-oas@5.0.0
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/adapter-oas@beta
+yarn add -D @kubb/adapter-oas@5.0.0
 ```
 
 :::
