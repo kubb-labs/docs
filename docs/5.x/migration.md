@@ -29,31 +29,31 @@ In v4, the code-generating plugins lived in [`kubb-labs/kubb`](https://github.co
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-ts @kubb/plugin-zod @kubb/plugin-axios @kubb/plugin-fetch \
-            @kubb/plugin-react-query @kubb/plugin-vue-query @kubb/plugin-swr \
-            @kubb/plugin-faker @kubb/plugin-msw \
-            @kubb/plugin-mcp @kubb/plugin-cypress @kubb/plugin-redoc
+bun add -d @kubb/plugin-ts@5.0.0 @kubb/plugin-zod@5.0.0 @kubb/plugin-axios@5.0.0 @kubb/plugin-fetch@5.0.0 \
+            @kubb/plugin-react-query@5.0.0 @kubb/plugin-vue-query@5.0.0 @kubb/plugin-swr@5.0.0 \
+            @kubb/plugin-faker@5.0.0 @kubb/plugin-msw@5.0.0 \
+            @kubb/plugin-mcp@5.0.0 @kubb/plugin-cypress@5.0.0 @kubb/plugin-redoc@5.0.0
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-ts @kubb/plugin-zod @kubb/plugin-axios @kubb/plugin-fetch \
-            @kubb/plugin-react-query @kubb/plugin-vue-query @kubb/plugin-swr \
-            @kubb/plugin-faker @kubb/plugin-msw \
-            @kubb/plugin-mcp @kubb/plugin-cypress @kubb/plugin-redoc
+pnpm add -D @kubb/plugin-ts@5.0.0 @kubb/plugin-zod@5.0.0 @kubb/plugin-axios@5.0.0 @kubb/plugin-fetch@5.0.0 \
+            @kubb/plugin-react-query@5.0.0 @kubb/plugin-vue-query@5.0.0 @kubb/plugin-swr@5.0.0 \
+            @kubb/plugin-faker@5.0.0 @kubb/plugin-msw@5.0.0 \
+            @kubb/plugin-mcp@5.0.0 @kubb/plugin-cypress@5.0.0 @kubb/plugin-redoc@5.0.0
 ```
 
 ```shell [npm]
-npm install -D @kubb/plugin-ts @kubb/plugin-zod @kubb/plugin-axios @kubb/plugin-fetch \
-               @kubb/plugin-react-query @kubb/plugin-vue-query @kubb/plugin-swr \
-               @kubb/plugin-faker @kubb/plugin-msw \
-               @kubb/plugin-mcp @kubb/plugin-cypress @kubb/plugin-redoc
+npm install -D @kubb/plugin-ts@5.0.0 @kubb/plugin-zod@5.0.0 @kubb/plugin-axios@5.0.0 @kubb/plugin-fetch@5.0.0 \
+               @kubb/plugin-react-query@5.0.0 @kubb/plugin-vue-query@5.0.0 @kubb/plugin-swr@5.0.0 \
+               @kubb/plugin-faker@5.0.0 @kubb/plugin-msw@5.0.0 \
+               @kubb/plugin-mcp@5.0.0 @kubb/plugin-cypress@5.0.0 @kubb/plugin-redoc@5.0.0
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-ts @kubb/plugin-zod @kubb/plugin-axios @kubb/plugin-fetch \
-            @kubb/plugin-react-query @kubb/plugin-vue-query @kubb/plugin-swr \
-            @kubb/plugin-faker @kubb/plugin-msw \
-            @kubb/plugin-mcp @kubb/plugin-cypress @kubb/plugin-redoc
+yarn add -D @kubb/plugin-ts@5.0.0 @kubb/plugin-zod@5.0.0 @kubb/plugin-axios@5.0.0 @kubb/plugin-fetch@5.0.0 \
+            @kubb/plugin-react-query@5.0.0 @kubb/plugin-vue-query@5.0.0 @kubb/plugin-swr@5.0.0 \
+            @kubb/plugin-faker@5.0.0 @kubb/plugin-msw@5.0.0 \
+            @kubb/plugin-mcp@5.0.0 @kubb/plugin-cypress@5.0.0 @kubb/plugin-redoc@5.0.0
 ```
 
 :::
