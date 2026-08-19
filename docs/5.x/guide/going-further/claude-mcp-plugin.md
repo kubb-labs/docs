@@ -86,19 +86,19 @@ Install [Claude desktop](https://claude.ai/download) and work through the [user 
 ::: code-group
 
 ```shell [bun]
-bun add -d kubb@5.0.0 @kubb/plugin-ts@5.0.0 @kubb/plugin-zod@5.0.0 @kubb/plugin-axios@5.0.0 @kubb/plugin-mcp@5.0.0
+bun add -d kubb @kubb/plugin-ts @kubb/plugin-zod @kubb/plugin-axios @kubb/plugin-mcp
 ```
 
 ```shell [pnpm]
-pnpm add -D kubb@5.0.0 @kubb/plugin-ts@5.0.0 @kubb/plugin-zod@5.0.0 @kubb/plugin-axios@5.0.0 @kubb/plugin-mcp@5.0.0
+pnpm add -D kubb @kubb/plugin-ts @kubb/plugin-zod @kubb/plugin-axios @kubb/plugin-mcp
 ```
 
 ```shell [npm]
-npm install --save-dev kubb@5.0.0 @kubb/plugin-ts@5.0.0 @kubb/plugin-zod@5.0.0 @kubb/plugin-axios@5.0.0 @kubb/plugin-mcp@5.0.0
+npm install --save-dev kubb @kubb/plugin-ts @kubb/plugin-zod @kubb/plugin-axios @kubb/plugin-mcp
 ```
 
 ```shell [yarn]
-yarn add -D kubb@5.0.0 @kubb/plugin-ts@5.0.0 @kubb/plugin-zod@5.0.0 @kubb/plugin-axios@5.0.0 @kubb/plugin-mcp@5.0.0
+yarn add -D kubb @kubb/plugin-ts @kubb/plugin-zod @kubb/plugin-axios @kubb/plugin-mcp
 ```
 
 :::
@@ -138,7 +138,7 @@ export default defineConfig({
 ## Generate MCP files
 
 ```shell [Terminal]
-npx kubb@5.0.0 generate
+npx kubb generate
 ```
 
 ## Inspect the generated files

@@ -49,7 +49,7 @@ The [architecture guide](/docs/5.x/guide/concepts/architecture) covers each laye
 Try the same loop yourself. Install Kubb together with the two plugins from that config:
 
 ```shell [Terminal]
-npm install -D kubb@5.0.0 @kubb/plugin-ts@5.0.0 @kubb/plugin-zod@5.0.0
+npm install -D kubb @kubb/plugin-ts @kubb/plugin-zod
 ```
 
 Write the config above next to your spec and run the generator:

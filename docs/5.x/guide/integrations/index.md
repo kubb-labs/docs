@@ -22,19 +22,19 @@ Install `kubb` as a dev dependency.
 ::: code-group
 
 ```shell [bun]
-bun add -d kubb@5.0.0
+bun add -d kubb
 ```
 
 ```shell [pnpm]
-pnpm add -D kubb@5.0.0
+pnpm add -D kubb
 ```
 
 ```shell [npm]
-npm install --save-dev kubb@5.0.0
+npm install --save-dev kubb
 ```
 
 ```shell [yarn]
-yarn add -D kubb@5.0.0
+yarn add -D kubb
 ```
 
 :::
