@@ -88,6 +88,9 @@ This plugin needs three other plugins. `@kubb/plugin-ts` and `@kubb/plugin-zod` 
 
 A client plugin is required, since the handlers call its generated functions. Register one of them and set [`client`](/plugins/plugin-mcp/reference/options#client) only when both are present.
 
+> [!IMPORTANT]
+> The generated server needs **`@modelcontextprotocol/sdk` v1 or higher**. It imports `McpServer` and `StdioServerTransport` from the SDK's v1 subpaths.
+
 ## Example
 
 ::: code-group

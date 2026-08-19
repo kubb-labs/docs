@@ -80,6 +80,9 @@ This plugin needs these plugins in your config:
 - [`@kubb/plugin-ts`](/plugins/plugin-ts/) for the types.
 - A client plugin, [`@kubb/plugin-axios`](/plugins/plugin-axios/) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch/), for the HTTP layer. The hooks call its functions, so generation errors out when no client plugin is registered.
 
+> [!IMPORTANT]
+> The generated hooks need **SWR v2 or higher**. They import `useSWR` from `swr` and `useSWRMutation` from `swr/mutation`, which v1 does not ship.
+
 For runtime validation, set `validator` on the client plugin. The generated operations carry the validation, so the hooks get it for free.
 
 ## Example

@@ -76,7 +76,10 @@ yarn add -D @kubb/plugin-zod
 
 ## Dependencies
 
-The generated schemas stand alone: they import `z` from your project, so add [Zod](https://zod.dev/) v4 to your dependencies. Set `inferred: true` to export a `z.infer` type alias next to each schema, which makes the schemas the single source of truth for types without `@kubb/plugin-ts`.
+> [!IMPORTANT]
+> The generated schemas need **Zod v4 or higher**. They use v4-only APIs such as `z.ipv4()` and `.meta()`, and read from `zod/mini` when you point `importPath` at the tree-shakeable bundle.
+
+The generated schemas stand alone: they import `z` from your project, so add [Zod](https://zod.dev/) to your dependencies. Set `inferred: true` to export a `z.infer` type alias next to each schema, which makes the schemas the single source of truth for types without `@kubb/plugin-ts`.
 
 ## Example
 

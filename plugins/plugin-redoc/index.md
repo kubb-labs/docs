@@ -74,6 +74,9 @@ yarn add -D @kubb/plugin-redoc
 
 `@kubb/plugin-redoc` has no plugin dependencies. It reads the OpenAPI spec through `@kubb/adapter-oas`, so add it on its own whenever you want generated documentation.
 
+> [!IMPORTANT]
+> The generated page loads Redoc from `cdn.redoc.ly` in a `<script>` tag, so there is no npm package to install and no version to pin. The page needs network access to that CDN when it opens.
+
 ## Example
 
 ::: code-group
