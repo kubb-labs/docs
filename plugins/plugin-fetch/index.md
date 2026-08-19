@@ -112,19 +112,19 @@ For cross-cutting concerns like retries and interceptors, reach for a [custom tr
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-fetch@5.0.0
+bun add -d @kubb/plugin-fetch
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-fetch@5.0.0
+pnpm add -D @kubb/plugin-fetch
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/plugin-fetch@5.0.0
+npm install --save-dev @kubb/plugin-fetch
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-fetch@5.0.0
+yarn add -D @kubb/plugin-fetch
 ```
 
 :::

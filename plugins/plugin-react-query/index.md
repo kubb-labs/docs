@@ -65,19 +65,19 @@ Each hook takes its parameters as a single grouped options object shaped as `{ b
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-react-query@5.0.0
+bun add -d @kubb/plugin-react-query
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-react-query@5.0.0
+pnpm add -D @kubb/plugin-react-query
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/plugin-react-query@5.0.0
+npm install --save-dev @kubb/plugin-react-query
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-react-query@5.0.0
+yarn add -D @kubb/plugin-react-query
 ```
 
 :::

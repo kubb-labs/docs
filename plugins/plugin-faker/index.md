@@ -55,19 +55,19 @@ resources:
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-faker@5.0.0
+bun add -d @kubb/plugin-faker
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-faker@5.0.0
+pnpm add -D @kubb/plugin-faker
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/plugin-faker@5.0.0
+npm install --save-dev @kubb/plugin-faker
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-faker@5.0.0
+yarn add -D @kubb/plugin-faker
 ```
 
 :::
