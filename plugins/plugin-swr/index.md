@@ -56,19 +56,19 @@ Query hooks take the grouped request config (`{ path, query, headers }`, camelCa
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-swr@5.0.0
+bun add -d @kubb/plugin-swr
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-swr@5.0.0
+pnpm add -D @kubb/plugin-swr
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/plugin-swr@5.0.0
+npm install --save-dev @kubb/plugin-swr
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-swr@5.0.0
+yarn add -D @kubb/plugin-swr
 ```
 
 :::

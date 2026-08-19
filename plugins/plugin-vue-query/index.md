@@ -62,19 +62,19 @@ Each composable takes its parameters as a single grouped options object shaped a
 ::: code-group
 
 ```shell [bun]
-bun add -d @kubb/plugin-vue-query@5.0.0
+bun add -d @kubb/plugin-vue-query
 ```
 
 ```shell [pnpm]
-pnpm add -D @kubb/plugin-vue-query@5.0.0
+pnpm add -D @kubb/plugin-vue-query
 ```
 
 ```shell [npm]
-npm install --save-dev @kubb/plugin-vue-query@5.0.0
+npm install --save-dev @kubb/plugin-vue-query
 ```
 
 ```shell [yarn]
-yarn add -D @kubb/plugin-vue-query@5.0.0
+yarn add -D @kubb/plugin-vue-query
 ```
 
 :::
