@@ -137,7 +137,7 @@ This plugin needs `@kubb/plugin-ts` in your config. Kubb runs it before `plugin-
 - [`@kubb/plugin-zod`](/plugins/plugin-zod/)
 
 > [!IMPORTANT]
-> The generated functions call the platform's native `fetch`, so there is no HTTP client to install. They need a runtime that ships `fetch` as a global, which every Node version Kubb supports does.
+> The generated functions call the native `fetch`, so there is no HTTP client to install.
 
 ## Example
 

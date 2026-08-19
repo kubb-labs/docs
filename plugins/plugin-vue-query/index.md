@@ -87,7 +87,7 @@ This plugin needs these plugins in your config:
 - A client plugin, [`@kubb/plugin-axios`](/plugins/plugin-axios/) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch/), for the HTTP layer. The composables call its functions, so generation errors out when no client plugin is registered.
 
 > [!IMPORTANT]
-> The generated composables need **`@tanstack/vue-query` v5.62 or higher**. The `*QueryOptions` helpers annotate their return type with `DataTag`, which only accepts an error type argument from 5.62.0 on.
+> The generated composables need `@tanstack/vue-query` v5 or higher.
 
 For runtime validation, set `validator` on the client plugin. The generated operations carry the validation, so the composables get it for free.
 

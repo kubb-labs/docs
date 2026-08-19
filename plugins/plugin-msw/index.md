@@ -82,7 +82,7 @@ This plugin always depends on [`@kubb/plugin-ts`](/plugins/plugin-ts/), so keep 
 It depends on [`@kubb/plugin-faker`](/plugins/plugin-faker/) only when you set `parser: 'faker'`. The default `parser: 'data'` doesn't need Faker.
 
 > [!IMPORTANT]
-> The generated handlers need **MSW v2 or higher**. They are written against the v2 API (`http` and `HttpResponse`), which replaced the `rest` namespace from v1.
+> The generated handlers need MSW v2 or higher.
 
 ## Example
 

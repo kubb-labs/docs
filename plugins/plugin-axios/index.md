@@ -133,7 +133,7 @@ This plugin needs `@kubb/plugin-ts` in your config. Kubb runs it before `plugin-
 - [`@kubb/plugin-zod`](/plugins/plugin-zod/)
 
 > [!IMPORTANT]
-> The generated functions need **Axios v1 or higher**. They import the `AxiosInstance`, `AxiosRequestConfig`, `AxiosResponse`, and `AxiosError` types alongside the default export.
+> The generated functions need Axios v1 or higher.
 
 ## Example
 

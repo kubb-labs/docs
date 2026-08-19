@@ -77,7 +77,7 @@ yarn add -D @kubb/plugin-faker
 This plugin depends on [`@kubb/plugin-ts`](/plugins/plugin-ts/) for the types each factory returns. Keep `pluginTs()` in the plugins array. No other plugin is required.
 
 > [!IMPORTANT]
-> The generated factories need **Faker v9 or higher**. They call the `faker.number`, `faker.string`, and `faker.helpers` modules, which replaced the older `faker.datatype` entry points.
+> The generated factories need Faker v9 or higher.
 
 ## Example
 
