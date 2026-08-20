@@ -86,6 +86,9 @@ This plugin needs these plugins in your config:
 - [`@kubb/plugin-ts`](/plugins/plugin-ts/) for the types.
 - A client plugin, [`@kubb/plugin-axios`](/plugins/plugin-axios/) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch/), for the HTTP layer. The composables call its functions, so generation errors out when no client plugin is registered.
 
+> [!IMPORTANT]
+> The generated composables need `@tanstack/vue-query` v5 or higher.
+
 For runtime validation, set `validator` on the client plugin. The generated operations carry the validation, so the composables get it for free.
 
 ## Example

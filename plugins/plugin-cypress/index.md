@@ -73,6 +73,9 @@ yarn add -D @kubb/plugin-cypress
 
 This plugin depends on [`@kubb/plugin-ts`](/plugins/plugin-ts/) for the request, parameter, and response types it imports. Keep `pluginTs()` in the plugins array.
 
+> [!IMPORTANT]
+> The generated requests need Cypress v13 or higher.
+
 ## Example
 
 ::: code-group

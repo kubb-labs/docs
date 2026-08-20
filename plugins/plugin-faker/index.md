@@ -76,6 +76,9 @@ yarn add -D @kubb/plugin-faker
 
 This plugin depends on [`@kubb/plugin-ts`](/plugins/plugin-ts/) for the types each factory returns. Keep `pluginTs()` in the plugins array. No other plugin is required.
 
+> [!IMPORTANT]
+> The generated factories need Faker v9 or higher.
+
 ## Example
 
 ::: code-group

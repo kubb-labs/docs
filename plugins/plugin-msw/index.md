@@ -81,6 +81,9 @@ This plugin always depends on [`@kubb/plugin-ts`](/plugins/plugin-ts/), so keep 
 
 It depends on [`@kubb/plugin-faker`](/plugins/plugin-faker/) only when you set `parser: 'faker'`. The default `parser: 'data'` doesn't need Faker.
 
+> [!IMPORTANT]
+> The generated handlers need MSW v2 or higher.
+
 ## Example
 
 ::: code-group
