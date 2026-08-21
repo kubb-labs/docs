@@ -1,5 +1,7 @@
 {
   "$schema": "https://context7.com/schema/context7.json",
+  "url": "https://context7.com/kubb-labs/docs",
+  "public_key": "pk_E3UkJR9X5FvhME9wB1sCS",
   "projectTitle": "Kubb",
   "description": "Meta framework for code generation from OpenAPI specs: TypeScript types, TanStack Query and SWR hooks, Zod schemas, Faker mocks, MSW handlers, and typed Axios or Fetch clients.",
   "folders": ["docs/5.x", "plugins", "adapters", "parsers", "snippets"],
