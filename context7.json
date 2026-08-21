@@ -1,16 +1,4 @@
 {
   "url": "https://context7.com/kubb-labs/docs",
-  "public_key": "pk_E3UkJR9X5FvhME9wB1sCS",
-  "projectTitle": "Kubb",
-  "description": "The meta framework for code generation. Point Kubb at an OpenAPI specification and it generates TypeScript types, typed Axios or Fetch clients, TanStack Query and SWR hooks, Zod schemas, Faker mocks, and MSW handlers.",
-  "folders": ["docs/5.x", "plugins", "adapters", "parsers", "snippets"],
-  "excludeFiles": ["AGENTS.md", "CLAUDE.md", "GEMINI.md", "changelog.md"],
-  "rules": [
-    "Import `defineConfig` from `kubb/config`, not from `kubb`.",
-    "Kubb v5 has no `pluginOas()`. The OpenAPI adapter is a top-level `adapter` key that defaults to `adapterOas()` from `@kubb/adapter-oas`, which ships with `kubb`. Set it only when you need to pass options.",
-    "Each output format is its own `@kubb/plugin-*` package, listed in `plugins: []` and maintained in kubb-labs/plugins.",
-    "`@kubb/plugin-client` was removed in v5. Register `pluginAxios` or `pluginFetch` instead, then point the query and MCP plugins at it with `client: 'axios' | 'fetch'`.",
-    "`@kubb/plugin-solid-query` and `@kubb/plugin-svelte-query` were removed in v5 with no equivalent. The query plugins are `pluginReactQuery`, `pluginVueQuery` and `pluginSwr`.",
-    "Passing your own `output` to a plugin replaces the plugin's default `output` wholesale. Repeat `barrel` inside it or you lose that plugin's barrel file."
-  ]
+  "public_key": "pk_E3UkJR9X5FvhME9wB1sCS"
 }
