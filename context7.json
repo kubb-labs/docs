@@ -1,0 +1,14 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "Kubb",
+  "description": "Meta framework for code generation from OpenAPI specs: TypeScript types, TanStack Query and SWR hooks, Zod schemas, Faker mocks, MSW handlers, and typed Axios or Fetch clients.",
+  "folders": ["docs/5.x", "plugins", "adapters", "parsers", "snippets"],
+  "excludeFiles": ["AGENTS.md", "CLAUDE.md", "GEMINI.md", "changelog.md"],
+  "rules": [
+    "Import `defineConfig` from `kubb/config`, not from `kubb`.",
+    "Kubb v5 has no `pluginOas()`. The OpenAPI adapter is the top-level `adapter` key and defaults to `adapterOas()` from `@kubb/adapter-oas`, which ships with `kubb`. Set `adapter` only to pass options.",
+    "Each output format is its own `@kubb/plugin-*` package, listed in `plugins: []` and maintained in kubb-labs/plugins.",
+    "`@kubb/plugin-client` was removed in v5. Register `pluginAxios` or `pluginFetch` and point query and MCP plugins at it with `client: 'axios' | 'fetch'`.",
+    "Passing your own `output` to a plugin replaces that plugin's default `output` object wholesale, so repeat `barrel` inside it to keep the plugin's barrel file."
+  ]
+}
