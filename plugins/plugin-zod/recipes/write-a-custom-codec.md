@@ -7,13 +7,13 @@ outline: deep
 
 # Write a custom codec
 
-Some fields travel as one type and are used as another. An OpenAPI `time` field arrives as the string `"09:30:00"`, but the code that handles it would rather have a `Temporal.PlainTime`. That needs two conversions going opposite ways, and which one applies depends on the direction of the call.
+An OpenAPI `time` field arrives as `"09:30:00"` but your code wants a `Temporal.PlainTime`. That is two conversions, and which one applies depends on the direction of the call.
 
 A codec is that pair. Register one on [`codecs`](/plugins/plugin-zod/reference/options#codecs) and plugin-zod prints `decode` into response schemas and `encode` into request schemas.
 
 ## The shape
 
-A codec has three members. `matches` picks the nodes it applies to, and the two directions return the Zod expression as a string.
+`matches` picks the nodes, and the two directions return a Zod expression as a string.
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -38,18 +38,18 @@ export default defineConfig({
 })
 ```
 
-`decode` starts from `z.iso.time()` rather than a bare `z.string()` on purpose. Validate first and a malformed value fails as a validation issue. Hand it straight to `Temporal.PlainTime.from` and it throws a `RangeError` out of the middle of the transform, which is much harder to trace back to the field that caused it.
+Decode from `z.iso.time()`, not a bare `z.string()`. A validated value fails as a validation issue. An unchecked one throws a `RangeError` out of the middle of the transform, which is much harder to trace back to the field.
 
 ## Match the node type, not the format
 
-`matches` receives a schema node from Kubb's AST, not the raw OpenAPI schema. The adapter has already turned `format: 'time'` into a node of type `time`, so match on that. The same holds for `date` and `date-time`, which become `date` and `datetime` nodes.
+`matches` receives a node from Kubb's AST, not the raw OpenAPI schema. The adapter has already turned `format: 'time'` into a `time` node. The same holds for `date` and `date-time`, which become `date` and `datetime` nodes.
 
 ```typescript
 matches: (node) => node.type === 'time'        // correct
 matches: (node) => node.format === 'time'      // never fires, a time node carries no format
 ```
 
-Both direction functions receive the node as well, so one codec can vary its output across the nodes it matches:
+Both directions receive the node, so one codec can cover several types:
 
 ```typescript
 const temporalCodec: Codec = {
@@ -67,7 +67,7 @@ const temporalCodec: Codec = {
 
 ## What gets generated
 
-A component carrying the type is emitted twice. The canonical schema decodes, and an `InputSchema` variant encodes:
+A component carrying the type is emitted twice, and operations reference whichever direction fits. This holds when the body is a `$ref`:
 
 ```typescript [src/gen/zod/slotSchema.ts]
 export const slotSchema = z.object({
@@ -79,8 +79,6 @@ export const slotInputSchema = z.object({
 })
 ```
 
-Operations then reference whichever direction fits. A response points at the decode schema and a request body at the encode one, and this holds when the body is a `$ref`:
-
 ```typescript [src/gen/zod/bookSlotSchema.ts]
 export const bookSlotStatus201Schema = slotSchema      // decode
 export const bookSlotBodySchema = slotInputSchema      // encode
@@ -88,7 +86,7 @@ export const bookSlotBodySchema = slotInputSchema      // encode
 
 ## Using it with a client
 
-Both sides are ordinary Zod schemas built from `.transform()`, so both satisfy [Standard Schema](https://standardschema.dev). Setting [`validator`](/plugins/plugin-fetch/reference/options#validator) on `pluginFetch` or `pluginAxios` picks the right schema per slot on its own, and the client runs each through `~standard.validate` without knowing a conversion happened.
+Both sides are ordinary Zod built from `.transform()`, so both satisfy [Standard Schema](https://standardschema.dev). Set [`validator`](/plugins/plugin-fetch/reference/options#validator) on `pluginFetch` or `pluginAxios` and it picks the right schema per slot, then runs it through `~standard.validate` without knowing a conversion happened.
 
 ```typescript [kubb.config.ts]
 pluginFetch({
@@ -104,13 +102,13 @@ import { bookSlot } from './src/gen/clients/bookSlot'
 await bookSlot({ body: { startsAt: Temporal.PlainTime.from('09:30') } })
 ```
 
-The types will not follow the value, though. Request and response types come from `@kubb/plugin-ts`, which reads the spec, so a `time` field is typed `string` there whatever the schema converts it to at runtime.
+Two things to expect. The types will not follow the value: they come from `@kubb/plugin-ts`, which reads the spec, so a `time` field is typed `string` whatever the schema converts it to at runtime.
 
-`Temporal` is also referenced as a global. Until your runtime ships it, load a polyfill that installs the global along with its types, and make sure that import runs before any generated schema does.
+`Temporal` is also referenced as a global. Until your runtime ships it, load a polyfill that installs the global with its types, and make sure that import runs first.
 
 ## Replacing the built-in date codec
 
-Registered codecs are checked first, so matching `date` takes the built-in over. Worth knowing that it is all or nothing: your codec owns both directions for every node it matches, including the `YYYY-MM-DD` case the built-in handles separately. This swaps `Date` for a Luxon `DateTime`:
+Registered codecs are checked first, so matching `date` takes the built-in over. It is all or nothing: your codec owns both directions for every node it matches, including the `YYYY-MM-DD` case the built-in handles separately.
 
 ```typescript
 const luxonCodec: Codec = {
@@ -124,4 +122,4 @@ const luxonCodec: Codec = {
 
 [`printer.nodes`](/plugins/plugin-zod/reference/options#printer) replaces how a node prints. Use it when a type needs no conversion and you only want different output, such as printing `int64` as `z.number()` instead of `z.bigint()`.
 
-It cannot stand in for a codec. A node handler changes the printed output without telling the generator that the schema carries a conversion, so no `InputSchema` variant is emitted and a `$ref` request body keeps the decode direction. Reach for `codecs` whenever the two directions differ.
+It cannot stand in for a codec. A node handler changes the output without telling the generator the schema carries a conversion, so no `InputSchema` variant is emitted and a `$ref` request body keeps the decode direction. Reach for `codecs` whenever the two directions differ.
