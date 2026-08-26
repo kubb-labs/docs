@@ -45,4 +45,4 @@ import { categorySchema, type CategorySchemaType } from './src/gen/zod/categoryS
 const category: CategorySchemaType = categorySchema.parse({ name: 'Dogs' })
 ```
 
-Add [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) or [`@kubb/plugin-axios`](/plugins/plugin-axios/) to the same config, with no `@kubb/plugin-ts` in the pipeline, and the client keys its `RequestResult` on these inferred types instead of a hand-rolled interface.
+Add [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) or [`@kubb/plugin-axios`](/plugins/plugin-axios/) to the same config, and the client keys its `RequestResult` on these inferred types instead of a hand-rolled interface.
