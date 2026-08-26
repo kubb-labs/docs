@@ -102,7 +102,7 @@ import { bookSlot } from './src/gen/clients/bookSlot'
 await bookSlot({ body: { startsAt: Temporal.PlainTime.from('09:30') } })
 ```
 
-Two things to expect. The types will not follow the value: they come from `@kubb/plugin-ts`, which reads the spec, so a `time` field is typed `string` whatever the schema converts it to at runtime.
+One thing to expect: if the client is also typed by `@kubb/plugin-ts`, its types will not follow the value. `plugin-ts` reads the spec, so a `time` field is typed `string` there whatever the schema converts it to at runtime. Drop `pluginTs` and add `inferred: true` here instead, and `pluginFetch` or `pluginAxios` types the operation from `z.infer` on this schema, so `startsAt` comes back typed `Temporal.PlainTime`.
 
 `Temporal` is also referenced as a global. Until your runtime ships it, load a polyfill that installs the global with its types, and make sure that import runs first.
 

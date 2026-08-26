@@ -89,7 +89,7 @@ Register a [codec](/plugins/plugin-zod/recipes/write-a-custom-codec) instead, or
 
 ### The generated types describe the wire shape
 
-Request and response types come from `@kubb/plugin-ts`, which reads the spec. There a `format: 'time'` field is typed `string`, whatever the Zod schema converts it to at runtime.
+If the client is also typed by `@kubb/plugin-ts`, its request and response types come from the spec, so a `format: 'time'` field is typed `string` there whatever the Zod schema converts it to at runtime. Drop `pluginTs` and add `inferred: true` on `pluginZod` instead, and `pluginFetch` or `pluginAxios` types the operation from `z.infer` on this schema, which follows the conversion.
 
 ### Temporal needs a polyfill
 
