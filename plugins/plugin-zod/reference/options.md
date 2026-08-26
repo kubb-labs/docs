@@ -25,6 +25,7 @@ Options for `pluginZod`.
 | [`resolver`](#resolver) | `ResolverPatch<ResolverZod>` | — | Customize generated names and file paths |
 | [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
 | [`printer`](#printer) | `{ nodes?: PrinterZodNodes \| PrinterZodMiniNodes }` | — | Replace the handler for a schema type |
+| [`codecs`](#codecs) | `Array<Codec>` | `[]` | Register a two-way conversion for a schema type |
 
 ### output
 
@@ -226,3 +227,25 @@ pluginZod({
   },
 })
 ```
+
+### codecs
+
+Registers a two-way conversion for a schema node whose runtime type differs from its wire type, such as a `time` field carried as an ISO string but modeled as a `Temporal.PlainTime`. Each codec is `{ matches, decode, encode }`, where `matches` picks the nodes it applies to and the two directions return the Zod expression as a string.
+
+Responses print `decode` and request bodies print `encode`, including when the body is a `$ref`. Codecs are checked before the built-in date codec, so registering one for `date` replaces it. See [Write a custom codec](/plugins/plugin-zod/recipes/write-a-custom-codec).
+
+```typescript twoslash
+import { pluginZod } from '@kubb/plugin-zod'
+
+pluginZod({
+  codecs: [
+    {
+      matches: (node) => node.type === 'time',
+      decode: () => 'z.iso.time().transform((value) => Temporal.PlainTime.from(value))',
+      encode: () => 'z.instanceof(Temporal.PlainTime).transform((value) => value.toString())',
+    },
+  ],
+})
+```
+
+Reach for [`printer.nodes`](#printer) instead when a type needs no conversion and only prints differently. A node handler cannot stand in for a codec: it changes how a node prints without telling the generator the schema carries a conversion, so no encode variant is emitted and a `$ref` request body keeps the decode direction.
