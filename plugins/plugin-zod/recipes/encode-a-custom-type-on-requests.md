@@ -14,6 +14,17 @@ Printer node handlers read `this.options.direction`, which is `'output'` for res
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginZod } from '@kubb/plugin-zod'
+import type { PrinterZodNodes } from '@kubb/plugin-zod'
+
+const nodes: PrinterZodNodes = {
+  string(node) {
+    if (node.format !== 'time') return this.base(node)
+
+    return this.options.direction === 'input'
+      ? 'z.instanceof(Temporal.PlainTime).transform((value) => value.toString())'
+      : 'z.string().transform((value) => Temporal.PlainTime.from(value))'
+  },
+}
 
 export default defineConfig({
   input: './petStore.yaml',
@@ -21,23 +32,16 @@ export default defineConfig({
   plugins: [
     pluginZod({
       output: { path: 'zod', mode: 'directory' },
-      printer: {
-        nodes: {
-          string(node) {
-            if (node.format !== 'time') return this.base(node)
-
-            return this.options.direction === 'input'
-              ? 'z.instanceof(Temporal.PlainTime).transform((value) => value.toString())'
-              : 'z.string().transform((value) => Temporal.PlainTime.from(value))'
-          },
-        },
-      },
+      printer: { nodes },
     }),
   ],
 })
 ```
 
 Returning `this.base(node)` for every other format keeps the built-in `string` handler for fields you are not converting.
+
+> [!IMPORTANT]
+> Annotate the handler map as `PrinterZodNodes`. The `printer.nodes` option also accepts the Zod Mini shape, which has no `direction`, so an inline object literal fails to typecheck with `Property 'direction' does not exist on type 'PrinterZodMiniOptions'`. Writing `nodes` as a separate annotated constant picks the standard printer.
 
 ## Output example
 
