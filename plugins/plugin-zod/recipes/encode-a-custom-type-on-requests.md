@@ -7,7 +7,7 @@ outline: deep
 
 # Encode a custom type on requests
 
-A field can travel as a string but live in your code as something richer, such as a `Temporal.PlainTime`. That needs two different conversions. A response decodes the wire string into the domain value, and a request encodes the domain value back into a string.
+A field can travel as an ISO string on the wire and be a `Temporal.PlainTime` in your code. That needs two conversions going opposite ways. A response decodes the string into the domain value, and a request encodes the domain value back into a string.
 
 Printer node handlers read `this.options.direction`, which is `'output'` for response schemas and `'input'` for request bodies and parameters. Branch on it to emit a different Zod chain per direction.
 
@@ -42,7 +42,7 @@ export default defineConfig({
 
 Override the `time` node, not `string`. An OpenAPI `format: 'time'` field parses to a `time` node, so a `string` handler never sees it. The same holds for `date` and `date-time`, which parse to `date` and `datetime` nodes.
 
-Decoding starts from `z.iso.time()` rather than a bare `z.string()` so a malformed value fails as a validation issue. Handing an unchecked string straight to `Temporal.PlainTime.from` would throw a `RangeError` from inside the transform instead of the `ParseError` a client validator raises.
+Decode from `z.iso.time()`, not a bare `z.string()`. An unchecked string reaching `Temporal.PlainTime.from` throws a `RangeError` out of the transform, where the same bad value would otherwise surface as the `ParseError` a client validator raises.
 
 > [!IMPORTANT]
 > Annotate the handler map as `PrinterZodNodes`. The `printer.nodes` option also accepts the Zod Mini shape, which has no `direction`, so an inline object literal fails to typecheck with `Property 'direction' does not exist on type 'PrinterZodMiniOptions'`. Writing `nodes` as a separate annotated constant picks the standard printer.
@@ -61,13 +61,13 @@ export const bookSlotBodySchema = z.object({
 })
 ```
 
-The response schema decodes and the body schema encodes, from one handler.
+One handler covers both. The response decodes, the body encodes.
 
 ## Why this works with a client validator
 
-Both schemas are ordinary Zod schemas built from `.transform()`, so both satisfy [Standard Schema](https://standardschema.dev). A client plugin validates through `~standard.validate` without knowing a conversion is happening.
+Both schemas are ordinary Zod, built from `.transform()`, so each satisfies [Standard Schema](https://standardschema.dev). A client plugin validates through `~standard.validate` without knowing a conversion is happening.
 
-That matters because `~standard.validate` runs a schema in one direction only. Setting [`validator`](/plugins/plugin-fetch/reference/options#validator) on `pluginFetch` or `pluginAxios` picks up the right schema for each slot on its own: `validator.request` gets the body schema, which encodes, and `validator.response` gets the response schema, which decodes.
+That matters because `~standard.validate` runs a schema in one direction only. Setting [`validator`](/plugins/plugin-fetch/reference/options#validator) on `pluginFetch` or `pluginAxios` already picks the right schema per slot. `validator.request` gets the body schema, which encodes, and `validator.response` gets the response schema, which decodes.
 
 ```typescript [kubb.config.ts]
 pluginFetch({
@@ -80,7 +80,7 @@ pluginFetch({
 
 ### A $ref request body keeps the decode direction
 
-The encode variant of a component schema is only generated for a schema Kubb already knows carries a conversion, which today means the built-in date codec. A custom conversion added through `printer.nodes` is invisible to that check, so a request body written as a `$ref` resolves to the component's decode schema:
+Kubb generates the encode variant of a component schema only when it already knows that schema carries a conversion, and today that means the built-in date codec. A conversion you add through `printer.nodes` is invisible to that check, so a `$ref` request body resolves to the component's decode schema:
 
 ```typescript [src/gen/zod/bookRefSlotSchema.ts]
 export const bookRefSlotResponseSchema = slotSchema
@@ -91,11 +91,11 @@ Write the request body schema inline in the operation to get the encode directio
 
 ### The generated types describe the wire shape
 
-Request and response types come from `@kubb/plugin-ts`, which reads the spec. A `format: 'time'` field is typed `string` there, whatever the Zod schema converts it to at runtime. So the conversion is a runtime one, and the types will not tell you a `Temporal.PlainTime` is what comes back.
+Request and response types come from `@kubb/plugin-ts`, which reads the spec. There a `format: 'time'` field is typed `string`, whatever the Zod schema converts it to at runtime. The conversion happens at runtime only, so the types will not tell you a `Temporal.PlainTime` comes back.
 
 ### Temporal needs a polyfill
 
-The generated code references `Temporal` as a global. Until your runtime ships it, load a polyfill that installs the global and provides its types, and make sure that import runs before any generated schema does.
+The generated code references `Temporal` as a global. Until your runtime ships it, load a polyfill that installs the global along with its types. That import has to run before any generated schema does.
 
 ## Built-in date conversion
 
