@@ -77,7 +77,7 @@ From your spec, the generated client gives you:
 - [Interceptors](/plugins/plugin-axios/guide/interceptors) and a [custom transport](/plugins/plugin-axios/guide/transport) for the send.
 - Standalone functions or a class-based [SDK](/plugins/plugin-axios/reference/options#sdk).
 
-It builds on `@kubb/plugin-ts` for the types, so add that to your config, and axios is a runtime dependency to install next to your app.
+It sources its operation types from `@kubb/plugin-ts` when that plugin is in your config, or from [`@kubb/plugin-zod`](/plugins/plugin-zod/) with [`inferred: true`](/plugins/plugin-zod/reference/options#inferred) when it is not, so a client built on Zod codecs is typed by what they decode to rather than the raw wire type. Add neither and generation stops with a warning. Axios is a runtime dependency to install next to your app.
 
 Each function takes one grouped options object (`{ path, query, headers, body }`) and returns a `RequestResult` of `{ status, data, error, contentType, request, response }`, bundled into `.kubb/client.ts`. See [error handling](/plugins/plugin-axios/guide/error-handling) for `throwOnError` and the status-keyed result union.
 
@@ -127,7 +127,7 @@ yarn add -D @kubb/plugin-axios
 
 ## Dependencies
 
-This plugin needs `@kubb/plugin-ts` in your config. Kubb runs it before `plugin-axios` so the functions can import the generated types. When `validator` is set to `'zod'`, also add `@kubb/plugin-zod`.
+This plugin needs `@kubb/plugin-ts` or `@kubb/plugin-zod` with `inferred: true` in your config, to supply the operation types the functions import. `plugin-ts` wins when both are present. When `validator` is set to `'zod'`, `@kubb/plugin-zod` also validates the request and response bodies.
 
 - [`@kubb/plugin-ts`](/plugins/plugin-ts/)
 - [`@kubb/plugin-zod`](/plugins/plugin-zod/)

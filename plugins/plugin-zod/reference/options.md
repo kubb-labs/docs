@@ -99,6 +99,8 @@ export const petSchema = z.object({
 export type PetSchemaType = z.infer<typeof petSchema>
 ```
 
+It also generates a `ResponsesSchema` per operation, a per-status record of the response schemas, with its own inferred type. [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and [`@kubb/plugin-axios`](/plugins/plugin-axios/) key their `RequestResult` on this type when `@kubb/plugin-ts` is absent from the config.
+
 ### coercion
 
 Wraps schemas in `z.coerce` so input is coerced before validation, for form data, query params, and similar string sources.
