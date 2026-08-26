@@ -11,18 +11,20 @@ A field can travel as a string but live in your code as something richer, such a
 
 Printer node handlers read `this.options.direction`, which is `'output'` for response schemas and `'input'` for request bodies and parameters. Branch on it to emit a different Zod chain per direction.
 
+::: warning Read the limits first
+This works for a request body whose schema is written inline in the operation. A `$ref` body keeps the decode direction, and the generated TypeScript types describe the wire shape, not your domain type. Both are covered in [Limits](#limits) below.
+:::
+
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginZod } from '@kubb/plugin-zod'
 import type { PrinterZodNodes } from '@kubb/plugin-zod'
 
 const nodes: PrinterZodNodes = {
-  string(node) {
-    if (node.format !== 'time') return this.base(node)
-
+  time() {
     return this.options.direction === 'input'
       ? 'z.instanceof(Temporal.PlainTime).transform((value) => value.toString())'
-      : 'z.string().transform((value) => Temporal.PlainTime.from(value))'
+      : 'z.iso.time().transform((value) => Temporal.PlainTime.from(value))'
   },
 }
 
@@ -38,7 +40,9 @@ export default defineConfig({
 })
 ```
 
-Returning `this.base(node)` for every other format keeps the built-in `string` handler for fields you are not converting.
+Override the `time` node, not `string`. An OpenAPI `format: 'time'` field parses to a `time` node, so a `string` handler never sees it. The same holds for `date` and `date-time`, which parse to `date` and `datetime` nodes.
+
+Decoding starts from `z.iso.time()` rather than a bare `z.string()` so a malformed value fails as a validation issue. Handing an unchecked string straight to `Temporal.PlainTime.from` would throw a `RangeError` from inside the transform instead of the `ParseError` a client validator raises.
 
 > [!IMPORTANT]
 > Annotate the handler map as `PrinterZodNodes`. The `printer.nodes` option also accepts the Zod Mini shape, which has no `direction`, so an inline object literal fails to typecheck with `Property 'direction' does not exist on type 'PrinterZodMiniOptions'`. Writing `nodes` as a separate annotated constant picks the standard printer.
@@ -47,7 +51,7 @@ Returning `this.base(node)` for every other format keeps the built-in `string` h
 
 ```typescript [src/gen/zod/bookSlotSchema.ts]
 export const bookSlotStatus201Schema = z.object({
-  startsAt: z.string().transform((value) => Temporal.PlainTime.from(value)),
+  startsAt: z.iso.time().transform((value) => Temporal.PlainTime.from(value)),
 })
 
 export const bookSlotResponseSchema = bookSlotStatus201Schema
@@ -63,7 +67,7 @@ The response schema decodes and the body schema encodes, from one handler.
 
 Both schemas are ordinary Zod schemas built from `.transform()`, so both satisfy [Standard Schema](https://standardschema.dev). A client plugin validates through `~standard.validate` without knowing a conversion is happening.
 
-That matters because `~standard.validate` runs a schema in one direction only. Setting [`validator`](/plugins/plugin-fetch/reference/options#validator) on `pluginFetch` or `pluginAxios` picks up the right schema for each slot on its own: `validator.request` gets the body schema, which already encodes, and `validator.response` gets the response schema, which already decodes.
+That matters because `~standard.validate` runs a schema in one direction only. Setting [`validator`](/plugins/plugin-fetch/reference/options#validator) on `pluginFetch` or `pluginAxios` picks up the right schema for each slot on its own: `validator.request` gets the body schema, which encodes, and `validator.response` gets the response schema, which decodes.
 
 ```typescript [kubb.config.ts]
 pluginFetch({
@@ -72,18 +76,30 @@ pluginFetch({
 })
 ```
 
-```typescript [usage.ts]
-import { bookSlot } from './src/gen/clients/bookSlot'
+## Limits
 
-// startsAt goes out as '09:30:00' and comes back as a Temporal.PlainTime
-const { data } = await bookSlot({ body: { startsAt: Temporal.PlainTime.from('09:30') } })
+### A $ref request body keeps the decode direction
+
+The encode variant of a component schema is only generated for a schema Kubb already knows carries a conversion, which today means the built-in date codec. A custom conversion added through `printer.nodes` is invisible to that check, so a request body written as a `$ref` resolves to the component's decode schema:
+
+```typescript [src/gen/zod/bookRefSlotSchema.ts]
+export const bookRefSlotResponseSchema = slotSchema
+export const bookRefSlotBodySchema = slotSchema // decode, not encode
 ```
 
-`Temporal` is referenced as a global in the generated code. Load a polyfill in your app entry point until your runtime ships it natively.
+Write the request body schema inline in the operation to get the encode direction. Most specs `$ref` their bodies, so check your generated `<operation>BodySchema` before relying on this.
+
+### The generated types describe the wire shape
+
+Request and response types come from `@kubb/plugin-ts`, which reads the spec. A `format: 'time'` field is typed `string` there, whatever the Zod schema converts it to at runtime. So the conversion is a runtime one, and the types will not tell you a `Temporal.PlainTime` is what comes back.
+
+### Temporal needs a polyfill
+
+The generated code references `Temporal` as a global. Until your runtime ships it, load a polyfill that installs the global and provides its types, and make sure that import runs before any generated schema does.
 
 ## Built-in date conversion
 
-Dates already work this way with no configuration. Set `dateType: 'date'` on the adapter and a `date-time` field decodes to a `Date` on responses and encodes back to an ISO string on requests.
+Dates already work this way with no configuration, and without the `$ref` limitation above. Set `dateType: 'date'` on the adapter and a `date-time` field decodes to a `Date` on responses and encodes back to an ISO string on requests.
 
 ```typescript [src/gen/zod/orderSchema.ts]
 export const orderSchema = z.object({
@@ -95,4 +111,4 @@ export const orderInputSchema = z.object({
 })
 ```
 
-Request bodies reference `orderInputSchema` and responses reference `orderSchema`. Use the recipe above for any type that needs the same treatment.
+Request bodies reference `orderInputSchema` and responses reference `orderSchema`, including through a `$ref`.
