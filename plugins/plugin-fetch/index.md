@@ -81,7 +81,7 @@ From your spec, the generated client gives you:
 - [Interceptors](/plugins/plugin-fetch/guide/interceptors) and a [custom transport](/plugins/plugin-fetch/guide/transport) for the send.
 - Standalone functions or a class-based [SDK](/plugins/plugin-fetch/reference/options#sdk).
 
-It builds on `@kubb/plugin-ts` for the types, so add that to your config. The client uses the built-in `fetch`, so there is no extra HTTP dependency to install.
+It sources its operation types from `@kubb/plugin-ts`, or from [`@kubb/plugin-zod`](/plugins/plugin-zod/) with [`inferred: true`](/plugins/plugin-zod/reference/options#inferred) when `plugin-ts` is absent. Add neither and generation stops with a warning. The client uses the built-in `fetch`, so there is no extra HTTP dependency to install.
 
 Each function takes one grouped options object (`{ path, query, headers, body }`) and returns a `RequestResult` of `{ status, data, error, contentType, request, response }`, bundled into `.kubb/client.ts`. See [error handling](/plugins/plugin-fetch/guide/error-handling) for `throwOnError` and the status-keyed result union.
 
@@ -131,7 +131,7 @@ yarn add -D @kubb/plugin-fetch
 
 ## Dependencies
 
-This plugin needs `@kubb/plugin-ts` in your config. Kubb runs it before `plugin-fetch` so the functions can import the generated types. When `validator` is set to `'zod'`, also add `@kubb/plugin-zod`.
+This plugin needs `@kubb/plugin-ts`, or `@kubb/plugin-zod` with `inferred: true` when `plugin-ts` is absent, for the operation types. `plugin-ts` wins when both are configured, and `@kubb/plugin-zod` is also required when `validator` is `'zod'`.
 
 - [`@kubb/plugin-ts`](/plugins/plugin-ts/)
 - [`@kubb/plugin-zod`](/plugins/plugin-zod/)
