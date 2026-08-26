@@ -38,7 +38,7 @@ export default defineConfig({
 })
 ```
 
-`decode` starts from `z.iso.time()` rather than a bare `z.string()` on purpose. An unchecked string reaching `Temporal.PlainTime.from` throws a `RangeError` out of the transform, where the same bad value would otherwise surface as the validation issue a client validator reports.
+`decode` starts from `z.iso.time()` rather than a bare `z.string()` on purpose. Validate first and a malformed value fails as a validation issue. Hand it straight to `Temporal.PlainTime.from` and it throws a `RangeError` out of the middle of the transform, which is much harder to trace back to the field that caused it.
 
 ## Match the node type, not the format
 
@@ -104,11 +104,13 @@ import { bookSlot } from './src/gen/clients/bookSlot'
 await bookSlot({ body: { startsAt: Temporal.PlainTime.from('09:30') } })
 ```
 
-Two things to know before you rely on this. The generated request and response types come from `@kubb/plugin-ts`, which reads the spec, so a `time` field is typed `string` there whatever the schema converts it to. The conversion is a runtime one and the types will not show it. And `Temporal` is referenced as a global, so until your runtime ships it, load a polyfill that installs the global along with its types, before any generated schema runs.
+The types will not follow the value, though. Request and response types come from `@kubb/plugin-ts`, which reads the spec, so a `time` field is typed `string` there whatever the schema converts it to at runtime.
+
+`Temporal` is also referenced as a global. Until your runtime ships it, load a polyfill that installs the global along with its types, and make sure that import runs before any generated schema does.
 
 ## Replacing the built-in date codec
 
-Registered codecs are checked before the built-in one, so matching `date` takes it over. This turns date fields into Luxon `DateTime` instead of `Date`:
+Registered codecs are checked first, so matching `date` takes the built-in over. Worth knowing that it is all or nothing: your codec owns both directions for every node it matches, including the `YYYY-MM-DD` case the built-in handles separately. This swaps `Date` for a Luxon `DateTime`:
 
 ```typescript
 const luxonCodec: Codec = {
