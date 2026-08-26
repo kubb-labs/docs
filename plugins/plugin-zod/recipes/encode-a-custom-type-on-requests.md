@@ -1,7 +1,7 @@
 ---
 layout: doc
 title: Encode a custom type on requests
-description: Use a direction-aware printer node so a domain type decodes on responses and encodes back to the wire format on requests.
+description: Use a direction-aware printer node so a domain type decodes on responses and encodes back to the wire format on requests, including through a $ref.
 outline: deep
 ---
 
@@ -9,11 +9,7 @@ outline: deep
 
 A field can travel as an ISO string and be a `Temporal.PlainTime` in your code. Responses decode, requests encode.
 
-Printer node handlers read `this.options.direction`: `'output'` for response schemas, `'input'` for request bodies and parameters. Branch on it to emit a different Zod chain per direction.
-
-::: warning Read the limits first
-This works for a request body written inline in the operation. A `$ref` body keeps the decode direction, and the generated types describe the wire shape. Both are covered in [Limits](#limits).
-:::
+Printer node handlers read `this.options.direction`: `'output'` for response schemas, `'input'` for request bodies and parameters. Branch on it, and plugin-zod does the rest: it detects that the handler's output differs by direction and emits an `${name}InputSchema` variant for request bodies to resolve to, including through a `$ref`.
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -49,18 +45,21 @@ Decode from `z.iso.time()`, not a bare `z.string()`. An unchecked string reachin
 
 ## Output example
 
-One handler covers both. The response decodes, the body encodes.
+A component carrying the type is emitted twice, and a `$ref` request body resolves to the input one:
 
-```typescript [src/gen/zod/bookSlotSchema.ts]
-export const bookSlotStatus201Schema = z.object({
+```typescript [src/gen/zod/slotSchema.ts]
+export const slotSchema = z.object({
   startsAt: z.iso.time().transform((value) => Temporal.PlainTime.from(value)),
 })
 
-export const bookSlotResponseSchema = bookSlotStatus201Schema
-
-export const bookSlotBodySchema = z.object({
+export const slotInputSchema = z.object({
   startsAt: z.instanceof(Temporal.PlainTime).transform((value) => value.toString()),
 })
+```
+
+```typescript [src/gen/zod/bookSlotSchema.ts]
+export const bookSlotStatus201Schema = slotSchema      // decode
+export const bookSlotBodySchema = slotInputSchema      // encode
 ```
 
 ## Why this works with a client validator
@@ -76,17 +75,6 @@ pluginFetch({
 
 ## Limits
 
-### A $ref request body keeps the decode direction
-
-Kubb emits the encode variant of a component schema only when it knows that schema carries a conversion. A `printer.nodes` handler is invisible to that check, so a `$ref` body resolves to the decode schema:
-
-```typescript [src/gen/zod/bookRefSlotSchema.ts]
-export const bookRefSlotResponseSchema = slotSchema
-export const bookRefSlotBodySchema = slotSchema // decode, not encode
-```
-
-Register a [codec](/plugins/plugin-zod/recipes/write-a-custom-codec) instead, or write the body schema inline in the operation. Most specs `$ref` their bodies, so check your generated `<operation>BodySchema` before relying on this.
-
 ### The generated types describe the wire shape
 
 If the client is also typed by `@kubb/plugin-ts`, its request and response types come from the spec, so a `format: 'time'` field is typed `string` there whatever the Zod schema converts it to at runtime. Drop `pluginTs` and add `inferred: true` on `pluginZod` instead, and `pluginFetch` or `pluginAxios` types the operation from `z.infer` on this schema, which follows the conversion.
@@ -97,7 +85,7 @@ The generated code references `Temporal` as a global. Until your runtime ships i
 
 ## Built-in date conversion
 
-Dates already work this way with no configuration, and without the `$ref` limit above. Set `dateType: 'date'` on the adapter and a `date-time` field decodes to a `Date` on responses and encodes back to an ISO string on requests.
+Dates already work this way with no configuration. Set `dateType: 'date'` on the adapter and a `date-time` field decodes to a `Date` on responses and encodes back to an ISO string on requests, through a `$ref` too:
 
 ```typescript [src/gen/zod/orderSchema.ts]
 export const orderSchema = z.object({
@@ -109,4 +97,4 @@ export const orderInputSchema = z.object({
 })
 ```
 
-Request bodies reference `orderInputSchema` and responses reference `orderSchema`, including through a `$ref`.
+It is the same mechanism: the built-in `date` node handler branches on `direction` the same way a custom one does. A `printer.nodes.date` override replaces it entirely, including that branch.
