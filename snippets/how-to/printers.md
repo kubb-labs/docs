@@ -14,7 +14,7 @@ type PrinterNodes = Partial<{
 }>
 ```
 
-Handlers run with a `this` context, so write them as regular functions rather than arrow functions. `this.transform(node)` recurses into a nested schema node through the full handler map, overrides included. `this.base(node)` runs the built-in handler your override replaced, so you can wrap its output instead of rebuilding it. `this.options` reads the resolved printer options, such as `arrayType` on `@kubb/plugin-ts`.
+Handlers run with a `this` context, so write them as regular functions rather than arrow functions. `this.transform(node)` recurses into a nested schema node through the full handler map, overrides included. `this.base(node)` runs the built-in handler your override replaced, so you can wrap its output instead of rebuilding it. `this.options` reads the resolved printer options, such as `arrayType` on `@kubb/plugin-ts` or `direction` on `@kubb/plugin-zod`.
 
 ## TypeScript types
 
@@ -68,6 +68,8 @@ pluginZod({
   },
 })
 ```
+
+A Zod handler can also read `this.options.direction`, which is `'decode'` while printing response schemas and `'encode'` while printing request bodies and parameters. Return a different expression per direction and the plugin treats the node as a two-way conversion, emitting an `${name}InputSchema` variant that request bodies resolve to. See [Encode a custom type on requests](/plugins/plugin-zod/recipes/encode-a-custom-type-on-requests).
 
 ## Faker mocks
 
