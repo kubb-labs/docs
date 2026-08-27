@@ -226,3 +226,5 @@ pluginZod({
   },
 })
 ```
+
+A handler that reads `this.options.direction` (`'decode'` for responses, `'encode'` for request bodies and parameters) and returns a different expression per direction registers a two-way conversion: the generator detects the difference and emits an `${name}InputSchema` variant for request bodies to resolve to, including through a `$ref`. See [Encode a custom type on requests](/plugins/plugin-zod/recipes/encode-a-custom-type-on-requests).

@@ -13,6 +13,8 @@ recipes:
     title: Coerce query and form input
   - id: validate-every-api-response
     title: Validate every API response
+  - id: encode-a-custom-type-on-requests
+    title: Encode a custom type on requests
 kind: plugin
 id: plugin-zod
 name: Zod
