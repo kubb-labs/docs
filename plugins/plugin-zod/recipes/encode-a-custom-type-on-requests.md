@@ -9,7 +9,7 @@ outline: deep
 
 A field can travel as an ISO string and be a `Temporal.PlainTime` in your code. Responses decode, requests encode.
 
-Printer node handlers read `this.options.direction`: `'output'` for response schemas, `'input'` for request bodies and parameters. Branch on it, and plugin-zod does the rest: it detects that the handler's output differs by direction and emits an `${name}InputSchema` variant for request bodies to resolve to, including through a `$ref`.
+Printer node handlers read `this.options.direction`: `'output'` for response schemas, `'input'` for request bodies and parameters. Branch on it and plugin-zod notices the two outputs differ, then emits an `${name}InputSchema` variant for request bodies to resolve to, `$ref` included.
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -41,7 +41,7 @@ Override the `time` node, not `string`. An OpenAPI `format: 'time'` field parses
 Decode from `z.iso.time()`, not a bare `z.string()`. An unchecked string reaching `Temporal.PlainTime.from` throws a `RangeError` out of the transform, instead of surfacing as the `ParseError` a client validator raises.
 
 > [!IMPORTANT]
-> Annotate the handler map as `PrinterZodNodes`. The `printer.nodes` option also accepts the Zod Mini shape, which has no `direction`, so an inline object literal fails to typecheck with `Property 'direction' does not exist on type 'PrinterZodMiniOptions'`. Writing `nodes` as a separate annotated constant picks the standard printer.
+> Annotate the handler map as `PrinterZodNodes`. `printer.nodes` also accepts the Zod Mini shape, which has no `direction`, so an inline object literal fails to typecheck with `Property 'direction' does not exist on type 'PrinterZodMiniOptions'`. A separate annotated constant picks the standard printer.
 
 ## Output example
 
@@ -97,4 +97,4 @@ export const orderInputSchema = z.object({
 })
 ```
 
-It is the same mechanism: the built-in `date` node handler branches on `direction` the same way a custom one does. A `printer.nodes.date` override replaces it entirely, including that branch.
+The built-in `date` handler branches on `direction` exactly like a custom one. Overriding `printer.nodes.date` replaces it whole, that branch included.
