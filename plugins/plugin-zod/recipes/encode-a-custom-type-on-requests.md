@@ -9,7 +9,9 @@ outline: deep
 
 A field can travel as an ISO string and be a `Temporal.PlainTime` in your code. Responses decode, requests encode.
 
-Printer node handlers read `this.options.direction`: `'output'` for response schemas, `'input'` for request bodies and parameters. Branch on it and plugin-zod notices the two outputs differ, then emits an `${name}InputSchema` variant for request bodies to resolve to, `$ref` included.
+Printer node handlers read `this.options.direction`: `'decode'` for response schemas, `'encode'` for request bodies and parameters. Branch on it and plugin-zod notices the two outputs differ, then emits an `${name}InputSchema` variant for request bodies to resolve to, `$ref` included.
+
+The values name the conversion rather than the slot, because Zod's own `z.input` and `z.output` describe a different axis and read inverted here: the `'decode'` schema is the one whose `z.input` is the wire type.
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -18,7 +20,7 @@ import type { PrinterZodNodes } from '@kubb/plugin-zod'
 
 const nodes: PrinterZodNodes = {
   time() {
-    return this.options.direction === 'input'
+    return this.options.direction === 'encode'
       ? 'z.instanceof(Temporal.PlainTime).transform((value) => value.toString())'
       : 'z.iso.time().transform((value) => Temporal.PlainTime.from(value))'
   },
