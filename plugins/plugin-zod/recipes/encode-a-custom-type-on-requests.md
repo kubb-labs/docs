@@ -9,9 +9,7 @@ outline: deep
 
 A field can travel as an ISO string and be a `Temporal.PlainTime` in your code. Responses decode, requests encode.
 
-Printer node handlers read `this.options.direction`: `'decode'` for response schemas, `'encode'` for request bodies and parameters. Branch on it and plugin-zod notices the two outputs differ, then emits an `${name}InputSchema` variant for request bodies to resolve to, `$ref` included.
-
-The values name the conversion rather than the slot, because Zod's own `z.input` and `z.output` describe a different axis and read inverted here: the `'decode'` schema is the one whose `z.input` is the wire type.
+Printer node handlers read `this.options.direction`: `'decode'` for response schemas, `'encode'` for request bodies and parameters.
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -42,9 +40,6 @@ Override the `time` node, not `string`. An OpenAPI `format: 'time'` field parses
 
 Decode from `z.iso.time()`, not a bare `z.string()`. An unchecked string reaching `Temporal.PlainTime.from` throws a `RangeError` out of the transform, instead of surfacing as the `ParseError` a client validator raises.
 
-> [!IMPORTANT]
-> Annotate the handler map as `PrinterZodNodes`. `printer.nodes` also accepts the Zod Mini shape, which has no `direction`, so an inline object literal fails to typecheck with `Property 'direction' does not exist on type 'PrinterZodMiniOptions'`. A separate annotated constant picks the standard printer.
-
 ## Output example
 
 A component carrying the type is emitted twice, and a `$ref` request body resolves to the input one:
@@ -64,26 +59,11 @@ export const bookSlotStatus201Schema = slotSchema      // decode
 export const bookSlotBodySchema = slotInputSchema      // encode
 ```
 
-## Why this works with a client validator
-
-`~standard.validate` runs a schema in one direction only, but both schemas are ordinary Zod built from `.transform()`, so each satisfies [Standard Schema](https://standardschema.dev) on its own. Setting [`validator`](/plugins/plugin-fetch/reference/options#validator) on `pluginFetch` or `pluginAxios` picks the right one per slot: `validator.request` gets the body schema, which encodes, and `validator.response` gets the response schema, which decodes.
-
-```typescript [kubb.config.ts]
-pluginFetch({
-  output: { path: 'clients', mode: 'directory' },
-  validator: { request: 'zod', response: 'zod' },
-})
-```
-
 ## Limits
 
 ### The generated types describe the wire shape
 
 If the client is also typed by `@kubb/plugin-ts`, its request and response types come from the spec, so a `format: 'time'` field is typed `string` there whatever the Zod schema converts it to at runtime. Drop `pluginTs` and add `inferred: true` on `pluginZod` instead, and `pluginFetch` or `pluginAxios` types the operation from `z.infer` on this schema, which follows the conversion.
-
-### Temporal needs a polyfill
-
-The generated code references `Temporal` as a global. Until your runtime ships it, load a polyfill that installs the global with its types, and make sure that import runs first.
 
 ## Built-in date conversion
 
