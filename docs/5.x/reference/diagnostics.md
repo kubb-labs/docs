@@ -67,6 +67,7 @@ These carry whatever a plugin reports through its generator context (`ctx.error`
 | [`KUBB_PLUGIN_FAILED`](/docs/5.x/reference/diagnostics/kubb-plugin-failed) | error | A plugin threw while generating, or reported an error. |
 | [`KUBB_PLUGIN_WARNING`](/docs/5.x/reference/diagnostics/kubb-plugin-warning) | warning | A plugin reported a non-fatal warning. |
 | [`KUBB_PLUGIN_INFO`](/docs/5.x/reference/diagnostics/kubb-plugin-info) | info | A plugin reported an informational message. |
+| [`KUBB_BARREL_DUPLICATE_EXPORT`](/docs/5.x/reference/diagnostics/kubb-barrel-duplicate-export) | error | Two files in the same barrel directory export the same name. |
 
 ## Output pipeline
 
