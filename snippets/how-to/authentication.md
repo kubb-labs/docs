@@ -105,7 +105,7 @@ For a standard bearer, basic, or apiKey scheme, the `auth` resolver stays the si
 
 ## Sign requests with an async credential
 
-A request interceptor can be `async`, and Kubb awaits it before the request goes out. That covers auth that cannot resolve to a plain string: an AWS SigV4 signature computed from the method, path, and body, or a Microsoft Entra ID or Amazon Cognito token fetched by exchanging a refresh token on demand.
+A request interceptor can be `async`. Kubb awaits it before sending the request, so it can compute a credential first, such as an AWS SigV4 signature or a token from Entra ID or Cognito.
 
 ```typescript
 import { client } from './gen/.kubb/client'
@@ -118,7 +118,7 @@ client.interceptors.request.use(async (request) => {
 })
 ```
 
-`signRequest` stands in for whatever library computes the credential, an AWS SDK signer, an MSAL token acquisition call, or a Cognito SDK method. The interceptor runs inside the client Kubb generates rather than in a client you supply yourself, so the generated functions and their typed responses stay in place. If you moved a signing wrapper like this into your own module through v4's `importPath`, this interceptor is where that logic lives now. See [Migrate from `@kubb/plugin-client`](/docs/5.x/migration/plugin-client#authentication-comes-from-the-spec) for the rest of that change.
+`signRequest` is your own signing or token function. The interceptor runs on the client Kubb generates, so the generated functions keep their typed responses.
 
 ## See also
 
