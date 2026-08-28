@@ -103,6 +103,23 @@ client.interceptors.request.use((request) => {
 
 For a standard bearer, basic, or apiKey scheme, the `auth` resolver stays the simpler path. To refresh a token after a `401`, read the new token from a response or error interceptor and let the request interceptor pick it up on the next call.
 
+## Sign requests with an async credential
+
+A request interceptor can be `async`, and Kubb awaits it before the request goes out. That covers auth that cannot resolve to a plain string: an AWS SigV4 signature computed from the method, path, and body, or a Microsoft Entra ID or Amazon Cognito token fetched by exchanging a refresh token on demand.
+
+```typescript
+import { client } from './gen/.kubb/client'
+
+client.interceptors.request.use(async (request) => {
+  const { headers } = await signRequest(request)
+
+  request.headers = { ...request.headers, ...headers }
+  return request
+})
+```
+
+`signRequest` stands in for whatever library computes the credential, an AWS SDK signer, an MSAL token acquisition call, or a Cognito SDK method. The interceptor runs inside the client Kubb generates rather than in a client you supply yourself, so the generated functions and their typed responses stay in place. If you moved a signing wrapper like this into your own module through v4's `importPath`, this interceptor is where that logic lives now. See [Migrate from `@kubb/plugin-client`](/docs/5.x/migration/plugin-client#authentication-comes-from-the-spec) for the rest of that change.
+
 ## See also
 
 - [Interceptors](/plugins/plugin-fetch/guide/interceptors)
