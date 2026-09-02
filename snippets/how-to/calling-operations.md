@@ -93,9 +93,8 @@ Reading the `error` body and handling failures is covered in
 
 ## Unwrap the success body
 
-Every call's promise also carries an `unwrap()` method, the way Redux Toolkit's `unwrap()` works
-on a dispatched thunk. It resolves to the bare success body, or rejects with `error` for a call
-made with `throwOnError: false`:
+Every call's promise also carries an `unwrap()` method. It resolves to the bare success body, or
+rejects with `error` for a call made with `throwOnError: false`:
 
 ```typescript
 import { getPetById } from './gen/clients/getPetById'
