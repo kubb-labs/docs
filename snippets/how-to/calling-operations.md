@@ -93,8 +93,9 @@ Reading the `error` body and handling failures is covered in
 
 ## Unwrap the success body
 
-Every call's promise also carries an `unwrap()` method. It resolves to the bare success body, or
-rejects with `error` for a call made with `throwOnError: false`:
+Every call's promise also carries an `unwrap()` method that resolves to the bare success body
+instead of the full `RequestResult`. Awaiting the call directly still resolves to the full
+result, so existing code keeps working.
 
 ```typescript
 import { getPetById } from './gen/clients/getPetById'
@@ -103,7 +104,36 @@ const pet = await getPetById({ path: { petId: 1 } }).unwrap()
 //    ^ the parsed pet, not the full RequestResult
 ```
 
-Awaiting the call directly still resolves to the full result, so existing code keeps working.
+How `unwrap()` handles a failure depends on `throwOnError`. With the default `throwOnError: true`,
+a non-2xx response already throws a `ResponseError` before the call resolves, so `unwrap()` throws
+the same `ResponseError` a plain `await` would:
+
+```typescript
+import { ResponseError } from './gen/.kubb/client'
+
+try {
+  const pet = await getPetById({ path: { petId: 1 } }).unwrap()
+} catch (error) {
+  if (error instanceof ResponseError) {
+    console.error(error.status) // 404
+  }
+}
+```
+
+With `throwOnError: false`, the call resolves instead of throwing, so `unwrap()` rejects itself:
+it checks the resolved result for `error` and throws that bare error body, not a `ResponseError`:
+
+```typescript
+try {
+  const pet = await getPetById({ path: { petId: 1 }, throwOnError: false }).unwrap()
+} catch (error) {
+  // the parsed error body, not a ResponseError
+  console.error(error)
+}
+```
+
+Reading `error` off the full result instead of catching it is covered in
+[error handling](/plugins/plugin-fetch/guide/error-handling).
 
 ## Set the content type
 

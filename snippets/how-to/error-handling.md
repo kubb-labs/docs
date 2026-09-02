@@ -145,6 +145,10 @@ A `ParseError` is separate from a `ResponseError`: the response arrived and its 
 but the body did not match the schema. Validation runs after the status check, so on the
 `throwOnError: false` path a non-2xx never reaches response validation.
 
+Calling `.unwrap()` on a `throwOnError: false` call turns that same `error` into a rejection, so a
+`try`/`catch` works there too. See
+[unwrap the success body](/plugins/plugin-fetch/guide/calling-operations#unwrap-the-success-body).
+
 ## See also
 
 - [Call operations](/plugins/plugin-fetch/guide/calling-operations)
