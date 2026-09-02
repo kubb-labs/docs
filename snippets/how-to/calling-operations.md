@@ -91,6 +91,20 @@ if (result.status === 200) {
 Reading the `error` body and handling failures is covered in
 [error handling](/plugins/plugin-fetch/guide/error-handling).
 
+## Unwrap the success body
+
+Every call's promise also carries an `unwrap()` method. It resolves to the bare success body, or
+rejects with `error` for a call made with `throwOnError: false`:
+
+```typescript
+import { getPetById } from './gen/clients/getPetById'
+
+const pet = await getPetById({ path: { petId: 1 } }).unwrap()
+//    ^ the parsed pet, not the full RequestResult
+```
+
+Awaiting the call directly still resolves to the full result, so existing code keeps working.
+
 ## Set the content type
 
 When an operation accepts or returns more than one media type, set `contentType` on the call. A
