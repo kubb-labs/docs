@@ -16,7 +16,7 @@ Options for `adapterOas`, with type and default in the table.
 | [`server`](#server) | `{ index?: number, variables?: Record<string, string> }` | — | Which spec server Kubb resolves into the document `baseURL` |
 | [`discriminator`](#discriminator) | `'preserve' \| 'propagate'` | `'preserve'` | How `discriminator` fields are interpreted |
 | [`enums`](#enums) | `'inline' \| 'root'` | `'inline'` | Where inline enums live |
-| [`dateType`](#datetype) | `false \| 'string' \| 'stringOffset' \| 'stringLocal' \| 'date'` | `'string'` | How `format: date-time` schemas are represented |
+| [`dateType`](#datetype) | `false \| 'string' \| 'stringOffset' \| 'stringLocal' \| 'date' \| { dateTime?, date?, time? }` | `'string'` | How `date-time`, `date`, and `time` schemas are represented |
 | [`integerType`](#integertype) | `'number' \| 'bigint'` | `'bigint'` | How integers map to TypeScript |
 | [`unknownType`](#unknowntype) | `'any' \| 'unknown' \| 'void'` | `'any'` | Type for schemas Kubb cannot infer |
 | [`emptySchemaType`](#emptyschematype) | `'any' \| 'unknown' \| 'void'` | `unknownType \| 'any'` | Type for empty schemas |
@@ -108,15 +108,29 @@ export type Pet = { status?: PetStatusEnum }
 
 ### dateType
 
-How `format: date-time` schemas are represented downstream.
+How `date-time`, `date`, and `time` schemas are represented downstream.
+
+Pass a single value to apply it to all three formats:
 
 - `false` falls through to a plain `string` with no validation.
-- `'string'` (default) emits an ISO 8601 datetime string.
-- `'stringOffset'` emits a datetime string with a timezone offset.
-- `'stringLocal'` emits a local datetime string with no timezone.
+- `'string'` (default) emits an ISO 8601 string.
+- `'stringOffset'` emits a datetime string with a timezone offset. `date-time` only; `date` and `time` fall back to `'string'`.
+- `'stringLocal'` emits a local datetime string with no timezone. `date-time` only; `date` and `time` fall back to `'string'`.
 - `'date'` emits a JavaScript `Date`, best for client code, though JSON needs parsing to revive it.
 
 The string variants all emit `string` at the TypeScript type level. The offset and local distinction surfaces in schema output such as Zod.
+
+Pass an object to set `dateTime`, `date`, and `time` independently. A key you leave out defaults to `'string'`, regardless of the other keys.
+
+```ts
+adapterOas({
+  dateType: {
+    dateTime: 'date', // Date object for timestamps
+    date: 'string', // plain string for date-only values, since Date can't represent them safely
+    time: 'string',
+  },
+})
+```
 
 ### integerType
 
