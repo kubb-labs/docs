@@ -55,6 +55,7 @@ kubb generate ./petStore.yaml
 | `--verbose`                                  | `false` | Force `logLevel` to `verbose`. Shows slow plugins.                        |
 | `--reporter=<cli\|json\|file>`               |         | Pick which reporters to trigger, comma separated. Defaults to `cli`.      |
 | `--watch`, `-w`                              | `false` | Re-run the pipeline whenever the input spec changes.                      |
+| `--dryRun`                                   | `false` | Preview a run without writing files, formatting, linting, or running post-generate commands. |
 
 `--reporter` takes no short flag.
 
@@ -64,7 +65,7 @@ A reporter decides how a run is rendered. The config registers available reporte
 
 | Reporter | Output                                                                          |
 | -------- | ------------------------------------------------------------------------------- |
-| `cli`    | The end-of-run summary in the terminal. This runs when you pass no flag.        |
+| `cli`    | The end-of-run summary in the terminal. This runs when you pass no flag. Renders as plain text, without spinners or progress bars, when there is no interactive terminal or when an AI coding agent runs the command. |
 | `json`   | A machine-readable report on stdout for CI. See [Diagnostics](/docs/5.x/reference/diagnostics#machine-readable-output) for the full JSON shape. |
 | `file`   | The run's diagnostics, written to `.kubb/kubb[-<name>]-<timestamp>.log`. The `<name>` segment is dropped when the config has no `name`. |
 
@@ -98,6 +99,12 @@ Run with verbose plugin timings:
 
 ```shell [Terminal]
 kubb generate --verbose
+```
+
+Preview a run without touching disk:
+
+```shell [Terminal]
+kubb generate --dryRun
 ```
 
 ## See also

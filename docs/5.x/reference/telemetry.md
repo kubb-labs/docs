@@ -25,6 +25,7 @@ Each CLI command sends this anonymous data:
 | `runtimeVersion` | Runtime major version                              | `"22"`                                                                          |
 | `platform`     | Operating system                                     | `"linux"`, `"darwin"`, `"win32"`                                                |
 | `ci`           | Whether running in CI                                | `true`                                                                          |
+| `agent`        | Name of the AI coding agent that ran the command, if any | `"claude"`                                                                  |
 | `plugins`      | Plugin names and their options (only for `generate`) | `[{ "name": "@kubb/plugin-ts", "options": { "output": { "path": "types" } } }]` |
 | `duration`     | Command execution time in milliseconds               | `1432`                                                                          |
 | `filesCreated` | Number of files generated (only for `generate`)      | `47`                                                                            |

@@ -57,6 +57,7 @@ The wizard installs `kubb` at the exact version of the CLI you ran and takes the
 | `--input`, `-i`  |         | Path to the OpenAPI specification (local file or URL). Bypasses the spec path prompt.                                                                                                                                                                               |
 | `--output`, `-o` |         | Output directory for generated files. Bypasses the output directory prompt.                                                                                                                                                                                         |
 | `--plugins`      |         | Comma-separated list of plugins to install. Bypasses the plugin selection prompt. Valid values: `plugin-ts`, `plugin-axios`, `plugin-fetch`, `plugin-react-query`, `plugin-vue-query`, `plugin-zod`, `plugin-faker`, `plugin-msw`, `plugin-cypress`, `plugin-mcp`, `plugin-redoc`. |
+| `--dryRun`      | `false` | Preview the wizard without installing packages or writing `kubb.config.ts`.                                                                                                                                                                                        |
 
 Each flag skips only its own prompt and combines with `--yes`. Pass all three value flags and the wizard runs without prompts, no `--yes` needed.
 
@@ -78,6 +79,12 @@ Pass a plugin selection but still prompt for the spec path:
 
 ```shell [Terminal]
 npx kubb init --plugins plugin-ts,plugin-axios,plugin-react-query
+```
+
+Preview what the wizard would install and write, without changing anything:
+
+```shell [Terminal]
+npx kubb init --yes --dryRun
 ```
 
 > [!TIP]
