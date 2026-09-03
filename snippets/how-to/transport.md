@@ -31,7 +31,7 @@ type ResolvedRequest = {
   url: string
   method: string
   headers: Record<string, string>
-  body?: BodyInit
+  body?: RequestBody
   signal?: AbortSignal
   credentials?: RequestCredentials
   options?: FetchOptions
