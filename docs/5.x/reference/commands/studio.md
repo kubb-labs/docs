@@ -116,6 +116,6 @@ kubb studio --url http://localhost:3000
 
 ## See also
 
-- [Kubb Studio guide](/docs/5.x/guide/going-further/studio): connect a project, run headless, and self-host
+- [Kubb Studio guide](/docs/5.x/guide/integrations/studio): connect a project, run headless, and self-host
 - [Commands](/docs/5.x/reference/commands/): every command the CLI exposes
 - [Configuration](/docs/5.x/reference/configuration): the `kubb.config.ts` Studio reads
