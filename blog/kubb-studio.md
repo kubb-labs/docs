@@ -15,7 +15,7 @@ Published: 2026-09-04
 
 # Introducing Kubb Studio
 
-Tuning a Kubb config is a slow loop. You change one plugin option, run `kubb generate`, open the output folder, decide it was wrong, and start over. The feedback lives in your terminal and your file tree, which is a fine place for it, but not a fast one.
+Tuning a Kubb config is a slow loop. You change one plugin option, run `kubb generate`, open the output folder, decide it was wrong, and start over.
 
 [Kubb Studio](https://kubb.studio) puts that loop in a browser tab. You pick plugin options in a form, hit generate, and watch files appear as they are written. What you do not do is upload anything.
 
@@ -24,60 +24,40 @@ Tuning a Kubb config is a slow loop. You change one plugin option, run `kubb gen
 
 ## Your code never leaves your machine
 
-Every hosted code generator has the same problem: to generate from your spec, it needs your spec. For a public Petstore that is fine. For the internal API that describes your billing system, it is a non-starter at most companies, and no amount of encryption-at-rest copy fixes the org chart.
+To generate from your spec, a hosted generator needs your spec. For a public Petstore that is fine. For the internal API that describes your billing system, it usually is not.
 
-Studio splits the two halves. The browser holds the UI and the session. Your machine holds the code. When you click generate, Studio sends a command over a WebSocket, Kubb runs locally against the files already on disk, and progress events and generated output stream back to the tab.
-
-Nothing is uploaded, so the spec, the config, and the generated files stay where they already were. As a side effect you also get the plugin versions from your own `node_modules` rather than whatever a server happens to have installed, so what you see in the browser is what you would have gotten from `kubb generate`.
+Studio splits the two halves. The browser holds the UI, your machine holds the code. When you click generate, Studio sends a command over a WebSocket, Kubb runs locally against the files already on disk, and progress and output stream back to the tab. Nothing is uploaded, so you get the plugin versions already in your `node_modules`, not whatever a server has installed.
 
 ## One command to connect
 
-The runtime ships with the CLI, so there is nothing extra to install. Run this from the project root:
+The runtime ships with the CLI, so there is nothing extra to install:
 
 ```shell
 kubb studio
 ```
 
-The first run opens the approval page and waits while you approve this machine in Studio. You approve once. Every later `kubb studio` connects straight away.
+The first run asks you to approve this machine in Studio. Every later `kubb studio` connects straight away.
 
 ## Read-only until you say otherwise
 
-A tab on the internet can now ask your laptop to run code. We took that seriously, so a fresh session can do almost nothing: generation runs in memory and streams to the browser, and not a single file on disk changes.
-
-Four permissions open that up, and the CLI asks about each one separately on the first connect to a project:
+A fresh session can do almost nothing: generation runs in memory and streams to the browser, and not a single file on disk changes. Four flags open that up one at a time:
 
 | Permission          | What it grants                                                               |
-| ------------------- | ------------------------------------------------------------------------------ |
+| -------------------- | ----------------------------------------------------------------------------- |
 | `--allowWrite`      | Generated files are written to disk instead of only streaming to Studio.     |
 | `--allowConfigEdit` | Studio may change plugin options in your `kubb.config.ts`.                   |
 | `--allowInput`      | A spec sent by Studio replaces the one on disk for that generation.          |
 | `--allowExec`       | The formatter, the linter, and `output.postGenerate` run as child processes. |
 
-Your answers are saved per project directory, so you are asked once and not on every connect. Pass the flag to skip the question.
-
-The rule we cared most about: nothing is ever asked in CI or without a TTY. An unattended run cannot widen its own access, because there is no one there to approve it and a silent default of yes would be the wrong answer.
+The CLI asks about each one on the first connect to a project and remembers your answer. Nothing is ever asked in CI or without a TTY: an unattended run stays at whatever access it was explicitly given.
 
 ## Editing config from the browser
 
-With `--allowConfigEdit`, the options you change in Studio are written back to your `kubb.config.ts`. This is an AST patch rather than a regeneration, so it edits the fields you touched and leaves your comments, import order, and formatting alone. The diff you get is the diff you would have written by hand.
+With `--allowConfigEdit`, the options you change in Studio are written back to your `kubb.config.ts` as an AST patch, not a regeneration, so it touches only the fields you changed and leaves the rest alone. Try `group.type: 'tag'`, look at the resulting file tree, switch back, all without leaving the tab.
 
-That turns the config into something you can actually explore. Try `group.type: 'tag'`, look at the resulting file tree, switch back, all without leaving the tab.
+## Beyond your laptop
 
-## Running it somewhere other than a laptop
-
-Approving a machine needs a browser, and a build agent does not have one. Connect once where you can, then hand the agent token over through the environment:
-
-```shell
-KUBB_AGENT_TOKEN=$KUBB_TOKEN kubb studio
-```
-
-A token passed this way is used for the session and never written to disk.
-
-For a connection that outlives your terminal, the `kubblabs/kubb-agent` Docker image runs the same runtime with a fixed plugin set. It suits a team that wants one long-lived agent instead of everyone connecting their own checkout.
-
-Self-hosting the Studio instance itself works too. Point the CLI at it with `kubb studio --url http://localhost:3000`. Approval is per instance, so connecting to a self-hosted Studio does not undo the one for the hosted instance.
-
-If you only want to see what the thing does, there is a shared sandbox agent you can use with no local setup at all. Use it for a public spec you do not mind sending, not for your billing API.
+`kubb studio` also runs from CI or a long-lived server, and the `kubblabs/kubb-agent` Docker image runs the same runtime for a team that wants one shared agent. See the [guide](/docs/5.x/guide/integrations/studio) for how.
 
 ## Try it
 

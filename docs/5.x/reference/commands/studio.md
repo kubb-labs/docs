@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # `kubb studio`
 
-Run `kubb studio` to connect this project to [Kubb Studio](https://kubb.studio). Kubb keeps running on your machine. It reads the config and the spec from disk, then streams progress and generated files back to the browser over a WebSocket, so nothing in your project is uploaded.
+Run `kubb studio` to connect this project to [Kubb Studio](https://kubb.studio). Kubb keeps running on your machine, reads the config and spec from disk, and streams progress and generated files back to the browser over a WebSocket.
 
 > [!WARNING]
 > This feature is under active development. Use it with caution and expect breaking changes.
@@ -62,26 +62,7 @@ output:
 > [!IMPORTANT]
 > Flags are camelCase. `--allow-write` is not recognized, and the CLI ignores it without a warning, so the permission stays off.
 
-## Connecting
-
-The first connect asks you to approve this machine in Studio. The CLI opens the approval page unless you pass `--no-open`, and waits. Later runs connect straight away.
-
-Approval is per Studio instance. Pointing `--url` at a different instance asks for approval again, and `kubb studio status` says so before you connect.
-
-## Permissions
-
-The connection is read-only. Generated files stay in memory and stream to the browser, and nothing on disk changes until you grant more.
-
-| Permission          | What it grants                                                                     |
-| ------------------- | ----------------------------------------------------------------------------------- |
-| `--allowWrite`      | Generated files are written to disk instead of only streaming to Studio.           |
-| `--allowConfigEdit` | Studio may change plugin options in your `kubb.config.ts`.                         |
-| `--allowInput`      | A spec sent by Studio replaces the one on disk for that generation.                |
-| `--allowExec`       | The formatter, the linter, and `output.postGenerate` run as child processes.       |
-
-On the first connect to a project the CLI asks a separate yes/no question for each permission that has no flag and no saved answer. Answers are saved per project directory, so later runs skip the questions. A flag always wins over a saved answer.
-
-Nothing is asked in CI or without a TTY. Anything you did not pass a flag for stays off, so an unattended run can never widen its own access.
+Approval is per Studio instance, so pointing `--url` at a different instance asks for approval again. The connection is read-only until you grant a permission: on the first connect the CLI asks a yes/no question for each one without a flag, then remembers the answer per project directory. Nothing is asked in CI or without a TTY, so an unattended run stays at whatever access it was given on the command line.
 
 ## Environment variables
 
@@ -93,23 +74,11 @@ Nothing is asked in CI or without a TTY. Anything you did not pass a flag for st
 ## Examples
 
 ```shell [Terminal]
-# Connect read-only
-kubb studio
-
-# Let Studio write generated files to disk
-kubb studio --allowWrite
-
-# Also run the formatter, the linter, and postGenerate
-kubb studio --allowWrite --allowExec
-
-# Connect without opening a session
-kubb studio login
-
-# Disconnect this machine
-kubb studio logout
-
-# Point at a self-hosted Studio
-kubb studio --url http://localhost:3000
+kubb studio                              # connect read-only
+kubb studio --allowWrite --allowExec     # write files, run the formatter and linter
+kubb studio login                        # connect without opening a session
+kubb studio logout                       # disconnect this machine
+kubb studio --url http://localhost:3000  # self-hosted Studio
 ```
 
 ## See also
