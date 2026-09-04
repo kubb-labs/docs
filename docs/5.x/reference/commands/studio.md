@@ -21,30 +21,6 @@ output:
   - ✘ run formatter, linter, postGenerate
 ```
 
-## Installation
-
-The command lives behind an optional peer dependency, so `kubb --help` never loads it. Install `@kubb/studio` next to `kubb` before the first connect.
-
-::: code-group
-
-```shell [bun]
-bun add -d @kubb/studio
-```
-
-```shell [pnpm]
-pnpm add -D @kubb/studio
-```
-
-```shell [npm]
-npm install --save-dev @kubb/studio
-```
-
-```shell [yarn]
-yarn add -D @kubb/studio
-```
-
-:::
-
 ## Usage
 
 Connect the current project. The first run pairs the machine, and later runs reuse the stored token.

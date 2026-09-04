@@ -32,10 +32,9 @@ Nothing is uploaded, so the spec, the config, and the generated files stay where
 
 ## One command to connect
 
-Install the runtime next to the CLI, then connect from the project root:
+The runtime ships with the CLI, so there is nothing extra to install. Run this from the project root:
 
 ```shell
-npm install --save-dev @kubb/studio
 kubb studio
 ```
 

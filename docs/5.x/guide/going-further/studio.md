@@ -17,31 +17,9 @@ That split is the point. Studio sends a command over a WebSocket, your machine r
 > [!NOTE]
 > Studio is not a [bundler integration](/docs/5.x/guide/integrations/) you add to a build. It is a session you open from the CLI and close when you are done.
 
-## Installation
-
-Studio ships as an optional peer of the CLI, so a project that never opens a session never installs it. Add `@kubb/studio` next to `kubb`.
-
-::: code-group
-
-```shell [bun]
-bun add -d kubb @kubb/studio
-```
-
-```shell [pnpm]
-pnpm add -D kubb @kubb/studio
-```
-
-```shell [npm]
-npm install --save-dev kubb @kubb/studio
-```
-
-```shell [yarn]
-yarn add -D kubb @kubb/studio
-```
-
-:::
-
 ## Connect a project
+
+The Studio runtime ships with the CLI, so a project that already has `kubb` installed needs nothing else.
 
 Run the command from the project root, next to your `kubb.config.ts`.
 
