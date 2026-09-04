@@ -26,7 +26,7 @@ Tuning a Kubb config is a slow loop. You change one plugin option, run `kubb gen
 
 To generate from your spec, a hosted generator needs your spec. For a public Petstore that is fine. For the internal API that describes your billing system, it usually is not.
 
-Studio splits the two halves. The browser holds the UI, your machine holds the code. When you click generate, Studio sends a command over a WebSocket, Kubb runs locally against the files already on disk, and progress and output stream back to the tab. Nothing is uploaded, so you get the plugin versions already in your `node_modules`, not whatever a server has installed.
+Studio splits the two halves. The browser holds the UI, your machine holds the code. When you click generate, Studio sends a command over a WebSocket, Kubb runs locally against the files already on disk, and progress and output stream back to the tab. Nothing is uploaded, so you get the plugin versions already installed in your project, not whatever a server happens to have.
 
 ## One command to connect
 

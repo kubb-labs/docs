@@ -43,7 +43,7 @@ The first positional argument picks what the command does. It defaults to `conne
 ```terminal
 command: kubb studio status
 output:
-  - Connected to https://kubb.studio as brave-otter
+  - Paired with https://kubb.studio as brave-otter
 ```
 
 ## Options
