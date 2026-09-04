@@ -15,7 +15,7 @@ That split is the point. Studio sends a command over a WebSocket, your machine r
 > This feature is under active development. Use it with caution and expect breaking changes.
 
 > [!NOTE]
-> Unlike the [bundler integrations](./), Studio is not an entrypoint you add to a build. It is a session you open from the CLI and close when you are done.
+> Studio is not a [bundler integration](/docs/5.x/guide/integrations/) you add to a build. It is a session you open from the CLI and close when you are done.
 
 ## Installation
 
@@ -101,12 +101,12 @@ Set `KUBB_HOME` to move the credentials, the machine secret, and the session reg
 
 ## Run an agent as a service
 
-The CLI is one host for the Studio runtime, and it is the right one while you are working in a project. For a shared or always-on setup there is a second host, the `kubblabs/kubb-agent` Docker image, which runs the same runtime with a fixed plugin set and stays connected without a terminal open.
+`kubb studio` is the right way to connect while you are working in a project, but the session ends when you close the terminal. The `kubblabs/kubb-agent` Docker image runs the same runtime with a fixed plugin set and stays connected on its own.
 
-Reach for the image when a team needs one long-lived connection, or when the project should stay reachable from Studio after you close your laptop. Reach for `kubb studio` for everything else. See the [image on Docker Hub](https://hub.docker.com/r/kubblabs/kubb-agent) for how to run and configure it.
+Use the image when a team wants one long-lived agent instead of everyone connecting their own checkout. Use `kubb studio` for everything else. See the [image on Docker Hub](https://hub.docker.com/r/kubblabs/kubb-agent) for how to run and configure it.
 
 ## See also
 
 - [`kubb studio` command](/docs/5.x/reference/commands/studio): every action, flag, and environment variable
 - [Configuration](/docs/5.x/reference/configuration): the `kubb.config.ts` a session reads
-- [Integrations](./): run generation inside your bundler instead
+- [Integrations](/docs/5.x/guide/integrations/): run generation inside your bundler instead

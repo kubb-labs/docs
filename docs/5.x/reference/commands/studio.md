@@ -107,7 +107,7 @@ The connection is read-only. Generated files stay in memory and stream to the br
 
 On the first connect to a project the CLI asks a separate yes/no question for each permission that has no flag and no saved answer. Answers are stored per project directory in `~/.kubb/credentials.json`, so later runs skip the questions. A flag always wins over a saved answer.
 
-Nothing is asked in CI or without a TTY. Every permission that has no flag and no saved answer stays off, so an unattended run can never widen its own access.
+Nothing is asked in CI or without a TTY. Anything you did not pass a flag for stays off, so an unattended run can never widen its own access.
 
 ## Environment variables
 
@@ -140,6 +140,6 @@ kubb studio --url http://localhost:3000
 
 ## See also
 
-- [Kubb Studio integration guide](/docs/5.x/guide/integrations/studio): connect a project, run headless, and self-host
+- [Kubb Studio guide](/docs/5.x/guide/going-further/studio): connect a project, run headless, and self-host
 - [Commands](/docs/5.x/reference/commands/): every command the CLI exposes
 - [Configuration](/docs/5.x/reference/configuration): the `kubb.config.ts` Studio reads
