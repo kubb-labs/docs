@@ -1,11 +1,15 @@
 ---
 layout: doc
 title: Integrations
-description: Run Kubb as part of your bundler with kubb's build integrations. Supported targets include Vite, Rollup, Rolldown, webpack, Rspack, esbuild, Farm, Nuxt and Astro.
+description: Run Kubb from somewhere other than the CLI. Generate inside your bundler with Vite, Rollup, Rolldown, webpack, Rspack, esbuild, Farm, Nuxt or Astro, or from the browser with Kubb Studio.
 outline: [2, 3]
 ---
 
 # Integrations
+
+Kubb runs from the CLI, and it also runs from the places you already work. A bundler integration generates during your build, and [Kubb Studio](./studio) generates from a browser tab while Kubb runs on your machine.
+
+## Bundlers
 
 `kubb`'s bundler entrypoints run code generation inside your build. You skip the separate `kubb generate` step. Pass the same config you write in `kubb.config.ts`, and Kubb runs it as part of your build instead. Each entrypoint is powered by [`unplugin-kubb`](https://www.npmjs.com/package/unplugin-kubb) under the hood, re-exported from `kubb` so you only install one package.
 
@@ -75,3 +79,9 @@ export default defineViteConfig({
   plugins: [kubb({ config })],
 })
 ```
+
+## Kubb Studio
+
+[Kubb Studio](./studio) is the other way in, and it works differently from the entrypoints above. Rather than generating during a build, you open a session with `kubb studio` and drive generation from a browser tab. Kubb still runs on your machine against the files on disk, so your spec is never uploaded.
+
+Reach for it when you want to change plugin options and see the result straight away, and for a bundler entrypoint when generation should happen as part of your build.
