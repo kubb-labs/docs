@@ -15,6 +15,8 @@ outline: [2, 3]
 > [!IMPORTANT]
 > Vite-based bundlers ([Vite](./vite), [Nuxt](./nuxt), [Astro](./astro)) generate during a build only. They skip generation on dev server startup. Run [`kubb generate`](/docs/5.x/reference/commands/) before you start the dev server.
 
+[Kubb Studio](./studio) is the exception on this page. It is not a bundler entrypoint but a session you open from the CLI, which lets you generate from the browser while Kubb runs on your machine.
+
 ## Installation
 
 Install `kubb` as a dev dependency.
