@@ -38,9 +38,7 @@ The runtime ships with the CLI, so there is nothing extra to install. Run this f
 kubb studio
 ```
 
-The first run pairs the machine. The CLI prints a short code, opens the approval page, and waits while you approve it. That is [RFC 8628 device authorization](https://www.rfc-editor.org/rfc/rfc8628.html), the same flow a TV app uses when you type a code from your couch. Studio mints an agent token, stores only its hash, and the CLI writes the token to `~/.kubb/credentials.json` at mode `0600`.
-
-Pairing happens once per machine. Every later `kubb studio` connects straight away.
+The first run opens the approval page and waits while you approve this machine in Studio. You approve once. Every later `kubb studio` connects straight away.
 
 ## Read-only until you say otherwise
 
@@ -67,7 +65,7 @@ That turns the config into something you can actually explore. Try `group.type: 
 
 ## Running it somewhere other than a laptop
 
-Pairing needs a browser, and a build agent does not have one. Pair once where you can, then hand the token over through the environment:
+Approving a machine needs a browser, and a build agent does not have one. Connect once where you can, then hand the agent token over through the environment:
 
 ```shell
 KUBB_AGENT_TOKEN=$KUBB_TOKEN kubb studio
@@ -77,12 +75,12 @@ A token passed this way is used for the session and never written to disk.
 
 For a connection that outlives your terminal, the `kubblabs/kubb-agent` Docker image runs the same runtime with a fixed plugin set. It suits a team that wants one long-lived agent instead of everyone connecting their own checkout.
 
-Self-hosting the Studio instance itself works too. Point the CLI at it with `kubb studio --url http://localhost:3000`. Credentials are stored per instance, so a self-hosted pairing does not replace your token for the hosted one.
+Self-hosting the Studio instance itself works too. Point the CLI at it with `kubb studio --url http://localhost:3000`. Approval is per instance, so connecting to a self-hosted Studio does not undo the one for the hosted instance.
 
-If you only want to see what the thing does, there is a shared sandbox agent you can connect to with no local setup at all. Use it for a public spec you do not mind sending, not for your billing API.
+If you only want to see what the thing does, there is a shared sandbox agent you can use with no local setup at all. Use it for a public spec you do not mind sending, not for your billing API.
 
 ## Try it
 
-Studio is live at [kubb.studio](https://kubb.studio). The [guide](/docs/5.x/guide/going-further/studio) walks through connecting a project, and the [`kubb studio` reference](/docs/5.x/reference/commands/studio) lists every action and flag.
+Studio is live at [kubb.studio](https://kubb.studio). The [guide](/docs/5.x/guide/integrations/studio) walks through connecting a project, and the [`kubb studio` reference](/docs/5.x/reference/commands/studio) lists every action and flag.
 
 Feedback goes to [GitHub](https://github.com/kubb-labs/kubb/issues) or [Discord](https://discord.gg/shfBFeczrm). The permission model in particular is the part we would most like to hear about before it hardens.

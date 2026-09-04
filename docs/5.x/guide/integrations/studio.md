@@ -1,7 +1,7 @@
 ---
 layout: doc
 title: Kubb Studio
-description: Connect a Kubb project to Kubb Studio and generate from the browser while Kubb runs on your own machine. Covers pairing, permissions, headless runs, and self-hosted instances.
+description: Connect a Kubb project to Kubb Studio and generate from the browser while Kubb runs on your own machine. Covers connecting, permissions, headless runs, and self-hosted instances.
 outline: [2, 3]
 ---
 
@@ -27,9 +27,9 @@ Run the command from the project root, next to your `kubb.config.ts`.
 kubb studio
 ```
 
-The first run pairs the machine. The CLI prints a short code and opens the approval page, you approve it in Studio, and the agent token is stored in `~/.kubb/credentials.json`. Later runs reuse that token and connect straight away.
+The first run opens the approval page in Studio and waits for you to approve this machine. Later runs connect straight away.
 
-Once the session is open, the project shows up in Studio and stays there until you stop the command. Check what a machine is paired as with `kubb studio status`, and drop the token with `kubb studio logout`.
+Once the session is open, the project shows up in Studio and stays there until you stop the command. Check what a machine is connected as with `kubb studio status`, and disconnect it with `kubb studio logout`.
 
 ## Choose what Studio may do
 
@@ -54,7 +54,7 @@ Grant `--allowConfigEdit` when you want to tune plugin options from the browser 
 
 ## Run headless
 
-Pairing needs a browser, which a build agent does not have. Pair once on a machine that does, then hand the token to the headless one through `KUBB_AGENT_TOKEN`.
+Approving a machine needs a browser, which a build agent does not have. Connect once on a machine that has one, then hand the agent token to the headless one through `KUBB_AGENT_TOKEN`.
 
 ```shell [Terminal]
 KUBB_AGENT_TOKEN=$KUBB_TOKEN kubb studio
@@ -67,15 +67,15 @@ A token passed this way is used for the session and never written to disk. Permi
 
 ## Point at a self-hosted Studio
 
-`--url` picks the instance to pair and connect with. It defaults to `https://kubb.studio`.
+`--url` picks the instance to connect with. It defaults to `https://kubb.studio`.
 
 ```shell [Terminal]
 kubb studio --url http://localhost:3000
 ```
 
-Credentials are stored per instance, so pairing with a self-hosted Studio does not replace the token for the hosted one. Switching back needs no extra step, and `kubb studio status` tells you when the instance you are pointing at needs pairing first.
+Approval is per instance, so connecting to a self-hosted Studio does not undo the approval for the hosted one. Switching back needs no extra step, and `kubb studio status` tells you when the instance you are pointing at needs approval first.
 
-Set `KUBB_HOME` to move the credentials, the machine secret, and the session registry out of `~/.kubb`. This helps when a container has no stable home directory.
+Set `KUBB_HOME` to move the CLI's Studio state out of `~/.kubb`. This helps when a container has no stable home directory.
 
 ## Run an agent as a service
 

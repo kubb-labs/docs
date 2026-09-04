@@ -23,7 +23,7 @@ output:
 
 ## Usage
 
-Connect the current project. The first run pairs the machine, and later runs reuse the stored token.
+Connect the current project. The first run asks you to approve it in Studio, and later runs connect straight away.
 
 ```shell [Terminal]
 kubb studio
@@ -35,15 +35,15 @@ The first positional argument picks what the command does. It defaults to `conne
 
 | Action    | Description                                                             |
 | --------- | ----------------------------------------------------------------------- |
-| `connect` | Pair if needed, then hold a session open and generate on request.       |
-| `login`   | Pair this machine and store the token without opening a session.        |
-| `logout`  | Forget the stored token.                                                |
-| `status`  | Show what this machine is paired as, plus the permissions saved for it. |
+| `connect` | Connect, then hold a session open and generate on request.              |
+| `login`   | Connect this machine without opening a session.                         |
+| `logout`  | Disconnect this machine from Studio.                                    |
+| `status`  | Show what this machine is connected as, plus the permissions saved for it. |
 
 ```terminal
 command: kubb studio status
 output:
-  - Paired with https://kubb.studio as brave-otter
+  - Connected to https://kubb.studio as brave-otter
 ```
 
 ## Options
@@ -51,24 +51,22 @@ output:
 | Option                                     | Default               | Description                                                                        |
 | ------------------------------------------ | --------------------- | ---------------------------------------------------------------------------------- |
 | `--config=<path>`, `-c <path>`             |                       | Path to a config file, such as `./kubb.staging.ts`.                                |
-| `--url=<url>`                              | `https://kubb.studio` | Base URL of the Studio instance to pair and connect with.                          |
+| `--url=<url>`                              | `https://kubb.studio` | Base URL of the Studio instance to connect with.                                   |
 | `--allowWrite`                             | `false`               | Write generated files to disk. Asked once per project when omitted.                |
 | `--allowConfigEdit`                        | `false`               | Let Studio change plugin options in `kubb.config.ts`. Asked once per project.      |
 | `--allowInput`                             | `false`               | Generate from a spec Studio sends instead of the one on disk. Asked once per project. |
 | `--allowExec`                              | `false`               | Run the formatter, the linter, and `output.postGenerate`. Asked once per project.  |
-| `--no-open`                                |                       | Do not open the approval page in a browser while pairing.                           |
+| `--no-open`                                |                       | Do not open the approval page in a browser.                                        |
 | `--logLevel=<silent\|info\|verbose>`, `-l` | `info`                | Set the verbosity.                                                                 |
 
 > [!IMPORTANT]
 > Flags are camelCase. `--allow-write` is not recognized, and the CLI ignores it without a warning, so the permission stays off.
 
-## Pairing
+## Connecting
 
-The first connect pairs the machine over [RFC 8628](https://www.rfc-editor.org/rfc/rfc8628.html) device authorization. The CLI prints a short code, opens the approval page unless you pass `--no-open`, and waits while you approve it in Studio. Studio mints the token once and stores only its hash, so it can never be read back.
+The first connect asks you to approve this machine in Studio. The CLI opens the approval page unless you pass `--no-open`, and waits. Later runs connect straight away.
 
-The token lands in `~/.kubb/credentials.json` at mode `0600`. Set `KUBB_HOME` to keep it, the machine secret, and the session registry somewhere else.
-
-Pairing is per Studio instance. Running `kubb studio --url` against a different instance asks you to pair again, and `kubb studio status` says so before you connect.
+Approval is per Studio instance. Pointing `--url` at a different instance asks for approval again, and `kubb studio status` says so before you connect.
 
 ## Permissions
 
@@ -81,21 +79,21 @@ The connection is read-only. Generated files stay in memory and stream to the br
 | `--allowInput`      | A spec sent by Studio replaces the one on disk for that generation.                |
 | `--allowExec`       | The formatter, the linter, and `output.postGenerate` run as child processes.       |
 
-On the first connect to a project the CLI asks a separate yes/no question for each permission that has no flag and no saved answer. Answers are stored per project directory in `~/.kubb/credentials.json`, so later runs skip the questions. A flag always wins over a saved answer.
+On the first connect to a project the CLI asks a separate yes/no question for each permission that has no flag and no saved answer. Answers are saved per project directory, so later runs skip the questions. A flag always wins over a saved answer.
 
 Nothing is asked in CI or without a TTY. Anything you did not pass a flag for stays off, so an unattended run can never widen its own access.
 
 ## Environment variables
 
-| Variable           | Description                                                                                        |
-| ------------------ | ---------------------------------------------------------------------------------------------------- |
-| `KUBB_HOME`        | Directory for the credentials, the machine secret, and the session registry. Defaults to `~/.kubb`. |
-| `KUBB_AGENT_TOKEN` | Connect with an existing agent token instead of pairing. The token is not written to disk.          |
+| Variable           | Description                                                                        |
+| ------------------ | ---------------------------------------------------------------------------------- |
+| `KUBB_HOME`        | Directory the CLI keeps its Studio state in. Defaults to `~/.kubb`.                |
+| `KUBB_AGENT_TOKEN` | Connect with an existing agent token instead of approving this machine.            |
 
 ## Examples
 
 ```shell [Terminal]
-# Pair on the first run, then connect read-only
+# Connect read-only
 kubb studio
 
 # Let Studio write generated files to disk
@@ -104,10 +102,10 @@ kubb studio --allowWrite
 # Also run the formatter, the linter, and postGenerate
 kubb studio --allowWrite --allowExec
 
-# Pair without opening a session
+# Connect without opening a session
 kubb studio login
 
-# Forget the stored token
+# Disconnect this machine
 kubb studio logout
 
 # Point at a self-hosted Studio
