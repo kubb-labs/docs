@@ -17,6 +17,7 @@ Pass these options to `pluginFetch()` to control what it generates and where the
 | [`validator`](#validator) | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` | `false` | Validate request and response bodies with Zod |
 | [`comments`](#comments) | `'full' \| 'brief' \| 'none'` | `'full'` | How much of each description reaches the JSDoc |
 | [`sdk`](#sdk) | `{ mode?: 'tag' \| 'flat'; name?: string }` | — | Generate a class-based SDK instead of functions |
+| [`returnType`](#returntype) | `'full' \| 'data'` | `'full'` | Shape of the value a generated call resolves to |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | `[]` | Apply different options per pattern |
@@ -98,6 +99,20 @@ if (status === 200) {
   console.error(status, error) // status is the documented error code, error is its parsed body
 }
 ```
+
+### returnType
+
+Shape of the value a generated call resolves to. `'full'` (the default) keeps `{ status, data, error, contentType, request, response }`. `'data'` unwraps that down to the bare success body once `throwOnError` (on by default) rules out the error branch, and falls back to the full result for a call that sets `throwOnError: false`, since that path still needs `error` to tell success from failure.
+
+```typescript
+pluginFetch({ returnType: 'data' })
+```
+
+```typescript
+const pet = await getPetById({ path: { petId: 1 } }) // Pet, not { status, data, ... }
+```
+
+This applies to the standalone functions and the class-based SDK. It does not apply to `@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, or `@kubb/plugin-swr`, which call the client directly and expect the full result.
 
 ### include
 
