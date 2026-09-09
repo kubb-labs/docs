@@ -43,8 +43,8 @@ rtk git log -10
 
 `AGENTS.md` is the canonical instruction file. `CLAUDE.md`, `GEMINI.md`, and
 `.github/copilot-instructions.md` symlink to it. Skills live in `.agents/skills/` (open
-`SKILL.md` format, cross-provider). Always-on conventions live in `.claude/rules/`
-(`markdown`, `plain-language`, `security`, `usa-english`).
+`SKILL.md` format, cross-provider, symlinked at `.claude/skills/`). Always-on conventions live
+in `.claude/rules/` (`markdown`, `plain-language`, `security`, `usa-english`).
 
 <skills>
 
@@ -54,4 +54,5 @@ You have new skills. If any skill might be relevant then you MUST read it.
 
 - [documentation](.agents/skills/documentation/SKILL.md) - Use when writing blog posts or documentation markdown files - provides writing style guide (active voice, present tense), content structure patterns, and SEO optimization.
 - [humanizer](.agents/skills/humanizer/SKILL.md) - Remove AI writing patterns to make documentation sound natural, specific, and human. Covers content patterns, language patterns, style patterns, and communication patterns.
+- [pr](.agents/skills/pr/SKILL.md) - Open or update a pull request in this content repo. Covers what to check on a markdown change, frontmatter and include rules, Conventional Commit titles, how to fill the PR template, and what to do once CI runs.
 </skills>
