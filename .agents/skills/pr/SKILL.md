@@ -73,6 +73,17 @@ Check `git diff --cached` before every commit. Never commit a secret or a token.
 
 One Conventional Commit line, imperative, under 72 characters, no trailing period.
 
+Read the title off the branch you already named:
+
+1. Take the type from the branch prefix, so `feat/`, `fix/`, `docs/`, `chore/`, `refactor/`,
+   `test/`, or `perf/`.
+2. Turn the kebab-case slug into a sentence, imperative and in the present tense.
+3. Add the scope in parentheses when the change sits in one package.
+
+`feat/plugin-resolver-cache` becomes `feat(core): add a plugin resolver cache`.
+
+Put the issue number in the body with `Closes #123`, not in the title.
+
 ### Body
 
 Fill `.github/pull_request_template.md`. Keep its headings and their order, replace each HTML
@@ -88,13 +99,46 @@ a reviewer their trust, so it is the one thing never to do here.
 Keep the body in plain language: short sentences, active voice, exact paths, no restating the
 request back at the reader.
 
+### How to test
+
+Write numbered steps a reviewer can follow from a clean checkout, ending in the result they
+should see. When someone handed you steps, fix them before you paste them in: add the missing
+prerequisite, put them in order, replace a vague instruction with the exact command or path, and
+state the expected result. When you have no steps and cannot derive them from the diff, ask for
+them rather than leaving the section empty.
+
+Add a screenshot for a visible change, and a before and after when you changed something that
+already existed.
+
 ## 7. Push and open the PR
 
 ```bash
+git fetch origin main
+git pull --ff-only
 git push -u origin <branch>
+
+gh pr create \
+  --base main \
+  --title "<conventional commit title>" \
+  --body-file <body>.md \
+  --assignee @me
 ```
 
-Open the PR against `main`, ready for review rather than draft. One topic per PR.
+Use the `gh` CLI rather than a GitHub MCP server or any other bot token, so the PR is authored by
+whoever ran it and lands in their own list.
+
+Open it ready for review, not draft. Mark a draft ready with `gh pr ready` once the branch is
+finished and the checks pass.
+
+Add a label the repo already uses. `gh label list` shows them, and inventing one is worse than
+leaving the PR unlabeled.
+
+Squash the commits and delete the branch on merge, which `gh pr merge --squash --delete-branch`
+does in one step. When you do not have merge rights, say in the body that the PR is meant to be
+squashed.
+
+One PR does one thing. When you notice unrelated work along the way, leave it out and mention it
+in the body instead.
 
 ## 8. After CI runs
 
