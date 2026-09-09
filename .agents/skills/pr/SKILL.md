@@ -78,9 +78,10 @@ Read the title off the branch you already named:
 1. Take the type from the branch prefix, so `feat/`, `fix/`, `docs/`, `chore/`, `refactor/`,
    `test/`, or `perf/`.
 2. Turn the kebab-case slug into a sentence, imperative and in the present tense.
-3. Add the scope in parentheses when the change sits in one package.
+3. Add the scope in parentheses when the change sits in one plugin, adapter, or parser.
 
-`feat/plugin-resolver-cache` becomes `feat(core): add a plugin resolver cache`.
+`docs/plugin-react-query-mutation-key` becomes `docs(plugin-react-query): document the mutation
+key option`.
 
 Put the issue number in the body with `Closes #123`, not in the title.
 

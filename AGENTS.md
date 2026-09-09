@@ -43,8 +43,8 @@ rtk git log -10
 
 `AGENTS.md` is the canonical instruction file. `CLAUDE.md`, `GEMINI.md`, and
 `.github/copilot-instructions.md` symlink to it. Skills live in `.agents/skills/` (open
-`SKILL.md` format, cross-provider, symlinked at `.claude/skills/`). Always-on conventions live in `.claude/rules/`
-(`markdown`, `plain-language`, `security`, `usa-english`).
+`SKILL.md` format, cross-provider, symlinked at `.claude/skills/`). Always-on conventions live
+in `.claude/rules/` (`markdown`, `plain-language`, `security`, `usa-english`).
 
 <skills>
 
