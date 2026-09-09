@@ -54,5 +54,5 @@ You have new skills. If any skill might be relevant then you MUST read it.
 
 - [documentation](.agents/skills/documentation/SKILL.md) - Use when writing blog posts or documentation markdown files - provides writing style guide (active voice, present tense), content structure patterns, and SEO optimization.
 - [humanizer](.agents/skills/humanizer/SKILL.md) - Remove AI writing patterns to make documentation sound natural, specific, and human. Covers content patterns, language patterns, style patterns, and communication patterns.
-- [pr](.agents/skills/pr/SKILL.md) - Open or update a pull request in this content repo. Covers what to check on a markdown change, frontmatter and include rules, Conventional Commit titles, how to fill the PR template, and what to do once CI runs.
+- [pr](.agents/skills/pr/SKILL.md) - Open or update a pull request in this content repo. Covers what to check on a markdown change, frontmatter and include rules, Conventional Commit titles, how to fill the PR template, and what to do once CI runs. Use when asked to open a PR, push a branch for review, fix a red PR, or judge whether a branch is ready to merge.
 </skills>
