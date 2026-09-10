@@ -17,6 +17,12 @@ below are the whole safety net.
 - Updating a pull request after a review comment or a failing CI run.
 - Answering whether a branch is ready to merge.
 
+## Keep every output short
+
+The title, the body, the commits, the review replies, and what you report back in chat all
+follow one rule: lead with what changed, keep what the reader has to act on, cut the rest. Aim
+for a PR body under 150 words. Run the `humanizer` skill over anything you write for a person.
+
 ## 1. Confirm the branch
 
 Never commit to `main`. Check where you are, and branch from an up-to-date `main` if you are
@@ -88,28 +94,28 @@ Put the issue number in the body with `Closes #123`, not in the title.
 ### Body
 
 Fill `.github/pull_request_template.md`. Keep its headings and their order, replace each HTML
-comment with real content, and delete no section.
+comment with real content, and delete no section. Write a body a reviewer gets in one read.
 
-Under **Changes**, write two to five sentences. Lead with what changed, then why. Name the page a
-reviewer should open first. Add `Closes #123` when the PR closes an issue.
+Under **Changes**, write one to three sentences. Lead with what changed, then why. Name the page
+a reviewer should open first. Add `Closes #123` when the PR closes an issue.
 
 Under **Checklist**, tick a box only for something you actually did on this branch. An unticked
 box with a one-line reason under it is honest and useful. A ticked box you did not verify costs
 a reviewer their trust, so it is the one thing never to do here.
 
-Keep the body in plain language: short sentences, active voice, exact paths, no restating the
-request back at the reader.
+Run the `humanizer` skill over the body before you open the PR, and fix the tells it surfaces.
+The ones that show up most here: an opener that restates the title, a closing paragraph that
+repeats the opener, words such as `comprehensive` and `robust`, bold mid-sentence, and a dash
+joining two clauses. Cut background the reviewer already has, options you ruled out, and any
+sentence that names no file, command, or result.
 
-### How to test
+### How to review
 
-Write numbered steps a reviewer can follow from a clean checkout, ending in the result they
-should see. When someone handed you steps, fix them before you paste them in: add the missing
-prerequisite, put them in order, replace a vague instruction with the exact command or path, and
-state the expected result. When you have no steps and cannot derive them from the diff, ask for
-them rather than leaving the section empty.
-
-Add a screenshot for a visible change, and a before and after when you changed something that
-already existed.
+Name the pages a reviewer should open and what they should see there, one line each, starting
+from a clean checkout. Fix the steps someone hands you rather than pasting them as they are: add
+the missing prerequisite, put them in order, name the expected result. Ask for steps when you
+cannot derive them from the diff. Add a screenshot when the rendering changed, and a before and
+after when you changed a page that already existed.
 
 ## 7. Push and open the PR
 
@@ -146,14 +152,16 @@ in the body instead.
 A red PR is work now, whatever its review state. Read the failing job, fix the cause, and push
 again.
 
-Answer every review comment. Push the fix for a small, local ask. For a larger ask, reply with
-what you propose and let the author decide.
+Answer every review comment in a sentence or two: what you changed, and how the reviewer can
+check it. Push the fix for a small, local ask. For a larger ask, reply with what you propose and
+let the author decide.
 
 ## Guardrails
 
 - Keep the diff to what was asked.
 - Never force-push a branch someone else may have checked out.
 - Never edit a generated page.
+- Run the `humanizer` skill over the PR body and every page in the diff.
 
 ## Related skills
 
