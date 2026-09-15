@@ -73,13 +73,13 @@ snapshot:
   stage: build
   script:
     - kubb studio snapshot --json
-  variables:
-    KUBB_TOKEN: $KUBB_TOKEN
   rules:
     - if: $CI_MERGE_REQUEST_IID
 ```
 
-`kubb-labs/action` runs this same command on GitHub Actions and posts the result as a pull-request comment. Use `--json` to read the result yourself instead: it prints one JSON object with the tarball URL, the package name and version, and the integrity hash, and nothing else on stdout.
+Set `KUBB_TOKEN` as a masked CI/CD variable in the project's settings rather than in the job itself, so GitLab injects it without exposing it in the job log.
+
+[`kubb-labs/action`](https://github.com/kubb-labs/action) runs this same command on GitHub Actions and posts the result as a pull-request comment. Use `--json` to read the result yourself instead: it prints one JSON object with the tarball URL, the package name and version, and the integrity hash, and nothing else on stdout.
 
 ```shell [Terminal]
 kubb studio snapshot --json | jq -r '.url'
