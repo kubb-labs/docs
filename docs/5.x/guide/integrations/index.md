@@ -1,13 +1,13 @@
 ---
 layout: doc
 title: Integrations
-description: Run Kubb from somewhere other than the CLI. Generate inside your bundler with Vite, Rollup, Rolldown, webpack, Rspack, esbuild, Farm, Nuxt or Astro, or from the browser with Kubb Studio.
+description: Run Kubb from somewhere other than the CLI. Generate inside your bundler with Vite, Rollup, Rolldown, webpack, Rspack, esbuild, Farm, Nuxt or Astro, from the browser with Kubb Studio, or on every pull request from GitHub Actions and GitLab CI.
 outline: [2, 3]
 ---
 
 # Integrations
 
-Kubb runs from the CLI, and it also runs from the places you already work. A bundler integration generates during your build, and [Kubb Studio](./studio) generates from a browser tab while Kubb runs on your machine.
+Kubb runs from the CLI, and it also runs from the places you already work. A bundler integration generates during your build, [Kubb Studio](./studio) generates from a browser tab while Kubb runs on your machine, and a CI job publishes a snapshot a reviewer can install.
 
 ## Bundlers
 
@@ -85,3 +85,14 @@ export default defineViteConfig({
 [Kubb Studio](./studio) is the other way in, and it works differently from the entrypoints above. Rather than generating during a build, you open a session with `kubb studio` and drive generation from a browser tab. Kubb still runs on your machine against the files on disk, so your spec is never uploaded.
 
 Reach for it when you want to change plugin options and see the result straight away, and for a bundler entrypoint when generation should happen as part of your build.
+
+## Continuous integration
+
+`kubb studio snapshot` runs generation on a build agent and publishes the result to Studio as an installable tarball. A reviewer installs that package and runs the generated client, rather than reading a diff of generated files.
+
+| CI                                                    | Docs                               |
+| ----------------------------------------------------- | ---------------------------------- |
+| [GitHub Actions](https://github.com/features/actions) | [GitHub Actions](./github-actions) |
+| [GitLab CI](https://docs.gitlab.com/ci/)              | [GitLab CI](./gitlab)              |
+
+Bitbucket Pipelines and CircleCI are detected too, and any other CI works once you pass `--id`. See [Snapshot from CI](./studio#snapshot-from-ci) for the shared behavior.

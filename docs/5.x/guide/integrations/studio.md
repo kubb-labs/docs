@@ -60,7 +60,7 @@ For a connection that outlives your terminal, the [`kubblabs/kubb-agent` Docker 
 
 ## Snapshot from CI
 
-`kubb studio snapshot` generates a package and publishes it to Studio in one command, then exits. Use it to attach an installable tarball to a pull or merge request, from any CI. It needs a different credential than `kubb studio`: an organization CI API key, not an agent token.
+`kubb studio snapshot` generates a package and publishes it to Studio in one command, then exits. Use it to hand a reviewer an installable tarball on a pull or merge request, from any CI. It needs a different credential than `kubb studio`: an organization CI API key, not an agent token.
 
 ```shell [Terminal]
 KUBB_TOKEN=$KUBB_TOKEN kubb studio snapshot
@@ -68,22 +68,16 @@ KUBB_TOKEN=$KUBB_TOKEN kubb studio snapshot
 
 The command detects GitHub Actions, GitLab CI, Bitbucket Pipelines, and CircleCI on its own, and reuses one CI agent per pull or merge request instead of registering a new one on every run. On another CI, pass `--id` with something stable, such as the merge request number.
 
-```yaml [.gitlab-ci.yml]
-snapshot:
-  stage: build
-  script:
-    - kubb studio snapshot --json
-  rules:
-    - if: $CI_MERGE_REQUEST_IID
-```
-
-Set `KUBB_TOKEN` as a masked CI/CD variable in the project's settings rather than in the job itself, so GitLab injects it without exposing it in the job log.
-
-[`kubb-labs/action`](https://github.com/kubb-labs/action) runs this same command on GitHub Actions and posts the result as a pull-request comment. Use `--json` to read the result yourself instead: it prints one JSON object with the tarball URL, the package name and version, and the integrity hash, and nothing else on stdout.
+Use `--json` to read the result in a later step. It prints one JSON object with the tarball URL, the package name and version, and the integrity hash, and nothing else on stdout.
 
 ```shell [Terminal]
 kubb studio snapshot --json | jq -r '.url'
 ```
+
+Two providers have a page of their own:
+
+- [GitHub Actions](./github-actions): [`kubb-labs/action`](https://github.com/kubb-labs/action) runs the command and keeps the result in one pull-request comment
+- [GitLab CI](./gitlab): a `.gitlab-ci.yml` job that runs the command and writes the result as a merge request note
 
 > [!NOTE]
 > The tarball URL needs a `registry` API key to download, not the `ci` key that created the snapshot. Create one in Studio's settings for whichever system installs the package.
@@ -93,5 +87,7 @@ See the [`snapshot` action reference](/docs/5.x/reference/commands/studio#action
 ## See also
 
 - [`kubb studio` command](/docs/5.x/reference/commands/studio): every action, flag, and environment variable
+- [GitHub Actions](./github-actions): publish a snapshot on every pull request
+- [GitLab CI](./gitlab): publish a snapshot on every merge request
 - [Configuration](/docs/5.x/reference/configuration): the `kubb.config.ts` a session reads
 - [Integrations](/docs/5.x/guide/integrations/): run generation inside your bundler instead
