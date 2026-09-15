@@ -78,7 +78,6 @@ Approval is per Studio instance, so pointing `--url` at a different instance ask
 | `KUBB_HOME`        | Directory the CLI keeps its Studio state in. Defaults to `~/.kubb`.                |
 | `KUBB_AGENT_TOKEN` | Connect with an existing agent token instead of approving this machine.            |
 | `KUBB_TOKEN`       | `snapshot` only: organization CI API key. Same as `--token`.                       |
-| `KUBB_STUDIO_URL`  | `snapshot` only: base URL of the Studio instance. Same as `--url`.                 |
 
 ## Examples
 
