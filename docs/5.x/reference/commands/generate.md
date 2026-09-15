@@ -53,7 +53,7 @@ kubb generate ./petStore.yaml
 | `--logLevel=<silent\|info\|verbose>`, `-l`   | `info`  | Set the verbosity. Use `verbose` to see plugin timings.                   |
 | `--silent`, `-s`                             | `false` | Force `logLevel` to `silent`. Suppresses output.                          |
 | `--verbose`                                  | `false` | Force `logLevel` to `verbose`. Shows slow plugins.                        |
-| `--reporter=<cli\|json\|file>`               |         | Pick which reporters to trigger, comma separated. Defaults to `cli`.      |
+| `--reporter=<cli\|json\|file\|html>`        |         | Pick which reporters to trigger, comma-separated. Defaults to `cli`.      |
 | `--watch`, `-w`                              | `false` | Re-run the pipeline whenever the input spec changes.                      |
 | `--dryRun`                                   | `false` | Preview a run without writing files, formatting, linting, or running post-generate commands. |
 
@@ -61,13 +61,14 @@ kubb generate ./petStore.yaml
 
 ## Reporters
 
-A reporter decides how a run is rendered. The config registers available reporters with [`reporters`](/docs/5.x/reference/configuration). `--reporter` picks which ones to trigger by name, comma separated (`--reporter cli,file`). Three ship out of the box.
+A reporter decides how a run is rendered. The config registers available reporters with [`reporters`](/docs/5.x/reference/configuration). `--reporter` picks which ones to trigger by name, comma-separated (`--reporter cli,file`). Four reporters are registered by default.
 
 | Reporter | Output                                                                          |
 | -------- | ------------------------------------------------------------------------------- |
 | `cli`    | The end-of-run summary in the terminal. This runs when you pass no flag. Renders as plain text, without spinners or progress bars, when there is no interactive terminal or when an AI coding agent runs the command. |
 | `json`   | A machine-readable report on stdout for CI. See [Diagnostics](/docs/5.x/reference/diagnostics#machine-readable-output) for the full JSON shape. |
 | `file`   | The run's diagnostics, written to `.kubb/kubb[-<name>]-<timestamp>.log`. The `<name>` segment is dropped when the config has no `name`. |
+| `html`   | A browsable report directory with generated files and diagnostics, written to `.kubb/kubb[-<name>]-<timestamp>/index.html`. |
 
 Write a log file:
 
