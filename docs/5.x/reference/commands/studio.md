@@ -62,7 +62,7 @@ output:
 | `--token=<key>`                            |                       | `snapshot` only: organization CI API key. Defaults to `KUBB_TOKEN`.                |
 | `--id=<id>`                                |                       | `snapshot` only: stable identity for the CI agent. Auto-detected on GitHub Actions, GitLab CI, Bitbucket Pipelines and CircleCI. |
 | `--name=<name>`                            |                       | `snapshot` only: package name for the tarball. Defaults to the name in `package.json`. |
-| `--version=<version>`                      |                       | `snapshot` only: package version for the tarball. Defaults to the version in `package.json`. |
+| `--package-version=<version>`              |                       | `snapshot` only: package version for the tarball. Defaults to the version in `package.json`. |
 | `--timeout=<seconds>`                      | `600`                 | `snapshot` only: seconds to wait for the job to finish, capped at `3600`.          |
 | `--json`                                   | `false`               | `snapshot` only: print the result as one JSON object instead of a summary.         |
 
