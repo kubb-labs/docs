@@ -487,7 +487,7 @@ Project root, absolute or relative to the config file location.
 
 ### `reporters`
 
-Reporters available to the run, registered as instances. `defineConfig` registers the built-in `cli`, `json`, and `file` reporters by default, so most configs never set this option. Pick which ones fire by name with the CLI [`--reporter`](/docs/5.x/reference/commands/generate#reporters) flag, defaulting to `cli` when omitted. See that page for what each reporter outputs.
+Reporters available to the run, registered as instances. `defineConfig` registers the built-in `cli`, `json`, `file`, and `html` reporters by default. The HTML reporter remains opt-in: select it with [`--reporter html`](/docs/5.x/reference/commands/generate#reporters). The CLI [`--reporter`](/docs/5.x/reference/commands/generate#reporters) flag selects reporters by name and defaults to `cli`. See that page for details about each reporter.
 
 |           |                                             |
 | --------: | :------------------------------------------ |
