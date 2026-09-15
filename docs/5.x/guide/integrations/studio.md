@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Kubb Studio
 
-[Kubb Studio](https://kubb.studio) is a browser front end for a Kubb project. You edit plugin options, trigger a generation, and watch the output appear, while the generation itself runs on your machine against the files already on disk.
+[Kubb Studio](https://kubb.studio) is a browser interface for a Kubb project. You edit plugin options, trigger a generation, and watch the output appear while the generation runs on your machine against the files on disk.
 
 That split is the point. Studio sends a command over a WebSocket, your machine runs Kubb, and progress events and generated files stream back to the browser. Your spec and your source never leave your infrastructure.
 
@@ -25,13 +25,13 @@ The Studio runtime ships with the CLI, so a project that already has `kubb` inst
 kubb studio
 ```
 
-The first run opens the approval page in Studio and waits for you to approve this machine. Later runs connect straight away. Once the session is open, the project shows up in Studio and stays there until you stop the command. Check what a machine is connected as with `kubb studio status`, and disconnect it with `kubb studio logout`.
+When the project is not approved yet, the CLI opens Studio's approval page and waits for confirmation. Once approved, the session connects and the project appears in Studio until you stop the command. Check the connected machine with `kubb studio status`, and disconnect it with `kubb studio logout`.
 
 ## Choose what Studio may do
 
 A session is read-only by default. Generated files stream to the browser and nothing on disk changes, which makes the first connect safe to try on a real project.
 
-Four permissions widen that, and the CLI asks about each one on the first connect to a project, then remembers your answer.
+The CLI exposes four permissions. It asks about each permission when you first connect a project, then remembers your answers.
 
 | Permission          | What it grants                                                               |
 | -------------------- | ----------------------------------------------------------------------------- |
@@ -51,7 +51,7 @@ Grant `--allowConfigEdit` when you want to tune plugin options from the browser 
 `kubb studio` also runs on a build agent, with the agent token passed through `KUBB_AGENT_TOKEN` instead of an interactive approval:
 
 ```shell [Terminal]
-KUBB_AGENT_TOKEN=$KUBB_AGENT_TOKEN kubb studio
+KUBB_AGENT_TOKEN=your-agent-token kubb studio
 ```
 
 Nothing is asked without a TTY, so grant what the run needs with flags on the command line. Point at a self-hosted instance with `--url`, and set `KUBB_HOME` to move the CLI's Studio state out of `~/.kubb`.

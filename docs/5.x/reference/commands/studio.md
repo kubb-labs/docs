@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # `kubb studio`
 
-Run `kubb studio` to connect this project to [Kubb Studio](https://kubb.studio). Kubb keeps running on your machine, reads the config and spec from disk, and streams progress and generated files back to the browser over a WebSocket.
+Run `kubb studio` to connect a project to [Kubb Studio](https://kubb.studio). Kubb runs on your machine, reads the config and spec from disk, and streams progress and generated files to the browser over a WebSocket.
 
 > [!WARNING]
 > This feature is under active development. Use it with caution and expect breaking changes.
@@ -23,7 +23,7 @@ output:
 
 ## Usage
 
-Connect the current project. The first run asks you to approve it in Studio, and later runs connect straight away.
+Connect the current project. If the project is not approved yet, Studio asks you to approve it before the session starts.
 
 ```shell [Terminal]
 kubb studio
@@ -31,7 +31,7 @@ kubb studio
 
 ## Actions
 
-The first positional argument picks what the command does. It defaults to `connect`.
+The positional argument selects the action. It defaults to `connect`.
 
 | Action     | Description                                                             |
 | ---------- | ----------------------------------------------------------------------- |
@@ -69,7 +69,7 @@ output:
 > [!IMPORTANT]
 > Flags are camelCase. `--allow-write` is not recognized, and the CLI ignores it without a warning, so the permission stays off.
 
-Approval is per Studio instance, so pointing `--url` at a different instance asks for approval again. The connection is read-only until you grant a permission: on the first connect the CLI asks a yes/no question for each one without a flag, then remembers the answer per project directory. Nothing is asked in CI or without a TTY, so an unattended run stays at whatever access it was given on the command line.
+Approval is per Studio instance, so pointing `--url` at a different instance asks for approval again. The connection is read-only until you grant a permission. Without a permission flag, the CLI asks a yes/no question for each permission and remembers the answers per project directory. It does not ask questions in CI or without a TTY, so unattended runs use only the permissions passed on the command line.
 
 ## Environment variables
 
