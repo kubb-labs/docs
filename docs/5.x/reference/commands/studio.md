@@ -33,12 +33,13 @@ kubb studio
 
 The first positional argument picks what the command does. It defaults to `connect`.
 
-| Action    | Description                                                             |
-| --------- | ----------------------------------------------------------------------- |
-| `connect` | Connect, then hold a session open and generate on request.              |
-| `login`   | Connect this machine without opening a session.                         |
-| `logout`  | Disconnect this machine from Studio.                                    |
-| `status`  | Show what this machine is connected as, plus the permissions saved for it. |
+| Action     | Description                                                             |
+| ---------- | ----------------------------------------------------------------------- |
+| `connect`  | Connect, then hold a session open and generate on request.              |
+| `login`    | Connect this machine without opening a session.                         |
+| `logout`   | Disconnect this machine from Studio.                                    |
+| `status`   | Show what this machine is connected as, plus the permissions saved for it. |
+| `snapshot` | Generate and publish a snapshot from a script, then exit. See [Snapshot from CI](/docs/5.x/guide/integrations/studio#snapshot-from-ci). |
 
 ```terminal
 command: kubb studio status
@@ -58,6 +59,12 @@ output:
 | `--allowExec`                              | `false`               | Run the formatter, the linter, and `output.postGenerate`. Asked once per project.  |
 | `--no-open`                                |                       | Do not open the approval page in a browser.                                        |
 | `--logLevel=<silent\|info\|verbose>`, `-l` | `info`                | Set the verbosity.                                                                 |
+| `--token=<key>`                            |                       | `snapshot` only: organization CI API key. Defaults to `KUBB_TOKEN`.                |
+| `--id=<id>`                                |                       | `snapshot` only: stable identity for the CI agent. Auto-detected on GitHub Actions, GitLab CI, Bitbucket Pipelines and CircleCI. |
+| `--name=<name>`                            |                       | `snapshot` only: package name for the tarball. Defaults to the name in `package.json`. |
+| `--version=<version>`                      |                       | `snapshot` only: package version for the tarball. Defaults to the version in `package.json`. |
+| `--timeout=<seconds>`                      | `600`                 | `snapshot` only: seconds to wait for the job to finish, capped at `3600`.          |
+| `--json`                                   | `false`               | `snapshot` only: print the result as one JSON object instead of a summary.         |
 
 > [!IMPORTANT]
 > Flags are camelCase. `--allow-write` is not recognized, and the CLI ignores it without a warning, so the permission stays off.
@@ -70,6 +77,8 @@ Approval is per Studio instance, so pointing `--url` at a different instance ask
 | ------------------ | ---------------------------------------------------------------------------------- |
 | `KUBB_HOME`        | Directory the CLI keeps its Studio state in. Defaults to `~/.kubb`.                |
 | `KUBB_AGENT_TOKEN` | Connect with an existing agent token instead of approving this machine.            |
+| `KUBB_TOKEN`       | `snapshot` only: organization CI API key. Same as `--token`.                       |
+| `KUBB_STUDIO_URL`  | `snapshot` only: base URL of the Studio instance. Same as `--url`.                 |
 
 ## Examples
 
@@ -79,6 +88,8 @@ kubb studio --allowWrite --allowExec     # write files, run the formatter and li
 kubb studio login                        # connect without opening a session
 kubb studio logout                       # disconnect this machine
 kubb studio --url http://localhost:3000  # self-hosted Studio
+kubb studio snapshot                     # generate and publish a snapshot from CI
+kubb studio snapshot --json              # print the snapshot as one JSON object
 ```
 
 ## See also

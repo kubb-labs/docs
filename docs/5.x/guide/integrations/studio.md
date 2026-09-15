@@ -51,12 +51,44 @@ Grant `--allowConfigEdit` when you want to tune plugin options from the browser 
 `kubb studio` also runs on a build agent, with the agent token passed through `KUBB_AGENT_TOKEN` instead of an interactive approval:
 
 ```shell [Terminal]
-KUBB_AGENT_TOKEN=$KUBB_TOKEN kubb studio
+KUBB_AGENT_TOKEN=$KUBB_AGENT_TOKEN kubb studio
 ```
 
 Nothing is asked without a TTY, so grant what the run needs with flags on the command line. Point at a self-hosted instance with `--url`, and set `KUBB_HOME` to move the CLI's Studio state out of `~/.kubb`.
 
 For a connection that outlives your terminal, the [`kubblabs/kubb-agent` Docker image](https://hub.docker.com/r/kubblabs/kubb-agent) runs the same runtime and stays connected on its own. Use it when a team wants one shared agent instead of everyone connecting their own checkout.
+
+## Snapshot from CI
+
+`kubb studio snapshot` generates a package and publishes it to Studio in one command, then exits. Use it to attach an installable tarball to a pull or merge request, from any CI. It needs a different credential than `kubb studio`: an organization CI API key, not an agent token.
+
+```shell [Terminal]
+KUBB_TOKEN=$KUBB_TOKEN kubb studio snapshot
+```
+
+The command detects GitHub Actions, GitLab CI, Bitbucket Pipelines, and CircleCI on its own, and reuses one CI agent per pull or merge request instead of registering a new one on every run. On another CI, pass `--id` with something stable, such as the merge request number.
+
+```yaml [.gitlab-ci.yml]
+snapshot:
+  stage: build
+  script:
+    - kubb studio snapshot --json
+  variables:
+    KUBB_TOKEN: $KUBB_TOKEN
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+```
+
+`kubb-labs/action` runs this same command on GitHub Actions and posts the result as a pull-request comment. Use `--json` to read the result yourself instead: it prints one JSON object with the tarball URL, the package name and version, and the integrity hash, and nothing else on stdout.
+
+```shell [Terminal]
+kubb studio snapshot --json | jq -r '.url'
+```
+
+> [!NOTE]
+> The tarball URL needs a `registry` API key to download, not the `ci` key that created the snapshot. Create one in Studio's settings for whichever system installs the package.
+
+See the [`snapshot` action reference](/docs/5.x/reference/commands/studio#actions) for every flag.
 
 ## See also
 
