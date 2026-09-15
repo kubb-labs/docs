@@ -9,6 +9,191 @@ outline: 2
 
 # Changelog
 
+## v5.3.0 — Sep 15, 2026
+
+### @kubb/core
+
+#### Features
+
+- Add an opt-in HTML report with generated files, plugin timings, and diagnostics. ([#4041](https://github.com/kubb-labs/kubb/pull/4041), [`be705de`](https://github.com/kubb-labs/kubb/commit/be705de4279b0fa691e1b1d5ef001ad515b4bafc))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.2.8 — Sep 15, 2026
+
+### @kubb/cli
+
+#### Bug Fixes
+
+- Add `kubb studio snapshot` to generate and publish a Kubb Studio snapshot from any CI, not only GitHub Actions.
+  
+  - Registers or reuses a CI agent, connects it, queues a snapshot job, and polls until the tarball is ready.
+  - Reads the organization CI API key from `--token` or `KUBB_TOKEN`.
+  - Detects the calling CI (GitHub Actions, GitLab CI, Bitbucket Pipelines, CircleCI) to reuse one agent per pull or merge request, or takes an explicit `--id` on any other CI.
+  - Prints a summary, or one JSON object with `--json` for a script to read.
+  - `@kubb/studio` now also exports `createAgent` and `machineTokenFrom`, so a host can register a CI agent without hand-rolling the request.
+  
+  ```shell
+  KUBB_TOKEN=$KUBB_TOKEN kubb studio snapshot --json
+  ``` ([#4038](https://github.com/kubb-labs/kubb/pull/4038), [`4cd9f5e`](https://github.com/kubb-labs/kubb/commit/4cd9f5e311e5dc6edb14287c13db0a5466b4e892))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.2.7 — Sep 15, 2026
+
+### @kubb/cli
+
+#### Bug Fixes
+
+- Create a separate Kubb Studio agent connection for each project directory while reusing the same agent within that directory. ([`af87dbc`](https://github.com/kubb-labs/kubb/commit/af87dbcc8bd77daabfa1ceb57f17366c83aab9d1))
+
+### @kubb/studio
+
+#### Bug Fixes
+
+- Add `createJob` and `waitForJob` for Studio's async `/api/jobs` endpoints. ([#4035](https://github.com/kubb-labs/kubb/pull/4035), [`5382ff0`](https://github.com/kubb-labs/kubb/commit/5382ff06d685beb03f805e1a5dce4bba37aecb7d))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.2.6 — Sep 14, 2026
+
+### @kubb/studio
+
+#### Bug Fixes
+
+- Add job ID correlation to Studio commands and streamed agent events. ([`0a1e553`](https://github.com/kubb-labs/kubb/commit/0a1e5537c5d1425af22081a04e51462e78baa947))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.2.5 — Sep 14, 2026
+
+### @kubb/studio
+
+#### Bug Fixes
+
+- Add a `studio:ready` acknowledgement so a host can tell "the socket is open" apart from "Studio has registered this connection and will dispatch jobs to it".
+  
+  A connected socket announces itself with `agent:connect` but never waited for a reply, so a job could arrive at Studio moments before the agent was actually registered. `StudioSession` now waits up to 10 seconds for `studio:ready` after sending that handshake and fires a new `studio:ready` hook once it lands, warning instead of failing if an older Studio never sends one. `kubb studio` prints `✓ Ready to receive jobs` once it does. ([#4028](https://github.com/kubb-labs/kubb/pull/4028), [`b93eb64`](https://github.com/kubb-labs/kubb/commit/b93eb640264f2905cf9b47e73c5f3c957938240e))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.2.4 — Sep 14, 2026
+
+### @kubb/studio
+
+#### Bug Fixes
+
+- Report the package a plugin ships from, so `plugin-ts` reaches Studio as `@kubb/plugin-ts` while a third-party plugin keeps its own name.
+  
+  The connect payload scoped every plugin name under `@kubb/`, which claimed a third-party plugin as one of Kubb's. It now follows the same rule the dependency check already used. ([#4026](https://github.com/kubb-labs/kubb/pull/4026), [`628c98b`](https://github.com/kubb-labs/kubb/commit/628c98b012cb9b1f91201c7c071fb66c4283f511))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.2.3 — Sep 13, 2026
+
+### @kubb/cli
+
+#### Bug Fixes
+
+- `kubb generate --watch` now works with URL inputs. A remote document emits no filesystem events, so watch mode polls the URL (every 2 seconds) and regenerates when the response body changes. Each poll request times out after 10 seconds, so a hung server never stalls the watcher. An unreachable server is reported once per outage and polling continues. After recovery, a rebuild only happens when the document actually changed, unless the server was already down at startup, in which case the first successful poll regenerates so the output catches up. Previously `--watch` was silently ignored for URL inputs and the CLI exited after a single build. ([#4022](https://github.com/kubb-labs/kubb/pull/4022), [`5f4fd20`](https://github.com/kubb-labs/kubb/commit/5f4fd2006e828838d221e46588440aaf6705bd38))
+
+### @kubb/studio
+
+#### Bug Fixes
+
+- Report installed peer dependency versions and missing dependencies with each generation result. ([#4021](https://github.com/kubb-labs/kubb/pull/4021), [`6187109`](https://github.com/kubb-labs/kubb/commit/6187109c97bd00d4cf17234b7383a43e84d4b71e))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle), [@tachirodriguez](https://github.com/tachirodriguez)
+
+## v5.2.2 — Sep 11, 2026
+
+### @kubb/adapter-oas
+
+#### Bug Fixes
+
+- A `oneOf`/`anyOf` without a declared OpenAPI `discriminator` now infers one when a property
+  carries a distinct single literal value on every branch. `UnionSchemaNode.discriminatorPropertyName`
+  is set from that inference, so every printer that narrows on it (`plugin-zod`, `plugin-faker`)
+  picks it up without reimplementing the same scan. ([#4019](https://github.com/kubb-labs/kubb/pull/4019), [`c89f215`](https://github.com/kubb-labs/kubb/commit/c89f215e942a8b21294f7f35d83040cf10db951c))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.2.1 — Sep 10, 2026
+
+### @kubb/adapter-oas
+
+#### Bug Fixes
+
+- Keep a binary response body under `application/octet-stream` typed as a blob instead of falling
+  back to `emptySchemaType`. ([#4013](https://github.com/kubb-labs/kubb/pull/4013), [`dd9a902`](https://github.com/kubb-labs/kubb/commit/dd9a902b310b14be77560c79b131f2f08e182727))
+
+### @kubb/core
+
+#### Bug Fixes
+
+- Add a `kubb.dev/sponsors` entry to each published package's `funding` field, alongside the
+  existing GitHub Sponsors and Open Collective links. ([#4007](https://github.com/kubb-labs/kubb/pull/4007), [`b063738`](https://github.com/kubb-labs/kubb/commit/b06373881532b71c9316600eaf40f096484fdb51))
+
+### @kubb/studio
+
+#### Bug Fixes
+
+- Trim `@kubb/studio`'s public API to what the `kubb studio` CLI command and the Docker agent
+  actually use.
+  
+  - Removed the unused hook context types `StudioCommandStartContext`, `StudioCommandEndContext`,
+    `StudioConnectingContext`, `StudioDisconnectedContext`, `StudioErrorContext`, and
+    `StudioWarnContext` from the package's root export. `StudioConnectedContext` stays exported.
+    Hook payloads for `studio:connecting`, `studio:command:start`, `studio:command:end`,
+    `studio:disconnected`, `studio:warn`, and `studio:error` still type-check through
+    `Hookable<KubbHooks>['hook']`, since the underlying types are still declared, just no longer
+    importable by name.
+  - Removed `ConnectionOutcome` and `TokenRejection` from the root export. Both stay inferable from
+    `runConnection`'s return value and `onTokenRejected` callback.
+  
+  Neither the CLI nor the Docker agent imports any of these by name, so this does not change their
+  behavior. A consumer that did import one of them by name gets the same type through inference at
+  the call site instead, such as `runConnection`'s return value or a `hooks.hook('studio:warn', ...)`
+  callback's parameter. ([#4012](https://github.com/kubb-labs/kubb/pull/4012), [`109abe8`](https://github.com/kubb-labs/kubb/commit/109abe8a05d43cca35e93571456de882acff61e6))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@ghettoDdOS](https://github.com/ghettoDdOS), [@stijnvanhulle](https://github.com/stijnvanhulle)
+
 ## v5.2.0 — Sep 9, 2026
 
 ### @kubb/adapter-oas
