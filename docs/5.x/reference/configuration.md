@@ -492,5 +492,5 @@ Reporters available to the run, registered as instances. `defineConfig` register
 |           |                                             |
 | --------: | :------------------------------------------ |
 |     Type: | `Array<Reporter>`                           |
-|  Default: | `[cli, json, file]`                         |
+|  Default: | `[cli, json, file, html]`                   |
 | Required: | `false`                                     |
