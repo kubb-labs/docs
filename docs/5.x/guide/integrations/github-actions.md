@@ -7,9 +7,7 @@ outline: [2, 3]
 
 # GitHub Actions
 
-[`kubb-labs/action`](https://github.com/kubb-labs/action) generates a package from your spec on every pull request and publishes it to [Kubb Studio](./studio). A reviewer installs the tarball from a comment on the pull request and runs the generated client before the branch merges.
-
-The action runs [`kubb studio snapshot`](/docs/5.x/reference/commands/studio#actions) and adds the GitHub parts: the comment, and an init pull request when the repository has no config yet.
+[`kubb-labs/action`](https://github.com/kubb-labs/action) runs [`kubb studio snapshot`](/docs/5.x/reference/commands/studio#actions) on every pull request and publishes the package to [Kubb Studio](./studio). A reviewer installs the tarball from the comment it posts.
 
 > [!WARNING]
 > This feature is under active development. Use it with caution and expect breaking changes.
@@ -35,11 +33,11 @@ jobs:
           token: ${{ secrets.KUBB_TOKEN }}
 ```
 
-`pull-requests: write` covers the comment. `contents: write` is only there for the init pull request, so you can drop it once the repository has a `kubb.config.ts`.
+`pull-requests: write` covers the comment. `contents: write` is only needed for the init pull request below.
 
 ## Set the token
 
-`KUBB_TOKEN` is an organization CI API key. Create it in Studio's settings and add it under Settings > Secrets and variables > Actions. It is not the agent token that pairs a developer machine with Studio, and not the registry key that downloads a tarball.
+`KUBB_TOKEN` is an organization CI API key, created in Studio's settings. It is not the agent token `kubb studio` uses, and not the registry key that downloads a tarball.
 
 Set `KUBB_STUDIO_URL` on the step for a self-hosted Studio. The default is `https://kubb.studio`.
 
@@ -51,8 +49,6 @@ Set `KUBB_STUDIO_URL` on the step for a self-hosted Studio. The default is `http
 | `github-token`      | `${{ github.token }}` | Token that opens the init pull request and writes the snapshot comment. |
 | `working-directory` | `.`                   | Directory holding the Kubb config and the package.                      |
 | `config`            | `kubb.config.ts`      | Path to the config file, relative to `working-directory`.               |
-
-Set `working-directory` when the config lives in a workspace package rather than the repository root.
 
 ## Outputs
 
@@ -69,15 +65,13 @@ Give the step an `id`, then read an output as `${{ steps.<id>.outputs.tarball-ur
 
 ## What a run does
 
-The action runs `kubb` from the repository's own `node_modules/.bin/kubb` when there is one, so a snapshot uses the Kubb version your config and plugins are built against. Without a local install it falls back to `npx`.
+`kubb` runs from the repository's own `node_modules/.bin/kubb` when there is one, so the snapshot matches the version your config and plugins are built against. Otherwise it falls back to `npx`. One CI agent and one comment are reused per pull request.
 
-It reuses one CI agent per pull request, and edits one comment instead of adding another.
-
-Two runs end early, and neither is a failure. A fork pull request has no secrets to publish with. A repository with no `kubb.config.ts` gets an init pull request titled `chore: initialize Kubb` instead, and the next run after you merge it generates a snapshot.
+Two runs end early, and neither is a failure. A fork pull request has no secrets. A repository with no `kubb.config.ts` gets an init pull request titled `chore: initialize Kubb`, and the next run after you merge it generates a snapshot.
 
 ## Install the snapshot
 
-The comment carries an `npm i` line with the tarball URL. The download needs a `registry` API key, not the `ci` key that created the snapshot.
+The download needs a `registry` API key, not the `ci` key that created the snapshot.
 
 ```ini [.npmrc]
 //kubb.studio/:_authToken=${KUBB_REGISTRY_TOKEN}

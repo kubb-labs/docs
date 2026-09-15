@@ -7,9 +7,7 @@ outline: [2, 3]
 
 # GitLab CI
 
-There is no GitLab component to install. [`kubb studio snapshot`](/docs/5.x/reference/commands/studio#actions) generates a package, publishes it to [Kubb Studio](./studio), and exits, so a merge request needs nothing more than a job that runs it.
-
-A reviewer installs that tarball and runs the generated client against the branch, instead of reading a diff of generated files.
+[`kubb studio snapshot`](/docs/5.x/reference/commands/studio#actions) generates a package, publishes it to [Kubb Studio](./studio), and exits. A merge request needs nothing more than a job that runs it, so there is no GitLab component to install.
 
 > [!WARNING]
 > This feature is under active development. Use it with caution and expect breaking changes.
@@ -27,23 +25,21 @@ snapshot:
     - if: $CI_MERGE_REQUEST_IID
 ```
 
-`kubb` ships the Studio runtime, so `npm ci` is the only setup the job needs. The `rules` entry keeps it on merge request pipelines, where a snapshot has a reviewer to reach.
+`kubb` ships the Studio runtime, so `npm ci` is the only setup. The `rules` entry keeps the job on merge request pipelines.
 
 ## Set the token
 
-The command reads an organization CI API key from `KUBB_TOKEN`. Create it in Studio's settings, then add it under Settings > CI/CD > Variables as a masked variable so GitLab keeps it out of the job log.
-
-It is not the agent token that pairs a developer machine with Studio, and not the registry key that downloads a tarball.
+`KUBB_TOKEN` is an organization CI API key, created in Studio's settings. Add it under Settings > CI/CD > Variables as a masked variable. It is not the agent token `kubb studio` uses, and not the registry key that downloads a tarball.
 
 Point at a self-hosted Studio with `--url https://studio.internal.example`.
 
 ## One agent per merge request
 
-`snapshot` reads `CI_PROJECT_ID` and `CI_MERGE_REQUEST_IID` and registers the CI agent as `gl:<project id>:<merge request iid>`, so every pipeline on that merge request reuses one agent. A branch pipeline falls back to `CI_COMMIT_REF_SLUG`. Pass `--id` to group runs your own way.
+The CI agent registers as `gl:<project id>:<merge request iid>`, read from `CI_PROJECT_ID` and `CI_MERGE_REQUEST_IID`, so every pipeline on that merge request reuses one agent. A branch pipeline falls back to `CI_COMMIT_REF_SLUG`. Pass `--id` to group runs your own way.
 
 ## Post the result as a note
 
-`--json` prints one JSON object on stdout and nothing else, carrying `url`, `name`, `version`, `integrity`, `expiresAt`, and `agentUrl`.
+`--json` prints one JSON object and nothing else, carrying `url`, `name`, `version`, `integrity`, `expiresAt`, and `agentUrl`.
 
 ```yaml [.gitlab-ci.yml]
   script:
@@ -56,7 +52,7 @@ Point at a self-hosted Studio with `--url https://studio.internal.example`.
         "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes"
 ```
 
-Writing a note needs a project access token with the `api` scope, held in a masked variable of its own. `CI_JOB_TOKEN` does not carry that permission.
+Writing a note needs a project access token with the `api` scope. `CI_JOB_TOKEN` does not carry it.
 
 ## Install the snapshot
 
