@@ -50,12 +50,12 @@ kubb generate ./petStore.yaml
 | Option                                       | Default | Description                                                                |
 | -------------------------------------------- | ------- | ------------------------------------------------------------------------- |
 | `--config=<path>`, `-c <path>`               |         | Path to a config file, such as `./kubb.staging.ts`.                       |
-| `--logLevel=<silent\|info\|verbose>`, `-l`   | `info`  | Set the verbosity. Use `verbose` to see plugin timings.                   |
-| `--silent`, `-s`                             | `false` | Force `logLevel` to `silent`. Suppresses output.                          |
-| `--verbose`                                  | `false` | Force `logLevel` to `verbose`. Shows slow plugins.                        |
+| `--log-level=<silent\|info\|verbose>`, `-l`  | `info`  | Set the verbosity. Use `verbose` to see plugin timings.                   |
+| `--silent`, `-s`                             | `false` | Force the log level to `silent`. Suppresses output.                       |
+| `--verbose`                                  | `false` | Force the log level to `verbose`. Shows slow plugins.                     |
 | `--reporter=<cli\|json\|file\|html>`        |         | Pick which reporters to trigger, comma-separated. Defaults to `cli`.      |
 | `--watch`, `-w`                              | `false` | Re-run the pipeline whenever the input spec changes.                      |
-| `--dryRun`                                   | `false` | Preview a run without writing files, formatting, linting, or running post-generate commands. |
+| `--dry-run`                                  | `false` | Preview a run without writing files, formatting, linting, or running post-generate commands. |
 
 `--reporter` takes no short flag.
 
@@ -105,7 +105,7 @@ kubb generate --verbose
 Preview a run without touching disk:
 
 ```shell [Terminal]
-kubb generate --dryRun
+kubb generate --dry-run
 ```
 
 ## See also

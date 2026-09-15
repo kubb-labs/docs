@@ -44,16 +44,16 @@ A fresh session can do almost nothing: generation runs in memory and streams to 
 
 | Permission          | What it grants                                                               |
 | -------------------- | ----------------------------------------------------------------------------- |
-| `--allowWrite`      | Generated files are written to disk instead of only streaming to Studio.     |
-| `--allowConfigEdit` | Studio may change plugin options in your `kubb.config.ts`.                   |
-| `--allowInput`      | A spec sent by Studio replaces the one on disk for that generation.          |
-| `--allowExec`       | The formatter, the linter, and `output.postGenerate` run as child processes. |
+| `--allow-write`      | Generated files are written to disk instead of only streaming to Studio.     |
+| `--allow-config-edit` | Studio may change plugin options in your `kubb.config.ts`.                   |
+| `--allow-input`      | A spec sent by Studio replaces the one on disk for that generation.          |
+| `--allow-exec`       | The formatter, the linter, and `output.postGenerate` run as child processes. |
 
 The CLI asks about each one on the first connect to a project and remembers your answer. Nothing is ever asked in CI or without a TTY: an unattended run stays at whatever access it was explicitly given.
 
 ## Editing config from the browser
 
-With `--allowConfigEdit`, the options you change in Studio are written back to your `kubb.config.ts` as an AST patch, not a regeneration, so it touches only the fields you changed and leaves the rest alone. Try `group.type: 'tag'`, look at the resulting file tree, switch back, all without leaving the tab.
+With `--allow-config-edit`, the options you change in Studio are written back to your `kubb.config.ts` as an AST patch, not a regeneration, so it touches only the fields you changed and leaves the rest alone. Try `group.type: 'tag'`, look at the resulting file tree, switch back, all without leaving the tab.
 
 ## Beyond your laptop
 
