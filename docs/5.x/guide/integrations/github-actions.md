@@ -61,7 +61,7 @@ Set `KUBB_STUDIO_URL` on the step for a self-hosted Studio. The default is `http
 | `integrity`       | SHA-512 integrity of the tarball.            |
 | `agent-url`       | Studio URL of the CI agent that ran the job. |
 
-Give the step an `id`, then read an output as `${{ steps.<id>.outputs.tarball-url }}`.
+Give the step an `id`, then read an output as `${{ steps.snapshot.outputs.tarball-url }}` (using `snapshot` as the step ID).
 
 ## What a run does
 
