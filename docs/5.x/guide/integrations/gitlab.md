@@ -29,7 +29,7 @@ snapshot:
 
 ## Set the token
 
-`KUBB_TOKEN` is an organization CI API key, created in Studio's settings. Add it under Settings > CI/CD > Variables as a masked variable. It is not the agent token `kubb studio` uses, and not the registry key that downloads a tarball.
+Create `KUBB_TOKEN`, an organization CI API key, in Studio's settings. Add it under Settings > CI/CD > Variables as a masked variable.
 
 Point at a self-hosted Studio with `--url https://studio.internal.example`.
 
