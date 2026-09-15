@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Kubb Studio
 
-[Kubb Studio](https://kubb.studio) is a browser front end for a Kubb project. You edit plugin options, trigger a generation, and watch the output appear, while the generation itself runs on your machine against the files already on disk.
+[Kubb Studio](https://kubb.studio) is a browser interface for a Kubb project. You edit plugin options, trigger a generation, and watch the output appear while the generation runs on your machine against the files on disk.
 
 That split is the point. Studio sends a command over a WebSocket, your machine runs Kubb, and progress events and generated files stream back to the browser. Your spec and your source never leave your infrastructure.
 
@@ -25,13 +25,13 @@ The Studio runtime ships with the CLI, so a project that already has `kubb` inst
 kubb studio
 ```
 
-The first run opens the approval page in Studio and waits for you to approve this machine. Later runs connect straight away. Once the session is open, the project shows up in Studio and stays there until you stop the command. Check what a machine is connected as with `kubb studio status`, and disconnect it with `kubb studio logout`.
+When the project is not approved yet, the CLI opens Studio's approval page and waits for confirmation. Once approved, the session connects and the project appears in Studio until you stop the command. Check the connected machine with `kubb studio status`, and disconnect it with `kubb studio logout`.
 
 ## Choose what Studio may do
 
 A session is read-only by default. Generated files stream to the browser and nothing on disk changes, which makes the first connect safe to try on a real project.
 
-Four permissions widen that, and the CLI asks about each one on the first connect to a project, then remembers your answer.
+The CLI exposes four permissions. It asks about each permission when you first connect a project, then remembers your answers.
 
 | Permission          | What it grants                                                               |
 | -------------------- | ----------------------------------------------------------------------------- |
@@ -51,12 +51,44 @@ Grant `--allowConfigEdit` when you want to tune plugin options from the browser 
 `kubb studio` also runs on a build agent, with the agent token passed through `KUBB_AGENT_TOKEN` instead of an interactive approval:
 
 ```shell [Terminal]
-KUBB_AGENT_TOKEN=$KUBB_TOKEN kubb studio
+KUBB_AGENT_TOKEN=your-agent-token kubb studio
 ```
 
 Nothing is asked without a TTY, so grant what the run needs with flags on the command line. Point at a self-hosted instance with `--url`, and set `KUBB_HOME` to move the CLI's Studio state out of `~/.kubb`.
 
 For a connection that outlives your terminal, the [`kubblabs/kubb-agent` Docker image](https://hub.docker.com/r/kubblabs/kubb-agent) runs the same runtime and stays connected on its own. Use it when a team wants one shared agent instead of everyone connecting their own checkout.
+
+## Snapshot from CI
+
+`kubb studio snapshot` generates a package and publishes it to Studio in one command, then exits. Use it to attach an installable tarball to a pull or merge request, from any CI. It needs a different credential than `kubb studio`: an organization CI API key, not an agent token.
+
+```shell [Terminal]
+KUBB_TOKEN=$KUBB_TOKEN kubb studio snapshot
+```
+
+The command detects GitHub Actions, GitLab CI, Bitbucket Pipelines, and CircleCI on its own, and reuses one CI agent per pull or merge request instead of registering a new one on every run. On another CI, pass `--id` with something stable, such as the merge request number.
+
+```yaml [.gitlab-ci.yml]
+snapshot:
+  stage: build
+  script:
+    - kubb studio snapshot --json
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+```
+
+Set `KUBB_TOKEN` as a masked CI/CD variable in the project's settings rather than in the job itself, so GitLab injects it without exposing it in the job log.
+
+[`kubb-labs/action`](https://github.com/kubb-labs/action) runs this same command on GitHub Actions and posts the result as a pull-request comment. Use `--json` to read the result yourself instead: it prints one JSON object with the tarball URL, the package name and version, and the integrity hash, and nothing else on stdout.
+
+```shell [Terminal]
+kubb studio snapshot --json | jq -r '.url'
+```
+
+> [!NOTE]
+> The tarball URL needs a `registry` API key to download, not the `ci` key that created the snapshot. Create one in Studio's settings for whichever system installs the package.
+
+See the [`snapshot` action reference](/docs/5.x/reference/commands/studio#actions) for every flag.
 
 ## See also
 
