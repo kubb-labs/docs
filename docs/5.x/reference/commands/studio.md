@@ -53,21 +53,18 @@ output:
 | ------------------------------------------ | --------------------- | ---------------------------------------------------------------------------------- |
 | `--config=<path>`, `-c <path>`             |                       | Path to a config file, such as `./kubb.staging.ts`.                                |
 | `--url=<url>`                              | `https://kubb.studio` | Base URL of the Studio instance to connect with.                                   |
-| `--allowWrite`                             | `false`               | Write generated files to disk. Asked once per project when omitted.                |
-| `--allowConfigEdit`                        | `false`               | Let Studio change plugin options in `kubb.config.ts`. Asked once per project.      |
-| `--allowInput`                             | `false`               | Generate from a spec Studio sends instead of the one on disk. Asked once per project. |
-| `--allowExec`                              | `false`               | Run the formatter, the linter, and `output.postGenerate`. Asked once per project.  |
+| `--allow-write`                            | `false`               | Write generated files to disk. Asked once per project when omitted.                |
+| `--allow-config-edit`                      | `false`               | Let Studio change plugin options in `kubb.config.ts`. Asked once per project.      |
+| `--allow-input`                            | `false`               | Generate from a spec Studio sends instead of the one on disk. Asked once per project. |
+| `--allow-exec`                             | `false`               | Run the formatter, the linter, and `output.postGenerate`. Asked once per project.  |
 | `--no-open`                                |                       | Do not open the approval page in a browser.                                        |
-| `--logLevel=<silent\|info\|verbose>`, `-l` | `info`                | Set the verbosity.                                                                 |
+| `--log-level=<silent\|info\|verbose>`, `-l`| `info`                | Set the verbosity.                                                                 |
 | `--token=<key>`                            |                       | `snapshot` only: organization CI API key. Defaults to `KUBB_TOKEN`.                |
 | `--id=<id>`                                |                       | `snapshot` only: stable identity for the CI agent. Auto-detected on GitHub Actions, GitLab CI, Bitbucket Pipelines and CircleCI. |
 | `--name=<name>`                            |                       | `snapshot` only: package name for the tarball. Defaults to the name in `package.json`. |
 | `--package-version=<version>`              |                       | `snapshot` only: package version for the tarball. Defaults to the version in `package.json`. |
 | `--timeout=<seconds>`                      | `600`                 | `snapshot` only: seconds to wait for the job to finish, capped at `3600`.          |
 | `--json`                                   | `false`               | `snapshot` only: print the result as one JSON object instead of a summary.         |
-
-> [!IMPORTANT]
-> Flags are camelCase. `--allow-write` is not recognized, and the CLI ignores it without a warning, so the permission stays off.
 
 Approval is per Studio instance, so pointing `--url` at a different instance asks for approval again. The connection is read-only until you grant a permission. Without a permission flag, the CLI asks a yes/no question for each permission and remembers the answers per project directory. It does not ask questions in CI or without a TTY, so unattended runs use only the permissions passed on the command line.
 
@@ -83,7 +80,7 @@ Approval is per Studio instance, so pointing `--url` at a different instance ask
 
 ```shell [Terminal]
 kubb studio                              # connect read-only
-kubb studio --allowWrite --allowExec     # write files, run the formatter and linter
+kubb studio --allow-write --allow-exec   # write files, run the formatter and linter
 kubb studio login                        # connect without opening a session
 kubb studio logout                       # disconnect this machine
 kubb studio --url http://localhost:3000  # self-hosted Studio

@@ -35,16 +35,16 @@ The CLI exposes four permissions. It asks about each permission when you first c
 
 | Permission          | What it grants                                                               |
 | -------------------- | ----------------------------------------------------------------------------- |
-| `--allowWrite`      | Generated files are written to disk instead of only streaming to Studio.     |
-| `--allowConfigEdit` | Studio may change plugin options in your `kubb.config.ts`.                   |
-| `--allowInput`      | A spec sent by Studio replaces the one on disk for that generation.          |
-| `--allowExec`       | The formatter, the linter, and `output.postGenerate` run as child processes. |
+| `--allow-write`      | Generated files are written to disk instead of only streaming to Studio.     |
+| `--allow-config-edit` | Studio may change plugin options in your `kubb.config.ts`.                   |
+| `--allow-input`      | A spec sent by Studio replaces the one on disk for that generation.          |
+| `--allow-exec`       | The formatter, the linter, and `output.postGenerate` run as child processes. |
 
 ```shell [Terminal]
-kubb studio --allowWrite --allowExec
+kubb studio --allow-write --allow-exec
 ```
 
-Grant `--allowConfigEdit` when you want to tune plugin options from the browser and keep the result. Studio patches the matching fields in `kubb.config.ts` and leaves the comments and formatting around them alone.
+Grant `--allow-config-edit` when you want to tune plugin options from the browser and keep the result. Studio patches the matching fields in `kubb.config.ts` and leaves the comments and formatting around them alone.
 
 ## Run headless or self-hosted
 
