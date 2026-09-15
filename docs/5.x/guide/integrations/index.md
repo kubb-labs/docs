@@ -1,7 +1,7 @@
 ---
 layout: doc
 title: Integrations
-description: Run Kubb from somewhere other than the CLI. Generate inside your bundler with Vite, Rollup, Rolldown, webpack, Rspack, esbuild, Farm, Nuxt or Astro, from the browser with Kubb Studio, or on every pull request from GitHub Actions and GitLab CI.
+description: Run Kubb from somewhere other than the CLI. Generate inside your bundler with Vite, Rollup, Rolldown, webpack, Rspack, esbuild, Farm, Nuxt or Astro, from the browser with Kubb Studio, or on CI.
 outline: [2, 3]
 ---
 
@@ -88,11 +88,9 @@ Reach for it when you want to change plugin options and see the result straight 
 
 ## Continuous integration
 
-`kubb studio snapshot` runs generation on a build agent and publishes the result to Studio as an installable tarball. A reviewer installs that package and runs the generated client, rather than reading a diff of generated files.
+`kubb studio snapshot` runs generation on a build agent and publishes the result to Studio as an installable tarball a reviewer can try.
 
-| CI                                                    | Docs                               |
-| ----------------------------------------------------- | ---------------------------------- |
-| [GitHub Actions](https://github.com/features/actions) | [GitHub Actions](./github-actions) |
-| [GitLab CI](https://docs.gitlab.com/ci/)              | [GitLab CI](./gitlab)              |
+- [GitHub Actions](./github-actions), through `kubb-labs/action`
+- [GitLab CI](./gitlab), through a `.gitlab-ci.yml` job
 
-Bitbucket Pipelines and CircleCI are detected too, and any other CI works once you pass `--id`. See [Snapshot from CI](./studio#snapshot-from-ci) for the shared behavior.
+Bitbucket Pipelines and CircleCI are detected too, and any other CI works once you pass `--id`. See [Snapshot from CI](./studio#snapshot-from-ci) for what they share.

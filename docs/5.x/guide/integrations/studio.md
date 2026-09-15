@@ -76,8 +76,8 @@ kubb studio snapshot --json | jq -r '.url'
 
 Two providers have a page of their own:
 
-- [GitHub Actions](./github-actions): [`kubb-labs/action`](https://github.com/kubb-labs/action) runs the command and keeps the result in one pull-request comment
-- [GitLab CI](./gitlab): a `.gitlab-ci.yml` job that runs the command and writes the result as a merge request note
+- [GitHub Actions](./github-actions), through [`kubb-labs/action`](https://github.com/kubb-labs/action)
+- [GitLab CI](./gitlab), through a `.gitlab-ci.yml` job
 
 > [!NOTE]
 > The tarball URL needs a `registry` API key to download, not the `ci` key that created the snapshot. Create one in Studio's settings for whichever system installs the package.
