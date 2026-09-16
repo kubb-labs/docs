@@ -17,7 +17,7 @@ Published: 2026-09-04
 
 Tuning a Kubb config is a slow loop. You change one plugin option, run `kubb generate`, open the output folder, decide it was wrong, and start over.
 
-[Kubb Studio](https://kubb.studio) puts that loop in a browser tab. You pick plugin options in a form, hit generate, and watch files appear as they are written. What you do not do is upload anything.
+[Kubb Studio](https://kubb.studio) puts that loop in a browser tab. You pick plugin options in a form, hit generate, and watch files appear as they are written. What you do not do is upload your spec.
 
 > [!WARNING]
 > Studio is under active development. Expect breaking changes while it settles.
@@ -26,7 +26,7 @@ Tuning a Kubb config is a slow loop. You change one plugin option, run `kubb gen
 
 To generate from your spec, a hosted generator needs your spec. For a public Petstore that is fine. For the internal API that describes your billing system, it usually is not.
 
-Studio splits the two halves. The browser holds the UI, your machine holds the code. When you click generate, Studio sends a command over a WebSocket, Kubb runs locally against the files already on disk, and progress and output stream back to the tab. Nothing is uploaded, so you get the plugin versions already installed in your project, not whatever a server happens to have.
+Studio splits the two halves. The browser holds the UI, your machine holds the code. When you click generate, Studio sends a command over a WebSocket, Kubb runs locally against the files already on disk, and progress and output stream back to the tab. Your spec never leaves your machine, so you get the plugin versions already installed in your project, not whatever a server happens to have. Generated file contents follow only if you grant `--allow-read`.
 
 ## One command to connect
 
