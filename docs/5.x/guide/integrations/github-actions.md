@@ -46,7 +46,7 @@ Set `KUBB_STUDIO_URL` on the step for a self-hosted Studio. The default is `http
 | Input               | Default               | Description                                                             |
 | ------------------- | --------------------- | ----------------------------------------------------------------------- |
 | `token`             |                       | Organization CI API key. Required.                                      |
-| `github-token`      | `${{ github.token }}` | Token that opens the init pull request and writes the snapshot comment. |
+| `github-token`      | <code v-pre>${{ github.token }}</code> | Token that opens the init pull request and writes the snapshot comment. |
 | `working-directory` | `.`                   | Directory holding the Kubb config and the package.                      |
 | `config`            | `kubb.config.ts`      | Path to the config file, relative to `working-directory`.               |
 
@@ -61,7 +61,7 @@ Set `KUBB_STUDIO_URL` on the step for a self-hosted Studio. The default is `http
 | `integrity`       | SHA-512 integrity of the tarball.            |
 | `agent-url`       | Studio URL of the CI agent that ran the job. |
 
-Give the step an `id`, then read an output as `${{ steps.snapshot.outputs.tarball-url }}` (using `snapshot` as the step ID).
+Give the step an `id`, then read an output as <code v-pre>${{ steps.snapshot.outputs.tarball-url }}</code> (using `snapshot` as the step ID).
 
 ## What a run does
 
