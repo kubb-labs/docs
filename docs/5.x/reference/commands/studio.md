@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # `kubb studio`
 
-Run `kubb studio` to connect a project to [Kubb Studio](https://kubb.studio). Kubb runs on your machine, reads the config and spec from disk, and streams progress and generated files to the browser over a WebSocket.
+Run `kubb studio` to connect a project to [Kubb Studio](https://kubb.studio). Kubb runs on your machine, reads the config and spec from disk, and streams progress and the list of generated files to the browser over a WebSocket. File contents follow only with `--allow-read`.
 
 > [!WARNING]
 > This feature is under active development. Use it with caution and expect breaking changes.
@@ -15,6 +15,7 @@ Run `kubb studio` to connect a project to [Kubb Studio](https://kubb.studio). Ku
 ```terminal
 command: kubb studio
 output:
+  - ✘ read generated files
   - ✘ write generated files
   - ✘ edit kubb.config.ts
   - ✘ use a Studio spec
@@ -53,6 +54,7 @@ output:
 | ------------------------------------------ | --------------------- | ---------------------------------------------------------------------------------- |
 | `--config=<path>`, `-c <path>`             |                       | Path to a config file, such as `./kubb.staging.ts`.                                |
 | `--url=<url>`                              | `https://kubb.studio` | Base URL of the Studio instance to connect with.                                   |
+| `--allow-read`                             | `false`               | Read the source of files a generation produced. Asked once per project when omitted. |
 | `--allow-write`                            | `false`               | Write generated files to disk. Asked once per project when omitted.                |
 | `--allow-config-edit`                      | `false`               | Let Studio change plugin options in `kubb.config.ts`. Asked once per project.      |
 | `--allow-input`                            | `false`               | Generate from a spec Studio sends instead of the one on disk. Asked once per project. |
@@ -66,7 +68,7 @@ output:
 | `--timeout=<seconds>`                      | `600`                 | `snapshot` only: seconds to wait for the job to finish, capped at `3600`.          |
 | `--json`                                   | `false`               | `snapshot` only: print the result as one JSON object instead of a summary.         |
 
-Approval is per Studio instance, so pointing `--url` at a different instance asks for approval again. The connection is read-only until you grant a permission. Without a permission flag, the CLI asks a yes/no question for each permission and remembers the answers per project directory. It does not ask questions in CI or without a TTY, so unattended runs use only the permissions passed on the command line.
+Approval is per Studio instance, so pointing `--url` at a different instance asks for approval again. Without `--allow-read`, a session still runs a generation and reports which files it produced, but Studio shows no contents for them. Without a permission flag, the CLI asks a yes/no question for each permission and remembers the answers per project directory. It does not ask questions in CI or without a TTY, so unattended runs use only the permissions passed on the command line.
 
 ## Environment variables
 
@@ -79,7 +81,8 @@ Approval is per Studio instance, so pointing `--url` at a different instance ask
 ## Examples
 
 ```shell [Terminal]
-kubb studio                              # connect read-only
+kubb studio                              # connect, granting nothing
+kubb studio --allow-read                 # show generated files in the browser
 kubb studio --allow-write --allow-exec   # write files, run the formatter and linter
 kubb studio login                        # connect without opening a session
 kubb studio logout                       # disconnect this machine

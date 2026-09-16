@@ -40,14 +40,15 @@ The first run asks you to approve this machine in Studio. Every later `kubb stud
 
 ## Read-only until you say otherwise
 
-A fresh session can do almost nothing: generation runs in memory and streams to the browser, and not a single file on disk changes. Four flags open that up one at a time:
+A fresh session can do almost nothing: generation runs in memory and streams the list of files it produced to the browser, and not a single file on disk changes or leaves your machine. Five flags open that up one at a time:
 
-| Permission          | What it grants                                                               |
-| -------------------- | ----------------------------------------------------------------------------- |
-| `--allow-write`      | Generated files are written to disk instead of only streaming to Studio.     |
-| `--allow-config-edit` | Studio may change plugin options in your `kubb.config.ts`.                   |
-| `--allow-input`      | A spec sent by Studio replaces the one on disk for that generation.          |
-| `--allow-exec`       | The formatter, the linter, and `output.postGenerate` run as child processes. |
+| Permission            | What it grants                                                               |
+| --------------------- | ----------------------------------------------------------------------------- |
+| `--allow-read`        | Studio can read the source of the files a generation produced.              |
+| `--allow-write`       | Generated files are written to disk instead of only streaming to Studio.    |
+| `--allow-config-edit` | Studio may change plugin options in your `kubb.config.ts`.                  |
+| `--allow-input`       | A spec sent by Studio replaces the one on disk for that generation.         |
+| `--allow-exec`        | The formatter, the linter, and `output.postGenerate` run as child processes. |
 
 The CLI asks about each one on the first connect to a project and remembers your answer. Nothing is ever asked in CI or without a TTY: an unattended run stays at whatever access it was explicitly given.
 
