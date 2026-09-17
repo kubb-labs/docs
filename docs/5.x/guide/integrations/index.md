@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Integrations
 
-Kubb runs from the CLI, and it also runs from the places you already work. A bundler integration generates during your build, [Kubb Studio](./studio) generates from a browser tab while Kubb runs on your machine, and a CI job publishes a snapshot a reviewer can install.
+Kubb runs from the CLI, and it also runs from the places you already work. A bundler integration generates during your build, and [Kubb Studio](./studio) generates from a browser tab while Kubb runs on your machine.
 
 ## Bundlers
 
@@ -92,5 +92,3 @@ Reach for it when you want to change plugin options and see the result straight 
 
 - [GitHub Actions](./github-actions), through `kubb-labs/action`
 - [GitLab CI](./gitlab), through a `.gitlab-ci.yml` job
-
-Bitbucket Pipelines and CircleCI are detected too, and any other CI works once you pass `--id`. See [Snapshot from CI](./studio#snapshot-from-ci) for what they share.

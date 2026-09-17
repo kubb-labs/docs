@@ -1,7 +1,7 @@
 ---
 layout: doc
 title: Kubb Studio
-description: Connect a Kubb project to Kubb Studio and generate from the browser while Kubb runs on your own machine. Covers connecting, permissions, headless runs, and self-hosted instances.
+description: Connect a Kubb project to Kubb Studio and generate from the browser while Kubb runs on your own machine. Covers connecting, permissions, and headless runs.
 outline: [2, 3]
 ---
 
@@ -47,7 +47,7 @@ kubb studio --allow-read --allow-write --allow-exec
 
 Grant `--allow-config-edit` when you want to tune plugin options from the browser and keep the result. Studio patches the matching fields in `kubb.config.ts` and leaves the comments and formatting around them alone.
 
-## Run headless or self-hosted
+## Run headless
 
 `kubb studio` also runs on a build agent, with the agent token passed through `KUBB_AGENT_TOKEN` instead of an interactive approval:
 
@@ -55,19 +55,19 @@ Grant `--allow-config-edit` when you want to tune plugin options from the browse
 KUBB_AGENT_TOKEN=your-agent-token kubb studio
 ```
 
-Nothing is asked without a TTY, so grant what the run needs with flags on the command line. `--allow-read` is the one a headless run most often forgets: without it, generated files show up in the tree with no contents. Point at a self-hosted instance with `--url`, and set `KUBB_HOME` to move the CLI's Studio state out of `~/.kubb`.
+Nothing is asked without a TTY, so grant what the run needs with flags on the command line. `--allow-read` is the one a headless run most often forgets: without it, generated files show up in the tree with no contents. Set `KUBB_HOME` to move the CLI's Studio state out of `~/.kubb`.
 
 For a connection that outlives your terminal, the [`kubblabs/kubb-agent` Docker image](https://hub.docker.com/r/kubblabs/kubb-agent) runs the same runtime and stays connected on its own. Use it when a team wants one shared agent instead of everyone connecting their own checkout.
 
 ## Snapshot from CI
 
-`kubb studio snapshot` generates a package and publishes it to Studio in one command, then exits. Use it to hand a reviewer an installable tarball on a pull or merge request, from any CI. It needs a different credential than `kubb studio`: an organization CI API key, not an agent token.
+`kubb studio snapshot` generates a package and publishes it to Studio in one command, then exits. Use it to hand a reviewer an installable tarball on a pull or merge request. It needs a different credential than `kubb studio`: an organization CI API key, not an agent token.
 
 ```shell [Terminal]
 KUBB_TOKEN=$KUBB_TOKEN kubb studio snapshot
 ```
 
-The command detects GitHub Actions, GitLab CI, Bitbucket Pipelines, and CircleCI on its own, and reuses one CI agent per pull or merge request instead of registering a new one on every run. On another CI, pass `--id` with something stable, such as the merge request number.
+GitHub Actions and GitLab CI reuse one CI agent per pull or merge request instead of registering a new one on every run.
 
 Use `--json` to read the result in a later step. It prints one JSON object with the tarball URL, the package name and version, and the integrity hash, and nothing else on stdout.
 
