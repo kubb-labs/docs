@@ -26,7 +26,7 @@ Tuning a Kubb config is a slow loop. You change one plugin option, run `kubb gen
 
 To generate from your spec, a hosted generator needs your spec. For a public Petstore that is fine. For the internal API that describes your billing system, it usually is not.
 
-Studio splits the two halves. The browser holds the UI, your machine holds the code. When you click generate, Studio sends a command over a WebSocket, Kubb runs locally against the files already on disk, and progress and output stream back to the tab. Your spec never leaves your machine, so you get the plugin versions already installed in your project, not whatever a server happens to have. Generated file contents follow only if you grant `--allow-read`.
+Studio keeps the browser and your code separate. When you click generate, Kubb runs locally against the files already on disk and reports progress back to the tab. Your spec stays on your machine, so you use the plugin versions installed in your project. Generated file contents go to Studio only when you grant `--allow-read`.
 
 ## One command to connect
 
@@ -40,7 +40,7 @@ The first run asks you to approve this machine in Studio. Every later `kubb stud
 
 ## Read-only until you say otherwise
 
-A fresh session can do almost nothing: generation runs in memory and streams the list of files it produced to the browser, and not a single file on disk changes or leaves your machine. Five flags open that up one at a time:
+A fresh session generates in memory and sends only the resulting file paths to Studio. It does not change files on disk. Five flags open that up one at a time:
 
 | Permission            | What it grants                                                               |
 | --------------------- | ----------------------------------------------------------------------------- |

@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # `kubb studio`
 
-Run `kubb studio` to connect a project to [Kubb Studio](https://kubb.studio). Kubb runs on your machine, reads the config and spec from disk, and streams progress and the list of generated files to the browser over a WebSocket. File contents follow only with `--allow-read`.
+Run `kubb studio` to connect a project to [Kubb Studio](https://kubb.studio). Kubb runs on your machine and reports progress and generated file paths to Studio. Grant `--allow-read` to open a generated file in the browser.
 
 > [!WARNING]
 > This feature is under active development. Use it with caution and expect breaking changes.

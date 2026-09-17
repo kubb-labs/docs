@@ -7,9 +7,9 @@ outline: [2, 3]
 
 # Kubb Studio
 
-[Kubb Studio](https://kubb.studio) is a browser interface for a Kubb project. You edit plugin options, trigger a generation, and watch the output appear while the generation runs on your machine against the files on disk.
+[Kubb Studio](https://kubb.studio) is a browser interface for a Kubb project. You edit plugin options, trigger a generation, and watch its progress while Kubb runs on your machine against the files on disk.
 
-That split is the point. Studio sends a command over a WebSocket, your machine runs Kubb, and progress events and the list of generated files stream back to the browser. File contents follow only when you open one, and only once you grant `--allow-read`. Your spec and your source never leave your infrastructure unless you ask for them to.
+Kubb reports progress and generated file paths to Studio. Your spec stays on your machine. Studio reads source from a generated file only after you grant `--allow-read`.
 
 > [!WARNING]
 > This feature is under active development. Use it with caution and expect breaking changes.
@@ -29,7 +29,7 @@ When the project is not approved yet, the CLI opens Studio's approval page and w
 
 ## Choose what Studio may do
 
-A session can do nothing but run a generation and report which files it produced, until you grant a permission. Nothing on disk changes and no source leaves your machine, which makes the first connect safe to try on a real project.
+A session is read-only by default. Studio sees generated file paths, but not their source, and nothing on disk changes. It is safe to try on a real project.
 
 The CLI exposes five permissions. It asks about each permission when you first connect a project, then remembers your answers.
 
