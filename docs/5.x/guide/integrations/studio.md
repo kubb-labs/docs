@@ -9,7 +9,7 @@ outline: [2, 3]
 
 [Kubb Studio](https://kubb.studio) is a browser interface for a Kubb project. You edit plugin options, trigger a generation, and watch the output appear while the generation runs on your machine against the files on disk.
 
-That split is the point. Studio sends a command over a WebSocket, your machine runs Kubb, and progress events and generated files stream back to the browser. Your spec and your source never leave your infrastructure.
+That split is the point. Studio sends a command over a WebSocket, your machine runs Kubb, and progress events and the list of generated files stream back to the browser. File contents follow only when you open one, and only once you grant `--allow-read`. Your spec and your source never leave your infrastructure unless you ask for them to.
 
 > [!WARNING]
 > This feature is under active development. Use it with caution and expect breaking changes.
@@ -29,19 +29,20 @@ When the project is not approved yet, the CLI opens Studio's approval page and w
 
 ## Choose what Studio may do
 
-A session is read-only by default. Generated files stream to the browser and nothing on disk changes, which makes the first connect safe to try on a real project.
+A session can do nothing but run a generation and report which files it produced, until you grant a permission. Nothing on disk changes and no source leaves your machine, which makes the first connect safe to try on a real project.
 
-The CLI exposes four permissions. It asks about each permission when you first connect a project, then remembers your answers.
+The CLI exposes five permissions. It asks about each permission when you first connect a project, then remembers your answers.
 
-| Permission          | What it grants                                                               |
-| -------------------- | ----------------------------------------------------------------------------- |
-| `--allow-write`      | Generated files are written to disk instead of only streaming to Studio.     |
-| `--allow-config-edit` | Studio may change plugin options in your `kubb.config.ts`.                   |
-| `--allow-input`      | A spec sent by Studio replaces the one on disk for that generation.          |
-| `--allow-exec`       | The formatter, the linter, and `output.postGenerate` run as child processes. |
+| Permission            | What it grants                                                               |
+| --------------------- | ----------------------------------------------------------------------------- |
+| `--allow-read`        | Studio can read the source of the files a generation produced.              |
+| `--allow-write`       | Generated files are written to disk instead of only streaming to Studio.    |
+| `--allow-config-edit` | Studio may change plugin options in your `kubb.config.ts`.                  |
+| `--allow-input`       | A spec sent by Studio replaces the one on disk for that generation.         |
+| `--allow-exec`        | The formatter, the linter, and `output.postGenerate` run as child processes. |
 
 ```shell [Terminal]
-kubb studio --allow-write --allow-exec
+kubb studio --allow-read --allow-write --allow-exec
 ```
 
 Grant `--allow-config-edit` when you want to tune plugin options from the browser and keep the result. Studio patches the matching fields in `kubb.config.ts` and leaves the comments and formatting around them alone.
@@ -54,7 +55,7 @@ Grant `--allow-config-edit` when you want to tune plugin options from the browse
 KUBB_AGENT_TOKEN=your-agent-token kubb studio
 ```
 
-Nothing is asked without a TTY, so grant what the run needs with flags on the command line. Point at a self-hosted instance with `--url`, and set `KUBB_HOME` to move the CLI's Studio state out of `~/.kubb`.
+Nothing is asked without a TTY, so grant what the run needs with flags on the command line. `--allow-read` is the one a headless run most often forgets: without it, generated files show up in the tree with no contents. Point at a self-hosted instance with `--url`, and set `KUBB_HOME` to move the CLI's Studio state out of `~/.kubb`.
 
 For a connection that outlives your terminal, the [`kubblabs/kubb-agent` Docker image](https://hub.docker.com/r/kubblabs/kubb-agent) runs the same runtime and stays connected on its own. Use it when a team wants one shared agent instead of everyone connecting their own checkout.
 
