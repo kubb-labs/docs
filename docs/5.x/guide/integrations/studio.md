@@ -89,7 +89,7 @@ Two providers have a page of their own:
 `kubb studio publish` publishes one of the current project's snapshots to a real npm registry. In an interactive terminal it lists the snapshots for the agent; pass `--snapshot-id` in CI or when you already know which snapshot to release.
 
 ```shell [Terminal]
-NPM_TOKEN=$NPM_TOKEN kubb studio publish --snapshot-id <snapshot-id>
+NPM_TOKEN=$NPM_TOKEN kubb studio publish --allow-publish --snapshot-id <snapshot-id>
 ```
 
 The npm credential stays in the agent's environment. Studio receives the snapshot metadata and job status, never the token. The tarball is published exactly as packed; it is not rewritten and no npm tag is added. Publishing the same package version again fails with npm's duplicate-version error.

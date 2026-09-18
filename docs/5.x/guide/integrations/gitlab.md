@@ -45,6 +45,7 @@ The CI agent registers as `gl:<project id>:<merge request iid>`, read from `CI_P
   script:
     - npm ci
     - npx kubb studio snapshot --json > snapshot.json
+    - jq -r '.id' snapshot.json
     - |
       curl --fail --request POST \
         --header "PRIVATE-TOKEN: $GITLAB_API_TOKEN" \
@@ -53,6 +54,9 @@ The CI agent registers as `gl:<project id>:<merge request iid>`, read from `CI_P
 ```
 
 Writing a note needs a project access token with the `api` scope. `CI_JOB_TOKEN` does not carry it.
+Copy the ID printed by `jq -r '.id' snapshot.json` into the project or group variable
+`SNAPSHOT_ID` for the later tag pipeline. `SNAPSHOT_ID` is a regular, non-secret variable; the
+published tarball remains protected by Studio's organization permissions.
 
 ## Install the snapshot
 
@@ -76,7 +80,8 @@ publish:
   image: node:22
   script:
     - npm ci
-    - NPM_TOKEN="$NPM_TOKEN" npx kubb studio publish --snapshot-id "$SNAPSHOT_ID" --id "gl:$CI_PROJECT_ID:$CI_MERGE_REQUEST_IID"
+    - test -n "$SNAPSHOT_ID"
+    - NPM_TOKEN="$NPM_TOKEN" npx kubb studio publish --allow-publish --snapshot-id "$SNAPSHOT_ID" --id "gl:$CI_PROJECT_ID:$CI_MERGE_REQUEST_IID"
   rules:
     - if: $CI_COMMIT_TAG
 ```
