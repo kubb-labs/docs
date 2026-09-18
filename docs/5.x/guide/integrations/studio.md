@@ -31,7 +31,7 @@ When the project is not approved yet, the CLI opens Studio's approval page and w
 
 A session is read-only by default. Studio sees generated file paths, but not their source, and nothing on disk changes. It is safe to try on a real project.
 
-The CLI exposes five permissions. It asks about each permission when you first connect a project, then remembers your answers.
+The CLI exposes six permissions. It asks about each permission when you first connect a project, then remembers your answers.
 
 | Permission            | What it grants                                                               |
 | --------------------- | ----------------------------------------------------------------------------- |
@@ -40,6 +40,7 @@ The CLI exposes five permissions. It asks about each permission when you first c
 | `--allow-config-edit` | Studio may change plugin options in your `kubb.config.ts`.                  |
 | `--allow-input`       | A spec sent by Studio replaces the one on disk for that generation.         |
 | `--allow-exec`        | The formatter, the linter, and `output.postGenerate` run as child processes. |
+| `--allow-publish`     | The agent may publish a snapshot to npm from its own machine.               |
 
 ```shell [Terminal]
 kubb studio --allow-read --allow-write --allow-exec
@@ -83,7 +84,19 @@ Two providers have a page of their own:
 > [!NOTE]
 > The tarball URL needs a `registry` API key to download, not the `ci` key that created the snapshot. Create one in Studio's settings for whichever system installs the package.
 
-See the [`snapshot` action reference](/docs/5.x/reference/commands/studio#actions) for every flag.
+## Publish to npm
+
+`kubb studio publish` publishes one of the current project's snapshots to a real npm registry. In an interactive terminal it lists the snapshots for the agent; pass `--snapshot-id` in CI or when you already know which snapshot to release.
+
+```shell [Terminal]
+NPM_TOKEN=$NPM_TOKEN kubb studio publish --snapshot-id <snapshot-id>
+```
+
+The npm credential stays in the agent's environment. Studio receives the snapshot metadata and job status, never the token. The tarball is published exactly as packed; it is not rewritten and no npm tag is added. Publishing the same package version again fails with npm's duplicate-version error.
+
+The publish permission must be granted with `--allow-publish` (or `KUBB_AGENT_ALLOW_PUBLISH=true` for an agent image). `NPM_CONFIG_REGISTRY` selects another registry, such as a local Verdaccio instance.
+
+See the [`kubb studio` command reference](/docs/5.x/reference/commands/studio#subcommands) for every flag.
 
 ## See also
 

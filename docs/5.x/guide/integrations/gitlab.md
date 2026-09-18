@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # GitLab CI
 
-[`kubb studio snapshot`](/docs/5.x/reference/commands/studio#actions) generates a package, publishes it to [Kubb Studio](./studio), and exits. A merge request needs nothing more than a job that runs it, so there is no GitLab component to install.
+[`kubb studio snapshot`](/docs/5.x/reference/commands/studio#subcommands) generates a package, publishes it to [Kubb Studio](./studio), and exits. A later job can run [`kubb studio publish`](./studio#publish-to-npm) with the snapshot ID to release the exact same tarball to npm.
 
 > [!WARNING]
 > This feature is under active development. Use it with caution and expect breaking changes.
@@ -64,6 +64,21 @@ The download needs a `registry` API key, not the `ci` key that created the snaps
 
 ```shell [Terminal]
 npm i https://kubb.studio/packages/<agent>/<package>.tgz
+```
+
+## Publish from a release job
+
+Pass the snapshot ID from the earlier job and keep the npm token in the release job's environment:
+
+```yaml [.gitlab-ci.yml]
+publish:
+  stage: release
+  image: node:22
+  script:
+    - npm ci
+    - NPM_TOKEN="$NPM_TOKEN" npx kubb studio publish --snapshot-id "$SNAPSHOT_ID" --id "gl:$CI_PROJECT_ID:$CI_MERGE_REQUEST_IID"
+  rules:
+    - if: $CI_COMMIT_TAG
 ```
 
 ## See also
