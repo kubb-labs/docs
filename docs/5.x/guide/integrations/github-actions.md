@@ -41,8 +41,6 @@ jobs:
 
 Create `KUBB_TOKEN`, an organization CI API key, in Studio's settings. Add it under Settings > Secrets and variables > Actions.
 
-Set `KUBB_STUDIO_URL` on the step for a self-hosted Studio. The default is `https://kubb.studio`.
-
 ## Inputs
 
 | Input               | Default               | Description                                                             |
@@ -81,6 +79,6 @@ The download needs a `registry` API key, not the `ci` key that created the snaps
 
 ## See also
 
-- [Kubb Studio](./studio): connect a project, grant permissions, and self-host
+- [Kubb Studio](./studio): connect a project and grant permissions
 - [GitLab CI](./gitlab): the same snapshot from a `.gitlab-ci.yml` job
 - [`kubb studio` command](/docs/5.x/reference/commands/studio): every action, flag, and environment variable
