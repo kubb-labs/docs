@@ -27,13 +27,13 @@ The Studio runtime ships with the CLI, so a project that already has `kubb` inst
 kubb studio
 ```
 
-When the project is not approved yet, the CLI opens Studio's approval page and waits for confirmation. Once approved, the session connects and the project appears in Studio until you stop the command. Check the connected machine with `kubb studio status`, and disconnect it with `kubb studio logout`.
+When the project is not approved yet, an interactive CLI session with a TTY opens Studio's approval page and waits for confirmation. Once approved, the session connects and the project appears in Studio until you stop the command. Check the connected machine with `kubb studio status`, and disconnect it with `kubb studio logout`.
 
 ## Choose what Studio may do
 
 A session is read-only by default. Studio sees generated file paths, but not their source, and nothing on disk changes. It is safe to try on a real project.
 
-The CLI exposes five permissions. It asks about each permission when you first connect a project, then remembers your answers.
+The CLI exposes five permissions. An interactive session with a TTY asks about each permission when you first connect a project, then remembers your answers. CI and other headless sessions do not prompt, so pass the permission flags explicitly.
 
 | Permission            | What it grants                                                               |
 | --------------------- | ----------------------------------------------------------------------------- |
