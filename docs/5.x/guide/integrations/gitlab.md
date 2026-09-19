@@ -31,8 +31,6 @@ snapshot:
 
 Create `KUBB_TOKEN`, an organization CI API key, in Studio's settings. Add it under Settings > CI/CD > Variables as a masked variable.
 
-Point at a self-hosted Studio with `--url https://studio.internal.example`.
-
 ## One agent per merge request
 
 The CI agent registers as `gl:<project id>:<merge request iid>`, read from `CI_PROJECT_ID` and `CI_MERGE_REQUEST_IID`, so every pipeline on that merge request reuses one agent. A branch pipeline falls back to `CI_COMMIT_REF_SLUG`. Pass `--id` to group runs your own way.
@@ -68,6 +66,6 @@ npm i https://kubb.studio/packages/<agent>/<package>.tgz
 
 ## See also
 
-- [Kubb Studio](./studio): connect a project, grant permissions, and self-host
+- [Kubb Studio](./studio): connect a project and grant permissions
 - [GitHub Actions](./github-actions): the same snapshot through `kubb-labs/action`
 - [`kubb studio` command](/docs/5.x/reference/commands/studio): every action, flag, and environment variable
