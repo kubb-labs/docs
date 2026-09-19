@@ -53,6 +53,7 @@ output:
 | Option                                     | Default               | Description                                                                        |
 | ------------------------------------------ | --------------------- | ---------------------------------------------------------------------------------- |
 | `--config=<path>`, `-c <path>`             |                       | Path to a config file, such as `./kubb.staging.ts`.                                |
+| `--url=<url>`                               | `https://kubb.studio` | Override the Studio URL. Intended for Kubb development environments such as `https://dev.kubb.studio`; this does not provide self-hosted Studio support. |
 | `--allow-read`                             | `false`               | Read the source of files a generation produced. Asked once per project when omitted. |
 | `--allow-write`                            | `false`               | Write generated files to disk. Asked once per project when omitted.                |
 | `--allow-config-edit`                      | `false`               | Let Studio change plugin options in `kubb.config.ts`. Asked once per project.      |
@@ -82,6 +83,7 @@ Approval is stored for Kubb Studio. Without `--allow-read`, a session still runs
 ```shell [Terminal]
 kubb studio                              # connect, granting nothing
 kubb studio --allow-read                 # show generated files in the browser
+kubb studio --url https://dev.kubb.studio # connect to the Kubb development Studio
 kubb studio --allow-write --allow-exec   # write files, run the formatter and linter
 kubb studio login                        # connect without opening a session
 kubb studio logout                       # disconnect this machine
