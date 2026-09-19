@@ -63,7 +63,7 @@ For a connection that outlives your terminal, the [`kubblabs/kubb-agent` Docker 
 
 ## Snapshot from CI
 
-`kubb studio snapshot` generates a package and publishes it to Studio in one command, then exits. Use it to hand a reviewer an installable tarball on a pull or merge request, from any CI. It needs a different credential than `kubb studio`: an organization CI API key, not an agent token.
+`kubb studio snapshot` generates a package and publishes it to Studio in one command, then exits. Use it in GitHub Actions or GitLab CI to hand a reviewer an installable tarball on a pull or merge request. It needs a different credential than `kubb studio`: an organization CI API key, not an agent token.
 
 ```shell [Terminal]
 KUBB_TOKEN=$KUBB_TOKEN kubb studio snapshot
