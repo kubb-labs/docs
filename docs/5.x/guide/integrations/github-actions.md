@@ -9,6 +9,8 @@ outline: [2, 3]
 
 [`kubb-labs/action`](https://github.com/kubb-labs/action) runs [`kubb studio snapshot`](/docs/5.x/reference/commands/studio#actions) on every pull request and publishes the package to [Kubb Studio](./studio). A reviewer installs the tarball from the comment it posts.
 
+<StudioCTA source="github-actions-guide" />
+
 > [!WARNING]
 > This feature is under active development. Use it with caution and expect breaking changes.
 
