@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Integrations
 
-Kubb runs from the CLI, and it also runs from the places you already work. A bundler integration generates during your build, [Kubb Studio](./studio) generates from a browser tab while Kubb runs on your machine, and a CI job publishes a snapshot a reviewer can install.
+Kubb runs from the CLI, and it also runs from the places you already work. A bundler integration generates during your build, [Kubb Studio](./studio) generates from a browser tab while Kubb runs on your machine, and a CI job publishes a snapshot a reviewer can install or publishes that snapshot to npm.
 
 ## Bundlers
 
@@ -88,7 +88,7 @@ Reach for it when you want to change plugin options and see the result straight 
 
 ## Continuous integration
 
-`kubb studio snapshot` runs generation on a build agent and publishes the result to Studio as an installable tarball a reviewer can try.
+`kubb studio snapshot` runs generation on a build agent and publishes the result to Studio as an installable tarball a reviewer can try. `kubb studio publish` sends that exact tarball to npm from the agent.
 
 - [GitHub Actions](./github-actions), through `kubb-labs/action`
 - [GitLab CI](./gitlab), through a `.gitlab-ci.yml` job

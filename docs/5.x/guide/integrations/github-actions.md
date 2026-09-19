@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # GitHub Actions
 
-[`kubb-labs/action`](https://github.com/kubb-labs/action) runs [`kubb studio snapshot`](/docs/5.x/reference/commands/studio#actions) on every pull request and publishes the package to [Kubb Studio](./studio). A reviewer installs the tarball from the comment it posts.
+[`kubb-labs/action`](https://github.com/kubb-labs/action) runs [`kubb studio snapshot`](/docs/5.x/reference/commands/studio#subcommands) on every pull request and publishes the package to [Kubb Studio](./studio). A reviewer installs the tarball from the comment it posts.
 
 > [!WARNING]
 > This feature is under active development. Use it with caution and expect breaking changes.
@@ -49,6 +49,9 @@ Set `KUBB_STUDIO_URL` on the step for a self-hosted Studio. The default is `http
 | `github-token`      | <code v-pre>${{ github.token }}</code> | Token that opens the init pull request and writes the snapshot comment. |
 | `working-directory` | `.`                   | Directory holding the Kubb config and the package.                      |
 | `config`            | `kubb.config.ts`      | Path to the config file, relative to `working-directory`.               |
+| `publish`            | `false`               | Publish the snapshot to npm after generation.                            |
+| `snapshot-id`        |                       | Publish this existing snapshot instead of generating a new one.          |
+| `npm-token`          |                       | npm credential passed to the agent process for publishing.               |
 
 ## Outputs
 
@@ -60,12 +63,38 @@ Set `KUBB_STUDIO_URL` on the step for a self-hosted Studio. The default is `http
 | `tarball-url`     | URL of the generated tarball.                |
 | `integrity`       | SHA-512 integrity of the tarball.            |
 | `agent-url`       | Studio URL of the CI agent that ran the job. |
+| `registry`        | npm registry used for a publish.             |
+| `published`       | `true` when the action published a snapshot. |
 
 Give the step an `id`, then read an output as <code v-pre>${{ steps.snapshot.outputs.tarball-url }}</code> (using `snapshot` as the step ID).
 
 ## What a run does
 
 `kubb` runs from the repository's own `node_modules/.bin/kubb` when there is one, so the snapshot matches the version your config and plugins are built against. Otherwise it falls back to `npx`. One CI agent and one comment are reused per pull request.
+
+When `publish` is true, the action publishes the generated snapshot to npm. With `snapshot-id`, it publishes a snapshot created by an earlier workflow run instead. A different workflow run registers a new CI agent unless it passes the same `id` to the CLI; reusing that identity avoids consuming another agent slot.
+
+```yaml [.github/workflows/release.yml]
+name: Kubb release
+
+on:
+  workflow_dispatch:
+    inputs:
+      snapshot-id:
+        required: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: kubb-labs/action@v1
+        with:
+          token: ${{ secrets.KUBB_TOKEN }}
+          publish: true
+          snapshot-id: ${{ inputs.snapshot-id }}
+          npm-token: ${{ secrets.NPM_TOKEN }}
+```
 
 Two runs end early, and neither is a failure. A fork pull request has no secrets. A repository with no `kubb.config.ts` gets an init pull request titled `chore: initialize Kubb`, and the next run after you merge it generates a snapshot.
 
