@@ -64,7 +64,7 @@ export default defineConfig(({ watch }) => ({
 
 Reach for `createKubb` when you orchestrate several builds, inspect diagnostics, or feed Kubb output into a larger toolchain. For a one-off build, chain the call: `await createKubb(config).build()`.
 
-Import `createKubb` from the `kubb` package. Unlike `defineConfig`, `createKubb` adds no defaults, so pass `adapter`, `parsers`, and your plugins yourself.
+Import `createKubb` from the `kubb` package. It applies the same defaults as `defineConfig`, so a shared config has the same adapter, parsers, and plugins in both paths. Import it from `@kubb/core` when you need a bare engine without package defaults.
 
 `createKubb` takes a plain config object, the same shape `defineConfig` produces in `kubb.config.ts`, not a fluent builder. The config stays plain, serializable data so Kubb can validate it against the shipped JSON schema.
 
@@ -72,14 +72,10 @@ Import `createKubb` from the `kubb` package. Unlike `defineConfig`, `createKubb`
 // @module: esnext
 import { createKubb } from 'kubb'
 import { Diagnostics } from 'kubb/kit'
-import { adapterOas } from '@kubb/adapter-oas'
-import { parserTs, parserTsx } from '@kubb/parser-ts'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginAxios } from '@kubb/plugin-axios'
 
 const kubb = createKubb({
-  adapter: adapterOas(),
-  parsers: [parserTs(), parserTsx()],
   input: './petStore.yaml',
   output: { path: './gen' },
   plugins: [pluginTs(), pluginAxios()],
@@ -134,4 +130,3 @@ Each `Diagnostic` carries a `code`, a `severity` (`error`, `warning`, or `info`)
 ### Related
 
 - [Programmatic usage recipe](/docs/5.x/guide/recipes#programmatic-build)
-
