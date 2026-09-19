@@ -53,7 +53,7 @@ output:
 | Option                                     | Default               | Description                                                                        |
 | ------------------------------------------ | --------------------- | ---------------------------------------------------------------------------------- |
 | `--config=<path>`, `-c <path>`             |                       | Path to a config file, such as `./kubb.staging.ts`.                                |
-| `--url=<url>`                               | `https://kubb.studio` | Override the Studio URL for Kubb development and testing. This does not provide self-hosted Studio support. |
+| `--url=<url>`                               | `https://kubb.studio` | URL for Kubb Studio. |
 | `--allow-read`                             | `false`               | Read the source of files a generation produced. Asked once per project when omitted. |
 | `--allow-write`                            | `false`               | Write generated files to disk. Asked once per project when omitted.                |
 | `--allow-config-edit`                      | `false`               | Let Studio change plugin options in `kubb.config.ts`. Asked once per project.      |
