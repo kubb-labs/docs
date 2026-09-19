@@ -252,18 +252,14 @@ export default defineConfig({
 
 ## Programmatic build
 
-Drive Kubb from a script with [`createKubb`](/docs/5.x/reference/kit/engine#createkubb) from the `kubb` package, paired with `Diagnostics` from `kubb/kit`. This fits monorepo orchestration and custom build pipelines. Unlike `defineConfig`, `createKubb` takes no defaults, so the script below passes `adapter`, `parsers`, and plugins explicitly.
+Drive Kubb from a script with [`createKubb`](/docs/5.x/reference/kit/engine#createkubb) from the `kubb` package, paired with `Diagnostics` from `kubb/kit`. This fits monorepo orchestration and custom build pipelines. It applies the same defaults as `defineConfig`, so a shared config generates the same files through the CLI and a script.
 
 ```typescript twoslash [generate.ts]
 import { createKubb } from 'kubb'
 import { Diagnostics } from 'kubb/kit'
-import { adapterOas } from '@kubb/adapter-oas'
-import { parserTs, parserTsx } from '@kubb/parser-ts'
 import { pluginTs } from '@kubb/plugin-ts'
 
 const kubb = createKubb({
-  adapter: adapterOas(),
-  parsers: [parserTs(), parserTsx()],
   input: './petStore.yaml',
   output: { path: './gen' },
   plugins: [pluginTs()],
@@ -276,7 +272,11 @@ kubb.hooks.hook('kubb:plugin:end', ({ plugin, duration }) => {
 const { files, diagnostics } = await kubb.safeBuild()
 
 if (Diagnostics.hasError(diagnostics)) {
-  console.error('Generation failed')
+  for (const diagnostic of diagnostics.filter(Diagnostics.isProblem)) {
+    if (diagnostic.severity === 'error') {
+      console.error(`${diagnostic.plugin ?? 'kubb'}: ${diagnostic.message}`)
+    }
+  }
   process.exit(1)
 }
 
