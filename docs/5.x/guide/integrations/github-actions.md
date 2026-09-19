@@ -82,6 +82,5 @@ The download needs a `registry` API key, not the `ci` key that created the snaps
 ## See also
 
 - [Kubb Studio](./studio): connect a project, grant permissions, and self-host
-- [Local-first Kubb Studio](/docs/5.x/guide/concepts/local-first): what the CI snapshot uploads
 - [GitLab CI](./gitlab): the same snapshot from a `.gitlab-ci.yml` job
 - [`kubb studio` command](/docs/5.x/reference/commands/studio): every action, flag, and environment variable

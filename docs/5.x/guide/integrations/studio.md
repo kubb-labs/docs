@@ -93,5 +93,4 @@ See the [`snapshot` action reference](/docs/5.x/reference/commands/studio#action
 - [GitHub Actions](./github-actions): publish a snapshot on every pull request
 - [GitLab CI](./gitlab): publish a snapshot on every merge request
 - [Configuration](/docs/5.x/reference/configuration): the `kubb.config.ts` a session reads
-- [Local-first Kubb Studio](/docs/5.x/guide/concepts/local-first): where generation runs and what Studio receives
 - [Integrations](/docs/5.x/guide/integrations/): run generation inside your bundler instead
