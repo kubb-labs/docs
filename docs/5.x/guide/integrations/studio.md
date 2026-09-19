@@ -1,7 +1,7 @@
 ---
 layout: doc
 title: Kubb Studio
-description: Connect a Kubb project to Kubb Studio and generate from the browser while Kubb runs on your own machine. Covers connecting, permissions, headless runs, and self-hosted instances.
+description: Connect a Kubb project to Kubb Studio and generate from the browser while Kubb runs on your own machine. Covers connecting, permissions, headless runs, and agents.
 outline: [2, 3]
 ---
 
@@ -49,7 +49,7 @@ kubb studio --allow-read --allow-write --allow-exec
 
 Grant `--allow-config-edit` when you want to tune plugin options from the browser and keep the result. Studio patches the matching fields in `kubb.config.ts` and leaves the comments and formatting around them alone.
 
-## Run headless or self-hosted
+## Run headless
 
 `kubb studio` also runs on a build agent, with the agent token passed through `KUBB_AGENT_TOKEN` instead of an interactive approval:
 
@@ -57,7 +57,9 @@ Grant `--allow-config-edit` when you want to tune plugin options from the browse
 KUBB_AGENT_TOKEN=your-agent-token kubb studio
 ```
 
-Nothing is asked without a TTY, so grant what the run needs with flags on the command line. `--allow-read` is the one a headless run most often forgets: without it, generated files show up in the tree with no contents. Point at a self-hosted instance with `--url`, and set `KUBB_HOME` to move the CLI's Studio state out of `~/.kubb`.
+Nothing is asked without a TTY, so grant what the run needs with flags on the command line. `--allow-read` is the one a headless run most often forgets: without it, generated files show up in the tree with no contents. Set `KUBB_HOME` to move the CLI's Studio state out of `~/.kubb`.
+
+Kubb Studio itself is hosted at [kubb.studio](https://kubb.studio) and is not available for self-hosting. The agent that connects your environment to Studio can run wherever you need it: through the CLI, in CI, or with Docker.
 
 For a connection that outlives your terminal, the [`kubblabs/kubb-agent` Docker image](https://hub.docker.com/r/kubblabs/kubb-agent) runs the same runtime and stays connected on its own. Use it when a team wants one shared agent instead of everyone connecting their own checkout.
 
