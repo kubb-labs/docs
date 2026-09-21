@@ -41,8 +41,7 @@ rtk git log -10
 
 ## How agents read this repo
 
-`AGENTS.md` is the canonical instruction file. `GEMINI.md` and
-`.github/copilot-instructions.md` symlink to it. Skills live in `.agents/skills/` (open
+`AGENTS.md` is the canonical instruction file. Skills live in `.agents/skills/` (open
 `SKILL.md` format, cross-provider, symlinked at `.claude/skills/`). Always-on conventions live
 in `.claude/rules/` (`markdown`, `plain-language`, `security`, `usa-english`).
 
