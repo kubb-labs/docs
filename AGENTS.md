@@ -41,18 +41,15 @@ rtk git log -10
 
 ## How agents read this repo
 
-`AGENTS.md` is the canonical instruction file. `CLAUDE.md`, `GEMINI.md`, and
-`.github/copilot-instructions.md` symlink to it. Skills live in `.agents/skills/` (open
-`SKILL.md` format, cross-provider, symlinked at `.claude/skills/`). Always-on conventions live
-in `.claude/rules/` (`markdown`, `plain-language`, `security`, `usa-english`).
+`AGENTS.md` is the canonical instruction file. Local skills live in `.agents/skills/` (open
+`SKILL.md` format, cross-provider). Shared skills, convention rules, `/create-pr`,
+`/create-changeset`, `/create-branch`, `/create-issue`, the `code-reviewer` subagent, and the
+`house` output style come from the `agents` plugin
+([stijnvanhulle/agents](https://github.com/stijnvanhulle/agents)). Claude Code loads it from
+this repo's `.claude/settings.json`. Install `agents@stijnvanhulle` for Cursor and Codex.
 
 <skills>
 
 ## Skills
 
-You have new skills. If any skill might be relevant then you MUST read it.
-
-- [documentation](.agents/skills/documentation/SKILL.md) - Use when writing blog posts or documentation markdown files - provides writing style guide (active voice, present tense), content structure patterns, and SEO optimization.
-- [humanizer](.agents/skills/humanizer/SKILL.md) - Remove AI writing patterns to make documentation sound natural, specific, and human. Covers content patterns, language patterns, style patterns, and communication patterns.
-- [pr](.agents/skills/pr/SKILL.md) - Open or update a pull request in this content repo. Covers what to check on a markdown change, frontmatter and include rules, Conventional Commit titles, how to fill the PR template, and what to do once CI runs. Use when asked to open a PR, push a branch for review, fix a red PR, or judge whether a branch is ready to merge.
 </skills>
