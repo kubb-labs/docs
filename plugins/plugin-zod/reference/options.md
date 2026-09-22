@@ -18,6 +18,7 @@ Options for `pluginZod`.
 | [`coercion`](#coercion) | `boolean \| { dates?: boolean, strings?: boolean, numbers?: boolean }` | `false` | Coerce input before validation |
 | [`guidType`](#guidtype) | `'uuid' \| 'guid'` | `'uuid'` | Validator for `format: uuid` properties |
 | [`regexType`](#regextype) | `'literal' \| 'constructor'` | `'literal'` | How an OpenAPI `pattern` is written |
+| [`compile`](#compile) | `boolean \| { strict?: boolean }` | `false` | Wrap schemas in `z.compile` for fast-path validation |
 | [`mini`](#mini) | `boolean` | `false` | Generate Zod Mini schemas |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
@@ -135,6 +136,42 @@ Controls how an OpenAPI `pattern` is written inside `.regex(...)`.
 - `'constructor'` emits the `RegExp` constructor, such as `.regex(new RegExp('^[a-z]+$'))`.
 
 Use `'constructor'` when a regex literal breaks your build or you need a string pattern.
+
+### compile
+
+Wraps generated schemas in `z.compile(...)` to enable Zod's fast-path validation logic (available in Zod v4.5.0+). Under the hood, `z.compile()` walks the schema once and generates flat, loop-free JavaScript validation code that executes significantly faster than standard interpreter traversal.
+
+- `true` compiles schemas using `z.compile(...)`.
+- `false` (default) leaves schemas uncompiled.
+- `{ strict: true }` passes `{ strict: true }` to `z.compile(...)`, which throws an error if any part of the schema cannot be compiled into flat JavaScript, preventing silent fallback to the interpreter.
+
+> [!NOTE]
+> `compile` requires **Zod v4.5.0 or higher**. Schemas with circular references (`z.lazy`) and bare `$ref` response aliases are automatically kept uncompiled to prevent runtime errors.
+
+```typescript
+import * as z from 'zod'
+
+export const petSchema = z.compile(
+  z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+)
+```
+
+With `{ strict: true }`:
+
+```typescript
+import * as z from 'zod'
+
+export const petSchema = z.compile(
+  z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+  { strict: true },
+)
+```
 
 ### mini
 

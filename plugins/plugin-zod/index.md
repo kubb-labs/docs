@@ -7,6 +7,8 @@ outline: deep
 recipes:
   - id: zod-as-the-single-source-of-truth
     title: Zod as the single source of truth
+  - id: fast-path-validation-with-compile
+    title: Fast-path validation with compile
   - id: tree-shakeable-schemas-with-zod-mini
     title: Tree-shakeable schemas with Zod Mini
   - id: coerce-query-and-form-input
