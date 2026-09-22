@@ -154,6 +154,9 @@ z.array(z.string()).check(z.minLength(1), z.maxLength(10))
 
 ### typeGuards
 
+> [!IMPORTANT]
+> The generated type guards and assertions require Zod v4.6.0 or higher.
+
 Generates TypeScript type guards (`is*`) and assertion functions (`assert*`) for schemas using Zod v4's native `validate` API.
 
 - `true`: Generates both `is<Schema>` type guards and `assert<Schema>` assertion functions.

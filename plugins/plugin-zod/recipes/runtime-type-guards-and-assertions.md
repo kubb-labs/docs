@@ -7,6 +7,9 @@ outline: deep
 
 # Runtime type guards and assertions
 
+> [!IMPORTANT]
+> The generated type guards and assertions require Zod v4.6.0 or higher.
+
 Set [`typeGuards`](/plugins/plugin-zod/reference/options#typeguards) to `true` to generate native TypeScript type predicates (`isPet`) and assertion functions (`assertPet`) alongside your Zod schemas.
 
 ```typescript [kubb.config.ts]
