@@ -83,6 +83,30 @@ yarn add -D @kubb/plugin-zod
 
 The generated schemas stand alone: they import `z` from your project, so add [Zod](https://zod.dev/) to your dependencies. Set `inferred: true` to export a `z.infer` type alias next to each schema, which makes the schemas the single source of truth for types without `@kubb/plugin-ts`.
 
+## Format and type mappings
+
+`@kubb/plugin-zod` generates native Zod v4 schemas for standard OpenAPI types and formats:
+
+| OpenAPI Type / Format | Standard Zod Output | Zod Mini Output | Notes |
+| :--- | :--- | :--- | :--- |
+| `integer` | `z.int()` | `z.int()` | Coerces to `z.coerce.number().int()` when `coercion.numbers` is enabled |
+| `integer`, `format: int32` | `z.int32()` | `z.int32()` | 32-bit signed integer |
+| `integer`, `format: uint32` | `z.uint32()` | `z.uint32()` | 32-bit unsigned integer |
+| `integer`, `format: int64` | `z.bigint()` | `z.bigint()` | 64-bit integer |
+| `string`, `format: byte` / `base64` | `z.base64()` | `z.base64()` | Base64 string validation |
+| `string`, `format: base64url` | `z.base64url()` | `z.base64url()` | URL-safe base64 string validation |
+| `string`, `format: jwt` | `z.jwt()` | `z.jwt()` | JSON Web Token format |
+| `string`, `format: ulid` | `z.ulid()` | `z.ulid()` | ULID format |
+| `string`, `format: iban` | `z.iban()` | `z.iban()` | International Bank Account Number |
+| `string`, `format: duration` | `z.iso.duration()` | `z.iso.duration()` | ISO 8601 duration format |
+| `string`, `format: uuid` | `z.uuid()` (or `z.guid()`) | `z.uuid()` (or `z.guid()`) | Configured via `guidType` |
+| `string`, `format: email` | `z.email()` | `z.email()` | Email format |
+| `string`, `format: uri` / `url` | `z.url()` | `z.url()` | URL format |
+| `string`, `format: ipv4` / `ipv6` | `z.ipv4()` / `z.ipv6()` | `z.ipv4()` / `z.ipv6()` | IP address format |
+| `string`, `format: date` | `z.iso.date()` | `z.iso.date()` | ISO 8601 date |
+| `string`, `format: date-time` | `z.iso.datetime()` | `z.string()` | ISO 8601 date-time |
+| `string`, `format: time` | `z.iso.time()` | `z.iso.time()` | ISO 8601 time |
+
 ## Example
 
 ::: code-group
