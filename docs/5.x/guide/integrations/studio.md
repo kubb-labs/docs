@@ -1,98 +1,71 @@
 ---
 layout: doc
 title: Kubb Studio
-description: Connect a Kubb project to Kubb Studio and generate from the browser while Kubb runs on your own machine. Covers connecting, permissions, headless runs, and agents.
+description: Generate and review OpenAPI clients in Kubb Studio with a local CLI agent, Docker agent, or shared sandbox. Publish installable snapshots from CI.
 outline: [2, 3]
 ---
 
 # Kubb Studio
 
-[Kubb Studio](https://kubb.studio) is a browser interface for a Kubb project. You edit plugin options, trigger a generation, and watch its progress while Kubb runs on your machine against the files on disk.
+[Kubb Studio](https://kubb.studio) is a browser workspace for generating and reviewing TypeScript code from an OpenAPI spec. It runs your Kubb plugins to produce types, clients, schemas, and hooks, shows file changes, and can publish installable snapshots from CI.
 
-Kubb reports progress and generated file paths to Studio. Your spec stays on your machine. Studio reads source from a generated file only after you grant `--allow-read`.
+Choose where generation runs:
+
+| Option | Use it for |
+| --- | --- |
+| [Shared sandbox](https://kubb.studio) | Try Studio with a spec you provide in the browser, without installing anything. |
+| `kubb studio` | Work on a local project with its existing spec, config, and plugin versions. |
+| [Docker agent](https://hub.docker.com/r/kubblabs/kubb-agent) | Keep an agent connected on your infrastructure for a team. |
+
+With a CLI or Docker agent, generation runs in your environment. Studio receives plugin settings, progress, and generated file paths. A local spec is not uploaded. Reading generated file contents or changing local files requires the agent's permission. The shared sandbox runs outside your environment, so use it with a spec you are comfortable providing there.
 
 <StudioCTA source="studio-guide" />
 
-> [!WARNING]
-> This feature is under active development. Use it with caution and expect breaking changes.
+## Connect a local project
 
-> [!NOTE]
-> Studio is not a [bundler integration](/docs/5.x/guide/integrations/) you add to a build. It is a session you open from the CLI and close when you are done.
-
-## Connect a project
-
-The Studio runtime ships with the CLI, so a project that already has `kubb` installed needs nothing else. Run this from the project root, next to your `kubb.config.ts`.
+Run the command from a project with Kubb installed and a `kubb.config.ts`:
 
 ```shell [Terminal]
 kubb studio
 ```
 
-When the project is not approved yet, an interactive CLI session with a TTY opens Studio's approval page and waits for confirmation. Once approved, the session connects and the project appears in Studio until you stop the command. Check the connected machine with `kubb studio status`, and disconnect it with `kubb studio logout`.
+The first run opens Studio to approve the machine. After approval, keep the command running and select the connected agent in Studio. Generate from the browser to see progress and the file tree. Grant `--allow-read` to view file contents and diffs.
 
-## Choose what Studio may do
-
-A session is read-only by default. Studio sees generated file paths, but not their source, and nothing on disk changes. It is safe to try on a real project.
-
-The CLI exposes five permissions. An interactive session with a TTY asks about each permission when you first connect a project, then remembers your answers. CI and other headless sessions do not prompt, so pass the permission flags explicitly.
-
-| Permission            | What it grants                                                               |
-| --------------------- | ----------------------------------------------------------------------------- |
-| `--allow-read`        | Studio can read the source of the files a generation produced.              |
-| `--allow-write`       | Generated files are written to disk instead of only streaming to Studio.    |
-| `--allow-config-edit` | Studio may change plugin options in your `kubb.config.ts`.                  |
-| `--allow-input`       | A spec sent by Studio replaces the one on disk for that generation.         |
-| `--allow-exec`        | The formatter, the linter, and `output.postGenerate` run as child processes. |
+The CLI asks which permissions to grant for this project and remembers your answers. With no permissions granted, generation uses memory and Studio sees file paths and progress. It does not write generated files or edit your config. For example, to review generated files and write them to disk:
 
 ```shell [Terminal]
-kubb studio --allow-read --allow-write --allow-exec
+kubb studio --allow-read --allow-write
 ```
 
-Grant `--allow-config-edit` when you want to tune plugin options from the browser and keep the result. Studio patches the matching fields in `kubb.config.ts` and leaves the comments and formatting around them alone.
+Use `--allow-config-edit` to save plugin option changes to `kubb.config.ts`. Use `--allow-input` to generate from a spec supplied in Studio instead of the project's spec. Use `--allow-exec` to run the configured formatter, linter, and `output.postGenerate` commands. See the [`kubb studio` reference](/docs/5.x/reference/commands/studio) for all flags and actions.
 
-## Run headless
+## Run an agent without a terminal session
 
-`kubb studio` also runs on a build agent, with the agent token passed through `KUBB_AGENT_TOKEN` instead of an interactive approval:
+For a long-running team connection, run the [Docker agent](https://hub.docker.com/r/kubblabs/kubb-agent). You can also run the CLI without a TTY using an existing agent token:
 
 ```shell [Terminal]
-KUBB_AGENT_TOKEN=your-agent-token kubb studio
+KUBB_AGENT_TOKEN=your-agent-token kubb studio --allow-read
 ```
 
-Nothing is asked without a TTY, so grant what the run needs with flags on the command line. `--allow-read` is the one a headless run most often forgets: without it, generated files show up in the tree with no contents. Set `KUBB_HOME` to move the CLI's Studio state out of `~/.kubb`.
-
-Kubb Studio itself is hosted at [kubb.studio](https://kubb.studio) and is not available for self-hosting. The agent that connects your environment to Studio can run wherever you need it: through the CLI, in CI, or with Docker.
-
-For a connection that outlives your terminal, the [`kubblabs/kubb-agent` Docker image](https://hub.docker.com/r/kubblabs/kubb-agent) runs the same runtime and stays connected on its own. Use it when a team wants one shared agent instead of everyone connecting their own checkout.
+Headless runs do not ask permission questions. Pass the permissions the run needs as flags. `kubb studio status` shows the current machine's pairing and saved project permissions. `kubb studio logout` forgets its token.
 
 ## Snapshot from CI
 
-`kubb studio snapshot` generates a package and publishes it to Studio in one command, then exits. Use it in GitHub Actions or GitLab CI to hand a reviewer an installable tarball on a pull or merge request. It needs a different credential than `kubb studio`: an organization CI API key, not an agent token.
+`kubb studio snapshot` generates an installable package on a CI runner, publishes the tarball to Studio, and exits. It uses an organization CI API key in `KUBB_TOKEN`, not an agent token:
 
 ```shell [Terminal]
-KUBB_TOKEN=$KUBB_TOKEN kubb studio snapshot
+kubb studio snapshot
 ```
 
-The command detects GitHub Actions, GitLab CI, Bitbucket Pipelines, and CircleCI on its own, and reuses one CI agent per pull or merge request instead of registering a new one on every run. On another CI, pass `--id` with something stable, such as the merge request number.
-
-Use `--json` to read the result in a later step. It prints one JSON object with the tarball URL, the package name and version, and the integrity hash, and nothing else on stdout.
+The command detects GitHub Actions, GitLab CI, Bitbucket Pipelines, and CircleCI. For another CI provider, pass a stable `--id`. Use `--json` when a later step needs the tarball URL:
 
 ```shell [Terminal]
 kubb studio snapshot --json | jq -r '.url'
 ```
 
-Two providers have a page of their own:
-
-- [GitHub Actions](./github-actions), through [`kubb-labs/action`](https://github.com/kubb-labs/action)
-- [GitLab CI](./gitlab), through a `.gitlab-ci.yml` job
-
-> [!NOTE]
-> The tarball URL needs a `registry` API key to download, not the `ci` key that created the snapshot. Create one in Studio's settings for whichever system installs the package.
-
-See the [`snapshot` action reference](/docs/5.x/reference/commands/studio#actions) for every flag.
+Follow the [GitHub Actions](./github-actions) or [GitLab CI](./gitlab) guide for a complete workflow. Installing the tarball requires a separate `registry` API key.
 
 ## See also
 
-- [`kubb studio` command](/docs/5.x/reference/commands/studio): every action, flag, and environment variable
-- [GitHub Actions](./github-actions): publish a snapshot on every pull request
-- [GitLab CI](./gitlab): publish a snapshot on every merge request
-- [Configuration](/docs/5.x/reference/configuration): the `kubb.config.ts` a session reads
-- [Integrations](/docs/5.x/guide/integrations/): run generation inside your bundler instead
+- [`kubb studio` command](/docs/5.x/reference/commands/studio): actions, flags, and environment variables
+- [Configuration](/docs/5.x/reference/configuration): the config a connected project uses
