@@ -9,9 +9,6 @@ outline: [2, 3]
 
 [`kubb studio snapshot`](/docs/5.x/reference/commands/studio#actions) generates a package, publishes it to [Kubb Studio](./studio), and exits. A merge request needs nothing more than a job that runs it, so there is no GitLab component to install.
 
-> [!WARNING]
-> This feature is under active development. Use it with caution and expect breaking changes.
-
 ## Add the job
 
 ```yaml [.gitlab-ci.yml]

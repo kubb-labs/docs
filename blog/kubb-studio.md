@@ -1,7 +1,7 @@
 ---
 layout: doc
 title: Introducing Kubb Studio
-description: Kubb Studio is a browser front end for a Kubb project. You change plugin options and trigger generation from a tab, while Kubb runs on your own machine and your spec stays on disk.
+description: Kubb Studio lets you generate and review OpenAPI clients in the browser with a local agent, Docker agent, or shared sandbox.
 outline: deep
 image: /blog/kubb-studio/cover.svg
 date: 2026-09-04
@@ -15,22 +15,17 @@ Published: 2026-09-04
 
 # Introducing Kubb Studio
 
-Tuning a Kubb config is a slow loop. You change one plugin option, run `kubb generate`, open the output folder, decide it was wrong, and start over.
+Tuning a Kubb config takes repeated runs. You change a plugin option, run `kubb generate`, and check the output folder.
 
-[Kubb Studio](https://kubb.studio) puts that loop in a browser tab. You pick plugin options in a form, hit generate, and watch files appear as they are written. What you do not do is upload your spec.
+[Kubb Studio](https://kubb.studio) puts that loop in a browser tab. You change plugin options, generate, and review the resulting files. Connect your project to run Kubb locally, or use the shared sandbox to try it without setup.
 
-> [!WARNING]
-> Studio is under active development. Expect breaking changes while it settles.
+## Generation stays where your agent runs
 
-## Your code never leaves your machine
-
-To generate from your spec, a hosted generator needs your spec. For a public Petstore that is fine. For the internal API that describes your billing system, it usually is not.
-
-Studio keeps the browser and your code separate. When you click generate, Kubb runs locally against the files already on disk and reports progress back to the tab. Your spec stays on your machine, so you use the plugin versions installed in your project. Generated file contents go to Studio only when you grant `--allow-read`.
+With a connected CLI or Docker agent, Kubb uses the spec and plugin versions in your environment. Studio receives plugin settings, progress, and generated file paths. Your local spec is not uploaded. During an interactive generation, Studio receives generated file contents only when you grant read access. The shared sandbox runs on shared infrastructure and uses a spec you provide in the browser.
 
 ## One command to connect
 
-The runtime ships with the CLI, so there is nothing extra to install:
+The runtime ships with the CLI, so a project with Kubb installed needs nothing extra:
 
 ```shell
 kubb studio
@@ -38,9 +33,9 @@ kubb studio
 
 The first run asks you to approve this machine in Studio. Every later `kubb studio` connects straight away.
 
-## Read-only until you say otherwise
+## Choose what Studio can access
 
-A fresh session generates in memory and sends only the resulting file paths to Studio. It does not change files on disk. Five flags open that up one at a time:
+A session with no permissions granted generates in memory. It sends progress and file paths to Studio but does not change files on disk. The CLI asks about five permissions:
 
 | Permission            | What it grants                                                               |
 | --------------------- | ----------------------------------------------------------------------------- |
@@ -50,18 +45,18 @@ A fresh session generates in memory and sends only the resulting file paths to S
 | `--allow-input`       | A spec sent by Studio replaces the one on disk for that generation.         |
 | `--allow-exec`        | The formatter, the linter, and `output.postGenerate` run as child processes. |
 
-The CLI asks about each one on the first connect to a project and remembers your answer. Nothing is ever asked in CI or without a TTY: an unattended run stays at whatever access it was explicitly given.
+The CLI remembers your answers per project. In CI or without a TTY, it does not prompt, so pass the needed permissions as flags.
 
 ## Editing config from the browser
 
-With `--allow-config-edit`, the options you change in Studio are written back to your `kubb.config.ts` as an AST patch, not a regeneration, so it touches only the fields you changed and leaves the rest alone. Try `group.type: 'tag'`, look at the resulting file tree, switch back, all without leaving the tab.
+With `--allow-config-edit`, Studio can save changed plugin options to `kubb.config.ts`. The edit preserves the surrounding comments and formatting.
 
 ## Beyond your laptop
 
-`kubb studio` also runs from CI or a long-lived server, and the `kubblabs/kubb-agent` Docker image runs the same runtime for a team that wants one shared agent. See the [guide](/docs/5.x/guide/integrations/studio) for how.
+The `kubblabs/kubb-agent` Docker image keeps a team agent connected. In CI, `kubb studio snapshot` publishes an installable package for a pull or merge request. See the [guide](/docs/5.x/guide/integrations/studio) for setup.
 
 ## Try it
 
 Studio is live at [kubb.studio](https://kubb.studio). The [guide](/docs/5.x/guide/integrations/studio) walks through connecting a project, and the [`kubb studio` reference](/docs/5.x/reference/commands/studio) lists every action and flag.
 
-Feedback goes to [GitHub](https://github.com/kubb-labs/kubb/issues) or [Discord](https://discord.gg/shfBFeczrm). The permission model in particular is the part we would most like to hear about before it hardens.
+Feedback goes to [GitHub](https://github.com/kubb-labs/kubb/issues) or [Discord](https://discord.gg/shfBFeczrm).

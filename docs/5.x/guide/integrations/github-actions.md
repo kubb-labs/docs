@@ -11,9 +11,6 @@ outline: [2, 3]
 
 <StudioCTA source="github-actions-guide" />
 
-> [!WARNING]
-> This feature is under active development. Use it with caution and expect breaking changes.
-
 ## Add the workflow
 
 ```yaml [.github/workflows/kubb.yml]

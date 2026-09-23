@@ -1,30 +1,17 @@
 ---
 layout: doc
 title: kubb studio
-description: The studio command connects a project to Kubb Studio, so you can trigger generation from the browser while Kubb keeps running on your own machine.
+description: Command reference for connecting a project to Kubb Studio, managing pairing and permissions, and publishing CI snapshots.
 outline: [2, 3]
 ---
 
 # `kubb studio`
 
-Run `kubb studio` to connect a project to [Kubb Studio](https://kubb.studio). Kubb runs on your machine and reports progress and generated file paths to Studio. Grant `--allow-read` to open a generated file in the browser.
-
-> [!WARNING]
-> This feature is under active development. Use it with caution and expect breaking changes.
-
-```terminal
-command: kubb studio
-output:
-  - ✘ read generated files
-  - ✘ write generated files
-  - ✘ edit kubb.config.ts
-  - ✘ use a Studio spec
-  - ✘ run formatter, linter, postGenerate
-```
+Run `kubb studio` to connect a project to [Kubb Studio](https://kubb.studio). The CLI runs generation on your machine and sends progress and generated file paths to Studio. Grant `--allow-read` to view generated file contents and diffs in the browser.
 
 ## Usage
 
-Connect the current project. If the project is not approved yet, Studio asks you to approve it before the session starts.
+Connect the current project. On the first run, approve the pairing code in Studio. The CLI then asks which permissions to grant for this project.
 
 ```shell [Terminal]
 kubb studio
@@ -37,16 +24,10 @@ The positional argument selects the action. It defaults to `connect`.
 | Action     | Description                                                             |
 | ---------- | ----------------------------------------------------------------------- |
 | `connect`  | Connect, then hold a session open and generate on request.              |
-| `login`    | Connect this machine without opening a session.                         |
-| `logout`   | Disconnect this machine from Studio.                                    |
-| `status`   | Show what this machine is connected as, plus the permissions saved for it. |
+| `login`    | Pair this machine without opening a generation session.                 |
+| `logout`   | Forget this machine's stored Studio token.                              |
+| `status`   | Show the machine's pairing and saved permissions for this project.      |
 | `snapshot` | Generate and publish a snapshot from a script, then exit. See [Snapshot from CI](/docs/5.x/guide/integrations/studio#snapshot-from-ci). |
-
-```terminal
-command: kubb studio status
-output:
-  - Paired with https://kubb.studio as brave-otter
-```
 
 ## Options
 
@@ -68,7 +49,7 @@ output:
 | `--timeout=<seconds>`                      | `600`                 | `snapshot` only: seconds to wait for the job to finish, capped at `3600`.          |
 | `--json`                                   | `false`               | `snapshot` only: print the result as one JSON object instead of a summary.         |
 
-Approval is stored for Kubb Studio. Without `--allow-read`, a session still runs a generation and reports which files it produced, but Studio shows no contents for them. Without a permission flag, the CLI asks a yes/no question for each permission and remembers the answers per project directory. It does not ask questions in CI or without a TTY, so unattended runs use only the permissions passed on the command line.
+Without `--allow-read`, a session still generates and reports file paths, but Studio cannot display their contents. The CLI asks about permissions not supplied as flags and remembers answers per project directory. In CI or without a TTY, it does not prompt, so pass the permissions the run needs explicitly.
 
 ## Environment variables
 
@@ -81,11 +62,11 @@ Approval is stored for Kubb Studio. Without `--allow-read`, a session still runs
 ## Examples
 
 ```shell [Terminal]
-kubb studio                              # connect, granting nothing
-kubb studio --allow-read                 # show generated files in the browser
+kubb studio                              # connect and answer permission prompts
+kubb studio --allow-read                 # allow Studio to show generated file contents
 kubb studio --allow-write --allow-exec   # write files, run the formatter and linter
-kubb studio login                        # connect without opening a session
-kubb studio logout                       # disconnect this machine
+kubb studio login                        # pair without opening a session
+kubb studio logout                       # forget the stored token
 kubb studio snapshot                     # generate and publish a snapshot from CI
 kubb studio snapshot --json              # print the snapshot as one JSON object
 ```
