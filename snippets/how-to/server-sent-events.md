@@ -95,7 +95,7 @@ try {
     handle(event.data)
   }
 } catch (error) {
-  if (error instanceof ResponseError) {
+  if (ResponseError.is(error)) {
     console.error('stream rejected', error.status)
   }
 }
