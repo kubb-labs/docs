@@ -134,8 +134,7 @@ if (result.error === undefined) {
 }
 ```
 
-> [!WARNING]
-> Hooks read the global `returnType`, not a value set per operation through [`override`](#override). An `override` that changes `returnType` for some operations leaves their hooks expecting the other shape.
+Dependent plugins (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, `@kubb/plugin-swr`, and `@kubb/plugin-mcp`) also honor per-operation `returnType` set through [`override`](#override), so their generated hooks and handlers match the shape of the resolved `<op>`.
 
 ### include
 
