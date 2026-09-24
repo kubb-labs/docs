@@ -14,6 +14,7 @@ Options for `@kubb/plugin-axios`, which generates a type-safe HTTP client pinned
 | [`output`](#output) | `Output` | `{ path: 'clients', barrel: { type: 'named' } }` | Where the generated files are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`baseURL`](#baseurl) | `string` | — | Base URL prepended to every request |
+| [`throwOnErrorDefault`](#throwonerrordefault) | `boolean` | `true` | Default error behavior and return type for generated operations |
 | [`validator`](#validator) | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` | `false` | Validate request and response bodies with Zod |
 | [`comments`](#comments) | `'full' \| 'brief' \| 'none'` | `'full'` | How much of each description reaches the JSDoc |
 | [`sdk`](#sdk) | `{ mode?: 'tag' \| 'flat'; name?: string }` | — | Emit a class-based SDK instead of standalone functions |
@@ -63,6 +64,19 @@ Function `(context: { group: string }) => string` that turns a group key into a 
 
 Base URL prepended to every request. When omitted, no host is prepended and each request uses the operation's relative path from the spec, with no server-URL fallback. A value containing a `${...}` interpolation is emitted as a template literal, so `baseURL: '${process.env.API_URL}'` reads the environment variable at runtime.
 
+### throwOnErrorDefault
+
+Set `throwOnErrorDefault: false` to return documented error responses as values by default. This sets the fallback on each generated request and the default `ThrowOnError` type parameter on standalone functions and SDK methods. A call with `throwOnError: true` still throws for a non-2xx response and narrows its return type to successful responses.
+
+```typescript
+pluginAxios({ throwOnErrorDefault: false })
+
+const result = await getPetById({ path: { petId: 1 } })
+if (result.error) console.error(result.error)
+```
+
+This setting applies to the whole plugin and cannot be set in `override`. Generated operations use it even when the client config changes; pass `throwOnError` on a call to override it. Query hooks continue to set `throwOnError: true` explicitly.
+
 ### validator
 
 Validates request and response bodies with schemas from `@kubb/plugin-zod`, which you add to the plugins list when either direction is `'zod'`. `false` (the default) skips validation and returns the response cast to the generated type. `'zod'` validates the success response body, plus the error body when a non-2xx call does not throw. `{ request?: 'zod', response?: 'zod' }` opts in per direction, and with validation on the generated function throws a `ParseError` on invalid data.
@@ -84,7 +98,7 @@ const pet = new PetClient({ baseURL: 'https://petstore.swagger.io/v2' })
 const { data } = await pet.getPetById({ path: { petId: 1 } })
 ```
 
-Each call resolves to `{ status, data, error, contentType, request, response }`. Because `throwOnError` defaults to `true`, a resolved call means the request succeeded and `data` is set. Pass `throwOnError: false` to get the discriminated union instead, keyed on the top-level `status`.
+Each call resolves to `{ status, data, error, contentType, request, response }`. With the default `throwOnErrorDefault: true` setting, a resolved call means the request succeeded and `data` is set. Pass `throwOnError: false` to get the discriminated union instead, keyed on the top-level `status`.
 
 ```typescript
 const { status, data, error } = await pet.getPetById({ path: { petId: 1 }, throwOnError: false })
@@ -98,7 +112,7 @@ if (status === 200) {
 
 ### returnType
 
-Shape of the value a generated call resolves to. `'full'` (the default) keeps `{ status, data, error, contentType, request, response }`. `'data'` unwraps that down to the bare success body once `throwOnError` (on by default) rules out the error branch, and falls back to the full result for a call that sets `throwOnError: false`, since that path still needs `error` to tell success from failure.
+Shape of the value a generated call resolves to. `'full'` (the default) keeps `{ status, data, error, contentType, request, response }`. `'data'` unwraps that down to the bare success body when `throwOnError` is `true`, and falls back to the full result when `throwOnError` is `false`, since that result still needs `error` to tell success from failure.
 
 ```typescript
 pluginAxios({ returnType: 'data' })
