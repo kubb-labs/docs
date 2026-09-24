@@ -20,9 +20,10 @@ snapshot:
     - npx kubb studio snapshot
   rules:
     - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
 
-`kubb` ships the Studio runtime, so `npm ci` is the only setup. The `rules` entry keeps the job on merge request pipelines.
+`kubb` ships the Studio runtime, so `npm ci` is the only setup. The `rules` entries run the job on merge request pipelines and on the default branch, whose snapshot merge requests into it compare with (`branchChanges` in the `--json` output).
 
 ## Set the token
 
