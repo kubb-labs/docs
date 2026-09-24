@@ -19,6 +19,7 @@ Options for `pluginZod`.
 | [`guidType`](#guidtype) | `'uuid' \| 'guid'` | `'uuid'` | Validator for `format: uuid` properties |
 | [`regexType`](#regextype) | `'literal' \| 'constructor'` | `'literal'` | How an OpenAPI `pattern` is written |
 | [`mini`](#mini) | `boolean` | `false` | Generate Zod Mini schemas |
+| [`typeGuards`](#typeguards) | `boolean | { is?: boolean, assert?: boolean }` | `false` | Generate `is*` type guards and `assert*` assertions |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | `[]` | Apply different options per pattern |
@@ -151,6 +152,44 @@ z.nullable(z.number())
 z.array(z.string()).check(z.minLength(1), z.maxLength(10))
 ```
 
+### typeGuards
+
+> [!IMPORTANT]
+> The generated type guards and assertions require Zod v4.6.0 or higher.
+
+Generates TypeScript type guards (`is*`) and assertion functions (`assert*`) for schemas using Zod v4's native `validate` API.
+
+- `true`: Generates both `is<Schema>` type guards and `assert<Schema>` assertion functions.
+- `{ is?: boolean; assert?: boolean }`: Selectively enables type guards or assertions.
+- `false` (default): Generates only the Zod schemas.
+
+```typescript
+pluginZod({
+  typeGuards: true,
+})
+```
+
+Emitted code:
+
+```typescript [src/gen/zod/petSchema.ts]
+import * as z from 'zod'
+
+export const petSchema = z.object({
+  id: z.int32(),
+  name: z.string(),
+})
+
+export const isPet = (data: unknown): data is z.infer<typeof petSchema> => petSchema.validate(data)
+
+export function assertPet(data: unknown): asserts data is z.infer<typeof petSchema> {
+  if (!petSchema.validate(data)) {
+    petSchema.parse(data)
+  }
+}
+```
+
+When [`inferred`](#inferred) is `true`, the guards narrow to the generated schema type alias (e.g. `PetSchemaType`). When [`mini`](#mini) is `true`, they route through `z.validate` and `z.parse`.
+
 ### include
 
 <!--@include: ../../../snippets/how-to/include.md-->
@@ -184,6 +223,8 @@ type ResolverZodPatch = {
     type?(name: string): string           // → 'PetSchemaType'
     inputName?(name: string): string      // → 'orderInputSchema'
     inputTypeName?(name: string): string  // → 'OrderInputSchemaType'
+    isName?(name: string): string         // → 'isPet'
+    assertName?(name: string): string     // → 'assertPet'
   }
   param?: {
     name?(node: OperationNode, param: ParameterNode): string    // → 'deletePetPathPetIdSchema'

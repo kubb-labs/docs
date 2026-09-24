@@ -9,6 +9,8 @@ recipes:
     title: Zod as the single source of truth
   - id: tree-shakeable-schemas-with-zod-mini
     title: Tree-shakeable schemas with Zod Mini
+  - id: runtime-type-guards-and-assertions
+    title: Runtime type guards and assertions
   - id: coerce-query-and-form-input
     title: Coerce query and form input
   - id: validate-every-api-response
