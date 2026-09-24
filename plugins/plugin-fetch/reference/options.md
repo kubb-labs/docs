@@ -14,6 +14,7 @@ Pass these options to `pluginFetch()` to control what it generates and where the
 | [`output`](#output) | `Output` | `{ path: 'clients', barrel: { type: 'named' } }` | Where the generated files are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
 | [`baseURL`](#baseurl) | `string` | — | Base URL prepended to every request |
+| [`throwOnErrorDefault`](#throwonerrordefault) | `boolean` | `true` | Default error behavior and return type for generated operations |
 | [`validator`](#validator) | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` | `false` | Validate request and response bodies with Zod |
 | [`comments`](#comments) | `'full' \| 'brief' \| 'none'` | `'full'` | How much of each description reaches the JSDoc |
 | [`sdk`](#sdk) | `{ mode?: 'tag' \| 'flat'; name?: string }` | — | Generate a class-based SDK instead of functions |
@@ -68,6 +69,19 @@ Function `(context: { group: string }) => string` that turns a group key into a 
 
 Base URL prepended to every request. When omitted, no host is prepended and each request uses the operation's relative path from the spec. A value containing a `${...}` interpolation is emitted as a template literal in the generated client config, so `baseURL: '${process.env.API_URL}'` reads the environment variable at runtime.
 
+### throwOnErrorDefault
+
+Set `throwOnErrorDefault: false` to return documented error responses as values by default. This configures both the generated client's runtime behavior and the default `ThrowOnError` type parameter on standalone functions and SDK methods. A call with `throwOnError: true` still throws for a non-2xx response and narrows its return type to successful responses.
+
+```typescript
+pluginFetch({ throwOnErrorDefault: false })
+
+const result = await getPetById({ path: { petId: 1 } })
+if (result.error) console.error(result.error)
+```
+
+This setting applies to the whole plugin and cannot be set in `override`. The default is fixed in generated TypeScript. Changing `client.setConfig({ throwOnError: ... })` later changes runtime behavior but does not change that type default. Query hooks continue to set `throwOnError: true` explicitly.
+
 ### validator
 
 Runtime validator applied to request and response bodies using schemas from `@kubb/plugin-zod`, defaulting to `false`.
@@ -88,7 +102,7 @@ Generates a class-based SDK instead of standalone functions, accepting `{ mode?:
 
 `mode: 'tag'` (the default) emits one class per tag, such as `PetClient` and `StoreClient`. Set `sdk.name` alongside it to also emit a composed root class that instantiates every tag client from one shared config, reached as `new PetStore(config).pet.getPetById(...)`. `mode: 'flat'` emits a single class named by `sdk.name` with every operation as a direct method.
 
-Construct a class with a client config, then call a method with the grouped options object (`{ path, query, headers, body }`). Each call resolves to `{ status, data, error, contentType, request, response }`. Because `throwOnError` defaults to `true`, a resolved call means the request succeeded and `data` is set. Pass `throwOnError: false` to get the discriminated union instead, keyed on the top-level `status`:
+Construct a class with a client config, then call a method with the grouped options object (`{ path, query, headers, body }`). Each call resolves to `{ status, data, error, contentType, request, response }`. With the default `throwOnErrorDefault: true` setting, a resolved call means the request succeeded and `data` is set. Pass `throwOnError: false` to get the discriminated union instead, keyed on the top-level `status`:
 
 ```typescript
 const { status, data, error } = await pet.getPetById({ path: { petId: 1 }, throwOnError: false })
@@ -102,7 +116,7 @@ if (status === 200) {
 
 ### returnType
 
-Shape of the value a generated call resolves to. `'full'` (the default) keeps `{ status, data, error, contentType, request, response }`. `'data'` unwraps that down to the bare success body once `throwOnError` (on by default) rules out the error branch, and falls back to the full result for a call that sets `throwOnError: false`, since that path still needs `error` to tell success from failure.
+Shape of the value a generated call resolves to. `'full'` (the default) keeps `{ status, data, error, contentType, request, response }`. `'data'` unwraps that down to the bare success body when `throwOnError` is `true`, and falls back to the full result when `throwOnError` is `false`, since that result still needs `error` to tell success from failure.
 
 ```typescript
 pluginFetch({ returnType: 'data' })
