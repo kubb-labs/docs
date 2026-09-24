@@ -19,6 +19,8 @@ Rewrites the extensions emitted in `import`/`export` statements. Keys are the so
 
 Use it to emit `.js` imports from `.ts` sources for an ESM dual package, or to keep the source extension for Node16/NodeNext resolution.
 
+The same mapping applies to runtime templates a plugin copies into the output, such as the `.kubb/` runtime files of `@kubb/plugin-fetch`. Their relative `.ts`, `.tsx`, `.js` and `.jsx` imports are rewritten too, so the whole output follows one convention.
+
 |          |                          |
 | -------: | :----------------------- |
 |    Type: | `Record<string, string>` |

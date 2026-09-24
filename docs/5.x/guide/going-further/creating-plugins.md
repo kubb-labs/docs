@@ -397,7 +397,7 @@ export const pluginExample = definePlugin(() => ({
         sources: [{ kind: 'Source', nodes: [{ kind: 'Text', value: '# Generated\n' }] }],
       })
 
-      // Copy a real file shipped in your package into the output, verbatim.
+      // Copy a real file shipped in your package into the output.
       ctx.injectFile({
         baseName: 'runtime.ts',
         path: `${outputPath}/runtime.ts`,
@@ -408,7 +408,9 @@ export const pluginExample = definePlugin(() => ({
 }))
 ```
 
-Set `copy` to an absolute path and Kubb writes that file into the output unchanged, applying only `banner`/`footer` and skipping the parser. It keeps a hand-authored template as a real, tested `.ts` file instead of an inlined string. The JSX renderer takes the same field: `<File baseName="runtime.ts" path={…} copy={templatePath} />`.
+Set `copy` to an absolute path and Kubb writes that file into the output instead of rendering `sources`. It keeps a hand-authored template as a real, tested `.ts` file instead of an inlined string. The JSX renderer takes the same field: `<File baseName="runtime.ts" path={…} copy={templatePath} />`.
+
+Kubb keeps the copied content as-is, except that the parser for the file's extension can adapt it through its [`parseCopy`](/docs/5.x/reference/kit/parsers#parser-anatomy) hook. `@kubb/parser-ts` rewrites the template's relative imports to match its [`extension`](/parsers/parser-ts/reference/options#extension) option, then `banner`/`footer` wrap the result. Write template imports with an explicit extension (`from './serializers.ts'`) so they follow the same convention as every generated file.
 
 ## Options
 

@@ -59,6 +59,7 @@ Every value returned from `defineParser` matches the `Parser` interface from [`k
 | `extNames` | `Array<FileNode['extname']> \| undefined`                                 | Yes      |                                              | File extensions this parser handles. Set to `undefined` to register a catch-all fallback.                                                            |
 | `parse`    | `(file: FileNode) => string`                                             | Yes      | By the file processor after all plugins run  | Serializes the file's staged sources into the final output string. Must return synchronously.                                                         |
 | `print`    | `(...nodes: TNode[]) => string`                                           | Yes      | By plugins, before files are staged          | Renders compiler AST nodes to source text. The node type is parser-specific, for example `ts.Node` for `parserTs`. |
+| `parseCopy` | `(file: FileNode, source: string) => string`                             | No       | By the file processor, for each `copy` file  | Adapts a copied template's raw content to the parser's output conventions, for example import extensions. `banner`/`footer` are added afterwards. Omit it to write copied files verbatim. |
 
 > [!IMPORTANT]
 > If two parsers register the same extension, the last one in the `parsers` array wins. Order matters.
