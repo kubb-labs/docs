@@ -120,6 +120,8 @@ z.coerce.date()
 
 > [!NOTE]
 > `dates` coerces only `Date`-typed fields (from `dateType: 'date'`). Fields kept as ISO strings (`z.iso.date()`, `z.iso.datetime()`) are never coerced.
+>
+> `format: time` fields are never coerced either, because `new Date()` cannot parse a bare `HH:mm:ss`. With `dateType.time: 'date'`, a time decodes into a `Date` on `1970-01-01` UTC and encodes back to `HH:mm:ss` (fractional seconds are dropped). For a real time-of-day type such as `Temporal.PlainTime`, see [Encode a custom type on requests](/plugins/plugin-zod/recipes/encode-a-custom-type-on-requests).
 
 ### guidType
 
