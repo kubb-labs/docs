@@ -410,7 +410,7 @@ export const pluginExample = definePlugin(() => ({
 
 Set `copy` to an absolute path and Kubb writes that file into the output instead of rendering `sources`. It keeps a hand-authored template as a real, tested `.ts` file instead of an inlined string. The JSX renderer takes the same field: `<File baseName="runtime.ts" path={…} copy={templatePath} />`.
 
-Kubb keeps the copied content as-is, except that the parser for the file's extension can adapt it through its [`copy`](/docs/5.x/reference/kit/parsers#parser-anatomy) hook. `@kubb/parser-ts` rewrites the template's relative imports to match its [`extension`](/parsers/parser-ts/reference/options#extension) option, then `banner`/`footer` wrap the result. Write template imports with an explicit extension (`from './serializers.ts'`) so they follow the same convention as every generated file.
+Kubb keeps the copied content as-is, except that the parser for the file's extension can turn it into nodes through its [`copy`](/docs/5.x/reference/kit/parsers#parser-anatomy) hook and print it with `parse`. `@kubb/parser-ts` lifts the template's top-level `import` and `export … from` statements into import and export nodes, so they get the [`extension`](/parsers/parser-ts/reference/options#extension) option like every generated file. Write template imports with an explicit extension (`from './serializers.ts'`).
 
 ## Options
 
