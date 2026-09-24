@@ -55,7 +55,6 @@ Create `KUBB_TOKEN`, an organization CI API key, in Studio's settings. Add it un
 | `github-token`      | <code v-pre>${{ github.token }}</code> | Token that opens the init pull request and writes the snapshot comment. |
 | `working-directory` | `.`                   | Directory holding the Kubb config and the package.                      |
 | `config`            | `kubb.config.ts`      | Path to the config file, relative to `working-directory`.               |
-| `compare-committed` | `false`               | Also compare with the generated files checked out with the repository. Passes `--allow-read`. |
 
 ## Outputs
 
@@ -83,7 +82,6 @@ Below the install command, the comment lists which generated files changed:
 | --- | --- |
 | Changes against `main` | The latest snapshot of the base branch, from the `push` trigger |
 | Changes since `abc1234` | The previous snapshot on the same pull request |
-| Differs from the committed generated files | The checked-out generated files, with `compare-committed: true` |
 
 Snapshots expire after seven days, so add a `schedule` trigger if `main` can go a week without a push. A failed snapshot shows its error in the comment.
 

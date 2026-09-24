@@ -69,7 +69,6 @@ A snapshot reports which generated files it added, changed, and removed:
 | --- | --- |
 | `changes` | The previous snapshot on the same pull request or branch |
 | `branchChanges` | The latest snapshot of a GitHub pull request's base branch. Run the command on that branch too |
-| `diskChanges` | The checked-out output directory, with `--allow-read` |
 
 Follow the [GitHub Actions](./github-actions) or [GitLab CI](./gitlab) guide for a complete workflow. Installing the tarball requires a separate `registry` API key.
 
