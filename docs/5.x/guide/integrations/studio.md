@@ -57,7 +57,7 @@ Headless runs do not ask permission questions. Pass the permissions the run need
 kubb studio snapshot
 ```
 
-The command detects GitHub Actions, GitLab CI, Bitbucket Pipelines, and CircleCI. For another CI provider, pass a stable `--id`. Each pull request, merge request, or branch reuses one CI agent. Use `--json` when a later step needs the tarball URL:
+The command detects GitHub Actions, GitLab CI, Bitbucket Pipelines, and CircleCI. For another CI provider, pass a stable `--id`. Use `--json` when a later step needs the tarball URL:
 
 ```shell [Terminal]
 kubb studio snapshot --json | jq -r '.url'
@@ -67,11 +67,9 @@ A snapshot reports which generated files it added, changed, and removed:
 
 | JSON field | Compared with |
 | --- | --- |
-| `changes` | The previous snapshot of the package on the same pull request or branch |
-| `branchChanges` | The latest snapshot of the pull request's base branch, detected on GitHub Actions, GitLab CI, and Bitbucket Pipelines. `base` is `null` until the base branch has a snapshot of its own |
-| `diskChanges` | The output directory as checked out, such as committed generated code. Only with `--allow-read` |
-
-Run the command on the base branch too, so pull requests have a snapshot to compare with. With a custom `--id`, name the base branch's with `--base-id`.
+| `changes` | The previous snapshot on the same pull request or branch |
+| `branchChanges` | The latest snapshot of a GitHub pull request's base branch. Run the command on that branch too |
+| `diskChanges` | The checked-out output directory, with `--allow-read` |
 
 Follow the [GitHub Actions](./github-actions) or [GitLab CI](./gitlab) guide for a complete workflow. Installing the tarball requires a separate `registry` API key.
 

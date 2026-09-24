@@ -18,14 +18,11 @@ snapshot:
   script:
     - npm ci
     - npx kubb studio snapshot
-  # Pipelines of the same branch share one Studio agent, so run them one at a time.
-  resource_group: kubb-snapshot-$CI_COMMIT_REF_SLUG
   rules:
     - if: $CI_MERGE_REQUEST_IID
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
 
-`kubb` ships the Studio runtime, so `npm ci` is the only setup. The `rules` entries run the job on merge request pipelines and on the default branch, whose snapshot merge requests into it compare with (`branchChanges` in the `--json` output).
+`kubb` ships the Studio runtime, so `npm ci` is the only setup. The `rules` entry keeps the job on merge request pipelines.
 
 ## Set the token
 
