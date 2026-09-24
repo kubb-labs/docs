@@ -18,6 +18,8 @@ snapshot:
   script:
     - npm ci
     - npx kubb studio snapshot
+  # Pipelines of the same branch share one Studio agent, so run them one at a time.
+  resource_group: kubb-snapshot-$CI_COMMIT_REF_SLUG
   rules:
     - if: $CI_MERGE_REQUEST_IID
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
