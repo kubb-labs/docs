@@ -66,7 +66,7 @@ Base URL prepended to every request. When omitted, no host is prepended and each
 
 ### throwOnErrorDefault
 
-Set `throwOnErrorDefault: false` to return documented error responses as values by default. This configures both the generated client's runtime behavior and the default `ThrowOnError` type parameter on standalone functions and SDK methods. A call with `throwOnError: true` still throws for a non-2xx response and narrows its return type to successful responses.
+Set `throwOnErrorDefault: false` to return documented error responses as values by default. This sets the fallback on each generated request and the default `ThrowOnError` type parameter on standalone functions and SDK methods. A call with `throwOnError: true` still throws for a non-2xx response and narrows its return type to successful responses.
 
 ```typescript
 pluginAxios({ throwOnErrorDefault: false })
@@ -75,7 +75,7 @@ const result = await getPetById({ path: { petId: 1 } })
 if (result.error) console.error(result.error)
 ```
 
-This setting applies to the whole plugin and cannot be set in `override`. The default is fixed in generated TypeScript. Changing `client.setConfig({ throwOnError: ... })` later changes runtime behavior but does not change that type default. Query hooks continue to set `throwOnError: true` explicitly.
+This setting applies to the whole plugin and cannot be set in `override`. Generated operations use it even when the client config changes; pass `throwOnError` on a call to override it. Query hooks continue to set `throwOnError: true` explicitly.
 
 ### validator
 
