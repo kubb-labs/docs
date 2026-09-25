@@ -63,6 +63,20 @@ The command detects GitHub Actions, GitLab CI, Bitbucket Pipelines, and CircleCI
 kubb studio snapshot --json | jq -r '.url'
 ```
 
+A snapshot reports which generated files it added, changed, and removed:
+
+| JSON field | Compared with |
+| --- | --- |
+| `changes` | The previous snapshot on the same pull request or branch |
+| `branchChanges` | The latest snapshot of a GitHub pull request's base branch or a GitLab merge request's target branch. Run the command on that branch too |
+
+On another CI provider, give the base branch's runs a stable `--id` too, and pass it as `--base-id` on a pull request:
+
+```shell [Terminal]
+kubb studio snapshot --id jenkins:api:main                                # on main
+kubb studio snapshot --id jenkins:api:pr-12 --base-id jenkins:api:main    # on a pull request
+```
+
 Follow the [GitHub Actions](./github-actions) or [GitLab CI](./gitlab) guide for a complete workflow. Installing the tarball requires a separate `registry` API key.
 
 ## See also
