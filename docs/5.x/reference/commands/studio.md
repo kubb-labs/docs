@@ -38,7 +38,6 @@ The positional argument selects the action. It defaults to `connect`.
 | `--allow-read`                             | `false`               | Read the source of files a generation produced. Asked once per project when omitted. |
 | `--allow-write`                            | `false`               | Write generated files to disk. Asked once per project when omitted.                |
 | `--allow-config-edit`                      | `false`               | Let Studio change plugin options in `kubb.config.ts`. Asked once per project.      |
-| `--allow-input`                            | `false`               | Generate from a spec Studio sends instead of the one on disk. Asked once per project. |
 | `--allow-exec`                             | `false`               | Run the formatter, the linter, and `output.postGenerate`. Asked once per project.  |
 | `--no-open`                                |                       | Do not open the approval page in a browser.                                        |
 | `--log-level=<silent\|info\|verbose>`, `-l`| `info`                | Set the verbosity.                                                                 |
