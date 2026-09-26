@@ -37,7 +37,7 @@ The CLI asks which permissions to grant for this project and remembers your answ
 kubb studio --allow-read --allow-write
 ```
 
-Use `--allow-config-edit` to save plugin option changes to `kubb.config.ts`. Use `--allow-input` to generate from a spec supplied in Studio instead of the project's spec. Use `--allow-exec` to run the configured formatter, linter, and `output.postGenerate` commands. See the [`kubb studio` reference](/docs/5.x/reference/commands/studio) for all flags and actions.
+Use `--allow-config-edit` to save plugin option changes to `kubb.config.ts`. Use `--allow-exec` to run the configured formatter, linter, and `output.postGenerate` commands. See the [`kubb studio` reference](/docs/5.x/reference/commands/studio) for all flags and actions.
 
 ## Run an agent without a terminal session
 

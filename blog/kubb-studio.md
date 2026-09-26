@@ -35,14 +35,13 @@ The first run asks you to approve this machine in Studio. Every later `kubb stud
 
 ## Choose what Studio can access
 
-A session with no permissions granted generates in memory. It sends progress and file paths to Studio but does not change files on disk. The CLI asks about five permissions:
+A session with no permissions granted generates in memory. It sends progress and file paths to Studio but does not change files on disk. The CLI asks about four permissions:
 
 | Permission            | What it grants                                                               |
 | --------------------- | ----------------------------------------------------------------------------- |
 | `--allow-read`        | Studio can read the source of the files a generation produced.              |
 | `--allow-write`       | Generated files are written to disk instead of only streaming to Studio.    |
 | `--allow-config-edit` | Studio may change plugin options in your `kubb.config.ts`.                  |
-| `--allow-input`       | A spec sent by Studio replaces the one on disk for that generation.         |
 | `--allow-exec`        | The formatter, the linter, and `output.postGenerate` run as child processes. |
 
 The CLI remembers your answers per project. In CI or without a TTY, it does not prompt, so pass the needed permissions as flags.
