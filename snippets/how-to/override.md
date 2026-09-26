@@ -7,3 +7,5 @@ export type Override = {
   options: Omit<Partial<Options>, 'override'>
 }
 ```
+
+When options such as `returnType`, `output`, or `group` are overridden on a client plugin (`@kubb/plugin-fetch` or `@kubb/plugin-axios`), dependent plugins (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, `@kubb/plugin-swr`, `@kubb/plugin-mcp`) resolve and follow those per-operation options automatically.

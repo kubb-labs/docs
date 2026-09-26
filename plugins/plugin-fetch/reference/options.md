@@ -128,7 +128,19 @@ pluginFetch({ returnType: 'data' })
 const pet = await getPetById({ path: { petId: 1 } }) // Pet, not { status, data, ... }
 ```
 
-This applies to the standalone functions and the class-based SDK. It does not apply to `@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, or `@kubb/plugin-swr`, which call the client directly and expect the full result.
+This applies to the standalone functions and the class-based SDK. `@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, and `@kubb/plugin-swr` read the same option, so their hooks give you the success body as `data` either way.
+
+To read response headers such as `ETag` under `'data'`, pass `throwOnError: false` on the call. It then resolves to the full result, and a non-2xx comes back on `error` instead of throwing:
+
+```typescript
+const result = await getPetById({ path: { petId: 1 }, throwOnError: false })
+
+if (result.error === undefined) {
+  const etag = result.response.headers.get('etag')
+}
+```
+
+Dependent plugins (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, `@kubb/plugin-swr`, and `@kubb/plugin-mcp`) also honor per-operation `returnType` set through [`override`](#override), so their generated hooks and handlers match the shape of the resolved `<op>`.
 
 ### include
 
