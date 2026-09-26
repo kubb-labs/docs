@@ -89,6 +89,8 @@ How much of each OpenAPI `description` reaches the JSDoc above each generated op
 
 Generates a class-based SDK instead of standalone functions, where each tag client is an instance class whose constructor takes a client config and builds its own client, so every environment is a separate instance. `mode: 'tag'` (the default) emits one class per tag such as `PetClient` and `StoreClient`. Add `sdk.name` to also emit a composed root that instantiates every tag client from one shared config, reached as `new PetStore(config).pet.getPetById(...)`. `mode: 'flat'` emits a single class named by `sdk.name` with every operation as a direct method. Leave `sdk` unset to keep the per-operation functions the query plugins consume.
 
+`mode: 'tag'` needs one file per tag, so pairing it with a single-file `output` (`output.mode: 'file'`, or an `output.path` that already names a file such as `'clients.ts'`) throws [`KUBB_INVALID_PLUGIN_OPTIONS`](/docs/5.x/reference/diagnostics/kubb-invalid-plugin-options). Use `mode: 'flat'` for a single-file SDK, or give `output.path` a directory so `mode: 'tag'` can split per tag.
+
 Construct a class with a `ClientConfig` (`baseURL`, `headers`, and so on), then call a method with the grouped options object (`{ path, query, headers, body }`) and read `data` off the result.
 
 ```typescript
