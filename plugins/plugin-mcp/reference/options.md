@@ -56,6 +56,11 @@ Function that turns a group key into the subdirectory name under `output.path`. 
 
 Selects which registered client plugin the handlers call, `'fetch'` for `@kubb/plugin-fetch` or `'axios'` for `@kubb/plugin-axios`. Each handler calls that client's generated `<op>` for the operation, passing one grouped `{ path, query, headers, body }` object. A lone registered client plugin is auto-detected, so set this only to disambiguate when both are registered, and transport options such as `baseURL` live on the client plugin itself.
 
+Generated handlers follow the client plugin's `returnType` option:
+- Under `returnType: 'full'` (default), handlers read the success body from `res.data`.
+- Under `returnType: 'data'`, handlers use the resolved call result directly as the tool response body.
+- Handlers always pass `throwOnError: true` so non-2xx responses throw and surface as tool errors, regardless of client-level `throwOnErrorDefault` settings.
+
 > [!NOTE]
 > The handlers call a client plugin's functions, so register `@kubb/plugin-fetch` or `@kubb/plugin-axios` alongside this one.
 

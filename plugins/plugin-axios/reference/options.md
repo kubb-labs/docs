@@ -124,7 +124,7 @@ pluginAxios({ returnType: 'data' })
 const pet = await getPetById({ path: { petId: 1 } }) // Pet, not { status, data, ... }
 ```
 
-This applies to the standalone functions and the class-based SDK. `@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, and `@kubb/plugin-swr` read the same option, so their hooks give you the success body as `data` either way.
+This applies to the standalone functions and the class-based SDK. `@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, `@kubb/plugin-swr`, and `@kubb/plugin-mcp` read the same option, so their hooks and tool handlers give you the success body as `data` either way.
 
 To read response headers such as `ETag` under `'data'`, pass `throwOnError: false` on the call. It then resolves to the full result, and a non-2xx comes back on `error` instead of throwing:
 
