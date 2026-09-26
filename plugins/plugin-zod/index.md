@@ -135,6 +135,16 @@ export default defineConfig({
 
 :::
 
+## Dictionaries, open objects, and key schemas
+
+OpenAPI schemas representing dynamic maps, open objects, or pattern-matched keys are emitted using Zod v4's native `z.record(keySchema, valueSchema)` and `z.looseObject(...)`:
+
+- **Dictionaries (`additionalProperties: <schema>`)**: An object with no fixed properties and an `additionalProperties` schema generates `z.record(z.string(), valueSchema)`.
+- **Open objects (`additionalProperties: true`)**: Objects that permit arbitrary undeclared properties generate native `z.looseObject(shape)` (the counterpart to `z.strictObject(...)`).
+- **Key validation (`propertyNames`)**: In OpenAPI 3.1, schemas declaring `propertyNames` (such as regex patterns, formats, or enums) pass the validated key schema as the first argument, e.g. `z.record(z.string().regex(/^[a-z]+$/), valueSchema)` or `z.record(z.enum(['admin', 'user']), valueSchema)`.
+- **Pattern properties (`patternProperties`)**: Key regex patterns are combined into an alternation and emitted as `z.record(z.string().regex(...), valueSchema)` (or `z.string().check(z.regex(...))` when using `mini: true`).
+- **Mixed objects**: Objects declaring fixed properties alongside typed `additionalProperties` continue to use `.catchall(valueSchema)` to preserve their declared shape.
+
 ## See also
 
 - [Zod](https://zod.dev/)
