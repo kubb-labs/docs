@@ -11,11 +11,11 @@ outline: [2, 3]
 
 Choose where generation runs:
 
-| Option | Use it for |
-| --- | --- |
-| [Shared sandbox](https://kubb.studio) | Try Studio with a spec you provide in the browser, without installing anything. |
-| `kubb studio` | Work on a local project with its existing spec, config, and plugin versions. |
-| [Docker agent](https://hub.docker.com/r/kubblabs/kubb-agent) | Keep an agent connected on your infrastructure for a team. |
+| Option                                                       | Use it for                                                                      |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| [Shared sandbox](https://kubb.studio)                        | Try Studio with a spec you provide in the browser, without installing anything. |
+| `kubb studio`                                                | Work on a local project with its existing spec, config, and plugin versions.    |
+| [Docker agent](https://hub.docker.com/r/kubblabs/kubb-agent) | Keep an agent connected on your infrastructure for a team.                      |
 
 With a CLI or Docker agent, generation runs in your environment. Studio receives plugin settings, progress, and generated file paths. A local spec is not uploaded. Reading generated file contents or changing local files requires the agent's permission. The shared sandbox runs outside your environment, so use it with a spec you are comfortable providing there.
 
@@ -41,13 +41,22 @@ Use `--allow-config-edit` to save plugin option changes to `kubb.config.ts`. Use
 
 ## Run an agent without a terminal session
 
-For a long-running team connection, run the [Docker agent](https://hub.docker.com/r/kubblabs/kubb-agent). You can also run the CLI without a TTY using an existing agent token:
+For a local project, detach the same connection:
 
 ```shell [Terminal]
-KUBB_AGENT_TOKEN=your-agent-token kubb studio --allow-read
+kubb studio start --allow-read
+kubb studio status
+kubb studio stop
 ```
 
-Headless runs do not ask permission questions. Pass the permissions the run needs as flags. `kubb studio status` shows the current machine's pairing and saved project permissions. `kubb studio logout` forgets its token.
+The first start resolves pairing and permissions in the terminal. Later starts reuse them.
+The worker stays connected when the terminal closes and retries temporary connection failures.
+Restart it explicitly after a crash or reboot. If `status` says `authentication required`, run
+`kubb studio login`, then start it again. `logout` stops the worker and forgets its token.
+
+For a persistent team connection, run the [Docker agent](https://hub.docker.com/r/kubblabs/kubb-agent).
+In CI or without a TTY, use an existing `KUBB_AGENT_TOKEN` and pass the required permission flags;
+headless runs do not ask permission questions.
 
 ## Snapshot from CI
 
@@ -65,9 +74,9 @@ kubb studio snapshot --json | jq -r '.url'
 
 A snapshot reports which generated files it added, changed, and removed:
 
-| JSON field | Compared with |
-| --- | --- |
-| `changes` | The previous snapshot on the same pull request or branch |
+| JSON field      | Compared with                                                                                                                            |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `changes`       | The previous snapshot on the same pull request or branch                                                                                 |
 | `branchChanges` | The latest snapshot of a GitHub pull request's base branch or a GitLab merge request's target branch. Run the command on that branch too |
 
 On another CI provider, give the base branch's runs a stable `--id` too, and pass it as `--base-id` on a pull request:
