@@ -260,12 +260,12 @@ Lower-level helpers for parsers that turn the AST into source code:
 
 A handler runs with a `this` context. These members are available inside `nodes` and `overrides`:
 
-| Member                | Purpose                                                                                       |
-| --------------------- | --------------------------------------------------------------------------------------------- |
-| `this.transform(node)` | Print a nested schema node through the full handler map, overrides included.                 |
-| `this.base(node)`      | Run the built-in handler an override replaced.                                               |
-| `this.import(node)`    | Declare an import the printed code needs. `node` comes from `ast.factory.createImport`.       |
-| `this.options`         | The resolved printer options.                                                                 |
+| Member                 | Purpose                                                                                 |
+| ---------------------- | --------------------------------------------------------------------------------------- |
+| `this.transform(node)` | Print a nested schema node through the full handler map, overrides included.            |
+| `this.base(node)`      | Run the built-in handler an override replaced.                                          |
+| `this.import(node)`    | Declare an import the printed code needs. `node` comes from `ast.factory.createImport`. |
+| `this.options`         | The resolved printer options.                                                           |
 
 The printer instance returned by `createPrinter` has `print(node)` and `transform(node)`, plus `takeImports()`. `takeImports()` returns the imports handlers declared with `this.import` since the last call, then clears the list. A generator calls it after printing a schema and adds the result to the file it renders.
 
