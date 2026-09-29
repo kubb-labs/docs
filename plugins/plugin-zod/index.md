@@ -110,6 +110,10 @@ The generated schemas stand alone: they import `z` from your project, so add [Zo
 | `string`, `format: date` | `z.iso.date()` | `z.iso.date()` | ISO 8601 date |
 | `string`, `format: date-time` | `z.iso.datetime()` | `z.string()` | ISO 8601 date-time |
 | `string`, `format: time` | `z.iso.time()` | `z.iso.time()` | ISO 8601 time |
+| `object`, `additionalProperties: <schema>` | `z.record(z.string(), schema)` | `z.record(z.string(), schema)` | Dictionary with no fixed properties |
+| `object`, `additionalProperties: true` | `z.looseObject(shape)` | `z.looseObject(shape)` | Open/passthrough object allowing extra keys |
+| `object`, `propertyNames: <schema>` | `z.record(keySchema, schema)` | `z.record(keySchema, schema)` | Dynamic map with validated key schema (e.g. pattern, format) |
+| `object`, `propertyNames: <enum>` | `z.partialRecord(enumSchema, schema)` | `z.partialRecord(enumSchema, schema)` | Closed key schemas use partial record to avoid exhaustiveness |
 
 ## Example
 
@@ -134,6 +138,18 @@ export default defineConfig({
 ```
 
 :::
+
+## Dictionaries, open objects, and key schemas
+
+OpenAPI schemas representing dynamic maps, open objects, or pattern-matched keys are emitted using Zod v4's native `z.record(keySchema, valueSchema)`, `z.partialRecord(...)`, and `z.looseObject(...)`:
+
+- **Dictionaries (`additionalProperties: <schema>`)**: An object with no fixed properties and an `additionalProperties` schema generates `z.record(z.string(), valueSchema)`.
+- **Open objects (`additionalProperties: true`)**: Objects that permit arbitrary undeclared properties generate native `z.looseObject(shape)` (the counterpart to `z.strictObject(...)`).
+- **Key validation (`propertyNames`)**: In OpenAPI 3.1, schemas declaring `propertyNames` validate dictionary key names:
+  - **Open key schemas** (such as regex patterns, formats like UUID, or length constraints) pass the validated key schema as the first argument, e.g. `z.record(z.string().regex(/^[a-z]+$/), valueSchema)` or `z.record(z.uuid(), valueSchema)`.
+  - **Closed key schemas** (such as enums, single-value literals, or unions of enums) emit `z.partialRecord(enumSchema, valueSchema)`. In Zod v4, `z.record(enum, ...)` enforces exhaustiveness (requiring *all* enum keys to be present in the input). Emitting `z.partialRecord` matches OpenAPI partial semantics (only validating present keys) and infers `Partial<Record<Keys, Value>>`.
+- **Pattern properties (`patternProperties`)**: Key regex patterns are combined into an alternation and emitted as `z.record(z.string().regex(...), valueSchema)` (or `z.string().check(z.regex(...))` when using `mini: true`).
+- **Mixed objects**: Objects declaring fixed properties alongside typed `additionalProperties` continue to use `.catchall(valueSchema)` to preserve their declared shape.
 
 ## See also
 
