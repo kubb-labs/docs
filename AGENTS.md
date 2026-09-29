@@ -30,15 +30,6 @@ Plugin, adapter, and parser pages mirror those in the platform repo at `apps/kub
 Do NOT edit:
 - `docs/5.x/changelog.md` — auto-generated from the core repo by the platform pipeline
 
-## Token optimized CLI (rtk)
-
-`rtk` is a CLI proxy that filters and compresses command output to cut token usage. Prefix shell commands with it so output stays small:
-
-```bash
-rtk git status
-rtk git log -10
-```
-
 ## How agents read this repo
 
 `AGENTS.md` is the canonical instruction file. Local skills live in `.agents/skills/` (open
