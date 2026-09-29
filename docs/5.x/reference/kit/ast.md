@@ -258,4 +258,6 @@ Lower-level helpers for parsers that turn the AST into source code:
 
 `createPrinter` takes an `overrides` map to replace the handler for individual schema node types. Inside an override, `this.base(node)` runs the built-in handler the override replaced, so you can wrap its output instead of re-implementing it. Pass overrides through the `overrides` field rather than spreading them into `nodes`, otherwise `this.base` cannot find the original handler. The `printer.nodes` option on `@kubb/plugin-ts`, `@kubb/plugin-zod`, and `@kubb/plugin-faker` feeds this map. See [Override a printer](/docs/5.x/guide/going-further/printers).
 
+Inside a handler, `this.import(node)` declares an import the printed code needs, where `node` comes from `ast.factory.createImport`. The generator reads the declared imports with `printer.drainImports()`, which returns them and clears the list. See [Use a custom codec from your own package](/plugins/plugin-zod/recipes/use-a-custom-codec-from-your-package).
+
 See [Parsers concepts](/docs/5.x/guide/concepts/parsers) for how parsers consume printers.
