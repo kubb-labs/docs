@@ -124,6 +124,12 @@ every generated function imports to cover the whole app. For an isolated instanc
 [`createClient`](/plugins/plugin-fetch/guide/calling-operations#reuse-one-configuration), set
 them on that instance, and they stay scoped to the calls you pass it to.
 
+On `@kubb/plugin-axios`, interceptors registered through `client.interceptors` also follow a custom
+transport set later with `client.setConfig({ transport })`. When the transport changes, handlers
+detach from the old instance and attach to the new one, and their IDs stay valid for `eject` and
+`update`. Clearing the transport (`client.setConfig({ transport: undefined })`) moves them back to the
+client's base instance. A per-call `transport` still bypasses client interceptors.
+
 ## See also
 
 - [Call operations](/plugins/plugin-fetch/guide/calling-operations)
