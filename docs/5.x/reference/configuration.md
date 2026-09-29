@@ -381,7 +381,7 @@ Text appended to the end of every file a plugin generates. Mirror of [`output.ba
 
 #### `output.imports`
 
-Imports added to every file a plugin generates. Use it when generated code references a package, for example a custom codec printed by a `printer.nodes` handler. Kubb removes a named import from files that never use it, so you don't need to declare it per file.
+Imports added to every file a plugin generates. Use it when generated code references a package, for example a custom codec printed by a `printer.nodes` handler. Kubb removes a named import from files that never use it, so you don't need to declare it per file. To declare an import next to the code that needs it, call `this.import(...)` in a [`printer.nodes` handler](/plugins/plugin-zod/recipes/use-a-custom-codec-from-your-package) instead.
 
 Leave `root` unset on the import. Kubb then keeps the package specifier as written instead of rewriting it as a relative path.
 
