@@ -267,7 +267,7 @@ A handler runs with a `this` context. These members are available inside `nodes`
 | `this.import(node)`    | Declare an import the printed code needs. `node` comes from `ast.factory.createImport`. |
 | `this.options`         | The resolved printer options.                                                           |
 
-The printer instance returned by `createPrinter` has `print(node)` and `transform(node)`, plus `takeImports()`. `takeImports()` returns the imports handlers declared with `this.import` since the last call, then clears the list. A generator calls it after printing a schema and adds the result to the file it renders.
+The printer instance returned by `createPrinter` has `print(node)` and `transform(node)`, plus `drainImports()`. `drainImports()` returns the imports handlers declared with `this.import` since the last call, then clears the list. A generator calls it after printing a schema and adds the result to the file it renders.
 
 ```typescript
 import { ast } from 'kubb/kit'
@@ -284,9 +284,9 @@ const printer = ast.createPrinter(() => ({
 }))()
 
 printer.print(ast.factory.createSchema({ type: 'bigint' })) // 'myCodec.uint64()'
-printer.takeImports() // [{ kind: 'Import', name: ['myCodec'], path: 'my-codec/zod' }]
+printer.drainImports() // [{ kind: 'Import', name: ['myCodec'], path: 'my-codec/zod' }]
 ```
 
-Leave `root` unset on the import so the parser keeps the package specifier as written. `@kubb/plugin-zod` reads `takeImports()` for you, so a `printer.nodes` handler there only needs to call `this.import`. See [Use a custom codec from your own package](/plugins/plugin-zod/recipes/use-a-custom-codec-from-your-package).
+Leave `root` unset on the import so the parser keeps the package specifier as written. `@kubb/plugin-zod` reads `drainImports()` for you, so a `printer.nodes` handler there only needs to call `this.import`. See [Use a custom codec from your own package](/plugins/plugin-zod/recipes/use-a-custom-codec-from-your-package).
 
 See [Parsers concepts](/docs/5.x/guide/concepts/parsers) for how parsers consume printers.
