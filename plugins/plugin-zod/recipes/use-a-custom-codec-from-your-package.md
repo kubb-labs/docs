@@ -1,22 +1,18 @@
 ---
 layout: doc
 title: Use a custom codec from your own package
-description: Print a codec from your own package, such as myCodec.uint64(), and add its import only to the files that use it.
+description: Print a codec from your own package, such as myCodec.uint64(), and add its import to the generated file.
 outline: deep
 ---
 
 # Use a custom codec from your own package
 
-Say your package `my-codec/zod` exports a `myCodec` object with Zod codecs, and you want `int64` fields to print as `myCodec.uint64()`. The [printer](/plugins/plugin-zod/reference/options#printer) handler emits the call. Every file that contains the call also needs `import { myCodec } from 'my-codec/zod'`.
-
-Call `this.import(...)` in the handler, next to the code it prints. The import travels with the code, and Kubb keeps the package specifier as written.
+To print `int64` fields as `myCodec.uint64()` from your own package, override the `bigint` printer node and call `this.import(...)` in it. The generated file gets the import, and Kubb keeps the package path as written.
 
 ```typescript [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { ast } from 'kubb/kit'
 import { pluginZod } from '@kubb/plugin-zod'
-
-const myCodec = ast.factory.createImport({ name: ['myCodec'], path: 'my-codec/zod' })
 
 export default defineConfig({
   input: './petStore.yaml',
@@ -27,7 +23,7 @@ export default defineConfig({
       printer: {
         nodes: {
           bigint() {
-            this.import(myCodec)
+            this.import(ast.factory.createImport({ name: ['myCodec'], path: 'my-codec/zod' }))
             return 'myCodec.uint64()'
           },
         },
@@ -37,11 +33,7 @@ export default defineConfig({
 })
 ```
 
-The handler can also wrap the built-in output. Call `this.base(node)` inside `overrides` to reuse it.
-
 ## Output example
-
-A schema with an `int64` field gets the import, because the handler ran for it.
 
 ```typescript [src/gen/zod/counterSchema.ts]
 import * as z from 'zod'
@@ -52,14 +44,6 @@ export const counterSchema = z.object({
 })
 ```
 
-A schema with no `int64` field does not, because the handler never ran.
-
-```typescript [src/gen/zod/petNameSchema.ts]
-import * as z from 'zod'
-
-export const petNameSchema = z.string()
-```
-
 ::: tip
-Leave `root` unset on the import. Kubb then keeps `my-codec/zod` as written. With `root` set, Kubb rewrites the path as a relative path such as `../../../my-codec/zod`.
+Leave `root` unset on the import. With `root` set, Kubb rewrites the path as a relative path such as `../../../my-codec/zod`.
 :::

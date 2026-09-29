@@ -14,7 +14,7 @@ type PrinterNodes = Partial<{
 }>
 ```
 
-Handlers run with a `this` context, so write them as regular functions rather than arrow functions. `this.transform(node)` recurses into a nested schema node through the full handler map, overrides included. `this.base(node)` runs the built-in handler your override replaced, so you can wrap its output instead of rebuilding it. `this.options` reads the resolved printer options, such as `arrayType` on `@kubb/plugin-ts` or `direction` on `@kubb/plugin-zod`. `this.import(node)` declares an import the printed code needs, described in [Add an import](#add-an-import).
+Handlers run with a `this` context, so write them as regular functions rather than arrow functions. `this.transform(node)` recurses into a nested schema node through the full handler map, overrides included. `this.base(node)` runs the built-in handler your override replaced, so you can wrap its output instead of rebuilding it. `this.options` reads the resolved printer options, such as `arrayType` on `@kubb/plugin-ts` or `direction` on `@kubb/plugin-zod`. `this.import(node)` declares an import the printed code needs. See [Use a custom codec from your own package](/plugins/plugin-zod/recipes/use-a-custom-codec-from-your-package).
 
 ## TypeScript types
 
@@ -88,28 +88,6 @@ pluginFaker({
   },
 })
 ```
-
-## Add an import
-
-When a handler prints code that needs an import, call `this.import(...)` with a node from `ast.factory.createImport`. Leave `root` unset so the import keeps its package specifier. `@kubb/plugin-zod` adds the import to the generated file, and Kubb removes it from files that don't use the name.
-
-```typescript [kubb.config.ts]
-import { ast } from 'kubb/kit'
-import { pluginZod } from '@kubb/plugin-zod'
-
-pluginZod({
-  printer: {
-    nodes: {
-      bigint() {
-        this.import(ast.factory.createImport({ name: ['myCodec'], path: 'my-codec/zod' }))
-        return 'myCodec.uint64()'
-      },
-    },
-  },
-})
-```
-
-See [Use a custom codec from your own package](/plugins/plugin-zod/recipes/use-a-custom-codec-from-your-package) for the generated output.
 
 ## Printer override or macro
 
