@@ -258,6 +258,35 @@ Lower-level helpers for parsers that turn the AST into source code:
 
 `createPrinter` takes an `overrides` map to replace the handler for individual schema node types. Inside an override, `this.base(node)` runs the built-in handler the override replaced, so you can wrap its output instead of re-implementing it. Pass overrides through the `overrides` field rather than spreading them into `nodes`, otherwise `this.base` cannot find the original handler. The `printer.nodes` option on `@kubb/plugin-ts`, `@kubb/plugin-zod`, and `@kubb/plugin-faker` feeds this map. See [Override a printer](/docs/5.x/guide/going-further/printers).
 
-Handlers can also declare an import their output needs with `this.import(node)`, where `node` comes from `ast.factory.createImport`. The generator reads the collected imports with `printer.takeImports()`, which returns them once and clears the list. See [Use a custom codec from your own package](/plugins/plugin-zod/recipes/use-a-custom-codec-from-your-package).
+A handler runs with a `this` context. These members are available inside `nodes` and `overrides`:
+
+| Member                | Purpose                                                                                       |
+| --------------------- | --------------------------------------------------------------------------------------------- |
+| `this.transform(node)` | Print a nested schema node through the full handler map, overrides included.                 |
+| `this.base(node)`      | Run the built-in handler an override replaced.                                               |
+| `this.import(node)`    | Declare an import the printed code needs. `node` comes from `ast.factory.createImport`.       |
+| `this.options`         | The resolved printer options.                                                                 |
+
+The printer instance returned by `createPrinter` has `print(node)` and `transform(node)`, plus `takeImports()`. `takeImports()` returns the imports handlers declared with `this.import` since the last call, then clears the list. A generator calls it after printing a schema and adds the result to the file it renders.
+
+```typescript
+import { ast } from 'kubb/kit'
+
+const printer = ast.createPrinter(() => ({
+  name: 'my',
+  options: {},
+  nodes: {
+    bigint() {
+      this.import(ast.factory.createImport({ name: ['myCodec'], path: 'my-codec/zod' }))
+      return 'myCodec.uint64()'
+    },
+  },
+}))()
+
+printer.print(ast.factory.createSchema({ type: 'bigint' })) // 'myCodec.uint64()'
+printer.takeImports() // [{ kind: 'Import', name: ['myCodec'], path: 'my-codec/zod' }]
+```
+
+Leave `root` unset on the import so the parser keeps the package specifier as written. `@kubb/plugin-zod` reads `takeImports()` for you, so a `printer.nodes` handler there only needs to call `this.import`. See [Use a custom codec from your own package](/plugins/plugin-zod/recipes/use-a-custom-codec-from-your-package).
 
 See [Parsers concepts](/docs/5.x/guide/concepts/parsers) for how parsers consume printers.
