@@ -379,6 +379,34 @@ Text appended to the end of every file a plugin generates. Mirror of [`output.ba
 |     Type: | `string \| ((meta: BannerMeta) => string)` |
 | Required: | `false`                                |
 
+#### `output.imports`
+
+Imports added to every file a plugin generates. Use it when generated code references a package, for example a custom codec printed by a `printer.nodes` handler. Kubb removes a named import from files that never use it, so you don't need to declare it per file.
+
+Leave `root` unset on the import. Kubb then keeps the package specifier as written instead of rewriting it as a relative path.
+
+|           |                     |
+| --------: | :------------------ |
+|     Type: | `Array<ImportNode>` |
+| Required: | `false`             |
+
+```typescript twoslash [kubb.config.ts]
+import { defineConfig } from 'kubb/config'
+import { ast } from 'kubb/kit'
+import { pluginZod } from '@kubb/plugin-zod'
+
+export default defineConfig({
+  plugins: [
+    pluginZod({
+      output: {
+        path: './zod',
+        imports: [ast.factory.createImport({ name: ['myCodec'], path: 'my-codec/zod' })],
+      },
+    }),
+  ],
+})
+```
+
 ### `plugins`
 
 Array of Kubb plugins. A plugin can declare dependencies, and Kubb throws at startup when one is missing.
