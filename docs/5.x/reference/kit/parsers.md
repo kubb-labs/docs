@@ -59,6 +59,7 @@ Every value returned from `defineParser` matches the `Parser` interface from [`k
 | `extNames` | `Array<FileNode['extname']> \| undefined`                                 | Yes      |                                              | File extensions this parser handles. Set to `undefined` to register a catch-all fallback.                                                            |
 | `parse`    | `(file: FileNode) => string`                                             | Yes      | By the file processor after all plugins run  | Serializes the file's staged sources into the final output string. Must return synchronously.                                                         |
 | `print`    | `(...nodes: TNode[]) => string`                                           | Yes      | By plugins, before files are staged          | Renders compiler AST nodes to source text. The node type is parser-specific, for example `ts.Node` for `parserTs`. |
+| `copy`     | `(file: FileNode, source: string) => UserFileNode`                        | No       | By the file processor, for each `copy` file  | Describes a copied template's raw content as nodes, for example its imports as `ImportNode`s, in the same shape `injectFile` takes. Kubb builds it with `createFile` and prints it with `parse`. Omit it to write copied files verbatim. |
 
 > [!IMPORTANT]
 > If two parsers register the same extension, the last one in the `parsers` array wins. Order matters.

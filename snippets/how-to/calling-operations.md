@@ -114,7 +114,7 @@ import { ResponseError } from './gen/.kubb/client'
 try {
   const pet = await getPetById({ path: { petId: 1 } }).unwrap()
 } catch (error) {
-  if (error instanceof ResponseError) {
+  if (ResponseError.is(error)) {
     console.error(error.status) // 404
   }
 }

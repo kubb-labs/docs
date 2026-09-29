@@ -7,7 +7,7 @@ outline: [2, 3]
 
 # Integrations
 
-Kubb runs from the CLI, and it also runs from the places you already work. A bundler integration generates during your build, [Kubb Studio](./studio) generates from a browser tab while Kubb runs on your machine, and a CI job publishes a snapshot a reviewer can install.
+Kubb runs from the CLI and the places you already work. A bundler integration generates during your build. [Kubb Studio](./studio) starts generation in a connected agent or shared sandbox from a browser tab, and a CI job publishes a snapshot a reviewer can install.
 
 ## Bundlers
 
@@ -82,9 +82,9 @@ export default defineViteConfig({
 
 ## Kubb Studio
 
-[Kubb Studio](./studio) is the other way in, and it works differently from the entrypoints above. Rather than generating during a build, you open a session with `kubb studio` and drive generation from a browser tab. Kubb still runs on your machine against the files on disk, so your spec is never uploaded.
+[Kubb Studio](./studio) lets you start and review generation from a browser tab. Connect a local project with `kubb studio`, run a Docker agent for a team, or try the shared sandbox without setup. A connected agent runs Kubb in its own environment. The sandbox runs on shared infrastructure.
 
-Reach for it when you want to change plugin options and see the result straight away, and for a bundler entrypoint when generation should happen as part of your build.
+Use Studio when you want to change plugin options and inspect generated files. Use a bundler integration when generation should run as part of your build.
 
 ## Continuous integration
 

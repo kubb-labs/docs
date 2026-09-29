@@ -18,7 +18,9 @@ Options for `pluginZod`.
 | [`coercion`](#coercion) | `boolean \| { dates?: boolean, strings?: boolean, numbers?: boolean }` | `false` | Coerce input before validation |
 | [`guidType`](#guidtype) | `'uuid' \| 'guid'` | `'uuid'` | Validator for `format: uuid` properties |
 | [`regexType`](#regextype) | `'literal' \| 'constructor'` | `'literal'` | How an OpenAPI `pattern` is written |
+| [`compile`](#compile) | `boolean \| { strict?: boolean }` | `false` | Wrap schemas in `z.compile` for fast-path validation |
 | [`mini`](#mini) | `boolean` | `false` | Generate Zod Mini schemas |
+| [`typeGuards`](#typeguards) | `boolean | { is?: boolean, assert?: boolean }` | `false` | Generate `is*` type guards and `assert*` assertions |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | `[]` | Apply different options per pattern |
@@ -119,6 +121,8 @@ z.coerce.date()
 
 > [!NOTE]
 > `dates` coerces only `Date`-typed fields (from `dateType: 'date'`). Fields kept as ISO strings (`z.iso.date()`, `z.iso.datetime()`) are never coerced.
+>
+> `format: time` fields are never coerced either, because `new Date()` cannot parse a bare `HH:mm:ss`. With `dateType.time: 'date'`, a time decodes into a `Date` on `1970-01-01` UTC and encodes back to `HH:mm:ss` (fractional seconds are dropped). For a real time-of-day type such as `Temporal.PlainTime`, see [Encode a custom type on requests](/plugins/plugin-zod/recipes/encode-a-custom-type-on-requests).
 
 ### guidType
 
@@ -136,6 +140,42 @@ Controls how an OpenAPI `pattern` is written inside `.regex(...)`.
 
 Use `'constructor'` when a regex literal breaks your build or you need a string pattern.
 
+### compile
+
+Wraps generated schemas in `z.compile(...)` to enable Zod's fast-path validation logic (available in Zod v4.5.0+). Under the hood, `z.compile()` walks the schema once and generates flat, loop-free JavaScript validation code that executes significantly faster than standard interpreter traversal.
+
+- `true` compiles schemas using `z.compile(...)`.
+- `false` (default) leaves schemas uncompiled.
+- `{ strict: true }` passes `{ strict: true }` to `z.compile(...)`, which throws an error if any part of the schema cannot be compiled into flat JavaScript, preventing silent fallback to the interpreter.
+
+> [!NOTE]
+> `compile` requires **Zod v4.5.0 or higher**. Schemas with circular references (`z.lazy`) and bare `$ref` response aliases are automatically kept uncompiled to prevent runtime errors.
+
+```typescript
+import * as z from 'zod'
+
+export const petSchema = z.compile(
+  z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+)
+```
+
+With `{ strict: true }`:
+
+```typescript
+import * as z from 'zod'
+
+export const petSchema = z.compile(
+  z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+  { strict: true },
+)
+```
+
 ### mini
 
 Switches code generation to [Zod Mini](https://zod.dev/packages/mini), which uses the functional API (`z.optional(z.string())`) instead of the chainable one (`z.string().optional()`) so bundlers can tree-shake unused validators. `mini: true` also defaults `importPath` to `'zod/mini'`.
@@ -150,6 +190,44 @@ z.optional(z.string())
 z.nullable(z.number())
 z.array(z.string()).check(z.minLength(1), z.maxLength(10))
 ```
+
+### typeGuards
+
+> [!IMPORTANT]
+> The generated type guards and assertions require Zod v4.6.0 or higher.
+
+Generates TypeScript type guards (`is*`) and assertion functions (`assert*`) for schemas using Zod v4's native `validate` API.
+
+- `true`: Generates both `is<Schema>` type guards and `assert<Schema>` assertion functions.
+- `{ is?: boolean; assert?: boolean }`: Selectively enables type guards or assertions.
+- `false` (default): Generates only the Zod schemas.
+
+```typescript
+pluginZod({
+  typeGuards: true,
+})
+```
+
+Emitted code:
+
+```typescript [src/gen/zod/petSchema.ts]
+import * as z from 'zod'
+
+export const petSchema = z.object({
+  id: z.int32(),
+  name: z.string(),
+})
+
+export const isPet = (data: unknown): data is z.infer<typeof petSchema> => petSchema.validate(data)
+
+export function assertPet(data: unknown): asserts data is z.infer<typeof petSchema> {
+  if (!petSchema.validate(data)) {
+    petSchema.parse(data)
+  }
+}
+```
+
+When [`inferred`](#inferred) is `true`, the guards narrow to the generated schema type alias (e.g. `PetSchemaType`). When [`mini`](#mini) is `true`, they route through `z.validate` and `z.parse`.
 
 ### include
 
@@ -184,6 +262,8 @@ type ResolverZodPatch = {
     type?(name: string): string           // → 'PetSchemaType'
     inputName?(name: string): string      // → 'orderInputSchema'
     inputTypeName?(name: string): string  // → 'OrderInputSchemaType'
+    isName?(name: string): string         // → 'isPet'
+    assertName?(name: string): string     // → 'assertPet'
   }
   param?: {
     name?(node: OperationNode, param: ParameterNode): string    // → 'deletePetPathPetIdSchema'

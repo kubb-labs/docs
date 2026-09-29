@@ -26,11 +26,11 @@ Where the generated MCP handler files are written and how they are exported.
 
 #### output.path
 
-Folder where the plugin writes its files, resolved against the global `output.path` on `defineConfig` and defaulting to `mcp`. To write everything into a single file, set `output.mode: 'file'` and give `path` a file name with its extension, such as `mcp.ts`.
+Folder where the plugin writes its files, resolved against the global `output.path` on `defineConfig` and defaulting to `mcp`. Give it an extensionless directory name — `path` naming a single file (with `output.mode: 'file'`, explicit or inferred from an extension) is rejected, since `plugin-mcp` always writes `server.ts` and `.mcp.json` alongside the per-operation handlers.
 
 #### output.mode
 
-How the plugin consolidates its generated code. `'file'` writes everything into a single file whose `output.path` must include the extension, and `'directory'` writes one file per operation under `output.path`. Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
+How the plugin consolidates its generated code. Only `'directory'` is supported: one file per operation is written under `output.path`, next to the fixed `server.ts` and `.mcp.json` files. `output.mode: 'file'` fails the build with a setup error, since a single file has nowhere to put those extra files — leave `mode` unset (an extensionless `output.path`, the default `mcp`, resolves to `'directory'`) or set it to `'directory'` explicitly.
 
 #### output.barrel
 
@@ -55,6 +55,11 @@ Function that turns a group key into the subdirectory name under `output.path`. 
 ### client
 
 Selects which registered client plugin the handlers call, `'fetch'` for `@kubb/plugin-fetch` or `'axios'` for `@kubb/plugin-axios`. Each handler calls that client's generated `<op>` for the operation, passing one grouped `{ path, query, headers, body }` object. A lone registered client plugin is auto-detected, so set this only to disambiguate when both are registered, and transport options such as `baseURL` live on the client plugin itself.
+
+Generated handlers follow the client plugin's `returnType` option:
+- Under `returnType: 'full'` (default), handlers read the success body from `res.data`.
+- Under `returnType: 'data'`, handlers use the resolved call result directly as the tool response body.
+- Handlers always pass `throwOnError: true` so non-2xx responses throw and surface as tool errors, regardless of client-level `throwOnErrorDefault` settings.
 
 > [!NOTE]
 > The handlers call a client plugin's functions, so register `@kubb/plugin-fetch` or `@kubb/plugin-axios` alongside this one.

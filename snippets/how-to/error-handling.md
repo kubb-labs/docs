@@ -21,18 +21,21 @@ try {
   const { data } = await getPetById({ path: { petId: 1 } })
   console.info(data.name)
 } catch (error) {
-  if (error instanceof ResponseError) {
+  if (ResponseError.is(error)) {
     console.error(error.status) // 404
     console.error(error.data) // the parsed error body
   }
 }
 ```
 
-A `ResponseError` carries the same fields a result does, so nothing about the response is out of
+A `ResponseError` includes the HTTP method and URL (without query parameters, keeping credentials safe) in its `message`, e.g. `GET https://api.example.com/pets/1 failed with status 404 Not Found`.
+
+It carries the same fields a result does, so nothing about the response is out of
 reach:
 
 ```typescript
 class ResponseError extends Error {
+  static is(error: unknown): error is ResponseError<unknown, unknown, unknown>
   data: TError // the parsed error body
   status: number
   statusText: string
@@ -41,6 +44,9 @@ class ResponseError extends Error {
   response: Response // AxiosResponse on plugin-axios
 }
 ```
+
+> [!TIP]
+> Prefer `ResponseError.is(error)` over `error instanceof ResponseError`. Because each generated client bundles its own `.kubb/client.ts`, an application that consumes multiple generated clients has separate `ResponseError` classes. `ResponseError.is` checks `error.name === 'ResponseError'` and safely narrows across package boundaries.
 
 ## Return the error instead
 
