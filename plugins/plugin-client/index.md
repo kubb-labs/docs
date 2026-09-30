@@ -84,7 +84,7 @@ yarn add -D @kubb/plugin-client
 
 ## Dependencies
 
-This plugin needs `@kubb/plugin-ts` for the operation types. `@kubb/plugin-zod` is required only when `validator` is set, and generation stops with an error if it is missing.
+The plugin needs `@kubb/plugin-ts` for the operation types. It needs `@kubb/plugin-zod` only when `validator` is set, and generation stops with an error if `@kubb/plugin-zod` is missing.
 
 - [`@kubb/plugin-ts`](/plugins/plugin-ts/)
 - [`@kubb/plugin-zod`](/plugins/plugin-zod/)

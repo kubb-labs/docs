@@ -1,7 +1,7 @@
 ---
 layout: doc
 title: Authenticate
-description: Use the security list that @kubb/plugin-client passes to your client to add tokens, signing, or any other auth, including credentials fetched asynchronously.
+description: Add tokens, request signing, or other auth to your client with the security list that @kubb/plugin-client passes, including async credentials.
 outline: deep
 ---
 

@@ -45,7 +45,7 @@ Your `client` receives `method`, the `url` template with `{param}` placeholders,
 
 ## A minimal client
 
-This one uses `fetch`. Replace the transport with whatever you use.
+The client below uses `fetch`. Replace the transport with the HTTP library you use.
 
 ```typescript [src/client.ts]
 export type RequestConfig = {

@@ -79,7 +79,7 @@ Function `(context: { group: string }) => string` that turns a group key into a 
 
 Default for the `throwOnError` field that every generated function passes to your client. It defaults to `true`. A call that sets `throwOnError` itself wins. Your client decides what the flag does: the [example client](/plugins/plugin-client/guide/write-your-client) throws on a non-2xx status when it is `true` and returns the error as a value when it is `false`.
 
-This setting applies to the whole plugin and cannot be set in `override`.
+The setting applies to the whole plugin, so you cannot set it in `override`.
 
 ### validator
 

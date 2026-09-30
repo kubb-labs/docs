@@ -1,7 +1,7 @@
 ---
 layout: doc
 title: Validate requests and responses
-description: Pass Zod schemas from @kubb/plugin-zod to your client and validate bodies there.
+description: Pass Zod schemas from @kubb/plugin-zod to your client and validate request and response bodies there. The client runs the schemas, not Kubb.
 outline: deep
 ---
 
