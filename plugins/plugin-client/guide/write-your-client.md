@@ -71,9 +71,12 @@ export type RequestResult<TResponses, ThrowOnError extends boolean = true> = Thr
   ? { data: TResponses[keyof TResponses]; error: undefined; response: Response }
   : { data: TResponses[keyof TResponses]; error: undefined; response: Response } | { data: undefined; error: {}; response: Response }
 
+// Set this to your API host. `new URL()` needs an absolute URL.
+export const settings = { baseURL: 'https://petstore3.swagger.io/api/v3' }
+
 export async function client(config: RequestConfig) {
   const path: Record<string, unknown> = { ...config.path }
-  const url = new URL((config.baseURL ?? '') + config.url.replace(/\{(\w+)\}/g, (_, key) => encodeURIComponent(String(path[key]))))
+  const url = new URL((config.baseURL ?? settings.baseURL) + config.url.replace(/\{(\w+)\}/g, (_, key) => encodeURIComponent(String(path[key]))))
 
   const response = await fetch(url, {
     method: config.method,
@@ -85,7 +88,7 @@ export async function client(config: RequestConfig) {
 
   if (response.ok) return { data: body, error: undefined, response }
   if (config.throwOnError ?? true) throw new Error(`Request failed with status ${response.status}`)
-  return { data: undefined, error: body, response }
+  return { data: undefined, error: body ?? { status: response.status }, response }
 }
 ```
 

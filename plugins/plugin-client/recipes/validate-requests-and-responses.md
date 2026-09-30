@@ -44,7 +44,8 @@ request({
 Add a `validator` field to your `RequestConfig`, then run the schemas in `client`. Zod schemas follow [Standard Schema](https://standardschema.dev), so `~standard.validate` works with any compatible library:
 
 ```typescript [src/client.ts]
-type Schema = { '~standard': { validate: (value: unknown) => unknown } }
+type Result = { value: unknown; issues?: undefined } | { issues: ReadonlyArray<unknown> }
+type Schema = { '~standard': { validate: (value: unknown) => Result | Promise<Result> } }
 
 export type RequestConfig = {
   // ...
@@ -53,6 +54,10 @@ export type RequestConfig = {
 
 // inside client(), after reading the body
 const result = await config.validator?.response?.['~standard'].validate(body)
+if (result && 'issues' in result && result.issues) throw new Error('Response validation failed')
+const validatedBody = result && 'value' in result ? result.value : body
 ```
+
+Return `validatedBody` as `data`, so a schema that transforms the value takes effect. Without a response schema, `validatedBody` is the original `body`.
 
 Set `validator: { request: 'zod' }` or `{ response: 'zod' }` to pass one direction only. Without `pluginZod()` in the plugins list, generation stops with an error.
