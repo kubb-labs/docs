@@ -15,7 +15,7 @@ A request interceptor sees the request after the core has built the URL, seriali
 body, and resolved auth, so you change what leaves the app as a last step. Return the request to
 pass it on.
 
-::: code-group
+::code-group
 
 ```typescript [Fetch]
 import { client } from './gen/.kubb/client'
@@ -35,7 +35,7 @@ client.interceptors.request.use((request) => {
 })
 ```
 
-:::
+::
 
 On fetch the handler receives a `ResolvedRequest` (`url`, `method`, `headers`, `body`, `signal`,
 `credentials`, `options`, `responseType`). On axios it receives an `InternalAxiosRequestConfig`,
@@ -47,7 +47,7 @@ A response interceptor sees every result before the call resolves, so use it to 
 metrics, or reshape a body across the board. On fetch it runs before the success or error
 split and before any deserializer, so `result.data` is still the raw body.
 
-::: code-group
+::code-group
 
 ```typescript [Fetch]
 client.interceptors.response.use((result) => {
@@ -63,7 +63,7 @@ client.interceptors.response.use((response) => {
 })
 ```
 
-:::
+::
 
 The fetch handler receives a `TransportResult` (`data`, `status`, `statusText`, `headers`,
 `contentType`, `request`, `response`), the axios handler an `AxiosResponse`.
@@ -73,7 +73,7 @@ The fetch handler receives a `TransportResult` (`data`, `status`, `statusText`, 
 An error interceptor runs when a non-2xx throws, which happens while `throwOnError` is on. Use it
 to log a failure or kick off a token refresh so the next call picks up the new credential.
 
-::: code-group
+::code-group
 
 ```typescript [Fetch]
 client.interceptors.error.use((error) => {
@@ -89,7 +89,7 @@ client.interceptors.error.use((error) => {
 })
 ```
 
-:::
+::
 
 The fetch handler receives the `ResponseError`, the axios handler an `AxiosError`, and this
 channel only fires on the throw path. When you read with `throwOnError: false`, a documented

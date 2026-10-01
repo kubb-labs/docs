@@ -44,6 +44,5 @@ export const counterSchema = z.object({
 })
 ```
 
-::: tip
-Leave `root` unset on the import. With `root` set, Kubb rewrites the path as a relative path such as `../../../my-codec/zod`.
-:::
+> [!TIP]
+> Leave `root` unset on the import. With `root` set, Kubb rewrites the path as a relative path such as `../../../my-codec/zod`.

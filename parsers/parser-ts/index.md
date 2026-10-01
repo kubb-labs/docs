@@ -50,7 +50,7 @@ Both accept the same [`extension`](/parsers/parser-ts/reference/options#extensio
 
 ## Installation
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/parser-ts
@@ -68,7 +68,7 @@ npm install --save-dev @kubb/parser-ts
 yarn add -D @kubb/parser-ts
 ```
 
-:::
+::
 
 ## Dependencies
 
@@ -76,7 +76,7 @@ yarn add -D @kubb/parser-ts
 
 ## Example
 
-::: code-group
+::code-group
 
 ```typescript twoslash [TypeScript (default)]
 import { defineConfig } from 'kubb'
@@ -106,7 +106,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 ## See also
 

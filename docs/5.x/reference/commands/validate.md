@@ -9,11 +9,13 @@ outline: [2, 3]
 
 Run `kubb validate` to check that a Swagger/OpenAPI document is valid without running the pipeline. Use it to catch errors early in CI or before you commit a spec change.
 
-```terminal
+::terminal
+---
 command: kubb validate ./petStore.yaml
 output:
   - ✅ Validation success
-```
+---
+::
 
 ## Usage
 

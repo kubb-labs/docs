@@ -23,7 +23,7 @@ These three options are gone. Each request helper now takes a single grouped opt
 
 The helper signature changes from positional arguments to one object. The first argument is the grouped options type that `@kubb/plugin-ts` generates for the operation (for example `ShowPetByIdOptions`). When an operation has a required parameter in a group, that group (`path`, `query`, or `headers`) is required too. The trailing `options` argument, typed `Partial<Cypress.RequestOptions>`, is unchanged.
 
-::: code-group
+::code-group
 
 ```diff [Call site]
 -showPetById(2, { limit: 10 })
@@ -35,7 +35,7 @@ The helper signature changes from positional arguments to one object. The first 
 +export function showPetById({ path, query }: ShowPetByIdOptions, options: Partial<Cypress.RequestOptions> = {}) {}
 ```
 
-:::
+::
 
 ## Removed: `dataReturnType`
 

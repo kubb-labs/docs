@@ -13,7 +13,8 @@ A barrel file is an `index.ts` that re-exports everything from a directory. Cons
 
 Toggle the export style and barrel depth to see what each `index.ts` re-exports.
 
-<BarrelTree />
+::barrel-tree
+::
 
 ## Configure the root barrel
 
@@ -46,7 +47,7 @@ export default defineConfig({
 
 `type` picks the export style: `'named'` re-exports each symbol by name for accurate tree-shaking, `'all'` re-exports everything with `export *`. See [`type`](/plugins/plugin-barrel/reference/options#type) for when it's required and its full type.
 
-::: code-group
+::code-group
 
 ```typescript ['named']
 // src/gen/index.ts
@@ -62,7 +63,7 @@ export * from './api/post'
 export * from './api/types/User'
 ```
 
-:::
+::
 
 ## Adjust a single plugin
 

@@ -12,12 +12,14 @@ Run `kubb mcp` to start a [Model Context Protocol](https://modelcontextprotocol.
 > [!WARNING]
 > This feature is under active development. Use it with caution and expect breaking changes.
 
-```terminal
+::terminal
+---
 command: kubb mcp
 output:
   - ⏳ Starting MCP server...
   - This feature is still under development, use with caution
-```
+---
+::
 
 ## Usage
 

@@ -25,7 +25,7 @@ v4 repeated the same schema-level options on every plugin. In v5 they live on [`
 > [!IMPORTANT]
 > The default `integerType` changed from `'number'` to `'bigint'`. OpenAPI `int64` fields now map to `bigint`. Set `integerType: 'number'` on `adapterOas` to keep the old output.
 
-::: code-group
+::code-group
 
 ```typescript [v4 kubb.config.ts]
 import { defineConfig } from '@kubb/core'
@@ -79,7 +79,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 ## `pluginOas` options move to the adapter
 
@@ -87,7 +87,7 @@ export default defineConfig({
 
 The `discriminator` values are also renamed: `'strict'` → `'preserve'` and `'inherit'` → `'propagate'`. The default is `'preserve'`, so drop the option unless you want the old `'inherit'` behavior.
 
-::: code-group
+::code-group
 
 ```typescript [v4 kubb.config.ts]
 import { defineConfig } from '@kubb/core'
@@ -126,4 +126,4 @@ export default defineConfig({
 })
 ```
 
-:::
+::

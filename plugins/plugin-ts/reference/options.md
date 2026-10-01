@@ -73,7 +73,7 @@ Representation of each enum. Defaults to `'asConst'`.
 - `'literal'` emits a union type with no runtime value.
 - `'inlineLiteral'` inlines the union at each usage site instead of giving it a name.
 
-::: code-group
+::code-group
 
 ```typescript ['asConst' (default)]
 export const petStatus = {
@@ -109,7 +109,7 @@ export type PetStatus = 'available' | 'pending' | 'sold'
 export type PetStatus = 'available' | 'pending' | 'sold'
 ```
 
-:::
+::
 
 #### enum.constCasing
 
@@ -118,7 +118,7 @@ Casing of the generated const variable when `type` is `'asConst'`. Defaults to `
 - `'camelCase'` names the const `petStatus`.
 - `'pascalCase'` names the const `PetStatus`, matching the schema name.
 
-::: code-group
+::code-group
 
 ```typescript ['camelCase' (default)]
 export const petStatus = {
@@ -140,13 +140,13 @@ export const PetStatus = {
 export type PetStatusKey = (typeof PetStatus)[keyof typeof PetStatus]
 ```
 
-:::
+::
 
 #### enum.typeSuffix
 
 Suffix on the type alias generated when `type` is `'asConst'` (`string`, default `'Key'`), applied only to the companion type alias, not the const object name. Set it to `''` to drop the suffix, which with `constCasing: 'pascalCase'` merges the const and type under one name.
 
-::: code-group
+::code-group
 
 ```typescript ['Key' (default)]
 export const petStatus = {
@@ -178,7 +178,7 @@ export const petStatus = {
 export type PetStatus = (typeof petStatus)[keyof typeof petStatus]
 ```
 
-:::
+::
 
 #### enum.keyCasing
 
@@ -196,7 +196,7 @@ Casing applied to enum key names, `'none'` by default (the raw value from the sp
 
 Whether object schemas are emitted as `type` aliases or `interface` declarations, with `type` as the safer default. Pick `interface` only when consumers need declaration merging, which is rare for generated code and covered in [Type vs Interface](https://www.totaltypescript.com/type-vs-interface-which-should-you-use).
 
-::: code-group
+::code-group
 
 ```typescript ['type' (default)]
 export type Pet = {
@@ -210,7 +210,7 @@ export interface Pet {
 }
 ```
 
-:::
+::
 
 ### optionalType
 
@@ -220,7 +220,7 @@ How optional properties are written. Defaults to `'questionToken'`.
 - `'undefined'` writes `type: string | undefined`, so it must exist but may be `undefined`.
 - `'questionTokenAndUndefined'` writes `type?: string | undefined`, the strictest form. Use it with `"exactOptionalPropertyTypes": true`.
 
-::: code-group
+::code-group
 
 ```typescript ['questionToken' (default)]
 export type Pet = {
@@ -240,7 +240,7 @@ export type Pet = {
 }
 ```
 
-:::
+::
 
 ### arrayType
 
@@ -249,7 +249,7 @@ Syntax for array types. Defaults to `'array'`.
 - `'array'` uses the postfix `Type[]`.
 - `'generic'` uses `Array<Type>`, which reads better for complex elements like `Array<{ id: number }>`.
 
-::: code-group
+::code-group
 
 ```typescript ['array' (default)]
 export type Pet = {
@@ -263,7 +263,7 @@ export type Pet = {
 }
 ```
 
-:::
+::
 
 ### include
 

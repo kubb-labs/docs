@@ -42,7 +42,7 @@ Export style for the barrel files. Required whenever `output.barrel` is set to a
 |    Type: | `'all' \| 'named'` |
 | Default: | Required, no default |
 
-::: code-group
+::code-group
 
 ```typescript ['named']
 // src/gen/index.ts
@@ -58,7 +58,7 @@ export * from './api/post'
 export * from './api/types/User'
 ```
 
-:::
+::
 
 ### nested
 
@@ -69,7 +69,7 @@ Changes what each barrel references. A barrel is written for every directory eit
 |    Type: | `boolean` |
 | Default: | `false`   |
 
-::: code-group
+::code-group
 
 ```typescript [nested: false (default) → barrels reference leaf files]
 // src/gen/api/index.ts
@@ -91,4 +91,4 @@ export * from './types'
 export * from './User'
 ```
 
-:::
+::

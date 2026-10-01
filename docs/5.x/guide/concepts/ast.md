@@ -13,11 +13,13 @@ Kubb's universal Abstract Syntax Tree is the contract between the two halves of 
 
 A single `InputNode` sits at the top, holding reusable schemas and operations. Operations point at parameters, an optional request body, and responses. Each of those connects back to schemas.
 
-<AstTree />
+::ast-tree
+::
 
 A `SchemaNode` is discriminated by its `type`, which falls into one of three groups.
 
-<SchemaNodeTypes />
+::schema-node-types
+::
 
 Request bodies and responses hold one `ContentNode` per content type (for example `application/json`), and each content node carries its own body schema.
 

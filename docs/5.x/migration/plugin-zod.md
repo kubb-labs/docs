@@ -13,7 +13,7 @@ The `version` option (`'3' | '4'`) is removed. v5 always generates [Zod v4](http
 
 Upgrade your `zod` dependency:
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add zod@^4
@@ -31,7 +31,7 @@ npm install zod@^4
 yarn add zod@^4
 ```
 
-:::
+::
 
 ## Removed: `mapper`
 
@@ -71,7 +71,7 @@ The `operations` option is gone, so `plugin-zod` no longer emits an `operations.
 
 :::: details Show the operations rebuild plugin
 
-::: code-group
+::code-group
 
 ```typescript twoslash [operationsPlugin.ts]
 import { ast, defineGenerator, definePlugin } from 'kubb/kit'
@@ -233,9 +233,9 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
-::::
+:
 
 The custom plugin runs after `pluginZod`, so the per-operation schemas it imports already exist.
 

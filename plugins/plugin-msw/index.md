@@ -55,7 +55,7 @@ By default a handler returns an empty typed payload you fill in from tests. Set 
 
 ## Installation
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/plugin-msw
@@ -73,7 +73,7 @@ npm install --save-dev @kubb/plugin-msw
 yarn add -D @kubb/plugin-msw
 ```
 
-:::
+::
 
 ## Dependencies
 
@@ -86,7 +86,7 @@ It depends on [`@kubb/plugin-faker`](/plugins/plugin-faker/) only when you set `
 
 ## Example
 
-::: code-group
+::code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -110,7 +110,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 ## See also
 

@@ -9,21 +9,23 @@ outline: [2, 3]
 
 Run `kubb init` for an interactive setup wizard. Answer a few questions and Kubb creates a `package.json` if one is missing, installs your chosen plugins, and writes a ready-to-use `kubb.config.ts`.
 
-```terminal
+::terminal
+---
 command: npx kubb init
 output:
   - ◆  Kubb Init
-  - ◇  Detected package manager: pnpm
+  - "◇  Detected package manager: pnpm"
   - ◇  Where is your OpenAPI specification located?
   - │  ./openapi.yaml
   - ◇  Where should the generated files be output?
   - │  ./src/gen
-  - ◇  Select plugins to use:
+  - "◇  Select plugins to use:"
   - │  plugin-ts, plugin-axios, plugin-zod
   - ◇  Installed 4 packages
   - ◇  Created kubb.config.ts
   - ◇  All set! Run `npx kubb generate` to start generating.
-```
+---
+::
 
 ## Usage
 

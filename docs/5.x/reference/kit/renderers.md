@@ -21,7 +21,7 @@ A renderer turns the elements a generator returns into `FileNode`s. Kubb ships a
 - [`jsxRenderer`](#jsxrenderer-via-kubb-jsx), the shipped JSX renderer
 - [Creating plugins](/docs/5.x/guide/going-further/creating-plugins)
 
-## `jsxRenderer` (via `kubb/jsx`) {#jsxrenderer-via-kubb-jsx}
+## `jsxRenderer` (via `kubb/jsx`)
 
 For JSX-based rendering, import `jsxRenderer` from [`kubb/jsx`](/docs/5.x/reference/jsx), backed by the internal `@kubb/renderer-jsx` package.
 

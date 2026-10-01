@@ -59,7 +59,7 @@ Each composable takes its parameters as a single grouped options object shaped a
 
 ## Installation
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/plugin-vue-query
@@ -77,7 +77,7 @@ npm install --save-dev @kubb/plugin-vue-query
 yarn add -D @kubb/plugin-vue-query
 ```
 
-:::
+::
 
 ## Dependencies
 
@@ -93,7 +93,7 @@ For runtime validation, set `validator` on the client plugin. The generated oper
 
 ## Example
 
-::: code-group
+::code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -129,7 +129,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 ## See also
 

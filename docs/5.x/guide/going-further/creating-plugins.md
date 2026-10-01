@@ -5,32 +5,6 @@ description: Learn how to build a Kubb plugin from scratch. Step-by-step guide c
 outline: [2, 3]
 ---
 
-<script setup>
-const pluginTree = [
-  { name: 'kubb-plugin-example', type: 'dir', children: [
-    { name: 'src', type: 'dir', children: [
-      { name: 'index.ts', comment: 'Public exports (factory, generators, resolvers, types)' },
-      { name: 'plugin.ts', comment: 'definePlugin factory + plugin<Name>Name constant' },
-      { name: 'types.ts', comment: 'PluginExample = PluginFactoryOptions<...>' },
-      { name: 'generators', type: 'dir', comment: 'One file per generator (e.g. operationsGenerator.ts)', children: [
-        { name: 'exampleGenerator.ts' },
-      ] },
-      { name: 'resolvers', type: 'dir', comment: 'One file per resolver', children: [
-        { name: 'resolverExample.ts' },
-      ] },
-      { name: 'components', type: 'dir', comment: 'Optional: JSX components when using kubb/jsx' },
-      { name: 'templates', type: 'dir', comment: 'Optional: source templates exposed at runtime' },
-    ] },
-    { name: 'mocks', type: 'dir', comment: 'OpenAPI fixtures consumed by tests', children: [
-      { name: 'petStore.yaml' },
-    ] },
-    { name: 'package.json' },
-    { name: 'tsconfig.json' },
-    { name: 'README.md' },
-  ] },
-]
-</script>
-
 # Create your first plugin
 
 A [plugin](/docs/5.x/guide/concepts/plugins) teaches Kubb to generate something new. It owns its output folder and file naming, runs [generators](/docs/5.x/guide/concepts/generators) that walk the [AST](/docs/5.x/guide/concepts/ast), and hooks into the build lifecycle. Everything this guide uses comes from [`kubb/kit`](/docs/5.x/reference/kit) and its `kubb/kit/testing` subpath, so installing `kubb` is the only setup.
@@ -109,7 +83,47 @@ kubb generate
 
 Every official Kubb plugin uses the same layout, one folder per concern: `generators/`, `resolvers/`, `components/`, and `templates/`. The reference implementation is [`@kubb/plugin-axios`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-axios). Mirror it so other contributors find their way around:
 
-<FileTree :tree="pluginTree" />
+::file-tree
+---
+tree:
+  - name: kubb-plugin-example
+    type: dir
+    children:
+      - name: src
+        type: dir
+        children:
+          - name: index.ts
+            comment: Public exports (factory, generators, resolvers, types)
+          - name: plugin.ts
+            comment: definePlugin factory + plugin<Name>Name constant
+          - name: types.ts
+            comment: PluginExample = PluginFactoryOptions<...>
+          - name: generators
+            type: dir
+            comment: One file per generator (e.g. operationsGenerator.ts)
+            children:
+              - name: exampleGenerator.ts
+          - name: resolvers
+            type: dir
+            comment: One file per resolver
+            children:
+              - name: resolverExample.ts
+          - name: components
+            type: dir
+            comment: "Optional: JSX components when using kubb/jsx"
+          - name: templates
+            type: dir
+            comment: "Optional: source templates exposed at runtime"
+      - name: mocks
+        type: dir
+        comment: OpenAPI fixtures consumed by tests
+        children:
+          - name: petStore.yaml
+      - name: package.json
+      - name: tsconfig.json
+      - name: README.md
+---
+::
 
 > [!TIP]
 > In [`@kubb/plugin-axios`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-axios), `src/index.ts` re-exports each generator, resolver, and the plugin factory by name. `src/plugin.ts` declares a `pluginAxiosName satisfies PluginAxios['name']` constant that other plugins consume.
@@ -141,7 +155,7 @@ export const pluginExampleName = 'plugin-example' satisfies Plugin['name']
 
 These files form the skeleton, in reading order: the option types, then the generator and resolver that do the work, then the plugin that wires them together and the barrel that exports them.
 
-::: code-group
+::code-group
 
 ```typescript twoslash [src/types.ts]
 import type { PluginFactoryOptions } from 'kubb/kit'
@@ -261,7 +275,7 @@ export { pluginExample, pluginExampleName } from './plugin'
 export type { PluginExampleOptions, PluginExample } from './types'
 ```
 
-:::
+::
 
 ## Generators
 

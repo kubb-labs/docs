@@ -13,7 +13,7 @@ Part of the [v4 → v5 migration guide](/docs/5.x/migration). For the full optio
 
 In v4 `client` was an object that carried the whole client config (`dataReturnType`, `clientType`, `baseURL`, `bundle`, `importPath`). In v5 it is a string that names a registered client plugin, and the hooks call that plugin instead of emitting their own. See [Query and MCP plugins select a client](/docs/5.x/migration#client-becomes-a-selector) for the shared rules, then register [`@kubb/plugin-axios`](/plugins/plugin-axios/) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and point `client` at it.
 
-::: code-group
+::code-group
 
 ```typescript [v4 kubb.config.ts]
 import { defineConfig } from '@kubb/core'
@@ -45,7 +45,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 `dataReturnType` has no replacement on the query plugin. The client plugin returns the response body, so the hooks read `res.data`. Move `baseURL` to the client plugin, and see [Migration: @kubb/plugin-client removed](/docs/5.x/migration/plugin-client) for the `clientType`, `bundle`, and `importPath` options that went with it.
 
@@ -76,7 +76,7 @@ These three options are gone, including `client.paramsCasing`. Each hook now tak
 
 Update the call sites. When an operation has a required parameter in a group, that group (`path`, `query`, or `headers`) is required too, so an incomplete call fails to compile.
 
-::: code-group
+::code-group
 
 ```typescript [v4 call site]
 useFindPets({ status: 'available' })
@@ -90,7 +90,7 @@ useGetPet({ path: { petId } })
 useUpdatePet().mutate({ path: { petId }, body: pet })
 ```
 
-:::
+::
 
 The first argument is the grouped options type that `@kubb/plugin-ts` generates for the operation (`{ path, query, body, headers }`, for example `GetPetByIdOptions`). The trailing `config` argument is typed `Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>`, where `RequestConfig` comes from the client plugin's `.kubb/client`.
 

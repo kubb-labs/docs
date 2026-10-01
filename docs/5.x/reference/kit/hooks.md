@@ -38,7 +38,8 @@ await kubb.build()
 
 A full generation run fires the hooks in this order.
 
-<LifecycleTimeline />
+::lifecycle-timeline
+::
 
 ## Generation run
 

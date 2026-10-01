@@ -9,7 +9,8 @@ outline: deep
 
 A generator is where a plugin produces code. The plugin handles options, lifecycle, and wiring, while the generator reads a node from the [AST](/docs/5.x/guide/concepts/ast) and returns the files that node becomes. A plugin with no generators emits nothing.
 
-<FlowDiagram preset="generator" />
+::flow-diagram{preset="generator"}
+::
 
 ## Why a plugin splits into generators
 

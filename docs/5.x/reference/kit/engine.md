@@ -58,7 +58,7 @@ export default defineConfig(({ watch }) => ({
 - [CLI options](/docs/5.x/reference/commands/)
 - [`@kubb/plugin-barrel`](/plugins/plugin-barrel/)
 
-## `createKubb` {#createkubb}
+## `createKubb`
 
 `createKubb` drives Kubb from your own code. It accepts a `UserConfig` and returns a `Kubb` instance. Calling `.build()` runs the full generation pipeline and returns a `BuildOutput`.
 

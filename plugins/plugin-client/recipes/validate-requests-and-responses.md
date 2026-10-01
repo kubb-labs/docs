@@ -9,7 +9,7 @@ outline: deep
 
 `@kubb/plugin-client` does not validate on its own. With `validator` set, it passes the schemas to your client, which runs them.
 
-::: code-group
+::code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -28,7 +28,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 Each generated call now includes the schemas:
 

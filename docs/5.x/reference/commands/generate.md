@@ -9,7 +9,8 @@ outline: [2, 3]
 
 Run `kubb generate` to read your [`kubb.config.ts`](/docs/5.x/reference/configuration) and run the code-generation pipeline. It's the default command, so running `kubb` with no arguments does the same.
 
-```terminal
+::terminal
+---
 command: kubb generate
 output:
   - ◆  Generation started
@@ -18,12 +19,13 @@ output:
   - ◇  @kubb/plugin-react-query completed in 201ms
   - ◇  @kubb/plugin-axios       completed in 77ms
   - ◇  Generation completed
-  -
-  -  Plugins  4 passed (4)
-  -    Files  156 generated
+  - ""
+  - " Plugins  4 passed (4)"
+  - "   Files  156 generated"
   - Duration  1.2s
-  -   Output  ./src/gen
-```
+  - "  Output  ./src/gen"
+---
+::
 
 ## Usage
 

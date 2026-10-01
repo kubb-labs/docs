@@ -9,7 +9,8 @@ outline: deep
 
 An adapter is the front door of the pipeline. It reads your specification and converts it into the universal [AST](/docs/5.x/guide/concepts/ast). Everything downstream, every [plugin](/docs/5.x/guide/concepts/plugins) and [parser](/docs/5.x/guide/concepts/parsers), works off that AST and never touches the original spec. The adapter is the one place that knows whether the input was OpenAPI, AsyncAPI, or something you invented.
 
-<FlowDiagram preset="adapter" />
+::flow-diagram{preset="adapter"}
+::
 
 ## Why adapters exist
 

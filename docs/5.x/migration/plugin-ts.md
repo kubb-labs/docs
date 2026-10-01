@@ -35,7 +35,7 @@ export type GetPetHeaders = { 'X-Api-Key'?: string }
 
 The generated `*Options` type groups every request input under `{ body, path, query, headers }` so the client, query, and Cypress plugins all share one call shape. Each key holds the matching `*Body`, `*Path`, `*Query`, or `*Headers` type, or `never` when the operation has none. The `body`, `path`, `query`, and `headers` keys are required when the operation has a required parameter in that group, and the unused keys are typed `never` so passing them is a compile error.
 
-::: code-group
+::code-group
 
 ```typescript [Generated output]
 export type GetPetOptions = {
@@ -53,7 +53,7 @@ export type AddPetOptions = {
 }
 ```
 
-:::
+::
 
 The grouped `*Options` object is what every generated client function, hook, and Cypress helper takes as its first argument. See the [client plugin removal note](/docs/5.x/migration/plugin-client), [plugin-react-query](/docs/5.x/migration/plugin-react-query), and [plugin-cypress](/docs/5.x/migration/plugin-cypress) pages for the call-site changes.
 
@@ -76,7 +76,7 @@ The loose `enumType`, `enumTypeSuffix`, and `enumKeyCasing` options now live ins
 | `enumTypeSuffix: 'Value'`             | `enum: { typeSuffix: 'Value' }`                        |
 | `enumKeyCasing: 'screamingSnakeCase'` | `enum: { keyCasing: 'screamingSnakeCase' }`            |
 
-::: code-group
+::code-group
 
 ```typescript [v4 kubb.config.ts]
 import { defineConfig } from '@kubb/core'
@@ -110,7 +110,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 > [!TIP]
 > Set `constCasing: 'pascalCase'` with `typeSuffix: ''` to emit a const and a type that share the schema's exact name, the convention most hand-written codebases already use, so existing annotations and value references keep working.

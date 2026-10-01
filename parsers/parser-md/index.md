@@ -42,7 +42,7 @@ The parser joins a file's source blocks with blank lines to form the body, and p
 
 ## Installation
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/parser-md
@@ -60,7 +60,7 @@ npm install --save-dev @kubb/parser-md
 yarn add -D @kubb/parser-md
 ```
 
-:::
+::
 
 ## Dependencies
 
@@ -98,7 +98,7 @@ You can also call `parserMd().print` directly to build a frontmatter envelope. I
 
 ## Example
 
-::: code-group
+::code-group
 
 ```typescript twoslash [Standalone markdown]
 import { defineConfig } from 'kubb'
@@ -129,7 +129,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 ## See also
 

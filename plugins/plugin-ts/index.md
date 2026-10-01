@@ -47,7 +47,7 @@ resources:
 
 ## Installation
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/plugin-ts
@@ -65,7 +65,7 @@ npm install --save-dev @kubb/plugin-ts
 yarn add -D @kubb/plugin-ts
 ```
 
-:::
+::
 
 ## Dependencies
 
@@ -73,7 +73,7 @@ yarn add -D @kubb/plugin-ts
 
 ## Example
 
-::: code-group
+::code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -94,7 +94,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 ## See also
 

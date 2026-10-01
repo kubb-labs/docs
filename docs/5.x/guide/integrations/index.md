@@ -23,7 +23,7 @@ Kubb runs from the CLI and the places you already work. A bundler integration ge
 
 Install `kubb` as a dev dependency.
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d kubb
@@ -41,7 +41,7 @@ npm install --save-dev kubb
 yarn add -D kubb
 ```
 
-:::
+::
 
 ## Pick your bundler
 

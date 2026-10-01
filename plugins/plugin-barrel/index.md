@@ -52,7 +52,7 @@ The plugin is registered by default in `defineConfig`, but barrels stay off unti
 
 ## Installation
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/plugin-barrel
@@ -70,7 +70,7 @@ npm install --save-dev @kubb/plugin-barrel
 yarn add -D @kubb/plugin-barrel
 ```
 
-:::
+::
 
 ## Dependencies
 
@@ -78,7 +78,7 @@ yarn add -D @kubb/plugin-barrel
 
 ## Example
 
-::: code-group
+::code-group
 
 ```typescript twoslash [Named exports]
 import { defineConfig } from 'kubb'
@@ -186,7 +186,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 ## See also
 

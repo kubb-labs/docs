@@ -65,7 +65,7 @@ Library used to format `date` and `time` fields represented as strings. Pick a v
 
 A string `date` field renders differently per parser:
 
-::: code-group
+::code-group
 
 ```typescript ['faker' (default)]
 faker.date.anytime().toISOString().substring(0, 10)
@@ -79,7 +79,7 @@ dayjs(faker.date.anytime()).format('YYYY-MM-DD')
 moment(faker.date.anytime()).format('YYYY-MM-DD')
 ```
 
-:::
+::
 
 ### regexGenerator
 
