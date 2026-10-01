@@ -526,9 +526,9 @@ The output changes specific to each generator live on its [per-extension page](#
 
 A realistic multi-plugin config. Expand it to see every change from this guide applied together.
 
-:::: details Show the full v4 → v5 config
+::collapsible{name="Show the full v4 → v5 config"}
 
-::code-group
+:::code-group
 
 ```typescript [v4 kubb.config.ts]
 import { defineConfig, memoryStorage } from '@kubb/core'
@@ -640,7 +640,7 @@ export default defineConfig({
 })
 ```
 
-::
+:::
 
 :
 
