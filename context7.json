@@ -3,7 +3,7 @@
   "url": "https://context7.com/kubb-labs/docs",
   "public_key": "pk_E3UkJR9X5FvhME9wB1sCS",
   "projectTitle": "Kubb",
-  "description": "Generate your API layer from your API spec. Point Kubb at an OpenAPI specification and it generates TypeScript types, typed Axios or Fetch clients, TanStack Query and SWR hooks, Zod schemas, Faker mocks, and MSW handlers.",
+  "description": "Generate your API layer from OpenAPI. Point Kubb at an OpenAPI specification and it generates TypeScript types, typed Axios or Fetch clients, TanStack Query and SWR hooks, Zod schemas, Faker mocks, and MSW handlers.",
   "folders": ["docs/5.x", "plugins", "adapters", "parsers", "snippets"],
   "excludeFiles": ["AGENTS.md", "changelog.md"],
   "rules": [

@@ -20,7 +20,7 @@
 
 # Kubb Docs
 
-**Documentation content for [Kubb](https://kubb.dev), which generates your API layer from your API spec.**
+**Documentation content for [Kubb](https://kubb.dev), which generates your API layer from OpenAPI.**
 
 This repository holds the raw markdown documentation files that power [kubb.dev](https://kubb.dev). Content is organized by category: plugins, adapters, parsers, and versioned docs.
 
