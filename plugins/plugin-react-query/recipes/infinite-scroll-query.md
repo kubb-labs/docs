@@ -53,8 +53,7 @@ export function findPetsByTagsInfiniteQueryOptions({ query }: FindPetsByTagsOpti
     queryKey,
     queryFn: async ({ signal, pageParam }) => {
       query = { ...(query ?? {}), ['page']: pageParam as unknown as FindPetsByTagsQuery['page'] } as FindPetsByTagsQuery
-      const { data } = await findPetsByTags({ ...config, query, signal: config.signal ?? signal, throwOnError: true })
-      return data
+      return findPetsByTags({ ...config, query, signal: config.signal ?? signal, throwOnError: true }).unwrap()
     },
     initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage?.['pagination']?.['next']?.['cursor']

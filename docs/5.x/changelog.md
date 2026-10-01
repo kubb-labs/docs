@@ -9,6 +9,425 @@ outline: 2
 
 # Changelog
 
+## v5.3.19 — Sep 26, 2026
+
+### @kubb/studio
+
+#### Bug Fixes
+
+- Fix `kubb studio snapshot` saying "No snapshot of `main` to compare with" even when a CI agent for the base branch already exists and simply has no snapshot of this package yet, such as a package newly added in the pull request. `branchChanges` now carries `baseFound`, and the summary line tells the two cases apart: "No snapshot of `main` to compare with" (no agent has run there) versus "No snapshot of `main` for this package yet" (the agent exists, this package is new to it). ([#4123](https://github.com/kubb-labs/kubb/pull/4123), [`3561e19`](https://github.com/kubb-labs/kubb/commit/3561e1977c36056a0727566175c3b40edf8c097d))
+- Remove `allowInput` from `AgentPermissions` and the `--allow-input`/`KUBB_AGENT_ALLOW_INPUT` flag. Only a sandbox agent can generate from an OpenAPI spec sent by Studio; every other agent always reads its spec from disk, so this was never actually a permission a host could opt into. ([#4124](https://github.com/kubb-labs/kubb/pull/4124), [`292350e`](https://github.com/kubb-labs/kubb/commit/292350e28f01c65e277cf32288724fb8bc0ca4d8))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.3.18 — Sep 25, 2026
+
+### @kubb/studio
+
+#### Bug Fixes
+
+- Organize the Studio runtime into protocol, operations, and runtime layers. ([#4121](https://github.com/kubb-labs/kubb/pull/4121), [`63f951a`](https://github.com/kubb-labs/kubb/commit/63f951a6efbdd27208df4e792cded4ea7e22973a))
+- `kubb studio snapshot` runs its snapshot job on the agent process it connected, so two overlapping pipelines of the same CI agent never build each other's checkout.
+  
+  - `createJob` accepts `instanceId`, and sends it on `POST /api/jobs`. A Studio that does not know the field ignores it.
+  - `createClient` accepts an `instanceId`, so a host that queues its own jobs can name its process. Without one, each client still gets a random id. ([#4119](https://github.com/kubb-labs/kubb/pull/4119), [`955b6b5`](https://github.com/kubb-labs/kubb/commit/955b6b557135d18b173aa237bd0876dac388abef))
+- Remove `memoryBudgetMb` from `AgentCapacity`, along with the `KUBB_AGENT_MEMORY_BUDGET_MB` environment variable. An agent no longer refuses a job for memory, and its heartbeat always reports `accepting: true`. ([#4117](https://github.com/kubb-labs/kubb/pull/4117), [`d3996ef`](https://github.com/kubb-labs/kubb/commit/d3996ef6ead14995ade6378963ee0e45b9bbd5f5))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.3.17 — Sep 25, 2026
+
+### @kubb/studio
+
+#### Bug Fixes
+
+- Improve Studio agent connections, job isolation, retries, capacity reporting, and close handling. Add GitHub/GitLab branch snapshots and fail-fast token rejection handling to the CLI. ([#4110](https://github.com/kubb-labs/kubb/pull/4110), [`327bfe9`](https://github.com/kubb-labs/kubb/commit/327bfe9d2a38caacfc0707345a5f532f264b2754))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.3.16 — Sep 24, 2026
+
+### @kubb/studio
+
+#### Bug Fixes
+
+- Align how `kubb studio`, the Docker agent, and `kubb studio snapshot` pair, connect, and log. The runtime no longer prints or knows its host, pairing takes a `type` through the new `pairAgent`, and snapshots report the files changed since the previous one. ([#4098](https://github.com/kubb-labs/kubb/pull/4098), [`555e057`](https://github.com/kubb-labs/kubb/commit/555e057827aed831b755035ffab2a3e84a120629))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.3.15 — Sep 24, 2026
+
+### @kubb/core
+
+#### Bug Fixes
+
+- Files emitted with `copy` now follow the parser's `extension` option. Parsers can implement the new `copy(file, source)` hook to turn a copied file into nodes, and `parserTs`/`parserTsx` use it to lift a template's imports and exports into import and export nodes. ([#4096](https://github.com/kubb-labs/kubb/pull/4096), [`050f6f9`](https://github.com/kubb-labs/kubb/commit/050f6f98d4150a2bd9b26d1937a56c1b0a89fd72))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.3.14 — Sep 24, 2026
+
+### @kubb/adapter-oas
+
+#### Bug Fixes
+
+- Keep a binary response or request body typed as a blob for any non-JSON media type (`application/pdf`, `image/png`, ...), not just `application/octet-stream`. A newer `@scalar/openapi-upgrader` release started emptying `format: 'binary'` schemas for every media type on the OAS 3.1 upgrade, not just `application/octet-stream`, so those bodies fell back to `emptySchemaType` instead of resolving to a blob. ([#4094](https://github.com/kubb-labs/kubb/pull/4094), [`cfcb497`](https://github.com/kubb-labs/kubb/commit/cfcb497977f246d02dac9cc8f88a2a230ab8734e))
+
+### @kubb/ast
+
+#### Bug Fixes
+
+- Add `isBareRef` for detecting unmodified schema references. ([#4093](https://github.com/kubb-labs/kubb/pull/4093), [`c7a9157`](https://github.com/kubb-labs/kubb/commit/c7a91570a9f9ad176fb4580094476406ac5b9997))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.3.13 — Sep 23, 2026
+
+### @kubb/studio
+
+#### Bug Fixes
+
+- Keep recent generations by job id and snapshot the output directory before each run, so Studio can diff a run against an earlier one or against the files on disk. Agents with a project keep them in `node_modules/.cache/kubb`, so they survive a restart, and sandboxes keep them in memory. `KUBB_AGENT_MAX_GENERATIONS` (default 8), `KUBB_AGENT_MAX_GENERATIONS_MB` (default 100) and `KUBB_AGENT_MAX_SNAPSHOT_MB` (default 50) set the limits. Breaking for the Studio connection: `readFiles` now takes a `jobId` and a `source`, and `GenerateResult.changes` is replaced by `hashes` and `disk.hashes`. `@kubb/core` now exports `cacheStorage`. ([#4090](https://github.com/kubb-labs/kubb/pull/4090), [`7b517b8`](https://github.com/kubb-labs/kubb/commit/7b517b80d2d80a90878e7854528345e3836ebcac))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.3.12 — Sep 23, 2026
+
+### @kubb/studio
+
+#### Bug Fixes
+
+- Report which files a Studio run added, changed, or removed, and serve the previous run's contents so Studio can show a diff.
+  
+  - `GenerateResult.changes` maps each path that differs from the session's previous successful run to `added`, `changed`, or `removed`. Unchanged files are left out, and the field is absent on a session's first run.
+  - `readFiles` takes `revision: 'previous'` to read the run before the latest one, including files the latest run removed. The previous run is read into memory before the next run starts, so a session that writes to disk can still be diffed after its files are overwritten.
+  - A failed run leaves the last successful run as the one to compare against.
+  - `FileChange` is exported from `@kubb/studio`. ([#4086](https://github.com/kubb-labs/kubb/pull/4086), [`300186d`](https://github.com/kubb-labs/kubb/commit/300186d94395921012334877c291e8065dd591ef))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.3.11 — Sep 21, 2026
+
+### @kubb/adapter-oas
+
+#### Bug Fixes
+
+- Generate `Blob` for multipart binary properties after upgrading an OpenAPI 3.0 document to 3.1. ([#4083](https://github.com/kubb-labs/kubb/pull/4083), [`95d93a7`](https://github.com/kubb-labs/kubb/commit/95d93a70c8021bc6aa912be412a3e21b37890bf0))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.3.10 — Sep 19, 2026
+
+### @kubb/cli
+
+#### Bug Fixes
+
+- Show sponsor tips again for successful `kubb generate` runs and when starting a `kubb studio` session. ([#4077](https://github.com/kubb-labs/kubb/pull/4077), [`15c644e`](https://github.com/kubb-labs/kubb/commit/15c644e427dc7bc522bbf473eba4818bc4ac767c))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.3.9 — Sep 19, 2026
+
+### @kubb/adapter-oas
+
+#### Bug Fixes
+
+- Update the OpenAPI parser, upgrader, and unplugin dependencies. ([#4068](https://github.com/kubb-labs/kubb/pull/4068), [`d88ab19`](https://github.com/kubb-labs/kubb/commit/d88ab1989b222f8b1012ed046f10bf105139e3e9))
+
+### @kubb/cli
+
+#### Bug Fixes
+
+- Scope Kubb Studio help by subcommand and reject flags passed to the wrong Studio command. ([#4068](https://github.com/kubb-labs/kubb/pull/4068), [`d88ab19`](https://github.com/kubb-labs/kubb/commit/d88ab1989b222f8b1012ed046f10bf105139e3e9))
+
+### kubb
+
+#### Bug Fixes
+
+- Apply the same adapter, parser, and plugin defaults to programmatic `createKubb` builds as the CLI configuration. ([#4072](https://github.com/kubb-labs/kubb/pull/4072), [`4afe194`](https://github.com/kubb-labs/kubb/commit/4afe194a5d88e4ac59813564485e7542d633518c))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.3.8 — Sep 18, 2026
+
+### @kubb/studio
+
+#### Bug Fixes
+
+- Carry an agent's organization slug through pairing and connecting, so a host can log and trace it
+  alongside the agent's own slug.
+  
+  `PairingResult.agent` and the `studio:connected` hook context gain an optional
+  `organizationSlug`, absent for a sandbox or global agent, which has none. `studio:connected` also
+  gains `agentSlug`, refreshed on every connect so a rename in Studio shows up without a re-pair.
+  Both fields are additive: a host built against an older type just ignores them. ([#4066](https://github.com/kubb-labs/kubb/pull/4066), [`eb5fa50`](https://github.com/kubb-labs/kubb/commit/eb5fa50fedf52a06349813fae039f562225ae240))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.3.7 — Sep 18, 2026
+
+### @kubb/studio
+
+#### Bug Fixes
+
+- Fix a snapshot package's `package.json` pointing `main`/`module`/`exports['.']` at
+  `dist/index.*` even when the generation had no top-level barrel, and add a wildcard
+  `exports['./*']` so individual generated files stay importable by path. ([#4064](https://github.com/kubb-labs/kubb/pull/4064), [`d2ce0c4`](https://github.com/kubb-labs/kubb/commit/d2ce0c4af275d7bf89535e64fc0c6bdbfcfaecd1))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.3.6 — Sep 17, 2026
+
+### @kubb/studio
+
+#### Bug Fixes
+
+- Replace the agent WebSocket command protocol with typed Cap'n Web RPC and remove the legacy JSON envelopes. Agents and Studio must upgrade together; mismatched versions cannot communicate. ([#4061](https://github.com/kubb-labs/kubb/pull/4061), [`f880342`](https://github.com/kubb-labs/kubb/commit/f880342c1dc80611cd4094ced72c7d53e7d46cb5))
+- Fix generation and heartbeat lifecycle bugs left over from the Cap'n Web RPC cutover:
+  
+  - A dropped Studio connection now cancels the in-flight generation instead of letting it finish
+    unwatched.
+  - Two `startGeneration` calls arriving in the same tick can no longer both start a run.
+  - A heartbeat ping that never settles (a half-open socket) now closes the session instead of
+    hanging it indefinitely.
+  - Removed an unreachable error path left over from the old JSON transport. ([#4061](https://github.com/kubb-labs/kubb/pull/4061), [`f880342`](https://github.com/kubb-labs/kubb/commit/f880342c1dc80611cd4094ced72c7d53e7d46cb5))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.3.5 — Sep 17, 2026
+
+### @kubb/studio
+
+#### Bug Fixes
+
+- Stop holding a whole generation's output in memory for the life of a Studio session.
+  
+  `studio:files` and `studio:snapshot` used to read every generated file into one `Record<string,
+  string>` the moment a run finished, and kept that map alive until the next generation. A run
+  producing gigabytes of source meant the agent process held gigabytes in RAM, whether or not anyone
+  ever opened a file or took a snapshot.
+  
+  The agent now keeps the live `Storage` a run wrote through, plus the list of paths it produced, and
+  reads a file's content back from `Storage` only when `studio:files` or `studio:snapshot` actually
+  asks for it. A path outside that list is refused before it reaches storage, so this changes nothing
+  about what a session can read, only when the read happens. ([#4059](https://github.com/kubb-labs/kubb/pull/4059), [`351e3c9`](https://github.com/kubb-labs/kubb/commit/351e3c9f9822cfb7ffc5ac7d07517394a449f58e))
+- Stop streaming generated source over the agent WebSocket by default. Reading it now needs
+  `--allow-read` (or `KUBB_AGENT_ALLOW_READ=true`), matching the other four Studio permissions.
+  
+  Every `kubb studio` session used to send the full text of every generated file on
+  `kubb:generation:end`, whether or not anyone in the browser opened one. A spec producing hundreds
+  of files could put megabytes of source on the wire per run, and nothing gated it: `allowWrite`,
+  `allowConfigEdit`, `allowInput`, and `allowExec` all cover what Studio may do _to_ a project, but
+  reading generated output back was never one of the four.
+  
+  `kubb:generation:end` now carries nothing. Everything it used to carry moved somewhere better:
+  
+  - The list of generated files is on `kubb:build:end`, which already carried every path and fires
+    earlier in a run. Its paths are now relative to the agent's root, matching every other path on
+    the wire, where they used to be absolute.
+  - The file count is on `kubb:generation:summary`, which already had it and was always the accurate
+    number (`kubb:generation:end`'s old count went to 0 for a CI connection).
+  - File contents are fetched on demand with a new `studio:files` command, which the browser sends
+    when someone opens a file. The agent replies with `agent:files`, refusing unless `allowRead` was
+    granted.
+  - Peer dependency metadata, previously sent on every generation and round-tripped straight back
+    into `studio:snapshot`, now travels with the `agent:snapshot` reply instead, since the CI
+    snapshot flow is its only consumer. `studio:snapshot` takes `bundledDependencies` in place of
+    `peerDependencies`.
+  
+  `--allow-read` is off by default everywhere, like every other permission. A sandbox or global
+  agent is always granted it, since its output is the only thing it has:
+  
+  ```shell
+  kubb studio --allow-read   # show generated files in the browser
+  ```
+  
+  An older Studio instance talking to this version of the agent (or the reverse) can fail: a snapshot
+  build errors because `bundledDependencies` and `peerDependencies` no longer line up between the two
+  ends, and a plain session shows an empty editor with no file contents. Point `--url` at a Studio
+  build that matches this version.
+  
+  The in-process `kubb:generation:end` hook (`kubb.hooks.hook('kubb:generation:end', ...)`, or a
+  plugin's own listener) is unaffected. It still carries `config`, `storage`, `diagnostics`,
+  `status`, `hrStart`, and `filesCreated`, exactly as before. Only the payload this event sends over
+  the Studio WebSocket changed. ([#4059](https://github.com/kubb-labs/kubb/pull/4059), [`351e3c9`](https://github.com/kubb-labs/kubb/commit/351e3c9f9822cfb7ffc5ac7d07517394a449f58e))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.3.4 — Sep 16, 2026
+
+### @kubb/studio
+
+#### Bug Fixes
+
+- Back off while polling a Studio job, so a long snapshot stops exhausting the API key rate limit.
+  
+  `waitForJob` polled `GET /api/jobs/{id}` every second, starting the instant the job was queued. The
+  CLI's `kubb studio snapshot` waits up to 10 minutes by default, which is up to 600 requests against
+  a budget of 100 per window. The window only resets after a whole window with no request, so a
+  one-second poll could never escape the limit once it hit it, and every later call failed until the
+  run gave up. The budget belongs to the organization key, so concurrent CI runs share it.
+  
+  The first poll now waits two seconds, since a job runs a generation and packs a tarball before it
+  can possibly finish. From there the interval doubles to a 30 second ceiling, bringing a 10 minute
+  wait down from 600 requests to 22. A 429 pushes the next poll out by the `tryAgainIn` Studio
+  returns and never pulls it back in, and `retry: false` stops ofetch retrying a 429 with no delay. ([#4057](https://github.com/kubb-labs/kubb/pull/4057), [`52637b6`](https://github.com/kubb-labs/kubb/commit/52637b617207bd7e51e7f9d5c2220df9de0c4704))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.3.3 — Sep 16, 2026
+
+### @kubb/studio
+
+#### Bug Fixes
+
+- The agent runtime now packs snapshot tarballs itself. A new `studio:snapshot` command builds the
+  npm-installable tarball from the session's most recent generation and uploads it to a Studio
+  endpoint, instead of Studio building the tarball on its own server. A snapshot request with no
+  prior generation is refused.
+  
+  A CI connection also keeps generated files off every `kubb:generation:end` reply, since it has no
+  UI to render them in. `kubb studio snapshot` and the Studio UI's "Create snapshot" button keep
+  working as before, now backed by this protocol message. ([#4052](https://github.com/kubb-labs/kubb/pull/4052), [`19e9c2c`](https://github.com/kubb-labs/kubb/commit/19e9c2c70687f6440cd2d3e74d153edb64491d8d))
+- The background reconnect loop's "Retrying connection" and "Reconnect attempt failed" lines, and
+  the teardown notice `disconnect()` prints on the way out, now go through `console.error` instead
+  of `console.info`/`console.log`, and only print when a host passes a `logLevel` above `silent` to
+  `StudioSession`. Previously they always printed unconditionally, which a CI runner that only
+  streams a child process's stderr live (such as `kubb-labs/action`) never surfaces, and which
+  contradicted `installLogger`'s own "prints nothing when left out" default.
+  
+  `kubb studio` and `kubb studio snapshot` now pass their `--log-level` flag through, so these lines
+  respect the same flag as the rest of the command's output. ([#4052](https://github.com/kubb-labs/kubb/pull/4052), [`19e9c2c`](https://github.com/kubb-labs/kubb/commit/19e9c2c70687f6440cd2d3e74d153edb64491d8d))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.3.2 — Sep 16, 2026
+
+### @kubb/cli
+
+#### Bug Fixes
+
+- CLI flags are now kebab-case, matching the convention used by most command-line tools.
+  
+  - `kubb generate --log-level` and `kubb generate --dry-run` replace `--logLevel` and `--dryRun`.
+  - `kubb studio --allow-write`, `--allow-config-edit`, `--allow-input`, and `--allow-exec` replace
+    `--allowWrite`, `--allowConfigEdit`, `--allowInput`, and `--allowExec`.
+  - `kubb init --dry-run` replaces `--dryRun`.
+  
+  To upgrade, replace any camelCase flag in a script or CI job with its kebab-case name. The CLI
+  now rejects an unrecognized flag with an error instead of silently ignoring it.
+  
+  ```bash
+  # Before
+  kubb studio --allowWrite --allowExec
+  
+  # After
+  kubb studio --allow-write --allow-exec
+  ``` ([#4046](https://github.com/kubb-labs/kubb/pull/4046), [`e5ecdda`](https://github.com/kubb-labs/kubb/commit/e5ecdda06acbd3b99c2716384b2a8ac56eedfad8))
+
+### @kubb/studio
+
+#### Bug Fixes
+
+- Renamed the `studio:ping` heartbeat reply to `studio:pong`, matching the ping/pong pattern
+  `agent:ping` already implies (`StudioPingMessage` is now `StudioPongMessage`,
+  `isStudioPingMessage` is now `isStudioPongMessage`). This is a wire-protocol change: an agent
+  running an older `@kubb/studio` and a Studio running the new one won't recognize each other's
+  heartbeat reply. Update both sides together.
+  
+  Also documented the full `studio:`/`agent:` message table in `packages/studio/src/protocol/index.ts`,
+  including why `studio:generate` has no dedicated `agent:generate` reply (its result rides the
+  `agent:data`/`kubb:generation:end` event stream instead, unlike `studio:save`/`studio:snapshot`,
+  which reply directly). ([#4053](https://github.com/kubb-labs/kubb/pull/4053), [`76dd283`](https://github.com/kubb-labs/kubb/commit/76dd283169ac312c269c398bee64944eee6f5b05))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.3.1 — Sep 15, 2026
+
+### @kubb/core
+
+#### Bug Fixes
+
+- Report duplicate barrel exports instead of emitting an invalid barrel. ([#4043](https://github.com/kubb-labs/kubb/pull/4043), [`2aad826`](https://github.com/kubb-labs/kubb/commit/2aad826b4f70cd7a82c30c8d6323c4fc7664848c))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
 ## v5.3.0 — Sep 15, 2026
 
 ### @kubb/core

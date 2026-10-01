@@ -18,8 +18,8 @@ Options for `adapterOas`, with type and default in the table.
 | [`enums`](#enums) | `'inline' \| 'root'` | `'inline'` | Where inline enums live |
 | [`dateType`](#datetype) | `false \| 'string' \| 'stringOffset' \| 'stringLocal' \| 'date' \| { dateTime?, date?, time? }` | `'string'` | How `date-time`, `date`, and `time` schemas are represented |
 | [`integerType`](#integertype) | `'number' \| 'bigint'` | `'bigint'` | How integers map to TypeScript |
-| [`unknownType`](#unknowntype) | `'any' \| 'unknown' \| 'void'` | `'any'` | Type for schemas Kubb cannot infer |
-| [`emptySchemaType`](#emptyschematype) | `'any' \| 'unknown' \| 'void'` | `unknownType \| 'any'` | Type for empty schemas |
+| [`unknownType`](#unknowntype) | `'any' \| 'unknown' \| 'void'` | `'unknown'` | Type for schemas Kubb cannot infer |
+| [`emptySchemaType`](#emptyschematype) | `'any' \| 'unknown' \| 'void'` | `unknownType` (`'unknown'` by default) | Type for empty schemas |
 | [`enumSuffix`](#enumsuffix) | `string` | `'enum'` | Suffix for derived enum names |
 
 ### validate

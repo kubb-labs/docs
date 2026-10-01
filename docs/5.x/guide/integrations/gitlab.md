@@ -40,7 +40,7 @@ A merge request pipeline also names its target branch's agent, from `CI_MERGE_RE
 
 ## Post the result as a note
 
-`--json` prints one JSON object and nothing else, carrying `url`, `name`, `version`, `integrity`, `expiresAt`, `agentUrl`, `changes`, and `branchChanges`. This script turns it into one note on the merge request and updates that note on every pipeline. It needs nothing beyond Node:
+`--json` prints one JSON object and nothing else. It includes `id`, `name`, `version`, `integrity`, `url`, `snapshotIdUrl`, `expiresAt`, and `agentUrl`, plus `changes` and `branchChanges` when available. This script turns it into one note on the merge request and updates that note on every pipeline. It needs nothing beyond Node:
 
 ```js [scripts/kubb-note.mjs]
 import { readFileSync } from 'node:fs'
@@ -51,7 +51,11 @@ const counts = (c) => `${c.added.length} added · ${c.changed.length} changed ·
 const lines = [marker, `Kubb snapshot: \`npm i ${snapshot.url}\``]
 
 const { branchChanges: branch, changes } = snapshot
-if (branch) lines.push(branch.base ? `Changes against \`${branch.branch}\`: ${counts(branch)}` : `No snapshot of \`${branch.branch}\` to compare with yet`)
+if (branch) {
+  if (branch.base) lines.push(`Changes against \`${branch.branch}\`: ${counts(branch)}`)
+  else if (branch.baseFound) lines.push(`No snapshot of \`${branch.branch}\` for this package yet`)
+  else lines.push(`No snapshot of \`${branch.branch}\` to compare with`)
+}
 if (changes?.base) lines.push(`Changes since ${changes.base.commit?.slice(0, 7) ?? changes.base.createdAt}: ${counts(changes)}`)
 
 const { CI_API_V4_URL, CI_PROJECT_ID, CI_MERGE_REQUEST_IID, GITLAB_API_TOKEN } = process.env

@@ -43,8 +43,7 @@ export function getUserByNameQueryOptions({ path }: { path: MaybeRefOrGetter<Get
   return queryOptions<GetUserByNameStatus200, ResponseErrorConfig<GetUserByNameStatus400 | GetUserByNameStatus404>, GetUserByNameStatus200>({
    queryKey,
    queryFn: async ({ signal }) => {
-      const { data } = await getUserByName({ ...config, path: toValue(path), signal: config.signal ?? signal, throwOnError: true })
-      return data
+      return getUserByName({ ...config, path: toValue(path), signal: config.signal ?? signal, throwOnError: true }).unwrap()
    },
   })
 }

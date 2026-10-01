@@ -36,8 +36,8 @@ import type { RequestHandlerExtra } from '@modelcontextprotocol/sdk/shared/proto
 import type { CallToolResult, ServerNotification, ServerRequest } from '@modelcontextprotocol/sdk/types'
 import { getPetById } from '../clients/getPetById'
 
-export async function getPetByIdHandler({ path }: GetPetByIdOptions, request: RequestHandlerExtra<ServerRequest, ServerNotification>): Promise<Promise<CallToolResult>> {
-  const res = await getPetById({ path })
+export async function getPetByIdHandler({ path }: GetPetByIdOptions, request: RequestHandlerExtra<ServerRequest, ServerNotification>): Promise<CallToolResult> {
+  const res = await getPetById({ path, signal: request.signal, throwOnError: true })
 
   return {
     content: [{ type: 'text', text: JSON.stringify(res.data) }],
@@ -46,7 +46,7 @@ export async function getPetByIdHandler({ path }: GetPetByIdOptions, request: Re
 }
 ```
 
-The handler calls `getPetById` from the auto-detected Axios client, and `server.ts` registers a matching tool with Zod input and output schemas, plus a ready-to-run `startServer` export.
+The handler calls `getPetById` from the auto-detected Axios client, forwards the MCP request's cancellation signal, and keeps non-2xx responses on the throwing path. `server.ts` registers a matching tool with Zod input and output schemas, plus a ready-to-run `startServer` export.
 
 ```typescript [usage.ts]
 import { startServer } from './src/gen/mcp/server'

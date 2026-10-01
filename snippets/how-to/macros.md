@@ -1,6 +1,6 @@
 # Write a macro
 
-A macro is a named, composable transform over Kubb's [AST](/docs/5.x/guide/concepts/ast). It rewrites the schema and operation nodes that adapters produce before generators print code, so you can rename a symbol, retype a field, strip metadata, or normalize a shape without forking an adapter or a generator. Because macros run on the shared AST, the same macro works across every input adapter (OpenAPI, AsyncAPI, JSON Schema) and every output target (TypeScript, Zod, and any [printer](/docs/5.x/guide/going-further/printers) a plugin supplies).
+A macro is a named, composable transform over Kubb's [AST](/docs/5.x/guide/concepts/ast). It rewrites the schema and operation nodes that adapters produce before generators print code, so you can rename a symbol, retype a field, strip metadata, or normalize a shape without forking an adapter or a generator. Because macros run on the shared AST, the same macro works with any adapter that emits Kubb AST nodes and across output targets such as TypeScript, Zod, and any [printer](/docs/5.x/guide/going-further/printers) a plugin supplies.
 
 The engine (`defineMacro`, `composeMacros`, `applyMacros`, and the `Macro` type) comes with the `ast` namespace from `kubb/kit`, next to the node tree it transforms. The built-in macro presets are named exports of `kubb/kit` itself.
 
@@ -19,7 +19,7 @@ type Macro = {
 }
 ```
 
-Each callback returns a replacement node, or `undefined` to leave the node untouched. A macro that changes nothing returns the original reference, so an unchanged tree is reused, not rebuilt.
+Each callback returns a replacement node, or `undefined` or `null` to leave the node untouched. A macro that changes nothing returns the original reference, so an unchanged tree is reused, not rebuilt.
 
 ## Writing a macro
 

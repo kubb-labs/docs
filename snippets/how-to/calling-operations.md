@@ -67,8 +67,8 @@ type RequestResult = {
 }
 ```
 
-With the default `throwOnError`, a resolved call is always a success, so you read `data`
-straight away:
+When `throwOnError` is `true` (the generated default), a resolved call is always a success, so you
+read `data` straight away:
 
 ```typescript
 const { data, status, response } = await getPetById({ path: { petId: 1 } })
@@ -104,9 +104,9 @@ const pet = await getPetById({ path: { petId: 1 } }).unwrap()
 //    ^ the parsed pet, not the full RequestResult
 ```
 
-How `unwrap()` handles a failure depends on `throwOnError`. With the default `throwOnError: true`,
-a non-2xx response already throws a `ResponseError` before the call resolves, so `unwrap()` throws
-the same `ResponseError` a plain `await` would:
+How `unwrap()` handles a failure depends on `throwOnError`. With `throwOnError: true`, a non-2xx
+response already throws a `ResponseError` before the call resolves, so `unwrap()` throws the same
+`ResponseError` a plain `await` would:
 
 ```typescript
 import { ResponseError } from './gen/.kubb/client'
