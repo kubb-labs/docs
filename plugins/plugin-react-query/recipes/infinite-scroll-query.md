@@ -68,3 +68,20 @@ import { findPetsByTagsInfiniteQueryOptions } from './src/gen/hooks/useFindPetsB
 
 const { data, fetchNextPage } = useInfiniteQuery(findPetsByTagsInfiniteQueryOptions({ query: { tags: ['dog'] } }))
 ```
+
+## Page-number pagination
+
+When the response carries a page number and a "has more" flag instead of a cursor, compute the next page with [`getNextPageParam`](/plugins/plugin-react-query/reference/options#infinite-getnextpageparam), and use [`match`](/plugins/plugin-react-query/reference/options#infinite-match) to skip operations that take the query parameter but don't return a page:
+
+```typescript [kubb.config.ts]
+pluginReactQuery({
+  hooks: true,
+  infinite: {
+    queryParam: 'page',
+    initialPageParam: 0,
+    getNextPageParam: '(lastPage) => (lastPage.hasNext ? lastPage.number + 1 : undefined)',
+    getPreviousPageParam: '(firstPage) => (firstPage.number > 0 ? firstPage.number - 1 : undefined)',
+    match: (node) => node.operationId.startsWith('list'),
+  },
+})
+```

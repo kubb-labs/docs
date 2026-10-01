@@ -89,6 +89,35 @@ Path to the next-page cursor, as dot notation (`'pagination.next.id'`) or array 
 
 Path to the previous-page cursor, in the same forms. Defaults to `null`.
 
+#### infinite.getNextPageParam
+
+Source of TanStack Query's `getNextPageParam`, inlined verbatim, for a next page that has to be computed rather than read from a field. Takes precedence over `nextParam` and `cursorParam`. Defaults to `null`.
+
+```typescript
+infinite: {
+  queryParam: 'page',
+  getNextPageParam: '(lastPage) => (lastPage.hasNext ? lastPage.number + 1 : undefined)',
+  getPreviousPageParam: '(firstPage) => (firstPage.number > 0 ? firstPage.number - 1 : undefined)',
+}
+```
+
+Without any of `getNextPageParam`, `nextParam` or `cursorParam`, the hook counts pages up from `initialPageParam` and stops on an empty array. That only works for responses that are arrays, so generation warns for an operation whose response is an object.
+
+#### infinite.getPreviousPageParam
+
+Source of TanStack Query's `getPreviousPageParam`, inlined verbatim. Takes precedence over `previousParam` and `cursorParam`. Defaults to `null`.
+
+#### infinite.match
+
+Narrows which operations get infinite hooks, on top of having `queryParam`. Receives the operation node, return `false` to skip it. Defaults to `null`.
+
+```typescript
+infinite: {
+  queryParam: 'page',
+  match: (node) => node.operationId.startsWith('list'),
+}
+```
+
 ### suspense
 
 Adds a suspense variant alongside the regular query output. Pass an empty object (`{}`) to enable, or leave it as `false` (the default) to skip it. TanStack Query v5+ only.
