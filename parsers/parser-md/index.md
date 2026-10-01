@@ -70,9 +70,9 @@ yarn add -D @kubb/parser-md
 
 `@kubb/parser-md` takes no options of its own. To add a YAML frontmatter block to a generated page, set `frontmatter` on a file's `meta` inside a plugin. The parser renders those keys and prepends them to the output. Any serializable object works.
 
-|          |                                   |
-| -------: | :-------------------------------- |
-|    Type: | `Record<string, unknown> \| null` |
+| Type |
+| --- |
+| `Record<string, unknown> \| null` |
 
 ```typescript [Plugin that sets frontmatter]
 ast.factory.createFile({

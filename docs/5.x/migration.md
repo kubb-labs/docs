@@ -670,13 +670,9 @@ Each timing covers a full `kubb generate`, from process start to the last file w
 
 ### Benchmark machine
 
-| | |
-| --- | --- |
-| OS | Linux 6.18.5 |
-| CPU | Intel(R) Xeon(R) Processor @ 2.10GHz |
-| Cores | 4 |
-| Memory | 15.7 GB |
-| Node | v22.22.2 |
+| OS | CPU | Cores | Memory | Node |
+| --- | --- | --- | --- | --- |
+| Linux 6.18.5 | Intel(R) Xeon(R) Processor @ 2.10GHz | 4 | 15.7 GB | v22.22.2 |
 
 > [!NOTE]
 > Absolute milliseconds and megabytes are hardware-dependent. Treat the speedup percentages as the

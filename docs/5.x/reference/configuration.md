@@ -117,19 +117,17 @@ export default defineConfig(({ watch }) => [
 
 A name for this config. The CLI prints it as `Generating <name>...`.
 
-|           |          |
-| --------: | :------- |
-|     Type: | `string` |
-| Required: | `false`  |
+| Type | Required |
+| --- | --- |
+| `string` | `false` |
 
 ### `input`
 
 Where Kubb reads your spec: a local file path, a URL, inline OpenAPI content as a JSON or YAML string, or an already-parsed object. Kubb detects which one you gave it. Required when an adapter is configured. Omit it in plugin-only mode, when there is no `adapter`.
 
-|           |                                      |
-| --------: | :----------------------------------- |
-|     Type: | `string \| Record<string, unknown>`  |
-| Required: | `false`                              |
+| Type | Required |
+| --- | --- |
+| `string \| Record<string, unknown>` | `false` |
 
 A string that starts with `{` or `[`, spans multiple lines, or opens with a YAML `openapi:` or `swagger:` key is read as inline content. Anything else is a file path or a URL, and a relative path resolves against the config file.
 
@@ -151,20 +149,17 @@ Controls where and how files are written.
 
 Directory for generated files, absolute or relative to `root`.
 
-|           |          |
-| --------: | :------- |
-|     Type: | `string` |
-| Required: | `true`   |
+| Type | Required |
+| --- | --- |
+| `string` | `true` |
 
 #### `output.mode`
 
 How a plugin consolidates its code into files. Set it on a plugin's `output`, not on the root `output`.
 
-|           |                                       |
-| --------: | :------------------------------------ |
-|     Type: | `'file' \| 'directory'`               |
-| Required: | `false`                               |
-|  Default: | follows the shape of `output.path`    |
+| Type | Required | Default |
+| --- | --- | --- |
+| `'file' \| 'directory'` | `false` | follows the shape of `output.path` |
 
 `'file'` writes everything into a single file, so `output.path` must include the extension (`'types.ts'`). `'directory'` writes one file per operation or schema under `output.path`. Pair `'directory'` with `group` to split the output into per-tag or per-path subdirectories.
 
@@ -194,11 +189,9 @@ This writes every type into `src/gen/types.ts` and one client file per operation
 
 Wipe `output.path` before regenerating.
 
-|           |           |
-| --------: | :-------- |
-|     Type: | `boolean` |
-| Required: | `false`   |
-|  Default: | `false`   |
+| Type | Required | Default |
+| --- | --- | --- |
+| `boolean` | `false` | `false` |
 
 > [!WARNING]
 > Only use `clean: true` with a dedicated output folder. Kubb removes the entire directory.
@@ -207,11 +200,9 @@ Wipe `output.path` before regenerating.
 
 Formatter to run on every generated file.
 
-|           |                                                       |
-| --------: | :---------------------------------------------------- |
-|     Type: | `'auto' \| 'prettier' \| 'biome' \| 'oxfmt' \| false` |
-| Required: | `false`                                               |
-|  Default: | `false`                                               |
+| Type | Required | Default |
+| --- | --- | --- |
+| `'auto' \| 'prettier' \| 'biome' \| 'oxfmt' \| false` | `false` | `false` |
 
 `'auto'` detects the first formatter it finds ([oxfmt](https://oxc.rs) then [Biome](https://biomejs.dev) then [Prettier](https://prettier.io)). A named tool forces that one. `false` skips formatting. Kubb reads your local `.prettierrc` or `biome.json`.
 
@@ -219,11 +210,9 @@ Formatter to run on every generated file.
 
 Linter to run after generation.
 
-|           |                                                      |
-| --------: | :--------------------------------------------------- |
-|     Type: | `'auto' \| 'eslint' \| 'biome' \| 'oxlint' \| false` |
-| Required: | `false`                                              |
-|  Default: | `false`                                              |
+| Type | Required | Default |
+| --- | --- | --- |
+| `'auto' \| 'eslint' \| 'biome' \| 'oxlint' \| false` | `false` | `false` |
 
 `'auto'` detects the first linter it finds ([oxlint](https://oxc.rs) then [Biome](https://biomejs.dev) then [ESLint](https://eslint.org)). A named tool forces that one. `false` skips linting.
 
@@ -231,10 +220,9 @@ Linter to run after generation.
 
 Shell commands to run after the generated files are formatted and linted, such as a type check or a custom script. Commands run from the `root` directory, in sequence. Pass a command string, or `{ name, command }` to label a step in the CLI output.
 
-|           |                                                       |
-| --------: | :---------------------------------------------------- |
-|     Type: | `Array<string \| { name?: string; command: string }>` |
-| Required: | `false`                                               |
+| Type | Required |
+| --- | --- |
+| `Array<string \| { name?: string; command: string }>` | `false` |
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -254,11 +242,9 @@ Behavior of the root `index.ts` barrel file at `output.path`.
 
 Provided by [`@kubb/plugin-barrel`](/plugins/plugin-barrel/).
 
-|           |                                                         |
-| --------: | :------------------------------------------------------ |
-|     Type: | `{ type: 'all' \| 'named' } \| false`                   |
-| Required: | `false`                                                 |
-|  Default: | `false`                                                 |
+| Type | Required | Default |
+| --- | --- | --- |
+| `{ type: 'all' \| 'named' } \| false` | `false` | `false` |
 
 `{ type: 'all' }` writes `export * from '...'` for every file. `{ type: 'named' }` writes `export { … } from '...'` using each file's named exports. `false` disables the root barrel.
 
@@ -293,11 +279,9 @@ Each plugin keeps its own `output.barrel` for its sub-folder and can override th
 
 Auto-generated banner injected at the top of each file.
 
-|           |                               |
-| --------: | :---------------------------- |
-|     Type: | `'simple' \| 'full' \| false` |
-| Required: | `false`                       |
-|  Default: | `'simple'`                    |
+| Type | Required | Default |
+| --- | --- | --- |
+| `'simple' \| 'full' \| false` | `false` | `'simple'` |
 
 `'simple'` adds a short "Generated by Kubb" notice. `'full'` adds the notice plus `Source`, `Title`, and `OpenAPI spec version` from the spec. `false` writes no banner.
 
@@ -330,20 +314,19 @@ Auto-generated banner injected at the top of each file.
 
 Text prepended to every file a plugin generates. Set it on an individual plugin. The root `output` exposes only [`output.defaultBanner`](#output-defaultbanner). Use it for license headers, lint-disable comments, or framework directives like `'use server'`.
 
-|           |                                        |
-| --------: | :------------------------------------- |
-|     Type: | `string \| ((meta: BannerMeta) => string)` |
-| Required: | `false`                                |
+| Type | Required |
+| --- | --- |
+| `string \| ((meta: BannerMeta) => string)` | `false` |
 
 A string applies to every file the plugin generates, including barrel (`index.ts`) and group aggregation (`[dir]/[dir].ts`) re-export files. A function runs once per file and receives a `BannerMeta`, so you can vary the banner per file or return an empty string to skip it.
 
 `BannerMeta` extends the document `InputMeta` (`title`, `description`, `version`, …) with per-file context:
 
-|              |           |                                                          |
-| -----------: | :-------- | :------------------------------------------------------- |
-|   `filePath` | `string`  | Full output path of the file being generated.            |
-|   `baseName` | `string`  | File name only, for example `stocks.ts`.                 |
-|   `isBarrel` | `boolean` | `true` for `index.ts` re-export barrels.                 |
+| Property | Type | Description |
+| --- | --- | --- |
+| `filePath` | `string` | Full output path of the file being generated. |
+| `baseName` | `string` | File name only, for example `stocks.ts`. |
+| `isBarrel` | `boolean` | `true` for `index.ts` re-export barrels. |
 | `isAggregation` | `boolean` | `true` for group `[dir]/[dir].ts` aggregation files. |
 
 The function form fits Next.js Server Actions. Add `'use server'` to source files, but skip it on re-export files, which only re-export symbols or return function references and break under the directive.
@@ -375,19 +358,17 @@ export default defineConfig({
 
 Text appended to the end of every file a plugin generates. Mirror of [`output.banner`](#output-banner), with the same `string | ((meta: BannerMeta) => string)` type.
 
-|           |                                        |
-| --------: | :------------------------------------- |
-|     Type: | `string \| ((meta: BannerMeta) => string)` |
-| Required: | `false`                                |
+| Type | Required |
+| --- | --- |
+| `string \| ((meta: BannerMeta) => string)` | `false` |
 
 ### `plugins`
 
 Array of Kubb plugins. A plugin can declare dependencies, and Kubb throws at startup when one is missing.
 
-|           |                         |
-| --------: | :---------------------- |
-|     Type: | `Array<Plugin>`         |
-| Required: | `false`                 |
+| Type | Required |
+| --- | --- |
+| `Array<Plugin>` | `false` |
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -410,11 +391,9 @@ Adapter that converts your input into the universal AST. With `defineConfig` fro
 
 See the [Adapter concept](/docs/5.x/guide/concepts/adapters) for the full picture.
 
-|           |                                       |
-| --------: | :------------------------------------ |
-|     Type: | `Adapter`                             |
-| Required: | `false`                               |
-|  Default: | `adapterOas()` (included with `kubb`) |
+| Type | Required | Default |
+| --- | --- | --- |
+| `Adapter` | `false` | `adapterOas()` (included with `kubb`) |
 
 Pass options to customize the adapter:
 
@@ -435,11 +414,9 @@ Array of parsers that turn the in-memory file representation into source code. E
 
 See the [Parser concept](/docs/5.x/guide/concepts/parsers) and [`@kubb/parser-ts`](/parsers/parser-ts/) for the built-in parsers.
 
-|           |                                                |
-| --------: | :--------------------------------------------- |
-|     Type: | `Array<Parser>`                                |
-| Required: | `false`                                        |
-|  Default: | `[parserTs(), parserTsx(), parserMd()]` (included with `kubb`) |
+| Type | Required | Default |
+| --- | --- | --- |
+| `Array<Parser>` | `false` | `[parserTs(), parserTsx(), parserMd()]` (included with `kubb`) |
 
 Import parsers explicitly to override the default set:
 
@@ -460,11 +437,9 @@ Storage driver that persists generated files. Defaults to `fsStorage()` (filesys
 
 See the [Storage concept](/docs/5.x/guide/concepts/storage) for the built-in drivers and how to write a custom backend.
 
-|           |                                      |
-| --------: | :----------------------------------- |
-|     Type: | `Storage`                            |
-| Required: | `false`                              |
-|  Default: | `fsStorage()`                        |
+| Type | Required | Default |
+| --- | --- | --- |
+| `Storage` | `false` | `fsStorage()` |
 
 
 ```typescript twoslash [kubb.config.ts]
@@ -482,18 +457,14 @@ export default defineConfig({
 
 Project root, absolute or relative to the config file location.
 
-|           |                 |
-| --------: | :-------------- |
-|     Type: | `string`        |
-| Required: | `false`         |
-|  Default: | `process.cwd()` |
+| Type | Required | Default |
+| --- | --- | --- |
+| `string` | `false` | `process.cwd()` |
 
 ### `reporters`
 
 Reporters available to the run, registered as instances. `defineConfig` registers the built-in `cli`, `json`, `file`, and `html` reporters by default. The HTML reporter remains opt-in: select it with [`--reporter html`](/docs/5.x/reference/commands/generate#reporters). The CLI [`--reporter`](/docs/5.x/reference/commands/generate#reporters) flag selects reporters by name and defaults to `cli`. See that page for details about each reporter.
 
-|           |                                             |
-| --------: | :------------------------------------------ |
-|     Type: | `Array<Reporter>`                           |
-|  Default: | `[cli, json, file, html]`                   |
-| Required: | `false`                                     |
+| Type | Required | Default |
+| --- | --- | --- |
+| `Array<Reporter>` | `false` | `[cli, json, file, html]` |
