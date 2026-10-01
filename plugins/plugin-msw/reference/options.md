@@ -13,7 +13,7 @@ Every option below is a key on `pluginMsw({ ... })`.
 | ------ | ---- | ------- | ----------- |
 | [`output`](#output) | `Output` | `{ path: 'handlers', barrel: { type: 'named' } }` | Where the generated files are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
-| [`baseURL`](#baseurl) | `string` | — | Base URL prepended to every handler's request |
+| [`baseURL`](#baseurl) | `string \| BaseURLImport` | — | Base URL prepended to every handler's request |
 | [`handlers`](#handlers) | `boolean` | `false` | Emit a `handlers.ts` that re-exports every handler |
 | [`parser`](#parser) | `'data' \| 'faker'` | `'data'` | Source of the response body each handler returns |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
@@ -60,6 +60,37 @@ Function that turns a group key into the subdirectory name. It defaults to `({ g
 ### baseURL
 
 Base URL prepended to every handler's request. When omitted, no host is prepended and each handler matches the operation's relative path from the spec. Set it to point at a different environment than the spec.
+
+Pass `{ importPath, name }` to read the base URL at runtime instead. Each handler file imports `name` from `importPath`, verbatim, and calls it when the handler is created, so the handlers can follow your API client's config:
+
+::: code-group
+
+```typescript [kubb.config.ts]
+pluginMsw({
+  baseURL: { importPath: '../client', name: 'getBaseURL' },
+})
+```
+
+```typescript [gen/handlers/listPetsHandler.ts]
+import { getBaseURL } from '../client'
+
+export function listPetsHandler(data?: ListPetsResponse | HttpResponseResolver, options?: { baseURL?: string }) {
+  return http.get(`${options?.baseURL ?? getBaseURL()}/pets`, function handler(info) {
+    // ...
+  })
+}
+```
+
+:::
+
+Every handler also takes `{ baseURL }` as its second argument, which wins over this option. Use it to mock two services that expose the same path side by side:
+
+```typescript
+server.use(
+  listPetsHandler(storePets, { baseURL: 'https://store.example.com' }),
+  listPetsHandler(shelterPets, { baseURL: 'https://shelter.example.com' }),
+)
+```
 
 ### handlers
 
