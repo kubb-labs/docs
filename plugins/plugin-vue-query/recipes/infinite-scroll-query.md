@@ -46,8 +46,7 @@ export function findPetsByTagsInfiniteQueryOptions({ query }: { query?: MaybeRef
         ...(query ?? {}),
         ['page']: pageParam as unknown as FindPetsByTagsQuery['page'],
       } as FindPetsByTagsQuery
-      const { data } = await findPetsByTags({ ...config, query: toValue(query), signal: config.signal ?? signal, throwOnError: true })
-      return data
+      return findPetsByTags({ ...config, query: toValue(query), signal: config.signal ?? signal, throwOnError: true }).unwrap()
     },
     initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage?.['pagination']?.['next']?.['cursor']

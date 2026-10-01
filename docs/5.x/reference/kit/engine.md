@@ -40,7 +40,7 @@ export default defineConfig(({ watch }) => ({
 | `root`           | `process.cwd()`                          |
 | `adapter`        | [`adapterOas()`](/docs/5.x/guide/concepts/adapters) |
 | `parsers`        | `[parserTs(), parserTsx(), parserMd()]`  |
-| `reporters`      | `[cli, json, file]`                      |
+| `reporters`      | `[cli, json, file, html]`                |
 | `plugins`        | `pluginBarrel()` appended when not already present |
 | `output.barrel`  | `false` (barrel generation is opt-in, even with `pluginBarrel` in `plugins`) |
 | `output.format`  | `false`                                  |

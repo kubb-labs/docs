@@ -38,8 +38,8 @@ import type { RequestHandlerExtra } from '@modelcontextprotocol/sdk/shared/proto
 import type { CallToolResult, ServerNotification, ServerRequest } from '@modelcontextprotocol/sdk/types'
 import { getPetById } from '../clients-axios/getPetById'
 
-export async function getPetByIdHandler({ path }: GetPetByIdOptions, request: RequestHandlerExtra<ServerRequest, ServerNotification>): Promise<Promise<CallToolResult>> {
-  const res = await getPetById({ path })
+export async function getPetByIdHandler({ path }: GetPetByIdOptions, request: RequestHandlerExtra<ServerRequest, ServerNotification>): Promise<CallToolResult> {
+  const res = await getPetById({ path, signal: request.signal, throwOnError: true })
 
   return {
     content: [{ type: 'text', text: JSON.stringify(res.data) }],

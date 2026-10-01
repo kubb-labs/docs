@@ -56,23 +56,23 @@ credentials. Interrupted jobs are not replayed.
 
 ## Options
 
-| Option                                      | Default               | Description                                                                                                                                                        |
-| ------------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `--config=<path>`, `-c <path>`              |                       | Path to a config file, such as `./kubb.staging.ts`.                                                                                                                |
-| `--url=<url>`                               | `https://kubb.studio` | URL for Kubb Studio.                                                                                                                                               |
-| `--allow-read`                              | `false`               | Read the source of files a generation produced. Asked once per project when omitted.                                                                               |
-| `--allow-write`                             | `false`               | Write generated files to disk. Asked once per project when omitted.                                                                                                |
-| `--allow-config-edit`                       | `false`               | Let Studio change plugin options in `kubb.config.ts`. Asked once per project.                                                                                      |
-| `--allow-exec`                              | `false`               | Run the formatter, the linter, and `output.postGenerate`. Asked once per project.                                                                                  |
-| `--no-open`                                 |                       | Do not open the approval page in a browser.                                                                                                                        |
-| `--log-level=<silent\|info\|verbose>`, `-l` | `info`                | Set the verbosity.                                                                                                                                                 |
-| `--token=<key>`                             |                       | `snapshot` only: organization CI API key. Defaults to `KUBB_TOKEN`.                                                                                                |
-| `--id=<id>`                                 |                       | `snapshot` only: stable identity for the CI agent. Auto-detected on GitHub Actions, GitLab CI, Bitbucket Pipelines and CircleCI.                                   |
-| `--base-id=<id>`                            |                       | `snapshot` only: the `--id` of another CI agent, such as the base branch's, to also compare with. Auto-detected on GitHub pull requests and GitLab merge requests. |
-| `--name=<name>`                             |                       | `snapshot` only: package name for the tarball. Defaults to the name in `package.json`.                                                                             |
-| `--package-version=<version>`               |                       | `snapshot` only: package version for the tarball. Defaults to the version in `package.json`.                                                                       |
-| `--timeout=<seconds>`                       | `600`                 | `snapshot` only: seconds to wait for the job to finish, capped at `3600`.                                                                                          |
-| `--json`                                    | `false`               | `snapshot` only: print the result as one JSON object instead of a summary.                                                                                         |
+| Option                                     | Default               | Description                                                                        |
+| ------------------------------------------ | --------------------- | ---------------------------------------------------------------------------------- |
+| `--config=<path>`, `-c <path>`             |                       | Path to a config file, such as `./kubb.staging.ts`.                                |
+| `--url=<url>`                              | `https://kubb.studio` | URL for Kubb Studio.                                                               |
+| `--allow-read`                             | `false`               | Let Studio read generated file contents. Asked once per project when omitted.     |
+| `--allow-write`                            | `false`               | Write generated files to disk. Asked once per project when omitted.                |
+| `--allow-config-edit`                      | `false`               | Let Studio change plugin options in `kubb.config.ts`. Asked once per project.      |
+| `--allow-exec`                             | `false`               | Run the formatter, the linter, and `output.postGenerate`. Asked once per project.  |
+| `--no-open`                                |                       | Do not open the approval page in a browser.                                        |
+| `--log-level=<silent\|info\|verbose>`, `-l` | `info`              | Set the verbosity.                                                                 |
+| `--token=<key>`                            |                       | `snapshot` only: organization CI API key. Defaults to `KUBB_TOKEN`.                |
+| `--id=<id>`                                |                       | `snapshot` only: stable identity for the CI agent. Auto-detected on GitHub Actions, GitLab CI, Bitbucket Pipelines and CircleCI. |
+| `--base-id=<id>`                           |                       | `snapshot` only: the `--id` of another CI agent, such as the base branch's, to also compare with. Auto-detected on GitHub pull requests and GitLab merge requests. |
+| `--name=<name>`                            |                       | `snapshot` only: package name for the tarball. Defaults to the name in `package.json`. |
+| `--package-version=<version>`              |                       | `snapshot` only: package version for the tarball. Defaults to the version in `package.json`. |
+| `--timeout=<seconds>`                      | `600`                 | `snapshot` only: seconds to wait for the job to finish, capped at `3600`.          |
+| `--json`                                   | `false`               | `snapshot` only: print the result as one JSON object instead of a summary.         |
 
 Without `--allow-read`, a session still generates and reports file paths, but Studio cannot display their contents. The CLI asks about permissions not supplied as flags and remembers answers per project directory. In CI or without a TTY, it does not prompt, so pass the permissions the run needs explicitly.
 

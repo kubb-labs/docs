@@ -1,17 +1,19 @@
 # Error handling
 
-The client Kubb generates has one rule that shapes every failure: a non-2xx response either throws
-or lands on the result, and you choose which with `throwOnError`. It defaults to `true`, so a
-resolved call always means success and you read `data` without a guard. Turn it off and the same
-call resolves for every status, with the failure on `error`.
+Generated clients use `throwOnError` to handle non-2xx responses. Its generated default is `true`,
+so a resolved call means success and you can read `data` without a guard. Set
+`throwOnErrorDefault` on the client plugin to change that default for generated operations, or set
+`throwOnError` on one call to override it. When it is `false`, the call resolves for every
+documented status and puts failures on `error`.
 
 This holds for both [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and [`@kubb/plugin-axios`](/plugins/plugin-axios/). The transport differs, the
 error contract does not.
 
 ## Throw on a non-2xx response
 
-By default a status outside 200-299 throws a `ResponseError`. Wrap the call in a `try`/`catch`
-and read the parsed body and status off the error:
+When `throwOnError` is `true` (the generated default), a status outside 200-299 throws a
+`ResponseError`. Wrap the call in a `try`/`catch` and read the parsed body and status off the
+error:
 
 ```typescript
 import { getPetById } from './gen/clients/getPetById'
@@ -84,23 +86,27 @@ switch (result.status) {
 }
 ```
 
-## Set the default for every call
+## Set the generated default
 
-`throwOnError` reads from three places, narrowest first: the per-call option, then the client
-config, then the built-in default of `true`. Set it on the client to flip the default for the
-whole app while keeping the per-call override:
+Set `throwOnErrorDefault` on `@kubb/plugin-fetch` or `@kubb/plugin-axios` to choose how generated
+operations handle non-2xx responses by default. Each call can still override that setting with
+`throwOnError`:
 
 ```typescript
-import { client } from './gen/.kubb/client'
+import { pluginFetch } from '@kubb/plugin-fetch'
 
-client.setConfig({ throwOnError: false })
+pluginFetch({ throwOnErrorDefault: false })
 
 // resolves with an error result
-const list = await searchPets({ query: { status: 'available' }, throwOnError: false })
+const list = await searchPets({ query: { status: 'available' } })
 
 // opt one call back into throwing
 const pet = await getPetById({ path: { petId: 1 }, throwOnError: true })
 ```
+
+The generated operation passes its selected value to the client runtime, so setting
+`throwOnError` with `client.setConfig` does not change this default. Configure the plugin to
+change the generated default.
 
 ## Network failures still throw
 

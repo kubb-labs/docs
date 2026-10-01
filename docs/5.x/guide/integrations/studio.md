@@ -74,10 +74,10 @@ kubb studio snapshot --json | jq -r '.url'
 
 A snapshot reports which generated files it added, changed, and removed:
 
-| JSON field      | Compared with                                                                                                                            |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `changes`       | The previous snapshot on the same pull request or branch                                                                                 |
-| `branchChanges` | The latest snapshot of a GitHub pull request's base branch or a GitLab merge request's target branch. Run the command on that branch too |
+| JSON field | Compared with |
+| --- | --- |
+| `changes` | The previous snapshot on the same pull request or branch |
+| `branchChanges` | The latest snapshot of a GitHub pull request's base branch or a GitLab merge request's target branch. Its `baseFound` field distinguishes a branch with no CI agent from one with an agent that has no snapshot of this package yet. Run the command on that branch too |
 
 On another CI provider, give the base branch's runs a stable `--id` too, and pass it as `--base-id` on a pull request:
 
