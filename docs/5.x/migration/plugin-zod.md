@@ -235,7 +235,7 @@ export default defineConfig({
 
 :::
 
-:
+::
 
 The custom plugin runs after `pluginZod`, so the per-operation schemas it imports already exist.
 

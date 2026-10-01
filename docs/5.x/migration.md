@@ -642,7 +642,7 @@ export default defineConfig({
 
 :::
 
-:
+::
 
 Every plugin keeps an extensionless `output.path`, which writes one file per operation. Give `path` a name ending in `.ts` to consolidate into a single file. The root `output.barrel` is set explicitly to keep v4's barrel.
 
@@ -665,8 +665,8 @@ comparison stays apples-to-apples.
 
 Each timing covers a full `kubb generate`, from process start to the last file written.
 
-:speed-comparison
-:
+::speed-comparison
+::
 
 ### Benchmark machine
 
