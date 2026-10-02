@@ -3,6 +3,7 @@ layout: doc
 title: Renderers
 description: createRenderer wraps a builder into a Renderer factory for generators that emit something other than plain FileNodes, alongside jsxRenderer, the React-free JSX renderer shipped in kubb/jsx.
 outline: [2, 3]
+order: 4
 ---
 
 # Renderers

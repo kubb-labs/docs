@@ -3,6 +3,9 @@ layout: doc
 title: Storage - How Kubb Decides Where Files Land
 description: Understand Kubb's storage layer. The driver decouples code generation from its destination, so the same build can target disk, memory, or any backend you write.
 outline: deep
+order: 9
+navigation:
+  title: "Storage"
 ---
 
 # Storage

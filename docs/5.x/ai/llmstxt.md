@@ -3,6 +3,9 @@ layout: doc
 title: LLMS.txt - AI
 description: Kubb publishes llms.txt and llms-full.txt so LLMs can consume the full documentation in a single request. Learn how to point your AI assistant at these files.
 outline: [2, 3]
+order: 4
+navigation:
+  title: "LLMS.txt"
 ---
 
 # LLMS.txt

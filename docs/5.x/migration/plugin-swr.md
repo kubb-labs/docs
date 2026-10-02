@@ -1,6 +1,9 @@
 ---
 title: 'Migration: @kubb/plugin-swr'
 description: Configuration changes for @kubb/plugin-swr when migrating from Kubb v4 to v5.
+order: 9
+navigation:
+  title: "@kubb/plugin-swr"
 ---
 
 # Migration: `@kubb/plugin-swr`

@@ -3,6 +3,9 @@ layout: doc
 title: JSX renderer
 description: The kubb/jsx surface backed by @kubb/renderer-jsx. jsxRenderer, the built-in components, and the JSX runtime for component-based code generation.
 outline: [2, 3]
+order: 4
+navigation:
+  title: "JSX"
 ---
 
 # JSX renderer

@@ -3,6 +3,7 @@ layout: doc
 title: Kubb Studio
 description: Generate and review OpenAPI clients in Kubb Studio with a local CLI agent, Docker agent, or shared sandbox. Publish installable snapshots from CI.
 outline: [2, 3]
+order: 1
 ---
 
 # Kubb Studio

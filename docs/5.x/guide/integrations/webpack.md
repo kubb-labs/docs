@@ -3,6 +3,9 @@ layout: doc
 title: Run Kubb with webpack
 description: Run Kubb as part of your webpack build with kubb/webpack.
 outline: [2, 3]
+order: 7
+navigation:
+  title: "webpack"
 ---
 
 # Run Kubb with webpack

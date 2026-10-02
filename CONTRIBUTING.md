@@ -36,6 +36,21 @@ Guides follow the same shape under `plugins/<id>/guide/<guide-id>.md` with a `gu
 Do NOT edit:
 - `docs/5.x/changelog.md` — auto-synced from kubb-labs/kubb by `.github/workflows/sync-changelog.yml` after each release. To update manually, trigger that workflow with `workflow_dispatch`.
 
+### Sidebar
+
+The `docs/5.x` sidebar is built from the files in this repository. A page shows up when its frontmatter sets `order`, its position among the pages in the same folder. Add `navigation.title` when the sidebar label should differ from the page `title`:
+
+```yaml
+---
+title: Basic Usage
+order: 3
+navigation:
+  title: Getting started
+---
+```
+
+A folder gets its title, icon and position from a `.navigation.yml` file inside it, such as `title: Guide`, `icon: i-iconoir-book-stack` and `order: 2`. Pages and folders without `order`, like the changelog, stay out of the sidebar. A page that has a folder of the same name (`reference/kit.md` and `reference/kit/`) becomes the group and gets an "Overview" link to itself.
+
 ## Development workflow
 
 This repo contains only content — no build step, no npm install, no test suite.

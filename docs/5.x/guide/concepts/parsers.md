@@ -3,6 +3,9 @@ layout: doc
 title: Parsers - How Kubb Turns the AST into Source Code
 description: Parsers are Kubb's output layer. They convert the universal AST into language-specific source code, so the same plugins can target TypeScript, Python, or any other language.
 outline: deep
+order: 8
+navigation:
+  title: "Parsers"
 ---
 
 # Parsers

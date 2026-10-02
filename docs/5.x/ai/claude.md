@@ -3,6 +3,9 @@ layout: doc
 title: Set up the Claude Code plugin
 description: The Kubb Claude Code plugin adds slash commands and an agent that run Kubb code generation from inside Claude Code.
 outline: [2, 3]
+order: 1
+navigation:
+  title: "Claude"
 ---
 
 # Set up the Claude Code plugin

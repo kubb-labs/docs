@@ -3,6 +3,7 @@ layout: doc
 title: Plugins
 description: definePlugin wraps a factory into a typed Plugin, with all lifecycle handlers under one hooks object and the KubbPluginSetupContext that registers generators, resolvers, macros, and options.
 outline: [2, 3]
+order: 1
 ---
 
 # Plugins

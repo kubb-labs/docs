@@ -3,6 +3,9 @@ layout: doc
 title: Renderers - How Generators Emit Files
 description: A renderer turns what a generator returns into FileNodes. Kubb ships a JSX renderer, and you build your own only when you emit through a different templating format.
 outline: deep
+order: 6
+navigation:
+  title: "Renderers"
 ---
 
 # Renderers

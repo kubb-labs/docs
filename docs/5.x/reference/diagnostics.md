@@ -3,6 +3,7 @@ layout: doc
 title: Diagnostics
 description: Reference for Kubb's diagnostic codes, the stable codes Kubb prints when a build fails, with causes and fixes.
 outline: [2, 3]
+order: 6
 ---
 
 # Diagnostics

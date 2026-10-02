@@ -3,6 +3,7 @@ layout: doc
 title: Configuration
 description: Reference for kubb.config.ts with every option, default and example for the Kubb v5 UserConfig.
 outline: [2, 3]
+order: 1
 ---
 
 # Configuration

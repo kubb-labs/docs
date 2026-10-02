@@ -3,6 +3,7 @@ layout: doc
 title: Introduction
 description: Turn your API spec into type-safe code. Kubb is a plugin-based pipeline that generates TypeScript types, API clients, hooks, validators, and mocks.
 outline: [2, 3]
+order: 1
 ---
 
 # Introduction

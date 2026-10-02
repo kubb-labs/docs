@@ -3,6 +3,9 @@ layout: doc
 title: Kit API
 description: The kubb/kit reference for authoring plugins, generators, resolvers, renderers, adapters, parsers, and storage backends, plus the ast namespace, Diagnostics, the engine surface, and the testing helpers.
 outline: [2, 3]
+order: 3
+navigation:
+  title: "Kit"
 ---
 
 # Kit API

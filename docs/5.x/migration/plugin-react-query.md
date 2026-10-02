@@ -1,6 +1,9 @@
 ---
 title: 'Migration: @kubb/plugin-react-query'
 description: Configuration and generated-output changes for @kubb/plugin-react-query when migrating from Kubb v4 to v5.
+order: 6
+navigation:
+  title: "@kubb/plugin-react-query"
 ---
 
 # Migration: `@kubb/plugin-react-query`

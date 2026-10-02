@@ -3,6 +3,9 @@ layout: doc
 title: Kit - The Plugin Authoring Toolkit
 description: kubb/kit is the authoring layer of Kubb. It is the one import a developer uses to build plugins, generators, resolvers, adapters, parsers, renderers, and storage backends, with the ast and core helpers those pieces lean on.
 outline: deep
+order: 2
+navigation:
+  title: "Kit"
 ---
 
 # Kit: the plugin authoring toolkit

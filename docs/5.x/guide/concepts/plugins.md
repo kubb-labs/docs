@@ -3,6 +3,9 @@ layout: doc
 title: Plugins - Build Custom Generators for Any Spec
 description: Build Kubb plugins that hook into the lifecycle, register generators, declare resolvers, and emit files. The hook-style definePlugin API mirrors Astro integrations.
 outline: deep
+order: 3
+navigation:
+  title: "Plugins"
 ---
 
 # Plugins

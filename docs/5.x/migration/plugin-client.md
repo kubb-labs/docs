@@ -1,6 +1,9 @@
 ---
 title: 'Migration: @kubb/plugin-client removed'
 description: '@kubb/plugin-client is removed. Migrate to @kubb/plugin-axios or @kubb/plugin-fetch.'
+order: 5
+navigation:
+  title: "@kubb/plugin-client"
 ---
 
 # Migration: `@kubb/plugin-client` removed

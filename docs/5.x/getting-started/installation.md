@@ -3,6 +3,7 @@ layout: doc
 title: Installation
 description: Install Kubb in any Node.js project. Use the interactive kubb init wizard or set up manually with the kubb package and a handful of plugins.
 outline: [2, 3]
+order: 2
 ---
 
 # Installation

@@ -3,6 +3,9 @@ layout: doc
 title: AST and node builders
 description: The ast namespace groups the factory node builders, the transform and collect visitors, the guards, the ref and naming helpers, the macro engine, and the printer helper behind one import.
 outline: [2, 3]
+order: 8
+navigation:
+  title: "AST & node builders"
 ---
 
 # AST and node builders

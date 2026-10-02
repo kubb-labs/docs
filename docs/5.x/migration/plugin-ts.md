@@ -1,6 +1,9 @@
 ---
 title: 'Migration: @kubb/plugin-ts'
 description: Configuration and generated-output changes for @kubb/plugin-ts when migrating from Kubb v4 to v5.
+order: 2
+navigation:
+  title: "@kubb/plugin-ts"
 ---
 
 # Migration: `@kubb/plugin-ts`

@@ -3,6 +3,9 @@ layout: doc
 title: Engine and configuration
 description: The engine that runs your plugins comes from the kubb package and its kubb/config subpath. Covers defineConfig, createKubb, the Kubb instance, BuildOutput, and narrowing config.input.
 outline: [2, 3]
+order: 10
+navigation:
+  title: "Engine & configuration"
 ---
 
 # Engine and configuration

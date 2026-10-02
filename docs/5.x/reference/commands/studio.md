@@ -3,6 +3,7 @@ layout: doc
 title: kubb studio
 description: Command reference for connecting a project to Kubb Studio, managing pairing and permissions, and publishing CI snapshots.
 outline: [2, 3]
+order: 5
 ---
 
 # `kubb studio`

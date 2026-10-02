@@ -3,6 +3,7 @@ layout: doc
 title: Contributing
 description: A concise guide to contributing to Kubb core and Kubb plugins.
 outline: [2, 3]
+order: 1
 ---
 
 # Contributing

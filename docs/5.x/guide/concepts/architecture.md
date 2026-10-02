@@ -3,6 +3,7 @@ layout: doc
 title: Architecture
 description: How Kubb generates code. The adapter, AST, plugins, parsers, and storage form one layered pipeline from spec to output files.
 outline: [2, 3]
+order: 1
 ---
 
 # Architecture
