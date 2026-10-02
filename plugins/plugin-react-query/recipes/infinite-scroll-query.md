@@ -45,7 +45,7 @@ import type { InfiniteData } from '@tanstack/react-query'
 import { findPetsByTags } from '../clients/findPetsByTags'
 import { infiniteQueryOptions } from '@tanstack/react-query'
 
-export const findPetsByTagsInfiniteQueryKey = ({ query }: Omit<FindPetsByTagsOptions, 'headers'> = {}) => [{ url: '/pet/findByTags' }, ...(query ? [query] : [])] as const
+export const findPetsByTagsInfiniteQueryKey = ({ query }: Omit<FindPetsByTagsOptions, 'headers'> = {}) => [{ url: '/pet/findByTags', infinite: true }, ...(query ? [query] : [])] as const
 
 export function findPetsByTagsInfiniteQueryOptions({ query }: FindPetsByTagsOptions = {}, config = {}) {
   const queryKey = findPetsByTagsInfiniteQueryKey({ query })

@@ -123,7 +123,7 @@ Module specifier for the generated `import { queryOptions } from '...'`. Type `s
 
 ### queryKey
 
-Builds the `queryKey` for each query composable. The callback receives the operation `node` and active `casing` and returns the key array. String values are inlined verbatim, so wrap literals in `JSON.stringify(...)`. Defaults to the built-in `queryKeyTransformer`.
+Builds the `queryKey` for each query composable. The callback receives the operation `node`, the active `casing` and the `variant` (`'query'` or `'infiniteQuery'`) and returns the key array. String values are inlined verbatim, so wrap literals in `JSON.stringify(...)`. Defaults to the exported `queryKeyTransformer`, which adds `infinite: true` to infinite keys so they never share a cache entry with the plain query.
 
 ::code-group
 

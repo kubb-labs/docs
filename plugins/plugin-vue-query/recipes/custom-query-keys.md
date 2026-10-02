@@ -31,6 +31,18 @@ export default defineConfig({
 
 This turns `getUserByName`'s key into a fixed `['getUserByName'] as const`, independent of its call arguments.
 
+## Keep infinite keys apart
+
+The builder also receives the `variant` of the composable. An infinite query caches `InfiniteData`, so its key must differ from the plain query's. Extend the exported default to keep that, and add your own segments on top:
+
+```typescript [kubb.config.ts]
+import { pluginVueQuery, queryKeyTransformer } from '@kubb/plugin-vue-query'
+
+pluginVueQuery({
+  queryKey: (props) => [JSON.stringify({ scope: 'pets' }), ...queryKeyTransformer(props)],
+})
+```
+
 ## Output example
 
 ```typescript [src/gen/hooks/useGetUserByName.ts]
