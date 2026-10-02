@@ -38,9 +38,3 @@ Do NOT edit:
 `house` output style come from the `agents` plugin
 ([stijnvanhulle/agents](https://github.com/stijnvanhulle/agents)). Claude Code loads it from
 this repo's `.claude/settings.json`. Install `agents@stijnvanhulle` for Cursor and Codex.
-
-<skills>
-
-## Skills
-
-</skills>
