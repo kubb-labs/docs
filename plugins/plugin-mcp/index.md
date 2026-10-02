@@ -58,7 +58,7 @@ The [Connect Claude to a remote MCP server](https://modelcontextprotocol.io/docs
 
 ## Installation
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/plugin-mcp
@@ -76,7 +76,7 @@ npm install --save-dev @kubb/plugin-mcp
 yarn add -D @kubb/plugin-mcp
 ```
 
-:::
+::
 
 ## Dependencies
 
@@ -93,7 +93,7 @@ A client plugin is required, since the handlers call its generated functions. Re
 
 ## Example
 
-::: code-group
+::code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -120,7 +120,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 ## See also
 

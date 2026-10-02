@@ -49,7 +49,7 @@ Method names follow Node's filesystem vocabulary, so `readItem` reads like `read
 > [!TIP]
 > Use `memoryStorage` for tests and dry runs. Use `fsStorage` for normal development and CI/CD.
 
-## `Storage` interface {#storage-interface}
+## `Storage` interface
 
 The `Storage` interface is the shape every backend implements. A `Storage` instance is what the engine consumes at build time and returns from `driver.storage`.
 

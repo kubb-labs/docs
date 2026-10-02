@@ -13,7 +13,7 @@ outline: [2, 3]
 
 Install `kubb` as a dev dependency.
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d kubb
@@ -31,7 +31,7 @@ npm install --save-dev kubb
 yarn add -D kubb
 ```
 
-:::
+::
 
 ## Configure
 

@@ -50,7 +50,7 @@ This plugin reads the OpenAPI adapter, which Kubb sets to `adapterOas()` by defa
 
 ## Installation
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/plugin-redoc
@@ -68,7 +68,7 @@ npm install --save-dev @kubb/plugin-redoc
 yarn add -D @kubb/plugin-redoc
 ```
 
-:::
+::
 
 ## Dependencies
 
@@ -79,7 +79,7 @@ yarn add -D @kubb/plugin-redoc
 
 ## Example
 
-::: code-group
+::code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -98,7 +98,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 ## See also
 

@@ -6,37 +6,6 @@ description: Integrate Kubb with Claude AI for enhanced code generation. AI-powe
 outline: deep
 ---
 
-<script setup>
-const mcpTree = [
-  { name: 'src', type: 'dir', children: [
-    { name: 'gen', type: 'dir', children: [
-      { name: 'mcp', type: 'dir', children: [
-        { name: 'addPet.ts' },
-        { name: 'getPetById.ts' },
-        { name: '.mcp.json' },
-        { name: 'server.ts' },
-      ] },
-      { name: 'clients', type: 'dir', children: [
-        { name: 'addPet.ts' },
-        { name: 'getPetById.ts' },
-      ] },
-      { name: 'zod', type: 'dir', children: [
-        { name: 'addPetSchema.ts' },
-        { name: 'getPetByIdSchema.ts' },
-      ] },
-      { name: 'types', type: 'dir', children: [
-        { name: 'AddPet.ts' },
-        { name: 'GetPetById.ts' },
-      ] },
-      { name: 'index.ts' },
-    ] },
-  ] },
-  { name: 'petStore.yaml' },
-  { name: 'kubb.config.ts' },
-  { name: 'package.json' },
-]
-</script>
-
 # Set up Claude with Kubb
 
 ![Claude](/public/screenshots/claude.png)
@@ -83,7 +52,7 @@ Install [Claude desktop](https://claude.ai/download) and work through the [user 
 > [!TIP]
 > The MCP plugin builds on the [OpenAPI adapter](/adapters/adapter-oas/), the [TypeScript](/plugins/plugin-ts/) and [Zod](/plugins/plugin-zod/) plugins, and a client plugin ([axios](/plugins/plugin-axios/) or [fetch](/plugins/plugin-fetch/)) to generate every file it needs.
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d kubb @kubb/plugin-ts @kubb/plugin-zod @kubb/plugin-axios @kubb/plugin-mcp
@@ -101,7 +70,7 @@ npm install --save-dev kubb @kubb/plugin-ts @kubb/plugin-zod @kubb/plugin-axios 
 yarn add -D kubb @kubb/plugin-ts @kubb/plugin-zod @kubb/plugin-axios @kubb/plugin-mcp
 ```
 
-:::
+::
 
 ## Define `kubb.config.ts`
 
@@ -145,7 +114,43 @@ npx kubb generate
 
 The `src/mcp` folder holds the files that build an [MCP server](https://modelcontextprotocol.io) and connect [Claude](https://claude.ai/download) to your API.
 
-<FileTree :tree="mcpTree" />
+::file-tree
+---
+tree:
+  - name: src
+    type: dir
+    children:
+      - name: gen
+        type: dir
+        children:
+          - name: mcp
+            type: dir
+            children:
+              - name: addPet.ts
+              - name: getPetById.ts
+              - name: .mcp.json
+              - name: server.ts
+          - name: clients
+            type: dir
+            children:
+              - name: addPet.ts
+              - name: getPetById.ts
+          - name: zod
+            type: dir
+            children:
+              - name: addPetSchema.ts
+              - name: getPetByIdSchema.ts
+          - name: types
+            type: dir
+            children:
+              - name: AddPet.ts
+              - name: GetPetById.ts
+          - name: index.ts
+  - name: petStore.yaml
+  - name: kubb.config.ts
+  - name: package.json
+---
+::
 
 ### src/mcp/addPet.ts
 

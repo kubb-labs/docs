@@ -8,7 +8,7 @@ Set it at build time by reading it from the spec's servers list or passing `base
 
 Kubb never sets the generated client's `baseURL` for you. Setting `adapter: adapterOas({ server: { index: 0 } })` only resolves a server URL onto the document's metadata (`meta.baseURL`), which a custom `banner` or `footer` function can read, but it does not reach the client. Pass [`baseURL`](#use-the-baseurl-option) to the client plugin yourself to prepend a host to every request.
 
-::: code-group
+::code-group
 
 ```yaml [OpenAPI]
 openapi: 3.0.3
@@ -39,7 +39,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 `defineConfig` applies `adapterOas()` for you, so you set `adapter` only to change an adapter option. Here it sets `server.index` so the adapter resolves `http://petstore.swagger.io/api` from the spec.
 
@@ -47,7 +47,7 @@ export default defineConfig({
 
 Pass `baseURL` to the client plugin.
 
-::: code-group
+::code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -70,7 +70,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 A value containing a `${...}` interpolation stays dynamic. The plugin emits it as a template literal in the generated client config, so `baseURL: '${process.env.API_URL}'` reads the environment variable when the app runs instead of baking in the build-time value.
 

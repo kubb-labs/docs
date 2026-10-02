@@ -9,7 +9,8 @@ outline: [2, 3]
 
 [`kubb-labs/action`](https://github.com/kubb-labs/action) runs [`kubb studio snapshot`](/docs/5.x/reference/commands/studio#actions) on every pull request and publishes the package to [Kubb Studio](./studio). A reviewer installs the tarball from the comment it posts.
 
-<StudioCTA source="github-actions-guide" />
+::studio-cta{source="github-actions-guide"}
+::
 
 ## Add the workflow
 
@@ -52,7 +53,7 @@ Create `KUBB_TOKEN`, an organization CI API key, in Studio's settings. Add it un
 | Input               | Default               | Description                                                             |
 | ------------------- | --------------------- | ----------------------------------------------------------------------- |
 | `token`             |                       | Organization CI API key. Required.                                      |
-| `github-token`      | <code v-pre>${{ github.token }}</code> | Token that opens the init pull request and writes the snapshot comment. |
+| `github-token`      | `${{ github.token }}` | Token that opens the init pull request and writes the snapshot comment. |
 | `working-directory` | `.`                   | Directory holding the Kubb config and the package.                      |
 | `config`            | `kubb.config.ts`      | Path to the config file, relative to `working-directory`.               |
 
@@ -68,7 +69,7 @@ Create `KUBB_TOKEN`, an organization CI API key, in Studio's settings. Add it un
 | `agent-url`       | Studio URL of the CI agent that ran the job. |
 | `files-added`, `files-changed`, `files-removed` | Generated files added, changed, and removed since the previous snapshot on the pull request. |
 
-Give the step an `id`, then read an output as <code v-pre>${{ steps.snapshot.outputs.tarball-url }}</code> (using `snapshot` as the step ID).
+Give the step an `id`, then read an output as `${{ steps.snapshot.outputs.tarball-url }}` (using `snapshot` as the step ID).
 
 ## What a run does
 

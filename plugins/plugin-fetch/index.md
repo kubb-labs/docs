@@ -109,7 +109,7 @@ For cross-cutting concerns like retries and interceptors, reach for a [custom tr
 
 ## Installation
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/plugin-fetch
@@ -127,7 +127,7 @@ npm install --save-dev @kubb/plugin-fetch
 yarn add -D @kubb/plugin-fetch
 ```
 
-:::
+::
 
 ## Dependencies
 
@@ -141,7 +141,7 @@ This plugin needs `@kubb/plugin-ts`, or `@kubb/plugin-zod` with `inferred: true`
 
 ## Example
 
-::: code-group
+::code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -165,7 +165,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 ## See also
 

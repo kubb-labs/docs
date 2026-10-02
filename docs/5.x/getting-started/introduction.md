@@ -26,7 +26,7 @@ Read [Installation](./installation) and [Basic Usage](./basic-usage) next, then 
 
 Watch the pipeline drain a spec like a work queue. Every schema and operation is its own unit of work: the adapter turns each one into an AST node, and every plugin turns that node into its own file. The run below uses this config:
 
-::: details Expand kubb.config.ts
+::collapsible{name="kubb.config.ts"}
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -40,9 +40,10 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
-<SpecJourney />
+::spec-journey
+::
 
 The [architecture guide](/docs/5.x/guide/concepts/architecture) covers each layer in depth.
 

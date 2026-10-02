@@ -15,7 +15,7 @@ In v4, `client` was an object that configured a bundled client (`clientType`, `d
 
 `pluginMcp` also depends on [`@kubb/plugin-ts`](/plugins/plugin-ts/) and [`@kubb/plugin-zod`](/plugins/plugin-zod/), so register both alongside the client plugin.
 
-::: code-group
+::code-group
 
 ```typescript [v4 kubb.config.ts]
 import { defineConfig } from '@kubb/core'
@@ -58,7 +58,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 ## Removed: `paramsCasing`
 

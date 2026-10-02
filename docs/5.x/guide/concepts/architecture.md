@@ -21,7 +21,8 @@ Each section below summarizes one layer and links to its full page for more deta
 
 Every run moves through four stages. Select one to see what it does, or watch it play through from spec to files.
 
-<ArchitecturePipeline />
+::architecture-pipeline
+::
 
 ## Config
 
@@ -42,37 +43,43 @@ export default defineConfig({
 
 ## [Adapter](/docs/5.x/guide/concepts/adapters)
 
-<FlowDiagram preset="adapter" />
+::flow-diagram{preset="adapter"}
+::
 
 The adapter reads your spec and returns an `InputNode`, so nothing downstream touches the original format. It answers every spec-specific question: nullability, `$ref` resolution, discriminators, and binary detection. [`@kubb/adapter-oas`](/adapters/adapter-oas/) covers OpenAPI 2.0, 3.0, and 3.1, and `defineConfig` selects it for you.
 
 ## [AST](/docs/5.x/guide/concepts/ast)
 
-<AstTree />
+::ast-tree
+::
 
 The AST is the contract between the adapter and the plugins. Every adapter produces one and every plugin reads it, so the same plugin works against any spec. Two visitors walk it: `transform` to rewrite nodes and `collect` to gather them.
 
 ## [Macros](/docs/5.x/guide/going-further/macros)
 
-<FlowDiagram preset="macros" />
+::flow-diagram{preset="macros"}
+::
 
 Macros are a second AST pass. They rewrite schema and operation nodes, one plugin at a time, before generators print code, so you can rename symbols or retype fields without patching the output. Pass them through a plugin's `macros` option.
 
 ## [Plugins](/docs/5.x/guide/concepts/plugins)
 
-<PluginAnatomy />
+::plugin-anatomy
+::
 
 A plugin walks the AST and emits `FileNode`s. Plugins run in array order, so a types plugin can run first and a client plugin after it imports those types. Browse the [plugins catalogue](/plugins) for what ships today.
 
 ## [Generators](/docs/5.x/guide/concepts/generators)
 
-<FlowDiagram preset="generator" />
+::flow-diagram{preset="generator"}
+::
 
 A generator is where a plugin produces code. Each one reads a schema, a single operation, or the whole operation set, and returns the files those nodes become. Splitting a plugin into named generators keeps each one small and lets the engine call the right one for every node.
 
 ## [Renderer](/docs/5.x/guide/concepts/renderers)
 
-<FlowDiagram preset="renderer" />
+::flow-diagram{preset="renderer"}
+::
 
 A generator can build `FileNode`s by hand or describe them as components, and [`kubb/jsx`](/docs/5.x/reference/jsx) is the optional JSX path for the second style.
 
@@ -81,19 +88,22 @@ A generator can build `FileNode`s by hand or describe them as components, and [`
 
 ## [Resolvers](/docs/5.x/guide/concepts/resolvers)
 
-<FlowDiagram preset="resolver" />
+::flow-diagram{preset="resolver"}
+::
 
 A resolver answers two questions for every file: its name and its path. Generators ask the resolver instead of building strings, so names stay consistent and one plugin imports another's output by reading its resolver.
 
 ## [Parsers](/docs/5.x/guide/concepts/parsers)
 
-<FlowDiagram preset="parsers" />
+::flow-diagram{preset="parsers"}
+::
 
 A parser converts a `FileNode` into a source string. Each one claims a set of file extensions, and Kubb hands every emitted file to the parser that owns its extension. [`@kubb/parser-ts`](/parsers/parser-ts/) and [`@kubb/parser-md`](/parsers/parser-md/) ship by default.
 
 ## [Storage](/docs/5.x/guide/concepts/storage)
 
-<FlowDiagram preset="storage" />
+::flow-diagram{preset="storage"}
+::
 
 The storage driver decides where files land.
 

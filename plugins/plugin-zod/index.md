@@ -60,7 +60,7 @@ Pair it with a client plugin (`@kubb/plugin-axios` or `@kubb/plugin-fetch`) and 
 
 ## Installation
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/plugin-zod
@@ -78,7 +78,7 @@ npm install --save-dev @kubb/plugin-zod
 yarn add -D @kubb/plugin-zod
 ```
 
-:::
+::
 
 ## Dependencies
 
@@ -117,7 +117,7 @@ The generated schemas stand alone: they import `z` from your project, so add [Zo
 
 ## Example
 
-::: code-group
+::code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -137,7 +137,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 ## Dictionaries, open objects, and key schemas
 

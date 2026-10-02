@@ -103,7 +103,7 @@ The `ast.factory` namespace also provides constructors for source files and Type
 | `createBreak`                                                       | Emit line breaks between nodes.                          |
 | `update`                                                            | Apply an identity-preserving shallow update to any node. |
 
-## Visitors {#visitors}
+## Visitors
 
 Two visitor functions cover the common traversal patterns: `transform` rewrites the tree and `collect` gathers nodes. Visitor objects use lowercase, kind-style keys (`input`, `output`, `operation`, `schema`, `property`, `parameter`, `response`). To rewrite nodes inside a plugin, reach for [macros](/docs/5.x/guide/going-further/macros), which add names, ordering, and composition on top of `transform`. For logging, validation, or statistics, `collect` the nodes you care about.
 
@@ -167,7 +167,7 @@ console.log(`Deprecated schemas: ${deprecated.length}`)
 
 Use `collect` to stream matches as you find them, and `collectSync` to find specific nodes, filter by a criterion, or build a list for later processing.
 
-## Guards and narrowing {#guards-and-narrowing}
+## Guards and narrowing
 
 Kubb exports type guards and a `narrowSchema` helper for safe discrimination:
 

@@ -16,7 +16,7 @@ Both speak the same `RequestResult` contract and share the same options: `output
 
 In v4 the `client` option chose the runtime inside one `@kubb/plugin-client`. In v5 you pick the plugin instead, and `client` is gone from its options.
 
-::: code-group
+::code-group
 
 ```typescript [v4 kubb.config.ts]
 import { pluginClient } from '@kubb/plugin-client'
@@ -30,9 +30,9 @@ import { pluginAxios } from '@kubb/plugin-axios'
 pluginAxios({ output: { path: 'clients', mode: 'directory' } })
 ```
 
-:::
+::
 
-::: code-group
+::code-group
 
 ```typescript [v4 kubb.config.ts]
 import { pluginClient } from '@kubb/plugin-client'
@@ -46,13 +46,13 @@ import { pluginFetch } from '@kubb/plugin-fetch'
 pluginFetch({ output: { path: 'clients', mode: 'directory' } })
 ```
 
-:::
+::
 
 ## Replace `clientType` and `wrapper` with `sdk`
 
 v4 generated standalone functions by default and switched to a class with `clientType: 'class'`. A separate `wrapper: { className }` composed those tag classes into one entry point. v5 drops both and adds a single `sdk` option for class-based output. Leave `sdk` unset to keep the standalone per-operation functions, which is what the query plugins consume.
 
-::: code-group
+::code-group
 
 ```typescript [v4 kubb.config.ts]
 import { pluginClient } from '@kubb/plugin-client'
@@ -66,7 +66,7 @@ import { pluginAxios } from '@kubb/plugin-axios'
 pluginAxios({ sdk: { name: 'petStore' } })
 ```
 
-:::
+::
 
 `sdk.mode: 'tag'` (the default) emits one class per tag, and adding `sdk.name` composes them into a root class that builds every tag client from one config. See [`sdk`](/plugins/plugin-axios/reference/options#sdk) for the full option, including the single-class `mode: 'flat'`.
 
@@ -148,7 +148,7 @@ Register it alongside `pluginTs` and your client plugin. See [Creating plugins](
 
 `@kubb/plugin-mcp` now takes `client` as an `'axios' | 'fetch'` selector instead of the v4 object that carried `baseURL`, `dataReturnType`, and the rest. The handlers delegate to a registered client plugin, so `baseURL` moves onto `pluginAxios` or `pluginFetch`. With a single client plugin registered, the selector auto-detects, so you only pass `client` to disambiguate several.
 
-::: code-group
+::code-group
 
 ```typescript [v4 kubb.config.ts]
 import { pluginMcp } from '@kubb/plugin-mcp'
@@ -164,4 +164,4 @@ pluginFetch({ baseURL: 'https://api.example.com' })
 pluginMcp({ client: 'fetch' })
 ```
 
-:::
+::

@@ -26,7 +26,7 @@ Update your CI pipelines, the `engines` field in `package.json`, and any `Docker
 
 In v4, the code-generating plugins lived in [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb). v5 moves them into [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins). The npm package names stay the same, so you do not need to rename anything. The infrastructure packages that `kubb` wires in for you, `@kubb/adapter-oas`, `@kubb/parser-ts`, `@kubb/parser-md`, and `@kubb/plugin-barrel`, stay in `kubb-labs/kubb`.
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/plugin-ts@5.0.0 @kubb/plugin-zod@5.0.0 @kubb/plugin-axios@5.0.0 @kubb/plugin-fetch@5.0.0 \
@@ -56,7 +56,7 @@ yarn add -D @kubb/plugin-ts@5.0.0 @kubb/plugin-zod@5.0.0 @kubb/plugin-axios@5.0.
             @kubb/plugin-mcp@5.0.0 @kubb/plugin-cypress@5.0.0 @kubb/plugin-redoc@5.0.0
 ```
 
-:::
+::
 
 ### Removed plugins
 
@@ -75,7 +75,7 @@ Two ways to migrate `kubb.config.ts`: run the automated prompt, or follow the ma
 
 Copy the prompt below, paste it into any LLM ([Claude](https://claude.ai), [ChatGPT](https://chat.openai.com), [Gemini](https://gemini.google.com), …), and add your `kubb.config.ts` at the end.
 
-::: details Expand upgrade prompt
+::collapsible{name="upgrade prompt"}
 
 ```text [Upgrade prompt]
 Migrate this kubb.config.ts from Kubb v4 to v5. Apply every rule, output the full updated file, and delete any import left unused after a removal.
@@ -104,7 +104,7 @@ Plugins:
 Now migrate the following kubb.config.ts:
 ```
 
-:::
+::
 
 ### Manual: the quick-path checklist
 
@@ -144,7 +144,7 @@ Every change to `kubb.config.ts`, grouped by the part of the config it touches. 
 
 Import [`defineConfig`](/docs/5.x/reference/kit/engine#defineconfig) from the top-level `kubb` package. That package wires up the OpenAPI [adapter](/docs/5.x/guide/concepts/adapters), the TypeScript [parsers](/docs/5.x/guide/concepts/parsers), and the barrel [plugin](/plugins/plugin-barrel/) for you.
 
-::: code-group
+::code-group
 
 ```typescript [v4 kubb.config.ts]
 import { defineConfig } from '@kubb/core'
@@ -154,7 +154,7 @@ import { defineConfig } from '@kubb/core'
 import { defineConfig } from 'kubb/config'
 ```
 
-:::
+::
 
 ### Give `input` a single value
 
@@ -189,7 +189,7 @@ v5 adds three top-level keys that replace behavior each plugin used to carry its
 
 `pluginOas()` no longer belongs in `plugins`. Its options move to the top-level `adapter` key.
 
-::: code-group
+::code-group
 
 ```typescript [v4 kubb.config.ts]
 import { defineConfig } from '@kubb/core'
@@ -228,7 +228,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 The `discriminator` values were also renamed: `'strict'` → `'preserve'` (now the default) and `'inherit'` → `'propagate'`.
 
@@ -267,7 +267,7 @@ The string `barrelType` option becomes an object `barrel` option with a `type` f
 > [!IMPORTANT]
 > `output.barrel` also defaults to `false`, where v4's `barrelType` defaulted to `'named'`. If your v4 config relied on that default, add `output.barrel: { type: 'named' }` to keep the barrel, or drop it since each plugin's output is already directly importable.
 
-::: code-group
+::code-group
 
 ```typescript [v4 kubb.config.ts]
 import { defineConfig } from '@kubb/core'
@@ -287,11 +287,11 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 The same change applies at the plugin level, on that plugin's own `output`:
 
-::: code-group
+::code-group
 
 ```typescript [v4 kubb.config.ts]
 import { defineConfig } from '@kubb/core'
@@ -315,7 +315,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 See [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) for the full `barrel` option reference.
 
@@ -426,7 +426,7 @@ Call the plugin's exported preset (`resolverTs.name`, `resolverZod.name`, and so
 
 After porting a `transformers.name` callback, verify the generated identifiers: a v5 resolver can receive a differently-cased input than v4, so a custom transform may produce different names.
 
-::: code-group
+::code-group
 
 ```typescript [v4]
 pluginTs({
@@ -448,13 +448,13 @@ pluginTs({
 })
 ```
 
-:::
+::
 
 ### `transformers.schema` becomes `macros` {#transformersschema-macros}
 
 Schema-level transformations move to [macros](/docs/5.x/guide/going-further/macros).
 
-::: code-group
+::code-group
 
 ```typescript [v4]
 pluginZod({
@@ -479,7 +479,7 @@ pluginZod({
 })
 ```
 
-:::
+::
 
 ### `mapper` is removed {#mapper-removed}
 
@@ -526,9 +526,9 @@ The output changes specific to each generator live on its [per-extension page](#
 
 A realistic multi-plugin config. Expand it to see every change from this guide applied together.
 
-:::: details Show the full v4 → v5 config
+::collapsible{name="Show the full v4 → v5 config"}
 
-::: code-group
+:::code-group
 
 ```typescript [v4 kubb.config.ts]
 import { defineConfig, memoryStorage } from '@kubb/core'
@@ -642,7 +642,7 @@ export default defineConfig({
 
 :::
 
-::::
+::
 
 Every plugin keeps an extensionless `output.path`, which writes one file per operation. Give `path` a name ending in `.ts` to consolidate into a single file. The root `output.barrel` is set explicitly to keep v4's barrel.
 
@@ -665,17 +665,14 @@ comparison stays apples-to-apples.
 
 Each timing covers a full `kubb generate`, from process start to the last file written.
 
-<SpeedComparison />
+::speed-comparison
+::
 
 ### Benchmark machine
 
-| | |
-| --- | --- |
-| OS | Linux 6.18.5 |
-| CPU | Intel(R) Xeon(R) Processor @ 2.10GHz |
-| Cores | 4 |
-| Memory | 15.7 GB |
-| Node | v22.22.2 |
+| OS | CPU | Cores | Memory | Node |
+| --- | --- | --- | --- | --- |
+| Linux 6.18.5 | Intel(R) Xeon(R) Processor @ 2.10GHz | 4 | 15.7 GB | v22.22.2 |
 
 > [!NOTE]
 > Absolute milliseconds and megabytes are hardware-dependent. Treat the speedup percentages as the

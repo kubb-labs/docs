@@ -19,7 +19,8 @@ Choose where generation runs:
 
 With a CLI or Docker agent, generation runs in your environment. Studio receives plugin settings, progress, and generated file paths. A local spec is not uploaded. Reading generated file contents or changing local files requires the agent's permission. The shared sandbox runs outside your environment, so use it with a spec you are comfortable providing there.
 
-<StudioCTA source="studio-guide" />
+::studio-cta{source="studio-guide"}
+::
 
 ## Connect a local project
 

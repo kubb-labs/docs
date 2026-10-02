@@ -9,7 +9,8 @@ outline: deep
 
 A renderer is the step between what a generator returns and the `FileNode`s the engine writes. A generator produces output two ways: it builds `FileNode`s directly with the `ast.factory` node builders, or it returns elements and lets a renderer walk them into `FileNode`s. The renderer is the second path.
 
-<FlowDiagram preset="renderer" />
+::flow-diagram{preset="renderer"}
+::
 
 ## Why rendering is a separate step
 

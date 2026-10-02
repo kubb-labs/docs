@@ -42,7 +42,7 @@ These five steps install Kubb, add the plugins you want, write a config, and run
 
 Add the `kubb` package as a dev dependency. Use the tab for your package manager:
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d kubb
@@ -60,7 +60,7 @@ npm install --save-dev kubb
 yarn add -D kubb
 ```
 
-:::
+::
 
 > [!NOTE]
 > The `kubb` package includes the CLI, the core runtime, the [OpenAPI adapter](/adapters/adapter-oas/), and the TypeScript, TSX, and Markdown parsers by default. You only need to add plugins for the outputs you want.
@@ -69,7 +69,7 @@ yarn add -D kubb
 
 Each output format is its own package, so you install only what you need. The example below adds TypeScript types, an Axios client, and React Query hooks, but you can swap in any plugin from the table that follows:
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/plugin-ts @kubb/plugin-axios @kubb/plugin-react-query
@@ -87,7 +87,7 @@ npm install --save-dev @kubb/plugin-ts @kubb/plugin-axios @kubb/plugin-react-que
 yarn add -D @kubb/plugin-ts @kubb/plugin-axios @kubb/plugin-react-query
 ```
 
-:::
+::
 
 | Package                                                   | Generates                                                                                                                             |
 | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |

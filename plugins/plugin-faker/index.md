@@ -52,7 +52,7 @@ resources:
 
 ## Installation
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/plugin-faker
@@ -70,7 +70,7 @@ npm install --save-dev @kubb/plugin-faker
 yarn add -D @kubb/plugin-faker
 ```
 
-:::
+::
 
 ## Dependencies
 
@@ -81,7 +81,7 @@ This plugin depends on [`@kubb/plugin-ts`](/plugins/plugin-ts/) for the types ea
 
 ## Example
 
-::: code-group
+::code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -103,7 +103,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 ## See also
 

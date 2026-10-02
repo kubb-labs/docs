@@ -45,7 +45,7 @@ How `discriminator` fields on `oneOf`/`anyOf` schemas are interpreted.
 - `'preserve'` (default) keeps child schemas exactly as written, though the discriminator still narrows types at the call site.
 - `'propagate'` pushes the discriminator property with its literal value into each child schema, so each branch's `type` field is precisely typed.
 
-::: code-group
+::code-group
 
 ```yaml [OpenAPI spec]
 openapi: 3.0.3
@@ -86,7 +86,7 @@ export type Dog = { type: 'dog'; name?: string }
 export type Animal = Cat | Dog
 ```
 
-:::
+::
 
 ### enums
 

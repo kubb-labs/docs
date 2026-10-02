@@ -9,7 +9,8 @@ outline: deep
 
 A parser is Kubb's output layer. It turns the language-neutral [AST](/docs/5.x/guide/concepts/ast) a plugin emits into the source string that [storage](/docs/5.x/guide/concepts/storage) writes to disk. The language lives in the parser, not in the plugins, so the same plugins target TypeScript today and Python or Rust tomorrow. You swap the parser, not the plugins.
 
-<FlowDiagram preset="parsers" />
+::flow-diagram{preset="parsers"}
+::
 
 ## Why the language lives here
 

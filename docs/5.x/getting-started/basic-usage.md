@@ -28,7 +28,7 @@ export default defineConfig({
 
 Each output format is its own plugin, so you only generate what you ask for. Start small and add plugins as you need them. The tabs below build up from types alone to a full setup with types, a client, hooks, schemas, and mocks.
 
-::: code-group
+::code-group
 
 ```typescript twoslash [TypeScript types]
 import { defineConfig } from 'kubb/config'
@@ -87,7 +87,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 | Plugin                                            | Package                    | Generates                                          |
 | ------------------------------------------------- | -------------------------- | -------------------------------------------------- |
@@ -106,7 +106,8 @@ See the [plugins catalogue](/plugins) for the full list.
 
 Run the generate command. An interactive terminal renders the plugins on a shared progress bar, so the transcript below is what a non-TTY run prints, such as CI or output piped to a file. Each plugin reports in turn, followed by a summary.
 
-```terminal
+::terminal
+---
 command: kubb generate
 output:
   - Generation started ./petStore.yaml
@@ -116,12 +117,13 @@ output:
   - plugin-zod completed in 134ms
   - plugin-msw completed in 63ms
   - Generation completed
-  -
-  -  Plugins  5 passed (5)
-  -    Files  156 generated
+  - ""
+  - " Plugins  5 passed (5)"
+  - "   Files  156 generated"
   - Duration  1.2s
-  -   Output  ./src/gen
-```
+  - "  Output  ./src/gen"
+---
+::
 
 Kubb creates one folder per plugin under `output.path`, so the layout mirrors the config you wrote. Re-run it after every spec change. See [`kubb generate`](../reference/commands/generate) for flags like `--watch` and `--reporter`.
 
@@ -129,7 +131,7 @@ Kubb creates one folder per plugin under `output.path`, so the layout mirrors th
 
 Import the generated code into your app. The import paths follow the `output.path` values you set for each plugin, so a plugin pointed at `models` lives under `gen/models`.
 
-::: code-group
+::code-group
 
 ```typescript [Types]
 // @filename: src/gen/models/Pet.ts
@@ -171,7 +173,7 @@ const server = setupServer(getPetByIdHandler())
 server.listen()
 ```
 
-:::
+::
 
 ## 5. Keep it in sync
 

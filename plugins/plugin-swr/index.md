@@ -53,7 +53,7 @@ Query hooks take the grouped request config (`{ path, query, headers }`, camelCa
 
 ## Installation
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/plugin-swr
@@ -71,7 +71,7 @@ npm install --save-dev @kubb/plugin-swr
 yarn add -D @kubb/plugin-swr
 ```
 
-:::
+::
 
 ## Dependencies
 
@@ -87,7 +87,7 @@ For runtime validation, set `validator` on the client plugin. The generated oper
 
 ## Example
 
-::: code-group
+::code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -112,7 +112,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 ## See also
 

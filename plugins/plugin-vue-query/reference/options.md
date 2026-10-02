@@ -69,7 +69,7 @@ Selects which registered client plugin the composables call: `'axios'` for `@kub
 
 Adds infinite-query output for cursor- or page-based pagination. Pass an object to configure how the cursor is read, or `false` (the default) to skip. Output is emitted for an operation only when it declares a query parameter matching `infinite.queryParam` (default `'id'`) and [`hooks`](#hooks) is also `true`. Without `hooks: true`, `infinite` produces no file at all, not even the factory:
 
-::: code-group
+::code-group
 
 ```typescript [infinite: false (default)]
 export function getPetsQueryOptions(/* ... */) {
@@ -87,7 +87,7 @@ export function useGetPetsInfiniteQuery(/* ... */) {
 }
 ```
 
-:::
+::
 
 #### infinite.queryParam
 
@@ -125,7 +125,7 @@ Module specifier for the generated `import { queryOptions } from '...'`. Type `s
 
 Builds the `queryKey` for each query composable. The callback receives the operation `node` and active `casing` and returns the key array. String values are inlined verbatim, so wrap literals in `JSON.stringify(...)`. Defaults to the built-in `queryKeyTransformer`.
 
-::: code-group
+::code-group
 
 ```typescript [queryKey builder]
 queryKey: ({ node }) => [JSON.stringify(node.operationId)]
@@ -135,7 +135,7 @@ queryKey: ({ node }) => [JSON.stringify(node.operationId)]
 export const getUserByNameQueryKey = () => ['getUserByName'] as const
 ```
 
-:::
+::
 
 ### mutation
 

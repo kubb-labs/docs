@@ -45,7 +45,7 @@ See [Options](/adapters/adapter-oas/reference/options) for the full configuratio
 
 ## Installation
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/adapter-oas
@@ -63,7 +63,7 @@ npm install --save-dev @kubb/adapter-oas
 yarn add -D @kubb/adapter-oas
 ```
 
-:::
+::
 
 ## Dependencies
 
@@ -71,7 +71,7 @@ yarn add -D @kubb/adapter-oas
 
 ## Example
 
-::: code-group
+::code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -96,7 +96,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 ## See also
 

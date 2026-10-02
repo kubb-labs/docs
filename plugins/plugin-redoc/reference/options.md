@@ -15,10 +15,9 @@ outline: deep
 
 Where the generated Redoc HTML file is written.
 
-|          |                         |
-| -------: | :---------------------- |
-|    Type: | `{ path: string }`      |
-| Default: | `{ path: 'docs.html' }` |
+| Type | Default |
+| --- | --- |
+| `{ path: string }` | `{ path: 'docs.html' }` |
 
 #### output.path
 
@@ -26,11 +25,21 @@ File path of the generated HTML, resolved against the global `output.path`. Unli
 
 End the path with a `.html` extension. If you leave the extension off, Kubb still writes the file and uses the path as the plugin output name.
 
-|          |               |
-| -------: | :------------ |
-|    Type: | `string`      |
-| Default: | `'docs.html'` |
+| Type | Default |
+| --- | --- |
+| `string` | `'docs.html'` |
 
 With `output.path` set to `'docs.html'` and the global `output.path` set to `'./src/gen'`, the plugin writes one file:
 
-<FileTree :tree="[{ name: 'src', type: 'dir', children: [{ name: 'gen', type: 'dir', children: [{ name: 'docs.html' }] }] }]" />
+::file-tree
+---
+tree:
+  - name: src
+    type: dir
+    children:
+      - name: gen
+        type: dir
+        children:
+          - name: docs.html
+---
+::

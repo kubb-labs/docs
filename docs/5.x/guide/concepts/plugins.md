@@ -17,7 +17,8 @@ Almost everything in a generated `src/gen/` folder traces back to one plugin, so
 
 For the signatures see the [Kit API](/docs/5.x/reference/kit), and to build one step by step follow [Creating your first plugin](/docs/5.x/guide/going-further/creating-plugins).
 
-<PluginAnatomy />
+::plugin-anatomy
+::
 
 > [!TIP]
 > Need a TanStack Query client, a Zod schema set, or MSW handlers? Check the [Plugins](/plugins) registry first. Build a custom plugin only when no existing one fits.
@@ -38,7 +39,8 @@ That isolation is what makes a build predictable. The TypeScript plugin never to
 
 A build moves through phases in a fixed order, and each plugin subscribes only to the moments it cares about.
 
-<LifecycleTimeline />
+::lifecycle-timeline
+::
 
 - Setup runs first, once per plugin, before any code exists. Validate options here and fail fast on a missing one.
 - Kubb walks the AST and calls your generator handlers for every schema and operation node. Most `FileNode`s come from here.

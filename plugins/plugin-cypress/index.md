@@ -49,7 +49,7 @@ Each helper takes its parameters as a single grouped options object shaped as `{
 
 ## Installation
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/plugin-cypress
@@ -67,7 +67,7 @@ npm install --save-dev @kubb/plugin-cypress
 yarn add -D @kubb/plugin-cypress
 ```
 
-:::
+::
 
 ## Dependencies
 
@@ -78,7 +78,7 @@ This plugin depends on [`@kubb/plugin-ts`](/plugins/plugin-ts/) for the request,
 
 ## Example
 
-::: code-group
+::code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -118,7 +118,7 @@ describe('Pet API', () => {
 })
 ```
 
-:::
+::
 
 ## See also
 

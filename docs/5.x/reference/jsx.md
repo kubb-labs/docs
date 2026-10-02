@@ -78,7 +78,7 @@ const files = renderer.files
 
 `File` is the container. Its members `File.Source`, `File.Import`, and `File.Export` attach source blocks, imports, and exports to it.
 
-#### `File` {#file}
+#### `File`
 
 Declares a generated output file. Pass both `baseName` and `path` to register a file entry. Omit both to render the children inline without creating a file.
 
@@ -100,7 +100,7 @@ Declares a generated output file. Pass both `baseName` and `path` to register a 
 </File>
 ```
 
-#### `File.Source` {#file-source}
+#### `File.Source`
 
 Marks a block of source text that belongs to the enclosing `File`. The children are the source string.
 
@@ -118,7 +118,7 @@ Marks a block of source text that belongs to the enclosing `File`. The children 
 </File.Source>
 ```
 
-#### `File.Import` {#file-import}
+#### `File.Import`
 
 Declares an import for the enclosing `File`. The renderer emits it at the top of the generated file.
 
@@ -138,7 +138,7 @@ Declares an import for the enclosing `File`. The renderer emits it at the top of
 // import * as z from 'zod'
 ```
 
-#### `File.Export` {#file-export}
+#### `File.Export`
 
 Declares an export for the enclosing `File`. The renderer emits it at the top of the generated file.
 
@@ -161,7 +161,7 @@ Declares an export for the enclosing `File`. The renderer emits it at the top of
 
 The JavaScript components emit TypeScript declarations. Nest them inside a `File.Source` so the renderer writes them into a `.ts` file.
 
-#### `Const` {#const}
+#### `Const`
 
 Generates a TypeScript constant declaration. The children are the initializer expression.
 
@@ -181,7 +181,7 @@ Generates a TypeScript constant declaration. The children are the initializer ex
 // export const petSchema: z.ZodType<Pet> = z.object({ id: z.number() })
 ```
 
-#### `Function` {#function}
+#### `Function`
 
 Generates a TypeScript function declaration. The children are the function body.
 
@@ -204,7 +204,7 @@ Generates a TypeScript function declaration. The children are the function body.
 // export async function getPet<TData = Pet>(petId: string): Promise<TData> { … }
 ```
 
-#### `Function.Arrow` {#function-arrow}
+#### `Function.Arrow`
 
 Generates an arrow function assigned to a `const`. Takes every `Function` prop plus `singleLine`.
 
@@ -219,7 +219,7 @@ Generates an arrow function assigned to a `const`. Takes every `Function` prop p
 // export const double = (n: number): number => n * 2
 ```
 
-#### `Type` {#type}
+#### `Type`
 
 Generates a TypeScript type alias. The children are the type expression. `name` must start with an uppercase letter or the component throws.
 
@@ -258,7 +258,7 @@ await renderer.render(
 )
 ```
 
-#### `Callout` {#callout}
+#### `Callout`
 
 Renders a GitHub-style alert using the `> [!TYPE]` blockquote syntax.
 
@@ -274,7 +274,7 @@ Renders a GitHub-style alert using the `> [!TYPE]` blockquote syntax.
 // > Breaking change in v6.
 ```
 
-#### `Frontmatter` {#frontmatter}
+#### `Frontmatter`
 
 Emits a YAML frontmatter envelope at the top of a markdown file. Place it as the first child of the `File`.
 
@@ -290,7 +290,7 @@ Emits a YAML frontmatter envelope at the top of a markdown file. Place it as the
 // ---
 ```
 
-#### `Heading` {#heading}
+#### `Heading`
 
 Renders an ATX-style markdown heading.
 
@@ -304,7 +304,7 @@ Renders an ATX-style markdown heading.
 // ## Installation
 ```
 
-#### `List` {#list}
+#### `List`
 
 Renders a markdown list, one entry per line.
 
@@ -319,7 +319,7 @@ Renders a markdown list, one entry per line.
 // 2. Second
 ```
 
-#### `Paragraph` {#paragraph}
+#### `Paragraph`
 
 Renders a markdown paragraph. Inline markdown passes through verbatim.
 
