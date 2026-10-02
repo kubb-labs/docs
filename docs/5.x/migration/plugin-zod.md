@@ -1,6 +1,9 @@
 ---
 title: 'Migration: @kubb/plugin-zod'
 description: Configuration and generated-output changes for @kubb/plugin-zod when migrating from Kubb v4 to v5.
+order: 3
+navigation:
+  title: "@kubb/plugin-zod"
 ---
 
 # Migration: `@kubb/plugin-zod`

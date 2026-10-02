@@ -3,6 +3,7 @@ layout: doc
 title: kubb init
 description: The init command bootstraps a fresh Kubb project with an interactive wizard.
 outline: [2, 3]
+order: 1
 ---
 
 # `kubb init`

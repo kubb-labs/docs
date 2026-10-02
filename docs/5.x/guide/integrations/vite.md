@@ -3,6 +3,9 @@ layout: doc
 title: Run Kubb with Vite
 description: Run Kubb as part of your Vite build with kubb/vite.
 outline: [2, 3]
+order: 4
+navigation:
+  title: "Vite"
 ---
 
 # Run Kubb with Vite

@@ -3,6 +3,7 @@ layout: doc
 title: kubb validate
 description: The validate command checks that a Swagger/OpenAPI document is valid without running the full pipeline.
 outline: [2, 3]
+order: 3
 ---
 
 # `kubb validate`

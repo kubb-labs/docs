@@ -3,6 +3,7 @@ layout: doc
 title: GitHub Actions
 description: Publish a Kubb snapshot from GitHub Actions with kubb-labs/action, and install the tarball from the pull-request comment.
 outline: [2, 3]
+order: 2
 ---
 
 # GitHub Actions

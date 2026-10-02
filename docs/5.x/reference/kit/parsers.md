@@ -3,6 +3,7 @@ layout: doc
 title: Parsers
 description: defineParser creates a parser that converts a generated file AST into the source string written to disk. Covers the Parser interface, the built-in TypeScript parser, and adding your own.
 outline: [2, 3]
+order: 6
 ---
 
 # Parsers

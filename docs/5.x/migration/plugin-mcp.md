@@ -1,6 +1,9 @@
 ---
 title: 'Migration: @kubb/plugin-mcp'
 description: Changes for @kubb/plugin-mcp when migrating from Kubb v4 to v5.
+order: 11
+navigation:
+  title: "@kubb/plugin-mcp"
 ---
 
 # Migration: `@kubb/plugin-mcp`

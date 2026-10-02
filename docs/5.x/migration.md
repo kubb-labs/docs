@@ -3,6 +3,10 @@ title: Migration guide
 description: Step-by-step guide for migrating from Kubb v4 to v5.
 layout: doc
 outline: [2, 3]
+order: 5
+navigation:
+  title: "Migration"
+  icon: "i-iconoir-transition-up"
 ---
 
 # Migration guide: v4 → v5

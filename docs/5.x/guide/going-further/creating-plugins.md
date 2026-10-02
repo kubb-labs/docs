@@ -3,6 +3,9 @@ layout: doc
 title: Create your first plugin
 description: Learn how to build a Kubb plugin from scratch. Step-by-step guide covering setup, lifecycle hooks, generators, and publishing.
 outline: [2, 3]
+order: 1
+navigation:
+  title: "Creating Your First Plugin"
 ---
 
 # Create your first plugin

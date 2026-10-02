@@ -3,6 +3,7 @@ layout: doc
 title: Add barrel files support
 description: Generate index.ts barrel files for every plugin output directory with @kubb/plugin-barrel, the post-enforced plugin built into Kubb.
 outline: deep
+order: 6
 ---
 
 # Add barrel files support

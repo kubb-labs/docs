@@ -3,6 +3,7 @@ layout: doc
 title: kubb generate
 description: The generate command runs the Kubb code-generation pipeline based on your kubb.config.ts.
 outline: [2, 3]
+order: 2
 ---
 
 # `kubb generate`

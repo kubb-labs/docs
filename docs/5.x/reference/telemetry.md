@@ -3,6 +3,7 @@ layout: doc
 title: Telemetry
 description: Learn what anonymous usage data Kubb collects, how to opt out, and how the data improves the tool.
 outline: [2, 3]
+order: 5
 ---
 
 # Telemetry

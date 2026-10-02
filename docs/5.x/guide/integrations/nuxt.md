@@ -3,6 +3,9 @@ layout: doc
 title: Run Kubb with Nuxt
 description: Run Kubb as part of your Nuxt application with the kubb/nuxt module.
 outline: [2, 3]
+order: 11
+navigation:
+  title: "Nuxt"
 ---
 
 # Run Kubb with Nuxt

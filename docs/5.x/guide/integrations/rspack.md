@@ -3,6 +3,9 @@ layout: doc
 title: Run Kubb with Rspack
 description: Run Kubb as part of your Rspack build with kubb/rspack.
 outline: [2, 3]
+order: 8
+navigation:
+  title: "Rspack"
 ---
 
 # Run Kubb with Rspack

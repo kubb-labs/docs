@@ -3,6 +3,7 @@ layout: doc
 title: kubb mcp
 description: The mcp command starts a Model Context Protocol server so LLM clients can interact with your schemas and trigger generation.
 outline: [2, 3]
+order: 4
 ---
 
 # `kubb mcp`

@@ -3,6 +3,7 @@ layout: doc
 title: Basic Usage
 description: Write your first kubb.config.ts, pick a few plugins, run kubb generate and import the generated types, client and hooks in your app.
 outline: [2, 3]
+order: 3
 ---
 
 # Basic Usage

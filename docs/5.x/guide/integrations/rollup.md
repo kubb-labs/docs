@@ -3,6 +3,9 @@ layout: doc
 title: Run Kubb with Rollup
 description: Run Kubb as part of your Rollup build with kubb/rollup.
 outline: [2, 3]
+order: 5
+navigation:
+  title: "Rollup"
 ---
 
 # Run Kubb with Rollup

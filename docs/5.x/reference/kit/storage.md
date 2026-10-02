@@ -3,6 +3,7 @@ layout: doc
 title: Storage
 description: Storage backends decide where generated files are written. Covers createStorage, the Storage interface, and the built-in fsStorage and memoryStorage backends.
 outline: [2, 3]
+order: 7
 ---
 
 # Storage

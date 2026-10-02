@@ -3,6 +3,9 @@ layout: doc
 title: Run Kubb with Rolldown
 description: Run Kubb as part of your Rolldown build with kubb/rolldown.
 outline: [2, 3]
+order: 6
+navigation:
+  title: "Rolldown"
 ---
 
 # Run Kubb with Rolldown

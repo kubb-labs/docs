@@ -3,6 +3,7 @@ layout: doc
 title: Generators
 description: defineGenerator declares a named generator unit that walks the AST and emits files. Covers the schema, operation, and operations methods and the GeneratorContext passed to each.
 outline: [2, 3]
+order: 2
 ---
 
 # Generators

@@ -3,6 +3,7 @@ layout: doc
 title: FAQ
 description: Frequently asked questions about Kubb, covering compatibility, generated code, customization, and plugins.
 outline: [2, 3]
+order: 2
 ---
 
 # FAQ

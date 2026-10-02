@@ -3,6 +3,9 @@ layout: doc
 title: Run Kubb with Astro
 description: Run Kubb as part of your Astro project with the kubb/astro integration.
 outline: [2, 3]
+order: 12
+navigation:
+  title: "Astro"
 ---
 
 # Run Kubb with Astro

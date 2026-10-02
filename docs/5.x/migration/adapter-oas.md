@@ -1,6 +1,9 @@
 ---
 title: 'Migration: @kubb/adapter-oas'
 description: Configuration changes for @kubb/adapter-oas when migrating from Kubb v4 to v5.
+order: 1
+navigation:
+  title: "@kubb/adapter-oas"
 ---
 
 # Migration: `@kubb/adapter-oas`

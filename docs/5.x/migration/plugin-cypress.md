@@ -1,6 +1,9 @@
 ---
 title: 'Migration: @kubb/plugin-cypress'
 description: Changes for @kubb/plugin-cypress when migrating from Kubb v4 to v5.
+order: 10
+navigation:
+  title: "@kubb/plugin-cypress"
 ---
 
 # Migration: `@kubb/plugin-cypress`

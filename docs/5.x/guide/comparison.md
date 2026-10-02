@@ -3,6 +3,9 @@ layout: doc
 title: Kubb vs orval, HeyAPI, and openapi-typescript
 description: Feature-by-feature comparison of Kubb against orval, HeyAPI, and openapi-typescript.
 outline: [2, 3]
+order: 4
+navigation:
+  title: "Comparison"
 ---
 
 # Kubb vs orval, HeyAPI, and openapi-typescript

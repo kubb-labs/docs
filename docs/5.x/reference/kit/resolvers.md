@@ -3,6 +3,7 @@ layout: doc
 title: Resolvers
 description: createResolver builds a Resolver that controls file naming and path resolution for a plugin, with auto-injected defaults under resolver.default and Resolver.merge for layering overrides.
 outline: [2, 3]
+order: 3
 ---
 
 # Resolvers

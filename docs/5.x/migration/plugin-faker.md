@@ -1,6 +1,9 @@
 ---
 title: 'Migration: @kubb/plugin-faker'
 description: Configuration and generated-output changes for @kubb/plugin-faker when migrating from Kubb v4 to v5.
+order: 4
+navigation:
+  title: "@kubb/plugin-faker"
 ---
 
 # Migration: `@kubb/plugin-faker`

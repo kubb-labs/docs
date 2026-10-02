@@ -1,6 +1,9 @@
 ---
 title: 'Migration: @kubb/plugin-vue-query'
 description: Configuration and generated-output changes for @kubb/plugin-vue-query when migrating from Kubb v4 to v5.
+order: 7
+navigation:
+  title: "@kubb/plugin-vue-query"
 ---
 
 # Migration: `@kubb/plugin-vue-query`

@@ -3,6 +3,9 @@ layout: doc
 title: Resolvers - How Kubb Names Generated Files
 description: A resolver is the single source of truth for a plugin's file names and output paths. Other plugins read it by name so they can import each other's output without hard-coding paths.
 outline: deep
+order: 5
+navigation:
+  title: "Resolvers"
 ---
 
 # Resolvers

@@ -4,6 +4,9 @@ layout: doc
 title: Use Kubb with Claude AI - AI Integration Guide
 description: Integrate Kubb with Claude AI for enhanced code generation. AI-powered OpenAPI analysis and code suggestions.
 outline: deep
+order: 2
+navigation:
+  title: "Setup MCP plugin with Claude"
 ---
 
 # Set up Claude with Kubb

@@ -3,6 +3,9 @@ layout: doc
 title: AST - Why Kubb Uses a Universal Tree
 description: How Kubb's universal Abstract Syntax Tree decouples input formats like OpenAPI from the generators that emit code, so one plugin works against any spec.
 outline: deep
+order: 10
+navigation:
+  title: "AST"
 ---
 
 # AST

@@ -3,6 +3,9 @@ layout: doc
 title: Generators - How a Plugin Turns the AST Into Files
 description: A generator is the piece of a plugin that walks the AST and emits files. One plugin can register several, each handling schemas, single operations, or the whole operation set.
 outline: deep
+order: 4
+navigation:
+  title: "Generators"
 ---
 
 # Generators

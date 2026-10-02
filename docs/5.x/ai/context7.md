@@ -3,6 +3,9 @@ layout: doc
 title: Use Kubb with Context7
 description: Connect Context7 to your AI assistant and use current Kubb documentation when generating code or configuring Kubb.
 outline: [2, 3]
+order: 2
+navigation:
+  title: "Context7"
 ---
 
 # Use Kubb with Context7

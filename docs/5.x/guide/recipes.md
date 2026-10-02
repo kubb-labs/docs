@@ -3,6 +3,7 @@ layout: doc
 title: Recipes
 description: Copy-paste kubb.config.ts configurations for the most common stacks including TypeScript, React Query, Zod, MSW, multi-spec setups and more.
 outline: [2, 3]
+order: 3
 ---
 
 # Recipes

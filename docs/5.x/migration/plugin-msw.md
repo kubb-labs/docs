@@ -1,6 +1,9 @@
 ---
 title: 'Migration: @kubb/plugin-msw'
 description: Configuration and generated-output changes for @kubb/plugin-msw when migrating from Kubb v4 to v5.
+order: 8
+navigation:
+  title: "@kubb/plugin-msw"
 ---
 
 # Migration: `@kubb/plugin-msw`

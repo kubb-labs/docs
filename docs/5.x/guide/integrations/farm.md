@@ -3,6 +3,9 @@ layout: doc
 title: Run Kubb with Farm
 description: Run Kubb as part of your Farm build with kubb/farm.
 outline: [2, 3]
+order: 10
+navigation:
+  title: "Farm"
 ---
 
 # Run Kubb with Farm

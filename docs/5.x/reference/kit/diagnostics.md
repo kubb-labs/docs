@@ -3,6 +3,7 @@ layout: doc
 title: Diagnostics
 description: Diagnostics is the namespace a plugin or adapter uses to build and narrow the structured errors Kubb collects during a build, each carrying a stable code, a severity, and a location.
 outline: [2, 3]
+order: 9
 ---
 
 # Diagnostics

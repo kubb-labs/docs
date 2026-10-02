@@ -3,6 +3,9 @@ layout: doc
 title: Adapters - How Kubb Reads Any Specification
 description: An adapter is the only part of Kubb that understands the input format. It converts a spec like OpenAPI into the universal AST, so every plugin works regardless of the source.
 outline: deep
+order: 7
+navigation:
+  title: "Adapters"
 ---
 
 # Adapters

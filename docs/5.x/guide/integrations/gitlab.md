@@ -3,6 +3,7 @@ layout: doc
 title: GitLab CI
 description: Publish a Kubb snapshot from a GitLab CI job with kubb studio snapshot, and post the tarball on the merge request.
 outline: [2, 3]
+order: 3
 ---
 
 # GitLab CI

@@ -3,6 +3,7 @@ layout: doc
 title: Lifecycle hooks
 description: Every kubb:* hook a build fires, its payload, and when it fires. Listen with kubb.hooks.hook(name, handler) or from a plugin's hooks map.
 outline: [2, 3]
+order: 11
 ---
 
 # Lifecycle hooks

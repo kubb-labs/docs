@@ -3,6 +3,9 @@ layout: doc
 title: Run Kubb with esbuild
 description: Run Kubb as part of your esbuild build with kubb/esbuild.
 outline: [2, 3]
+order: 9
+navigation:
+  title: "esbuild"
 ---
 
 # Run Kubb with esbuild
