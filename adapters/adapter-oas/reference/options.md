@@ -16,6 +16,7 @@ Options for `adapterOas`, with type and default in the table.
 | [`server`](#server) | `{ index?: number, variables?: Record<string, string> }` | — | Which spec server Kubb resolves into the document `baseURL` |
 | [`discriminator`](#discriminator) | `'preserve' \| 'propagate'` | `'preserve'` | How `discriminator` fields are interpreted |
 | [`enums`](#enums) | `'inline' \| 'root'` | `'inline'` | Where inline enums live |
+| [`annotatedEnums`](#annotatedenums) | `boolean` | `false` | Recognize annotation-only const unions as named enums |
 | [`dateType`](#datetype) | `false \| 'string' \| 'stringOffset' \| 'stringLocal' \| 'date' \| { dateTime?, date?, time? }` | `'string'` | How `date-time`, `date`, and `time` schemas are represented |
 | [`integerType`](#integertype) | `'number' \| 'bigint'` | `'bigint'` | How integers map to TypeScript |
 | [`unknownType`](#unknowntype) | `'any' \| 'unknown' \| 'void'` | `'unknown'` | Type for schemas Kubb cannot infer |
@@ -105,6 +106,45 @@ export type Pet = { status?: 'active' | 'inactive' }
 export type PetStatusEnum = 'active' | 'inactive'
 export type Pet = { status?: PetStatusEnum }
 ```
+
+### annotatedEnums
+
+Set `annotatedEnums: true` to recognize OpenAPI 3.1 `oneOf` or `anyOf` branches containing `const` values and `title` annotations as named enums. Member descriptions are retained too. Titles become member names; the original values remain the values sent over the wire.
+
+```typescript
+adapterOas({ annotatedEnums: true, integerType: 'number' })
+```
+
+With `@kubb/plugin-ts` and `enum.type: 'asConst'`:
+
+::code-group
+
+```yaml [OpenAPI schema]
+Status:
+  type: integer
+  oneOf:
+    - const: 1
+      title: First
+      description: First status
+    - const: 2
+      title: Second
+```
+
+```typescript [Generated TypeScript]
+export const status = {
+  /** First status */
+  First: 1,
+  Second: 2,
+} as const
+
+export type StatusKey = (typeof status)[keyof typeof status]
+```
+
+::
+
+The option defaults to `false`, preserving existing literal-union output. Recognition requires distinct non-empty titles, distinct values, and a single primitive value type (`string` or `number`). A declared `type` must match those values. Members and the parent may contain annotations, but additional validation constraints such as `minimum`, `pattern`, or `format` keep the existing union representation. Missing or duplicate titles, duplicate values, mixed value types, null or boolean members, references, and simultaneous `oneOf` and `anyOf` also keep the existing representation.
+
+See [OpenAPI 3.1 annotated enumerations](https://spec.openapis.org/oas/v3.1.1.html#annotated-enumerations).
 
 ### dateType
 
