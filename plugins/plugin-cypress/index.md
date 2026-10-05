@@ -1,12 +1,10 @@
 ---
 layout: doc
 title: Kubb Cypress Plugin
-description: Generates a typed cy.request() wrapper per OpenAPI operation so your
-  Cypress tests call the API through generated helpers and catch broken calls at compile time.
+description: Generates a typed cy.request() wrapper per OpenAPI operation so
+  your Cypress tests call the API through generated helpers and catch broken
+  calls at compile time.
 outline: deep
-recipes:
-  - id: typed-request-helpers-against-staging
-    title: Typed request helpers against staging
 kind: plugin
 id: plugin-cypress
 name: Cypress
@@ -43,9 +41,7 @@ resources:
 
 # @kubb/plugin-cypress
 
-`@kubb/plugin-cypress` turns your OpenAPI operations into typed `cy.request()` wrappers, one helper per operation. Each helper types its path params, body, query, and response, so a broken API call fails at compile time instead of in the test runner. Use the helpers in `before` and `beforeEach` hooks to seed data, in custom commands, or in API-only tests.
-
-Each helper takes its parameters as a single grouped options object shaped as `{ body, path, query, headers }`. Property names inside each group match the OpenAPI spec exactly, including snake_case or quoted names, and Kubb forwards that object straight into `cy.request()` with no extra mapping. A helper resolves to the response body and its return type is `Cypress.Chainable<{Operation}Response>`.
+`@kubb/plugin-cypress` generates typed `cy.request()` helpers from OpenAPI operations. Helpers take grouped `{ body, path, query, headers }` parameters and return the response body as `Cypress.Chainable<{Operation}Response>`. Parameter names match the spec.
 
 ## Installation
 
@@ -71,14 +67,9 @@ yarn add -D @kubb/plugin-cypress
 
 ## Dependencies
 
-This plugin depends on [`@kubb/plugin-ts`](/plugins/plugin-ts/) for the request, parameter, and response types it imports. Keep `pluginTs()` in the plugins array.
-
-> [!IMPORTANT]
-> The generated requests need Cypress v13 or higher.
+Add [`pluginTs`](/plugins/plugin-ts/) for request and response types. Generated helpers require Cypress v13 or higher.
 
 ## Example
-
-::code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -90,24 +81,13 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs(),
-    pluginCypress({
-      output: {
-        path: './cypress',
-        mode: 'directory',
-        barrel: { type: 'named' },
-        banner: '/* eslint-disable */',
-      },
-      group: {
-        type: 'tag',
-        name: ({ group }) => `${group}Requests`,
-      },
-    }),
+    pluginCypress({ output: { path: 'cypress', mode: 'directory' } }),
   ],
 })
 ```
 
-```typescript [Using a generated helper]
-import { getPetById } from '../gen/cypress/petRequests'
+```typescript [pet.cy.ts]
+import { getPetById } from '../src/gen/cypress/getPetById'
 
 describe('Pet API', () => {
   it('returns the pet by id', () => {
@@ -118,7 +98,9 @@ describe('Pet API', () => {
 })
 ```
 
-::
+## Documentation
+
+- [Options](./reference/options)
 
 ## See also
 

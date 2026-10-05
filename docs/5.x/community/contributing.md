@@ -2,7 +2,9 @@
 layout: doc
 title: Contributing
 description: A concise guide to contributing to Kubb core and Kubb plugins.
-outline: [2, 3]
+outline:
+  - 2
+  - 3
 order: 1
 ---
 
@@ -10,7 +12,7 @@ order: 1
 
 There are two places to contribute:
 
-1. [Kubb core](#kubb-core): the runtime, [AST](/docs/5.x/guide/concepts/ast), [adapter](/docs/5.x/guide/concepts/adapters), [parsers](/docs/5.x/guide/concepts/parsers), the [authoring kit](/docs/5.x/guide/concepts/kit), and built-in plugins in [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb).
+1. [Kubb core](#kubb-core): the runtime, [AST](/docs/5.x/explanation/architecture#ast), [adapter](/docs/5.x/explanation/architecture#adapters), [parsers](/docs/5.x/explanation/architecture#parsers), the [authoring kit](/docs/5.x/explanation/extensions#kit), and built-in plugins in [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb).
 2. [Kubb plugins](#kubb-plugins): community and official plugins in the registry at [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins).
 
 First, check the open [issues](https://github.com/kubb-labs/kubb/issues) and [pull requests](https://github.com/kubb-labs/kubb/pulls) so you don't duplicate work. Say hello on [Discord](https://discord.gg/4dQjA6vrWX).
@@ -91,7 +93,7 @@ Build a community plugin in your own repository, or propose an official one in t
 
 ### Build a community plugin
 
-1. Follow the [Creating Your First Plugin](/docs/5.x/guide/going-further/creating-plugins) guide.
+1. Follow the [Creating Your First Plugin](/docs/5.x/tutorials/creating-plugins) guide.
 2. Use [`@kubb/plugin-axios`](https://github.com/kubb-labs/plugins/tree/main/packages/plugin-axios) as the layout to copy.
 3. Publish to npm under the `kubb-plugin-*` naming convention.
 4. Submit it to the registry by opening a PR on [kubb-labs/docs](https://github.com/kubb-labs/docs) that adds a `plugins/<id>/index.md` page with the required frontmatter.

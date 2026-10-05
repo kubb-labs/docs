@@ -38,7 +38,7 @@ Folder where the plugin writes its files, defaulting to `'clients'` and resolved
 `'file'` writes everything into a single file whose `output.path` must include the extension. `'directory'` writes one file per operation under `output.path`. Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 
 > [!IMPORTANT]
-> `group` works with the inferred directory mode, no `mode` needed. Set `mode: 'directory'` yourself only to override the inference, such as a directory name that carries a dot (`path: 'clients.v2'`). An explicit `mode: 'file'` still forbids `group` and stops the build with `KUBB_INVALID_PLUGIN_OPTIONS`, since a single file has nothing to group.
+> `group` requires directory output. Kubb infers the mode from `output.path`. Set `mode: 'directory'` to override that inference. Combining `group` with `mode: 'file'` stops generation with `KUBB_INVALID_PLUGIN_OPTIONS`.
 
 #### output.barrel
 
@@ -81,15 +81,34 @@ This setting applies to the whole plugin and cannot be set in `override`. Genera
 
 Validates request and response bodies with schemas from `@kubb/plugin-zod`, which you add to the plugins list when either direction is `'zod'`. `false` (the default) skips validation and returns the response cast to the generated type. `'zod'` validates the success response body, plus the error body when a non-2xx call does not throw. `{ request?: 'zod', response?: 'zod' }` opts in per direction, and with validation on the generated function throws a `ParseError` on invalid data.
 
+Add the schema plugin alongside the client. The following configuration validates both directions:
+
+```typescript [kubb.config.ts]
+import { defineConfig } from 'kubb'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginZod } from '@kubb/plugin-zod'
+import { pluginAxios } from '@kubb/plugin-axios'
+
+export default defineConfig({
+  input: './petStore.yaml',
+  output: { path: './src/gen' },
+  plugins: [
+    pluginTs(),
+    pluginZod(),
+    pluginAxios({ validator: { request: 'zod', response: 'zod' } }),
+  ],
+})
+```
+
 ### comments
 
-How much of each OpenAPI `description` reaches the JSDoc above each generated operation. Defaults to `'full'`, which emits every description in full, however many paragraphs the spec carries. `'brief'` keeps the opening sentence and leaves every other tag such as `@summary` and the `{@link}` in place, cutting a description that runs on for 150 characters without a sentence ending at the last word before 120. `'none'` emits no JSDoc, leaving the generated-by banner untouched. Descriptions are a third of the output on a large spec, so pick `'brief'` or `'none'` when file size matters more than editor hovers.
+Controls generated JSDoc. `'full'` (default) keeps complete descriptions. `'brief'` keeps the first sentence and other tags. Descriptions over 150 characters without a sentence ending are cut at the last word before 120. `'none'` omits JSDoc but keeps the generated-by banner.
 
 ### sdk
 
 Generates a class-based SDK instead of standalone functions, where each tag client is an instance class whose constructor takes a client config and builds its own client, so every environment is a separate instance. `mode: 'tag'` (the default) emits one class per tag such as `PetClient` and `StoreClient`. Add `sdk.name` to also emit a composed root that instantiates every tag client from one shared config, reached as `new PetStore(config).pet.getPetById(...)`. `mode: 'flat'` emits a single class named by `sdk.name` with every operation as a direct method. Leave `sdk` unset to keep the per-operation functions the query plugins consume.
 
-`mode: 'tag'` needs one file per tag, so pairing it with a single-file `output` (`output.mode: 'file'`, or an `output.path` that already names a file such as `'clients.ts'`) throws [`KUBB_INVALID_PLUGIN_OPTIONS`](/docs/5.x/reference/diagnostics/kubb-invalid-plugin-options). Use `mode: 'flat'` for a single-file SDK, or give `output.path` a directory so `mode: 'tag'` can split per tag.
+`mode: 'tag'` needs one file per tag, so pairing it with a single-file `output` (`output.mode: 'file'`, or an `output.path` that already names a file such as `'clients.ts'`) throws [`KUBB_INVALID_PLUGIN_OPTIONS`](/docs/5.x/reference/diagnostics#kubb-invalid-plugin-options). Use `mode: 'flat'` for a single-file SDK, or give `output.path` a directory so `mode: 'tag'` can split per tag.
 
 Construct a class with a `ClientConfig` (`baseURL`, `headers`, and so on), then call a method with the grouped options object (`{ path, query, headers, body }`) and read `data` off the result.
 
@@ -152,7 +171,7 @@ Dependent plugins (`@kubb/plugin-react-query`, `@kubb/plugin-vue-query`, `@kubb/
 
 ### resolver
 
-Changes how the plugin names generated files and symbols. Pass a partial patch. Override only the members you want, and anything you omit keeps `resolverClient`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
+Overrides generated file and symbol names. Omitted members keep the plugin's resolver defaults. See [Override a resolver](/docs/5.x/how-to/resolvers) for the `this` context and how a patch layers over the default.
 
 > [!TIP]
 > Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.

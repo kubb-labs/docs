@@ -1,8 +1,11 @@
 ---
 layout: doc
 title: Lifecycle hooks
-description: Every kubb:* hook a build fires, its payload, and when it fires. Listen with kubb.hooks.hook(name, handler) or from a plugin's hooks map.
-outline: [2, 3]
+description: Every kubb:* hook a build fires, its payload, and when it fires.
+  Listen with kubb.hooks.hook(name, handler) or from a plugin's hooks map.
+outline:
+  - 2
+  - 3
 order: 11
 ---
 
@@ -40,7 +43,6 @@ await kubb.build()
 A full generation run fires the hooks in this order.
 
 ::lifecycle-timeline
-::
 
 ## Generation run
 
@@ -106,5 +108,5 @@ These carry log messages and diagnostics, and can fire at any point.
 
 - [Plugins](./plugins) for the plugin `hooks` map and `KubbPluginSetupContext`
 - [Engine and configuration](./engine) for `createKubb`, `.build()`, and `.safeBuild()`
-- [Plugin concepts](/docs/5.x/guide/concepts/plugins#how-the-lifecycle-runs) for the lifecycle as prose
+- [Plugin concepts](/docs/5.x/explanation/extensions#plugins) for the lifecycle as prose
 - [Diagnostics](../diagnostics) for the shape of `kubb:diagnostic` payloads

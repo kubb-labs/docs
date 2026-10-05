@@ -78,7 +78,7 @@ Generated handlers follow the client plugin's `returnType` option:
 
 ### resolver
 
-A partial patch changes how the plugin names generated files and symbols. Override only the members you want, and anything you omit keeps `resolverMcp`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
+A partial patch changes how the plugin names generated files and symbols. Override only the members you want, and anything you omit keeps `resolverMcp`. See [Override a resolver](/docs/5.x/how-to/resolvers) for the `this` context and how a patch layers over the default.
 
 > [!TIP]
 > Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.

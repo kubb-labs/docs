@@ -1,11 +1,15 @@
 ---
 layout: doc
 title: AST and node builders
-description: The ast namespace groups the factory node builders, the transform and collect visitors, the guards, the ref and naming helpers, the macro engine, and the printer helper behind one import.
-outline: [2, 3]
+description: The ast namespace groups the factory node builders, the transform
+  and collect visitors, the guards, the ref and naming helpers, the macro
+  engine, and the printer helper behind one import.
+outline:
+  - 2
+  - 3
 order: 8
 navigation:
-  title: "AST & node builders"
+  title: AST & node builders
 ---
 
 # AST and node builders
@@ -35,7 +39,7 @@ const file = ast.factory.createFile({
 })
 ```
 
-For why the AST exists and how it fits the pipeline, see [AST concepts](/docs/5.x/guide/concepts/ast).
+For why the AST exists and how it fits the pipeline, see [AST concepts](/docs/5.x/explanation/architecture#ast).
 
 ## Schema node types
 
@@ -106,9 +110,9 @@ The `ast.factory` namespace also provides constructors for source files and Type
 | `createBreak`                                                       | Emit line breaks between nodes.                          |
 | `update`                                                            | Apply an identity-preserving shallow update to any node. |
 
-## Visitors
+## Visitors {#visitors}
 
-Two visitor functions cover the common traversal patterns: `transform` rewrites the tree and `collect` gathers nodes. Visitor objects use lowercase, kind-style keys (`input`, `output`, `operation`, `schema`, `property`, `parameter`, `response`). To rewrite nodes inside a plugin, reach for [macros](/docs/5.x/guide/going-further/macros), which add names, ordering, and composition on top of `transform`. For logging, validation, or statistics, `collect` the nodes you care about.
+Two visitor functions cover the common traversal patterns: `transform` rewrites the tree and `collect` gathers nodes. Visitor objects use lowercase, kind-style keys (`input`, `output`, `operation`, `schema`, `property`, `parameter`, `response`). To rewrite nodes inside a plugin, reach for [macros](/docs/5.x/how-to/macros), which add names, ordering, and composition on top of `transform`. For logging, validation, or statistics, `collect` the nodes you care about.
 
 ### `transform`: synchronous, returns a new tree
 
@@ -170,7 +174,7 @@ console.log(`Deprecated schemas: ${deprecated.length}`)
 
 Use `collect` to stream matches as you find them, and `collectSync` to find specific nodes, filter by a criterion, or build a list for later processing.
 
-## Guards and narrowing
+## Guards and narrowing {#guards-and-narrowing}
 
 Kubb exports type guards and a `narrowSchema` helper for safe discrimination:
 
@@ -234,7 +238,7 @@ Analyze how schemas reference each other, to prune unused schemas or wrap circul
 
 ## Macros
 
-A macro is a named, composable transform built on `transform` that rewrites nodes before printing, adding ordering, gating, and reuse a bare visitor doesn't give you. See [Macros concepts](/docs/5.x/guide/going-further/macros).
+A macro is a named, composable transform built on `transform` that rewrites nodes before printing, adding ordering, gating, and reuse a bare visitor doesn't give you. See [Macros concepts](/docs/5.x/how-to/macros).
 
 | Export          | Purpose                                          |
 | --------------- | ------------------------------------------------ |
@@ -242,7 +246,7 @@ A macro is a named, composable transform built on `transform` that rewrites node
 | `composeMacros` | Fold an ordered list of macros into one visitor. |
 | `applyMacros`   | Run a list of macros over a node tree.           |
 
-Kubb also ships built-in macros for common schema normalizations that any adapter can compose with its own. These are named exports of `kubb/kit` itself, not members of the `ast` namespace. See [Built-in macros](/docs/5.x/guide/going-further/macros#built-in-macros) for the full walkthrough.
+Kubb also ships built-in macros for common schema normalizations that any adapter can compose with its own. These are named exports of `kubb/kit` itself, not members of the `ast` namespace. See [Built-in macros](/docs/5.x/how-to/macros#built-in-macros) for the full walkthrough.
 
 | Macro                    | Purpose                                                                                     |
 | ------------------------ | ------------------------------------------------------------------------------------------- |
@@ -259,8 +263,8 @@ Lower-level helpers for parsers that turn the AST into source code:
 | --------------- | -------------------------------------- |
 | `createPrinter` | Typed helper for creating a `Printer`. |
 
-`createPrinter` takes an `overrides` map to replace the handler for individual schema node types. Inside an override, `this.base(node)` runs the built-in handler the override replaced, so you can wrap its output instead of re-implementing it. Pass overrides through the `overrides` field rather than spreading them into `nodes`, otherwise `this.base` cannot find the original handler. The `printer.nodes` option on `@kubb/plugin-ts`, `@kubb/plugin-zod`, and `@kubb/plugin-faker` feeds this map. See [Override a printer](/docs/5.x/guide/going-further/printers).
+`createPrinter` takes an `overrides` map to replace the handler for individual schema node types. Inside an override, `this.base(node)` runs the built-in handler the override replaced, so you can wrap its output instead of re-implementing it. Pass overrides through the `overrides` field rather than spreading them into `nodes`, otherwise `this.base` cannot find the original handler. The `printer.nodes` option on `@kubb/plugin-ts`, `@kubb/plugin-zod`, and `@kubb/plugin-faker` feeds this map. See [Override a printer](/docs/5.x/how-to/printers).
 
-Inside a handler, `this.import(node)` declares an import the printed code needs, where `node` comes from `ast.factory.createImport`. The generator reads the declared imports with `printer.drainImports()`, which returns them and clears the list. See [Use a custom codec from your own package](/plugins/plugin-zod/recipes/use-a-custom-codec-from-your-package).
+Inside a handler, `this.import(ast.factory.createImport(...))` declares an import required by the printed code. After printing, the generator calls `printer.drainImports()` to retrieve the imports and clear the list. See [Import a custom codec](/plugins/plugin-zod/guide/customization#import-a-custom-codec) for a complete example.
 
-See [Parsers concepts](/docs/5.x/guide/concepts/parsers) for how parsers consume printers.
+See [Parsers concepts](/docs/5.x/explanation/architecture#parsers) for how parsers consume printers.

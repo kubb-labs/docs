@@ -1,8 +1,8 @@
 ---
 layout: doc
 title: Kubb Axios Plugin
-description: Generates a type-safe axios client from your OpenAPI spec, one async
-  function per operation, so each call stays in sync with the API.
+description: Generates a type-safe axios client from your OpenAPI spec, one
+  async function per operation, so each call stays in sync with the API.
 outline: deep
 guides:
   - id: authentication
@@ -16,18 +16,9 @@ guides:
   - id: interceptors
     title: Add interceptors
   - id: serialization
-    title: Serialize parameters
+    title: Configure serialization
   - id: transport
     title: Use custom transport
-recipes:
-  - id: class-based-sdk
-    title: Class-based SDK
-  - id: validate-requests-and-responses
-    title: Validate requests and responses
-  - id: build-a-url-without-sending
-    title: Build a URL without sending
-  - id: point-at-an-env-driven-host
-    title: Point at an env-driven host
 kind: plugin
 id: plugin-axios
 name: Axios
@@ -64,44 +55,7 @@ resources:
 
 # @kubb/plugin-axios
 
-`@kubb/plugin-axios` turns each OpenAPI operation into a typed async function that calls your API with [axios](https://axios-http.com/). The path, query parameters, request body, response, and error shape all come from the spec, so a call stays in sync with the API it targets.
-
-From your spec, the generated client gives you:
-
-- [Typed functions](/plugins/plugin-axios/guide/calling-operations) per operation with grouped `path`, `query`, `headers`, and `body`.
-- A [status-keyed result](/plugins/plugin-axios/guide/error-handling) on every call, or a thrown `ResponseError`.
-- [Auth](/plugins/plugin-axios/guide/authentication) resolved from your OpenAPI security schemes.
-- [Serialization](/plugins/plugin-axios/guide/serialization) of parameters and bodies across content types, including `multipart/form-data` uploads and binary downloads.
-- Runtime [validation](/plugins/plugin-axios/reference/options#validator) against [`@kubb/plugin-zod`](/plugins/plugin-zod/) schemas.
-- Typed [server-sent events](/plugins/plugin-fetch/guide/server-sent-events) you read with `for await`.
-- [Interceptors](/plugins/plugin-axios/guide/interceptors) and a [custom transport](/plugins/plugin-axios/guide/transport) for the send.
-- Standalone functions or a class-based [SDK](/plugins/plugin-axios/reference/options#sdk).
-
-It sources its operation types from `@kubb/plugin-ts`, or from [`@kubb/plugin-zod`](/plugins/plugin-zod/) with [`inferred: true`](/plugins/plugin-zod/reference/options#inferred) when `plugin-ts` is absent. Add neither and generation stops with a warning. Axios is a runtime dependency to install next to your app.
-
-Each function takes one grouped options object (`{ path, query, headers, body }`) and returns a `RequestResult` of `{ status, data, error, contentType, request, response }`, bundled into `.kubb/client.ts`. See [error handling](/plugins/plugin-axios/guide/error-handling) for `throwOnError` and the status-keyed result union.
-
-The bundled `client` also exposes `getUrl`, which builds an operation's final URL without sending the request, useful for cache keys, prefetch, and links:
-
-```ts
-import { client } from './.kubb/client'
-
-const url = client.getUrl({ url: '/pet/{petId}', path: { petId: 1 }, query: { status: ['available'] } })
-// '/pet/1?status=available'
-```
-
-For a native axios field the runtime does not set (`timeout`, `proxy`, `maxRedirects`, `decompress`, `onUploadProgress`), pass `options`, on the client or per call, where a per-call value wins:
-
-```ts
-import { client } from './.kubb/client'
-import { uploadFile } from './uploadFile'
-
-client.setConfig({ options: { timeout: 10_000 } })
-
-await uploadFile({ path: { petId: 1 }, body, options: { timeout: 2_000, onUploadProgress: (e) => console.log(e.loaded) } })
-```
-
-For cross-cutting concerns like retries and interceptors, reach for a [custom transport](/plugins/plugin-axios/guide/transport) instead.
+`@kubb/plugin-axios` generates a typed async function for each OpenAPI operation using [Axios](https://axios-http.com/). Calls accept grouped request parameters and return a status-keyed result.
 
 ## Installation
 
@@ -127,17 +81,9 @@ yarn add -D @kubb/plugin-axios
 
 ## Dependencies
 
-This plugin needs `@kubb/plugin-ts`, or `@kubb/plugin-zod` with `inferred: true` when `plugin-ts` is absent, for the operation types. `plugin-ts` wins when both are configured, and `@kubb/plugin-zod` is also required when `validator` is `'zod'`.
-
-- [`@kubb/plugin-ts`](/plugins/plugin-ts/)
-- [`@kubb/plugin-zod`](/plugins/plugin-zod/)
-
-> [!IMPORTANT]
-> The generated functions need Axios v1 or higher.
+Add [`pluginTs`](/plugins/plugin-ts/) or [`pluginZod`](/plugins/plugin-zod/) with `inferred: true` for operation types. `pluginTs` takes precedence when both are configured. Validation also requires `pluginZod`. Install Axios v1 or higher in the consuming app.
 
 ## Example
-
-::code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -149,19 +95,21 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs(),
-    pluginAxios({
-      output: { path: 'clients', mode: 'directory', barrel: { type: 'named' } },
-      baseURL: 'https://petstore.swagger.io/v2',
-      group: {
-        type: 'tag',
-        name: ({ group }) => `${group}Service`,
-      },
-    }),
+    pluginAxios({ baseURL: 'https://petstore.swagger.io/v2' }),
   ],
 })
 ```
 
-::
+## Documentation
+
+- [Options](./reference/options)
+- [Authenticate](./guide/authentication)
+- [Set base URL](./guide/base-url)
+- [Call operations](./guide/calling-operations)
+- [Handle errors](./guide/error-handling)
+- [Add interceptors](./guide/interceptors)
+- [Serialize parameters](./guide/serialization)
+- [Use custom transport](./guide/transport)
 
 ## See also
 

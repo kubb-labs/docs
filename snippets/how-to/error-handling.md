@@ -1,19 +1,6 @@
 # Error handling
 
-Generated clients use `throwOnError` to handle non-2xx responses. Its generated default is `true`,
-so a resolved call means success and you can read `data` without a guard. Set
-`throwOnErrorDefault` on the client plugin to change that default for generated operations, or set
-`throwOnError` on one call to override it. When it is `false`, the call resolves for every
-documented status and puts failures on `error`.
-
-This holds for both [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and [`@kubb/plugin-axios`](/plugins/plugin-axios/). The transport differs, the
-error contract does not.
-
-## Throw on a non-2xx response
-
-When `throwOnError` is `true` (the generated default), a status outside 200-299 throws a
-`ResponseError`. Wrap the call in a `try`/`catch` and read the parsed body and status off the
-error:
+Generated Fetch and Axios clients throw on non-2xx responses by default. Set the generated default on the client plugin. Individual operations can override it:
 
 ```typescript
 import { getPetById } from './gen/clients/getPetById'
@@ -32,8 +19,7 @@ try {
 
 A `ResponseError` includes the HTTP method and URL (without query parameters, keeping credentials safe) in its `message`, e.g. `GET https://api.example.com/pets/1 failed with status 404 Not Found`.
 
-It carries the same fields a result does, so nothing about the response is out of
-reach:
+The error exposes these fields:
 
 ```typescript
 class ResponseError extends Error {
@@ -47,8 +33,7 @@ class ResponseError extends Error {
 }
 ```
 
-> [!TIP]
-> Prefer `ResponseError.is(error)` over `error instanceof ResponseError`. Because each generated client bundles its own `.kubb/client.ts`, an application that consumes multiple generated clients has separate `ResponseError` classes. `ResponseError.is` checks `error.name === 'ResponseError'` and safely narrows across package boundaries.
+Use `ResponseError.is(error)` to narrow errors across generated packages, which each bundle their own class. It checks the error name.
 
 ## Return the error instead
 
@@ -66,25 +51,7 @@ if (result.error) {
 }
 ```
 
-Branching on `status` narrows the body to the variant for that code, which matters when the error
-responses differ between, say, a 404 and a 422:
-
-```typescript
-const result = await updatePet({
-  path: { petId: '123' },
-  body: { name: 'Updated name' },
-  throwOnError: false,
-})
-
-switch (result.status) {
-  case 200:
-    return result.data
-  case 404:
-    return notFound(result.error)
-  case 422:
-    return showValidationErrors(result.error)
-}
-```
+Check `status` to narrow responses to a specific documented status code.
 
 ## Set the generated default
 
@@ -124,15 +91,7 @@ try {
 }
 ```
 
-To cancel a request yourself, pass an `AbortSignal` and abort it. The pending call rejects with
-the abort reason:
-
-```typescript
-const controller = new AbortController()
-setTimeout(() => controller.abort(), 5_000)
-
-await searchPets({ query: { status: 'available' }, signal: controller.signal })
-```
+Pass an `AbortSignal` to cancel a request. The call rejects with the abort reason.
 
 ## Validation failures
 
@@ -153,9 +112,7 @@ try {
 }
 ```
 
-A `ParseError` is separate from a `ResponseError`: the response arrived and its status was fine,
-but the body did not match the schema. Validation runs after the status check, so on the
-`throwOnError: false` path a non-2xx never reaches response validation.
+A `ParseError` reports schema validation issues. A `ResponseError` reports a non-2xx status. On the non-throwing path, configured error schemas validate the error body separately from success schemas.
 
 Calling `.unwrap()` on a `throwOnError: false` call turns that same `error` into a rejection, so a
 `try`/`catch` works there too. See

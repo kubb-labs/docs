@@ -1,12 +1,15 @@
 ---
 layout: doc
 title: kubb studio
-description: Command reference for connecting a project to Kubb Studio, managing pairing and permissions, and publishing CI snapshots.
-outline: [2, 3]
+description: Command reference for connecting a project to Kubb Studio, managing
+  pairing and permissions, and publishing CI snapshots.
+outline:
+  - 2
+  - 3
 order: 5
 ---
 
-# `kubb studio`
+# kubb studio
 
 Run `kubb studio` to connect a project to [Kubb Studio](https://kubb.studio). The CLI runs generation on your machine and sends progress and generated file paths to Studio. Grant `--allow-read` to view generated file contents and diffs in the browser.
 
@@ -22,51 +25,38 @@ kubb studio
 
 The positional argument selects the action. It defaults to `connect`.
 
-| Action     | Description                                                                                                                             |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `connect`  | Connect, then hold a session open and generate on request.                                                                              |
-| `start`    | Resolve pairing and permissions, then keep this project connected in the background.                                                    |
-| `stop`     | Stop the background worker and keep its stored pairing.                                                                                 |
-| `login`    | Pair this machine without opening a generation session.                                                                                 |
-| `logout`   | Stop the background worker and forget this project's stored Studio token.                                                               |
-| `status`   | Show the worker state, log path, pairing, and saved permissions.                                                                        |
-| `snapshot` | Generate and publish a snapshot from a script, then exit. See [Snapshot from CI](/docs/5.x/guide/integrations/studio#snapshot-from-ci). |
+| Action     | Description                                                             |
+| ---------- | ----------------------------------------------------------------------- |
+| `connect` | Hold a foreground session open and generate on request. |
+| `start` | Resolve pairing and permissions, then connect this project in the background. |
+| `stop` | Stop the background worker and keep its pairing. |
+| `login`    | Pair this machine without opening a generation session.                 |
+| `logout` | Stop the background worker and forget this project's stored token. |
+| `status` | Show worker state, log path, pairing, and saved permissions. |
+| `snapshot` | Generate and publish a snapshot from a script, then exit. See [Publish snapshots from CI](/docs/5.x/how-to/integrations/ci). |
 
 ## Background connection
 
-Run these commands from the same project directory:
+Run `start`, `status`, and `stop` from the same project directory. `start` resolves pairing and permission prompts before detaching, then returns while the worker connects.
 
-```shell [Terminal]
-kubb studio start --allow-read
-kubb studio status
-kubb studio stop
-```
+`status` reports `starting`, `connected`, `reconnecting`, `authentication required`, or `stopped`. Only one worker can own a project. Stop it before using foreground `connect`.
 
-`start` resolves pairing and permission prompts before detaching. It returns while the worker
-connects; `status` reports `starting`, `connected`, `reconnecting`, `authentication required`, or
-`stopped`. Only one background worker can own a project. Stop it before using foreground `connect`.
+The worker survives terminal closure and retries temporary connection failures. Restart it after a crash or reboot. If its token is rejected, run `kubb studio login`, then `kubb studio start`. To change its URL, config, or permissions, stop it and start with the new flags.
 
-The worker survives terminal closure. Restart it explicitly after a crash or reboot. If its token
-is rejected, run `kubb studio login`, then `kubb studio start` again. To change its URL, config, or
-permissions, stop it and start it with the new flags.
-
-Credentials, worker state, and a bounded 1 MiB `worker.log` live under
-`$KUBB_HOME/projects/<sha256(project-path)>/` (default `KUBB_HOME`: `~/.kubb`). `status` prints the
-log path. `stop` waits for active generation cleanup; `logout` stops the worker before removing
-credentials. Interrupted jobs are not replayed.
+Credentials, worker state, and a bounded 1 MiB `worker.log` live under `$KUBB_HOME/projects/<sha256(project-path)>/`. `KUBB_HOME` defaults to `~/.kubb`. `status` prints the log path. `stop` waits for active generation cleanup. `logout` stops the worker before removing credentials. Interrupted jobs are not replayed.
 
 ## Options
 
 | Option                                     | Default               | Description                                                                        |
 | ------------------------------------------ | --------------------- | ---------------------------------------------------------------------------------- |
 | `--config=<path>`, `-c <path>`             |                       | Path to a config file, such as `./kubb.staging.ts`.                                |
-| `--url=<url>`                              | `https://kubb.studio` | URL for Kubb Studio.                                                               |
-| `--allow-read`                             | `false`               | Let Studio read generated file contents. Asked once per project when omitted.     |
+| `--url=<url>`                               | `https://kubb.studio` | URL for Kubb Studio. |
+| `--allow-read`                             | `false`               | Let Studio read generated file contents. Asked once per project when omitted.          |
 | `--allow-write`                            | `false`               | Write generated files to disk. Asked once per project when omitted.                |
 | `--allow-config-edit`                      | `false`               | Let Studio change plugin options in `kubb.config.ts`. Asked once per project.      |
 | `--allow-exec`                             | `false`               | Run the formatter, the linter, and `output.postGenerate`. Asked once per project.  |
 | `--no-open`                                |                       | Do not open the approval page in a browser.                                        |
-| `--log-level=<silent\|info\|verbose>`, `-l` | `info`              | Set the verbosity.                                                                 |
+| `--log-level=<silent\|info\|verbose>`, `-l`| `info`                | Set the verbosity.                                                                 |
 | `--token=<key>`                            |                       | `snapshot` only: organization CI API key. Defaults to `KUBB_TOKEN`.                |
 | `--id=<id>`                                |                       | `snapshot` only: stable identity for the CI agent. Auto-detected on GitHub Actions, GitLab CI, Bitbucket Pipelines and CircleCI. |
 | `--base-id=<id>`                           |                       | `snapshot` only: the `--id` of another CI agent, such as the base branch's, to also compare with. Auto-detected on GitHub pull requests and GitLab merge requests. |
@@ -79,11 +69,30 @@ Without `--allow-read`, a session still generates and reports file paths, but St
 
 ## Environment variables
 
-| Variable           | Description                                                             |
-| ------------------ | ----------------------------------------------------------------------- |
-| `KUBB_HOME`        | Directory the CLI keeps its Studio state in. Defaults to `~/.kubb`.     |
-| `KUBB_AGENT_TOKEN` | Connect with an existing agent token instead of approving this machine. |
-| `KUBB_TOKEN`       | `snapshot` only: organization CI API key. Same as `--token`.            |
+| Variable           | Description                                                                        |
+| ------------------ | ---------------------------------------------------------------------------------- |
+| `KUBB_HOME`        | Directory the CLI keeps its Studio state in. Defaults to `~/.kubb`.                |
+| `KUBB_AGENT_TOKEN` | Connect with an existing agent token instead of approving this machine.            |
+| `KUBB_TOKEN`       | `snapshot` only: organization CI API key. Same as `--token`.                       |
+
+## Snapshot output
+
+`--json` prints one JSON object with `id`, `name`, `version`, `integrity`, `url`, `snapshotIdUrl`, `expiresAt`, and `agentUrl`. It also includes `changes` and `branchChanges` when comparisons are available. Installing a snapshot requires a separate `registry` API key.
+
+| JSON field | Compared with |
+| --- | --- |
+| `changes` | The previous snapshot on the same pull request or branch. |
+| `branchChanges` | The latest snapshot of a GitHub pull request's base branch or a GitLab merge request's target branch. Its `baseFound` field distinguishes a branch with no CI agent from one with an agent that has no snapshot of this package yet. |
+
+## CI agent identity
+
+`snapshot` detects GitHub Actions, GitLab CI, Bitbucket Pipelines, and CircleCI. Other providers require a stable `--id`. Use a stable `--id` on the base branch and pass that identity as `--base-id` on pull request runs.
+
+### GitLab CI
+
+The CI agent registers as `gl:<project id>:<merge request iid>`, read from `CI_PROJECT_ID` and `CI_MERGE_REQUEST_IID`, so every pipeline on that merge request reuses one agent. A branch pipeline falls back to `CI_COMMIT_REF_SLUG`, so the default branch has one agent too. Pass `--id` to group runs your own way.
+
+A merge request pipeline also names its target branch's agent, from `CI_MERGE_REQUEST_TARGET_BRANCH_NAME`. The snapshot reports which generated files changed against that branch's latest snapshot in `branchChanges`, and against the merge request's previous pipeline in `changes`. The commit it records is the source branch's head, `CI_MERGE_REQUEST_SOURCE_BRANCH_SHA`, when GitLab sets it.
 
 ## Examples
 
@@ -91,9 +100,9 @@ Without `--allow-read`, a session still generates and reports file paths, but St
 kubb studio                              # connect and answer permission prompts
 kubb studio --allow-read                 # allow Studio to show generated file contents
 kubb studio --allow-write --allow-exec   # write files, run the formatter and linter
-kubb studio start --allow-read           # keep this project connected after the terminal closes
-kubb studio status                       # show the worker state and log path
-kubb studio stop                         # stop the worker and keep pairing
+kubb studio start --allow-read           # connect in the background
+kubb studio status                       # show worker state and log path
+kubb studio stop                         # stop while keeping pairing
 kubb studio login                        # pair without opening a session
 kubb studio logout                       # forget the stored token
 kubb studio snapshot                     # generate and publish a snapshot from CI
@@ -102,6 +111,6 @@ kubb studio snapshot --json              # print the snapshot as one JSON object
 
 ## See also
 
-- [Kubb Studio guide](/docs/5.x/guide/integrations/studio): connect a project and run headless
+- [Kubb Studio guide](/docs/5.x/how-to/integrations/studio): connect a project and run headless
 - [Commands](/docs/5.x/reference/commands/): every command the CLI exposes
 - [Configuration](/docs/5.x/reference/configuration): the `kubb.config.ts` Studio reads

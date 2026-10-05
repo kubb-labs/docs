@@ -2,31 +2,16 @@
 layout: doc
 title: kubb init
 description: The init command bootstraps a fresh Kubb project with an interactive wizard.
-outline: [2, 3]
+outline:
+  - 2
+  - 3
 order: 1
 ---
 
-# `kubb init`
+# kubb init
 
 Run `kubb init` for an interactive setup wizard. Answer a few questions and Kubb creates a `package.json` if one is missing, installs your chosen plugins, and writes a ready-to-use `kubb.config.ts`.
 
-::terminal
----
-command: npx kubb init
-output:
-  - ◆  Kubb Init
-  - "◇  Detected package manager: pnpm"
-  - ◇  Where is your OpenAPI specification located?
-  - │  ./openapi.yaml
-  - ◇  Where should the generated files be output?
-  - │  ./src/gen
-  - "◇  Select plugins to use:"
-  - │  plugin-ts, plugin-axios, plugin-zod
-  - ◇  Installed 4 packages
-  - ◇  Created kubb.config.ts
-  - ◇  All set! Run `npx kubb generate` to start generating.
----
-::
 
 ## Usage
 
@@ -44,11 +29,7 @@ The wizard prompts for three things:
 
 Kubb detects the package manager (`bun`, `pnpm`, `npm`, or `yarn`) from your project, so it does not prompt for one.
 
-When the wizard finishes, you have:
-
-- A `kubb.config.ts` wired up with the plugins you selected.
-- A `package.json` with `kubb` and the chosen plugins added as dependencies.
-- All selected dependencies installed.
+The wizard writes the config and installs `kubb` with your selected plugins.
 
 The wizard installs `kubb` at the exact version of the CLI you ran and takes the plugins from that same release channel, so `npx kubb@beta init` scaffolds a beta project and a stable CLI scaffolds a stable one.
 
@@ -78,11 +59,6 @@ Run with no prompts and a specific spec, output directory, and plugins:
 npx kubb init --input ./openapi.yaml --output ./src/gen --plugins plugin-ts,plugin-zod
 ```
 
-Pass a plugin selection but still prompt for the spec path:
-
-```shell [Terminal]
-npx kubb init --plugins plugin-ts,plugin-axios,plugin-react-query
-```
 
 Preview what the wizard would install and write, without changing anything:
 
@@ -90,11 +66,9 @@ Preview what the wizard would install and write, without changing anything:
 npx kubb init --yes --dry-run
 ```
 
-> [!TIP]
-> Prefer to wire things up by hand? See the [Installation](/docs/5.x/getting-started/installation) guide for a manual walkthrough.
 
 ## See also
 
-- [Installation](/docs/5.x/getting-started/installation): manual setup guide
+- [Installation](/docs/5.x/tutorials/quickstart): manual setup guide
 - [Configuration](/docs/5.x/reference/configuration): full `kubb.config.ts` reference
 - [Plugins](/plugins): browse available plugins

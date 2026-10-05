@@ -1,33 +1,16 @@
 # Call operations
 
-[`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and [`@kubb/plugin-axios`](/plugins/plugin-axios/) turn each operation in your OpenAPI spec into a
-typed function that takes a single grouped options object and returns one `RequestResult`. The two
-plugins generate different transports but share this calling convention, so swap the import and the
-examples on this page still hold.
-
-The parameters are typed from the spec, and the result carries the status, the parsed body, and the
-native request and response.
+Generated Fetch and Axios operations accept grouped request options and return a typed `RequestResult` by default. Both clients share the calling convention below.
 
 ## Call an operation
 
-Import the generated function and pass the parameters it declares. Kubb groups them by where they
-belong in the request: `path`, `query`, `headers`, `cookies`, and `body`.
+Pass parameters under `path`, `query`, `headers`, `cookies`, or `body`, matching the OpenAPI operation.
 
 ```typescript
 import { getPetById } from './gen/clients/getPetById'
 
 const { data } = await getPetById({ path: { petId: 1 } })
 //      ^ the parsed pet, typed from the 200 response
-```
-
-A path like `/pets/{petId}/photos/{photoId}` takes each segment under `path`:
-
-```typescript
-import { getPetPhoto } from './gen/clients/getPetPhoto'
-
-const { data } = await getPetPhoto({
-  path: { petId: '123', photoId: '456' },
-})
 ```
 
 Query, header, and cookie parameters sit under their own keys, and a request body goes under
@@ -93,9 +76,7 @@ Reading the `error` body and handling failures is covered in
 
 ## Unwrap the success body
 
-Every call's promise also carries an `unwrap()` method that resolves to the bare success body
-instead of the full `RequestResult`. Awaiting the call directly still resolves to the full
-result, so existing code keeps working.
+Call `.unwrap()` to return the success body. Awaiting the operation directly returns the full result.
 
 ```typescript
 import { getPetById } from './gen/clients/getPetById'
@@ -120,8 +101,7 @@ try {
 }
 ```
 
-With `throwOnError: false`, the call resolves instead of throwing, so `unwrap()` rejects itself:
-it checks the resolved result for `error` and throws that bare error body, not a `ResponseError`:
+With `throwOnError: false`, `.unwrap()` rejects with the parsed error body instead of a `ResponseError`:
 
 ```typescript
 try {
@@ -181,9 +161,7 @@ client.setConfig({
 })
 ```
 
-For an isolated client that does not touch the shared one, build a separate instance with
-`createClient` and pass it on the `client` option of any call. This suits tests and talking to
-more than one backend:
+Create and pass a separate client for isolated configuration:
 
 ```typescript
 import { createClient } from './gen/.kubb/client'
@@ -196,11 +174,53 @@ await getPetById({ path: { petId: 1 }, client: staging })
 
 The configuration object is the same `ClientConfig` in both cases.
 
+## Validate response bodies
+
+Add `@kubb/plugin-zod` and set the Fetch client's `validator` to `'zod'` to check each success and error response at runtime. A body that fails its generated schema throws a `ParseError`. See the [validator reference](/plugins/plugin-fetch/reference/options#validator) for request validation and per-direction settings.
+
+```typescript [kubb.config.ts]
+import { defineConfig } from 'kubb/config'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginZod } from '@kubb/plugin-zod'
+import { pluginFetch } from '@kubb/plugin-fetch'
+
+export default defineConfig({
+  input: './petStore.yaml',
+  output: { path: './src/gen', clean: true },
+  plugins: [
+    pluginTs({ output: { path: 'types', mode: 'directory' } }),
+    pluginZod({ output: { path: 'zod', mode: 'directory' } }),
+    pluginFetch({ output: { path: 'clients', mode: 'directory' }, validator: 'zod' }),
+  ],
+})
+```
+
+The generated operation validates the response before returning its typed result:
+
+```typescript
+import { findPetsByStatus } from './src/gen/clients/findPetsByStatus'
+
+const { data } = await findPetsByStatus({ query: { status: ['available'] } })
+```
+
+## Pass native client options
+
+Pass `options` on an operation for native transport settings:
+
+```typescript [src/app.ts]
+import { getPetById } from './gen/clients/getPetById'
+
+// Axios client
+await getPetById({ path: { petId: 1 }, options: { timeout: 5_000 } })
+```
+
+For Fetch clients, use options such as `cache`, `mode`, `redirect`, `keepalive`, `duplex`, or `next`. Axios supports `timeout`, `proxy`, `maxRedirects`, `decompress`, and `onUploadProgress`.
+
+Set `client.setConfig({ options })` for shared defaults. Per-call options take precedence. Kubb controls serialization and HTTP error handling, as described in [custom transport](/plugins/plugin-fetch/guide/transport).
+
 ## Build a URL without sending
 
-`client.getUrl` returns the URL for a call without making the request. It runs the same
-`baseURL`, path interpolation, and query serialization as the send path, so it suits building a
-link or logging the target ahead of a request:
+Use `client.getUrl` to build a URL with the same base URL, path interpolation, and query serialization as a request:
 
 ```typescript
 import { client } from './gen/.kubb/client'

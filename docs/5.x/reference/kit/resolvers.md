@@ -1,8 +1,12 @@
 ---
 layout: doc
 title: Resolvers
-description: createResolver builds a Resolver that controls file naming and path resolution for a plugin, with auto-injected defaults under resolver.default and Resolver.merge for layering overrides.
-outline: [2, 3]
+description: createResolver builds a Resolver that controls file naming and path
+  resolution for a plugin, with auto-injected defaults under resolver.default
+  and Resolver.merge for layering overrides.
+outline:
+  - 2
+  - 3
 order: 3
 ---
 
@@ -10,9 +14,9 @@ order: 3
 
 ## `createResolver`
 
-`createResolver` builds a `Resolver` instance that controls file naming and path resolution for a plugin. Pass the plugin-specific fields directly as an object.
+`createResolver` builds a plugin resolver for names, paths, and imports.
 
-The object must include at least `{ pluginName }`. The resolver exposes `name`, `file`, and `imports` methods that generators call. Use `this` to reach sibling members, so a namespace method calls `this.name(...)` for the plugin's identifier casing.
+Provide `pluginName`. Methods use `this` to reach the merged resolver, so namespaced methods call `this.name(...)` for active casing.
 
 ```typescript twoslash [resolver.ts]
 import { createResolver } from 'kubb/kit'
@@ -44,7 +48,7 @@ export const resolver = createResolver<MyPlugin>({
 
 | Method           | Default behavior                                                        |
 | ---------------- | ---------------------------------------------------------------------- |
-| `name`           | Active top-level identifier casing; delegates to `default.name` when omitted |
+| `name`           | Active top-level identifier casing. Delegates to `default.name` when omitted |
 | `file`           | Top-level `FileNode` builder, delegates to `default.file`              |
 | `default.name`   | The core `camelCase` generated-identifier casing                       |
 | `default.options`| Applies `exclude`, `include`, and `override` filters                   |
@@ -93,7 +97,7 @@ const imports = resolver.imports({
 
 `Resolver.merge(base, patch)` returns a new resolver with `patch`'s fields layered over `base`'s and every helper re-bound. A top-level `name` replaces, while `file` and each namespace merge per member, so overriding `query.name` keeps the base `query.keyName`. 
 
-Framework code uses it to apply a `setResolver` partial override over a plugin's built-in resolver, and you can call it yourself when composing resolvers.
+Use it to compose resolvers or apply partial overrides.
 
 > [!TIP]
 > Type a patch with `ResolverPatch<T>` to keep `this` and namespace shapes checked against the target resolver.
@@ -111,8 +115,9 @@ const patched = Resolver.merge(resolver, {
 })
 ```
 
-### Related
 
-- [Resolver concepts](/docs/5.x/guide/concepts/resolvers)
-- [Override a resolver](/docs/5.x/guide/going-further/resolvers)
-- [Creating plugins](/docs/5.x/guide/going-further/creating-plugins)
+## See also
+
+- [Resolver concepts](/docs/5.x/explanation/extensions#resolvers)
+- [Override a resolver](/docs/5.x/how-to/resolvers)
+- [Creating plugins](/docs/5.x/tutorials/creating-plugins)

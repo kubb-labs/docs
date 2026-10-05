@@ -1,12 +1,15 @@
 ---
 layout: doc
 title: kubb validate
-description: The validate command checks that a Swagger/OpenAPI document is valid without running the full pipeline.
-outline: [2, 3]
+description: The validate command checks that a Swagger/OpenAPI document is
+  valid without running the full pipeline.
+outline:
+  - 2
+  - 3
 order: 3
 ---
 
-# `kubb validate`
+# kubb validate
 
 Run `kubb validate` to check that a Swagger/OpenAPI document is valid without running the pipeline. Use it to catch errors early in CI or before you commit a spec change.
 
@@ -44,4 +47,4 @@ kubb validate https://petstore3.swagger.io/api/v3/openapi.json
 ## See also
 
 - [Adapters](/adapters): OAS adapter that parses the validated spec
-- [Basic usage](/docs/5.x/getting-started/basic-usage): end-to-end walkthrough
+- [Basic usage](/docs/5.x/tutorials/quickstart): end-to-end walkthrough

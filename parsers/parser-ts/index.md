@@ -1,8 +1,9 @@
 ---
 layout: doc
 title: Kubb TypeScript Parser
-description: Prints the Kubb AST to TypeScript source with the official TypeScript compiler, so
-  every plugin writes real `.ts`, `.tsx`, `.js`, and `.jsx` files.
+description: Prints the Kubb AST to TypeScript source with the official
+  TypeScript compiler, so every plugin writes real `.ts`, `.tsx`, `.js`, and
+  `.jsx` files.
 outline: deep
 kind: parser
 id: parser-ts
@@ -36,17 +37,12 @@ resources:
 
 # @kubb/parser-ts
 
-> [!TIP]
-> `parserTs` runs by default, so TypeScript output needs no setup. Add it back to a custom `parsers` list when you override the defaults, since a custom list replaces the whole default set.
+`@kubb/parser-ts` prints Kubb's AST as TypeScript using the official [TypeScript compiler](https://www.typescriptlang.org/). It resolves imports, emits exports and JSDoc, and applies the [`extension`](./reference/options#extension) mapping.
 
-`@kubb/parser-ts` takes the `FileNode` your plugins stage and prints it as TypeScript source with the official [TypeScript compiler](https://www.typescriptlang.org/). It resolves import paths, writes the import and export statements, prints JSDoc, and rewrites import extensions based on the parser's `extension` option.
+- `parserTs()` handles `.ts` and `.js`.
+- `parserTsx()` handles `.tsx` and `.jsx`.
 
-The package exports two parser factories, and Kubb selects one by the file extension a plugin writes:
-
-- `parserTs()` handles `.ts` and `.js` files.
-- `parserTsx()` handles `.tsx` and `.jsx` files. Use it for React projects so JSX in generated components is preserved.
-
-Both accept the same [`extension`](/parsers/parser-ts/reference/options#extension) option to rewrite the import and export extensions they emit, for example to emit `.js` imports from `.ts` sources in an ESM dual package. A custom `parsers` array replaces the default set (`parserTs`, `parserTsx`, `parserMd`), and files whose extension has no registered parser are written by joining their sources verbatim, so list every parser your plugins need.
+Both run by default alongside `parserMd`. A custom `parsers` array replaces that default set. Include every parser your plugins need. Unmatched files are written as source text.
 
 ## Installation
 
@@ -72,41 +68,29 @@ yarn add -D @kubb/parser-ts
 
 ## Dependencies
 
-`@kubb/parser-ts` has no plugin dependencies. It is a standalone parser you register on `defineConfig`'s `parsers` array, and needs no other Kubb plugin.
+No plugin dependencies. The parser registers on `defineConfig.parsers`.
 
 ## Example
 
-::code-group
+Override import extensions while keeping every default parser registered.
 
-```typescript twoslash [TypeScript (default)]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
-import { adapterOas } from '@kubb/adapter-oas'
-import { parserTs } from '@kubb/parser-ts'
-
-export default defineConfig({
-  input: './petStore.yaml',
-  output: { path: './src/gen' },
-  adapter: adapterOas(),
-  parsers: [parserTs()],
-  plugins: [],
-})
-```
-
-```typescript twoslash [TypeScript and TSX (React)]
-import { defineConfig } from 'kubb'
-import { adapterOas } from '@kubb/adapter-oas'
 import { parserTs, parserTsx } from '@kubb/parser-ts'
+import { parserMd } from '@kubb/parser-md'
+import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen' },
-  adapter: adapterOas(),
-  parsers: [parserTs(), parserTsx()],
-  plugins: [],
+  parsers: [
+    parserTs({ extension: { '.ts': '.js' } }),
+    parserTsx(),
+    parserMd(),
+  ],
+  plugins: [pluginTs()],
 })
 ```
-
-::
 
 ## See also
 

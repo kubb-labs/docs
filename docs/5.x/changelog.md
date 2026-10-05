@@ -9,6 +9,104 @@ outline: 2
 
 # Changelog
 
+## v5.4.5 — Oct 3, 2026
+
+### @kubb/adapter-oas
+
+#### Bug Fixes
+
+- Numbers with a `format` such as `double`, `float` or `int32` keep their `minimum`, `maximum`, `exclusiveMinimum`, `exclusiveMaximum` and `multipleOf` constraints, so `{ type: 'number', format: 'double', minimum: -90, maximum: 90 }` generates `z.number().min(-90).max(90)` again. `int64` and `uint64` now keep `multipleOf` as well. ([#4149](https://github.com/kubb-labs/kubb/pull/4149), [`8ff2b1e`](https://github.com/kubb-labs/kubb/commit/8ff2b1e74cf741965447ad58a33c5d3a1ba12a23))
+
+### @kubb/parser-ts
+
+#### Bug Fixes
+
+- Keep package import and export specifiers unchanged when applying the `extension` option. ([#4147](https://github.com/kubb-labs/kubb/pull/4147), [`31ad673`](https://github.com/kubb-labs/kubb/commit/31ad673781d6c62410c69ed8c5dbf5c5489ab994))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@mheob](https://github.com/mheob), [@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.4.4 — Oct 3, 2026
+
+### @kubb/cli
+
+#### Bug Fixes
+
+- The background worker started by `kubb studio start` now shows up as `Kubb` in process lists, like the main CLI. ([#4145](https://github.com/kubb-labs/kubb/pull/4145), [`81aa079`](https://github.com/kubb-labs/kubb/commit/81aa07992b3a06a426165219ad2c387088ee7f56))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.4.3 — Oct 2, 2026
+
+### @kubb/studio
+
+#### Bug Fixes
+
+- Add an optional `cursor` and `limit` to `readFiles`, so a caller can page through a large generated file. The reply carries only that page's lines plus `pages[path]` with the `nextCursor` (`null` after the last page) and the file's `totalLines`. Reads without a `limit` behave as before. ([#4140](https://github.com/kubb-labs/kubb/pull/4140), [`3bb9df6`](https://github.com/kubb-labs/kubb/commit/3bb9df67383285d2719f98bc30df59368a7ac3e0))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.4.2 — Oct 1, 2026
+
+### @kubb/cli
+
+#### Bug Fixes
+
+- Log Studio commands, warnings and each generation run in the background worker log, so it no longer stops at `connected`. ([#4135](https://github.com/kubb-labs/kubb/pull/4135), [`9e33c7e`](https://github.com/kubb-labs/kubb/commit/9e33c7e8b52a24cc3a1ca387f89628bd6aa0562f))
+
+### kubb
+
+#### Bug Fixes
+
+- Describe Kubb as a way to turn your API spec into type-safe code in the package description, README and CLI intro. ([#4137](https://github.com/kubb-labs/kubb/pull/4137), [`b25ce0d`](https://github.com/kubb-labs/kubb/commit/b25ce0d0ca4e5024a59b6ca7e3dbe3e1ac5c79bc))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.4.1 — Sep 29, 2026
+
+### @kubb/cli
+
+#### Bug Fixes
+
+- Add `kubb studio start` and `stop` for a background connection per project. `status` reports its connection state and log path, and `logout` stops it before removing credentials. Rejected tokens stop the worker until you log in again.
+
+  Use one shared connection loop for the CLI and Docker agent. Abort pending registration on shutdown and wait for canceled generation cleanup before reconnecting. ([#4128](https://github.com/kubb-labs/kubb/pull/4128), [`5d9151c`](https://github.com/kubb-labs/kubb/commit/5d9151c4c74e6c93e215ac24dfff0f270c64e771))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
+## v5.4.0 — Sep 29, 2026
+
+### @kubb/core
+
+#### Features
+
+- Add `this.import(...)` to printer handlers and `printer.drainImports()`, so a `printer.nodes` handler can declare the import its output needs. Allow `resolver.imports` to be overridden through `ResolverPatch` without a cast. ([#4130](https://github.com/kubb-labs/kubb/pull/4130), [`0d737e2`](https://github.com/kubb-labs/kubb/commit/0d737e227e8c21a37a2554aa7129434843bef811))
+
+### Contributors
+
+Thanks to everyone who contributed to this release:
+
+[@stijnvanhulle](https://github.com/stijnvanhulle)
+
 ## v5.3.19 — Sep 26, 2026
 
 ### @kubb/studio
@@ -793,6 +891,6 @@ Thanks to everyone who contributed to this release:
 
 Kubb v5 rebuilds code generation around adapters, a universal AST, parsers, and storage, and generates code up to 5.4x faster than v4. Config gets shorter, generated client calls change shape, and plugins move to their own repo ([kubb-labs/plugins](https://github.com/kubb-labs/plugins)).
 
-Read the [release blog post](https://kubb.dev/blog/v5) for the highlights, and the [migration guide](https://kubb.dev/docs/5.x/migration) for the full, per-package breaking-change list and upgrade steps.
+Read the [release blog post](https://kubb.dev/blog/v5) for the highlights, and the [migration guide](https://kubb.dev/docs/5.x/how-to/migration) for the full, per-package breaking-change list and upgrade steps.
 
 For prior releases, see [GitHub Releases](https://github.com/kubb-labs/kubb/releases).

@@ -1,8 +1,12 @@
 ---
 layout: doc
 title: Generators
-description: defineGenerator declares a named generator unit that walks the AST and emits files. Covers the schema, operation, and operations methods and the GeneratorContext passed to each.
-outline: [2, 3]
+description: defineGenerator declares a named generator unit that walks the AST
+  and emits files. Covers the schema, operation, and operations methods and the
+  GeneratorContext passed to each.
+outline:
+  - 2
+  - 3
 order: 2
 ---
 
@@ -10,7 +14,7 @@ order: 2
 
 ## `defineGenerator` {#defineGenerator}
 
-`defineGenerator` declares a named generator unit consumed by a plugin. Generators walk the [AST](/docs/5.x/guide/concepts/ast) and emit files. The engine calls each method for the matching node type during the generation loop.
+`defineGenerator` declares a named generator unit consumed by a plugin. Generators walk the [AST](/docs/5.x/explanation/architecture#ast) and emit files. The engine calls each method for the matching node type during the generation loop.
 
 Each generator method returns `TElement | Array<FileNode> | void`. Returning a renderer element (for example JSX from [`kubb/jsx`](/docs/5.x/reference/jsx)) requires a `renderer` factory on the generator.
 
@@ -45,9 +49,8 @@ const myGenerator = defineGenerator({
 
 ### Scoping with `match` {#match}
 
-Add a `match(node, ctx)` predicate to skip `schema` or `operation` for nodes a generator does not apply to. When `match` returns `false`, the engine skips that node entirely: no context work beyond what it already builds per node, and no call to `schema`/`operation`. Omitting `match` runs the generator for every node. `match` does not gate `operations()`, which already runs once on the full batch rather than per node.
+Add a `match(node, ctx)` predicate to skip `schema` or `operation` for nodes a generator does not apply to. A `false` result skips that node. Omitting `match` runs the generator for every node. `match` does not filter `operations()`.
 
-This is useful when a plugin registers several generators for the same node type and only one should run per node, for example one hook generator per query variant in `@kubb/plugin-react-query`. Without `match`, every generator runs for every node and has to classify and bail out on its own.
 
 ```typescript twoslash [scoped-generator.ts]
 import { ast, defineGenerator } from 'kubb/kit'
@@ -59,7 +62,7 @@ const getOnlyGenerator = defineGenerator({
   },
   operation(node, ctx) {
     // node is already known to be a GET operation here
-    return null
+    return
   },
 })
 ```
@@ -87,8 +90,9 @@ const getOnlyGenerator = defineGenerator({
 | `ctx.warn()`          | `(message: string) => void`                         | Emit a warning via the build event system                            |
 | `ctx.error()`         | `(error: string \| Error) => void`                  | Emit an error via the build event system                             |
 
-### Related
 
-- [Generator concepts](/docs/5.x/guide/concepts/generators)
-- [AST concepts](/docs/5.x/guide/concepts/ast) for node types and traversal
-- [Creating plugins](/docs/5.x/guide/going-further/creating-plugins)
+## See also
+
+- [Generator concepts](/docs/5.x/explanation/extensions#generators)
+- [AST concepts](/docs/5.x/explanation/architecture#ast) for node types and traversal
+- [Creating plugins](/docs/5.x/tutorials/creating-plugins)

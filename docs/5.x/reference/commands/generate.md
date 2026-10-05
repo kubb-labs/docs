@@ -1,32 +1,18 @@
 ---
 layout: doc
 title: kubb generate
-description: The generate command runs the Kubb code-generation pipeline based on your kubb.config.ts.
-outline: [2, 3]
+description: The generate command runs the Kubb code-generation pipeline based
+  on your kubb.config.ts.
+outline:
+  - 2
+  - 3
 order: 2
 ---
 
-# `kubb generate`
+# kubb generate
 
 Run `kubb generate` to read your [`kubb.config.ts`](/docs/5.x/reference/configuration) and run the code-generation pipeline. It's the default command, so running `kubb` with no arguments does the same.
 
-::terminal
----
-command: kubb generate
-output:
-  - ◆  Generation started
-  - ◇  @kubb/plugin-ts          completed in 98ms
-  - ◇  @kubb/plugin-zod         completed in 134ms
-  - ◇  @kubb/plugin-react-query completed in 201ms
-  - ◇  @kubb/plugin-axios       completed in 77ms
-  - ◇  Generation completed
-  - ""
-  - " Plugins  4 passed (4)"
-  - "   Files  156 generated"
-  - Duration  1.2s
-  - "  Output  ./src/gen"
----
-::
 
 ## Usage
 
@@ -68,7 +54,7 @@ A reporter decides how a run is rendered. The config registers available reporte
 
 | Reporter | Output                                                                          |
 | -------- | ------------------------------------------------------------------------------- |
-| `cli`    | The end-of-run summary in the terminal. This runs when you pass no flag. Renders as plain text, without spinners or progress bars, when there is no interactive terminal or when an AI coding agent runs the command. |
+| `cli`    | The end-of-run summary in the terminal. Default. Uses plain text in non-interactive terminals and AI agent sessions. |
 | `json`   | A machine-readable report on stdout for CI. See [Diagnostics](/docs/5.x/reference/diagnostics#machine-readable-output) for the full JSON shape. |
 | `file`   | The run's diagnostics, written to `.kubb/kubb[-<name>]-<timestamp>.log`. The `<name>` segment is dropped when the config has no `name`. |
 | `html`   | A browsable report directory with generated files and diagnostics, written to `.kubb/kubb[-<name>]-<timestamp>/index.html`. |
@@ -85,34 +71,9 @@ Print a JSON report for CI. The exit code is non-zero on any error:
 kubb generate --reporter json
 ```
 
-## Examples
-
-Run with a custom config:
-
-```shell [Terminal]
-kubb generate --config ./kubb.staging.ts
-```
-
-Watch the spec and regenerate on every change:
-
-```shell [Terminal]
-kubb generate --watch
-```
-
-Run with verbose plugin timings:
-
-```shell [Terminal]
-kubb generate --verbose
-```
-
-Preview a run without touching disk:
-
-```shell [Terminal]
-kubb generate --dry-run
-```
 
 ## See also
 
 - [Configuration](/docs/5.x/reference/configuration): full reference for `kubb.config.ts`
-- [Basic usage](/docs/5.x/getting-started/basic-usage): end-to-end walkthrough
+- [Basic usage](/docs/5.x/tutorials/quickstart): end-to-end walkthrough
 - [Plugins](/plugins): available plugins for code generation

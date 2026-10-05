@@ -1,20 +1,24 @@
 ---
 layout: doc
 title: Engine and configuration
-description: The engine that runs your plugins comes from the kubb package and its kubb/config subpath. Covers defineConfig, createKubb, the Kubb instance, BuildOutput, and narrowing config.input.
-outline: [2, 3]
+description: The engine that runs your plugins comes from the kubb package and
+  its kubb/config subpath. Covers defineConfig, createKubb, the Kubb instance,
+  BuildOutput, and narrowing config.input.
+outline:
+  - 2
+  - 3
 order: 10
 navigation:
-  title: "Engine & configuration"
+  title: Engine & configuration
 ---
 
 # Engine and configuration
 
-The engine that runs your plugins comes from the `kubb` package and its `kubb/config` subpath. This page documents that surface: `defineConfig`, `createKubb`, and the build types they share.
+Import configuration helpers from `kubb/config` and the programmatic engine from `kubb`.
 
 ## `defineConfig`
 
-`defineConfig` adds TypeScript type-checking to a `kubb.config.ts` file. It comes from the `kubb` package and fills in defaults for any field you omit.
+`defineConfig` adds TypeScript type-checking to a `kubb.config.ts` file. It fills in defaults for omitted fields.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -41,7 +45,7 @@ export default defineConfig(({ watch }) => ({
 | Field            | Default                                  |
 | ---------------- | ---------------------------------------- |
 | `root`           | `process.cwd()`                          |
-| `adapter`        | [`adapterOas()`](/docs/5.x/guide/concepts/adapters) |
+| `adapter`        | [`adapterOas()`](/docs/5.x/explanation/architecture#adapters) |
 | `parsers`        | `[parserTs(), parserTsx(), parserMd()]`  |
 | `reporters`      | `[cli, json, file, html]`                |
 | `plugins`        | `pluginBarrel()` appended when not already present |
@@ -49,19 +53,12 @@ export default defineConfig(({ watch }) => ({
 | `output.format`  | `false`                                  |
 | `output.lint`    | `false`                                  |
 
-> [!IMPORTANT]
-> `defineConfig` comes from the `kubb` package. Import it from `kubb` or the `kubb/config` subpath.
 
 > [!TIP]
-> `pluginBarrel` generates nothing until `output.barrel` is set, root or per-plugin. A plugins list without `pluginBarrel` leaves barrel generation untouched.
+> `pluginBarrel` generates nothing until `output.barrel` is set, root or per-plugin. The `kubb` package appends `pluginBarrel` unless already registered.
 
-### Related
 
-- [Configuration reference](/docs/5.x/reference/configuration)
-- [CLI options](/docs/5.x/reference/commands/)
-- [`@kubb/plugin-barrel`](/plugins/plugin-barrel/)
-
-## `createKubb`
+## `createKubb` {#createkubb}
 
 `createKubb` drives Kubb from your own code. It accepts a `UserConfig` and returns a `Kubb` instance. Calling `.build()` runs the full generation pipeline and returns a `BuildOutput`.
 
@@ -69,7 +66,7 @@ Reach for `createKubb` when you orchestrate several builds, inspect diagnostics,
 
 Import `createKubb` from the `kubb` package. It applies the same defaults as `defineConfig`, so a shared config has the same adapter, parsers, and plugins in both paths. Import it from `@kubb/core` when you need a bare engine without package defaults.
 
-`createKubb` takes a plain config object, the same shape `defineConfig` produces in `kubb.config.ts`, not a fluent builder. The config stays plain, serializable data so Kubb can validate it against the shipped JSON schema.
+Pass a plain `UserConfig` object.
 
 ```typescript twoslash [build.ts]
 // @module: esnext
@@ -130,6 +127,10 @@ Each `Diagnostic` carries a `code`, a `severity` (`error`, `warning`, or `info`)
 > [!WARNING]
 > After `safeBuild()`, check `Diagnostics.hasError(diagnostics)` before processing files. Plugins can fail without `safeBuild()` throwing. `build()` throws a `BuildError` in that case.
 
-### Related
 
-- [Programmatic usage recipe](/docs/5.x/guide/recipes#programmatic-build)
+## See also
+
+- [Configuration reference](/docs/5.x/reference/configuration)
+- [CLI options](/docs/5.x/reference/commands/)
+- [`@kubb/plugin-barrel`](/plugins/plugin-barrel/)
+- [Programmatic usage recipe](/docs/5.x/how-to/recipes#programmatic-build)

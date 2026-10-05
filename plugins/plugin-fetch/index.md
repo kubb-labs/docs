@@ -1,8 +1,8 @@
 ---
 layout: doc
 title: Kubb Fetch Plugin
-description: Generates a type-safe Fetch API client from your OpenAPI spec, one async
-  function per operation, so each call stays in sync with the API.
+description: Generates a type-safe Fetch API client from your OpenAPI spec, one
+  async function per operation, so each call stays in sync with the API.
 outline: deep
 guides:
   - id: authentication
@@ -16,22 +16,11 @@ guides:
   - id: interceptors
     title: Add interceptors
   - id: serialization
-    title: Serialize parameters
+    title: Configure serialization
   - id: server-sent-events
     title: Server-sent events
   - id: transport
     title: Use custom transport
-recipes:
-  - id: class-based-sdk
-    title: Class-based SDK
-  - id: validate-requests-and-responses
-    title: Validate requests and responses
-  - id: build-a-url-without-sending
-    title: Build a URL without sending
-  - id: point-at-an-env-driven-host
-    title: Point at an env-driven host
-  - id: stream-server-sent-events
-    title: Stream server-sent events
 kind: plugin
 id: plugin-fetch
 name: Fetch
@@ -68,44 +57,7 @@ resources:
 
 # @kubb/plugin-fetch
 
-`@kubb/plugin-fetch` turns each OpenAPI operation into a typed async function that calls your API with the global [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API). The path, query parameters, request body, response, and error shape all come from the spec, so a call stays in sync with the API it targets.
-
-From your spec, the generated client gives you:
-
-- [Typed functions](/plugins/plugin-fetch/guide/calling-operations) per operation with grouped `path`, `query`, `headers`, and `body`.
-- A [status-keyed result](/plugins/plugin-fetch/guide/error-handling) on every call, or a thrown `ResponseError`.
-- [Auth](/plugins/plugin-fetch/guide/authentication) resolved from your OpenAPI security schemes.
-- [Serialization](/plugins/plugin-fetch/guide/serialization) of parameters and bodies across content types, including `multipart/form-data` uploads and binary downloads.
-- Runtime [validation](/plugins/plugin-fetch/reference/options#validator) against [`@kubb/plugin-zod`](/plugins/plugin-zod/) schemas.
-- Typed [server-sent events](/plugins/plugin-fetch/guide/server-sent-events) you read with `for await`.
-- [Interceptors](/plugins/plugin-fetch/guide/interceptors) and a [custom transport](/plugins/plugin-fetch/guide/transport) for the send.
-- Standalone functions or a class-based [SDK](/plugins/plugin-fetch/reference/options#sdk).
-
-It sources its operation types from `@kubb/plugin-ts`, or from [`@kubb/plugin-zod`](/plugins/plugin-zod/) with [`inferred: true`](/plugins/plugin-zod/reference/options#inferred) when `plugin-ts` is absent. Add neither and generation stops with a warning. The client uses the built-in `fetch`, so there is no extra HTTP dependency to install.
-
-Each function takes one grouped options object (`{ path, query, headers, body }`) and returns a `RequestResult` of `{ status, data, error, contentType, request, response }`, bundled into `.kubb/client.ts`. See [error handling](/plugins/plugin-fetch/guide/error-handling) for `throwOnError` and the status-keyed result union.
-
-The bundled `client` also exposes `getUrl`, which builds an operation's final URL without sending the request, useful for cache keys, prefetch, and links:
-
-```ts
-import { client } from './.kubb/client'
-
-const url = client.getUrl({ url: '/pet/{petId}', path: { petId: 1 }, query: { status: ['available'] } })
-// '/pet/1?status=available'
-```
-
-The runtime sets `method`, `headers`, `body`, `signal`, and `credentials` itself. To reach the rest of `RequestInit` (`cache`, `mode`, `redirect`, `keepalive`, `duplex`, or Next.js's `next`), pass `options`, on the client or per call, where a per-call value wins:
-
-```ts
-import { client } from './.kubb/client'
-import { getPetById } from './getPetById'
-
-client.setConfig({ options: { cache: 'no-store' } })
-
-await getPetById({ path: { petId: 1 }, options: { cache: 'force-cache', next: { revalidate: 60 } } })
-```
-
-For cross-cutting concerns like retries and interceptors, reach for a [custom transport](/plugins/plugin-fetch/guide/transport) instead.
+`@kubb/plugin-fetch` generates a typed async function for each OpenAPI operation using the native [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API). Calls accept grouped request parameters and return a status-keyed result.
 
 ## Installation
 
@@ -131,17 +83,9 @@ yarn add -D @kubb/plugin-fetch
 
 ## Dependencies
 
-This plugin needs `@kubb/plugin-ts`, or `@kubb/plugin-zod` with `inferred: true` when `plugin-ts` is absent, for the operation types. `plugin-ts` wins when both are configured, and `@kubb/plugin-zod` is also required when `validator` is `'zod'`.
-
-- [`@kubb/plugin-ts`](/plugins/plugin-ts/)
-- [`@kubb/plugin-zod`](/plugins/plugin-zod/)
-
-> [!IMPORTANT]
-> The generated functions call the native `fetch`, so there is no HTTP client to install.
+Add [`pluginTs`](/plugins/plugin-ts/) or [`pluginZod`](/plugins/plugin-zod/) with `inferred: true` for operation types. `pluginTs` takes precedence when both are configured. Validation also requires `pluginZod`. The generated client uses native `fetch`.
 
 ## Example
-
-::code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -153,19 +97,22 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs(),
-    pluginFetch({
-      output: { path: 'clients', mode: 'directory', barrel: { type: 'named' } },
-      baseURL: 'https://petstore.swagger.io/v2',
-      group: {
-        type: 'tag',
-        name: ({ group }) => `${group}Service`,
-      },
-    }),
+    pluginFetch({ baseURL: 'https://petstore.swagger.io/v2' }),
   ],
 })
 ```
 
-::
+## Documentation
+
+- [Options](./reference/options)
+- [Authenticate](./guide/authentication)
+- [Set base URL](./guide/base-url)
+- [Call operations](./guide/calling-operations)
+- [Handle errors](./guide/error-handling)
+- [Add interceptors](./guide/interceptors)
+- [Serialize parameters](./guide/serialization)
+- [Server-sent events](./guide/server-sent-events)
+- [Use custom transport](./guide/transport)
 
 ## See also
 
