@@ -8,6 +8,9 @@ outline:
   - 2
   - 3
 order: 7
+navigation:
+  title: Storage
+  icon: i-iconoir-database
 ---
 
 # Storage

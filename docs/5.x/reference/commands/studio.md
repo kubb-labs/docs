@@ -7,6 +7,9 @@ outline:
   - 2
   - 3
 order: 5
+navigation:
+  title: kubb studio
+  icon: i-iconoir-cube
 ---
 
 # kubb studio
@@ -33,7 +36,7 @@ The positional argument selects the action. It defaults to `connect`.
 | `login`    | Pair this machine without opening a generation session.                 |
 | `logout` | Stop the background worker and forget this project's stored token. |
 | `status` | Show worker state, log path, pairing, and saved permissions. |
-| `snapshot` | Generate and publish a snapshot from a script, then exit. See [Publish snapshots from CI](/docs/5.x/how-to/integrations/ci). |
+| `snapshot` | Generate and publish a snapshot from a script, then exit. See [Publish snapshots from CI](/docs/5.x/integrations/ci). |
 
 ## Background connection
 
@@ -111,6 +114,6 @@ kubb studio snapshot --json              # print the snapshot as one JSON object
 
 ## See also
 
-- [Kubb Studio guide](/docs/5.x/how-to/integrations/studio): connect a project and run headless
+- [Kubb Studio guide](/docs/5.x/integrations/studio): connect a project and run headless
 - [Commands](/docs/5.x/reference/commands/): every command the CLI exposes
 - [Configuration](/docs/5.x/reference/configuration): the `kubb.config.ts` Studio reads

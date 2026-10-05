@@ -9,23 +9,40 @@ outline:
 order: 2
 navigation:
   title: Extension model
+  icon: i-iconoir-ev-plug
 ---
 
 # Extension model
 
 Use an existing [plugin](/plugins) when it generates the output you need. To add an output or replace a pipeline layer, build on `kubb/kit`, a subpath of the `kubb` package.
 
+## Choose an extension
+
+| You need to change | Extension | Why |
+| --- | --- | --- |
+| Input format | Adapter | Translate the format into Kubb’s shared AST. |
+| Schema meaning before generation | Macro | Transform nodes before the plugin processes them. |
+| Generated names or paths | Resolver | Keep declarations and imports consistent. |
+| Code emitted for a schema type | Printer | Change one output target without changing the input model. |
+| A new kind of output | Plugin and generators | Choose the files and content to generate. |
+| File syntax or assembly | Parser | Convert emitted nodes into source text. |
+| Where files are stored | Storage | Reuse generation with another destination. |
+
+For example, turning a date into a TypeScript `Date` type is a printer customization. Moving model files into a folder is a resolver customization. Changing a schema before several generators consume it calls for a macro.
+
 ## Plugins {#plugins}
 
 A plugin factory returns a name, options, and lifecycle hooks. It registers generators and a resolver during `kubb:plugin:setup`, then produces files during generation.
 
 ::plugin-anatomy
+::
 
 ### Lifecycle {#lifecycle}
 
 Setup runs once per plugin. Kubb then walks schemas and operations, invokes generators, collects files, and runs output passes. Hooks let a plugin observe or change specific stages.
 
 ::lifecycle-timeline
+::
 
 The [lifecycle reference](/docs/5.x/reference/kit/hooks) lists the firing order and payloads.
 
@@ -69,6 +86,6 @@ The engine runs those extensions. Import `defineConfig` from `kubb/config` for C
 
 ## See also
 
-- [Create your first plugin](/docs/5.x/tutorials/creating-plugins)
+- [Create, extend, and publish a plugin](/docs/5.x/tutorials/creating-plugins)
 - [Architecture](/docs/5.x/explanation/architecture)
 - [Kit API](/docs/5.x/reference/kit)

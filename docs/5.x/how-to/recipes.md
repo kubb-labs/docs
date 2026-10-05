@@ -9,15 +9,22 @@ outline:
 order: 1
 navigation:
   title: Configure generation
+  icon: i-iconoir-flask
 ---
 
 # Configure generation
 
-Ready-made `kubb.config.ts` snippets for common setups. Copy one in, install the matching packages, and run [`kubb generate`](/docs/5.x/reference/commands/generate).
+Use these configurations in an existing project with [Kubb installed](/docs/5.x/installation) and an OpenAPI specification. Replace `./petStore.yaml` with your specification path, install the packages for your chosen stack, then run `npx kubb generate`.
+
+The examples write to `./src/gen`. With `clean: true`, Kubb removes that directory before generation, so keep handwritten files elsewhere. See [Configuration](/docs/5.x/reference/configuration) for option defaults.
 
 ## TypeScript only
 
 The smallest setup, generating TypeScript types and interfaces from your OpenAPI spec.
+
+```shell [Terminal]
+npm install -D kubb typescript @kubb/plugin-ts
+```
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -33,6 +40,11 @@ export default defineConfig({
 ## TypeScript + React Query
 
 Generates types and [TanStack Query](https://tanstack.com/query) hooks for React.
+
+```shell [Terminal]
+npm install -D kubb typescript @kubb/plugin-ts @kubb/plugin-axios @kubb/plugin-react-query
+npm install axios react @tanstack/react-query
+```
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -51,6 +63,11 @@ export default defineConfig({
 
 Generates types and [TanStack Query](https://tanstack.com/query) hooks for Vue.
 
+```shell [Terminal]
+npm install -D kubb typescript @kubb/plugin-ts @kubb/plugin-axios @kubb/plugin-vue-query
+npm install axios vue @tanstack/vue-query
+```
+
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
@@ -68,6 +85,11 @@ export default defineConfig({
 
 Runtime validation with [Zod](https://zod.dev), plus [MSW](https://mswjs.io) request handlers backed by [Faker.js](https://fakerjs.dev) mock data.
 
+```shell [Terminal]
+npm install -D kubb typescript @kubb/plugin-ts @kubb/plugin-zod @kubb/plugin-faker @kubb/plugin-msw
+npm install zod msw @faker-js/faker
+```
+
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
@@ -84,7 +106,12 @@ export default defineConfig({
 
 ## Pick the HTTP client
 
-Choose [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) or [Axios](https://axios-http.com) by registering the matching plugin. Replace `pluginAxios` with `pluginFetch` to use global `fetch`, and change the import to `@kubb/plugin-fetch`.
+Choose [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) or [Axios](https://axios-http.com) by registering the matching plugin. Replace `pluginAxios` with `pluginFetch` to use global `fetch`, and change the import to `@kubb/plugin-fetch`. Install `@kubb/plugin-fetch` as a development dependency; the generated client uses the environment’s global `fetch`.
+
+```shell [Terminal]
+npm install -D kubb typescript @kubb/plugin-ts @kubb/plugin-axios
+npm install axios
+```
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -164,7 +191,11 @@ export default defineConfig({
 })
 ```
 
+Install the tools as development dependencies with `npm install -D @biomejs/biome oxlint` before running this configuration.
+
 ## Run a command after generation
+
+Install the command you plan to run in your project. For the example below, use `npm install -D @biomejs/biome`.
 
 Use [`output.postGenerate`](/docs/5.x/reference/configuration#output-postgenerate) to run shell commands, such as a formatter pass or a type check, once the generated files are formatted and linted.
 
@@ -219,4 +250,4 @@ Use `.build()` instead of `.safeBuild()` if you want it to throw on errors rathe
 
 ## Validate in CI
 
-Run `kubb validate ./petStore.yaml` before generation to fail on an invalid specification. See [Validate command](/docs/5.x/reference/commands/validate) and [CI snapshots](/docs/5.x/how-to/integrations/ci).
+Run `kubb validate ./petStore.yaml` before generation to fail on an invalid specification. See [Validate command](/docs/5.x/reference/commands/validate) and [CI snapshots](/docs/5.x/integrations/ci).

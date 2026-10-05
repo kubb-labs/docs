@@ -6,6 +6,9 @@ outline:
   - 2
   - 3
 order: 1
+navigation:
+  title: kubb init
+  icon: i-iconoir-magic-wand
 ---
 
 # kubb init
@@ -69,6 +72,6 @@ npx kubb init --yes --dry-run
 
 ## See also
 
-- [Installation](/docs/5.x/tutorials/quickstart): manual setup guide
+- [Installation](/docs/5.x/installation): manual setup guide
 - [Configuration](/docs/5.x/reference/configuration): full `kubb.config.ts` reference
 - [Plugins](/plugins): browse available plugins

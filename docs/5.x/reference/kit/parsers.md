@@ -8,6 +8,9 @@ outline:
   - 2
   - 3
 order: 6
+navigation:
+  title: Parsers
+  icon: i-iconoir-code
 ---
 
 # Parsers

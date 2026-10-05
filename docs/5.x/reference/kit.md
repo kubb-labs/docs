@@ -10,6 +10,7 @@ outline:
 order: 3
 navigation:
   title: Kit
+  icon: i-iconoir-tools
 ---
 
 # Kit API

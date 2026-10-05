@@ -14,29 +14,52 @@ navigation:
 
 # Introduction
 
-Kubb generates types, API clients, query hooks, validators, and mocks from an API specification. Choose [plugins](/plugins) for the outputs you need and configure them in one file.
+Kubb generates code from API specifications: TypeScript types, API clients, query hooks, validators, and mocks. Regenerate when your specification changes to keep these files in sync with your API, then import them in your application.
 
-The default [OpenAPI adapter](/adapters/adapter-oas/) supports OpenAPI 2.0, 3.0, and 3.1. Custom adapters read other input formats. Custom plugins add outputs.
+Choose the outputs you need with plugins in one `kubb.config.ts` file. Generated files belong to your project. The default [OpenAPI adapter](/adapters/adapter-oas/) supports OpenAPI 2.0, 3.0, and 3.1.
+
+## Features
+
+- Generate [TypeScript types](/plugins/plugin-ts/), typed [Axios](/plugins/plugin-axios/) or [Fetch](/plugins/plugin-fetch/) clients, [React Query](/plugins/plugin-react-query/), [Vue Query](/plugins/plugin-vue-query/), and [SWR](/plugins/plugin-swr/) hooks.
+- Validate data with [Zod](/plugins/plugin-zod/), create [Faker](/plugins/plugin-faker/) data and [MSW](/plugins/plugin-msw/) handlers, generate [Cypress](/plugins/plugin-cypress/) tests, or expose your API through a generated [MCP server](/plugins/plugin-mcp/).
+- Customize the pipeline with adapters, plugins, parsers, macros, and resolvers, or write output to disk, memory, or a custom storage backend.
+- Run generation with [Vite and webpack](/docs/5.x/integrations/build-tools), other bundlers, or in CI. Connect AI tools through [MCP](/docs/5.x/ai/mcp) or use the [Claude Code integration](/docs/5.x/ai/claude).
+
+## See it work
+
+The animation below follows a spec through Kubb's generation pipeline. The adapter turns schemas and operations into AST nodes, then plugins generate files from those nodes.
+
+```typescript twoslash [kubb.config.ts]
+import { defineConfig } from 'kubb/config'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginZod } from '@kubb/plugin-zod'
+
+export default defineConfig({
+  input: './petStore.yaml',
+  output: { path: './src/gen' },
+  plugins: [pluginTs(), pluginZod()],
+})
+```
+
+::spec-journey
+::
+
+See the [architecture guide](/docs/5.x/explanation/architecture) for details about each stage.
 
 ## Start here
 
 | You want to | Read |
 | --- | --- |
-| Generate your first client | [Quickstart](/docs/5.x/tutorials/quickstart) |
+| Install Kubb in a project | [Installation](/docs/5.x/installation) |
+| Generate your first client | [Generate your first client](/docs/5.x/tutorials/quickstart) |
 | Configure a stack or workflow | [Configure generation](/docs/5.x/how-to/recipes) |
 | Rename files or customize generated code | [Resolvers](/docs/5.x/how-to/resolvers), [macros](/docs/5.x/how-to/macros), and [printers](/docs/5.x/how-to/printers) |
-| Run generation during a build or in CI | [Bundlers](/docs/5.x/how-to/integrations/build-tools) and [CI](/docs/5.x/how-to/integrations/ci) |
-| Generate from a browser or AI editor | [Studio](/docs/5.x/how-to/integrations/studio) and [MCP setup](/docs/5.x/how-to/integrations/ai/mcp) |
+| Run generation during a build or in CI | [Vite](/docs/5.x/integrations/vite), [webpack](/docs/5.x/integrations/webpack), and [CI](/docs/5.x/integrations/ci) |
+| Use Kubb with a browser or AI assistant | [Studio](/docs/5.x/integrations/studio), [MCP](/docs/5.x/ai/mcp), and [Claude Code](/docs/5.x/ai/claude) |
 | Build a plugin | [Plugin tutorial](/docs/5.x/tutorials/creating-plugins) |
 | Look up an option or API | [Configuration](/docs/5.x/reference/configuration), [commands](/docs/5.x/reference/commands/), and [Kit API](/docs/5.x/reference/kit) |
 | Understand the pipeline | [Architecture](/docs/5.x/explanation/architecture) |
 | Upgrade from v4 | [Migration guide](/docs/5.x/how-to/migration) |
-
-## Available outputs
-
-[TypeScript](/plugins/plugin-ts/) types, [Axios](/plugins/plugin-axios/) and [Fetch](/plugins/plugin-fetch/) clients, [React Query](/plugins/plugin-react-query/), [Vue Query](/plugins/plugin-vue-query/), [SWR](/plugins/plugin-swr/), [Zod](/plugins/plugin-zod/), [Faker](/plugins/plugin-faker/), [MSW](/plugins/plugin-msw/), [Cypress](/plugins/plugin-cypress/), and [MCP servers](/plugins/plugin-mcp/) each have a plugin.
-
-Generated files belong to your project. Regenerate them when the specification changes, then import them in your application.
 
 ## Community
 

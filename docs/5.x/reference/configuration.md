@@ -7,13 +7,14 @@ outline:
   - 2
   - 3
 order: 1
+navigation:
+  title: Configuration
+  icon: i-iconoir-settings
 ---
 
 # Configuration
 
 `kubb.config.ts` drives a Kubb run. The file default-exports a `defineConfig` call. Pass it an object, a function that returns one, or an array of configs.
-
-::studio-cta{source="configuration-reference"}
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
@@ -435,3 +436,6 @@ Reporters available to the run, registered as instances. `defineConfig` register
 |     Type: | `Array<Reporter>`                           |
 |  Default: | `[cli, json, file, html]`                   |
 | Required: | `false`                                     |
+
+::studio-cta{source="configuration-reference"}
+::

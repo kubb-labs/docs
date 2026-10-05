@@ -6,6 +6,7 @@ outline: [2, 3]
 order: 5
 navigation:
   title: Claude Desktop API tools
+  icon: i-simple-icons-claude
 ---
 
 # Connect an API server to Claude Desktop
@@ -42,4 +43,4 @@ Quit Claude Desktop completely and reopen it. Open **Manage connectors**, select
 
 - [Run an MCP server](/plugins/plugin-mcp/guide/server): generation, dependencies, and the entry point
 - [MCP local-server setup](https://modelcontextprotocol.io/docs/develop/connect-local-servers): Claude Desktop configuration and connection checks
-- [Set up the Kubb MCP server](/docs/5.x/how-to/integrations/ai/mcp): generate and configure Kubb projects from an AI editor
+- [Set up the Kubb MCP server](/docs/5.x/ai/mcp): generate and configure Kubb projects from an AI editor

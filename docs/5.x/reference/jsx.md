@@ -9,6 +9,7 @@ outline:
 order: 4
 navigation:
   title: JSX
+  icon: i-iconoir-code
 ---
 
 # JSX renderer

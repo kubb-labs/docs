@@ -9,6 +9,7 @@ outline:
 order: 1
 navigation:
   title: Claude
+  icon: i-simple-icons-claude
 ---
 
 # Set up the Claude Code plugin
@@ -22,7 +23,7 @@ the chat matches the one you run in a terminal.
 
 > [!NOTE]
 > This page covers the Claude Code plugin. To generate an MCP server from your spec and drive it
-> from Claude Desktop, see the [Claude MCP guide](/docs/5.x/how-to/integrations/ai/claude-desktop) instead.
+> from Claude Desktop, see the [Claude MCP guide](/docs/5.x/ai/claude-desktop) instead.
 
 ## Install
 
@@ -79,9 +80,9 @@ Two skills load on their own when the work calls for them, so you never invoke t
 ## Conversational generation
 
 The plugin also wires in the Kubb MCP server (`kubb mcp`). Describe what you want instead of
-typing a command, and Claude calls the server directly. See [MCP](/docs/5.x/how-to/integrations/ai/mcp) for setup.
+typing a command, and Claude calls the server directly. See [MCP](/docs/5.x/ai/mcp) for setup.
 
 ## See also
 
-- [MCP](/docs/5.x/how-to/integrations/ai/mcp): connect AI editors directly to Kubb's MCP server
-- [Claude MCP guide](/docs/5.x/how-to/integrations/ai/claude-desktop): generate an MCP server from your spec
+- [MCP](/docs/5.x/ai/mcp): connect AI editors directly to Kubb's MCP server
+- [Claude MCP guide](/docs/5.x/ai/claude-desktop): generate an MCP server from your spec

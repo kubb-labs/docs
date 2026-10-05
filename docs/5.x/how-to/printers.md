@@ -1,6 +1,6 @@
 ---
 layout: doc
-title: Override a printer
+title: Customize generated code with printers
 description: Printers turn Kubb's AST schema nodes into generated code. The
   printer option on plugin-ts, plugin-zod, and plugin-faker replaces the handler
   for a single schema type, so you change what one plugin emits without forking
@@ -8,7 +8,8 @@ description: Printers turn Kubb's AST schema nodes into generated code. The
 outline: deep
 order: 5
 navigation:
-  title: Printers
+  title: Customize generated code with printers
+  icon: i-iconoir-printing-page
 ---
 
 <!--@include: ../../../snippets/how-to/printers.md-->

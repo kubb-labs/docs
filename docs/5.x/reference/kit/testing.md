@@ -4,6 +4,9 @@ title: Testing
 description: kubb/kit/testing is a separate subpath for the Vitest-backed helpers used to test plugins, generators, and adapters, kept apart from kubb/kit so the authoring toolkit never pulls in Vitest.
 outline: [2, 3]
 order: 12
+navigation:
+  title: Testing
+  icon: i-iconoir-flask
 ---
 
 # Testing

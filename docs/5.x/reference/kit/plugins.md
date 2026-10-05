@@ -8,6 +8,9 @@ outline:
   - 2
   - 3
 order: 1
+navigation:
+  title: Plugins
+  icon: i-iconoir-ev-plug
 ---
 
 # Plugins

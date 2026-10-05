@@ -8,6 +8,9 @@ outline:
   - 2
   - 3
 order: 4
+navigation:
+  title: Renderers
+  icon: i-iconoir-design-pencil
 ---
 
 # Renderers

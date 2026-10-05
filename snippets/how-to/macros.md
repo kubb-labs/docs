@@ -1,25 +1,10 @@
-# Write a macro
+# Transform schemas with macros
 
 Use a macro to transform schema or operation nodes before generation. Macros can rename symbols, change field types, or remove metadata across output targets.
 
 Import the macro engine through `ast` from `kubb/kit`. Built-in presets are named exports of `kubb/kit`.
 
-## Shape
-
-A macro carries the per-kind callbacks of a [visitor](/docs/5.x/reference/kit/ast#visitors), plus a `name`, an optional `enforce` order, and an optional `match` predicate.
-
-```typescript [Type definition]
-type Macro = {
-  name: string
-  enforce?: 'pre' | 'post'
-  match?: (node: Node) => boolean
-  schema?(node: SchemaNode, context): SchemaNode | null | undefined
-  operation?(node: OperationNode, context): OperationNode | null | undefined
-  // input, output, property, parameter, response
-}
-```
-
-Each callback returns a replacement node, or `undefined` or `null` to leave the node untouched. A macro that changes nothing returns the original reference, so an unchanged tree is reused, not rebuilt.
+For callback signatures and context properties, see the [AST reference](/docs/5.x/reference/kit/ast#macros).
 
 ## Writing a macro
 

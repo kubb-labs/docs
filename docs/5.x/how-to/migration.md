@@ -8,6 +8,7 @@ outline:
 order: 9
 navigation:
   title: Upgrade to v5
+  icon: i-iconoir-transition-up
 ---
 
 # Upgrade from v4 to v5
