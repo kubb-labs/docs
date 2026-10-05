@@ -7,6 +7,9 @@ outline:
   - 2
   - 3
 order: 2
+navigation:
+  title: FAQ
+  icon: i-iconoir-help-circle
 ---
 
 # FAQ

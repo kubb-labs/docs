@@ -10,6 +10,8 @@ outline:
 order: 8
 navigation:
   title: AST & node builders
+  icon: i-iconoir-code-brackets
+
 ---
 
 # AST and node builders
@@ -255,6 +257,23 @@ Kubb also ships built-in macros for common schema normalizations that any adapte
 | `macroEnumName`          | Name an inline enum schema from its parent and property name.                               |
 | `macroRenameSchema`      | Rename a schema's declaration and retarget every ref pointing at it in one pass.            |
 
+### Macro options and callbacks
+
+A macro carries the per-kind callbacks of a [visitor](/docs/5.x/reference/kit/ast#visitors), plus a `name`, an optional `enforce` order, and an optional `match` predicate.
+
+```typescript [Type definition]
+type Macro = {
+  name: string
+  enforce?: 'pre' | 'post'
+  match?: (node: Node) => boolean
+  schema?(node: SchemaNode, context): SchemaNode | null | undefined
+  operation?(node: OperationNode, context): OperationNode | null | undefined
+  // input, output, property, parameter, response
+}
+```
+
+Each callback returns a replacement node, or `undefined` or `null` to leave the node untouched. A macro that changes nothing returns the original reference, so an unchanged tree is reused, not rebuilt.
+
 ## Printers
 
 Lower-level helpers for parsers that turn the AST into source code:
@@ -268,3 +287,15 @@ Lower-level helpers for parsers that turn the AST into source code:
 Inside a handler, `this.import(ast.factory.createImport(...))` declares an import required by the printed code. After printing, the generator calls `printer.drainImports()` to retrieve the imports and clear the list. See [Import a custom codec](/plugins/plugin-zod/guide/customization#import-a-custom-codec) for a complete example.
 
 See [Parsers concepts](/docs/5.x/explanation/architecture#parsers) for how parsers consume printers.
+
+### Printer handlers and context
+
+The map is keyed by the schema `type` discriminant, such as `'string'`, `'integer'`, `'date'`, `'enum'`, or `'object'`. Supply only the handlers you want to replace and the built-in ones fill in the rest.
+
+```typescript [Type definition]
+type PrinterNodes = Partial<{
+  [K in SchemaType]: (this: Context, node: SchemaNodeByType[K]) => Output | null
+}>
+```
+
+Handlers run with a `this` context, so write them as regular functions rather than arrow functions. `this.transform(node)` recurses into a nested schema node through the full handler map, overrides included. `this.base(node)` runs the built-in handler your override replaced, so you can wrap its output instead of rebuilding it. `this.options` reads the resolved printer options, such as `arrayType` on `@kubb/plugin-ts` or `direction` on `@kubb/plugin-zod`.

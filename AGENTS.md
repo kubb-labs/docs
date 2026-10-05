@@ -7,7 +7,7 @@ kubb-docs is the component-free content repository for the Kubb documentation si
 This is a content-only repository:
 - No npm packages, no TypeScript, no tests
 - Documentation is written in Markdown, with code examples kept in Markdown pages or snippet files. The repository also includes supporting metadata, licenses, and GitHub workflows.
-- The platform repo ([kubb-labs/platform](https://github.com/kubb-labs/platform)) pulls content from this repo via `apps/kubb.dev/scripts/fetchRepos.ts` and renders it with VitePress
+- The platform repo ([kubb-labs/platform](https://github.com/kubb-labs/platform)) pulls content from this repo via `apps/kubb.dev/scripts/fetchRepos.ts` and renders it with Nuxt Content (MDC syntax)
 
 ## Repository layout
 

@@ -8,6 +8,9 @@ outline:
   - 2
   - 3
 order: 5
+navigation:
+  title: Adapters
+  icon: i-iconoir-link
 ---
 
 # Adapters

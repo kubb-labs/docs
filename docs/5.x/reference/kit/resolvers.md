@@ -8,6 +8,9 @@ outline:
   - 2
   - 3
 order: 3
+navigation:
+  title: Resolvers
+  icon: i-iconoir-label
 ---
 
 # Resolvers
@@ -114,6 +117,26 @@ const patched = Resolver.merge(resolver, {
   },
 })
 ```
+
+
+## Resolver overrides {#resolver-overrides}
+
+`name` changes identifier casing. `file.baseName` and `file.path` control files. Plugin namespaces control specific symbols.
+
+```typescript [Type definition]
+type ResolverPatch = {
+  name?: (name: string) => string
+  file?: {
+    baseName?: (params: { name: string; extname: string }) => string
+    path?: (params: { baseName: string; output: Output }) => string
+  }
+  // plugin-specific namespaces, such as query.keyName or schema.typeName
+}
+```
+
+Methods run with a `this` context bound to the full, merged resolver, so write them as regular functions rather than arrow functions. `this.default.name(name)` always applies Kubb's core `camelCase` default. The plugin preset's `name` method remains separate.
+
+From a namespaced method, `this.name(name)` calls the active top-level `name` method and follows any user override. Calling `this.name` from the top-level `name` method itself recurses, so call an exported preset resolver when you want to wrap its casing.
 
 
 ## See also

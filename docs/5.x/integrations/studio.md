@@ -3,7 +3,10 @@ layout: doc
 title: Connect a project to Studio
 description: Connect a local Kubb project to Studio, review generated files, and keep an agent running in the background.
 outline: [2, 3]
-order: 2
+order: 1
+navigation:
+  title: Kubb Studio
+  icon: i-iconoir-cube
 ---
 
 # Connect a project to Studio
@@ -62,7 +65,7 @@ In CI or without a TTY, pass an existing `KUBB_AGENT_TOKEN` and the permission f
 
 ## Snapshot from CI
 
-Follow [Publish snapshots from CI](/docs/5.x/how-to/integrations/ci) to produce installable packages and compare generated-file changes on pull or merge requests. Snapshot generation uses an organization CI API key. Installation uses a separate `registry` API key.
+Follow [Publish snapshots from CI](/docs/5.x/integrations/ci) to produce installable packages and compare generated-file changes on pull or merge requests. Snapshot generation uses an organization CI API key. Installation uses a separate `registry` API key.
 
 ## See also
 

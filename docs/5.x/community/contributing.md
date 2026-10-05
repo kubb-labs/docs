@@ -6,6 +6,9 @@ outline:
   - 2
   - 3
 order: 1
+navigation:
+  title: Contributing
+  icon: i-iconoir-git-branch
 ---
 
 # Contributing

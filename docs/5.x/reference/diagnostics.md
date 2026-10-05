@@ -7,6 +7,9 @@ outline:
   - 2
   - 3
 order: 6
+navigation:
+  title: Diagnostics
+  icon: i-iconoir-warning-triangle
 ---
 
 # Diagnostics

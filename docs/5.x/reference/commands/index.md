@@ -3,6 +3,9 @@ layout: doc
 title: Commands
 description: Reference for every command and flag exposed by the kubb CLI including init, generate, validate, mcp and studio.
 outline: [2, 3]
+navigation:
+  title: Commands
+  icon: i-iconoir-terminal
 ---
 
 # Commands

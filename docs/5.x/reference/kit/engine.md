@@ -10,6 +10,8 @@ outline:
 order: 10
 navigation:
   title: Engine & configuration
+  icon: i-iconoir-cpu
+
 ---
 
 # Engine and configuration

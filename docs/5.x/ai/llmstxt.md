@@ -10,6 +10,7 @@ outline:
 order: 4
 navigation:
   title: Documentation context
+  icon: i-iconoir-page-search
 ---
 
 # Use documentation in an AI assistant
@@ -42,4 +43,4 @@ Use https://kubb.dev/llms.txt to find relevant pages, then read them.
 ## See also
 
 - [llms.txt standard](https://llmstxt.org/): specification for LLM-friendly documentation
-- [MCP](/docs/5.x/how-to/integrations/ai/mcp): connect AI editors directly to Kubb's MCP server
+- [MCP](/docs/5.x/ai/mcp): connect AI editors directly to Kubb's MCP server

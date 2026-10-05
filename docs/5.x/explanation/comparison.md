@@ -9,6 +9,7 @@ outline:
 order: 3
 navigation:
   title: Comparison
+  icon: i-iconoir-mirror
 ---
 
 # Kubb vs orval, HeyAPI, and openapi-typescript
@@ -99,7 +100,7 @@ Kubb serializes OpenAPI parameter styles and supports codecs per media type. See
 
 Kubb parses the specification once and shares its AST across plugins. Adapters customize input formats, parsers customize source syntax, and plugins add outputs. Post-enforced plugins handle cross-output work such as barrels. See [Architecture](/docs/5.x/explanation/architecture) and [Extension model](/docs/5.x/explanation/extensions).
 
-[Bundler integrations](/docs/5.x/how-to/integrations/build-tools) run generation during builds. The [generator MCP server](/docs/5.x/how-to/integrations/ai/mcp) exposes Kubb to AI editors. [plugin-mcp](/plugins/plugin-mcp/) instead generates a server for your API.
+[Bundler integrations](/docs/5.x/integrations/build-tools) run generation during builds. The [generator MCP server](/docs/5.x/ai/mcp) exposes Kubb to AI editors. [plugin-mcp](/plugins/plugin-mcp/) instead generates a server for your API.
 
 ## When not to use Kubb
 

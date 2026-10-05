@@ -8,6 +8,7 @@ outline:
 order: 1
 navigation:
   title: Generate your first client
+  icon: i-iconoir-rocket
 ---
 
 # Generate your first client
@@ -102,7 +103,30 @@ node -e "console.log(require('node:fs').readdirSync('src/gen/clients'))"
 
 The output contains `getPetById.ts`. Open that file and notice that `getPetById` accepts typed path parameters and returns a typed result. Its imported types live in `src/gen/models`.
 
-Run `npx kubb generate` again. Kubb recreates the same client from the same specification. You now have a typed client ready to import into your application.
+The generated tree includes:
+
+```text [Generated files]
+src/gen/
+├── .kubb/                 # Shared client and serialization helpers
+├── clients/
+│   └── getPetById.ts
+└── models/
+    ├── GetPetById.ts
+    └── Pet.ts
+```
+
+## 5. Regenerate after a change
+
+Add a `tag` property to the `Pet` schema in `petStore.yaml`, alongside `id` and `name`:
+
+```yaml [petStore.yaml — properties]
+tag:
+  type: string
+```
+
+Run `npx kubb generate` again and open `src/gen/models/Pet.ts`. It now includes an optional `tag` field because `tag` is not listed in the schema’s `required` array. The client continues to import the regenerated types.
+
+You now have a typed client and have seen how a specification change flows into its output.
 
 ## Continue
 

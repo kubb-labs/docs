@@ -1,25 +1,8 @@
-# Override a resolver
+# Customize names and paths
 
 Set a plugin’s `resolver` option to change generated identifiers and file paths. Supply only the methods you need to replace. Other methods keep their defaults.
 
-## Shape
-
-`name` changes identifier casing. `file.baseName` and `file.path` control files. Plugin namespaces control specific symbols.
-
-```typescript [Type definition]
-type ResolverPatch = {
-  name?: (name: string) => string
-  file?: {
-    baseName?: (params: { name: string; extname: string }) => string
-    path?: (params: { baseName: string; output: Output }) => string
-  }
-  // plugin-specific namespaces, such as query.keyName or schema.typeName
-}
-```
-
-Methods run with a `this` context bound to the full, merged resolver, so write them as regular functions rather than arrow functions. `this.default.name(name)` always applies Kubb's core `camelCase` default. The plugin preset's `name` method remains separate.
-
-From a namespaced method, `this.name(name)` calls the active top-level `name` method and follows any user override. Calling `this.name` from the top-level `name` method itself recurses, so call an exported preset resolver when you want to wrap its casing.
+For callback signatures and context properties, see the [Resolver reference](/docs/5.x/reference/kit/resolvers#resolver-overrides).
 
 ## Rename identifiers
 
@@ -72,6 +55,8 @@ pluginFaker({
 ```
 
 ## Namespaced names
+
+Use regular methods when accessing `this`. Within a namespace, `this.name` applies the active naming rule; calling it from the top-level `name` override would recurse. Wrap the exported plugin resolver there instead.
 
 Override `query.keyName` to rename React Query keys. Use `this.name` to retain the active naming rule:
 

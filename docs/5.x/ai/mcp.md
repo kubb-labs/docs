@@ -10,6 +10,7 @@ outline:
 order: 3
 navigation:
   title: MCP
+  icon: i-simple-icons-modelcontextprotocol
 ---
 
 # Set up the MCP server

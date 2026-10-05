@@ -7,6 +7,9 @@ outline:
   - 2
   - 3
 order: 4
+navigation:
+  title: kubb mcp
+  icon: i-simple-icons-modelcontextprotocol
 ---
 
 # kubb mcp
@@ -60,6 +63,6 @@ Most MCP clients accept a JSON config with `command` and `args`. Register the Ku
 
 ## See also
 
-- [MCP integration guide](/docs/5.x/how-to/integrations/ai/mcp): connect the server to Claude Desktop, Cursor, and other clients
+- [MCP integration guide](/docs/5.x/ai/mcp): connect the server to Claude Desktop, Cursor, and other clients
 - [`@kubb/plugin-mcp`](/plugins/plugin-mcp/), a different package that generates an MCP server from your OpenAPI spec
 - [Concepts: Plugins](/docs/5.x/explanation/extensions#plugins): how plugins integrate with the Kubb pipeline

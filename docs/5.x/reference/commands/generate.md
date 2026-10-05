@@ -7,6 +7,9 @@ outline:
   - 2
   - 3
 order: 2
+navigation:
+  title: kubb generate
+  icon: i-iconoir-play
 ---
 
 # kubb generate

@@ -7,6 +7,9 @@ outline:
   - 2
   - 3
 order: 11
+navigation:
+  title: Lifecycle hooks
+  icon: i-iconoir-refresh-double
 ---
 
 # Lifecycle hooks

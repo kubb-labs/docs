@@ -5,6 +5,9 @@ description: Generate index.ts barrel files for every plugin output directory
   with @kubb/plugin-barrel, the post-enforced plugin built into Kubb.
 outline: deep
 order: 3
+navigation:
+  title: Add barrel files support
+  icon: i-iconoir-packages
 ---
 
 # Add barrel files support

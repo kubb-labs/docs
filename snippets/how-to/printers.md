@@ -1,18 +1,8 @@
-# Override a printer
+# Customize generated code with printers
 
 Set `printer.nodes` on TypeScript, Zod, or Faker plugins to change how schema types are emitted. Override only the handlers you need.
 
-## Shape
-
-The map is keyed by the schema `type` discriminant, such as `'string'`, `'integer'`, `'date'`, `'enum'`, or `'object'`. Supply only the handlers you want to replace and the built-in ones fill in the rest.
-
-```typescript [Type definition]
-type PrinterNodes = Partial<{
-  [K in SchemaType]: (this: Context, node: SchemaNodeByType[K]) => Output | null
-}>
-```
-
-Handlers run with a `this` context, so write them as regular functions rather than arrow functions. `this.transform(node)` recurses into a nested schema node through the full handler map, overrides included. `this.base(node)` runs the built-in handler your override replaced, so you can wrap its output instead of rebuilding it. `this.options` reads the resolved printer options, such as `arrayType` on `@kubb/plugin-ts` or `direction` on `@kubb/plugin-zod`.
+For callback signatures and context properties, see the [AST reference](/docs/5.x/reference/kit/ast#printers).
 
 ## TypeScript types
 
@@ -34,6 +24,8 @@ pluginTs({
 ```
 
 ## Zod schemas
+
+Write regular methods when you use `this.base`, `this.transform`, or `this.options`; arrow functions do not receive the printer context.
 
 `@kubb/plugin-zod` prints expression strings, so a handler returns the Zod code as a string. With `mini: true` the same overrides target the Zod Mini printer instead.
 

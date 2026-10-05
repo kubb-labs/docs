@@ -4,6 +4,9 @@ title: HTTP serialization
 description: Default parameter styles and serialized values for generated Fetch and Axios clients.
 outline: deep
 order: 8
+navigation:
+  title: HTTP serialization
+  icon: i-iconoir-network
 ---
 
 # HTTP serialization

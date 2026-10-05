@@ -7,6 +7,9 @@ outline:
   - 2
   - 3
 order: 3
+navigation:
+  title: kubb validate
+  icon: i-iconoir-check-circle
 ---
 
 # kubb validate
