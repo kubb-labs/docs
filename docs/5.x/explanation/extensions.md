@@ -8,7 +8,7 @@ outline:
   - 3
 order: 2
 navigation:
-  title: Plugins
+  title: Extension model
 ---
 
 # Extension model

@@ -8,7 +8,7 @@ outline:
   - 3
 order: 6
 navigation:
-  title: Vite
+  title: Integrate a bundler
 ---
 
 # Integrate a bundler
