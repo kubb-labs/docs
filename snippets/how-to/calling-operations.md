@@ -174,6 +174,35 @@ await getPetById({ path: { petId: 1 }, client: staging })
 
 The configuration object is the same `ClientConfig` in both cases.
 
+## Validate response bodies
+
+Add `@kubb/plugin-zod` and set the Fetch client's `validator` to `'zod'` to check each success and error response at runtime. A body that fails its generated schema throws a `ParseError`. See the [validator reference](/plugins/plugin-fetch/reference/options#validator) for request validation and per-direction settings.
+
+```typescript [kubb.config.ts]
+import { defineConfig } from 'kubb/config'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginZod } from '@kubb/plugin-zod'
+import { pluginFetch } from '@kubb/plugin-fetch'
+
+export default defineConfig({
+  input: './petStore.yaml',
+  output: { path: './src/gen', clean: true },
+  plugins: [
+    pluginTs({ output: { path: 'types', mode: 'directory' } }),
+    pluginZod({ output: { path: 'zod', mode: 'directory' } }),
+    pluginFetch({ output: { path: 'clients', mode: 'directory' }, validator: 'zod' }),
+  ],
+})
+```
+
+The generated operation validates the response before returning its typed result:
+
+```typescript
+import { findPetsByStatus } from './src/gen/clients/findPetsByStatus'
+
+const { data } = await findPetsByStatus({ query: { status: ['available'] } })
+```
+
 ## Pass native client options
 
 Pass `options` on an operation for native transport settings:
