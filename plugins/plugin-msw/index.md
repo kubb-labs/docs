@@ -4,13 +4,9 @@ title: Kubb MSW Plugin
 description: Generates MSW request handlers from your OpenAPI spec so you can
   mock the API in tests and during local development.
 outline: deep
-recipes:
-  - id: handlers-you-fill-from-tests
-    title: Handlers you fill from tests
-  - id: auto-generated-mock-data
-    title: Auto-generated mock data
-  - id: register-handlers-with-a-server
-    title: Register handlers with a server
+guides:
+  - id: mock-api
+    title: Mock API responses
 kind: plugin
 id: plugin-msw
 name: MSW
@@ -49,13 +45,11 @@ resources:
 
 # @kubb/plugin-msw
 
-`@kubb/plugin-msw` turns your OpenAPI spec into [MSW](https://mswjs.io/) request handlers you drop into a test setup or a service worker to mock the API. Each handler matches the spec's path, method, status, and response body.
-
-By default a handler returns an empty typed payload you fill in from tests. Set [`parser: 'faker'`](/plugins/plugin-msw/reference/options#parser) to return generated data from `@kubb/plugin-faker` instead.
+`@kubb/plugin-msw` generates typed [MSW](https://mswjs.io/) handlers from OpenAPI operations. Supply response data in tests or generate it with Faker.
 
 ## Installation
 
-::code-group{sync="package-manager"}
+::code-group
 
 ```shell [bun]
 bun add -d @kubb/plugin-msw
@@ -77,16 +71,9 @@ yarn add -D @kubb/plugin-msw
 
 ## Dependencies
 
-This plugin always depends on [`@kubb/plugin-ts`](/plugins/plugin-ts/), so keep `pluginTs()` in the plugins array.
-
-It depends on [`@kubb/plugin-faker`](/plugins/plugin-faker/) only when you set `parser: 'faker'`. The default `parser: 'data'` doesn't need Faker.
-
-> [!IMPORTANT]
-> The generated handlers need MSW v2 or higher.
+Add [`pluginTs`](/plugins/plugin-ts/). Add [`pluginFaker`](/plugins/plugin-faker/) when `parser: 'faker'`; the default `parser: 'data'` does not need it. Generated handlers require MSW v2 or higher.
 
 ## Example
-
-::code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -98,19 +85,15 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs(),
-    pluginMsw({
-      output: { path: './mocks', mode: 'directory' },
-      group: {
-        type: 'tag',
-        name: ({ group }) => `${group}Service`,
-      },
-      handlers: true,
-    }),
+    pluginMsw({ output: { path: 'handlers', mode: 'directory' }, handlers: true }),
   ],
 })
 ```
 
-::
+## Documentation
+
+- [Options](./reference/options)
+- [Mock API responses](./guide/mock-api)
 
 ## See also
 

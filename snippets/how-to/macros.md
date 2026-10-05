@@ -1,8 +1,8 @@
 # Write a macro
 
-A macro is a named, composable transform over Kubb's [AST](/docs/5.x/guide/concepts/ast). It rewrites the schema and operation nodes that adapters produce before generators print code, so you can rename a symbol, retype a field, strip metadata, or normalize a shape without forking an adapter or a generator. Because macros run on the shared AST, the same macro works with any adapter that emits Kubb AST nodes and across output targets such as TypeScript, Zod, and any [printer](/docs/5.x/guide/going-further/printers) a plugin supplies.
+Use a macro to transform schema or operation nodes before generation. Macros can rename symbols, change field types, or remove metadata across output targets.
 
-The engine (`defineMacro`, `composeMacros`, `applyMacros`, and the `Macro` type) comes with the `ast` namespace from `kubb/kit`, next to the node tree it transforms. The built-in macro presets are named exports of `kubb/kit` itself.
+Import the macro engine through `ast` from `kubb/kit`; built-in presets are named exports of `kubb/kit`.
 
 ## Shape
 
@@ -23,7 +23,7 @@ Each callback returns a replacement node, or `undefined` or `null` to leave the 
 
 ## Writing a macro
 
-`defineMacro` types a macro and keeps its definition in one place, the way `definePlugin` does for plugins.
+Define the node transformation:
 
 ```typescript twoslash [macro.ts]
 import { ast } from 'kubb/kit'
@@ -110,7 +110,7 @@ Macros run before resolver options are computed, so a renamed `operationId` or `
 
 ## Built-in macros
 
-Kubb ships built-in macros for common schema normalizations that any adapter can apply. Import them like any macro and compose them with your own.
+Import built-in presets for common transformations:
 
 - `macroSimplifyUnion` drops union members that a broader member already covers, such as a multi-value string enum next to a plain `string`. Single-value enums stay, since they narrow the type.
 - `macroDiscriminatorEnum` rewrites a discriminator property into a string enum of its allowed values. It reads options, so you call it to build a macro.
@@ -130,6 +130,4 @@ const next = ast.applyMacros(root, [
 
 Plugins that import another plugin's output compute names from the nodes they see, so register a rename on every plugin that touches the schema, for example by passing one shared `macros` array to each plugin's options.
 
-## Sharing macros
-
-A macro is a plain value, so you export it and import it wherever you need it. Group related macros in a module and pull them into any plugin or project, the same way you would with plugins.
+Export macros from a shared module to reuse them across plugins and projects.

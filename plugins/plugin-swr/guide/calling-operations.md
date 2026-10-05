@@ -1,7 +1,8 @@
 ---
 layout: doc
 title: Call operations
-description: Use the SWR hooks Kubb generates from your OpenAPI spec. Queries fetch with typed parameters, and mutations pass their input through trigger.
+description: Use the SWR hooks Kubb generates from your OpenAPI spec. Queries
+  fetch with typed parameters, and mutations pass their input through trigger.
 outline: deep
 ---
 
@@ -16,7 +17,7 @@ A query hook takes the operation's grouped request config (`path`, `query`, `hea
 ```typescript
 import { useGetPetById } from './gen/hooks/useGetPetById'
 
-const { data, error, isLoading } = useGetPetById({ path: { petId: 1 } })
+const { data, error, isLoading } = useGetPetById({ path: { petId: 1n } })
 ```
 
 The second argument holds the SWR configuration plus Kubb-specific switches. `query` takes any `SWRConfiguration`, `client` takes per-call request config for the underlying client, `shouldFetch: false` makes the key `null` so SWR skips the request, and `immutable: true` disables revalidation:
@@ -25,16 +26,15 @@ The second argument holds the SWR configuration plus Kubb-specific switches. `qu
 import { useGetPetById } from './gen/hooks/useGetPetById'
 
 useGetPetById(
-  { path: { petId: 1 } },
+  { path: { petId: 1n } },
   {
     query: { refreshInterval: 30_000 },
-    client: { headers: { 'X-Trace': 'abc' } },
-    shouldFetch: petId != null,
+    client: { baseURL: 'https://api.example.com/v1' },
   },
 )
 ```
 
-The key is built by the exported `queryKey` helper as `[{ url, params }]`, so you can also match it from `mutate` for cache updates.
+The exported `queryKey` helper includes the operation URL and request parameters. Use it with `mutate` to target cache updates.
 
 ## Mutations
 
@@ -55,3 +55,33 @@ await trigger({ body: { name: 'Fluffy' } })
 A `mutationKey` helper is exported next to the hook, and `shouldFetch: false` sets the key to `null` so the mutation cannot fire.
 
 <!--@include: ../../../snippets/how-to/query-errors-transport.md-->
+
+## Skip requests until ready
+
+Set `shouldFetch: false` to give SWR a `null` key and skip the request. Enable it once the required parameters are available.
+
+```typescript [usage.ts]
+import { useGetPetById } from './gen/hooks/useGetPetById'
+
+export function useSelectedPet(petId: bigint | undefined) {
+  return useGetPetById(
+    { path: { petId: petId ?? 0n } },
+    { shouldFetch: petId != null },
+  )
+}
+```
+
+## Fetch immutable data
+
+Set `immutable: true` for data that stays unchanged. This disables revalidation on stale data, window focus, and reconnect.
+
+```typescript [usage.ts]
+import { useGetPetById } from './gen/hooks/useGetPetById'
+
+const { data, error } = useGetPetById(
+  { path: { petId: 1n } },
+  { immutable: true },
+)
+```
+
+Options in `query` override these revalidation defaults.

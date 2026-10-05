@@ -1,20 +1,22 @@
 ---
 layout: doc
 title: Kit API
-description: The kubb/kit reference for authoring plugins, generators, resolvers, renderers, adapters, parsers, and storage backends, plus the ast namespace, Diagnostics, the engine surface, and the testing helpers.
-outline: [2, 3]
+description: The kubb/kit reference for authoring plugins, generators,
+  resolvers, renderers, adapters, parsers, and storage backends, plus the ast
+  namespace, Diagnostics, the engine surface, and the testing helpers.
+outline:
+  - 2
+  - 3
 order: 3
 navigation:
-  title: "Kit"
+  title: Kit
 ---
 
 # Kit API
 
-`kubb/kit` contains everything you need to build your own plugin and custom logic. Plugins, generators, resolvers, renderers, adapters, parsers, and storage backends all start here. It is a subpath of the top-level `kubb` package, so there is nothing extra to install. Import straight from `kubb/kit`.
+Import authoring APIs from `kubb/kit`, included with the `kubb` package.
 
 ## Big concepts
-
-The seven pieces you reach for when you build something new. Each has its own page.
 
 | Concept                     | Entry point                                  | What it does                                                             |
 | --------------------------- | -------------------------------------------- | ------------------------------------------------------------------------ |
@@ -38,14 +40,6 @@ The seven pieces you reach for when you build something new. Each has its own pa
 
 ## See also
 
-- [Kit concepts](/docs/5.x/guide/concepts/kit) for why the authoring toolkit is a separate surface from the engine
-- [JSX API reference](/docs/5.x/reference/jsx) for `kubb/jsx`, the JSX renderer
-- [Plugin concepts](/docs/5.x/guide/concepts/plugins) for lifecycle hooks, generators, resolvers, and the plugin registry
-- [AST concepts](/docs/5.x/guide/concepts/ast) for `InputNode`, `OperationNode`, `SchemaNode`, and traversal
-- [Adapter concepts](/docs/5.x/guide/concepts/adapters) on how adapters convert specs to the universal AST
-- [Parser concepts](/docs/5.x/guide/concepts/parsers) on converting `FileNode` AST to source strings
-- [Macros concepts](/docs/5.x/guide/going-further/macros) for `defineMacro`, `composeMacros`, and `applyMacros`
-- [Barrel files](/docs/5.x/guide/going-further/barrel-files) for barrel generation with `@kubb/plugin-barrel`
-- [Creating plugins](/docs/5.x/guide/going-further/creating-plugins) for a step-by-step guide to building a full plugin
-- [Programmatic usage recipes](/docs/5.x/guide/recipes#programmatic-build) with `createKubb` usage patterns
-- [Configuration reference](/docs/5.x/reference/configuration) for all `defineConfig` options
+- [Extension model](/docs/5.x/explanation/extensions)
+- [Create your first plugin](/docs/5.x/tutorials/creating-plugins)
+- [JSX reference](/docs/5.x/reference/jsx)

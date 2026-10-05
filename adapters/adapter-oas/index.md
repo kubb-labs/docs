@@ -1,9 +1,9 @@
 ---
 layout: doc
 title: Kubb OpenAPI Adapter
-description: Reads an OpenAPI 2.0, 3.0, or 3.1 spec and converts every schema and
-  operation into the AST that Kubb plugins generate from, so one adapter feeds
-  the whole build.
+description: Reads an OpenAPI 2.0, 3.0, or 3.1 spec and converts every schema
+  and operation into the AST that Kubb plugins generate from, so one adapter
+  feeds the whole build.
 outline: deep
 kind: adapter
 id: adapter-oas
@@ -37,15 +37,13 @@ resources:
 
 # @kubb/adapter-oas
 
-The OpenAPI adapter sits between your spec and every Kubb plugin. It reads the spec from `input`, whether that is a file, a URL, inline content, or a parsed object, validates it, and converts each schema and operation into Kubb's universal AST that downstream plugins consume.
+`@kubb/adapter-oas` reads and validates OpenAPI 2.0, 3.0, and 3.1 documents, then converts schemas and operations into the AST used by every plugin.
 
-Configure it once on `defineConfig`. Its choices for date representation, integer width, and server URL apply to every plugin in the build.
-
-See [Options](/adapters/adapter-oas/reference/options) for the full configuration reference.
+Configure it on `defineConfig.adapter`. Its type mappings apply to every plugin in the build. Kubb uses `adapterOas()` by default; add it explicitly to change [Options](./reference/options).
 
 ## Installation
 
-::code-group{sync="package-manager"}
+::code-group
 
 ```shell [bun]
 bun add -d @kubb/adapter-oas
@@ -67,11 +65,9 @@ yarn add -D @kubb/adapter-oas
 
 ## Dependencies
 
-`@kubb/adapter-oas` has no plugin dependencies. Every other Kubb plugin depends on it, not the other way around.
+No plugin dependencies.
 
 ## Example
-
-::code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -81,22 +77,10 @@ import { pluginTs } from '@kubb/plugin-ts'
 export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen' },
-  adapter: adapterOas({
-    validate: true,
-    server: { index: 0, variables: { env: 'prod' } },
-    discriminator: 'propagate',
-    enums: 'root',
-    dateType: 'date',
-    integerType: 'number',
-    unknownType: 'unknown',
-    emptySchemaType: 'unknown',
-    enumSuffix: 'enum',
-  }),
+  adapter: adapterOas({ dateType: 'date', integerType: 'number' }),
   plugins: [pluginTs()],
 })
 ```
-
-::
 
 ## See also
 

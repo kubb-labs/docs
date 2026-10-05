@@ -1,21 +1,25 @@
 ---
 layout: doc
 title: Parsers
-description: defineParser creates a parser that converts a generated file AST into the source string written to disk. Covers the Parser interface, the built-in TypeScript parser, and adding your own.
-outline: [2, 3]
+description: defineParser creates a parser that converts a generated file AST
+  into the source string written to disk. Covers the Parser interface, the
+  built-in TypeScript parser, and adding your own.
+outline:
+  - 2
+  - 3
 order: 6
 ---
 
 # Parsers
 
-A parser turns a `FileNode` into the source string written to disk. This page documents `defineParser`, the `Parser` interface, the built-in parsers, and how to add your own. For why parsers exist and where they sit in the pipeline, see [Parsers concepts](/docs/5.x/guide/concepts/parsers).
+A parser turns a `FileNode` into source code.
 
 > [!TIP]
 > For TypeScript and JavaScript output use the built-in [`@kubb/parser-ts`](/parsers/parser-ts/). It is added by default when you import `defineConfig` from the `kubb` package. Build a custom parser only when you target a different language, such as Python, Kotlin, or Rust.
 
 ## `defineParser`
 
-`defineParser` creates a parser that converts generated file ASTs to formatted source strings. Each parser declares which file extensions it handles via `extNames`. A minimal parser registers its extensions and concatenates each source:
+`defineParser` wraps a factory and infers its parser type. The factory receives caller options, or an empty object when omitted. Declare extensions with `extNames`:
 
 ```typescript twoslash [parserText.ts]
 import { defineParser } from 'kubb/kit'
@@ -69,7 +73,7 @@ When no parser matches a file's extension, the file processor joins the file's s
 
 ## Parser naming convention
 
-Parsers share the layout of [plugins](/docs/5.x/guide/concepts/plugins) and [adapters](/docs/5.x/guide/concepts/adapters):
+Parsers share the layout of [plugins](/docs/5.x/explanation/extensions#plugins) and [adapters](/docs/5.x/explanation/architecture#adapters):
 
 | Surface             | Pattern                                          | Example                          |
 | ------------------- | ------------------------------------------------ | -------------------------------- |
@@ -77,77 +81,9 @@ Parsers share the layout of [plugins](/docs/5.x/guide/concepts/plugins) and [ada
 | Parser runtime name | The output language or format (lowercase)        | `'typescript'`, `'markdown'`     |
 | Factory export      | `parser<Name>` (camelCase)                       | `parserTs`, `parserMd`           |
 
-A parser is a factory function that returns a [`Parser`](https://github.com/kubb-labs/kubb/blob/main/packages/core/src/defineParser.ts#L7) object. Call it when you pass it to `parsers:` in `defineConfig`:
-
-```typescript twoslash [naming.ts]
-import { defineParser } from 'kubb/kit'
-
-export const parserCustom = defineParser(() => ({
-  name: 'custom',
-  extNames: ['.custom'],
-  parse(file) {
-    return file.sources.map((source) => source.name ?? '').join('\n')
-  },
-  print(...nodes) {
-    return nodes.map(String).join('\n')
-  },
-}))
-```
+Call the parser factory when registering it in `parsers`.
 
 > [!TIP]
 > Parsers compose by extension. `parserTs` (`.ts`, `.js`) and `parserTsx` (`.tsx`, `.jsx`) ship in the same [`@kubb/parser-ts`](/parsers/parser-ts/) package and register side by side.
 
-## Creating a custom parser
-
-`defineParser` wraps a factory function and infers the parser type, mirroring `definePlugin`: the factory receives the caller's options, and calling the result without options passes an empty object.
-
-```typescript twoslash [parserPython.ts]
-import { defineParser } from 'kubb/kit'
-
-export const parserPython = defineParser(() => ({
-  name: 'parser-python',
-  extNames: ['.py', '.pyi'],
-  parse(file) {
-    const lines: Array<string> = []
-
-    if (file.banner) {
-      lines.push(file.banner)
-    }
-
-    for (const source of file.sources) {
-      for (const node of source.nodes ?? []) {
-        if (node.kind === 'Text') {
-          lines.push(node.value)
-        }
-      }
-    }
-
-    if (file.footer) {
-      lines.push(file.footer)
-    }
-
-    return lines.join('\n')
-  },
-  print(...nodes) {
-    return nodes.map(String).join('\n')
-  },
-}))
-```
-
-Register it alongside the built-ins:
-
-```typescript [kubb.config.ts]
-
-import { defineConfig } from 'kubb/config'
-import { parserTs } from '@kubb/parser-ts'
-import { parserPython } from './parserPython.ts'
-
-export default defineConfig({
-  input: './petStore.yaml',
-  output: { path: './src/gen' },
-  parsers: [parserTs(), parserPython()],
-})
-```
-
-> [!TIP]
-> Set `extNames: undefined` to register a catch-all fallback that runs when no other parser matches. Useful for a default `.txt` writer or for inspecting what files the build produces.
+Set `extNames: undefined` for a catch-all fallback when no parser matches.

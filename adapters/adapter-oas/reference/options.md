@@ -1,13 +1,15 @@
 ---
 layout: doc
 title: Options
-description: Configuration options for @kubb/adapter-oas covering spec validation, content type, the server base URL, discriminators, enums, and how OpenAPI types map to TypeScript.
+description: Configuration options for @kubb/adapter-oas covering spec
+  validation, content type, the server base URL, discriminators, enums, and how
+  OpenAPI types map to TypeScript.
 outline: deep
 ---
 
 # Options
 
-Options for `adapterOas`, with type and default in the table.
+All `adapterOas` options are optional. Types and defaults are listed below.
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |

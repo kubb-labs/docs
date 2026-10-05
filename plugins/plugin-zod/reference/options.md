@@ -20,7 +20,7 @@ Options for `pluginZod`.
 | [`regexType`](#regextype) | `'literal' \| 'constructor'` | `'literal'` | How an OpenAPI `pattern` is written |
 | [`compile`](#compile) | `boolean \| { strict?: boolean }` | `false` | Wrap schemas in `z.compile` for fast-path validation |
 | [`mini`](#mini) | `boolean` | `false` | Generate Zod Mini schemas |
-| [`typeGuards`](#typeguards) | `boolean | { is?: boolean, assert?: boolean }` | `false` | Generate `is*` type guards and `assert*` assertions |
+| [`typeGuards`](#typeguards) | `boolean \| { is?: boolean, assert?: boolean }` | `false` | Generate `is*` type guards and `assert*` assertions |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | `[]` | Apply different options per pattern |
@@ -36,9 +36,10 @@ Where the generated `.ts` files are written and how they are exported.
 
 Folder where the plugin writes its files, resolved against the global `output.path` on `defineConfig`. For a single file, set `output.mode: 'file'` and give `path` an extension, such as `'zod.ts'`.
 
-| Type | Default |
-| --- | --- |
-| `string` | `'zod'` |
+|          |          |
+| -------: | :------- |
+|    Type: | `string` |
+| Default: | `'zod'`  |
 
 #### output.mode
 
@@ -49,9 +50,10 @@ How the plugin consolidates generated code into files.
 
 Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 
-| Type | Default |
-| --- | --- |
-| `'directory' \| 'file'` | follows the shape of `output.path` |
+|          |                                    |
+| -------: | :--------------------------------- |
+|    Type: | `'directory' \| 'file'`            |
+| Default: | follows the shape of `output.path` |
 
 #### output.barrel
 
@@ -73,9 +75,10 @@ Leave it unset and Kubb reads `output.path`: a name with an extension means one 
 
 Function that turns a group key (first tag or path segment) into a folder or identifier name, used as the subdirectory under `output.path` and a suffix for aggregate files. For `type: 'path'`, the default keeps the URL segment as-is instead of camelCasing.
 
-| Type | Default |
-| --- | --- |
-| `(context: { group: string }) => string` | `'tag'`: `({ group }) => camelCase(group)`; `'path'`: the raw URL segment, uncased |
+|          |                                          |
+| -------: | :--------------------------------------- |
+|    Type: | `(context: { group: string }) => string` |
+| Default: | `'tag'`: `({ group }) => camelCase(group)`; `'path'`: the raw URL segment, uncased |
 
 ### importPath
 
@@ -119,7 +122,7 @@ z.coerce.date()
 > [!NOTE]
 > `dates` coerces only `Date`-typed fields (from `dateType: 'date'`). Fields kept as ISO strings (`z.iso.date()`, `z.iso.datetime()`) are never coerced.
 >
-> `format: time` fields are never coerced either, because `new Date()` cannot parse a bare `HH:mm:ss`. With `dateType.time: 'date'`, a time decodes into a `Date` on `1970-01-01` UTC and encodes back to `HH:mm:ss` (fractional seconds are dropped). For a real time-of-day type such as `Temporal.PlainTime`, see [Encode a custom type on requests](/plugins/plugin-zod/recipes/encode-a-custom-type-on-requests).
+> `format: time` fields are never coerced either, because `new Date()` cannot parse a bare `HH:mm:ss`. With `dateType.time: 'date'`, a time decodes into a `Date` on `1970-01-01` UTC and encodes back to `HH:mm:ss` (fractional seconds are dropped). For a real time-of-day type such as `Temporal.PlainTime`, see [Encode a custom type on requests](/plugins/plugin-zod/guide/customization#encode-custom-types).
 
 ### guidType
 
@@ -139,7 +142,7 @@ Use `'constructor'` when a regex literal breaks your build or you need a string 
 
 ### compile
 
-Wraps generated schemas in `z.compile(...)` to enable Zod's fast-path validation logic (available in Zod v4.5.0+). Under the hood, `z.compile()` walks the schema once and generates flat, loop-free JavaScript validation code that executes significantly faster than standard interpreter traversal.
+Wraps schemas in `z.compile(...)` to generate validation code instead of interpreting the schema on each call.
 
 - `true` compiles schemas using `z.compile(...)`.
 - `false` (default) leaves schemas uncompiled.
@@ -176,9 +179,6 @@ export const petSchema = z.compile(
 ### mini
 
 Switches code generation to [Zod Mini](https://zod.dev/packages/mini), which uses the functional API (`z.optional(z.string())`) instead of the chainable one (`z.string().optional()`) so bundlers can tree-shake unused validators. `mini: true` also defaults `importPath` to `'zod/mini'`.
-
-> [!WARNING]
-> Zod Mini is currently in beta. Its API may change in a future release.
 
 ```typescript
 import * as z from 'zod/mini'
@@ -226,6 +226,20 @@ export function assertPet(data: unknown): asserts data is z.infer<typeof petSche
 
 When [`inferred`](#inferred) is `true`, the guards narrow to the generated schema type alias (e.g. `PetSchemaType`). When [`mini`](#mini) is `true`, they route through `z.validate` and `z.parse`.
 
+Use the generated guard to filter unknown data, or assert a value before reading it:
+
+```typescript [usage.ts]
+import { isPet, assertPet } from './src/gen/zod/petSchema'
+
+const items: unknown[] = []
+const pets = items.filter(isPet)
+
+export function processPayload(payload: unknown) {
+  assertPet(payload)
+  console.log(payload.name)
+}
+```
+
 ### include
 
 <!--@include: ../../../snippets/how-to/include.md-->
@@ -242,7 +256,7 @@ For example, `override: [{ type: 'tag', pattern: 'user', options: { coercion: tr
 
 ### resolver
 
-Changes how the plugin names generated files and symbols. Pass a partial patch: override only the members you want, and anything you omit keeps `resolverZod`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
+Overrides generated file and symbol names. Omitted members keep the plugin's resolver defaults. See [Override a resolver](/docs/5.x/how-to/resolvers) for the `this` context and how a patch layers over the default.
 
 > [!TIP]
 > Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
@@ -285,7 +299,7 @@ type ResolverZodPatch = {
 
 ### printer
 
-Replaces the Zod handler for a schema type such as `'integer'` or `'string'`, each returning the Zod expression as a string and targeting the Zod Mini printer when `mini: true`. Inside a handler, `this.base(node)` returns the built-in output to wrap and `this.transform(node)` recurses into nested nodes. See the [printer guide](/docs/5.x/guide/going-further/printers).
+Replaces the Zod handler for a schema type such as `'integer'` or `'string'`, each returning the Zod expression as a string and targeting the Zod Mini printer when `mini: true`. Inside a handler, `this.base(node)` returns the built-in output to wrap and `this.transform(node)` recurses into nested nodes. See the [printer guide](/docs/5.x/how-to/printers).
 
 ```typescript twoslash
 import { pluginZod } from '@kubb/plugin-zod'
@@ -304,4 +318,40 @@ pluginZod({
 })
 ```
 
-A handler that reads `this.options.direction` (`'decode'` for responses, `'encode'` for request bodies and parameters) and returns a different expression per direction registers a two-way conversion: the generator detects the difference and emits an `${name}InputSchema` variant for request bodies to resolve to, including through a `$ref`. See [Encode a custom type on requests](/plugins/plugin-zod/recipes/encode-a-custom-type-on-requests).
+A handler that reads `this.options.direction` (`'decode'` for responses, `'encode'` for request bodies and parameters) and returns a different expression per direction registers a two-way conversion: the generator detects the difference and emits an `${name}InputSchema` variant for request bodies to resolve to, including through a `$ref`. See [Encode a custom type on requests](/plugins/plugin-zod/guide/customization#encode-custom-types).
+
+## Format and type mappings
+
+`@kubb/plugin-zod` generates native Zod v4 schemas for standard OpenAPI types and formats:
+
+| OpenAPI Type / Format | Standard Zod Output | Zod Mini Output | Notes |
+| :--- | :--- | :--- | :--- |
+| `integer` | `z.int()` | `z.int()` | Coerces to `z.coerce.number().int()` when `coercion.numbers` is enabled |
+| `integer`, `format: int32` | `z.int32()` | `z.int32()` | 32-bit signed integer |
+| `integer`, `format: uint32` | `z.uint32()` | `z.uint32()` | 32-bit unsigned integer |
+| `integer`, `format: int64` | `z.bigint()` | `z.bigint()` | 64-bit integer |
+| `string`, `format: byte` / `base64` | `z.base64()` | `z.base64()` | Base64 string validation |
+| `string`, `format: base64url` | `z.base64url()` | `z.base64url()` | URL-safe base64 string validation |
+| `string`, `format: jwt` | `z.jwt()` | `z.jwt()` | JSON Web Token format |
+| `string`, `format: ulid` | `z.ulid()` | `z.ulid()` | ULID format |
+| `string`, `format: iban` | `z.iban()` | `z.iban()` | International Bank Account Number |
+| `string`, `format: duration` | `z.iso.duration()` | `z.iso.duration()` | ISO 8601 duration format |
+| `string`, `format: uuid` | `z.uuid()` (or `z.guid()`) | `z.uuid()` (or `z.guid()`) | Configured via `guidType` |
+| `string`, `format: email` | `z.email()` | `z.email()` | Email format |
+| `string`, `format: uri` / `url` | `z.url()` | `z.url()` | URL format |
+| `string`, `format: ipv4` / `ipv6` | `z.ipv4()` / `z.ipv6()` | `z.ipv4()` / `z.ipv6()` | IP address format |
+| `string`, `format: date` | `z.iso.date()` | `z.iso.date()` | ISO 8601 date |
+| `string`, `format: date-time` | `z.iso.datetime()` | `z.string()` | ISO 8601 date-time |
+| `string`, `format: time` | `z.iso.time()` | `z.iso.time()` | ISO 8601 time |
+| `object`, `additionalProperties: <schema>` | `z.record(z.string(), schema)` | `z.record(z.string(), schema)` | Dictionary with no fixed properties |
+| `object`, `additionalProperties: true` | `z.looseObject(shape)` | `z.looseObject(shape)` | Open/passthrough object allowing extra keys |
+| `object`, `propertyNames: <schema>` | `z.record(keySchema, schema)` | `z.record(keySchema, schema)` | Dynamic map with validated key schema (e.g. pattern, format) |
+| `object`, `propertyNames: <enum>` | `z.partialRecord(enumSchema, schema)` | `z.partialRecord(enumSchema, schema)` | Closed key schemas use partial record to avoid exhaustiveness |
+
+## Dictionaries, open objects, and key schemas
+
+OpenAPI 3.1 `propertyNames` validates dictionary keys. Open key schemas use `z.record(keySchema, valueSchema)`, including regex, UUID, and length constraints. Closed keys, such as enums, literals, or unions of enums, use `z.partialRecord` so only present keys are validated. This preserves OpenAPI's partial semantics and infers `Partial<Record<Keys, Value>>`.
+
+`patternProperties` combines key regex patterns into an alternation and emits `z.record(z.string().regex(...), valueSchema)`. Zod Mini uses `z.string().check(z.regex(...))` for the key schema.
+
+An `additionalProperties` schema without fixed properties produces a dictionary. With fixed properties, it produces `.catchall(valueSchema)` to preserve that declared shape. `additionalProperties: true` emits `z.looseObject(shape)` to allow undeclared keys.

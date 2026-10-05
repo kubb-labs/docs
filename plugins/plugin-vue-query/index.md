@@ -1,19 +1,13 @@
 ---
 layout: doc
 title: Kubb Vue Query Plugin
-description: Generates TanStack Query composables for Vue from your OpenAPI spec, so
-  every read and write is a typed useQuery, useInfiniteQuery, or useMutation.
+description: Generates TanStack Query composables for Vue from your OpenAPI
+  spec, so every read and write is a typed useQuery, useInfiniteQuery, or
+  useMutation.
 outline: deep
 guides:
   - id: calling-operations
     title: Call operations
-recipes:
-  - id: infinite-scroll-query
-    title: Infinite scroll query
-  - id: custom-query-keys
-    title: Custom query keys
-  - id: reactive-params-that-refetch
-    title: Reactive params that refetch
 kind: plugin
 id: plugin-vue-query
 name: Vue Query
@@ -51,15 +45,11 @@ resources:
 
 # @kubb/plugin-vue-query
 
-`@kubb/plugin-vue-query` turns each OpenAPI operation into a [TanStack Query](https://tanstack.com/query) composable for Vue. Read operations become `useFoo`, with an optional `useFooInfinite` variant, and write operations become `useFoo` mutations. Every composable is typed: query keys, input variables, response data, and error shape all come from the spec.
-
-The composables call an HTTP client, so a client plugin must be registered: add `@kubb/plugin-ts` for the types and either `@kubb/plugin-axios` or `@kubb/plugin-fetch` for the client.
-
-Each composable takes its parameters as a single grouped options object shaped as `{ body, path, query, headers }`, with camelCase property names. The request still sends the original parameter names from the spec, and Kubb writes that mapping for you.
+`@kubb/plugin-vue-query` generates TanStack Query option factories and cache keys from OpenAPI operations. Set `hooks: true` to also generate Vue composables with reactive parameters.
 
 ## Installation
 
-::code-group{sync="package-manager"}
+::code-group
 
 ```shell [bun]
 bun add -d @kubb/plugin-vue-query
@@ -81,24 +71,14 @@ yarn add -D @kubb/plugin-vue-query
 
 ## Dependencies
 
-This plugin needs these plugins in your config:
-
-- [`@kubb/plugin-ts`](/plugins/plugin-ts/) for the types.
-- A client plugin, [`@kubb/plugin-axios`](/plugins/plugin-axios/) or [`@kubb/plugin-fetch`](/plugins/plugin-fetch/), for the HTTP layer. The composables call its functions, so generation errors out when no client plugin is registered.
-
-> [!IMPORTANT]
-> The generated composables need `@tanstack/vue-query` v5 or higher.
-
-For runtime validation, set `validator` on the client plugin. The generated operations carry the validation, so the composables get it for free.
+Add [`pluginTs`](/plugins/plugin-ts/) and an [Axios](/plugins/plugin-axios/) or [Fetch](/plugins/plugin-fetch/) client plugin. Generated output requires `@tanstack/vue-query` v5 or higher. Configure validation on the client plugin.
 
 ## Example
-
-::code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
 import { pluginTs } from '@kubb/plugin-ts'
-import { pluginAxios } from '@kubb/plugin-axios'
+import { pluginFetch } from '@kubb/plugin-fetch'
 import { pluginVueQuery } from '@kubb/plugin-vue-query'
 
 export default defineConfig({
@@ -106,30 +86,16 @@ export default defineConfig({
   output: { path: './src/gen' },
   plugins: [
     pluginTs(),
-    pluginAxios(),
-    pluginVueQuery({
-      output: { path: './hooks', mode: 'directory' },
-      group: {
-        type: 'tag',
-        name: ({ group }) => `${group}Hooks`,
-      },
-      client: 'axios',
-      mutation: { methods: ['POST', 'PUT', 'DELETE'] },
-      infinite: {
-        queryParam: 'next_page',
-        initialPageParam: 0,
-        nextParam: 'pagination.next.cursor',
-      },
-      query: {
-        methods: ['GET'],
-        importPath: '@tanstack/vue-query',
-      },
-    }),
+    pluginFetch(),
+    pluginVueQuery({ hooks: true }),
   ],
 })
 ```
 
-::
+## Documentation
+
+- [Options](./reference/options)
+- [Call operations](./guide/calling-operations)
 
 ## See also
 

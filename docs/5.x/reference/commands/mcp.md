@@ -1,12 +1,15 @@
 ---
 layout: doc
 title: kubb mcp
-description: The mcp command starts a Model Context Protocol server so LLM clients can interact with your schemas and trigger generation.
-outline: [2, 3]
+description: The mcp command starts a Model Context Protocol server so LLM
+  clients can interact with your schemas and trigger generation.
+outline:
+  - 2
+  - 3
 order: 4
 ---
 
-# `kubb mcp`
+# kubb mcp
 
 Run `kubb mcp` to start a [Model Context Protocol](https://modelcontextprotocol.io/) server. LLM clients such as Claude, Cursor, and VS Code can then read your schemas and trigger generation.
 
@@ -57,6 +60,6 @@ Most MCP clients accept a JSON config with `command` and `args`. Register the Ku
 
 ## See also
 
-- [MCP integration guide](/docs/5.x/ai/mcp): connect the server to Claude Desktop, Cursor, and other clients
+- [MCP integration guide](/docs/5.x/how-to/ai/mcp): connect the server to Claude Desktop, Cursor, and other clients
 - [`@kubb/plugin-mcp`](/plugins/plugin-mcp/), a different package that generates an MCP server from your OpenAPI spec
-- [Concepts: Plugins](/docs/5.x/guide/concepts/plugins): how plugins integrate with the Kubb pipeline
+- [Concepts: Plugins](/docs/5.x/explanation/extensions#plugins): how plugins integrate with the Kubb pipeline

@@ -1,11 +1,14 @@
 ---
 layout: doc
 title: JSX renderer
-description: The kubb/jsx surface backed by @kubb/renderer-jsx. jsxRenderer, the built-in components, and the JSX runtime for component-based code generation.
-outline: [2, 3]
+description: The kubb/jsx surface backed by @kubb/renderer-jsx. jsxRenderer, the
+  built-in components, and the JSX runtime for component-based code generation.
+outline:
+  - 2
+  - 3
 order: 4
 navigation:
-  title: "JSX"
+  title: JSX
 ---
 
 # JSX renderer
@@ -81,7 +84,7 @@ const files = renderer.files
 
 `File` is the container. Its members `File.Source`, `File.Import`, and `File.Export` attach source blocks, imports, and exports to it.
 
-#### `File`
+#### `File` {#file}
 
 Declares a generated output file. Pass both `baseName` and `path` to register a file entry. Omit both to render the children inline without creating a file.
 
@@ -103,7 +106,7 @@ Declares a generated output file. Pass both `baseName` and `path` to register a 
 </File>
 ```
 
-#### `File.Source`
+#### `File.Source` {#file-source}
 
 Marks a block of source text that belongs to the enclosing `File`. The children are the source string.
 
@@ -121,7 +124,7 @@ Marks a block of source text that belongs to the enclosing `File`. The children 
 </File.Source>
 ```
 
-#### `File.Import`
+#### `File.Import` {#file-import}
 
 Declares an import for the enclosing `File`. The renderer emits it at the top of the generated file.
 
@@ -141,7 +144,7 @@ Declares an import for the enclosing `File`. The renderer emits it at the top of
 // import * as z from 'zod'
 ```
 
-#### `File.Export`
+#### `File.Export` {#file-export}
 
 Declares an export for the enclosing `File`. The renderer emits it at the top of the generated file.
 
@@ -164,7 +167,7 @@ Declares an export for the enclosing `File`. The renderer emits it at the top of
 
 The JavaScript components emit TypeScript declarations. Nest them inside a `File.Source` so the renderer writes them into a `.ts` file.
 
-#### `Const`
+#### `Const` {#const}
 
 Generates a TypeScript constant declaration. The children are the initializer expression.
 
@@ -184,7 +187,7 @@ Generates a TypeScript constant declaration. The children are the initializer ex
 // export const petSchema: z.ZodType<Pet> = z.object({ id: z.number() })
 ```
 
-#### `Function`
+#### `Function` {#function}
 
 Generates a TypeScript function declaration. The children are the function body.
 
@@ -207,7 +210,7 @@ Generates a TypeScript function declaration. The children are the function body.
 // export async function getPet<TData = Pet>(petId: string): Promise<TData> { … }
 ```
 
-#### `Function.Arrow`
+#### `Function.Arrow` {#function-arrow}
 
 Generates an arrow function assigned to a `const`. Takes every `Function` prop plus `singleLine`.
 
@@ -222,7 +225,7 @@ Generates an arrow function assigned to a `const`. Takes every `Function` prop p
 // export const double = (n: number): number => n * 2
 ```
 
-#### `Type`
+#### `Type` {#type}
 
 Generates a TypeScript type alias. The children are the type expression. `name` must start with an uppercase letter or the component throws.
 
@@ -261,7 +264,7 @@ await renderer.render(
 )
 ```
 
-#### `Callout`
+#### `Callout` {#callout}
 
 Renders a GitHub-style alert using the `> [!TYPE]` blockquote syntax.
 
@@ -277,7 +280,7 @@ Renders a GitHub-style alert using the `> [!TYPE]` blockquote syntax.
 // > Breaking change in v6.
 ```
 
-#### `Frontmatter`
+#### `Frontmatter` {#frontmatter}
 
 Emits a YAML frontmatter envelope at the top of a markdown file. Place it as the first child of the `File`.
 
@@ -293,7 +296,7 @@ Emits a YAML frontmatter envelope at the top of a markdown file. Place it as the
 // ---
 ```
 
-#### `Heading`
+#### `Heading` {#heading}
 
 Renders an ATX-style markdown heading.
 
@@ -307,7 +310,7 @@ Renders an ATX-style markdown heading.
 // ## Installation
 ```
 
-#### `List`
+#### `List` {#list}
 
 Renders a markdown list, one entry per line.
 
@@ -322,7 +325,7 @@ Renders a markdown list, one entry per line.
 // 2. Second
 ```
 
-#### `Paragraph`
+#### `Paragraph` {#paragraph}
 
 Renders a markdown paragraph. Inline markdown passes through verbatim.
 
@@ -353,5 +356,5 @@ Embeds a raw JSX string in the generated source, including fragments. Use it ins
 ## See also
 
 - [Kit API](/docs/5.x/reference/kit) for `defineGenerator`'s `renderer` field and the `ast.factory` alternative to JSX
-- [Creating plugins](/docs/5.x/guide/going-further/creating-plugins) for how a generator wires a renderer into its output
+- [Creating plugins](/docs/5.x/tutorials/creating-plugins) for how a generator wires a renderer into its output
 - [Kit API: rendering](/docs/5.x/reference/kit/renderers#jsxrenderer-via-kubb-jsx) for how `jsxRenderer` sits next to `createRenderer`

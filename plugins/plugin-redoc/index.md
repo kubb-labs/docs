@@ -1,12 +1,10 @@
 ---
 layout: doc
 title: Kubb Redoc Plugin
-description: Generates a single-file HTML page from your OpenAPI spec with Redoc,
-  rebuilt on every Kubb run so the docs match the spec your code comes from.
+description: Generates a single-file HTML page from your OpenAPI spec with
+  Redoc, rebuilt on every Kubb run so the docs match the spec your code comes
+  from.
 outline: deep
-recipes:
-  - id: standalone-api-docs-page
-    title: Standalone API docs page
 kind: plugin
 id: plugin-redoc
 name: Redoc
@@ -42,15 +40,11 @@ resources:
 
 # @kubb/plugin-redoc
 
-`@kubb/plugin-redoc` turns your OpenAPI spec into a static HTML documentation page with [Redoc](https://redocly.com/). The output is a single file with the spec embedded inline, so you can drop it on any static host without a build step. The page loads the Redoc bundle and fonts from a CDN when viewed, so rendering needs network access.
-
-Kubb rebuilds the file on every run, keeping your docs in step with the spec your code was generated from.
-
-This plugin reads the OpenAPI adapter, which Kubb sets to `adapterOas()` by default, so it works out of the box. Set `adapter` yourself only if you replaced that default.
+`@kubb/plugin-redoc` generates a single HTML documentation page with [Redoc](https://redocly.com/). The spec is embedded in the file; publish it to a static host without a build step. Rendering requires network access for CDN scripts and fonts.
 
 ## Installation
 
-::code-group{sync="package-manager"}
+::code-group
 
 ```shell [bun]
 bun add -d @kubb/plugin-redoc
@@ -72,33 +66,26 @@ yarn add -D @kubb/plugin-redoc
 
 ## Dependencies
 
-`@kubb/plugin-redoc` has no plugin dependencies. It reads the OpenAPI spec through `@kubb/adapter-oas`, so add it on its own whenever you want generated documentation.
-
-> [!IMPORTANT]
-> The generated page loads Redoc from a CDN, so there is no package to install.
+No plugin dependencies. Kubb uses the OpenAPI adapter by default. The generated page loads Redoc from a CDN, so no Redoc runtime package is required.
 
 ## Example
 
-::code-group
-
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
-import { adapterOas } from '@kubb/adapter-oas'
 import { pluginRedoc } from '@kubb/plugin-redoc'
 
 export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen' },
-  adapter: adapterOas(),
   plugins: [
-    pluginRedoc({
-      output: { path: 'docs.html' },
-    }),
+    pluginRedoc({ output: { path: 'docs.html' } }),
   ],
 })
 ```
 
-::
+## Documentation
+
+- [Options](./reference/options)
 
 ## See also
 

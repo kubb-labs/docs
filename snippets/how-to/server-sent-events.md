@@ -1,18 +1,11 @@
 
 # Server-sent events
 
-An operation that returns `text/event-stream` streams its response instead of resolving to one
-body. Kubb generates a function for it that hands back a typed event stream you read with
-`for await`, rather than the usual `RequestResult`. Events are typed from the spec, and the
-native response stays reachable alongside them.
-
-Both [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and [`@kubb/plugin-axios`](/plugins/plugin-axios/) support this. On axios, streaming needs the
-fetch adapter, which Kubb selects for a stream request unless you set an adapter yourself.
+Operations returning `text/event-stream` produce a typed stream rather than a `RequestResult`. Both clients support streaming; Axios uses its fetch adapter unless you select another adapter.
 
 ## Consume a stream
 
-A streaming operation returns an `EventStreamResult`: a `stream` to iterate and the native
-`response`. Loop over the stream with `for await` and read each event's `data`:
+Read the `EventStreamResult.stream` with `for await`:
 
 ```typescript
 import { streamEvents } from './gen/clients/streamEvents'
@@ -66,8 +59,7 @@ controller.abort()
 
 ## Read the response
 
-The native `response` sits next to the stream, so status and headers are there before you start
-reading events. Check it for a header the server sets when the stream opens:
+Read status and headers from the native `response` before iterating:
 
 ```typescript
 const { stream, response } = await streamEvents({})
@@ -82,9 +74,7 @@ for await (const event of stream) {
 
 ## Handle errors
 
-A stream that fails to open rejects before you reach the loop, so the `await` that starts it is
-where a failed handshake surfaces. Wrap it to catch a non-2xx or a connection that never
-established:
+Catch connection failures and non-2xx responses around the call and iteration:
 
 ```typescript
 import { ResponseError } from './gen/.kubb/client'

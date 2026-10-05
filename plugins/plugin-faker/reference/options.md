@@ -37,7 +37,7 @@ Folder where the plugin writes its files, resolved against the global `output.pa
 How the plugin consolidates generated code. `'file'` writes everything into a single file, where `output.path` must include the extension such as `'mocks.ts'`. `'directory'` writes one file per operation or schema under `output.path`. Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 
 > [!IMPORTANT]
-> `group` works with the inferred directory mode, no `mode` needed. Set `mode: 'directory'` yourself only to override the inference, such as a directory name that carries a dot (`path: 'clients.v2'`). An explicit `mode: 'file'` still forbids `group` and stops the build with `KUBB_INVALID_PLUGIN_OPTIONS`, since a single file has nothing to group.
+> `group` requires directory output. Kubb infers the mode from `output.path`; set `mode: 'directory'` to override that inference. Combining `group` with `mode: 'file'` stops generation with `KUBB_INVALID_PLUGIN_OPTIONS`.
 
 #### output.barrel
 
@@ -81,6 +81,14 @@ moment(faker.date.anytime()).format('YYYY-MM-DD')
 
 ::
 
+```typescript [kubb.config.ts]
+import { pluginFaker } from '@kubb/plugin-faker'
+
+pluginFaker({ dateParser: 'dayjs' })
+```
+
+Install `dayjs` in the consuming app. Generated `date` and `time` strings use `YYYY-MM-DD` and `HH:mm:ss`; `date-time` values keep the ISO string.
+
 ### regexGenerator
 
 Library used to generate strings that satisfy a regex `pattern` keyword in the spec. The default `'faker'` emits `faker.helpers.fromRegExp(pattern)` and needs no extra dependency. `'randexp'` emits `new RandExp(pattern).gen()`, which supports a wider regex grammar but adds the `randexp` runtime dependency.
@@ -89,9 +97,23 @@ Library used to generate strings that satisfy a regex `pattern` keyword in the s
 
 Faker locale code. It switches the named import to `fakerXX` from `@faker-js/faker`, so generated values reflect the target region. The default `'en'` imports `fakerEN`, `'de'` imports `fakerDE`, and `'de_AT'` imports `fakerDE_AT`. See [Faker.js localization](https://fakerjs.dev/api/localization.html) for all locale codes.
 
+```typescript [kubb.config.ts]
+import { pluginFaker } from '@kubb/plugin-faker'
+
+pluginFaker({ locale: 'de' })
+```
+
 ### seed
 
 Value passed to `faker.seed(...)` and emitted at the top of each generated factory, giving deterministic output across runs for snapshot tests and reproducible local data. Pass a single number or an array of numbers.
+
+```typescript [kubb.config.ts]
+import { pluginFaker } from '@kubb/plugin-faker'
+
+pluginFaker({ seed: [100] })
+```
+
+Factories still accept overrides, such as `createPet({ name: 'Rex' })`.
 
 ### include
 
@@ -107,7 +129,7 @@ Value passed to `faker.seed(...)` and emitted at the top of each generated facto
 
 ### resolver
 
-Changes how the plugin names generated files and symbols. Pass a partial patch: override only the members you want, and anything you omit keeps `resolverFaker`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
+Overrides generated file and symbol names. Omitted members keep the plugin's resolver defaults. See [Override a resolver](/docs/5.x/how-to/resolvers) for the `this` context and how a patch layers over the default.
 
 > [!TIP]
 > Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
@@ -140,7 +162,7 @@ type ResolverFakerPatch = {
 
 ### printer
 
-Replaces the Faker node handler for a specific schema type, such as `'integer'`, `'date'`, or `'string'`. Each handler returns the Faker expression as a string. Use `this.transform` to recurse into nested nodes and `this.options` to read printer options. The [printer guide](/docs/5.x/guide/going-further/printers) covers how overrides compose with macros.
+Replaces the Faker node handler for a specific schema type, such as `'integer'`, `'date'`, or `'string'`. Each handler returns the Faker expression as a string. Use `this.transform` to recurse into nested nodes and `this.options` to read printer options. The [printer guide](/docs/5.x/how-to/printers) covers how overrides compose with macros.
 
 ```typescript twoslash [Map integer schemas to a float]
 import { pluginFaker } from '@kubb/plugin-faker'

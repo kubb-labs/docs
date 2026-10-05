@@ -1,14 +1,12 @@
 ---
 layout: doc
 title: Kubb TypeScript Plugin
-description: Generates TypeScript types and interfaces from your OpenAPI spec, the
-  typed foundation the other Kubb plugins build on.
+description: Generates TypeScript types and interfaces from your OpenAPI spec,
+  the typed foundation the other Kubb plugins build on.
 outline: deep
-recipes:
-  - id: tree-shakeable-enums
-    title: Tree-shakeable enums
-  - id: map-spec-types-to-native-ts
-    title: Map spec types to native TS
+guides:
+  - id: customization
+    title: Customize generated types
 kind: plugin
 id: plugin-ts
 name: TypeScript
@@ -43,11 +41,11 @@ resources:
 
 # @kubb/plugin-ts
 
-`@kubb/plugin-ts` turns your OpenAPI schemas into TypeScript types and interfaces that other Kubb plugins build on. Clients, query hooks, mocks, and validators reuse the names it generates, so every request, response, parameter, and enum is checked at compile time.
+`@kubb/plugin-ts` generates TypeScript types and interfaces from OpenAPI schemas. Other plugins use these types for requests, responses, hooks, and mocks.
 
 ## Installation
 
-::code-group{sync="package-manager"}
+::code-group
 
 ```shell [bun]
 bun add -d @kubb/plugin-ts
@@ -69,11 +67,9 @@ yarn add -D @kubb/plugin-ts
 
 ## Dependencies
 
-`@kubb/plugin-ts` has no plugin dependencies. It reads the OpenAPI spec through `@kubb/adapter-oas`, so add it whenever a client, query, mock, or validator plugin needs typed output.
+No plugin dependencies. Clients, hooks, mocks, and validators reuse its generated types.
 
 ## Example
-
-::code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -83,18 +79,15 @@ export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
-      output: { path: './types', mode: 'directory' },
-      exclude: [{ type: 'tag', pattern: 'store' }],
-      group: { type: 'tag' },
-      enum: { type: 'asConst' },
-      optionalType: 'questionTokenAndUndefined',
-    }),
+    pluginTs(),
   ],
 })
 ```
 
-::
+## Documentation
+
+- [Options](./reference/options)
+- [Customize generated types](./guide/customization)
 
 ## See also
 
