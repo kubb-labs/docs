@@ -16,7 +16,7 @@ guides:
   - id: interceptors
     title: Add interceptors
   - id: serialization
-    title: Serialize parameters
+    title: Configure serialization
   - id: transport
     title: Use custom transport
 kind: plugin

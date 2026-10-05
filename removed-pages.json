@@ -127,5 +127,14 @@
   "plugins/plugin-zod/recipes/tree-shakeable-schemas-with-zod-mini.md",
   "plugins/plugin-zod/recipes/use-a-custom-codec-from-your-package.md",
   "plugins/plugin-zod/recipes/validate-every-api-response.md",
-  "plugins/plugin-zod/recipes/zod-as-the-single-source-of-truth.md"
+  "plugins/plugin-zod/recipes/zod-as-the-single-source-of-truth.md",
+  "docs/5.x/how-to/bundlers.md",
+  "docs/5.x/how-to/studio.md",
+  "docs/5.x/how-to/ci.md",
+  "docs/5.x/how-to/claude-mcp-plugin.md",
+  "docs/5.x/how-to/ai/.navigation.yml",
+  "docs/5.x/how-to/ai/claude.md",
+  "docs/5.x/how-to/ai/context7.md",
+  "docs/5.x/how-to/ai/llmstxt.md",
+  "docs/5.x/how-to/ai/mcp.md"
 ]

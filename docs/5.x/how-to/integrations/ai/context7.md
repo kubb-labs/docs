@@ -44,4 +44,4 @@ Kubb configuration and API questions.
 
 - [Kubb on Context7](https://context7.com/kubb-labs/docs)
 - [Context7 setup](https://context7.com/docs/clients/cli)
-- [Kubb MCP server](/docs/5.x/how-to/ai/mcp)
+- [Kubb MCP server](/docs/5.x/how-to/integrations/ai/mcp)

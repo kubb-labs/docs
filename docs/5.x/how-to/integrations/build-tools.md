@@ -6,9 +6,9 @@ description: Generate code during builds with Vite, Rollup, Rolldown, webpack,
 outline:
   - 2
   - 3
-order: 6
+order: 1
 navigation:
-  title: Integrate a bundler
+  title: Generate during builds
 ---
 
 # Integrate a bundler

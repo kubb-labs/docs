@@ -43,6 +43,11 @@ Want to improve the docs? See [CONTRIBUTING.md](./CONTRIBUTING.md).
 | [`adapters/`](./adapters/) | Adapter reference pages |
 | [`parsers/`](./parsers/) | Parser reference pages |
 | [`docs/5.x/`](./docs/5.x/) | Versioned documentation for Kubb v5 |
+| [`docs/5.x/tutorials/`](./docs/5.x/tutorials/) | Tutorials: learn by building |
+| [`docs/5.x/how-to/`](./docs/5.x/how-to/) | How-to guides: complete a task |
+| [`docs/5.x/how-to/integrations/`](./docs/5.x/how-to/integrations/) | Integrations within How-to guides: build tools, Studio, CI, and AI |
+| [`docs/5.x/explanation/`](./docs/5.x/explanation/) | Explanation: understand how Kubb works |
+| [`docs/5.x/reference/`](./docs/5.x/reference/) | Reference: look up options, APIs, and diagnostics |
 
 ## Contributing
 

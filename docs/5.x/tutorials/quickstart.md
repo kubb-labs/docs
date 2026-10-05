@@ -1,57 +1,33 @@
 ---
 layout: doc
-title: Quickstart
-description: Install Kubb and generate TypeScript types, an HTTP client, and
-  React Query hooks from an OpenAPI specification.
+title: Generate your first client
+description: Generate and inspect a typed Axios client from a small OpenAPI specification.
 outline:
   - 2
   - 3
 order: 1
+navigation:
+  title: Generate your first client
 ---
 
-# Quickstart
+# Generate your first client
 
-Generate TypeScript types, an Axios client, and React Query hooks for a small Petstore API. The React example assumes a React application.
+Generate TypeScript types and an Axios client for one Petstore operation. You need Node.js 22 or higher and npm. You'll inspect the generated operation and its types.
 
-## Prerequisites
-
-Use Node.js 22 or higher and an OpenAPI 2.0, 3.0, or 3.1 specification. TypeScript 5.0 or higher is required for TypeScript configuration and generated types.
-
-## 1. Install Kubb
-
-For interactive setup, run `npx kubb init`, then skip to [Generate](#_3-generate). The wizard installs your selected plugins and writes `kubb.config.ts`.
-
-For manual setup, install Kubb and the plugins used below:
-
-::code-group
-
-```shell [bun]
-bun add -d kubb @kubb/plugin-ts @kubb/plugin-axios @kubb/plugin-react-query
-```
-
-```shell [pnpm]
-pnpm add -D kubb @kubb/plugin-ts @kubb/plugin-axios @kubb/plugin-react-query
-```
-
-```shell [npm]
-npm install -D kubb @kubb/plugin-ts @kubb/plugin-axios @kubb/plugin-react-query
-```
-
-```shell [yarn]
-yarn add -D kubb @kubb/plugin-ts @kubb/plugin-axios @kubb/plugin-react-query
-```
-
-::
-
-Install the generated client's runtime dependencies. React projects also need the query runtime:
+## 1. Create a project
 
 ```shell [Terminal]
-npm install axios @tanstack/react-query react react-dom
+mkdir kubb-first-client
+cd kubb-first-client
+npm init -y
+npm pkg set type=module
+npm install -D kubb typescript @kubb/plugin-ts @kubb/plugin-axios
+npm install axios
 ```
 
-## 2. Configure generation
+## 2. Add the specification
 
-Create this specification in your project root:
+Create `petStore.yaml` in the project root:
 
 ```yaml [petStore.yaml]
 openapi: 3.0.3
@@ -89,84 +65,48 @@ components:
           type: string
 ```
 
-Create the config beside it:
+The `getPetById` operation accepts a pet ID and returns a pet with an ID and name.
+
+## 3. Configure generation
+
+Create `kubb.config.ts` beside the specification:
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginAxios } from '@kubb/plugin-axios'
-import { pluginReactQuery } from '@kubb/plugin-react-query'
 
 export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [
     pluginTs({ output: { path: 'models' } }),
-    pluginAxios({ output: { path: 'clients' }, baseURL: 'https://petstore.swagger.io/v2' }),
-    pluginReactQuery({ output: { path: 'hooks' }, hooks: true }),
+    pluginAxios({ output: { path: 'clients' } }),
   ],
 })
 ```
 
-`defineConfig` supplies the OpenAPI adapter and TypeScript, TSX, and Markdown parsers. Install only the [plugins](/plugins) for the outputs you need. Axios and React Query require the TypeScript plugin. React Query also needs an Axios or Fetch client plugin. Set `hooks: true` to generate `use*` hooks.
+This configuration writes types to `src/gen/models` and the client to `src/gen/clients`. The generated directory is dedicated to Kubb because `clean: true` removes it before each run.
 
-> [!WARNING]
-> Use `clean: true` only with a dedicated generated-code directory. It removes that directory before generation.
-
-## 3. Generate
-
-Add a script:
-
-```json [package.json]
-{
-  "scripts": {
-    "generate": "kubb generate"
-  }
-}
-```
-
-Run it:
+## 4. Generate the client
 
 ```shell [Terminal]
-npm run generate
+npx kubb generate
 ```
 
-Kubb writes the files to `src/gen`, grouped into `models`, `clients`, and `hooks` as configured above.
-
-## 4. Use the output
-
-The specification generates a `getPetById` operation and its hook. Import either in your application. Wrap React components in a [QueryClientProvider](https://tanstack.com/query/latest/docs/framework/react/quick-start) before using the hook:
-
-::code-group
-
-```typescript [src/app.ts]
-import { getPetById } from './gen/clients/getPetById'
-
-const { data: pet } = await getPetById({ path: { petId: 1 } })
-```
-
-```tsx [src/Pet.tsx]
-import { useGetPetById } from './gen/hooks/useGetPetById'
-
-export function Pet({ id }: { id: number }) {
-  const { data, isLoading } = useGetPetById({ path: { petId: id } })
-  if (isLoading) return null
-  return <span>{data?.name}</span>
-}
-```
-
-::
-
-## 5. Regenerate when the specification changes
-
-Run `npm run generate` again, or watch for changes:
+Kubb reports a successful build. List the generated client files:
 
 ```shell [Terminal]
-npx kubb generate --watch
+node -e "console.log(require('node:fs').readdirSync('src/gen/clients'))"
 ```
 
-## Next steps
+The output contains `getPetById.ts`. Open that file and notice that `getPetById` accepts typed path parameters and returns a typed result. Its imported types live in `src/gen/models`.
 
-- [Recipes](/docs/5.x/how-to/recipes) for Vue Query, validation, and mocks.
-- [Configuration](/docs/5.x/reference/configuration) for all options and config formats.
-- [Bundler integration](/docs/5.x/how-to/bundlers) to generate during a build.
+Run `npx kubb generate` again. Kubb recreates the same client from the same specification. You now have a typed client ready to import into your application.
+
+## Continue
+
+- [Call generated operations](/plugins/plugin-axios/guide/calling-operations) and [configure their host](/plugins/plugin-axios/guide/base-url).
+- [Configure generation](/docs/5.x/how-to/recipes) for React or Vue hooks, validation, and mocks.
+- [Interactive setup](/docs/5.x/reference/commands/init) for an existing project.
+- [Configuration reference](/docs/5.x/reference/configuration) for supported specification versions, options, and config formats.

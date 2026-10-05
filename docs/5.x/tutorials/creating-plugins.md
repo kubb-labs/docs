@@ -1,8 +1,7 @@
 ---
 layout: doc
 title: Create your first plugin
-description: Build, test, and publish a Kubb plugin that generates one file per
-  API operation.
+description: Build and test a Kubb plugin that generates a comment file for an API operation.
 outline:
   - 2
   - 3
@@ -13,17 +12,40 @@ navigation:
 
 # Create your first plugin
 
-Build a plugin that writes one comment file per API operation. You need Node.js 22 or higher, TypeScript knowledge, and an OpenAPI specification. Check the [plugin catalogue](/plugins) before building an output that already exists.
+Build a plugin that writes `listPets.ts` containing the method and path of one API operation. You need Node.js 22 or higher, npm, and TypeScript knowledge.
 
-## 1. Install
+## 1. Create a project
 
 ```shell [Terminal]
+mkdir kubb-first-plugin
+cd kubb-first-plugin
+npm init -y
+npm pkg set type=module
 npm install -D kubb typescript @types/node vitest
+mkdir src
 ```
 
 All authoring APIs come from `kubb/kit`, included with `kubb`.
 
-## 2. Create the plugin
+## 2. Add the specification
+
+Create `petStore.yaml` in the project root:
+
+```yaml [petStore.yaml]
+openapi: 3.0.3
+info:
+  title: Pets
+  version: 1.0.0
+paths:
+  /pets:
+    get:
+      operationId: listPets
+      responses:
+        '200':
+          description: A list of pets
+```
+
+## 3. Create the plugin
 
 A plugin factory returns its name and lifecycle hooks. Register a generator and resolver in `kubb:plugin:setup`:
 
@@ -61,9 +83,9 @@ export const pluginExample = definePlugin(() => ({
 }))
 ```
 
-The `operation` handler runs once per operation and returns `FileNode`s. Use `schema` for reusable schemas or `operations` for a single file covering the whole operation set. The [generator reference](/docs/5.x/reference/kit/generators) lists the context properties and return types.
+The `operation` handler writes a comment containing the operation’s HTTP method and path.
 
-## 3. Generate
+## 4. Generate
 
 Register the plugin in your config:
 
@@ -82,15 +104,13 @@ export default defineConfig({
 npx kubb generate
 ```
 
-Each generated file contains the operation's method and path. For an operation named `listPets`, inspect `src/gen/listPets.ts`.
+Read the generated file:
 
-## 4. Add options or dependencies
+```shell [Terminal]
+node -e "console.log(require('node:fs').readFileSync('src/gen/listPets.ts', 'utf8'))"
+```
 
-Use `PluginFactoryOptions` to type user options and their resolved values. Apply defaults in the plugin factory and store resolved options with `ctx.setOptions`. Generators read them from the plugin context. See [Plugin reference](/docs/5.x/reference/kit/plugins).
-
-Declare `dependencies` when another plugin must run first. In the generator, call `ctx.requirePlugin(name)` to require it and `ctx.getResolver(name)` to reuse its names and paths. Missing dependencies fail when requested, not during ordering.
-
-For identifier or file naming, adjust your resolver. Users override its defaults through their plugin configuration. See [Override a resolver](/docs/5.x/how-to/resolvers).
+It contains a comment naming `GET` and `/pets`.
 
 ## 5. Test the output
 
@@ -131,36 +151,17 @@ describe('pluginExample', () => {
 })
 ```
 
-`build()` throws on errors. Use `safeBuild()` to inspect diagnostics without throwing, then check `Diagnostics.hasError`. See [Engine reference](/docs/5.x/reference/kit/engine) and [Testing helpers](/docs/5.x/reference/kit/testing).
+Run the test:
 
-## 6. Publish
-
-Use `kubb-plugin-<name>` for the npm package, `plugin-<name>` for the internal name, and `plugin<Name>` for its factory. Export the factory from `src/index.ts`.
-
-Keep generators and resolvers in separate folders as the plugin grows. Official [plugin source](https://github.com/kubb-labs/plugins) provides examples.
-
-Build TypeScript declarations and JavaScript into `dist`. Configure the package entrypoints and dependencies:
-
-```json [package.json]
-{
-  "name": "kubb-plugin-example",
-  "version": "1.0.0",
-  "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    }
-  },
-  "peerDependencies": { "kubb": "^5.0.0" },
-  "devDependencies": { "kubb": "^5.0.0" }
-}
+```shell [Terminal]
+npx vitest run src/plugin.test.ts
 ```
 
-Before publishing, compile the package, run its tests, and document installation and usage in the README. Then run `npm publish --access public` from the package directory.
+Vitest reports one passing test. It checks the generated file in memory without writing to disk.
 
 ## See also
 
+- [Extend and publish a plugin](/docs/5.x/how-to/extending-plugins)
 - [Extension model](/docs/5.x/explanation/extensions)
 - [Plugin API](/docs/5.x/reference/kit/plugins)
 - [Lifecycle hooks](/docs/5.x/reference/kit/hooks)

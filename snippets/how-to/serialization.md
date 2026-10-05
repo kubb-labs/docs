@@ -1,56 +1,11 @@
 
-# Serialization and parsing
+# Configure serialization
 
 Fetch and Axios clients encode parameters using OpenAPI `style` and `explode`, serialize request bodies by content type, and decode responses by media type. Generated operations carry the metadata. Most requests need no additional configuration.
 
-## Parameter styles
+## Override parameter serialization
 
-The client reads serialization metadata from the generated operation.
-
-### Query
-
-Query parameters default to the `form` style. Arrays explode into repeated keys unless the spec
-says otherwise, and `spaceDelimited`, `pipeDelimited`, and `deepObject` change how arrays and
-objects collapse.
-
-| Style              | `explode` | Input              | Result            |
-| ------------------ | --------- | ------------------ | ----------------- |
-| `form` (default)   | `true`    | `{ id: [3, 4, 5] }` | `id=3&id=4&id=5`  |
-| `form`             | `false`   | `{ id: [3, 4, 5] }` | `id=3,4,5`        |
-| `spaceDelimited`   | `false`   | `{ id: [3, 4, 5] }` | `id=3%204%205`    |
-| `pipeDelimited`    | `false`   | `{ id: [3, 4, 5] }` | `id=3\|4\|5`      |
-| `deepObject`       | `n/a`     | `{ a: { b: 1 } }`  | `a%5Bb%5D=1`      |
-
-With `explode: true`, `spaceDelimited` and `pipeDelimited` fall back to repeated keys like `form`,
-so the delimiter only shows with `explode: false`.
-
-### Path
-
-Path parameters default to the `simple` style, which emits the bare value. `label` prefixes a
-`.` and `matrix` prefixes a `;name=` segment. The results below are the serialized segment for a
-parameter named `id`.
-
-| Style              | `explode` | Input            | Result             |
-| ------------------ | --------- | ---------------- | ------------------ |
-| `simple` (default) | `false`   | `[3, 4, 5]`      | `3,4,5`            |
-| `label`            | `true`    | `[3, 4, 5]`      | `.3.4.5`           |
-| `matrix`           | `true`    | `[3, 4, 5]`      | `;id=3;id=4;id=5`  |
-| `simple`           | `false`   | `{ x: 1, y: 2 }` | `x,1,y,2`          |
-
-### Header and cookie
-
-Header parameters use the `simple` style and cookie parameters use the `form` style. Both fix the
-style and only let `explode` vary, so the metadata for these locations carries `explode` alone.
-Header values are sent as-is, and cookie values are URL-encoded into a single `Cookie` header.
-
-| Location | `explode` | Input                            | Result                  |
-| -------- | --------- | -------------------------------- | ----------------------- |
-| header   | `false`   | `[3, 4]`                         | `X-Ids: 3,4`            |
-| header   | `true`    | `{ role: 'admin' }`              | `X-Filter: role=admin`  |
-| cookie   | `false`   | `{ session: 'abc', ids: [1, 2] }` | `session=abc; ids=1,2`  |
-| cookie   | `true`    | `{ ids: [1, 2] }`                | `ids=1; ids=2`          |
-
-### Override the serializer
+Check the [default parameter styles and encoding](/docs/5.x/reference/serialization#parameter-styles) before replacing a serializer.
 
 Override `serializer.query`, `.body`, or `.path` on the client. Omitted functions retain their defaults:
 
@@ -68,7 +23,7 @@ client.setConfig({
 A serializer set this way runs for every call, but you can pass `serializer` on a single call to
 override just that request.
 
-## Request bodies
+## Encode request bodies
 
 The request content type decides how the body is encoded. The default serializer handles the
 common types: a plain object becomes JSON, `multipart/form-data` becomes `FormData`, and
@@ -101,7 +56,7 @@ client.setConfig({
 })
 ```
 
-## Response decoding
+## Decode responses
 
 The runtime reads the response `Content-Type` and decodes the body by it: JSON is parsed, text
 stays a string, and a binary type becomes a `Blob`. The negotiated media type is on the result as
@@ -138,7 +93,7 @@ For `responseType: 'stream'`, see [server-sent events](/plugins/plugin-fetch/gui
 
 For bidirectional formats, supply both `serialize` and `deserialize` in the media type codec, then set the operation’s request and response `contentType`.
 
-## Response validation
+## Validate responses
 
 Enable `validator` on the client plugin and register `pluginZod` in the same configuration. Validation is disabled by default.
 
@@ -164,6 +119,7 @@ schema's `issues`, covered in
 
 ## See also
 
+- [HTTP serialization reference](/docs/5.x/reference/serialization)
 - [Call operations](/plugins/plugin-fetch/guide/calling-operations)
 - [Error handling](/plugins/plugin-fetch/guide/error-handling)
 - [`@kubb/plugin-fetch`](/plugins/plugin-fetch/)

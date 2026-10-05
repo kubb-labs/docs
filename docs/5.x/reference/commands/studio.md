@@ -33,7 +33,7 @@ The positional argument selects the action. It defaults to `connect`.
 | `login`    | Pair this machine without opening a generation session.                 |
 | `logout` | Stop the background worker and forget this project's stored token. |
 | `status` | Show worker state, log path, pairing, and saved permissions. |
-| `snapshot` | Generate and publish a snapshot from a script, then exit. See [Snapshot from CI](/docs/5.x/how-to/studio#snapshot-from-ci). |
+| `snapshot` | Generate and publish a snapshot from a script, then exit. See [Publish snapshots from CI](/docs/5.x/how-to/integrations/ci). |
 
 ## Background connection
 
@@ -75,6 +75,25 @@ Without `--allow-read`, a session still generates and reports file paths, but St
 | `KUBB_AGENT_TOKEN` | Connect with an existing agent token instead of approving this machine.            |
 | `KUBB_TOKEN`       | `snapshot` only: organization CI API key. Same as `--token`.                       |
 
+## Snapshot output
+
+`--json` prints one JSON object with `id`, `name`, `version`, `integrity`, `url`, `snapshotIdUrl`, `expiresAt`, and `agentUrl`. It also includes `changes` and `branchChanges` when comparisons are available. Installing a snapshot requires a separate `registry` API key.
+
+| JSON field | Compared with |
+| --- | --- |
+| `changes` | The previous snapshot on the same pull request or branch. |
+| `branchChanges` | The latest snapshot of a GitHub pull request's base branch or a GitLab merge request's target branch. Its `baseFound` field distinguishes a branch with no CI agent from one with an agent that has no snapshot of this package yet. |
+
+## CI agent identity
+
+`snapshot` detects GitHub Actions, GitLab CI, Bitbucket Pipelines, and CircleCI. Other providers require a stable `--id`. Use a stable `--id` on the base branch and pass that identity as `--base-id` on pull request runs.
+
+### GitLab CI
+
+The CI agent registers as `gl:<project id>:<merge request iid>`, read from `CI_PROJECT_ID` and `CI_MERGE_REQUEST_IID`, so every pipeline on that merge request reuses one agent. A branch pipeline falls back to `CI_COMMIT_REF_SLUG`, so the default branch has one agent too. Pass `--id` to group runs your own way.
+
+A merge request pipeline also names its target branch's agent, from `CI_MERGE_REQUEST_TARGET_BRANCH_NAME`. The snapshot reports which generated files changed against that branch's latest snapshot in `branchChanges`, and against the merge request's previous pipeline in `changes`. The commit it records is the source branch's head, `CI_MERGE_REQUEST_SOURCE_BRANCH_SHA`, when GitLab sets it.
+
 ## Examples
 
 ```shell [Terminal]
@@ -92,6 +111,6 @@ kubb studio snapshot --json              # print the snapshot as one JSON object
 
 ## See also
 
-- [Kubb Studio guide](/docs/5.x/how-to/studio): connect a project and run headless
+- [Kubb Studio guide](/docs/5.x/how-to/integrations/studio): connect a project and run headless
 - [Commands](/docs/5.x/reference/commands/): every command the CLI exposes
 - [Configuration](/docs/5.x/reference/configuration): the `kubb.config.ts` Studio reads

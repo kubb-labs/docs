@@ -219,4 +219,4 @@ Use `.build()` instead of `.safeBuild()` if you want it to throw on errors rathe
 
 ## Validate in CI
 
-Run `kubb validate ./petStore.yaml` before generation to fail on an invalid specification. See [Validate command](/docs/5.x/reference/commands/validate) and [CI snapshots](/docs/5.x/how-to/ci).
+Run `kubb validate ./petStore.yaml` before generation to fail on an invalid specification. See [Validate command](/docs/5.x/reference/commands/validate) and [CI snapshots](/docs/5.x/how-to/integrations/ci).

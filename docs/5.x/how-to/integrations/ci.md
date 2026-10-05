@@ -6,12 +6,12 @@ description: Publish installable Kubb Studio snapshots from GitHub Actions or
 outline:
   - 2
   - 3
-order: 7
+order: 3
 ---
 
 # Publish snapshots from CI
 
-`kubb studio snapshot` generates a package on a CI runner, publishes it to [Studio](/docs/5.x/how-to/studio), and exits. Run snapshots on pull or merge requests and the default branch so reviewers can compare their output.
+`kubb studio snapshot` generates a package on a CI runner, publishes it to [Studio](/docs/5.x/how-to/integrations/studio), and exits. Run snapshots on pull or merge requests and the default branch so reviewers can compare their output.
 
 ## Set the token
 
@@ -54,44 +54,9 @@ jobs:
 
 `pull-requests: write` allows snapshot comments. `contents: write` lets the action open an initialization pull request when the repository has no Kubb config.
 
-### Inputs
+Review the pull request comment for generated changes against the base branch and the previous run.
 
-| Input               | Default               | Description                                                             |
-| ------------------- | --------------------- | ----------------------------------------------------------------------- |
-| `token`             |                       | Organization CI API key. Required.                                      |
-| `github-token`      | <code v-pre>${{ github.token }}</code> | Token that opens the init pull request and writes the snapshot comment. |
-| `working-directory` | `.`                   | Directory holding the Kubb config and the package.                      |
-| `config`            | `kubb.config.ts`      | Path to the config file, relative to `working-directory`.               |
-
-### Outputs
-
-| Output            | Description                                  |
-| ----------------- | -------------------------------------------- |
-| `snapshot-id`     | ID Studio stored the snapshot under.         |
-| `package-name`    | Name of the generated package.               |
-| `package-version` | Version of the generated package.            |
-| `tarball-url`     | URL of the generated tarball.                |
-| `integrity`       | SHA-512 integrity of the tarball.            |
-| `agent-url`       | Studio URL of the CI agent that ran the job. |
-| `files-added`, `files-changed`, `files-removed` | Generated files added, changed, and removed since the previous snapshot on the pull request. |
-
-Give the step an `id`, then read an output as <code v-pre>${{ steps.snapshot.outputs.tarball-url }}</code> (using `snapshot` as the step ID).
-
-### What a run does
-
-`kubb` runs from the repository's own `node_modules/.bin/kubb` when there is one, so the snapshot matches the version your config and plugins are built against. Otherwise it falls back to `npx`. One CI agent and one comment are reused per pull request, and one per branch.
-
-### What the comment shows
-
-Below the install command, the comment lists which generated files changed:
-
-| Section | Compared with |
-| --- | --- |
-| Changes against `main` | The latest snapshot of the base branch, from the `push` trigger |
-| Changes since `abc1234` | The previous snapshot on the same pull request |
-
-A failed snapshot shows its error in the comment.
-
+To pass the tarball URL to another step, give the action an `id: snapshot`, then read <code v-pre>${{ steps.snapshot.outputs.tarball-url }}</code>. See the [action reference](/docs/5.x/reference/github-actions) for all inputs, outputs, and runtime behavior.
 
 ## GitLab CI
 
@@ -114,15 +79,9 @@ snapshot:
 
 `resource_group` keeps two pipelines on the same branch or merge request from running the job at once. Registering the agent again ends the other run's session.
 
-### One agent per merge request
-
-The CI agent registers as `gl:<project id>:<merge request iid>`, read from `CI_PROJECT_ID` and `CI_MERGE_REQUEST_IID`, so every pipeline on that merge request reuses one agent. A branch pipeline falls back to `CI_COMMIT_REF_SLUG`, so the default branch has one agent too. Pass `--id` to group runs your own way.
-
-A merge request pipeline also names its target branch's agent, from `CI_MERGE_REQUEST_TARGET_BRANCH_NAME`. The snapshot reports which generated files changed against that branch's latest snapshot in `branchChanges`, and against the merge request's previous pipeline in `changes`. The commit it records is the source branch's head, `CI_MERGE_REQUEST_SOURCE_BRANCH_SHA`, when GitLab sets it.
-
 ### Post the result as a note
 
-`--json` prints one JSON object and nothing else. It includes `id`, `name`, `version`, `integrity`, `url`, `snapshotIdUrl`, `expiresAt`, and `agentUrl`, plus `changes` and `branchChanges` when available. This script turns it into one note on the merge request and updates that note on every pipeline. It needs nothing beyond Node:
+Use `--json` to capture the snapshot result, then post it as a merge request note with this script. It updates the same note on each pipeline and uses only Node:
 
 ```js [scripts/kubb-note.mjs]
 import { readFileSync } from 'node:fs'
@@ -162,6 +121,17 @@ if (!response.ok) throw new Error(`GitLab answered ${response.status}`)
 Writing a note needs a project access token with the `api` scope, stored as `GITLAB_API_TOKEN`. `CI_JOB_TOKEN` does not carry it.
 
 
+## Other CI providers
+
+For a provider without automatic agent identification, use a stable `--id` on the base branch and pass it as `--base-id` on pull request runs:
+
+```shell [Terminal]
+kubb studio snapshot --id jenkins:api:main                              # on main
+kubb studio snapshot --id jenkins:api:pr-12 --base-id jenkins:api:main  # on a pull request
+```
+
+Use `kubb studio snapshot --json | jq -r '.url'` to pass the tarball URL to another step. See [CI agent identity](/docs/5.x/reference/commands/studio#ci-agent-identity) for automatic provider detection and [Snapshot output](/docs/5.x/reference/commands/studio#snapshot-output) for the result fields.
+
 ## Install the snapshot
 
 Configure the registry API key, then run the install command from the snapshot result:
@@ -176,5 +146,5 @@ npm i https://kubb.studio/packages/<agent>/<package>.tgz
 
 ## See also
 
-- [Studio setup](/docs/5.x/how-to/studio)
+- [Studio setup](/docs/5.x/how-to/integrations/studio)
 - [Studio command reference](/docs/5.x/reference/commands/studio)

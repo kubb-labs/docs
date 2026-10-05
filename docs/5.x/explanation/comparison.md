@@ -80,9 +80,9 @@ Kubb serializes OpenAPI parameter styles and supports codecs per media type. See
 
 | Feature                                                                                                   | Kubb  | orval          | HeyAPI         |
 | --------------------------------------------------------------------------------------------------------- | :---: | :------------- | :------------- |
-| [Parameter styles from the spec](/plugins/plugin-fetch/guide/serialization#parameter-styles)              |  ✅   | 🔶<sup>1</sup> | 🔶<sup>2</sup> |
+| [Parameter styles from the spec](/docs/5.x/reference/serialization#parameter-styles)              |  ✅   | 🔶<sup>1</sup> | 🔶<sup>2</sup> |
 | Request body serializers (JSON, form-data, urlencoded)                                                    | ✅<sup>3</sup> | ✅    | ✅             |
-| [Pluggable codecs per media type](/plugins/plugin-fetch/guide/serialization#request-bodies) (XML, YAML)   |  ✅   | 🛑<sup>4</sup> | 🛑<sup>4</sup> |
+| [Pluggable codecs per media type](/plugins/plugin-fetch/guide/serialization#encode-request-bodies) (XML, YAML)   |  ✅   | 🛑<sup>4</sup> | 🛑<sup>4</sup> |
 | [Runtime body validation](/plugins/plugin-fetch/guide/error-handling#validation-failures)                 | ✅<sup>5</sup> | 🔶<sup>5</sup> | ✅<sup>5</sup> |
 | [Server-sent events and streaming](/plugins/plugin-fetch/guide/server-sent-events)                        |  ✅   | 🔶<sup>6</sup> | ✅             |
 
@@ -99,7 +99,7 @@ Kubb serializes OpenAPI parameter styles and supports codecs per media type. See
 
 Kubb parses the specification once and shares its AST across plugins. Adapters customize input formats, parsers customize source syntax, and plugins add outputs. Post-enforced plugins handle cross-output work such as barrels. See [Architecture](/docs/5.x/explanation/architecture) and [Extension model](/docs/5.x/explanation/extensions).
 
-[Bundler integrations](/docs/5.x/how-to/bundlers) run generation during builds. The [generator MCP server](/docs/5.x/how-to/ai/mcp) exposes Kubb to AI editors. [plugin-mcp](/plugins/plugin-mcp/) instead generates a server for your API.
+[Bundler integrations](/docs/5.x/how-to/integrations/build-tools) run generation during builds. The [generator MCP server](/docs/5.x/how-to/integrations/ai/mcp) exposes Kubb to AI editors. [plugin-mcp](/plugins/plugin-mcp/) instead generates a server for your API.
 
 ## When not to use Kubb
 
