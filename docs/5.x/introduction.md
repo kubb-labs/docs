@@ -16,14 +16,14 @@ navigation:
 
 Kubb generates types, API clients, query hooks, validators, and mocks from an API specification. Choose [plugins](/plugins) for the outputs you need and configure them in one file.
 
-The default [OpenAPI adapter](/adapters/adapter-oas/) supports OpenAPI 2.0, 3.0, and 3.1. Custom adapters read other input formats; custom plugins add outputs.
+The default [OpenAPI adapter](/adapters/adapter-oas/) supports OpenAPI 2.0, 3.0, and 3.1. Custom adapters read other input formats. Custom plugins add outputs.
 
 ## Start here
 
 | You want to | Read |
 | --- | --- |
 | Generate your first client | [Quickstart](/docs/5.x/tutorials/quickstart) |
-| Configure a stack or workflow | [Recipes](/docs/5.x/how-to/recipes) |
+| Configure a stack or workflow | [Configure generation](/docs/5.x/how-to/recipes) |
 | Rename files or customize generated code | [Resolvers](/docs/5.x/how-to/resolvers), [macros](/docs/5.x/how-to/macros), and [printers](/docs/5.x/how-to/printers) |
 | Run generation during a build or in CI | [Bundlers](/docs/5.x/how-to/bundlers) and [CI](/docs/5.x/how-to/ci) |
 | Generate from a browser or AI editor | [Studio](/docs/5.x/how-to/studio) and [MCP setup](/docs/5.x/how-to/ai/mcp) |

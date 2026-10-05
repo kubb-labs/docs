@@ -36,11 +36,11 @@ resources:
 
 `@kubb/parser-md` emits `.md` and `.markdown` files by joining source blocks with blank lines. It prepends YAML frontmatter from `file.meta.frontmatter`.
 
-The parser takes no options and runs by default alongside `parserTs` and `parserTsx`. A custom `parsers` array replaces that default set. Include every parser your plugins need; unmatched files are written as source text.
+The parser takes no options and runs by default alongside `parserTs` and `parserTsx`. A custom `parsers` array replaces that default set. Include every parser your plugins need. Unmatched files are written as source text.
 
 ## Installation
 
-::code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/parser-md
@@ -66,7 +66,7 @@ No plugin dependencies. The parser registers on `defineConfig.parsers`.
 
 ## Frontmatter
 
-`@kubb/parser-md` takes no options of its own. To add a YAML frontmatter block to a generated page, set `frontmatter` on a file's `meta` inside a plugin. The parser renders those keys and prepends them to the output. Any serializable object works.
+To add a YAML frontmatter block to a generated page, set `frontmatter` on a file's `meta` inside a plugin. The parser renders those keys and prepends them to the output. Any serializable object works.
 
 |          |                                   |
 | -------: | :-------------------------------- |

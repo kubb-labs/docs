@@ -28,7 +28,7 @@ pluginZod({
 })
 ```
 
-The type becomes `ApiPet`; the schema constant stays `petSchema`. The callback receives the cased type name, so no additional casing helper is needed.
+The type becomes `ApiPet`. The schema constant stays `petSchema`. The callback receives the cased type name, so no additional casing helper is needed.
 
 ## Use numbers for int64 fields
 
@@ -88,7 +88,7 @@ export const slotInputSchema = z.object({
 
 Use `inferred: true` without `pluginTs` so the client types follow these conversions. Types from `pluginTs` describe the wire format.
 
-For built-in date conversion, set `dateType: 'date'` on the adapter. Generated response schemas convert ISO datetimes to `Date`; request schemas convert them back with `toISOString()`.
+For built-in date conversion, set `dateType: 'date'` on the adapter. Generated response schemas convert ISO datetimes to `Date`. Request schemas convert them back with `toISOString()`.
 
 ## Import a custom codec
 

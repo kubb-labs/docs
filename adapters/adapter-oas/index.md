@@ -39,11 +39,11 @@ resources:
 
 `@kubb/adapter-oas` reads and validates OpenAPI 2.0, 3.0, and 3.1 documents, then converts schemas and operations into the AST used by every plugin.
 
-Configure it on `defineConfig.adapter`. Its type mappings apply to every plugin in the build. Kubb uses `adapterOas()` by default; add it explicitly to change [Options](./reference/options).
+Configure it on `defineConfig.adapter`. Its type mappings apply to every plugin in the build. Kubb uses `adapterOas()` by default. Add it explicitly to change [Options](./reference/options).
 
 ## Installation
 
-::code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/adapter-oas

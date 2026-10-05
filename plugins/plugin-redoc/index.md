@@ -40,11 +40,11 @@ resources:
 
 # @kubb/plugin-redoc
 
-`@kubb/plugin-redoc` generates a single HTML documentation page with [Redoc](https://redocly.com/). The spec is embedded in the file; publish it to a static host without a build step. Rendering requires network access for CDN scripts and fonts.
+`@kubb/plugin-redoc` generates a single HTML documentation page with [Redoc](https://redocly.com/). The spec is embedded in the file. Publish it to a static host without a build step. Rendering requires network access for CDN scripts and fonts.
 
 ## Installation
 
-::code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/plugin-redoc

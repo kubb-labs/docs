@@ -27,7 +27,7 @@ Kubb separates the input specification, generated content, output syntax, and de
 
 `defineConfig` from `kubb/config` supplies the OpenAPI adapter, TypeScript/TSX/Markdown parsers, filesystem storage, and a barrel plugin. Barrel generation follows `output.barrel` at the root or on individual plugins.
 
-Choose the outputs with `plugins`; configure the destination with `output.path`. The [configuration reference](/docs/5.x/reference/configuration) lists the available fields and defaults.
+Choose the outputs with `plugins`. Configure the destination with `output.path`. The [configuration reference](/docs/5.x/reference/configuration) lists the available fields and defaults.
 
 ## Adapters {#adapters}
 
@@ -41,7 +41,7 @@ An `InputNode` contains reusable schemas and operations. Operations connect para
 
 ::ast-tree
 
-Nodes carry a `kind` discriminant; schemas also carry a `type` discriminant. The `transform` visitor rewrites nodes, while `collect` gathers matching nodes. Import the `ast` namespace from `kubb/kit`; see [AST reference](/docs/5.x/reference/kit/ast) for node builders, visitors, and guards.
+Nodes carry a `kind` discriminant. Schemas also carry a `type` discriminant. The `transform` visitor rewrites nodes, while `collect` gathers matching nodes. Import the `ast` namespace from `kubb/kit`. See [AST reference](/docs/5.x/reference/kit/ast) for node builders, visitors, and guards.
 
 ## Plugins and generators {#plugins}
 
@@ -59,7 +59,7 @@ A printer inside a generator handles schema-specific output. A parser handles th
 
 ## Storage {#storage}
 
-Storage separates generation from its destination. `fsStorage()` writes to disk; `memoryStorage()` keeps results in a `Map`. Kubb skips writes when the stored content already matches.
+Storage separates generation from its destination. `fsStorage()` writes to disk. `memoryStorage()` keeps results in a `Map`. Kubb skips writes when the stored content already matches.
 
 A custom driver implements the [Storage interface](/docs/5.x/reference/kit/storage#storage-interface) to target another backend. Formatting, linting, and CLI post-generation commands follow generation.
 

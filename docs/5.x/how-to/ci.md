@@ -15,7 +15,7 @@ order: 7
 
 ## Set the token
 
-Create an organization CI API key in Studio and store it as `KUBB_TOKEN`. On GitHub, use an Actions secret; on GitLab, use a masked CI/CD variable. Snapshot installation uses a separate `registry` API key.
+Create an organization CI API key in Studio and store it as `KUBB_TOKEN`. On GitHub, use an Actions secret. On GitLab, use a masked CI/CD variable. Snapshot installation uses a separate `registry` API key.
 
 Snapshots expire after seven days. Schedule a default-branch run if it can go a week without a push.
 
@@ -52,7 +52,7 @@ jobs:
           token: ${{ secrets.KUBB_TOKEN }}
 ```
 
-`pull-requests: write` covers the comment. `contents: write` is only needed for the init pull request below.
+`pull-requests: write` allows snapshot comments. `contents: write` lets the action open an initialization pull request when the repository has no Kubb config.
 
 ### Inputs
 

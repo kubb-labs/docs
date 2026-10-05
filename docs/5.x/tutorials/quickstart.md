@@ -108,7 +108,7 @@ export default defineConfig({
 })
 ```
 
-`defineConfig` supplies the OpenAPI adapter and TypeScript, TSX, and Markdown parsers. Install only the [plugins](/plugins) for the outputs you need. Axios and React Query require the TypeScript plugin; React Query also needs an Axios or Fetch client plugin. Set `hooks: true` to generate `use*` hooks.
+`defineConfig` supplies the OpenAPI adapter and TypeScript, TSX, and Markdown parsers. Install only the [plugins](/plugins) for the outputs you need. Axios and React Query require the TypeScript plugin. React Query also needs an Axios or Fetch client plugin. Set `hooks: true` to generate `use*` hooks.
 
 > [!WARNING]
 > Use `clean: true` only with a dedicated generated-code directory. It removes that directory before generation.

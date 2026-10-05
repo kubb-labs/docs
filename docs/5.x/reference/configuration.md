@@ -334,7 +334,7 @@ Text appended to the end of every file a plugin generates. Mirror of [`output.ba
 
 ### `plugins`
 
-Array of Kubb plugins. Dependencies run first; missing dependencies fail when a generator requires them with `ctx.requirePlugin`.
+Array of Kubb plugins. Dependencies run first. Missing dependencies fail when a generator requires them with `ctx.requirePlugin`.
 
 |           |                         |
 | --------: | :---------------------- |

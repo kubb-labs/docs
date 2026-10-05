@@ -1,10 +1,10 @@
 # Override a resolver
 
-Set a plugin’s `resolver` option to change generated identifiers and file paths. Supply only the methods you need to replace; other methods keep their defaults.
+Set a plugin’s `resolver` option to change generated identifiers and file paths. Supply only the methods you need to replace. Other methods keep their defaults.
 
 ## Shape
 
-`name` changes identifier casing; `file.baseName` and `file.path` control files. Plugin namespaces control specific symbols.
+`name` changes identifier casing. `file.baseName` and `file.path` control files. Plugin namespaces control specific symbols.
 
 ```typescript [Type definition]
 type ResolverPatch = {

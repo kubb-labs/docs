@@ -38,7 +38,7 @@ resources:
 
 ## Installation
 
-::code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/plugin-barrel
@@ -60,7 +60,7 @@ yarn add -D @kubb/plugin-barrel
 
 ## Dependencies
 
-No plugin dependencies. The plugin ships with Kubb and runs by default; do not add it to `plugins`.
+No plugin dependencies. The plugin ships with Kubb and runs by default. Do not add it to `plugins`.
 
 ## Example
 

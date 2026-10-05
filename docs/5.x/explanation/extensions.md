@@ -39,7 +39,7 @@ Post-enforced plugins can process other plugins' emitted files. The built-in bar
 
 ## Generators {#generators}
 
-A generator handles `schema` nodes, `operation` nodes, or the complete `operations` batch. Splitting output into generators keeps each task separate. An optional `match` predicate filters schema and operation handlers; it does not filter the batch handler.
+A generator handles `schema` nodes, `operation` nodes, or the complete `operations` batch. Splitting output into generators keeps each task separate. An optional `match` predicate filters schema and operation handlers. It does not filter the batch handler.
 
 Generators return files directly or elements for a renderer. See [Generator reference](/docs/5.x/reference/kit/generators) for handler signatures and context properties.
 
@@ -47,7 +47,7 @@ Generators return files directly or elements for a renderer. See [Generator refe
 
 A resolver determines identifiers, filenames, and paths. Generators use the active resolver, and dependent plugins read it to import the correct output.
 
-The plugin's `resolver` option patches its defaults. Use it to rename or relocate output; use macros to change the underlying schema. See [Override a resolver](/docs/5.x/how-to/resolvers).
+The plugin's `resolver` option patches its defaults. Use it to rename or relocate output. Use macros to change the underlying schema. See [Override a resolver](/docs/5.x/how-to/resolvers).
 
 ## Macros and printers {#macros}
 

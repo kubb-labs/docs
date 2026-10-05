@@ -45,7 +45,7 @@ resources:
 
 ## Installation
 
-::code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/plugin-ts
@@ -67,7 +67,7 @@ yarn add -D @kubb/plugin-ts
 
 ## Dependencies
 
-No plugin dependencies. Clients, hooks, mocks, and validators reuse its generated types.
+No plugin dependencies.
 
 ## Example
 

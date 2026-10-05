@@ -39,11 +39,11 @@ The positional argument selects the action. It defaults to `connect`.
 
 Run `start`, `status`, and `stop` from the same project directory. `start` resolves pairing and permission prompts before detaching, then returns while the worker connects.
 
-`status` reports `starting`, `connected`, `reconnecting`, `authentication required`, or `stopped`. Only one worker can own a project; stop it before using foreground `connect`.
+`status` reports `starting`, `connected`, `reconnecting`, `authentication required`, or `stopped`. Only one worker can own a project. Stop it before using foreground `connect`.
 
 The worker survives terminal closure and retries temporary connection failures. Restart it after a crash or reboot. If its token is rejected, run `kubb studio login`, then `kubb studio start`. To change its URL, config, or permissions, stop it and start with the new flags.
 
-Credentials, worker state, and a bounded 1 MiB `worker.log` live under `$KUBB_HOME/projects/<sha256(project-path)>/`. `KUBB_HOME` defaults to `~/.kubb`; `status` prints the log path. `stop` waits for active generation cleanup. `logout` stops the worker before removing credentials. Interrupted jobs are not replayed.
+Credentials, worker state, and a bounded 1 MiB `worker.log` live under `$KUBB_HOME/projects/<sha256(project-path)>/`. `KUBB_HOME` defaults to `~/.kubb`. `status` prints the log path. `stop` waits for active generation cleanup. `logout` stops the worker before removing credentials. Interrupted jobs are not replayed.
 
 ## Options
 

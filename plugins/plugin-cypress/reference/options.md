@@ -38,7 +38,7 @@ How the plugin consolidates its generated code into files.
 Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 
 > [!IMPORTANT]
-> `group` requires directory output. Kubb infers the mode from `output.path`; set `mode: 'directory'` to override that inference. Combining `group` with `mode: 'file'` stops generation with `KUBB_INVALID_PLUGIN_OPTIONS`.
+> `group` requires directory output. Kubb infers the mode from `output.path`. Set `mode: 'directory'` to override that inference. Combining `group` with `mode: 'file'` stops generation with `KUBB_INVALID_PLUGIN_OPTIONS`.
 
 #### output.barrel
 
@@ -85,7 +85,7 @@ import { pluginCypress } from '@kubb/plugin-cypress'
 pluginCypress({ baseURL: 'https://staging.example.com' })
 ```
 
-Keep `pluginTs()` in the configuration. The host is emitted into each helper's URL; no runtime host setup is needed.
+Keep `pluginTs()` in the configuration. The host is emitted into each helper's URL. No runtime host setup is needed.
 
 ### include
 

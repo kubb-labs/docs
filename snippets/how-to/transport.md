@@ -3,7 +3,7 @@
 
 Set a transport at runtime to replace the network send. The client still builds URLs, serializes parameters, resolves authentication, and handles results.
 
-Fetch accepts a transport function; Axios accepts an `AxiosInstance`. Use [interceptors](/plugins/plugin-fetch/guide/interceptors) for request headers or response logging.
+Fetch accepts a transport function. Axios accepts an `AxiosInstance`. Use [interceptors](/plugins/plugin-fetch/guide/interceptors) for request headers or response logging.
 
 ## Fetch: a transport function
 

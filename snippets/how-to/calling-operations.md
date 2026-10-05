@@ -76,7 +76,7 @@ Reading the `error` body and handling failures is covered in
 
 ## Unwrap the success body
 
-Call `.unwrap()` to return the success body; awaiting the operation directly returns the full result.
+Call `.unwrap()` to return the success body. Awaiting the operation directly returns the full result.
 
 ```typescript
 import { getPetById } from './gen/clients/getPetById'
@@ -187,7 +187,7 @@ await getPetById({ path: { petId: 1 }, options: { timeout: 5_000 } })
 
 For Fetch clients, use options such as `cache`, `mode`, `redirect`, `keepalive`, `duplex`, or `next`. Axios supports `timeout`, `proxy`, `maxRedirects`, `decompress`, and `onUploadProgress`.
 
-Set `client.setConfig({ options })` for shared defaults; per-call options take precedence. Kubb controls serialization and HTTP error handling, as described in [custom transport](/plugins/plugin-fetch/guide/transport).
+Set `client.setConfig({ options })` for shared defaults. Per-call options take precedence. Kubb controls serialization and HTTP error handling, as described in [custom transport](/plugins/plugin-fetch/guide/transport).
 
 ## Build a URL without sending
 

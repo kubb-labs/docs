@@ -15,7 +15,7 @@ outline: deep
 
 ## Queries
 
-A query composable takes grouped request parameters as its first argument. Parameters accept a value, ref, or getter; see [reactive parameters](#refetch-when-parameters-change).
+A query composable takes grouped request parameters as its first argument. Parameters accept a value, ref, or getter. See [reactive parameters](#refetch-when-parameters-change).
 
 ```typescript [usage.ts]
 import { useGetPetById } from './gen/hooks/useGetPetById'
@@ -118,7 +118,7 @@ const { data, fetchNextPage, hasNextPage } = useInfiniteQuery(
 
 ## Refetch when parameters change
 
-Enable `hooks: true`, then pass a ref or getter to a generated composable. Parameters accept `MaybeRefOrGetter`; a getter tracks its reactive dependencies.
+Enable `hooks: true`, then pass a ref or getter to a generated composable. Parameters accept `MaybeRefOrGetter`. A getter tracks its reactive dependencies.
 
 ```typescript [usage.ts]
 import { ref } from 'vue'

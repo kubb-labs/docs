@@ -1,6 +1,6 @@
 # Interceptors
 
-Register handlers on `client.interceptors.request`, `.response`, or `.error` to apply behavior across calls. Fetch handlers receive resolved request/result objects; Axios handlers receive native Axios objects.
+Register handlers on `client.interceptors.request`, `.response`, or `.error` to apply behavior across calls. Fetch handlers receive resolved request/result objects. Axios handlers receive native Axios objects.
 
 ## Run before the send
 

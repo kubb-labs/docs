@@ -53,9 +53,9 @@ kubb studio status
 kubb studio stop
 ```
 
-The first start resolves pairing and permissions before detaching; later starts reuse them. The worker survives terminal closure and retries temporary connection failures. Restart it after a crash or reboot. If status reports `authentication required`, run `kubb studio login`, then start again. `logout` stops the worker and forgets its token.
+The first start resolves pairing and permissions before detaching. Later starts reuse them. The worker survives terminal closure and retries temporary connection failures. Restart it after a crash or reboot. If status reports `authentication required`, run `kubb studio login`, then start again. `logout` stops the worker and forgets its token.
 
-For a persistent team connection, use the [Docker agent](https://hub.docker.com/r/kubblabs/kubb-agent). In CI or without a TTY, pass an existing `KUBB_AGENT_TOKEN` and the required permission flags; headless runs do not prompt. See [Background connection](/docs/5.x/reference/commands/studio#background-connection) for worker states, logs, and restart behavior.
+For a persistent team connection, use the [Docker agent](https://hub.docker.com/r/kubblabs/kubb-agent). In CI or without a TTY, pass an existing `KUBB_AGENT_TOKEN` and the required permission flags. Headless runs do not prompt. See [Background connection](/docs/5.x/reference/commands/studio#background-connection) for worker states, logs, and restart behavior.
 
 ## Snapshot from CI
 

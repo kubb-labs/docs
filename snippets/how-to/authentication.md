@@ -1,6 +1,6 @@
 # Authenticate your API client
 
-Set an `auth` resolver on the generated Fetch or Axios client. Operations use the security schemes declared in your OpenAPI spec; requests remain unauthenticated until you provide credentials.
+Set an `auth` resolver on the generated Fetch or Axios client. Operations use the security schemes declared in your OpenAPI spec. Requests remain unauthenticated until you provide credentials.
 
 ## Set the auth resolver
 

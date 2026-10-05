@@ -149,7 +149,7 @@ pluginReactQuery({
 })
 ```
 
-Place the function where the generated import resolves. Each hook passes `{ hookName, operationId }`; the generated barrel re-exports `HookOptions`.
+Place the function where the generated import resolves. Each hook passes `{ hookName, operationId }`. The generated barrel re-exports `HookOptions`.
 
 ```typescript [src/gen/hooks/useCustomHookOptions.ts]
 import type { HookOptions } from './HookOptions'

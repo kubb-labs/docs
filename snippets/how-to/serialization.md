@@ -1,7 +1,7 @@
 
 # Serialization and parsing
 
-Fetch and Axios clients encode parameters using OpenAPI `style` and `explode`, serialize request bodies by content type, and decode responses by media type. Generated operations carry the metadata; most requests need no additional configuration.
+Fetch and Axios clients encode parameters using OpenAPI `style` and `explode`, serialize request bodies by content type, and decode responses by media type. Generated operations carry the metadata. Most requests need no additional configuration.
 
 ## Parameter styles
 
@@ -52,7 +52,7 @@ Header values are sent as-is, and cookie values are URL-encoded into a single `C
 
 ### Override the serializer
 
-Override `serializer.query`, `.body`, or `.path` on the client; omitted functions retain their defaults:
+Override `serializer.query`, `.body`, or `.path` on the client. Omitted functions retain their defaults:
 
 ```typescript
 import { client } from './gen/.kubb/client'

@@ -1,7 +1,7 @@
 
 # Server-sent events
 
-Operations returning `text/event-stream` produce a typed stream rather than a `RequestResult`. Both clients support streaming; Axios uses its fetch adapter unless you select another adapter.
+Operations returning `text/event-stream` produce a typed stream rather than a `RequestResult`. Both clients support streaming. Axios uses its fetch adapter unless you select another adapter.
 
 ## Consume a stream
 

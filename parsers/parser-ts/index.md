@@ -42,11 +42,11 @@ resources:
 - `parserTs()` handles `.ts` and `.js`.
 - `parserTsx()` handles `.tsx` and `.jsx`.
 
-Both run by default alongside `parserMd`. A custom `parsers` array replaces that default set. Include every parser your plugins need; unmatched files are written as source text.
+Both run by default alongside `parserMd`. A custom `parsers` array replaces that default set. Include every parser your plugins need. Unmatched files are written as source text.
 
 ## Installation
 
-::code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/parser-ts

@@ -71,4 +71,4 @@ const dropDescriptions = ast.defineMacro({
 pluginTs({ macros: [dropDescriptions] })
 ```
 
-The generated types omit description JSDoc. The OpenAPI document stays unchanged; the same macro works with `pluginZod`.
+The generated types omit description JSDoc. The OpenAPI document stays unchanged. The same macro works with `pluginZod`.

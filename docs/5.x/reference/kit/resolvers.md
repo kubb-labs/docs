@@ -48,7 +48,7 @@ export const resolver = createResolver<MyPlugin>({
 
 | Method           | Default behavior                                                        |
 | ---------------- | ---------------------------------------------------------------------- |
-| `name`           | Active top-level identifier casing; delegates to `default.name` when omitted |
+| `name`           | Active top-level identifier casing. Delegates to `default.name` when omitted |
 | `file`           | Top-level `FileNode` builder, delegates to `default.file`              |
 | `default.name`   | The core `camelCase` generated-identifier casing                       |
 | `default.options`| Applies `exclude`, `include`, and `override` filters                   |

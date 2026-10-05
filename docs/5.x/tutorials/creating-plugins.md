@@ -86,7 +86,7 @@ Each generated file contains the operation's method and path. For an operation n
 
 ## 4. Add options or dependencies
 
-Use `PluginFactoryOptions` to type user options and their resolved values. Apply defaults in the plugin factory and store resolved options with `ctx.setOptions`; generators read them from the plugin context. See [Plugin reference](/docs/5.x/reference/kit/plugins).
+Use `PluginFactoryOptions` to type user options and their resolved values. Apply defaults in the plugin factory and store resolved options with `ctx.setOptions`. Generators read them from the plugin context. See [Plugin reference](/docs/5.x/reference/kit/plugins).
 
 Declare `dependencies` when another plugin must run first. In the generator, call `ctx.requirePlugin(name)` to require it and `ctx.getResolver(name)` to reuse its names and paths. Missing dependencies fail when requested, not during ordering.
 

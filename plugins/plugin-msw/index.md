@@ -49,7 +49,7 @@ resources:
 
 ## Installation
 
-::code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/plugin-msw
@@ -71,7 +71,7 @@ yarn add -D @kubb/plugin-msw
 
 ## Dependencies
 
-Add [`pluginTs`](/plugins/plugin-ts/). Add [`pluginFaker`](/plugins/plugin-faker/) when `parser: 'faker'`; the default `parser: 'data'` does not need it. Generated handlers require MSW v2 or higher.
+Add [`pluginTs`](/plugins/plugin-ts/). Add [`pluginFaker`](/plugins/plugin-faker/) when `parser: 'faker'`. The default `parser: 'data'` does not need it. Generated handlers require MSW v2 or higher.
 
 ## Example
 

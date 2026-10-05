@@ -50,7 +50,7 @@ resources:
 
 ## Installation
 
-::code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/plugin-mcp

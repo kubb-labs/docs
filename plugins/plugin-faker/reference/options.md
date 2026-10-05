@@ -37,7 +37,7 @@ Folder where the plugin writes its files, resolved against the global `output.pa
 How the plugin consolidates generated code. `'file'` writes everything into a single file, where `output.path` must include the extension such as `'mocks.ts'`. `'directory'` writes one file per operation or schema under `output.path`. Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 
 > [!IMPORTANT]
-> `group` requires directory output. Kubb infers the mode from `output.path`; set `mode: 'directory'` to override that inference. Combining `group` with `mode: 'file'` stops generation with `KUBB_INVALID_PLUGIN_OPTIONS`.
+> `group` requires directory output. Kubb infers the mode from `output.path`. Set `mode: 'directory'` to override that inference. Combining `group` with `mode: 'file'` stops generation with `KUBB_INVALID_PLUGIN_OPTIONS`.
 
 #### output.barrel
 
@@ -87,7 +87,7 @@ import { pluginFaker } from '@kubb/plugin-faker'
 pluginFaker({ dateParser: 'dayjs' })
 ```
 
-Install `dayjs` in the consuming app. Generated `date` and `time` strings use `YYYY-MM-DD` and `HH:mm:ss`; `date-time` values keep the ISO string.
+Install `dayjs` in the consuming app. Generated `date` and `time` strings use `YYYY-MM-DD` and `HH:mm:ss`. `date-time` values keep the ISO string.
 
 ### regexGenerator
 

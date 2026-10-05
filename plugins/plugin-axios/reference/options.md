@@ -38,7 +38,7 @@ Folder where the plugin writes its files, defaulting to `'clients'` and resolved
 `'file'` writes everything into a single file whose `output.path` must include the extension. `'directory'` writes one file per operation under `output.path`. Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 
 > [!IMPORTANT]
-> `group` requires directory output. Kubb infers the mode from `output.path`; set `mode: 'directory'` to override that inference. Combining `group` with `mode: 'file'` stops generation with `KUBB_INVALID_PLUGIN_OPTIONS`.
+> `group` requires directory output. Kubb infers the mode from `output.path`. Set `mode: 'directory'` to override that inference. Combining `group` with `mode: 'file'` stops generation with `KUBB_INVALID_PLUGIN_OPTIONS`.
 
 #### output.barrel
 
@@ -102,7 +102,7 @@ export default defineConfig({
 
 ### comments
 
-Controls generated JSDoc. `'full'` (default) keeps complete descriptions. `'brief'` keeps the first sentence and other tags; descriptions over 150 characters without a sentence ending are cut at the last word before 120. `'none'` omits JSDoc but keeps the generated-by banner.
+Controls generated JSDoc. `'full'` (default) keeps complete descriptions. `'brief'` keeps the first sentence and other tags. Descriptions over 150 characters without a sentence ending are cut at the last word before 120. `'none'` omits JSDoc but keeps the generated-by banner.
 
 ### sdk
 

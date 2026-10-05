@@ -1,6 +1,6 @@
 ---
 layout: doc
-title: Recipes
+title: Configure generation
 description: Configure common Kubb outputs, multiple specifications, watch mode,
   formatters, and programmatic builds.
 outline:
@@ -11,7 +11,7 @@ navigation:
   title: Configure generation
 ---
 
-# Recipes
+# Configure generation
 
 Ready-made `kubb.config.ts` snippets for common setups. Copy one in, install the matching packages, and run [`kubb generate`](/docs/5.x/reference/commands/generate).
 
@@ -84,7 +84,7 @@ export default defineConfig({
 
 ## Pick the HTTP client
 
-Choose [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) or [Axios](https://axios-http.com) by registering the matching plugin. Swap `pluginFetch` for `pluginAxios` to use the global `fetch` instead.
+Choose [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) or [Axios](https://axios-http.com) by registering the matching plugin. Replace `pluginAxios` with `pluginFetch` to use global `fetch`, and change the import to `@kubb/plugin-fetch`.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'

@@ -1,6 +1,6 @@
 # Error handling
 
-Generated Fetch and Axios clients throw on non-2xx responses by default. Set the generated default on the client plugin; individual operations can override it:
+Generated Fetch and Axios clients throw on non-2xx responses by default. Set the generated default on the client plugin. Individual operations can override it:
 
 ```typescript
 import { getPetById } from './gen/clients/getPetById'
@@ -112,7 +112,7 @@ try {
 }
 ```
 
-A `ParseError` reports schema validation issues; a `ResponseError` reports a non-2xx status. On the non-throwing path, configured error schemas validate the error body separately from success schemas.
+A `ParseError` reports schema validation issues. A `ResponseError` reports a non-2xx status. On the non-throwing path, configured error schemas validate the error body separately from success schemas.
 
 Calling `.unwrap()` on a `throwOnError: false` call turns that same `error` into a rejection, so a
 `try`/`catch` works there too. See

@@ -2,7 +2,7 @@
 
 Use a macro to transform schema or operation nodes before generation. Macros can rename symbols, change field types, or remove metadata across output targets.
 
-Import the macro engine through `ast` from `kubb/kit`; built-in presets are named exports of `kubb/kit`.
+Import the macro engine through `ast` from `kubb/kit`. Built-in presets are named exports of `kubb/kit`.
 
 ## Shape
 
