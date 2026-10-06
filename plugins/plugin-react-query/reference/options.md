@@ -111,13 +111,7 @@ Module for the `queryOptions` import, defaulting to `'@tanstack/react-query'`.
 
 Builds the `queryKey` for each hook from the operation `node`, `casing` and `variant`, defaulting to the built-in `queryKeyTransformer`. String values are inlined verbatim, so wrap literals in `JSON.stringify(...)`.
 
-`variant` is the hook the key is built for: `'query'`, `'suspenseQuery'`, `'infiniteQuery'` or `'suspenseInfiniteQuery'`. The default key adds `infinite: true` for the infinite variants, because TanStack Query stores `InfiniteData` under an infinite key and the plain hook for the same request must not share it. Keep that distinction in a custom builder, or extend the exported default:
-
-```typescript
-import { queryKeyTransformer } from '@kubb/plugin-react-query'
-
-queryKey: (props) => [JSON.stringify({ service: 'pets' }), ...queryKeyTransformer(props)]
-```
+`variant` is the hook the key is built for: `'query'`, `'suspenseQuery'`, `'infiniteQuery'` or `'suspenseInfiniteQuery'`. The default key adds `infinite: true` for the infinite variants, because TanStack Query stores `InfiniteData` under an infinite key and the plain hook for the same request must not share it.
 
 ### mutation
 
@@ -133,7 +127,7 @@ Module for the `mutationOptions` import, defaulting to `'@tanstack/react-query'`
 
 ### mutationKey
 
-Builds the `mutationKey` for each mutation hook, for batched invalidations or `useMutationState`. Same props and string-inlining caveat as `queryKey`, with `variant` set to `'mutation'`, defaulting to the exported `mutationKeyTransformer`.
+Builds the `mutationKey` for each mutation hook, for batched invalidations or `useMutationState`. Same props and string-inlining caveat as `queryKey`, with `variant` set to `'mutation'`, defaulting to the built-in `mutationKeyTransformer`.
 
 ### customOptions
 
