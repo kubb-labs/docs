@@ -1,13 +1,15 @@
 ---
 layout: doc
 title: Options
-description: Configuration options for @kubb/adapter-oas covering spec validation, content type, the server base URL, discriminators, enums, and how OpenAPI types map to TypeScript.
+description: Configuration options for @kubb/adapter-oas covering spec
+  validation, content type, the server base URL, discriminators, enums, and how
+  OpenAPI types map to TypeScript.
 outline: deep
 ---
 
 # Options
 
-Options for `adapterOas`, with type and default in the table.
+All `adapterOas` options are optional. Types and defaults are listed below.
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
@@ -18,8 +20,8 @@ Options for `adapterOas`, with type and default in the table.
 | [`enums`](#enums) | `'inline' \| 'root'` | `'inline'` | Where inline enums live |
 | [`dateType`](#datetype) | `false \| 'string' \| 'stringOffset' \| 'stringLocal' \| 'date' \| { dateTime?, date?, time? }` | `'string'` | How `date-time`, `date`, and `time` schemas are represented |
 | [`integerType`](#integertype) | `'number' \| 'bigint'` | `'bigint'` | How integers map to TypeScript |
-| [`unknownType`](#unknowntype) | `'any' \| 'unknown' \| 'void'` | `'any'` | Type for schemas Kubb cannot infer |
-| [`emptySchemaType`](#emptyschematype) | `'any' \| 'unknown' \| 'void'` | `unknownType \| 'any'` | Type for empty schemas |
+| [`unknownType`](#unknowntype) | `'any' \| 'unknown' \| 'void'` | `'unknown'` | Type for schemas Kubb cannot infer |
+| [`emptySchemaType`](#emptyschematype) | `'any' \| 'unknown' \| 'void'` | `unknownType` (`'unknown'` by default) | Type for empty schemas |
 | [`enumSuffix`](#enumsuffix) | `string` | `'enum'` | Suffix for derived enum names |
 
 ### validate
@@ -45,7 +47,7 @@ How `discriminator` fields on `oneOf`/`anyOf` schemas are interpreted.
 - `'preserve'` (default) keeps child schemas exactly as written, though the discriminator still narrows types at the call site.
 - `'propagate'` pushes the discriminator property with its literal value into each child schema, so each branch's `type` field is precisely typed.
 
-::: code-group
+::code-group
 
 ```yaml [OpenAPI spec]
 openapi: 3.0.3
@@ -86,7 +88,7 @@ export type Dog = { type: 'dog'; name?: string }
 export type Animal = Cat | Dog
 ```
 
-:::
+::
 
 ### enums
 

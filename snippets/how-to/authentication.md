@@ -1,29 +1,10 @@
 # Authenticate your API client
 
-To add authentication to your generated client, give the client one `auth` resolver. Kubb attaches each operation's security schemes from your spec, and the runtime adds the token to requests that need it. Calls stay unauthenticated until you set a resolver.
-
-Follow the same steps for [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and [`@kubb/plugin-axios`](/plugins/plugin-axios/).
+Set an `auth` resolver on the generated Fetch or Axios client. Operations use the security schemes declared in your OpenAPI spec. Requests remain unauthenticated until you provide credentials.
 
 ## Set the auth resolver
 
-Every generated function already carries the operation's security, derived from the spec:
-
-```typescript
-export function addPet<ThrowOnError extends boolean = true>(
-  options: Options<AddPetOptions, ThrowOnError>,
-): Promise<RequestResult<AddPetResponses, ThrowOnError>> {
-  const { client: request = client, ...config } = options
-
-  return request({
-    method: 'POST',
-    url: '/pet',
-    security: [{ type: 'oauth2' }],
-    ...config,
-  }) as Promise<RequestResult<AddPetResponses, ThrowOnError>>
-}
-```
-
-Set the resolver on the client and every guarded call picks up the token:
+Set the resolver for all secured operations:
 
 ```typescript
 import { client } from './gen/.kubb/client'
@@ -37,7 +18,7 @@ The resolver is a token string, or a function (which can be async) that returns 
 
 ## Return the right token per scheme
 
-The resolver receives the resolved scheme, so one function can serve every operation. Read the `Auth` object it passes in to decide which credential to return:
+Use the scheme passed to the resolver to select a credential:
 
 ```typescript
 type Auth = {
@@ -88,37 +69,7 @@ const { data } = await getPetById({ path: { petId: 1 }, client: tenant })
 
 To override the client for one request, pass `auth` on that single call, which suits a one-off token refresh. An explicit `headers` value you set on a call always wins over the resolved token.
 
-## Use an interceptor instead
-
-For anything an OpenAPI security scheme cannot describe, reach for a request interceptor. It runs on every call and sees the final request before it is sent, so it can set or rewrite any header without touching the spec.
-
-```typescript
-import { client } from './gen/.kubb/client'
-
-client.interceptors.request.use((request) => {
-  request.headers.Authorization = `Bearer ${getToken()}`
-  return request
-})
-```
-
-For a standard bearer, basic, or apiKey scheme, the `auth` resolver stays the simpler path. To refresh a token after a `401`, read the new token from a response or error interceptor and let the request interceptor pick it up on the next call.
-
-## Sign requests with an async credential
-
-A request interceptor can be `async`. Kubb awaits it before sending the request, so it can compute a credential first, such as an AWS SigV4 signature or a token from Entra ID or Cognito.
-
-```typescript
-import { client } from './gen/.kubb/client'
-
-client.interceptors.request.use(async (request) => {
-  const { headers } = await signRequest(request)
-
-  request.headers = { ...request.headers, ...headers }
-  return request
-})
-```
-
-`signRequest` is your own signing or token function. The interceptor runs on the client Kubb generates, so the generated functions keep their typed responses.
+For authentication outside OpenAPI security schemes, use an async [request interceptor](/plugins/plugin-fetch/guide/interceptors) to sign requests or supply custom headers.
 
 ## See also
 

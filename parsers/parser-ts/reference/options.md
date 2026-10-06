@@ -21,10 +21,9 @@ Use it to emit `.js` imports from `.ts` sources for an ESM dual package, or to k
 
 The same mapping applies to runtime templates a plugin copies into the output, such as the `.kubb/` runtime files of `@kubb/plugin-fetch`. Their top-level `import` and `export … from` statements become import and export nodes, so the whole output follows one convention.
 
-|          |                          |
-| -------: | :----------------------- |
-|    Type: | `Record<string, string>` |
-| Default: | `{ '.ts': '' }`          |
+| Type | Default |
+| --- | --- |
+| `Record<string, string>` | `{ '.ts': '' }` |
 
 ```typescript
 parserTs({ extension: { '.ts': '.js' } })  // import './api.js' instead of './api'

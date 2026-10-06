@@ -1,17 +1,6 @@
 # Error handling
 
-The client Kubb generates has one rule that shapes every failure: a non-2xx response either throws
-or lands on the result, and you choose which with `throwOnError`. It defaults to `true`, so a
-resolved call always means success and you read `data` without a guard. Turn it off and the same
-call resolves for every status, with the failure on `error`.
-
-This holds for both [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and [`@kubb/plugin-axios`](/plugins/plugin-axios/). The transport differs, the
-error contract does not.
-
-## Throw on a non-2xx response
-
-By default a status outside 200-299 throws a `ResponseError`. Wrap the call in a `try`/`catch`
-and read the parsed body and status off the error:
+Generated Fetch and Axios clients throw on non-2xx responses by default. Set the generated default on the client plugin. Individual operations can override it:
 
 ```typescript
 import { getPetById } from './gen/clients/getPetById'
@@ -30,8 +19,7 @@ try {
 
 A `ResponseError` includes the HTTP method and URL (without query parameters, keeping credentials safe) in its `message`, e.g. `GET https://api.example.com/pets/1 failed with status 404 Not Found`.
 
-It carries the same fields a result does, so nothing about the response is out of
-reach:
+The error exposes these fields:
 
 ```typescript
 class ResponseError extends Error {
@@ -45,8 +33,7 @@ class ResponseError extends Error {
 }
 ```
 
-> [!TIP]
-> Prefer `ResponseError.is(error)` over `error instanceof ResponseError`. Because each generated client bundles its own `.kubb/client.ts`, an application that consumes multiple generated clients has separate `ResponseError` classes. `ResponseError.is` checks `error.name === 'ResponseError'` and safely narrows across package boundaries.
+Use `ResponseError.is(error)` to narrow errors across generated packages, which each bundle their own class. It checks the error name.
 
 ## Return the error instead
 
@@ -64,43 +51,29 @@ if (result.error) {
 }
 ```
 
-Branching on `status` narrows the body to the variant for that code, which matters when the error
-responses differ between, say, a 404 and a 422:
+Check `status` to narrow responses to a specific documented status code.
+
+## Set the generated default
+
+Set `throwOnErrorDefault` on `@kubb/plugin-fetch` or `@kubb/plugin-axios` to choose how generated
+operations handle non-2xx responses by default. Each call can still override that setting with
+`throwOnError`:
 
 ```typescript
-const result = await updatePet({
-  path: { petId: '123' },
-  body: { name: 'Updated name' },
-  throwOnError: false,
-})
+import { pluginFetch } from '@kubb/plugin-fetch'
 
-switch (result.status) {
-  case 200:
-    return result.data
-  case 404:
-    return notFound(result.error)
-  case 422:
-    return showValidationErrors(result.error)
-}
-```
-
-## Set the default for every call
-
-`throwOnError` reads from three places, narrowest first: the per-call option, then the client
-config, then the built-in default of `true`. Set it on the client to flip the default for the
-whole app while keeping the per-call override:
-
-```typescript
-import { client } from './gen/.kubb/client'
-
-client.setConfig({ throwOnError: false })
+pluginFetch({ throwOnErrorDefault: false })
 
 // resolves with an error result
-const list = await searchPets({ query: { status: 'available' }, throwOnError: false })
+const list = await searchPets({ query: { status: 'available' } })
 
 // opt one call back into throwing
 const pet = await getPetById({ path: { petId: 1 }, throwOnError: true })
 ```
+
+The generated operation passes its selected value to the client runtime, so setting
+`throwOnError` with `client.setConfig` does not change this default. Configure the plugin to
+change the generated default.
 
 ## Network failures still throw
 
@@ -118,15 +91,7 @@ try {
 }
 ```
 
-To cancel a request yourself, pass an `AbortSignal` and abort it. The pending call rejects with
-the abort reason:
-
-```typescript
-const controller = new AbortController()
-setTimeout(() => controller.abort(), 5_000)
-
-await searchPets({ query: { status: 'available' }, signal: controller.signal })
-```
+Pass an `AbortSignal` to cancel a request. The call rejects with the abort reason.
 
 ## Validation failures
 
@@ -147,9 +112,7 @@ try {
 }
 ```
 
-A `ParseError` is separate from a `ResponseError`: the response arrived and its status was fine,
-but the body did not match the schema. Validation runs after the status check, so on the
-`throwOnError: false` path a non-2xx never reaches response validation.
+A `ParseError` reports schema validation issues. A `ResponseError` reports a non-2xx status. On the non-throwing path, configured error schemas validate the error body separately from success schemas.
 
 Calling `.unwrap()` on a `throwOnError: false` call turns that same `error` into a rejection, so a
 `try`/`catch` works there too. See

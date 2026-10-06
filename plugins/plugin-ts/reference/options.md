@@ -15,7 +15,6 @@ outline: deep
 | [`syntaxType`](#syntaxtype) | `'type' \| 'interface'` | `'type'` | Emit object schemas as type aliases or interfaces |
 | [`optionalType`](#optionaltype) | `'questionToken' \| 'undefined' \| 'questionTokenAndUndefined'` | `'questionToken'` | How optional properties are written |
 | [`arrayType`](#arraytype) | `'array' \| 'generic'` | `'array'` | `Type[]` or `Array<Type>` |
-| [`comments`](#comments) | `'full' \| 'brief' \| 'none'` | `'full'` | How much of each description reaches the JSDoc |
 | [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
 | [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
 | [`override`](#override) | `Array<Override>` | `[]` | Apply different options per pattern |
@@ -74,7 +73,7 @@ Representation of each enum. Defaults to `'asConst'`.
 - `'literal'` emits a union type with no runtime value.
 - `'inlineLiteral'` inlines the union at each usage site instead of giving it a name.
 
-::: code-group
+::code-group
 
 ```typescript ['asConst' (default)]
 export const petStatus = {
@@ -110,7 +109,7 @@ export type PetStatus = 'available' | 'pending' | 'sold'
 export type PetStatus = 'available' | 'pending' | 'sold'
 ```
 
-:::
+::
 
 #### enum.constCasing
 
@@ -119,7 +118,7 @@ Casing of the generated const variable when `type` is `'asConst'`. Defaults to `
 - `'camelCase'` names the const `petStatus`.
 - `'pascalCase'` names the const `PetStatus`, matching the schema name.
 
-::: code-group
+::code-group
 
 ```typescript ['camelCase' (default)]
 export const petStatus = {
@@ -141,13 +140,13 @@ export const PetStatus = {
 export type PetStatusKey = (typeof PetStatus)[keyof typeof PetStatus]
 ```
 
-:::
+::
 
 #### enum.typeSuffix
 
 Suffix on the type alias generated when `type` is `'asConst'` (`string`, default `'Key'`), applied only to the companion type alias, not the const object name. Set it to `''` to drop the suffix, which with `constCasing: 'pascalCase'` merges the const and type under one name.
 
-::: code-group
+::code-group
 
 ```typescript ['Key' (default)]
 export const petStatus = {
@@ -179,7 +178,7 @@ export const petStatus = {
 export type PetStatus = (typeof petStatus)[keyof typeof petStatus]
 ```
 
-:::
+::
 
 #### enum.keyCasing
 
@@ -197,7 +196,7 @@ Casing applied to enum key names, `'none'` by default (the raw value from the sp
 
 Whether object schemas are emitted as `type` aliases or `interface` declarations, with `type` as the safer default. Pick `interface` only when consumers need declaration merging, which is rare for generated code and covered in [Type vs Interface](https://www.totaltypescript.com/type-vs-interface-which-should-you-use).
 
-::: code-group
+::code-group
 
 ```typescript ['type' (default)]
 export type Pet = {
@@ -211,7 +210,7 @@ export interface Pet {
 }
 ```
 
-:::
+::
 
 ### optionalType
 
@@ -221,7 +220,7 @@ How optional properties are written. Defaults to `'questionToken'`.
 - `'undefined'` writes `type: string | undefined`, so it must exist but may be `undefined`.
 - `'questionTokenAndUndefined'` writes `type?: string | undefined`, the strictest form. Use it with `"exactOptionalPropertyTypes": true`.
 
-::: code-group
+::code-group
 
 ```typescript ['questionToken' (default)]
 export type Pet = {
@@ -241,7 +240,7 @@ export type Pet = {
 }
 ```
 
-:::
+::
 
 ### arrayType
 
@@ -250,7 +249,7 @@ Syntax for array types. Defaults to `'array'`.
 - `'array'` uses the postfix `Type[]`.
 - `'generic'` uses `Array<Type>`, which reads better for complex elements like `Array<{ id: number }>`.
 
-::: code-group
+::code-group
 
 ```typescript ['array' (default)]
 export type Pet = {
@@ -264,41 +263,7 @@ export type Pet = {
 }
 ```
 
-:::
-
-### comments
-
-How much of each OpenAPI `description` reaches the JSDoc above generated types. Defaults to `'full'`.
-
-- `'full'` emits every description in full, however many paragraphs the spec carries.
-- `'brief'` keeps the opening sentence. Every other tag stays, so each type keeps its documentation. Abbreviations such as `e.g.` and unclosed brackets are not mistaken for the end of a sentence. A description that runs on for 150 characters without one is cut at the last word before 120 and ends with an ellipsis. The cut moves back further when it would leave a markdown link or code span half written.
-- `'none'` emits no JSDoc. The generated-by banner at the top of each file is unaffected.
-
-Descriptions are where the bytes go on a large spec. Generating the OpenAI API leaves JSDoc as a third of everything Kubb writes, so `'brief'` trims about 197 KB and `'none'` about 1 MB of a 2.76 MB output. Reach for one of those when the size of the generated tree matters more than editor hovers.
-
-::: code-group
-
-```typescript ['full' (default)]
-/**
- * @description The identifier, which can be referenced in API endpoints. Treat it as opaque, since the format changes between releases.
- * @type string
- */
-id: string
-```
-
-```typescript ['brief']
-/**
- * @description The identifier, which can be referenced in API endpoints.
- * @type string
- */
-id: string
-```
-
-```typescript ['none']
-id: string
-```
-
-:::
+::
 
 ### include
 
@@ -314,7 +279,7 @@ id: string
 
 ### resolver
 
-Changes how the plugin names generated files and symbols. Pass a partial patch. Override only the members you want, and anything you omit keeps `resolverTs`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
+Overrides generated file and symbol names. Omitted members keep the plugin's resolver defaults. See [Override a resolver](/docs/5.x/how-to/resolvers) for the `this` context and how a patch layers over the default.
 
 > [!TIP]
 > Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
@@ -351,7 +316,7 @@ type ResolverTsPatch = {
 
 ### printer
 
-Replaces the node handler for a schema type such as `'integer'` or `'date'` with one that builds its TypeScript AST node. Use `this.transform` to recurse into nested nodes and `this.options` to read printer options. The [printer guide](/docs/5.x/guide/going-further/printers) covers the handler context and how overrides compose with macros.
+Replaces the node handler for a schema type such as `'integer'` or `'date'` with one that builds its TypeScript AST node. Use `this.transform` to recurse into nested nodes and `this.options` to read printer options. The [printer guide](/docs/5.x/how-to/printers) covers the handler context and how overrides compose with macros.
 
 ```typescript [Map date schemas to the Date object]
 import ts from 'typescript'

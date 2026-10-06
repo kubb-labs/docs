@@ -1,17 +1,25 @@
 ---
 layout: doc
 title: Plugins
-description: definePlugin wraps a factory into a typed Plugin, with all lifecycle handlers under one hooks object and the KubbPluginSetupContext that registers generators, resolvers, macros, and options.
-outline: [2, 3]
+description: definePlugin wraps a factory into a typed Plugin, with all
+  lifecycle handlers under one hooks object and the KubbPluginSetupContext that
+  registers generators, resolvers, macros, and options.
+outline:
+  - 2
+  - 3
+order: 1
+navigation:
+  title: Plugins
+  icon: i-iconoir-ev-plug
 ---
 
 # Plugins
 
-Plugins are the main extension point in Kubb. A plugin owns its file naming, its output folder, its lifecycle hooks, and the [generators](./generators) that walk the [AST](/docs/5.x/guide/concepts/ast) and emit `FileNode` objects.
+Plugins are the main extension point in Kubb. A plugin owns its file naming, its output folder, its lifecycle hooks, and the [generators](./generators) that walk the [AST](/docs/5.x/explanation/architecture#ast) and emit `FileNode` objects.
 
 ## `definePlugin`
 
-`definePlugin` wraps a factory function and returns a typed `Plugin`. All lifecycle handlers live under one `hooks` object, inspired by [Astro integrations](https://docs.astro.build/en/reference/integrations-reference/).
+`definePlugin` wraps a factory function and returns a typed `Plugin`. Lifecycle handlers belong in `hooks`.
 
 ```typescript twoslash [plugin-example.ts]
 import { definePlugin } from 'kubb/kit'
@@ -34,7 +42,7 @@ export const pluginExample = definePlugin((options: { prefix?: string } = {}) =>
 | `dependencies` | `Array<string>`                      | No       | Names of other plugins this one requires                   |
 | `enforce`      | `'pre' \| 'post'`                    | No       | Run this plugin before (`'pre'`) or after (`'post'`) the normal plugins. Dependency order still wins. |
 | `options`      | `unknown`                            | No       | User-supplied options passed through to generators         |
-| `hooks`        | `{ 'kubb:plugin:setup'?: ...; ... }` | Yes      | Lifecycle handlers (see [Plugin API](/docs/5.x/guide/concepts/plugins)) |
+| `hooks`        | `{ 'kubb:plugin:setup'?: ...; ... }` | Yes      | Lifecycle handlers (see [Plugin API](/docs/5.x/explanation/extensions#plugins)) |
 
 ### `KubbPluginSetupContext` methods (passed to `kubb:plugin:setup`)
 
@@ -50,9 +58,9 @@ export const pluginExample = definePlugin((options: { prefix?: string } = {}) =>
 | `options`        | `TOptions`                                                      | The plugin's own options as passed by the user                |
 
 > [!IMPORTANT]
-> Plugin names should follow the convention `plugin-<feature>` (e.g., `plugin-react-query`, `plugin-zod`). See [Creating plugins](/docs/5.x/guide/going-further/creating-plugins) for naming conventions.
+> Plugin names should follow the convention `plugin-<feature>` (e.g., `plugin-react-query`, `plugin-zod`). See [Creating plugins](/docs/5.x/tutorials/creating-plugins) for naming conventions.
 
-### Related
+## See also
 
-- [Plugin concepts](/docs/5.x/guide/concepts/plugins)
-- [Creating your first plugin](/docs/5.x/guide/going-further/creating-plugins)
+- [Plugin concepts](/docs/5.x/explanation/extensions#plugins)
+- [Creating your first plugin](/docs/5.x/tutorials/creating-plugins)

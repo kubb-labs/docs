@@ -1,8 +1,15 @@
 ---
 layout: doc
 title: JSX renderer
-description: The kubb/jsx surface backed by @kubb/renderer-jsx. jsxRenderer, the built-in components, and the JSX runtime for component-based code generation.
-outline: [2, 3]
+description: The kubb/jsx surface backed by @kubb/renderer-jsx. jsxRenderer, the
+  built-in components, and the JSX runtime for component-based code generation.
+outline:
+  - 2
+  - 3
+order: 4
+navigation:
+  title: JSX
+  icon: i-iconoir-code
 ---
 
 # JSX renderer
@@ -350,5 +357,5 @@ Embeds a raw JSX string in the generated source, including fragments. Use it ins
 ## See also
 
 - [Kit API](/docs/5.x/reference/kit) for `defineGenerator`'s `renderer` field and the `ast.factory` alternative to JSX
-- [Creating plugins](/docs/5.x/guide/going-further/creating-plugins) for how a generator wires a renderer into its output
+- [Creating plugins](/docs/5.x/tutorials/creating-plugins) for how a generator wires a renderer into its output
 - [Kit API: rendering](/docs/5.x/reference/kit/renderers#jsxrenderer-via-kubb-jsx) for how `jsxRenderer` sits next to `createRenderer`

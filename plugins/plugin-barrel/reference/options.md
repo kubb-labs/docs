@@ -25,10 +25,9 @@ Call a plugin with no `output` at all and it uses its own default, which already
 
 Set `barrel: { type: 'named' | 'all' }` on `defineConfig` to enable barrels everywhere: a root barrel, and the default every plugin without its own `output.barrel` inherits. A plugin that sets its own `output.barrel` overrides that inherited value, including back to `false`, which also drops its files from the root barrel.
 
-|          |                                                        |
-| -------: | :----------------------------------------------------- |
-|    Type: | `{ type: 'all' \| 'named', nested?: boolean } \| false` |
-| Default: | `false`                                                |
+| Type | Default |
+| --- | --- |
+| `{ type: 'all' \| 'named', nested?: boolean } \| false` | `false` |
 
 ### type
 
@@ -37,12 +36,11 @@ Export style for the barrel files. Required whenever `output.barrel` is set to a
 - `'named'` re-exports each symbol by name from the file's named exports. Best for tree-shaking and explicit imports.
 - `'all'` uses `export *`, a smaller barrel that re-exports everything.
 
-|          |                    |
-| -------: | :----------------- |
-|    Type: | `'all' \| 'named'` |
-| Default: | Required, no default |
+| Type | Default |
+| --- | --- |
+| `'all' \| 'named'` | Required, no default |
 
-::: code-group
+::code-group
 
 ```typescript ['named']
 // src/gen/index.ts
@@ -58,18 +56,17 @@ export * from './api/post'
 export * from './api/types/User'
 ```
 
-:::
+::
 
 ### nested
 
 Changes what each barrel references. A barrel is written for every directory either way. With `nested: false`, the plugin's top barrel reaches through to the leaf files. With `nested: true`, each barrel re-exports only what sits directly inside its directory, including the subdirectory barrels below it, so callers can import from any depth. This field works on a plugin's `output.barrel` only.
 
-|          |           |
-| -------: | :-------- |
-|    Type: | `boolean` |
-| Default: | `false`   |
+| Type | Default |
+| --- | --- |
+| `boolean` | `false` |
 
-::: code-group
+::code-group
 
 ```typescript [nested: false (default) → barrels reference leaf files]
 // src/gen/api/index.ts
@@ -91,4 +88,4 @@ export * from './types'
 export * from './User'
 ```
 
-:::
+::

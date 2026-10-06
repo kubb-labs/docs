@@ -1,17 +1,25 @@
 ---
 layout: doc
 title: Storage
-description: Storage backends decide where generated files are written. Covers createStorage, the Storage interface, and the built-in fsStorage and memoryStorage backends.
-outline: [2, 3]
+description: Storage backends decide where generated files are written. Covers
+  createStorage, the Storage interface, and the built-in fsStorage and
+  memoryStorage backends.
+outline:
+  - 2
+  - 3
+order: 7
+navigation:
+  title: Storage
+  icon: i-iconoir-database
 ---
 
 # Storage
 
-Storage backends decide where generated files are written. Kubb ships a filesystem backend and an in-memory one. Use `createStorage` to build your own.
+Storage backends persist generated files in the filesystem, memory, or a custom destination.
 
 ## `createStorage`
 
-`createStorage` takes a builder function `(options: TOptions) => Storage` and returns a factory `(options?: TOptions) => Storage`. Call the returned factory to instantiate the storage, optionally with options.
+`createStorage` takes a builder function `(options: TOptions) => Storage` and returns a factory `(options?: TOptions) => Storage`. Call the returned factory to create a backend.
 
 ```typescript twoslash [memory-storage.ts]
 import { createStorage } from 'kubb/kit'
@@ -44,14 +52,12 @@ export const memoryStorage = createStorage(() => {
 })
 ```
 
-Method names follow Node's filesystem vocabulary, so `readItem` reads like `readFile` and `writeItem` like `writeFile`.
-
 > [!TIP]
 > Use `memoryStorage` for tests and dry runs. Use `fsStorage` for normal development and CI/CD.
 
 ## `Storage` interface {#storage-interface}
 
-The `Storage` interface is the shape every backend implements. A `Storage` instance is what the engine consumes at build time and returns from `driver.storage`.
+The engine consumes this interface and exposes the backend through the build result.
 
 | Method         | Params                       | Returns                   | Purpose                                       |
 | -------------- | ---------------------------- | ------------------------- | --------------------------------------------- |
@@ -64,7 +70,7 @@ The `Storage` interface is the shape every backend implements. A `Storage` insta
 
 Omitting `base` on `empty()` is implementation-defined. `memoryStorage` wipes every entry, while the filesystem-backed `fsStorage` treats a missing `base` as a no-op and deletes nothing.
 
-Every method is required. Before each write Kubb calls `readItem` and skips `writeItem` when the stored content already matches, ignoring surrounding whitespace. So `readItem` has to return `null` for a missing key rather than throw, and `writeItem` is not a signal that a file was generated, because an unchanged file never reaches it.
+Every method is required. `readItem` returns `null` for a missing key. Kubb skips `writeItem` when content matches after trimming surrounding whitespace, so writes do not count every generated file.
 
 ## `fsStorage`
 
@@ -77,7 +83,8 @@ Every method is required. Before each write Kubb calls `readItem` and skips `wri
 > [!NOTE]
 > Both `fsStorage` and `memoryStorage` are exported from `kubb/kit` and can be passed directly to the `storage` field at the root of your config.
 
-### Related
 
-- [Storage concepts](/docs/5.x/guide/concepts/storage)
+## See also
+
+- [Storage concepts](/docs/5.x/explanation/architecture#storage)
 - [Configuration reference](/docs/5.x/reference/configuration)

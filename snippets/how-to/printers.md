@@ -1,20 +1,8 @@
-# Override a printer
+# Customize generated code with printers
 
-A printer runs inside a plugin's generator, not at the end of the pipeline. The [adapter](/docs/5.x/guide/concepts/adapters) turns a spec into the [AST](/docs/5.x/guide/concepts/ast), [macros](/docs/5.x/guide/going-further/macros) rewrite the nodes, and a printer turns each schema node into code for one output target. `@kubb/plugin-ts` prints TypeScript type nodes, `@kubb/plugin-zod` prints Zod expressions, and `@kubb/plugin-faker` prints Faker expressions. A [parser](/docs/5.x/guide/concepts/parsers) still has to turn the assembled file into source text, and [storage](/docs/5.x/guide/concepts/storage) writes it to disk, before the CLI's formatter, linter, and `postGenerate` commands run.
+Set `printer.nodes` on TypeScript, Zod, or Faker plugins to change how schema types are emitted. Override only the handlers you need.
 
-These three plugins expose their printer through a `printer.nodes` option, a partial map of schema types to handlers. A handler replaces the built-in output for one schema type, so you can print a `date` schema as the JavaScript `Date` object or append `.openapi(...)` metadata to every Zod object without forking the plugin.
-
-## Shape
-
-The map is keyed by the schema `type` discriminant, such as `'string'`, `'integer'`, `'date'`, `'enum'`, or `'object'`. Supply only the handlers you want to replace and the built-in ones fill in the rest.
-
-```typescript [Type definition]
-type PrinterNodes = Partial<{
-  [K in SchemaType]: (this: Context, node: SchemaNodeByType[K]) => Output | null
-}>
-```
-
-Handlers run with a `this` context, so write them as regular functions rather than arrow functions. `this.transform(node)` recurses into a nested schema node through the full handler map, overrides included. `this.base(node)` runs the built-in handler your override replaced, so you can wrap its output instead of rebuilding it. `this.options` reads the resolved printer options, such as `arrayType` on `@kubb/plugin-ts` or `direction` on `@kubb/plugin-zod`. `this.import(node)` declares an import the printed code needs. See [Use a custom codec from your own package](/plugins/plugin-zod/recipes/use-a-custom-codec-from-your-package).
+For callback signatures and context properties, see the [AST reference](/docs/5.x/reference/kit/ast#printers).
 
 ## TypeScript types
 
@@ -36,6 +24,8 @@ pluginTs({
 ```
 
 ## Zod schemas
+
+Write regular methods when you use `this.base`, `this.transform`, or `this.options`; arrow functions do not receive the printer context.
 
 `@kubb/plugin-zod` prints expression strings, so a handler returns the Zod code as a string. With `mini: true` the same overrides target the Zod Mini printer instead.
 
@@ -69,7 +59,7 @@ pluginZod({
 })
 ```
 
-A Zod handler can also read `this.options.direction`, which is `'decode'` while printing response schemas and `'encode'` while printing request bodies and parameters. Return a different expression per direction and the plugin treats the node as a two-way conversion, emitting an `${name}InputSchema` variant that request bodies resolve to. See [Encode a custom type on requests](/plugins/plugin-zod/recipes/encode-a-custom-type-on-requests).
+A Zod handler can also read `this.options.direction`, which is `'decode'` while printing response schemas and `'encode'` while printing request bodies and parameters. Return a different expression per direction and the plugin treats the node as a two-way conversion, emitting an `${name}InputSchema` variant that request bodies resolve to. See [Encode a custom type on requests](/plugins/plugin-zod/guide/customization#encode-custom-types).
 
 ## Faker mocks
 
@@ -89,11 +79,6 @@ pluginFaker({
 })
 ```
 
-## Printer override or macro
+## Choose a customization
 
-A macro rewrites the node itself, before anything prints. Retype `integer` schemas to `string` with a macro and `plugin-ts`, `plugin-zod`, and `plugin-faker` all follow, because they print the rewritten node. A printer override changes what one plugin emits for a node type, leaving the node and every other plugin's output unchanged.
-
-Reach for a printer override when the output cannot be described as another schema node. No schema node prints as `Date`, and none carries an `.openapi(...)` call, so a macro cannot produce either. When the printed code is fine and only its name or file location needs to change, reach for a [resolver](/docs/5.x/guide/going-further/resolvers) instead.
-
-> [!TIP]
-> The two compose. The `macros` option on the same plugin rewrites nodes first, then the printer prints the result, overrides included.
+Use a printer for output-specific code such as `Date` or `.openapi(...)`. Use a [macro](/docs/5.x/how-to/macros) to change schema nodes before printing, or a [resolver](/docs/5.x/how-to/resolvers) to change names and paths. Macros run before printer handlers.

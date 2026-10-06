@@ -31,7 +31,7 @@ Want to improve the docs? See [CONTRIBUTING.md](./CONTRIBUTING.md).
 - Generate [TypeScript types](https://kubb.dev/plugins/plugin-ts), [React Query](https://kubb.dev/plugins/plugin-react-query) and [Vue Query](https://kubb.dev/plugins/plugin-vue-query) hooks, [SWR](https://kubb.dev/plugins/plugin-swr) hooks, [Zod](https://kubb.dev/plugins/plugin-zod) validators, [Faker](https://kubb.dev/plugins/plugin-faker) mocks, and [MSW](https://kubb.dev/plugins/plugin-msw) handlers, each from its own plugin.
 - Generate a typed [Axios](https://kubb.dev/plugins/plugin-axios) or [Fetch](https://kubb.dev/plugins/plugin-fetch) client with status-keyed results, auth, validation, file uploads, server-sent events, interceptors, and a swappable transport.
 - Read any OpenAPI 2.0, 3.0, or 3.1 spec through the [OpenAPI adapter](https://kubb.dev/adapters/adapter-oas), or add your own adapter.
-- Shape the output by grouping files by tag or path, including or excluding operations, and writing to disk, memory, or a [custom storage backend](https://kubb.dev/docs/5.x/guide/concepts/storage).
+- Shape the output by grouping files by tag or path, including or excluding operations, and writing to disk, memory, or a [custom storage backend](https://kubb.dev/docs/5.x/explanation/architecture#storage).
 - Generate [Cypress](https://kubb.dev/plugins/plugin-cypress) tests and a [Model Context Protocol server](https://kubb.dev/plugins/plugin-mcp), or write your own plugin.
 - Run generation in Vite, Nuxt, and other bundlers with `unplugin-kubb`, or from AI assistants and Claude Code.
 
@@ -43,6 +43,12 @@ Want to improve the docs? See [CONTRIBUTING.md](./CONTRIBUTING.md).
 | [`adapters/`](./adapters/) | Adapter reference pages |
 | [`parsers/`](./parsers/) | Parser reference pages |
 | [`docs/5.x/`](./docs/5.x/) | Versioned documentation for Kubb v5 |
+| [`docs/5.x/tutorials/`](./docs/5.x/tutorials/) | Tutorials: learn by building |
+| [`docs/5.x/how-to/`](./docs/5.x/how-to/) | How-to guides: complete a task |
+| [`docs/5.x/integrations/`](./docs/5.x/integrations/) | Build tools, Studio, and CI integrations |
+| [`docs/5.x/ai/`](./docs/5.x/ai/) | AI assistant integrations |
+| [`docs/5.x/explanation/`](./docs/5.x/explanation/) | Explanation: understand how Kubb works |
+| [`docs/5.x/reference/`](./docs/5.x/reference/) | Reference: look up options, APIs, and diagnostics |
 
 ## Contributing
 
