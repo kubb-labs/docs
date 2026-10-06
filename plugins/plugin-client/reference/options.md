@@ -105,7 +105,7 @@ The plugin does not run the schemas. Your client reads `config.validator` and va
 
 ### resolver
 
-Changes how the plugin names generated files and symbols by accepting a partial patch. Override only the members you want, and anything you omit keeps `resolverClient`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
+Changes how the plugin names generated files and symbols by accepting a partial patch. Override only the members you want, and anything you omit keeps `resolverClient`. See [Override a resolver](/docs/5.x/how-to/resolvers) for the `this` context and how a patch layers over the default.
 
 > [!TIP]
 > Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.

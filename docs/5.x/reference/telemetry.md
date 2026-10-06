@@ -1,20 +1,27 @@
 ---
 layout: doc
 title: Telemetry
-description: Learn what anonymous usage data Kubb collects, how to opt out, and how the data improves the tool.
-outline: [2, 3]
+description: Learn what anonymous usage data Kubb collects, how to opt out, and
+  how the data improves the tool.
+outline:
+  - 2
+  - 3
+order: 5
+navigation:
+  title: Telemetry
+  icon: i-iconoir-antenna
 ---
 
 # Telemetry
 
-The Kubb CLI collects anonymous usage data. This shows the team which plugins and features people use, and where the performance bottlenecks are.
+The Kubb CLI collects anonymous command, plugin, and performance data.
 
 > [!IMPORTANT]
 > Telemetry is enabled by default. Disable it any time with the `DO_NOT_TRACK` or `KUBB_DISABLE_TELEMETRY` environment variable.
 
 ## What is collected
 
-Each CLI command sends this anonymous data:
+Telemetry includes these fields:
 
 | Field          | Description                                          | Example                                                                         |
 | -------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------- |
@@ -51,35 +58,13 @@ Kubb never sends:
 
 ## How to opt out
 
-### `DO_NOT_TRACK` (recommended)
-
-`DO_NOT_TRACK` is a [standard cross-tool opt-out convention](https://consoledonottrack.com/). Many developer tools support it.
+Set `DO_NOT_TRACK` or `KUBB_DISABLE_TELEMETRY` to `1` or `true`:
 
 ```shell [Terminal]
 DO_NOT_TRACK=1 kubb generate
 ```
 
-Add it to your shell profile (`~/.bashrc`, `~/.zshrc`, etc.) to disable telemetry permanently:
-
-```shell [Terminal]
-export DO_NOT_TRACK=1
-```
-
-### `KUBB_DISABLE_TELEMETRY`
-
-Kubb-specific opt-out flag:
-
-```shell [Terminal]
-KUBB_DISABLE_TELEMETRY=1 kubb generate
-```
-
-Or permanently via your shell profile:
-
-```shell [Terminal]
-export KUBB_DISABLE_TELEMETRY=1
-```
-
-Both environment variables accept `"1"` or `"true"` as values.
+Add `export DO_NOT_TRACK=1` to your shell profile to opt out permanently. `DO_NOT_TRACK` follows the [cross-tool convention](https://consoledonottrack.com/).
 
 ## Data transmission
 

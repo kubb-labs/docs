@@ -1,15 +1,21 @@
 ---
 layout: doc
-title: LLMS.txt - AI
-description: Kubb publishes llms.txt and llms-full.txt so LLMs can consume the full documentation in a single request. Learn how to point your AI assistant at these files.
-outline: [2, 3]
+title: Use documentation in an AI assistant
+description: Kubb publishes llms.txt and llms-full.txt so LLMs can consume the
+  full documentation in a single request. Learn how to point your AI assistant
+  at these files.
+outline:
+  - 2
+  - 3
+order: 4
+navigation:
+  title: Documentation context
+  icon: i-iconoir-page-search
 ---
 
-# LLMS.txt
+# Use documentation in an AI assistant
 
-Kubb generates an `llms.txt` file at build time. It follows the [llms.txt standard](https://llmstxt.org/)
-and gives LLMs a compact, machine-readable index of the whole documentation, so they answer
-questions about Kubb without inventing outdated or missing details.
+Provide current Kubb documentation to an assistant that accepts URLs or pasted text. Choose the full documentation for broad context, or the index when the assistant needs to retrieve individual pages.
 
 ## Available files
 

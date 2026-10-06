@@ -62,7 +62,7 @@ Each function takes one grouped options object (`{ path, query, headers, body }`
 
 ## Installation
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/plugin-client
@@ -80,7 +80,7 @@ npm install --save-dev @kubb/plugin-client
 yarn add -D @kubb/plugin-client
 ```
 
-:::
+::
 
 ## Dependencies
 
@@ -94,7 +94,7 @@ The plugin needs `@kubb/plugin-ts` for the operation types. It needs `@kubb/plug
 
 ## Example
 
-::: code-group
+::code-group
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
@@ -116,7 +116,7 @@ export default defineConfig({
 })
 ```
 
-:::
+::
 
 ## See also
 

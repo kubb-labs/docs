@@ -1,21 +1,12 @@
 # Interceptors
 
-An interceptor runs on every call the client makes, without touching the generated functions or
-the spec. The client exposes three channels on `client.interceptors`: `request` runs before the
-send, `response` runs after it, and `error` runs when a call throws. Reach for one when a concern
-cuts across every request, such as a trace header, request logging, or a token refresh on `401`.
-
-The channels carry a different payload on each transport. [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) hands you the
-resolved request and result as plain objects, while [`@kubb/plugin-axios`](/plugins/plugin-axios/) wraps axios's own
-interceptor managers, so a handler there receives the native axios config, response, and error.
+Register handlers on `client.interceptors.request`, `.response`, or `.error` to apply behavior across calls. Fetch handlers receive resolved request/result objects. Axios handlers receive native Axios objects.
 
 ## Run before the send
 
-A request interceptor sees the request after the core has built the URL, serialized the query and
-body, and resolved auth, so you change what leaves the app as a last step. Return the request to
-pass it on.
+Request handlers run after URL construction, serialization, and authentication. Return the modified request:
 
-::: code-group
+::code-group
 
 ```typescript [Fetch]
 import { client } from './gen/.kubb/client'
@@ -35,7 +26,7 @@ client.interceptors.request.use((request) => {
 })
 ```
 
-:::
+::
 
 On fetch the handler receives a `ResolvedRequest` (`url`, `method`, `headers`, `body`, `signal`,
 `credentials`, `options`, `responseType`). On axios it receives an `InternalAxiosRequestConfig`,
@@ -43,11 +34,9 @@ so headers go through `AxiosHeaders` and the body is on `data`.
 
 ## Run after the send
 
-A response interceptor sees every result before the call resolves, so use it to log, collect
-metrics, or reshape a body across the board. On fetch it runs before the success or error
-split and before any deserializer, so `result.data` is still the raw body.
+Response handlers run before calls resolve. Fetch handlers run before the status split and deserialization, so `data` is the raw body.
 
-::: code-group
+::code-group
 
 ```typescript [Fetch]
 client.interceptors.response.use((result) => {
@@ -63,17 +52,16 @@ client.interceptors.response.use((response) => {
 })
 ```
 
-:::
+::
 
 The fetch handler receives a `TransportResult` (`data`, `status`, `statusText`, `headers`,
 `contentType`, `request`, `response`), the axios handler an `AxiosResponse`.
 
 ## React to an error
 
-An error interceptor runs when a non-2xx throws, which happens while `throwOnError` is on. Use it
-to log a failure or kick off a token refresh so the next call picks up the new credential.
+Use an error handler to react to HTTP errors on the throwing path:
 
-::: code-group
+::code-group
 
 ```typescript [Fetch]
 client.interceptors.error.use((error) => {
@@ -89,7 +77,7 @@ client.interceptors.error.use((error) => {
 })
 ```
 
-:::
+::
 
 The fetch handler receives the `ResponseError`, the axios handler an `AxiosError`, and this
 channel only fires on the throw path. When you read with `throwOnError: false`, a documented
@@ -119,10 +107,7 @@ client.interceptors.request.eject(id)
 
 ## Where to set them
 
-Interceptors live on a client instance, not on a single call. Register them on the shared `client`
-every generated function imports to cover the whole app. For an isolated instance from
-[`createClient`](/plugins/plugin-fetch/guide/calling-operations#reuse-one-configuration), set
-them on that instance, and they stay scoped to the calls you pass it to.
+Register handlers on the shared `client` for all operations, or on a separate `createClient` instance for isolated calls. Interceptors are instance-level settings.
 
 ## See also
 

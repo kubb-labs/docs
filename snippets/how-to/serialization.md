@@ -1,81 +1,13 @@
 
-# Serialization and parsing
+# Configure serialization
 
-Between the typed parameters you pass and the typed result you read, the client does the encoding
-and decoding. It reads each parameter's OpenAPI `style` and `explode` from your spec, picks a body
-encoder from the request content type, and decodes the response by its media type. Most of this
-needs no configuration: Kubb bakes the per-parameter metadata into each generated function.
+Fetch and Axios clients encode parameters using OpenAPI `style` and `explode`, serialize request bodies by content type, and decode responses by media type. Generated operations carry the metadata. Most requests need no additional configuration.
 
-The behavior is identical for [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) and [`@kubb/plugin-axios`](/plugins/plugin-axios/).
+## Override parameter serialization
 
-## Parameter styles
+Check the [default parameter styles and encoding](/docs/5.x/reference/serialization#parameter-styles) before replacing a serializer.
 
-OpenAPI describes how each parameter is rendered with a `style` and an `explode` flag, and the
-two differ by location. Kubb generates the metadata from your spec and the runtime applies it, so
-a parameter declared as `pipeDelimited` in the spec serializes that way without any code on your
-side. The generated call carries it:
-
-```typescript
-// generated from the spec, you do not write this
-request({
-  method: 'GET',
-  url: '/pets/{petId}',
-  styles: {
-    path: { petId: { style: 'matrix', explode: true } },
-    query: { tags: { style: 'pipeDelimited', explode: false } },
-  },
-  ...config,
-})
-```
-
-### Query
-
-Query parameters default to the `form` style. Arrays explode into repeated keys unless the spec
-says otherwise, and `spaceDelimited`, `pipeDelimited`, and `deepObject` change how arrays and
-objects collapse.
-
-| Style              | `explode` | Input              | Result            |
-| ------------------ | --------- | ------------------ | ----------------- |
-| `form` (default)   | `true`    | `{ id: [3, 4, 5] }` | `id=3&id=4&id=5`  |
-| `form`             | `false`   | `{ id: [3, 4, 5] }` | `id=3,4,5`        |
-| `spaceDelimited`   | `false`   | `{ id: [3, 4, 5] }` | `id=3%204%205`    |
-| `pipeDelimited`    | `false`   | `{ id: [3, 4, 5] }` | `id=3\|4\|5`      |
-| `deepObject`       | `n/a`     | `{ a: { b: 1 } }`  | `a%5Bb%5D=1`      |
-
-With `explode: true`, `spaceDelimited` and `pipeDelimited` fall back to repeated keys like `form`,
-so the delimiter only shows with `explode: false`.
-
-### Path
-
-Path parameters default to the `simple` style, which emits the bare value. `label` prefixes a
-`.` and `matrix` prefixes a `;name=` segment. The results below are the serialized segment for a
-parameter named `id`.
-
-| Style              | `explode` | Input            | Result             |
-| ------------------ | --------- | ---------------- | ------------------ |
-| `simple` (default) | `false`   | `[3, 4, 5]`      | `3,4,5`            |
-| `label`            | `true`    | `[3, 4, 5]`      | `.3.4.5`           |
-| `matrix`           | `true`    | `[3, 4, 5]`      | `;id=3;id=4;id=5`  |
-| `simple`           | `false`   | `{ x: 1, y: 2 }` | `x,1,y,2`          |
-
-### Header and cookie
-
-Header parameters use the `simple` style and cookie parameters use the `form` style. Both fix the
-style and only let `explode` vary, so the metadata for these locations carries `explode` alone.
-Header values are sent as-is, and cookie values are URL-encoded into a single `Cookie` header.
-
-| Location | `explode` | Input                            | Result                  |
-| -------- | --------- | -------------------------------- | ----------------------- |
-| header   | `false`   | `[3, 4]`                         | `X-Ids: 3,4`            |
-| header   | `true`    | `{ role: 'admin' }`              | `X-Filter: role=admin`  |
-| cookie   | `false`   | `{ session: 'abc', ids: [1, 2] }` | `session=abc; ids=1,2`  |
-| cookie   | `true`    | `{ ids: [1, 2] }`                | `ids=1; ids=2`          |
-
-### Override the serializer
-
-To change how a location is encoded across the board, pass your own serializer on the client.
-`serializer` groups a `query`, `body`, and `path` function, each falling back to the built-in
-default when omitted:
+Override `serializer.query`, `.body`, or `.path` on the client. Omitted functions retain their defaults:
 
 ```typescript
 import { client } from './gen/.kubb/client'
@@ -91,7 +23,7 @@ client.setConfig({
 A serializer set this way runs for every call, but you can pass `serializer` on a single call to
 override just that request.
 
-## Request bodies
+## Encode request bodies
 
 The request content type decides how the body is encoded. The default serializer handles the
 common types: a plain object becomes JSON, `multipart/form-data` becomes `FormData`, and
@@ -124,7 +56,7 @@ client.setConfig({
 })
 ```
 
-## Response decoding
+## Decode responses
 
 The runtime reads the response `Content-Type` and decodes the body by it: JSON is parsed, text
 stays a string, and a binary type becomes a `Blob`. The negotiated media type is on the result as
@@ -159,46 +91,11 @@ const { data } = await downloadInvoice({ path: { id: '123' }, responseType: 'blo
 
 For `responseType: 'stream'`, see [server-sent events](/plugins/plugin-fetch/guide/server-sent-events).
 
-## Send and receive XML
+For bidirectional formats, supply both `serialize` and `deserialize` in the media type codec, then set the operation’s request and response `contentType`.
 
-To talk XML in both directions, register one codec for the media type with both halves. `serialize`
-turns the request object into XML, `deserialize` turns the XML response back into data, and
-`contentType` sets the request `Content-Type` and the `Accept` header so the server answers in XML.
-The example below uses `fast-xml-parser` for plain-object data. The earlier `DOMParser`
-deserializer returns a DOM `Document` instead:
+## Validate responses
 
-```typescript
-import { client } from './gen/.kubb/client'
-import { XMLBuilder, XMLParser } from 'fast-xml-parser'
-
-const builder = new XMLBuilder()
-const parser = new XMLParser()
-
-client.setConfig({
-  codecs: {
-    'application/xml': {
-      serialize: (body) => builder.build(body),
-      deserialize: (raw) => parser.parse(raw as string),
-    },
-  },
-})
-```
-
-With both registered, set `contentType` on a call to send and accept XML for that request:
-
-```typescript
-const { data } = await updatePet({
-  path: { petId: '123' },
-  body: { pet: { name: 'Fluffy', status: 'sold' } },
-  contentType: { request: 'application/xml', response: 'application/xml' },
-})
-// the body is built to XML, and data is parsed from the XML response
-```
-
-## Response validation
-
-Validation is off by default. Turn it on with the [`validator`](/plugins/plugin-fetch/) plugin
-option to check request and response bodies against schemas from `@kubb/plugin-zod`:
+Enable `validator` on the client plugin and register `pluginZod` in the same configuration. Validation is disabled by default.
 
 ```typescript twoslash
 import { pluginFetch } from '@kubb/plugin-fetch'
@@ -220,13 +117,9 @@ with Zod, valibot, and arktype. A body that does not match throws a `ParseError`
 schema's `issues`, covered in
 [error handling](/plugins/plugin-fetch/guide/error-handling#validation-failures).
 
-> [!TIP]
-> Validation guarantees the data matches its type at runtime, at the cost of parsing every body.
-> Leave it off when you trust the API and need the throughput, and turn it on where a malformed
-> response is hard to trace.
-
 ## See also
 
+- [HTTP serialization reference](/docs/5.x/reference/serialization)
 - [Call operations](/plugins/plugin-fetch/guide/calling-operations)
 - [Error handling](/plugins/plugin-fetch/guide/error-handling)
 - [`@kubb/plugin-fetch`](/plugins/plugin-fetch/)

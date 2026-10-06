@@ -6,8 +6,8 @@ kubb-docs is the component-free content repository for the Kubb documentation si
 
 This is a content-only repository:
 - No npm packages, no TypeScript, no tests
-- All files are markdown (`.md`) or code snippet files
-- The platform repo ([kubb-labs/platform](https://github.com/kubb-labs/platform)) pulls content from this repo via `apps/kubb.dev/scripts/fetchRepos.ts` and renders it with VitePress
+- Documentation is written in Markdown, with code examples kept in Markdown pages or snippet files. The repository also includes supporting metadata, licenses, and GitHub workflows.
+- The platform repo ([kubb-labs/platform](https://github.com/kubb-labs/platform)) pulls content from this repo via `apps/kubb.dev/scripts/fetchRepos.ts` and renders it with Nuxt Content (MDC syntax)
 
 ## Repository layout
 
@@ -38,9 +38,3 @@ Do NOT edit:
 `house` output style come from the `agents` plugin
 ([stijnvanhulle/agents](https://github.com/stijnvanhulle/agents)). Claude Code loads it from
 this repo's `.claude/settings.json`. Install `agents@stijnvanhulle` for Cursor and Codex.
-
-<skills>
-
-## Skills
-
-</skills>

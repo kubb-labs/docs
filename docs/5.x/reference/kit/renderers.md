@@ -1,8 +1,16 @@
 ---
 layout: doc
 title: Renderers
-description: createRenderer wraps a builder into a Renderer factory for generators that emit something other than plain FileNodes, alongside jsxRenderer, the React-free JSX renderer shipped in kubb/jsx.
-outline: [2, 3]
+description: createRenderer wraps a builder into a Renderer factory for
+  generators that emit something other than plain FileNodes, alongside
+  jsxRenderer, the React-free JSX renderer shipped in kubb/jsx.
+outline:
+  - 2
+  - 3
+order: 4
+navigation:
+  title: Renderers
+  icon: i-iconoir-design-pencil
 ---
 
 # Renderers
@@ -15,11 +23,6 @@ A renderer turns the elements a generator returns into `FileNode`s. Kubb ships a
 
 `kubb/jsx`'s own `jsxRenderer` ships as a plain factory and does not depend on `createRenderer`, so most plugin authors only reach for `createRenderer` when building an alternative to JSX rendering, for example a renderer that walks a different templating format into `FileNode`s.
 
-### Related
-
-- [Renderer concepts](/docs/5.x/guide/concepts/renderers)
-- [`jsxRenderer`](#jsxrenderer-via-kubb-jsx), the shipped JSX renderer
-- [Creating plugins](/docs/5.x/guide/going-further/creating-plugins)
 
 ## `jsxRenderer` (via `kubb/jsx`) {#jsxrenderer-via-kubb-jsx}
 
@@ -34,3 +37,9 @@ const renderer = jsxRenderer()
 ```
 
 Set the renderer on a generator through its `renderer` field (`renderer: jsxRenderer`) to enable JSX-based output for that generator. Leave it unset, or pass `renderer: null`, to opt out of rendering.
+
+## See also
+
+- [Renderer concepts](/docs/5.x/explanation/extensions#renderers)
+- [`jsxRenderer`](#jsxrenderer-via-kubb-jsx), the shipped JSX renderer
+- [Creating plugins](/docs/5.x/tutorials/creating-plugins)

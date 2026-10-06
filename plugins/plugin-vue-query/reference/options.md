@@ -39,7 +39,7 @@ Folder the plugin writes to, resolved against the global `output.path` and defau
 How generated code is consolidated, `'file'` or `'directory'`. `'file'` writes a single file, so `output.path` needs an extension. `'directory'` writes one file per operation and pairs with `group` for subdirectories. Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 
 > [!IMPORTANT]
-> `group` works with the inferred directory mode, no `mode` needed. Set `mode: 'directory'` yourself only to override the inference, such as a directory name that carries a dot (`path: 'clients.v2'`). An explicit `mode: 'file'` still forbids `group` and stops the build with `KUBB_INVALID_PLUGIN_OPTIONS`, since a single file has nothing to group.
+> `group` requires directory output. Kubb infers the mode from `output.path`. Set `mode: 'directory'` to override that inference. Combining `group` with `mode: 'file'` stops generation with `KUBB_INVALID_PLUGIN_OPTIONS`.
 
 #### output.barrel
 
@@ -69,7 +69,7 @@ Selects which registered client plugin the composables call: `'axios'` for `@kub
 
 Adds infinite-query output for cursor- or page-based pagination. Pass an object to configure how the cursor is read, or `false` (the default) to skip. Output is emitted for an operation only when it declares a query parameter matching `infinite.queryParam` (default `'id'`) and [`hooks`](#hooks) is also `true`. Without `hooks: true`, `infinite` produces no file at all, not even the factory:
 
-::: code-group
+::code-group
 
 ```typescript [infinite: false (default)]
 export function getPetsQueryOptions(/* ... */) {
@@ -87,7 +87,7 @@ export function useGetPetsInfiniteQuery(/* ... */) {
 }
 ```
 
-:::
+::
 
 #### infinite.queryParam
 
@@ -125,7 +125,7 @@ Module specifier for the generated `import { queryOptions } from '...'`. Type `s
 
 Builds the `queryKey` for each query composable. The callback receives the operation `node`, the active `casing` and the `variant` (`'query'` or `'infiniteQuery'`) and returns the key array. String values are inlined verbatim, so wrap literals in `JSON.stringify(...)`. Defaults to the exported `queryKeyTransformer`, which adds `infinite: true` to infinite keys so they never share a cache entry with the plain query.
 
-::: code-group
+::code-group
 
 ```typescript [queryKey builder]
 queryKey: ({ node }) => [JSON.stringify(node.operationId)]
@@ -135,7 +135,7 @@ queryKey: ({ node }) => [JSON.stringify(node.operationId)]
 export const getUserByNameQueryKey = () => ['getUserByName'] as const
 ```
 
-:::
+::
 
 ### mutation
 
@@ -173,7 +173,7 @@ Controls whether `use*` composables are emitted. The default `false` writes only
 
 ### resolver
 
-Changes how the plugin names generated files and symbols. Pass a partial patch. Override only the members you want, and anything you omit keeps `resolverVueQuery`. See [Override a resolver](/docs/5.x/guide/going-further/resolvers) for the `this` context and how a patch layers over the default.
+Overrides generated file and symbol names. Omitted members keep the plugin's resolver defaults. See [Override a resolver](/docs/5.x/how-to/resolvers) for the `this` context and how a patch layers over the default.
 
 > [!TIP]
 > Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.

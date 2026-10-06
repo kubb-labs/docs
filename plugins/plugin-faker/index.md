@@ -1,16 +1,10 @@
 ---
 layout: doc
 title: Kubb Faker Plugin
-description: Generates a Faker.js mock-data factory for every schema in your OpenAPI spec.
-  Use the factories in tests, Storybook, and local development without a running backend.
+description: Generates a Faker.js mock-data factory for every schema in your
+  OpenAPI spec. Use the factories in tests, Storybook, and local development
+  without a running backend.
 outline: deep
-recipes:
-  - id: localized-mock-data
-    title: Localized mock data
-  - id: format-date-fields-with-dayjs
-    title: Format date fields with Day.js
-  - id: deterministic-data-with-a-seed
-    title: Deterministic data with a seed
 kind: plugin
 id: plugin-faker
 name: Faker
@@ -48,11 +42,11 @@ resources:
 
 # @kubb/plugin-faker
 
-`@kubb/plugin-faker` builds a mock-data factory for every schema in your OpenAPI spec with [Faker.js](https://fakerjs.dev/). Call `createPet()` to get a realistic `Pet` object. Use the factories in tests, Storybook stories, and local development without a backend.
+`@kubb/plugin-faker` generates typed mock-data factories from OpenAPI schemas. Pass partial data to a factory to override generated values.
 
 ## Installation
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/plugin-faker
@@ -70,40 +64,32 @@ npm install --save-dev @kubb/plugin-faker
 yarn add -D @kubb/plugin-faker
 ```
 
-:::
+::
 
 ## Dependencies
 
-This plugin depends on [`@kubb/plugin-ts`](/plugins/plugin-ts/) for the types each factory returns. Keep `pluginTs()` in the plugins array. No other plugin is required.
-
-> [!IMPORTANT]
-> The generated factories need Faker v9 or higher.
+Add [`pluginTs`](/plugins/plugin-ts/) for factory return types. Generated factories require `@faker-js/faker` v9 or higher.
 
 ## Example
 
-::: code-group
-
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
-import { pluginFaker } from '@kubb/plugin-faker'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginFaker } from '@kubb/plugin-faker'
 
 export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen' },
   plugins: [
-    pluginTs({
-      output: { path: './types' },
-    }),
-    pluginFaker({
-      output: { path: './mocks' },
-      seed: [100],
-    }),
+    pluginTs(),
+    pluginFaker({ seed: [100] }),
   ],
 })
 ```
 
-:::
+## Documentation
+
+- [Options](./reference/options)
 
 ## See also
 

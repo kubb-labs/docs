@@ -1,7 +1,8 @@
 ---
 layout: doc
 title: Kubb Markdown Parser
-description: Emits `.md` and `.markdown` files from the Kubb AST, joining source blocks as plain markdown and prepending YAML frontmatter from a file's meta.
+description: Emits `.md` and `.markdown` files from the Kubb AST, joining source
+  blocks as plain markdown and prepending YAML frontmatter from a file's meta.
 outline: deep
 kind: parser
 id: parser-md
@@ -33,16 +34,13 @@ resources:
 
 # @kubb/parser-md
 
-`@kubb/parser-md` lets Kubb emit `.md` and `.markdown` files. Any plugin that writes a markdown source has its output serialized for you.
+`@kubb/parser-md` emits `.md` and `.markdown` files by joining source blocks with blank lines. It prepends YAML frontmatter from `file.meta.frontmatter`.
 
-The parser joins a file's source blocks with blank lines to form the body, and prepends a YAML frontmatter block when `file.meta.frontmatter` is set, so you never add a `yaml` dependency yourself.
-
-> [!TIP]
-> `parserMd` runs by default next to `parserTs` and `parserTsx`. Add it back to a custom `parsers` list when you override the defaults, since a custom `parsers` array replaces the whole default set. Files whose extension has no registered parser are written by joining their sources verbatim.
+The parser takes no options and runs by default alongside `parserTs` and `parserTsx`. A custom `parsers` array replaces that default set. Include every parser your plugins need. Unmatched files are written as source text.
 
 ## Installation
 
-::: code-group
+::code-group{sync="package-manager"}
 
 ```shell [bun]
 bun add -d @kubb/parser-md
@@ -60,28 +58,30 @@ npm install --save-dev @kubb/parser-md
 yarn add -D @kubb/parser-md
 ```
 
-:::
+::
 
 ## Dependencies
 
-`@kubb/parser-md` has no plugin dependencies. It is a standalone parser you register on `defineConfig`'s `parsers` array, and needs no other Kubb plugin.
+No plugin dependencies. The parser registers on `defineConfig.parsers`.
 
 ## Frontmatter
 
-`@kubb/parser-md` takes no options of its own. To add a YAML frontmatter block to a generated page, set `frontmatter` on a file's `meta` inside a plugin. The parser renders those keys and prepends them to the output. Any serializable object works.
+To add a YAML frontmatter block to a generated page, set `frontmatter` on a file's `meta` inside a plugin. The parser renders those keys and prepends them to the output. Any serializable object works.
 
 |          |                                   |
 | -------: | :-------------------------------- |
 |    Type: | `Record<string, unknown> \| null` |
 
-```typescript [Plugin that sets frontmatter]
-ast.factory.createFile({
+```typescript [plugin.ts]
+import { ast } from 'kubb/kit'
+
+const file = ast.factory.createFile({
   baseName: 'README.md',
-  path: `${config.output.path}/README.md`,
+  path: './src/gen/README.md',
   meta: {
     frontmatter: { title: 'API Reference', layout: 'doc' },
   },
-  sources: [...],
+  sources: [ast.factory.createSource({ nodes: [ast.factory.createText('# API Reference')] })],
 })
 ```
 
@@ -98,38 +98,20 @@ You can also call `parserMd().print` directly to build a frontmatter envelope. I
 
 ## Example
 
-::: code-group
+Register the Markdown parser explicitly when overriding the default parser set.
 
-```typescript twoslash [Standalone markdown]
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb'
-import { adapterOas } from '@kubb/adapter-oas'
-import { parserMd } from '@kubb/parser-md'
-
-export default defineConfig({
-  input: './petStore.yaml',
-  output: { path: './src/gen' },
-  adapter: adapterOas(),
-  parsers: [parserMd()],
-  plugins: [],
-})
-```
-
-```typescript twoslash [Markdown alongside TypeScript]
-import { defineConfig } from 'kubb'
-import { adapterOas } from '@kubb/adapter-oas'
 import { parserMd } from '@kubb/parser-md'
 import { parserTs, parserTsx } from '@kubb/parser-ts'
 
 export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen' },
-  adapter: adapterOas(),
   parsers: [parserTs(), parserTsx(), parserMd()],
   plugins: [],
 })
 ```
-
-:::
 
 ## See also
 

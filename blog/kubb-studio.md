@@ -52,10 +52,10 @@ With `--allow-config-edit`, Studio can save changed plugin options to `kubb.conf
 
 ## Beyond your laptop
 
-The `kubblabs/kubb-agent` Docker image keeps a team agent connected. In CI, `kubb studio snapshot` publishes an installable package for a pull or merge request. See the [guide](/docs/5.x/guide/integrations/studio) for setup.
+The `kubblabs/kubb-agent` Docker image keeps a team agent connected. In CI, `kubb studio snapshot` publishes an installable package for a pull or merge request. See the [guide](/docs/5.x/integrations/studio) for setup.
 
 ## Try it
 
-Studio is live at [kubb.studio](https://kubb.studio). The [guide](/docs/5.x/guide/integrations/studio) walks through connecting a project, and the [`kubb studio` reference](/docs/5.x/reference/commands/studio) lists every action and flag.
+Studio is live at [kubb.studio](https://kubb.studio). The [guide](/docs/5.x/integrations/studio) walks through connecting a project, and the [`kubb studio` reference](/docs/5.x/reference/commands/studio) lists every action and flag.
 
 Feedback goes to [GitHub](https://github.com/kubb-labs/kubb/issues) or [Discord](https://discord.gg/shfBFeczrm).
