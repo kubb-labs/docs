@@ -95,7 +95,7 @@ instance.interceptors.response.use((response) => {
 client.setConfig({ transport: instance })
 ```
 
-Every generated function now sends through your instance, so its timeout, headers, and interceptors apply to each call.
+Every generated function now sends through your instance, so its timeout, headers, and interceptors apply to each call. Any client interceptors registered through `client.interceptors` also transfer to the new transport automatically, preserving their IDs for `eject` and `update`.
 
 > [!NOTE]
 > Kubb sets `transformRequest`, `paramsSerializer`, and `validateStatus` on each request so its own serialization and `throwOnError` handling stay in charge. Configure cross-cutting concerns like timeouts, retries, and interceptors on the instance instead of overriding those fields. For a native axios field on a single call, such as `timeout` or `onUploadProgress`, pass [`options`](/plugins/plugin-axios/guide/calling-operations#pass-native-client-options) instead of building a new instance.

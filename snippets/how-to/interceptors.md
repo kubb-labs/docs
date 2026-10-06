@@ -109,6 +109,12 @@ client.interceptors.request.eject(id)
 
 Register handlers on the shared `client` for all operations, or on a separate `createClient` instance for isolated calls. Interceptors are instance-level settings.
 
+On `@kubb/plugin-axios`, interceptors registered through `client.interceptors` also follow a custom
+transport set later with `client.setConfig({ transport })`. When the transport changes, handlers
+detach from the old instance and attach to the new one, and their IDs stay valid for `eject` and
+`update`. Clearing the transport (`client.setConfig({ transport: undefined })`) moves them back to the
+client's base instance. A per-call `transport` still bypasses client interceptors.
+
 ## See also
 
 - [Call operations](/plugins/plugin-fetch/guide/calling-operations)
