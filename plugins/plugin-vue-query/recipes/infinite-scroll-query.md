@@ -66,7 +66,7 @@ const { data, fetchNextPage, hasNextPage } = useInfiniteQuery(
 
 ## Page-number pagination
 
-When the response carries a page number and a "has more" flag instead of a cursor, compute the next page with [`getNextPageParam`](/plugins/plugin-vue-query/reference/options#infinite-getnextpageparam), and use [`match`](/plugins/plugin-vue-query/reference/options#infinite-match) to skip operations that take the query parameter but don't return a page:
+When the response carries a page number and a "has more" flag instead of a cursor, compute the next page with [`getNextPageParam`](/plugins/plugin-vue-query/reference/options#infinite-getnextpageparam):
 
 ```typescript [kubb.config.ts]
 pluginVueQuery({
@@ -76,7 +76,6 @@ pluginVueQuery({
     initialPageParam: 0,
     getNextPageParam: '(lastPage) => (lastPage.hasNext ? lastPage.number + 1 : undefined)',
     getPreviousPageParam: '(firstPage) => (firstPage.number > 0 ? firstPage.number - 1 : undefined)',
-    match: (node) => node.operationId.startsWith('list'),
   },
 })
 ```

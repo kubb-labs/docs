@@ -119,10 +119,6 @@ Without any of `getNextPageParam`, `nextParam` or `cursorParam`, the composable 
 
 Source of TanStack Query's `getPreviousPageParam`, inlined verbatim. Takes precedence over `previousParam` and `cursorParam`. Type `string | null`, default `null`.
 
-#### infinite.match
-
-Narrows which operations get infinite composables, on top of having `queryParam`. Receives the operation node, return `false` to skip it. Type `((node) => boolean) | null`, default `null`.
-
 ### query
 
 Decides which operations are treated as queries. The plugin generates a `queryOptions` factory for each match by default. Pass `false` to skip, or set [`hooks`](#hooks) to also emit `useQuery`.

@@ -107,17 +107,6 @@ Without any of `getNextPageParam`, `nextParam` or `cursorParam`, the hook counts
 
 Source of TanStack Query's `getPreviousPageParam`, inlined verbatim. Takes precedence over `previousParam` and `cursorParam`. Defaults to `null`.
 
-#### infinite.match
-
-Narrows which operations get infinite hooks, on top of having `queryParam`. Receives the operation node, return `false` to skip it. Defaults to `null`.
-
-```typescript
-infinite: {
-  queryParam: 'page',
-  match: (node) => node.operationId.startsWith('list'),
-}
-```
-
 ### suspense
 
 Adds a suspense variant alongside the regular query output. Pass an empty object (`{}`) to enable, or leave it as `false` (the default) to skip it. TanStack Query v5+ only.
