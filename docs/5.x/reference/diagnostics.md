@@ -118,6 +118,14 @@ The document resolved from `input` declares neither `openapi` nor `swagger`, so 
 
 Use a document declaring `openapi` or `swagger`. Pass the document itself rather than a wrapper. Missing versions fail even when validation is disabled.
 
+## KUBB_INVALID_SPEC: Invalid spec {#kubb-invalid-spec}
+
+Severity: `warning`.
+
+The document does not pass OpenAPI schema validation. Kubb reports each problem and keeps generating, but the output can be incomplete or wrong. `@kubb/adapter-oas` checks this when [`validate`](/adapters/adapter-oas/reference/options#validate) is `true`, the default.
+
+Fix the reported problem in the spec. Run [`kubb validate`](/docs/5.x/reference/commands/validate) to list every error with its location. Set `validate: false` on the adapter to skip the check.
+
 ## KUBB_INVALID_PLUGIN_OPTIONS: Invalid plugin options {#kubb-invalid-plugin-options}
 
 Severity: `error`.
