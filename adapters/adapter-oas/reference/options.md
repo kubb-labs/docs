@@ -26,7 +26,7 @@ All `adapterOas` options are optional. Types and defaults are listed below.
 
 ### validate
 
-Validates the OpenAPI spec with `@readme/openapi-parser` before parsing. Set it to `false` only when you have a known-invalid spec that you still want to generate from.
+Validates the OpenAPI spec with `@readme/openapi-parser` before parsing. Each problem is reported as a [`KUBB_INVALID_SPEC`](/docs/5.x/reference/diagnostics#kubb-invalid-spec) warning, and generation continues. Set it to `false` to skip the check, which makes generation faster on a large spec. Run [`kubb validate`](/docs/5.x/reference/commands/validate) to list every error.
 
 ### contentType
 
