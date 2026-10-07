@@ -11,7 +11,13 @@ navigation:
 
 # Generate with Rspack
 
-Install [Kubb and your output plugins](/docs/5.x/installation), then create a [Kubb config](/docs/5.x/reference/configuration). The integration uses `unplugin-kubb`, included with `kubb`.
+The integration uses `unplugin-kubb`, which ships with `kubb`.
+
+::steps{level="2"}
+
+## Install Kubb and your output plugins
+
+Follow the [installation guide](/docs/5.x/installation) to add Kubb and the plugins your output needs.
 
 ## Configure the integration
 
@@ -27,6 +33,8 @@ export default {
 ```
 
 Run your project's Rspack build command to generate the files. Bundler integrations do not run `output.postGenerate` commands; use the CLI when you need them.
+
+::
 
 ## See also
 

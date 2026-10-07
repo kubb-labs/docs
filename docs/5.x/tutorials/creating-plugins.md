@@ -15,7 +15,9 @@ navigation:
 
 Build a plugin that writes `listPets.ts` containing the method and path of one API operation, add a configurable prefix, then prepare an npm package. You need Node.js 22 or higher, npm, and TypeScript knowledge.
 
-## 1. Create a project
+::steps{level="2"}
+
+## Create a project {#_1-create-a-project}
 
 ```shell [Terminal]
 mkdir kubb-first-plugin
@@ -28,7 +30,7 @@ mkdir src
 
 All authoring APIs come from `kubb/kit`, included with `kubb`.
 
-## 2. Add the specification
+## Add the specification {#_2-add-the-specification}
 
 Create `petStore.yaml` in the project root:
 
@@ -46,7 +48,7 @@ paths:
           description: A list of pets
 ```
 
-## 3. Create the plugin
+## Create the plugin {#_3-create-the-plugin}
 
 A plugin factory returns its name and lifecycle hooks. Register a generator and resolver in `kubb:plugin:setup`:
 
@@ -86,7 +88,7 @@ export const pluginExample = definePlugin(() => ({
 
 The `operation` handler writes a comment containing the operation’s HTTP method and path.
 
-## 4. Generate
+## Generate {#_4-generate}
 
 Register the plugin in your config:
 
@@ -113,7 +115,7 @@ node -e "console.log(require('node:fs').readFileSync('src/gen/listPets.ts', 'utf
 
 It contains a comment naming `GET` and `/pets`.
 
-## 5. Test the output
+## Test the output {#_5-test-the-output}
 
 Run an in-process build with memory storage and a small fixture. `createKubb` from `kubb` supplies the same adapter and parser defaults as `defineConfig`.
 
@@ -160,7 +162,7 @@ npx vitest run src/plugin.test.ts
 
 Vitest reports one passing test. It checks the generated file in memory without writing to disk.
 
-## 6. Extend the plugin {#extend-the-plugin}
+## Extend the plugin {#extend-the-plugin}
 
 Add a `prefix` option so users can label the generated comment. Replace `src/plugin.ts` with:
 
@@ -231,7 +233,7 @@ Run `npx vitest run src/plugin.test.ts` again. Both tests should pass: the origi
 
 For further extensions, use the [Plugin reference](/docs/5.x/reference/kit/plugins) and [Generator reference](/docs/5.x/reference/kit/generators). A dependency on another plugin lets your generator reuse its resolver rather than guessing generated names; see [Dependencies and ordering](/docs/5.x/explanation/extensions#dependencies).
 
-## 7. Build the package
+## Build the package {#_7-build-the-package}
 
 Export the factory from a package entrypoint. Use a `.js` extension for the relative import so the compiled ESM works in Node:
 
@@ -292,7 +294,7 @@ npm pack
 
 The dry run should list `dist/index.js`, `dist/index.d.ts`, `dist/plugin.js`, and `dist/plugin.d.ts`, along with `package.json`. The tarball should contain compiled output rather than the fixture, tests, or generated client files. `prepack` runs the build and both tests before packaging.
 
-## 8. Publish
+## Publish {#_8-publish}
 
 Add a README showing installation and `pluginExample({ prefix: 'API: ' })` in a Kubb config. Choose a license and include its file. Review the tarball and confirm the package name and version before publishing to npm.
 
@@ -310,3 +312,5 @@ Consumers install your package as a development dependency and import its factor
 - [Extension model](/docs/5.x/explanation/extensions)
 - [Plugin API](/docs/5.x/reference/kit/plugins)
 - [Lifecycle hooks](/docs/5.x/reference/kit/hooks)
+
+::

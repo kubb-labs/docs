@@ -18,6 +18,8 @@ Install Kubb in an existing project using your package manager. If you want to l
 - [Node.js](https://nodejs.org/) 22 or higher.
 - TypeScript 5 or higher if you use a TypeScript config or import generated types.
 
+::steps{level="2"}
+
 ## Install Kubb
 
 Add `kubb` as a development dependency. It includes the CLI, core runtime, default OpenAPI adapter, and TypeScript, TSX, and Markdown parsers.
@@ -89,6 +91,8 @@ npx kubb init
 For an existing config, use [Configure generation](/docs/5.x/how-to/recipes). Install the runtime libraries required by your chosen output too: an Axios client uses `axios`, and React Query hooks use React and `@tanstack/react-query`. Each plugin documents its requirements.
 
 Once configured, run `npx kubb generate` from the project directory. Kubb writes the generated files to `output.path`.
+
+::
 
 ## Next steps
 
