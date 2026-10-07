@@ -30,26 +30,28 @@ First, check the open [issues](https://github.com/kubb-labs/kubb/issues) and [pu
 
 The monorepo at [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb) holds everything in the `kubb` and `@kubb/*` packages.
 
-### 1. Fork and clone
+::steps{level="3"}
+
+### Fork and clone {#_1-fork-and-clone}
 
 ```shell [Terminal]
 gh repo fork kubb-labs/kubb --clone
 cd kubb
 ```
 
-### 2. Install dependencies
+### Install dependencies {#_2-install-dependencies}
 
 ```shell [Terminal]
 pnpm install
 ```
 
-### 3. Create a branch
+### Create a branch {#_3-create-a-branch}
 
 ```shell [Terminal]
 git checkout -b feat/your-feature-name
 ```
 
-### 4. Iterate
+### Iterate {#_4-iterate}
 
 Run a single package in watch mode:
 
@@ -62,6 +64,8 @@ Run the test suite:
 ```shell [Terminal]
 pnpm run test
 ```
+
+::
 
 ### What lives where
 

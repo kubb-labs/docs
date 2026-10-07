@@ -17,6 +17,8 @@ navigation:
 [Context7](https://context7.com) gives AI assistants access to current library documentation and
 code examples. Kubb's documentation is indexed under the library ID `/kubb-labs/docs`.
 
+::steps{level="2"}
+
 ## Set up Context7
 
 Run the interactive setup and select your AI assistant:
@@ -40,6 +42,8 @@ from ./petStore.yaml. Use Context7 library /kubb-labs/docs.
 
 You can also add a rule to your assistant's instructions so it uses Context7 automatically for
 Kubb configuration and API questions.
+
+::
 
 ## See also
 

@@ -15,7 +15,9 @@ navigation:
 
 Generate TypeScript types and an Axios client for one Petstore operation. You need Node.js 22 or higher and npm. You'll inspect the generated operation and its types.
 
-## 1. Create a project
+::steps{level="2"}
+
+## Create a project {#_1-create-a-project}
 
 ```shell [Terminal]
 mkdir kubb-first-client
@@ -26,7 +28,7 @@ npm install -D kubb typescript @kubb/plugin-ts @kubb/plugin-axios
 npm install axios
 ```
 
-## 2. Add the specification
+## Add the specification {#_2-add-the-specification}
 
 Create `petStore.yaml` in the project root:
 
@@ -68,7 +70,7 @@ components:
 
 The `getPetById` operation accepts a pet ID and returns a pet with an ID and name.
 
-## 3. Configure generation
+## Configure generation {#_3-configure-generation}
 
 Create `kubb.config.ts` beside the specification:
 
@@ -89,7 +91,7 @@ export default defineConfig({
 
 This configuration writes types to `src/gen/models` and the client to `src/gen/clients`. The generated directory is dedicated to Kubb because `clean: true` removes it before each run.
 
-## 4. Generate the client
+## Generate the client {#_4-generate-the-client}
 
 ```shell [Terminal]
 npx kubb generate
@@ -115,7 +117,7 @@ src/gen/
     └── Pet.ts
 ```
 
-## 5. Regenerate after a change
+## Regenerate after a change {#_5-regenerate-after-a-change}
 
 Add a `tag` property to the `Pet` schema in `petStore.yaml`, alongside `id` and `name`:
 
@@ -127,6 +129,8 @@ tag:
 Run `npx kubb generate` again and open `src/gen/models/Pet.ts`. It now includes an optional `tag` field because `tag` is not listed in the schema’s `required` array. The client continues to import the regenerated types.
 
 You now have a typed client and have seen how a specification change flows into its output.
+
+::
 
 ## Continue
 
