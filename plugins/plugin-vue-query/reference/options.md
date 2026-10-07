@@ -109,6 +109,16 @@ Path to the previous-page cursor, same dot or array form. Type `string | string[
 
 Deprecated path to the cursor field. Use `nextParam` and `previousParam` instead. Type `string | null`, default `null`.
 
+#### infinite.getNextPageParam
+
+Source of TanStack Query's `getNextPageParam`, inlined verbatim, for a next page that has to be computed rather than read from a field, such as `'(lastPage) => (lastPage.hasNext ? lastPage.number + 1 : undefined)'`. Takes precedence over `nextParam` and `cursorParam`. Type `string | null`, default `null`.
+
+Without any of `getNextPageParam`, `nextParam` or `cursorParam`, the composable counts pages up from `initialPageParam` and stops on an empty array. That only works for responses that are arrays, so generation warns for an operation whose response is an object.
+
+#### infinite.getPreviousPageParam
+
+Source of TanStack Query's `getPreviousPageParam`, inlined verbatim. Takes precedence over `previousParam` and `cursorParam`. Type `string | null`, default `null`.
+
 ### query
 
 Decides which operations are treated as queries. The plugin generates a `queryOptions` factory for each match by default. Pass `false` to skip, or set [`hooks`](#hooks) to also emit `useQuery`.
