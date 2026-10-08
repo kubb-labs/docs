@@ -113,6 +113,10 @@ Builds the `queryKey` for each hook from the operation `node`, `casing` and `var
 
 `variant` is the hook the key is built for: `'query'`, `'suspenseQuery'`, `'infiniteQuery'` or `'suspenseInfiniteQuery'`. The default key adds `infinite: true` for the infinite variants, because TanStack Query stores `InfiniteData` under an infinite key and the plain hook for the same request must not share it.
 
+```typescript
+queryKey: ({ node, variant }) => [JSON.stringify({ variant, operationId: node.operationId })]
+```
+
 ### mutation
 
 Which operations become mutations, emitting a `mutationOptions` factory by default. Set `false` to skip, or [`hooks`](#hooks) to also emit `useMutation`.
