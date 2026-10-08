@@ -79,6 +79,10 @@ Module that `useSWR` is imported from (`string`, default `'swr'`). The plugin em
 
 Builds the SWR key for each query hook. The callback receives the operation `node`, the active `casing` and `variant: 'query'` and returns the key array, and the built-in transformer is used when unset. String values are inlined into generated code verbatim, so wrap any literal string in `JSON.stringify(...)`.
 
+```typescript
+queryKey: ({ node, variant }) => [JSON.stringify({ variant, operationId: node.operationId })]
+```
+
 ### mutation
 
 Configures the generated `useSWRMutation` hooks. Pass an object to change the HTTP methods or import path, or `false` to skip mutation hook generation. Defaults to `{ methods: ['POST', 'PUT', 'PATCH', 'DELETE'], importPath: 'swr/mutation' }`.

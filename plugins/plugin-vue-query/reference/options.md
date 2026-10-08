@@ -123,16 +123,16 @@ Module specifier for the generated `import { queryOptions } from '...'`. Type `s
 
 ### queryKey
 
-Builds the `queryKey` for each query composable. The callback receives the operation `node`, the active `casing` and the `variant` (`'query'` or `'infiniteQuery'`) and returns the key array. String values are inlined verbatim, so wrap literals in `JSON.stringify(...)`. Defaults to the built-in `queryKeyTransformer`, which adds `infinite: true` to infinite keys so they never share a cache entry with the plain query.
+Builds the `queryKey` for each query composable. The callback receives the operation `node`, the active `casing` and the `variant` (`'query'` or `'infiniteQuery'`, the hook the key is built for) and returns the key array. String values are inlined verbatim, so wrap literals in `JSON.stringify(...)`. Defaults to the built-in `queryKeyTransformer`, which adds `infinite: true` to infinite keys so they never share a cache entry with the plain query.
 
 ::code-group
 
 ```typescript [queryKey builder]
-queryKey: ({ node }) => [JSON.stringify(node.operationId)]
+queryKey: ({ node, variant }) => [JSON.stringify({ variant, operationId: node.operationId })]
 ```
 
 ```typescript [Generated output]
-export const getUserByNameQueryKey = () => ['getUserByName'] as const
+export const getUserByNameQueryKey = () => [{ variant: 'query', operationId: 'getUserByName' }] as const
 ```
 
 ::
