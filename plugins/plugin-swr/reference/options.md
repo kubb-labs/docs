@@ -77,7 +77,7 @@ Module that `useSWR` is imported from (`string`, default `'swr'`). The plugin em
 
 ### queryKey
 
-Builds the SWR key for each query hook. The callback receives the operation `node` and the active `casing` and returns the key array, and the built-in transformer is used when unset. String values are inlined into generated code verbatim, so wrap any literal string in `JSON.stringify(...)`.
+Builds the SWR key for each query hook. The callback receives the operation `node`, the active `casing` and `variant: 'query'` and returns the key array, and the built-in transformer is used when unset. String values are inlined into generated code verbatim, so wrap any literal string in `JSON.stringify(...)`.
 
 ### mutation
 
@@ -93,7 +93,7 @@ Module that `useSWRMutation` is imported from (`string`, default `'swr/mutation'
 
 ### mutationKey
 
-Builds the SWR key for each mutation hook. Like `queryKey`, the callback receives the operation `node` and the active `casing` and returns the key array, and the built-in transformer is used when unset. String values are inlined verbatim, so wrap any literal string in `JSON.stringify(...)`.
+Builds the SWR key for each mutation hook. Like `queryKey`, the callback receives the operation `node`, the active `casing` and `variant: 'mutation'` and returns the key array, and the built-in transformer is used when unset. String values are inlined verbatim, so wrap any literal string in `JSON.stringify(...)`.
 
 ### include
 
