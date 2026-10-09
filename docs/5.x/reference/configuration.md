@@ -91,13 +91,13 @@ A config function can return an array to combine both forms.
 
 ### `name`
 
-:::field{name="name" type="string"}
+:::field{type="string"}
 A name for this config. The CLI prints it as `Generating <name>...`.
 :::
 
 ### `input`
 
-:::field{name="input" type="string | Record<string, unknown>"}
+:::field{type="string | Record<string, unknown>"}
 Where Kubb reads your spec: a local file path, a URL, inline OpenAPI content as a JSON or YAML string, or an already-parsed object. Kubb detects which one you gave it. Required when an adapter is configured. Omit it in plugin-only mode, when there is no `adapter`.
 
 
@@ -120,13 +120,13 @@ Controls where and how files are written.
 
 #### `output.path`
 
-:::field{name="output.path" type="string" required}
+:::field{type="string" required}
 Directory for generated files, absolute or relative to `root`.
 :::
 
 #### `output.mode`
 
-:::field{name="output.mode" type="'file' | 'directory'"}
+:::field{type="'file' | 'directory'"}
 How a plugin consolidates its code into files. Set it on a plugin's `output`, not on the root `output`.
 
 Default: follows the shape of `output.path`.
@@ -158,7 +158,7 @@ This writes every type into `src/gen/types.ts` and one client file per operation
 
 #### `output.clean`
 
-:::field{name="output.clean" type="boolean"}
+:::field{type="boolean"}
 Wipe `output.path` before regenerating.
 
 Default: `false`.
@@ -169,7 +169,7 @@ Default: `false`.
 
 #### `output.format`
 
-:::field{name="output.format" type="'auto' | 'prettier' | 'biome' | 'oxfmt' | false"}
+:::field{type="'auto' | 'prettier' | 'biome' | 'oxfmt' | false"}
 Formatter to run on every generated file.
 
 Default: `false`.
@@ -179,7 +179,7 @@ Default: `false`.
 
 #### `output.lint`
 
-:::field{name="output.lint" type="'auto' | 'eslint' | 'biome' | 'oxlint' | false"}
+:::field{type="'auto' | 'eslint' | 'biome' | 'oxlint' | false"}
 Linter to run after generation.
 
 Default: `false`.
@@ -189,7 +189,7 @@ Default: `false`.
 
 #### `output.postGenerate`
 
-:::field{name="output.postGenerate" type="Array<string | { name?: string; command: string }>"}
+:::field{type="Array<string | { name?: string; command: string }>"}
 Shell commands to run after the generated files are formatted and linted, such as a type check or a custom script. Commands run from the `root` directory, in sequence. Pass a command string, or `{ name, command }` to label a step in the CLI output.
 
 
@@ -208,7 +208,7 @@ export default defineConfig({
 
 #### `output.barrel`
 
-:::field{name="output.barrel" type="{ type: 'all' | 'named' } | false"}
+:::field{type="{ type: 'all' | 'named' } | false"}
 Behavior of the root `index.ts` barrel file at `output.path`.
 
 Provided by [`@kubb/plugin-barrel`](/plugins/plugin-barrel/).
@@ -247,7 +247,7 @@ Each plugin keeps its own `output.barrel` for its sub-folder and can override th
 
 #### `output.defaultBanner`
 
-:::field{name="output.defaultBanner" type="'simple' | 'full' | false"}
+:::field{type="'simple' | 'full' | false"}
 Auto-generated banner injected at the top of each file.
 
 Default: `'simple'`.
@@ -282,7 +282,7 @@ Default: `'simple'`.
 
 #### `output.banner`
 
-:::field{name="output.banner" type="string | ((meta: BannerMeta) => string)"}
+:::field{type="string | ((meta: BannerMeta) => string)"}
 Text prepended to every file a plugin generates. Set it on an individual plugin. The root `output` exposes only [`output.defaultBanner`](#output-defaultbanner). Use it for license headers, lint-disable comments, or framework directives like `'use server'`.
 
 
@@ -304,19 +304,19 @@ A string applies to every file the plugin generates, including barrel (`index.ts
 
 #### `output.footer`
 
-:::field{name="output.footer" type="string | ((meta: BannerMeta) => string)"}
+:::field{type="string | ((meta: BannerMeta) => string)"}
 Text appended to the end of every file a plugin generates. Mirror of [`output.banner`](#output-banner), with the same `string | ((meta: BannerMeta) => string)` type.
 :::
 
 ### `plugins`
 
-:::field{name="plugins" type="Array<Plugin>"}
+:::field{type="Array<Plugin>"}
 Array of Kubb plugins. Dependencies run first. Missing dependencies fail when a generator requires them with `ctx.requirePlugin`.
 :::
 
 ### `adapter`
 
-:::field{name="adapter" type="Adapter"}
+:::field{type="Adapter"}
 Adapter that converts your input into the universal AST. With `defineConfig` from the `kubb` package this defaults to `adapterOas()` from [`@kubb/adapter-oas`](/adapters/adapter-oas/).
 
 See the [Adapter concept](/docs/5.x/explanation/architecture#adapters) for the full picture.
@@ -339,7 +339,7 @@ export default defineConfig({
 
 ### `parsers`
 
-:::field{name="parsers" type="Array<Parser>"}
+:::field{type="Array<Parser>"}
 Array of parsers that turn the in-memory file representation into source code. Each parser declares which file extensions it handles through `extNames`.
 
 See the [Parser concept](/docs/5.x/explanation/architecture#parsers) and [`@kubb/parser-ts`](/parsers/parser-ts/) for the built-in parsers.
@@ -362,7 +362,7 @@ export default defineConfig({
 
 ### `storage`
 
-:::field{name="storage" type="Storage"}
+:::field{type="Storage"}
 Storage driver that persists generated files. Defaults to `fsStorage()` (filesystem).
 
 See the [Storage concept](/docs/5.x/explanation/architecture#storage) for the built-in drivers and how to write a custom backend.
@@ -384,7 +384,7 @@ export default defineConfig({
 
 ### `root`
 
-:::field{name="root" type="string"}
+:::field{type="string"}
 Project root, absolute or relative to the config file location.
 
 Default: `process.cwd()`.
@@ -392,7 +392,7 @@ Default: `process.cwd()`.
 
 ### `reporters`
 
-:::field{name="reporters" type="Array<Reporter>"}
+:::field{type="Array<Reporter>"}
 Reporters available to the run, registered as instances. `defineConfig` registers the built-in `cli`, `json`, `file`, and `html` reporters by default. The HTML reporter remains opt-in: select it with [`--reporter html`](/docs/5.x/reference/commands/generate#reporters). The CLI [`--reporter`](/docs/5.x/reference/commands/generate#reporters) flag selects reporters by name and defaults to `cli`. See that page for details about each reporter.
 
 Default: `[cli, json, file, html]`.
