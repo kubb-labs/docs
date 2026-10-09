@@ -9,24 +9,105 @@ outline: deep
 
 Options for `pluginReactQuery`.
 
-| Option | Type | Default | Description |
-| ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'hooks', barrel: { type: 'named' } }` | Where the generated hooks are written and exported |
-| [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
-| [`client`](#client) | `'axios' \| 'fetch'` | — | Which registered client plugin the hooks call |
-| [`infinite`](#infinite) | `Partial<Infinite> \| false` | `false` | Generate `useInfiniteQuery` hooks for pagination |
-| [`suspense`](#suspense) | `Partial<object> \| false` | `false` | Generate `useSuspenseQuery` hooks |
-| [`query`](#query) | `Partial<Query> \| false` | `{ methods: ['GET'], … }` | Configure the query hooks |
-| [`queryKey`](#querykey) | `(props) => unknown[]` | `built-in` | Build the `queryKey` for each query hook |
-| [`mutation`](#mutation) | `Partial<Mutation> \| false` | `{ methods: ['POST', 'PUT', 'PATCH', 'DELETE'], … }` | Configure the mutation hooks |
-| [`mutationKey`](#mutationkey) | `(props) => unknown[]` | `built-in` | Build the `mutationKey` for each mutation hook |
-| [`customOptions`](#customoptions) | `CustomOptions` | — | Route every hook through your own options function |
-| [`hooks`](#hooks) | `boolean` | `false` | Emit `use*` hook functions on top of the factories |
-| [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
-| [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
-| [`override`](#override) | `Array<Override>` | `[]` | Apply different options per pattern |
-| [`resolver`](#resolver) | `ResolverPatch<ResolverReactQuery>` | — | Customize generated names and file paths |
-| [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
+::field-group
+
+:::field{name="output" type="Output"}
+Where the generated hooks are written and exported. [See details](#output).
+
+Default: `{ path: 'hooks', barrel: { type: 'named' } }`.
+:::
+
+:::field{name="group" type="Group"}
+Split output into per-tag or per-path folders. [See details](#group).
+
+No default.
+:::
+
+:::field{name="client" type="'axios' | 'fetch'"}
+Which registered client plugin the hooks call. [See details](#client).
+
+No default.
+:::
+
+:::field{name="infinite" type="Partial<Infinite> | false"}
+Generate `useInfiniteQuery` hooks for pagination. [See details](#infinite).
+
+Default: `false`.
+:::
+
+:::field{name="suspense" type="Partial<object> | false"}
+Generate `useSuspenseQuery` hooks. [See details](#suspense).
+
+Default: `false`.
+:::
+
+:::field{name="query" type="Partial<Query> | false"}
+Configure the query hooks. [See details](#query).
+
+Default: `{ methods: ['GET'], … }`.
+:::
+
+:::field{name="queryKey" type="(props) => unknown[]"}
+Build the `queryKey` for each query hook. [See details](#querykey).
+
+Default: `built-in`.
+:::
+
+:::field{name="mutation" type="Partial<Mutation> | false"}
+Configure the mutation hooks. [See details](#mutation).
+
+Default: `{ methods: ['POST', 'PUT', 'PATCH', 'DELETE'], … }`.
+:::
+
+:::field{name="mutationKey" type="(props) => unknown[]"}
+Build the `mutationKey` for each mutation hook. [See details](#mutationkey).
+
+Default: `built-in`.
+:::
+
+:::field{name="customOptions" type="CustomOptions"}
+Route every hook through your own options function. [See details](#customoptions).
+
+No default.
+:::
+
+:::field{name="hooks" type="boolean"}
+Emit `use*` hook functions on top of the factories. [See details](#hooks).
+
+Default: `false`.
+:::
+
+:::field{name="include" type="Array<Include>"}
+Keep only operations that match. [See details](#include).
+
+No default.
+:::
+
+:::field{name="exclude" type="Array<Exclude>"}
+Skip operations that match. [See details](#exclude).
+
+Default: `[]`.
+:::
+
+:::field{name="override" type="Array<Override>"}
+Apply different options per pattern. [See details](#override).
+
+Default: `[]`.
+:::
+
+:::field{name="resolver" type="ResolverPatch<ResolverReactQuery>"}
+Customize generated names and file paths. [See details](#resolver).
+
+No default.
+:::
+
+:::field{name="macros" type="Array<Macro>"}
+Rewrite AST nodes before printing. [See details](#macros).
+
+No default.
+:::
+
+::
 
 ### output
 

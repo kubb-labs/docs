@@ -9,24 +9,105 @@ outline: deep
 
 Options for `pluginZod`.
 
-| Option | Type | Default | Description |
-| ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'zod', barrel: { type: 'named' } }` | Where the generated files are written and exported |
-| [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
-| [`importPath`](#importpath) | `string` | `mini ? 'zod/mini' : 'zod'` | Module the generated files import `z` from |
-| [`inferred`](#inferred) | `boolean` | `false` | Emit a `z.infer` alias next to each schema |
-| [`coercion`](#coercion) | `boolean \| { dates?: boolean, strings?: boolean, numbers?: boolean }` | `false` | Coerce input before validation |
-| [`guidType`](#guidtype) | `'uuid' \| 'guid'` | `'uuid'` | Validator for `format: uuid` properties |
-| [`regexType`](#regextype) | `'literal' \| 'constructor'` | `'literal'` | How an OpenAPI `pattern` is written |
-| [`compile`](#compile) | `boolean \| { strict?: boolean }` | `false` | Wrap schemas in `z.compile` for fast-path validation |
-| [`mini`](#mini) | `boolean` | `false` | Generate Zod Mini schemas |
-| [`typeGuards`](#typeguards) | `boolean \| { is?: boolean, assert?: boolean }` | `false` | Generate `is*` type guards and `assert*` assertions |
-| [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
-| [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
-| [`override`](#override) | `Array<Override>` | `[]` | Apply different options per pattern |
-| [`resolver`](#resolver) | `ResolverPatch<ResolverZod>` | — | Customize generated names and file paths |
-| [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
-| [`printer`](#printer) | `{ nodes?: PrinterZodNodes \| PrinterZodMiniNodes }` | — | Replace the handler for a schema type |
+::field-group
+
+:::field{name="output" type="Output"}
+Where the generated files are written and exported. [See details](#output).
+
+Default: `{ path: 'zod', barrel: { type: 'named' } }`.
+:::
+
+:::field{name="group" type="Group"}
+Split output into per-tag or per-path folders. [See details](#group).
+
+No default.
+:::
+
+:::field{name="importPath" type="string"}
+Module the generated files import `z` from. [See details](#importpath).
+
+Default: `mini ? 'zod/mini' : 'zod'`.
+:::
+
+:::field{name="inferred" type="boolean"}
+Emit a `z.infer` alias next to each schema. [See details](#inferred).
+
+Default: `false`.
+:::
+
+:::field{name="coercion" type="boolean | { dates?: boolean, strings?: boolean, numbers?: boolean }"}
+Coerce input before validation. [See details](#coercion).
+
+Default: `false`.
+:::
+
+:::field{name="guidType" type="'uuid' | 'guid'"}
+Validator for `format: uuid` properties. [See details](#guidtype).
+
+Default: `'uuid'`.
+:::
+
+:::field{name="regexType" type="'literal' | 'constructor'"}
+How an OpenAPI `pattern` is written. [See details](#regextype).
+
+Default: `'literal'`.
+:::
+
+:::field{name="compile" type="boolean | { strict?: boolean }"}
+Wrap schemas in `z.compile` for fast-path validation. [See details](#compile).
+
+Default: `false`.
+:::
+
+:::field{name="mini" type="boolean"}
+Generate Zod Mini schemas. [See details](#mini).
+
+Default: `false`.
+:::
+
+:::field{name="typeGuards" type="boolean | { is?: boolean, assert?: boolean }"}
+Generate `is*` type guards and `assert*` assertions. [See details](#typeguards).
+
+Default: `false`.
+:::
+
+:::field{name="include" type="Array<Include>"}
+Keep only operations that match. [See details](#include).
+
+No default.
+:::
+
+:::field{name="exclude" type="Array<Exclude>"}
+Skip operations that match. [See details](#exclude).
+
+Default: `[]`.
+:::
+
+:::field{name="override" type="Array<Override>"}
+Apply different options per pattern. [See details](#override).
+
+Default: `[]`.
+:::
+
+:::field{name="resolver" type="ResolverPatch<ResolverZod>"}
+Customize generated names and file paths. [See details](#resolver).
+
+No default.
+:::
+
+:::field{name="macros" type="Array<Macro>"}
+Rewrite AST nodes before printing. [See details](#macros).
+
+No default.
+:::
+
+:::field{name="printer" type="{ nodes?: PrinterZodNodes | PrinterZodMiniNodes }"}
+Replace the handler for a schema type. [See details](#printer).
+
+No default.
+:::
+
+::
 
 ### output
 

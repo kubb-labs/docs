@@ -89,7 +89,10 @@ export default defineConfig({
 })
 ```
 
-This configuration writes types to `src/gen/models` and the client to `src/gen/clients`. The generated directory is dedicated to Kubb because `clean: true` removes it before each run.
+This configuration writes types to `src/gen/models` and the client to `src/gen/clients`.
+
+> [!WARNING]
+> Keep `src/gen` dedicated to generated files. `clean: true` removes its contents before each run.
 
 ## Generate the client {#_4-generate-the-client}
 
@@ -107,15 +110,30 @@ The output contains `getPetById.ts`. Open that file and notice that `getPetById`
 
 The generated tree includes:
 
-```text [Generated files]
-src/gen/
-├── .kubb/                 # Shared client and serialization helpers
-├── clients/
-│   └── getPetById.ts
-└── models/
-    ├── GetPetById.ts
-    └── Pet.ts
-```
+::file-tree
+---
+tree:
+  - name: src
+    type: dir
+    children:
+      - name: gen
+        type: dir
+        children:
+          - name: .kubb
+            type: dir
+          - name: clients
+            type: dir
+            children:
+              - name: getPetById.ts
+          - name: models
+            type: dir
+            children:
+              - name: GetPetById.ts
+              - name: Pet.ts
+---
+::
+
+The `.kubb` directory holds shared client and serialization helpers.
 
 ## Regenerate after a change {#_5-regenerate-after-a-change}
 
@@ -134,7 +152,22 @@ You now have a typed client and have seen how a specification change flows into 
 
 ## Continue
 
-- [Call generated operations](/plugins/plugin-axios/guide/calling-operations) and [configure their host](/plugins/plugin-axios/guide/base-url).
-- [Configure generation](/docs/5.x/how-to/recipes) for React or Vue hooks, validation, and mocks.
-- [Interactive setup](/docs/5.x/reference/commands/init) for an existing project.
-- [Configuration reference](/docs/5.x/reference/configuration) for supported specification versions, options, and config formats.
+::card-group
+
+:::card{title="Call generated operations" icon="i-iconoir-code" to="/plugins/plugin-axios/guide/calling-operations"}
+Use the generated Axios client. [Configure its host](/plugins/plugin-axios/guide/base-url) for your API.
+:::
+
+:::card{title="Configure generation" icon="i-iconoir-settings" to="/docs/5.x/how-to/recipes"}
+Add React or Vue hooks, validation, and mocks.
+:::
+
+:::card{title="Interactive setup" icon="i-iconoir-terminal" to="/docs/5.x/reference/commands/init"}
+Set up Kubb in an existing project.
+:::
+
+:::card{title="Configuration reference" icon="i-iconoir-bookmark" to="/docs/5.x/reference/configuration"}
+Look up specification versions, options, and config formats.
+:::
+
+::

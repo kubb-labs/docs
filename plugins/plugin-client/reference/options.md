@@ -9,18 +9,69 @@ outline: deep
 
 Pass these options to `pluginClient()` to control what it generates and where the files go.
 
-| Option | Type | Default | Description |
-| ------ | ---- | ------- | ----------- |
-| [`importPath`](#importpath) | `string` | required | Import specifier of your client module |
-| [`output`](#output) | `Output` | `{ path: 'clients', barrel: { type: 'named' } }` | Where the generated files are written and exported |
-| [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
-| [`throwOnErrorDefault`](#throwonerrordefault) | `boolean` | `true` | Default `throwOnError` value passed to your client |
-| [`validator`](#validator) | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` | `false` | Pass Zod schemas to your client |
-| [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
-| [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
-| [`override`](#override) | `Array<Override>` | `[]` | Apply different options per pattern |
-| [`resolver`](#resolver) | `ResolverPatch<ResolverClient>` | — | Customize generated names and file paths |
-| [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
+::field-group
+
+:::field{name="importPath" type="string"}
+Import specifier of your client module. [See details](#importpath).
+
+Default: required.
+:::
+
+:::field{name="output" type="Output"}
+Where the generated files are written and exported. [See details](#output).
+
+Default: `{ path: 'clients', barrel: { type: 'named' } }`.
+:::
+
+:::field{name="group" type="Group"}
+Split output into per-tag or per-path folders. [See details](#group).
+
+No default.
+:::
+
+:::field{name="throwOnErrorDefault" type="boolean"}
+Default `throwOnError` value passed to your client. [See details](#throwonerrordefault).
+
+Default: `true`.
+:::
+
+:::field{name="validator" type="false | 'zod' | { request?: 'zod'; response?: 'zod' }"}
+Pass Zod schemas to your client. [See details](#validator).
+
+Default: `false`.
+:::
+
+:::field{name="include" type="Array<Include>"}
+Keep only operations that match. [See details](#include).
+
+No default.
+:::
+
+:::field{name="exclude" type="Array<Exclude>"}
+Skip operations that match. [See details](#exclude).
+
+Default: `[]`.
+:::
+
+:::field{name="override" type="Array<Override>"}
+Apply different options per pattern. [See details](#override).
+
+Default: `[]`.
+:::
+
+:::field{name="resolver" type="ResolverPatch<ResolverClient>"}
+Customize generated names and file paths. [See details](#resolver).
+
+No default.
+:::
+
+:::field{name="macros" type="Array<Macro>"}
+Rewrite AST nodes before printing. [See details](#macros).
+
+No default.
+:::
+
+::
 
 > [!NOTE]
 > `sdk`, `returnType`, and `baseURL` from [`@kubb/plugin-fetch`](/plugins/plugin-fetch/reference/options) are not options here. This plugin generates standalone functions that return your client's promise, and your client owns the base URL.

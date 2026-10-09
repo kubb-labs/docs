@@ -96,6 +96,18 @@ Once configured, run `npx kubb generate` from the project directory. Kubb writes
 
 ## Next steps
 
-- [Generate your first client](/docs/5.x/tutorials/quickstart) — follow a complete example with a supplied specification.
-- [Configure generation](/docs/5.x/how-to/recipes) — choose a stack for your existing project.
-- [Configuration reference](/docs/5.x/reference/configuration) — look up options and defaults.
+::card-group
+
+:::card{title="Generate your first client" icon="i-iconoir-rocket" to="/docs/5.x/tutorials/quickstart"}
+Follow a complete example with a supplied specification.
+:::
+
+:::card{title="Configure generation" icon="i-iconoir-settings" to="/docs/5.x/how-to/recipes"}
+Choose a stack for your existing project.
+:::
+
+:::card{title="Configuration reference" icon="i-iconoir-bookmark" to="/docs/5.x/reference/configuration"}
+Look up options and defaults.
+:::
+
+::

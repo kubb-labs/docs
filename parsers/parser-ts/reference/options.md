@@ -9,9 +9,15 @@ outline: deep
 
 `parserTs` and `parserTsx` accept the same single option.
 
-| Option | Type | Default | Description |
-| ------ | ---- | ------- | ----------- |
-| [`extension`](#extension) | `Record<string, string>` | `{ '.ts': '' }` | Rewrite the extensions emitted in `import`/`export` statements |
+::field-group
+
+:::field{name="extension" type="Record<string, string>"}
+Rewrite the extensions emitted in `import`/`export` statements. [See details](#extension).
+
+Default: `{ '.ts': '' }`.
+:::
+
+::
 
 ### extension
 
@@ -21,9 +27,7 @@ Use it to emit `.js` imports from `.ts` sources for an ESM dual package, or to k
 
 The same mapping applies to runtime templates a plugin copies into the output, such as the `.kubb/` runtime files of `@kubb/plugin-fetch`. Their top-level `import` and `export … from` statements become import and export nodes, so the whole output follows one convention.
 
-| Type | Default |
-| --- | --- |
-| `Record<string, string>` | `{ '.ts': '' }` |
+Type: `Record<string, string>`. Default: `{ '.ts': '' }`.
 
 ```typescript
 parserTs({ extension: { '.ts': '.js' } })  // import './api.js' instead of './api'

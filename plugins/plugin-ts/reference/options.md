@@ -7,20 +7,81 @@ outline: deep
 
 # Options
 
-| Option | Type | Default | Description |
-| ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'types', barrel: { type: 'named' } }` | Where the generated files are written and exported |
-| [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
-| [`enum`](#enum) | `EnumOptions` | `{ type: 'asConst', … }` | How enums are generated and cased |
-| [`syntaxType`](#syntaxtype) | `'type' \| 'interface'` | `'type'` | Emit object schemas as type aliases or interfaces |
-| [`optionalType`](#optionaltype) | `'questionToken' \| 'undefined' \| 'questionTokenAndUndefined'` | `'questionToken'` | How optional properties are written |
-| [`arrayType`](#arraytype) | `'array' \| 'generic'` | `'array'` | `Type[]` or `Array<Type>` |
-| [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
-| [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
-| [`override`](#override) | `Array<Override>` | `[]` | Apply different options per pattern |
-| [`resolver`](#resolver) | `ResolverPatch<ResolverTs>` | — | Customize generated names and file paths |
-| [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
-| [`printer`](#printer) | `{ nodes?: PrinterTsNodes }` | — | Replace the handler for a schema type |
+::field-group
+
+:::field{name="output" type="Output"}
+Where the generated files are written and exported. [See details](#output).
+
+Default: `{ path: 'types', barrel: { type: 'named' } }`.
+:::
+
+:::field{name="group" type="Group"}
+Split output into per-tag or per-path folders. [See details](#group).
+
+No default.
+:::
+
+:::field{name="enum" type="EnumOptions"}
+How enums are generated and cased. [See details](#enum).
+
+Default: `{ type: 'asConst', … }`.
+:::
+
+:::field{name="syntaxType" type="'type' | 'interface'"}
+Emit object schemas as type aliases or interfaces. [See details](#syntaxtype).
+
+Default: `'type'`.
+:::
+
+:::field{name="optionalType" type="'questionToken' | 'undefined' | 'questionTokenAndUndefined'"}
+How optional properties are written. [See details](#optionaltype).
+
+Default: `'questionToken'`.
+:::
+
+:::field{name="arrayType" type="'array' | 'generic'"}
+`Type[]` or `Array<Type>`. [See details](#arraytype).
+
+Default: `'array'`.
+:::
+
+:::field{name="include" type="Array<Include>"}
+Keep only operations that match. [See details](#include).
+
+No default.
+:::
+
+:::field{name="exclude" type="Array<Exclude>"}
+Skip operations that match. [See details](#exclude).
+
+Default: `[]`.
+:::
+
+:::field{name="override" type="Array<Override>"}
+Apply different options per pattern. [See details](#override).
+
+Default: `[]`.
+:::
+
+:::field{name="resolver" type="ResolverPatch<ResolverTs>"}
+Customize generated names and file paths. [See details](#resolver).
+
+No default.
+:::
+
+:::field{name="macros" type="Array<Macro>"}
+Rewrite AST nodes before printing. [See details](#macros).
+
+No default.
+:::
+
+:::field{name="printer" type="{ nodes?: PrinterTsNodes }"}
+Replace the handler for a schema type. [See details](#printer).
+
+No default.
+:::
+
+::
 
 ### output
 
