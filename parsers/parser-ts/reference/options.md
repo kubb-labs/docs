@@ -27,7 +27,7 @@ Use it to emit `.js` imports from `.ts` sources for an ESM dual package, or to k
 
 The same mapping applies to runtime templates a plugin copies into the output, such as the `.kubb/` runtime files of `@kubb/plugin-fetch`. Their top-level `import` and `export … from` statements become import and export nodes, so the whole output follows one convention.
 
-::field{name="extension" type="Record<string, string>"}
+::field{type="Record<string, string>"}
 Default: `{ '.ts': '' }`.
 ::
 

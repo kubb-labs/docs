@@ -71,7 +71,7 @@ Pages render with Nuxt Content and Nuxt UI's Markdown components. Reuse the same
 | Content | Element | Authoring rule |
 | --- | --- | --- |
 | Comparisons and tabular reference data | Markdown table | Keep related values in columns. Escape `\|` in types. |
-| Option overviews and individual option metadata | `::field-group` and `:::field` | Set `name` and `type`, include any default in the body, and link overview entries to their detailed headings. Add `required` only for required options. |
+| Option overviews and individual option metadata | `::field-group` and `:::field` | Set `name` and `type`, include any default in the body, and link overview entries to their detailed headings. Under a detail heading, set only `type` so the option name is not repeated. Add `required` only for required options. |
 | Background information | `> [!NOTE]` | Use for supplementary context. |
 | Recommendations | `> [!TIP]` | Use for optional improvements and useful shortcuts. |
 | Requirements | `> [!IMPORTANT]` | State what the reader must do. |
