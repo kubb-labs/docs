@@ -21,7 +21,7 @@ Default: `{ path: 'docs.html' }`.
 
 Where the generated Redoc HTML file is written.
 
-::field{name="output" type="{ path: string }"}
+::field{type="{ path: string }"}
 Default: `{ path: 'docs.html' }`.
 ::
 
@@ -31,7 +31,7 @@ File path of the generated HTML, resolved against the global `output.path`. Unli
 
 End the path with a `.html` extension. If you leave the extension off, Kubb still writes the file and uses the path as the plugin output name.
 
-::field{name="output.path" type="string"}
+::field{type="string"}
 Default: `'docs.html'`.
 ::
 
