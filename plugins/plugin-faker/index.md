@@ -87,6 +87,8 @@ export default defineConfig({
 })
 ```
 
+Use [`typeMode: 'schema'`](./reference/options#typemode) for fixtures you modify after creation. Factories return the declared model type and reject unknown properties in inline overrides. The default `'inferred'` mode preserves literal overrides and precise generated field types.
+
 ## Documentation
 
 - [Options](./reference/options)

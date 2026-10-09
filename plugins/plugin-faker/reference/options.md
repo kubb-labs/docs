@@ -13,6 +13,7 @@ Configure `@kubb/plugin-faker` by passing these options to `pluginFaker()`, all 
 | ------ | ---- | ------- | ----------- |
 | [`output`](#output) | `Output` | `{ path: 'mocks', barrel: { type: 'named' } }` | Where the generated files are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
+| [`typeMode`](#typemode) | `'inferred' \| 'schema'` | `'inferred'` | Type object factories from generated values or the declared model |
 | [`dateParser`](#dateparser) | `'faker' \| 'dayjs' \| 'moment' \| string` | `'faker'` | Library that formats string date and time fields |
 | [`regexGenerator`](#regexgenerator) | `'faker' \| 'randexp'` | `'faker'` | Library that turns a regex `pattern` into a string |
 | [`locale`](#locale) | `string` | `'en'` | Faker locale code for the generated values |
@@ -58,6 +59,53 @@ How the plugin consolidates generated code. `'file'` writes everything into a si
 #### group.name
 
 Function `(context: { group: string }) => string` that turns a group key into the subdirectory name and the suffix for aggregate files. It defaults to `camelCase(group)` for tag groups, and for `type: 'path'` groups uses the path segment as-is.
+
+### typeMode
+
+Controls the input and return types of object and intersection factories. The default `'inferred'` mode derives the return type from generated values and supplied overrides. Generated optional or nullable fields keep their concrete value types, and overrides preserve literal types.
+
+```typescript [Inferred mode (default)]
+pluginFaker({ typeMode: 'inferred' })
+
+// Generated signature:
+// export function createOrder<TData extends Partial<Order> = object>(data?: TData)
+const order = createOrder({ quantity: 2, complete: true })
+const complete: true = order.complete
+
+// TypeScript error: false is not assignable to true.
+order.complete = false
+```
+
+Use `'schema'` for fixtures you modify after creation. Factories accept `Partial<Model>` and return the declared model type, including its optional and nullable fields.
+
+```typescript [Schema mode]
+pluginFaker({ typeMode: 'schema' })
+
+// Generated signature:
+// export function createOrder(data?: Partial<Order>): Order
+const order = createOrder({ quantity: 2, complete: true })
+order.complete = false
+order.complete = true
+
+// TypeScript error: foo does not exist in Partial<Order>.
+createOrder({ quantity: 2, foo: '' })
+```
+
+Both modes generate the same values and apply overrides with a shallow merge.
+
+Use [`override`](#override) to select a mode for matching schemas or operations. String patterns are regular expressions, so `^Order$` matches only the `Order` schema. For example, generate mutable `Order` fixtures while keeping the default inferred mode for other schemas:
+
+```typescript [Per-schema mode]
+pluginFaker({
+  override: [
+    {
+      type: 'schemaName',
+      pattern: '^Order$',
+      options: { typeMode: 'schema' },
+    },
+  ],
+})
+```
 
 ### dateParser
 
