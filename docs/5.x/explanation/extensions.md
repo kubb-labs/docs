@@ -20,7 +20,7 @@ Use an existing [plugin](/plugins) when it generates the output you need. To add
 
 | You need to change | Extension | Why |
 | --- | --- | --- |
-| Input format | Adapter | Translate the format into Kubb’s shared AST. |
+| Input format | Adapter | Translate the format into Kubb's shared AST. |
 | Schema meaning before generation | Macro | Transform nodes before the plugin processes them. |
 | Generated names or paths | Resolver | Keep declarations and imports consistent. |
 | Code emitted for a schema type | Printer | Change one output target without changing the input model. |
@@ -28,7 +28,7 @@ Use an existing [plugin](/plugins) when it generates the output you need. To add
 | File syntax or assembly | Parser | Convert emitted nodes into source text. |
 | Where files are stored | Storage | Reuse generation with another destination. |
 
-For example, turning a date into a TypeScript `Date` type is a printer customization. Moving model files into a folder is a resolver customization. Changing a schema before several generators consume it calls for a macro.
+For example, turning a date into a TypeScript `Date` type is a printer customization. Moving model files into a folder is a resolver customization. Changing a schema before several generators consume it calls for a macro. Macros run before printer handlers, so a macro change is visible to every output target while a printer change stays in one.
 
 ## Plugins {#plugins}
 
@@ -76,13 +76,7 @@ Use a macro when the schema meaning changes. Override a printer when one target 
 
 Generators can build `FileNode`s with `ast.factory` or return elements that a renderer converts into files. `kubb/jsx` provides the JSX renderer without React. Enable it per generator through `renderer`.
 
-A custom renderer is useful for another templating format. Direct node builders need no renderer. See [Renderer reference](/docs/5.x/reference/kit/renderers) and [JSX reference](/docs/5.x/reference/jsx).
-
-## Kit and engine {#kit}
-
-`kubb/kit` supplies plugin factories, generators, resolvers, adapters, parsers, renderers, storage helpers, AST tools, and diagnostics. `kubb/kit/testing` supplies test helpers.
-
-The engine runs those extensions. Import `defineConfig` from `kubb/config` for CLI configuration or `createKubb` from `kubb` for programmatic builds. Both apply the package defaults. The lower-level `@kubb/core` engine has no package defaults.
+A custom renderer is useful for another templating format. Direct node builders need no renderer. See [JSX reference](/docs/5.x/reference/jsx#renderers).
 
 ## See also
 

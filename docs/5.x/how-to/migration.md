@@ -179,10 +179,8 @@ Register TypeScript, Zod, and an Axios or Fetch client. `client` selects the reg
 
 Run `kubb generate`, review generated-file changes, and type-check your application. Update response imports for `Status<code>` names, Zod inferred-type imports for `Type`, and imports from renamed tag folders. Enable formatting, linting, and barrels explicitly if needed.
 
-The default banner is controlled by root `output.defaultBanner`. Per-plugin `output.banner` and `output.footer` accept strings or per-file functions. Operations with multiple request content types generate per-content-type types plus a union and accept a typed `contentType` argument.
-
 ## See also
 
 - [Configuration](/docs/5.x/reference/configuration)
-- [Quickstart](/docs/5.x/tutorials/quickstart)
+- [Generate your first client](/docs/5.x/tutorials/quickstart)
 - [Plugin catalogue](/plugins)

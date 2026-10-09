@@ -1,123 +1,59 @@
 ---
 layout: doc
-title: Add barrel files support
-description: Generate index.ts barrel files for every plugin output directory
-  with @kubb/plugin-barrel, the post-enforced plugin built into Kubb.
+title: Add barrel files
+description: Generate index.ts barrel files for the output directory and for
+  individual plugins with @kubb/plugin-barrel.
 outline: deep
-order: 3
+order: 6
 navigation:
-  title: Add barrel files support
+  title: Add barrel files
   icon: i-iconoir-packages
 ---
 
-# Add barrel files support
+# Add barrel files
 
-A barrel file is an `index.ts` that re-exports everything from a directory. Consumers then import from one place instead of reaching into individual files, keeping imports short and stable. Kubb generates these files through [`@kubb/plugin-barrel`](/plugins/plugin-barrel/).
-
-`@kubb/plugin-barrel` ships inside `kubb`, and `defineConfig` registers it for you, but `output.barrel` defaults to `false`, so it generates nothing until you opt in.
+A barrel file is an `index.ts` that re-exports everything in a directory, so consumers import from one place. [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) ships inside `kubb` and `defineConfig` registers it for you. It generates nothing until you set `output.barrel`.
 
 Toggle the export style and barrel depth to see what each `index.ts` re-exports.
 
 ::barrel-tree
 ::
 
-## Configure the root barrel
+## Enable the root barrel
 
-Set `output.barrel` on `defineConfig` to control the root `index.ts` and the default every plugin inherits. The `type` field picks the export style.
-
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb/config'
-
-export default defineConfig({
-  input: './petStore.yaml',
-  output: { path: './src/gen', barrel: { type: 'named' } },
-  plugins: [],
-})
-```
-
-To tune the behavior yourself, add `pluginBarrel` to the `plugins` array. It reads the same `output.barrel` settings.
+Set `output.barrel` on `defineConfig`. It controls the root `index.ts` and the default every plugin inherits. `type` is `'named'` for per-symbol re-exports or `'all'` for `export *`. See [`type`](/plugins/plugin-barrel/reference/options#type) for the difference.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb/config'
-import { pluginBarrel } from '@kubb/plugin-barrel'
-
-export default defineConfig({
-  input: './petStore.yaml',
-  output: { path: './src/gen', barrel: { type: 'named' } },
-  plugins: [pluginBarrel()],
-})
-```
-
-## Choose an export style
-
-`type` picks the export style: `'named'` re-exports each symbol by name for accurate tree-shaking, `'all'` re-exports everything with `export *`. See [`type`](/plugins/plugin-barrel/reference/options#type) for when it's required and its full type.
-
-::code-group
-
-```typescript ['named']
-// src/gen/index.ts
-export { getUser, User } from './api/user'
-export { getPost, Post } from './api/post'
-export { User } from './api/types/User'
-```
-
-```typescript ['all']
-// src/gen/index.ts
-export * from './api/user'
-export * from './api/post'
-export * from './api/types/User'
-```
-
-::
-
-## Adjust a single plugin
-
-A plugin inherits `output.barrel` from `config.output.barrel` when it sets none of its own. Override it on the plugin to change or drop that plugin's barrel.
-
-Set `barrel: { type, nested: true }` on a plugin to write an `index.ts` in every subdirectory instead of one flat barrel. See [`nested`](/plugins/plugin-barrel/reference/options#nested) for what each barrel re-exports at that setting. The root `output.barrel` has no `nested` field.
-
-A plugin only gets its own barrel under `output.mode: 'directory'`. Under `'file'` mode the plugin writes a single file, so there is no directory to walk and the plugin-level `barrel` is skipped.
-
-```typescript twoslash [Nested barrels]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
   input: './petStore.yaml',
-  output: { path: './src/gen' },
-  plugins: [pluginTs({ output: { path: 'api', mode: 'directory', barrel: { type: 'all', nested: true } } })],
+  output: { path: './src/gen', barrel: { type: 'named' } },
+  plugins: [pluginTs()],
 })
 ```
 
-Set `barrel: false` on a plugin to skip its barrel and drop its files from the root barrel.
+## Adjust a single plugin
 
-```typescript twoslash [Disable a plugin barrel]
+Set `barrel` inside a plugin's `output` to change or drop that plugin's barrel. `nested: true` writes an `index.ts` in every subdirectory instead of one flat barrel. `false` skips the plugin's barrel and drops its files from the root barrel. A plugin only gets a barrel in `output.mode: 'directory'`, the mode an extensionless `output.path` implies.
+
+```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'
 
 export default defineConfig({
   input: './petStore.yaml',
-  output: { path: './src/gen' },
-  plugins: [pluginTs(), pluginZod({ output: { path: 'zod', barrel: false } })],
-})
-```
-
-## Turn barrels off
-
-`barrel: false` is already the default, so a fresh config needs no change. Set it explicitly on `defineConfig` to override a root barrel enabled elsewhere, for example a shared base config. See [`output.barrel`](/plugins/plugin-barrel/reference/options#output-barrel) for how a plugin's own setting overrides that inherited value.
-
-```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb/config'
-
-export default defineConfig({
-  input: './petStore.yaml',
-  output: { path: './src/gen', barrel: false },
-  plugins: [],
+  output: { path: './src/gen', barrel: { type: 'named' } },
+  plugins: [
+    pluginTs({ output: { path: 'types', barrel: { type: 'all', nested: true } } }),
+    pluginZod({ output: { path: 'zod', barrel: false } }),
+  ],
 })
 ```
 
 ## See also
 
-- [`@kubb/plugin-barrel`](/plugins/plugin-barrel/) for the plugin overview and examples
-- [Options](/plugins/plugin-barrel/reference/options) for every `output.barrel` field
+- [`@kubb/plugin-barrel` options](/plugins/plugin-barrel/reference/options) for every `barrel` field
+- [`output.barrel`](/docs/5.x/reference/configuration#output-barrel) in the configuration reference

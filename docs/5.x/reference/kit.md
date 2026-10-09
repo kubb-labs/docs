@@ -7,7 +7,7 @@ description: The kubb/kit reference for authoring plugins, generators,
 outline:
   - 2
   - 3
-order: 3
+order: 4
 navigation:
   title: Kit
   icon: i-iconoir-tools
@@ -24,7 +24,7 @@ Import authoring APIs from `kubb/kit`, included with the `kubb` package.
 | [Plugins](./kit/plugins)        | `definePlugin`                               | The main extension point. Owns file naming, the output folder, and the lifecycle hooks. |
 | [Generators](./kit/generators)  | `defineGenerator`                            | Walks the AST and emits files. A plugin registers one or more.           |
 | [Resolvers](./kit/resolvers)    | `createResolver`                             | Decides file names and output paths. Other plugins read them by name.    |
-| [Renderers](./kit/renderers)    | `createRenderer`, `jsxRenderer`              | Turns the elements a generator returns into `FileNode`s.                 |
+| [Renderers](/docs/5.x/reference/jsx#renderers) | `createRenderer`, `jsxRenderer`     | Turns the elements a generator returns into `FileNode`s.                 |
 | [Adapters](./kit/adapters)      | `createAdapter`                              | Converts an input spec into the universal AST every plugin reads.        |
 | [Parsers](./kit/parsers)        | `defineParser`                               | Turns a `FileNode` into the source string written to disk.               |
 | [Storage](./kit/storage)        | `createStorage`, `fsStorage`, `memoryStorage`| Decides where generated files land.                                      |
@@ -34,8 +34,7 @@ Import authoring APIs from `kubb/kit`, included with the `kubb` package.
 | Part                                       | Entry point                | What it does                                                     |
 | ------------------------------------------ | -------------------------- | --------------------------------------------------------------- |
 | [AST and node builders](./kit/ast)             | `ast`                      | The namespace behind `factory` builders, visitors, guards, macros, and printers. |
-| [Diagnostics](./kit/diagnostics)           | `Diagnostics`              | Builds and narrows the structured errors Kubb collects during a build. |
-| [Engine and configuration](./kit/engine)       | `defineConfig`, `createKubb` | The `kubb`-package surface that runs your plugins.            |
+| [Engine](./kit/engine)                     | `createKubb`, `Diagnostics` | The `kubb`-package surface that runs your plugins and the errors it collects. |
 | [Lifecycle hooks](./kit/hooks)                 | `KubbHooks`                | Every `kubb:*` hook a build fires, its payload, and when it fires. |
 | [Testing](./kit/testing)                       | `kubb/kit/testing`         | Vitest-backed helpers for testing plugins, generators, and adapters. |
 

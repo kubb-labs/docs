@@ -15,7 +15,7 @@ navigation:
 
 There are two places to contribute:
 
-1. [Kubb core](#kubb-core): the runtime, [AST](/docs/5.x/explanation/architecture#ast), [adapter](/docs/5.x/explanation/architecture#adapters), [parsers](/docs/5.x/explanation/architecture#parsers), the [authoring kit](/docs/5.x/explanation/extensions#kit), and built-in plugins in [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb).
+1. [Kubb core](#kubb-core): the runtime, [AST](/docs/5.x/explanation/architecture#ast), [adapter](/docs/5.x/explanation/architecture#adapters), [parsers](/docs/5.x/explanation/architecture#parsers), the [authoring kit](/docs/5.x/reference/kit), and built-in plugins in [`kubb-labs/kubb`](https://github.com/kubb-labs/kubb).
 2. [Kubb plugins](#kubb-plugins): community and official plugins in the registry at [`kubb-labs/plugins`](https://github.com/kubb-labs/plugins).
 
 First, check the open [issues](https://github.com/kubb-labs/kubb/issues) and [pull requests](https://github.com/kubb-labs/kubb/pulls) so you don't duplicate work. Say hello on [Discord](https://discord.gg/4dQjA6vrWX).
@@ -81,7 +81,7 @@ pnpm run test
 | `packages/renderer-jsx/`      | JSX renderer used by plugins that emit components.                      |
 | `packages/cli/`               | The `kubb` CLI entry point.                                             |
 | `packages/mcp/`               | MCP server runtime.                                                     |
-| `packages/unplugin-kubb/`     | Bundler integrations (Vite, webpack, Rollup, Rspack, esbuild, Nuxt, Astro). |
+| `packages/unplugin-kubb/`     | Bundler integrations (Vite, webpack, Rollup, Rolldown, Rspack, esbuild, Farm, Nuxt, Astro). |
 | `packages/kubb/`              | The meta package that re-exports `defineConfig` with sensible defaults. |
 
 ### Quality gates

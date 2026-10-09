@@ -6,7 +6,7 @@ description: Learn what anonymous usage data Kubb collects, how to opt out, and
 outline:
   - 2
   - 3
-order: 5
+order: 6
 navigation:
   title: Telemetry
   icon: i-iconoir-antenna
@@ -64,7 +64,7 @@ Set `DO_NOT_TRACK` or `KUBB_DISABLE_TELEMETRY` to `1` or `true`:
 DO_NOT_TRACK=1 kubb generate
 ```
 
-Add `export DO_NOT_TRACK=1` to your shell profile to opt out permanently. `DO_NOT_TRACK` follows the [cross-tool convention](https://consoledonottrack.com/).
+`DO_NOT_TRACK` follows the [cross-tool convention](https://consoledonottrack.com/).
 
 ## Data transmission
 

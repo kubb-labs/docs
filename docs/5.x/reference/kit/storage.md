@@ -52,9 +52,6 @@ export const memoryStorage = createStorage(() => {
 })
 ```
 
-> [!TIP]
-> Use `memoryStorage` for tests and dry runs. Use `fsStorage` for normal development and CI/CD.
-
 ## `Storage` interface {#storage-interface}
 
 The engine consumes this interface and exposes the backend through the build result.
@@ -74,15 +71,13 @@ Every method is required. `readItem` returns `null` for a missing key. Kubb skip
 
 ## `fsStorage`
 
-`fsStorage` is the built-in filesystem storage backend, used by default when no `storage` option is set in the config. It creates output directories automatically and respects `output.path`.
+`fsStorage` is the default backend. It writes under `output.path` and creates directories as needed.
 
 ## `memoryStorage`
 
-`memoryStorage` is the built-in in-memory storage backend that writes nothing to disk, so it suits plugin tests, CI validation, and dry runs.
+`memoryStorage` writes nothing to disk, so it suits plugin tests, CI validation, and dry runs.
 
-> [!NOTE]
-> Both `fsStorage` and `memoryStorage` are exported from `kubb/kit` and can be passed directly to the `storage` field at the root of your config.
-
+Both ship from `kubb/kit` and go straight into the config's `storage` field.
 
 ## See also
 

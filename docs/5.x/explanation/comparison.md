@@ -96,12 +96,6 @@ Kubb serializes OpenAPI parameter styles and supports codecs per media type. See
 5. Off by default. Kubb validates request and response bodies through any Standard Schema validator (Zod, valibot, arktype). HeyAPI validates both with Zod or Valibot. orval validates responses only, with Zod.
 6. orval streams NDJSON on its `fetch` client but has no server-sent events (`text/event-stream`) support. Kubb and HeyAPI consume SSE.
 
-## Extension model
-
-Kubb parses the specification once and shares its AST across plugins. Adapters customize input formats, parsers customize source syntax, and plugins add outputs. Post-enforced plugins handle cross-output work such as barrels. See [Architecture](/docs/5.x/explanation/architecture) and [Extension model](/docs/5.x/explanation/extensions).
-
-[Bundler integrations](/docs/5.x/integrations/build-tools) run generation during builds. The [generator MCP server](/docs/5.x/ai/mcp) exposes Kubb to AI editors. [plugin-mcp](/plugins/plugin-mcp/) instead generates a server for your API.
-
 ## When not to use Kubb
 
 - You use only a few endpoints that rarely change.

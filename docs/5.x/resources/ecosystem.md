@@ -3,6 +3,7 @@ layout: doc
 title: Ecosystem
 description: Discover projects built with Kubb, articles featuring Kubb, and community resources. See how developers use Kubb for OpenAPI code generation.
 outline: [2, 3]
+order: 1
 ---
 
 # Ecosystem

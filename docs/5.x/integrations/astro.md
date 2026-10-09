@@ -3,7 +3,7 @@ layout: doc
 title: Generate with Astro
 description: Run Kubb code generation during Astro builds.
 outline: [2, 3]
-order: 12
+order: 14
 navigation:
   title: Astro
   icon: i-simple-icons-astro
@@ -11,20 +11,12 @@ navigation:
 
 # Generate with Astro
 
-The integration uses `unplugin-kubb`, which ships with `kubb`.
-
 > [!IMPORTANT]
 > This integration generates during builds only. Run `kubb generate` before starting the development server.
 
 ::steps{level="2"}
 
-## Install Kubb and your output plugins
-
-Follow the [installation guide](/docs/5.x/installation) to add Kubb and the plugins your output needs.
-
-## Configure the integration
-
-Import your shared `kubb.config.ts` and pass it to the integration:
+<!--@include: ../../../snippets/integrations/bundler-steps.md-->
 
 ```typescript [astro.config.mjs]
 import { defineConfig } from 'astro/config'
@@ -36,14 +28,4 @@ export default defineConfig({
 })
 ```
 
-Run your project's Astro build command to generate the files.
-
-> [!NOTE]
-> Bundler integrations do not run `output.postGenerate` commands. Use the CLI when you need them.
-
-::
-
-## See also
-
-- [Configuration](/docs/5.x/reference/configuration)
-- [Other build tools](/docs/5.x/integrations/build-tools)
+<!--@include: ../../../snippets/integrations/bundler-notes.md-->

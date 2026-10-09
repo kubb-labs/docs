@@ -3,7 +3,7 @@ layout: doc
 title: Generate with Rspack
 description: Run Kubb code generation during Rspack builds.
 outline: [2, 3]
-order: 8
+order: 10
 navigation:
   title: Rspack
   icon: i-iconoir-journal
@@ -11,17 +11,9 @@ navigation:
 
 # Generate with Rspack
 
-The integration uses `unplugin-kubb`, which ships with `kubb`.
-
 ::steps{level="2"}
 
-## Install Kubb and your output plugins
-
-Follow the [installation guide](/docs/5.x/installation) to add Kubb and the plugins your output needs.
-
-## Configure the integration
-
-Import your shared `kubb.config.ts` and pass it to the integration:
+<!--@include: ../../../snippets/integrations/bundler-steps.md-->
 
 ```typescript [rspack.config.ts]
 import kubb from 'kubb/rspack'
@@ -32,14 +24,4 @@ export default {
 }
 ```
 
-Run your project's Rspack build command to generate the files.
-
-> [!NOTE]
-> Bundler integrations do not run `output.postGenerate` commands. Use the CLI when you need them.
-
-::
-
-## See also
-
-- [Configuration](/docs/5.x/reference/configuration)
-- [Other build tools](/docs/5.x/integrations/build-tools)
+<!--@include: ../../../snippets/integrations/bundler-notes.md-->

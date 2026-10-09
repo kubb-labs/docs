@@ -36,9 +36,7 @@ To view file contents and diffs, then write generated files to disk, connect wit
 kubb studio --allow-read --allow-write
 ```
 
-With no permissions granted, generation uses memory and Studio sees file paths and progress. It does not write files or edit your config. The CLI remembers permission answers per project.
-
-Add `--allow-config-edit` to save plugin changes to `kubb.config.ts`. Add `--allow-exec` to run the configured formatter, linter, and `output.postGenerate` commands. See the [command reference](/docs/5.x/reference/commands/studio#options) for all permission flags.
+With no permissions granted, generation uses memory and Studio sees file paths and progress only. The CLI remembers permission answers per project. See [Options](/docs/5.x/reference/commands/studio#options) for `--allow-config-edit`, `--allow-exec`, and the other flags.
 
 ## Keep an agent running in the background
 
@@ -60,16 +58,12 @@ To end the background connection, run:
 kubb studio stop
 ```
 
-Stop the worker before opening a foreground connection. Restart it after a crash or reboot. If status reports `authentication required`, run `kubb studio login`, then start again. See [Background connection](/docs/5.x/reference/commands/studio#background-connection) for worker states, logs, and restart behavior.
+See [Background connection](/docs/5.x/reference/commands/studio#background-connection) for worker states, logs, and restart behavior.
 
 > [!IMPORTANT]
-> In CI or without a TTY, pass an existing `KUBB_AGENT_TOKEN` and the permission flags the run needs. Headless runs do not prompt.
-
-## Snapshot from CI
-
-Follow [Publish snapshots from CI](/docs/5.x/integrations/ci) to produce installable packages and compare generated-file changes on pull or merge requests. Snapshot generation uses an organization CI API key. Installation uses a separate `registry` API key.
+> Without a TTY the CLI skips the permission prompts, so pass the permission flags the run needs. In CI it does not pair interactively either: provide stored credentials or `KUBB_AGENT_TOKEN`.
 
 ## See also
 
+- [Publish snapshots from CI](/docs/5.x/integrations/ci): installable packages and generated-file diffs on pull requests
 - [`kubb studio` command](/docs/5.x/reference/commands/studio): actions, flags, environment variables, and snapshot results
-- [Configuration](/docs/5.x/reference/configuration): the config a connected project uses

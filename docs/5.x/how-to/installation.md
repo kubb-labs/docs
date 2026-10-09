@@ -1,7 +1,7 @@
 ---
 layout: doc
 title: Installation
-description: Install Kubb, verify the CLI, and choose output plugins for your project.
+description: Install Kubb, the plugins your output needs, and verify the CLI.
 outline: [2, 3]
 order: 1
 navigation:
@@ -11,7 +11,7 @@ navigation:
 
 # Installation
 
-Install Kubb in an existing project using your package manager. If you want to learn generation with a supplied specification and expected output, follow [Generate your first client](/docs/5.x/tutorials/quickstart).
+Install Kubb in an existing project. To learn generation with a supplied specification and expected output, follow [Generate your first client](/docs/5.x/tutorials/quickstart) instead.
 
 ## Prerequisites
 
@@ -20,94 +20,53 @@ Install Kubb in an existing project using your package manager. If you want to l
 
 ::steps{level="2"}
 
-## Install Kubb
+## Install Kubb and your plugins
 
-Add `kubb` as a development dependency. It includes the CLI, core runtime, default OpenAPI adapter, and TypeScript, TSX, and Markdown parsers.
+`kubb` ships the CLI, the core runtime, the OpenAPI adapter, and the TypeScript, TSX, and Markdown parsers. Each output comes from its own plugin package, so install only the [plugins](/plugins) you need. This example adds the TypeScript plugin:
 
-:::code-group
+:::code-group{sync="package-manager"}
 
 ```shell [pnpm]
-pnpm add -D kubb
+pnpm add -D kubb @kubb/plugin-ts typescript
 ```
 
 ```shell [npm]
-npm install -D kubb
+npm install -D kubb @kubb/plugin-ts typescript
 ```
 
 ```shell [yarn]
-yarn add -D kubb
+yarn add -D kubb @kubb/plugin-ts typescript
 ```
 
 ```shell [bun]
-bun add -d kubb
+bun add -d kubb @kubb/plugin-ts typescript
 ```
 
 :::
 
-## Verify the installation
+Install the runtime libraries your output needs too. An Axios client uses `axios`, and React Query hooks use `react` and `@tanstack/react-query`. Each plugin page lists its requirements.
 
-Run the CLI from your project directory:
+## Verify the installation
 
 ```shell [Terminal]
 npx kubb --version
 ```
 
-The command prints the installed Kubb version. Use `pnpm exec kubb --version`, `yarn kubb --version`, or `bunx kubb --version` with the corresponding package manager.
+Use `pnpm exec kubb`, `yarn kubb`, or `bunx kubb` with the matching package manager.
 
-## Install plugins
+## Create a config
 
-Each output is provided by a plugin package. Install only the plugins you need. For TypeScript types, install the TypeScript plugin and compiler:
-
-:::code-group
-
-```shell [pnpm]
-pnpm add -D @kubb/plugin-ts typescript
-```
-
-```shell [npm]
-npm install -D @kubb/plugin-ts typescript
-```
-
-```shell [yarn]
-yarn add -D @kubb/plugin-ts typescript
-```
-
-```shell [bun]
-bun add -d @kubb/plugin-ts typescript
-```
-
-:::
-
-Browse [available plugins](/plugins) to choose outputs for your project.
-
-## Configure your project
-
-Run the [initialization wizard](/docs/5.x/reference/commands/init) to choose your specification, output directory, and plugins:
+Run the [initialization wizard](/docs/5.x/reference/commands/init) to choose your specification, output directory, and plugins, or write `kubb.config.ts` yourself with one of the [stacks](/docs/5.x/how-to/recipes).
 
 ```shell [Terminal]
 npx kubb init
 ```
 
-For an existing config, use [Configure generation](/docs/5.x/how-to/recipes). Install the runtime libraries required by your chosen output too: an Axios client uses `axios`, and React Query hooks use React and `@tanstack/react-query`. Each plugin documents its requirements.
-
-Once configured, run `npx kubb generate` from the project directory. Kubb writes the generated files to `output.path`.
+Then run `npx kubb generate`. Kubb writes the generated files to `output.path`.
 
 ::
 
-## Next steps
+## See also
 
-::card-group
-
-:::card{title="Generate your first client" icon="i-iconoir-rocket" to="/docs/5.x/tutorials/quickstart"}
-Follow a complete example with a supplied specification.
-:::
-
-:::card{title="Configure generation" icon="i-iconoir-settings" to="/docs/5.x/how-to/recipes"}
-Choose a stack for your existing project.
-:::
-
-:::card{title="Configuration reference" icon="i-iconoir-bookmark" to="/docs/5.x/reference/configuration"}
-Look up options and defaults.
-:::
-
-::
+- [Generate your first client](/docs/5.x/tutorials/quickstart): a complete example with a supplied specification
+- [Configuration reference](/docs/5.x/reference/configuration): every option and default
