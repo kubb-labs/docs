@@ -55,7 +55,10 @@ resources:
 
 # @kubb/plugin-axios
 
-`@kubb/plugin-axios` generates a typed async function for each OpenAPI operation using [Axios](https://axios-http.com/). Calls accept grouped request parameters and return a status-keyed result.
+Generate typed API calls with [Axios](https://axios-http.com/).
+
+- One async function per OpenAPI operation.
+- Grouped request parameters and status-keyed results.
 
 ## Installation
 
@@ -81,7 +84,9 @@ yarn add -D @kubb/plugin-axios
 
 ## Dependencies
 
-Add [`pluginTs`](/plugins/plugin-ts/) or [`pluginZod`](/plugins/plugin-zod/) with `inferred: true` for operation types. `pluginTs` takes precedence when both are configured. Validation also requires `pluginZod`. Install Axios v1 or higher in the consuming app.
+- Add [`pluginTs`](/plugins/plugin-ts/) or [`pluginZod`](/plugins/plugin-zod/) with `inferred: true` for operation types. `pluginTs` takes precedence.
+- Add `pluginZod` for validation.
+- Install Axios v1 or higher in the consuming app.
 
 ## Example
 

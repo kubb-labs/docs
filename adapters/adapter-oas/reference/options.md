@@ -11,81 +11,57 @@ outline: deep
 
 All `adapterOas` options are optional. Types and defaults are listed below.
 
-::field-group
+## Options overview
 
-:::field{name="validate" type="boolean"}
-Validate the spec before parsing. [See details](#validate).
+Select an option to see its type, default, and examples. Nested settings link to their own section or the parent option.
 
-Default: `true`.
-:::
+| Option | Purpose |
+| --- | --- |
+| [`validate`](#validate) | Validate the spec before parsing. |
+| [`contentType`](#contenttype) | Preferred media type for request and response schemas. |
+| [`server`](#server) | Which spec server Kubb resolves into the document `baseURL`. |
+| ↳ [`server.index`](#server) | Select an entry in the spec's servers array. |
+| ↳ [`server.variables`](#server) | Supply values for server URL variables. |
+| [`discriminator`](#discriminator) | How `discriminator` fields are interpreted. |
+| [`enums`](#enums) | Where inline enums live. |
+| [`dateType`](#datetype) | How `date-time`, `date`, and `time` schemas are represented. |
+| ↳ [`dateType.dateTime`](#datetype) | Configure the representation of timestamps. |
+| ↳ [`dateType.date`](#datetype) | Configure the representation of date-only values. |
+| ↳ [`dateType.time`](#datetype) | Configure the representation of time-only values. |
+| [`integerType`](#integertype) | How integers map to TypeScript. |
+| [`unknownType`](#unknowntype) | Type for schemas Kubb cannot infer. |
+| [`emptySchemaType`](#emptyschematype) | Type for empty schemas. |
+| [`enumSuffix`](#enumsuffix) | Suffix for derived enum names. |
 
-:::field{name="contentType" type="'application/json' | string"}
-Preferred media type for request and response schemas. [See details](#contenttype).
-
-No default.
-:::
-
-:::field{name="server" type="{ index?: number, variables?: Record<string, string> }"}
-Which spec server Kubb resolves into the document `baseURL`. [See details](#server).
-
-No default.
-:::
-
-:::field{name="discriminator" type="'preserve' | 'propagate'"}
-How `discriminator` fields are interpreted. [See details](#discriminator).
-
-Default: `'preserve'`.
-:::
-
-:::field{name="enums" type="'inline' | 'root'"}
-Where inline enums live. [See details](#enums).
-
-Default: `'inline'`.
-:::
-
-:::field{name="dateType" type="false | 'string' | 'stringOffset' | 'stringLocal' | 'date' | { dateTime?, date?, time? }"}
-How `date-time`, `date`, and `time` schemas are represented. [See details](#datetype).
-
-Default: `'string'`.
-:::
-
-:::field{name="integerType" type="'number' | 'bigint'"}
-How integers map to TypeScript. [See details](#integertype).
-
-Default: `'bigint'`.
-:::
-
-:::field{name="unknownType" type="'any' | 'unknown' | 'void'"}
-Type for schemas Kubb cannot infer. [See details](#unknowntype).
-
-Default: `'unknown'`.
-:::
-
-:::field{name="emptySchemaType" type="'any' | 'unknown' | 'void'"}
-Type for empty schemas. [See details](#emptyschematype).
-
-Default: `unknownType` (`'unknown'` by default).
-:::
-
-:::field{name="enumSuffix" type="string"}
-Suffix for derived enum names. [See details](#enumsuffix).
-
-Default: `'enum'`.
-:::
-
-::
+## Option details
 
 ### validate
 
 Validates the OpenAPI spec with `@readme/openapi-parser` before parsing. Each problem is reported as a [`KUBB_INVALID_SPEC`](/docs/5.x/reference/diagnostics#kubb-invalid-spec) warning, and generation continues. Set it to `false` to skip the check, which makes generation faster on a large spec. Run [`kubb validate`](/docs/5.x/reference/commands/validate) to list every error.
 
+| | |
+| --- | --- |
+| Type | `boolean` |
+| Required | `false` |
+| Default | `true` |
+
 ### contentType
 
 Preferred media type when an operation defines several. Without a value, Kubb falls back to the first JSON-like media type in the spec (`application/json`, `application/x-json`, `text/json`, `text/x-json`, or any `*+json`), and to the first media type overall when none is JSON-like.
 
+| | |
+| --- | --- |
+| Type | `'application/json' \| string` |
+| Required | `false` |
+
 ### server
 
 Selects which entry in the spec's `servers` array Kubb resolves into the document `baseURL`, filling in any `{variable}` placeholders. `server.index` points at one of the spec's servers, usually `0` for the primary one. `server.variables` supplies placeholder values, falling back to each variable's `default` from the spec. Omit `server` and `baseURL` resolves to `null`.
+
+| | |
+| --- | --- |
+| Type | `{ index?: number, variables?: Record<string, string> }` |
+| Required | `false` |
 
 The resolved `baseURL` reaches banner functions through `BannerMeta.baseURL` but does not set request URLs on its own. To change where a generated client sends requests, use that plugin's own `baseURL` option ([`@kubb/plugin-fetch`](/plugins/plugin-fetch/), [`@kubb/plugin-axios`](/plugins/plugin-axios/), [`@kubb/plugin-msw`](/plugins/plugin-msw/)).
 
@@ -94,6 +70,12 @@ With a spec server of `https://api.{env}.example.com`, `server: { index: 0, vari
 ### discriminator
 
 How `discriminator` fields on `oneOf`/`anyOf` schemas are interpreted.
+
+| | |
+| --- | --- |
+| Type | `'preserve' \| 'propagate'` |
+| Required | `false` |
+| Default | `'preserve'` |
 
 | Value | Behavior |
 | --- | --- |
@@ -147,6 +129,12 @@ export type Animal = Cat | Dog
 
 Where inline enums live.
 
+| | |
+| --- | --- |
+| Type | `'inline' \| 'root'` |
+| Required | `false` |
+| Default | `'inline'` |
+
 | Value | Behavior |
 | --- | --- |
 | `'inline'` (default) | Keeps each enum on the property that declares it. |
@@ -170,6 +158,12 @@ export type Pet = { status?: PetStatusEnum }
 ### dateType
 
 How `date-time`, `date`, and `time` schemas are represented downstream.
+
+| | |
+| --- | --- |
+| Type | `false \| 'string' \| 'stringOffset' \| 'stringLocal' \| 'date' \| { dateTime?, date?, time? }` |
+| Required | `false` |
+| Default | `'string'` |
 
 Pass a single value to apply it to all three formats:
 
@@ -199,6 +193,12 @@ adapterOas({
 
 How `type: integer` (and `format: int64`) maps to TypeScript.
 
+| | |
+| --- | --- |
+| Type | `'number' \| 'bigint'` |
+| Required | `false` |
+| Default | `'bigint'` |
+
 - `'bigint'` (default) is exact for 64-bit IDs, but `JSON.stringify` and `JSON.parse` cannot round-trip it. Use it only when you handle bigint serialization yourself.
 - `'number'` fits most JSON APIs. It loses precision above `Number.MAX_SAFE_INTEGER`.
 
@@ -208,9 +208,21 @@ This option only applies to schemas that declare a numeric type. A schema that d
 
 AST type used when a schema's type cannot be inferred from the spec (`additionalProperties: true`, a missing `type`, and similar). Pick `'unknown'` to force callers to narrow before using the value, `'any'` for the loosest option, or `'void'` to match some legacy APIs.
 
+| | |
+| --- | --- |
+| Type | `'any' \| 'unknown' \| 'void'` |
+| Required | `false` |
+| Default | `'unknown'` |
+
 ### emptySchemaType
 
 AST type used for fully empty schemas (`{}`). It follows `unknownType` unless you set it. Override it only when empty schemas should be treated differently from unresolvable ones.
+
+| | |
+| --- | --- |
+| Type | `'any' \| 'unknown' \| 'void'` |
+| Required | `false` |
+| Default | `unknownType` (`'unknown'` by default) |
 
 > [!TIP]
 > A common pairing sets `unknownType: 'unknown'` for safety and `emptySchemaType: 'any'` so empty 204 response bodies stay easy to use.
@@ -218,3 +230,9 @@ AST type used for fully empty schemas (`{}`). It follows `unknownType` unless yo
 ### enumSuffix
 
 Suffix appended to derived enum names when Kubb has to invent one, typically for inline enums on object properties. The derived name joins the parent schema name, the property name, and the suffix in PascalCase, so an inline enum on the `status` property of the `Pet` schema derives `PetStatusEnum`. Set it to `'type'` and the same enum derives `PetStatusType`.
+
+| | |
+| --- | --- |
+| Type | `string` |
+| Required | `false` |
+| Default | `'enum'` |

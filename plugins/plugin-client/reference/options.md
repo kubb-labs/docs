@@ -9,76 +9,44 @@ outline: deep
 
 Pass these options to `pluginClient()` to control what it generates and where the files go.
 
-::field-group
+## Options overview
 
-:::field{name="importPath" type="string" required}
-Import specifier of your client module. [See details](#importpath).
+Select an option to see its type, default, and examples. Nested settings link to their own section or the parent option.
 
-Required; no default.
-:::
+| Option | Purpose |
+| --- | --- |
+| [`importPath`](#importpath) | Import specifier of your client module. |
+| [`output`](#output) | Where the generated files are written and exported. |
+| ↳ [`output.path`](#output-path) | Choose the output folder or file. |
+| ↳ [`output.mode`](#output-mode) | Write a single file or a directory of files. |
+| ↳ [`output.barrel`](#output-barrel) | Configure barrel exports. |
+| ↳ [`output.barrel.type`](#output-barrel) | Use named exports or wildcard exports. |
+| ↳ [`output.barrel.nested`](#output-barrel) | Choose whether barrels reference subdirectory barrels. |
+| ↳ [`output.banner`](#output-banner) | Add content before generated code. |
+| ↳ [`output.footer`](#output-footer) | Add content after generated code. |
+| [`group`](#group) | Split output into per-tag or per-path folders. |
+| ↳ [`group.type`](#group-type) | Group operations by tag or URL path. |
+| ↳ [`group.name`](#group-name) | Customize output group names. |
+| [`throwOnErrorDefault`](#throwonerrordefault) | Default `throwOnError` value passed to your client. |
+| [`validator`](#validator) | Pass Zod schemas to your client. |
+| ↳ [`validator.request`](#validator) | Validate request bodies with Zod. |
+| ↳ [`validator.response`](#validator) | Validate response bodies with Zod. |
+| [`include`](#include) | Keep only operations that match. |
+| [`exclude`](#exclude) | Skip operations that match. |
+| [`override`](#override) | Apply different options per pattern. |
+| [`resolver`](#resolver) | Customize generated names and file paths. |
+| [`macros`](#macros) | Rewrite AST nodes before printing. |
 
-:::field{name="output" type="Output"}
-Where the generated files are written and exported. [See details](#output).
-
-Default: `{ path: 'clients', barrel: { type: 'named' } }`.
-:::
-
-:::field{name="group" type="Group"}
-Split output into per-tag or per-path folders. [See details](#group).
-
-No default.
-:::
-
-:::field{name="throwOnErrorDefault" type="boolean"}
-Default `throwOnError` value passed to your client. [See details](#throwonerrordefault).
-
-Default: `true`.
-:::
-
-:::field{name="validator" type="false | 'zod' | { request?: 'zod'; response?: 'zod' }"}
-Pass Zod schemas to your client. [See details](#validator).
-
-Default: `false`.
-:::
-
-:::field{name="include" type="Array<Include>"}
-Keep only operations that match. [See details](#include).
-
-No default.
-:::
-
-:::field{name="exclude" type="Array<Exclude>"}
-Skip operations that match. [See details](#exclude).
-
-Default: `[]`.
-:::
-
-:::field{name="override" type="Array<Override>"}
-Apply different options per pattern. [See details](#override).
-
-Default: `[]`.
-:::
-
-:::field{name="resolver" type="ResolverPatch<ResolverClient>"}
-Customize generated names and file paths. [See details](#resolver).
-
-No default.
-:::
-
-:::field{name="macros" type="Array<Macro>"}
-Rewrite AST nodes before printing. [See details](#macros).
-
-No default.
-:::
-
-::
-
-> [!NOTE]
-> `sdk`, `returnType`, and `baseURL` from [`@kubb/plugin-fetch`](/plugins/plugin-fetch/reference/options) are not options here. This plugin generates standalone functions that return your client's promise, and your client owns the base URL.
+## Option details
 
 ### importPath
 
 Import specifier of your client module. The plugin writes it into every generated import exactly as given, so it must resolve from the generated file. Use a relative path, a package name, or an alias.
+
+| | |
+| --- | --- |
+| Type | `string` |
+| Required | `true` |
 
 ```typescript
 pluginClient({ importPath: '../../../client' }) // relative to src/gen/clients/<tag>/
@@ -92,6 +60,12 @@ The module must export `client`, plus the `Options` and `RequestResult` types. S
 ### output
 
 Where the plugin writes its generated `.ts` files and how it exports them.
+
+| | |
+| --- | --- |
+| Type | `Output` |
+| Required | `false` |
+| Default | `{ path: 'clients', barrel: { type: 'named' } }` |
 
 #### output.path
 
@@ -120,6 +94,13 @@ Leave it unset and Kubb reads `output.path`: a name with an extension means one 
 
 ### group
 
+Split output into per-tag or per-path folders.
+
+| | |
+| --- | --- |
+| Type | `Group` |
+| Required | `false` |
+
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
 #### group.name
@@ -130,11 +111,23 @@ Function `(context: { group: string }) => string` that turns a group key into a 
 
 Default for the `throwOnError` field that every generated function passes to your client. It defaults to `true`. A call that sets `throwOnError` itself wins. Your client decides what the flag does: the [example client](/plugins/plugin-client/guide/write-your-client) throws on a non-2xx status when it is `true` and returns the error as a value when it is `false`.
 
+| | |
+| --- | --- |
+| Type | `boolean` |
+| Required | `false` |
+| Default | `true` |
+
 The setting applies to the whole plugin, so you cannot set it in `override`.
 
 ### validator
 
 Passes Zod schemas from `@kubb/plugin-zod` to your client on `config.validator`, defaulting to `false`.
+
+| | |
+| --- | --- |
+| Type | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` |
+| Required | `false` |
+| Default | `false` |
 
 - `false` passes nothing.
 - `'zod'` passes the response and error schemas.
@@ -144,13 +137,36 @@ The plugin does not run the schemas. Your client reads `config.validator` and va
 
 ### include
 
+Keep only operations that match.
+
+| | |
+| --- | --- |
+| Type | `Array<Include>` |
+| Required | `false` |
+
 <!--@include: ../../../snippets/how-to/include.md-->
 
 ### exclude
 
+Skip operations that match.
+
+| | |
+| --- | --- |
+| Type | `Array<Exclude>` |
+| Required | `false` |
+| Default | `[]` |
+
 <!--@include: ../../../snippets/how-to/exclude.md-->
 
 ### override
+
+Apply different options per pattern.
+
+| | |
+| --- | --- |
+| Type | `Array<Override>` |
+| Required | `false` |
+| Default | `[]` |
 
 <!--@include: ../../../snippets/how-to/override.md-->
 
@@ -158,9 +174,19 @@ The plugin does not run the schemas. Your client reads `config.validator` and va
 
 Changes how the plugin names generated files and symbols by accepting a partial patch. Override only the members you want, and anything you omit keeps `resolverClient`. See [Override a resolver](/docs/5.x/how-to/resolvers) for the `this` context and how a patch layers over the default.
 
+| | |
+| --- | --- |
+| Type | `ResolverPatch<ResolverClient>` |
+| Required | `false` |
+
 > [!TIP]
 > Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
 
 ### macros
 
 <!--@include: ../../../snippets/how-to/macros-option.md-->
+
+| | |
+| --- | --- |
+| Type | `Array<Macro>` |
+| Required | `false` |

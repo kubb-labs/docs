@@ -45,7 +45,10 @@ resources:
 
 # @kubb/plugin-react-query
 
-`@kubb/plugin-react-query` generates TanStack Query option factories and cache keys from OpenAPI operations. Set `hooks: true` to also generate React hooks.
+Generate [TanStack Query](https://tanstack.com/query) helpers from OpenAPI.
+
+- Option factories and cache keys by default.
+- React hooks when `hooks: true`.
 
 ## Installation
 
@@ -71,7 +74,9 @@ yarn add -D @kubb/plugin-react-query
 
 ## Dependencies
 
-Add [`pluginTs`](/plugins/plugin-ts/) and an [Axios](/plugins/plugin-axios/) or [Fetch](/plugins/plugin-fetch/) client plugin. Generated output requires `@tanstack/react-query` v5 or higher. Configure validation on the client plugin.
+- Add [`pluginTs`](/plugins/plugin-ts/) and an [Axios](/plugins/plugin-axios/) or [Fetch](/plugins/plugin-fetch/) client plugin.
+- Generated output requires `@tanstack/react-query` v5 or higher.
+- Configure validation on the client plugin.
 
 ## Example
 

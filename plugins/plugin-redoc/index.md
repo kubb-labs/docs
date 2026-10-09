@@ -40,7 +40,10 @@ resources:
 
 # @kubb/plugin-redoc
 
-`@kubb/plugin-redoc` generates a single HTML documentation page with [Redoc](https://redocly.com/). The spec is embedded in the file. Publish it to a static host without a build step. Rendering requires network access for CDN scripts and fonts.
+Generate a single HTML documentation page with [Redoc](https://redocly.com/).
+
+- Embed the spec and publish to a static host without building.
+- Network access is required for CDN scripts and fonts.
 
 ## Installation
 
@@ -66,7 +69,8 @@ yarn add -D @kubb/plugin-redoc
 
 ## Dependencies
 
-No plugin dependencies. Kubb uses the OpenAPI adapter by default. The generated page loads Redoc from a CDN, so no Redoc runtime package is required.
+- No plugin dependencies or Redoc runtime package.
+- Uses Kubb's default OpenAPI adapter and loads Redoc from a CDN.
 
 ## Example
 

@@ -42,7 +42,10 @@ resources:
 
 # @kubb/plugin-faker
 
-`@kubb/plugin-faker` generates typed mock-data factories from OpenAPI schemas. Pass partial data to a factory to override generated values.
+Generate typed mock-data factories from OpenAPI schemas.
+
+- Create test fixtures with Faker.
+- Override generated values with partial data.
 
 ## Installation
 
@@ -68,7 +71,8 @@ yarn add -D @kubb/plugin-faker
 
 ## Dependencies
 
-Add [`pluginTs`](/plugins/plugin-ts/) for factory return types. Generated factories require `@faker-js/faker` v9 or higher.
+- Add [`pluginTs`](/plugins/plugin-ts/) for factory return types.
+- Generated factories require `@faker-js/faker` v9 or higher.
 
 ## Example
 
@@ -87,7 +91,8 @@ export default defineConfig({
 })
 ```
 
-Use [`typeMode: 'schema'`](/plugins/plugin-faker/reference/options#typemode) for object and intersection fixtures you modify after creation. Their factories return the declared model type and reject unknown properties in inline overrides. The default `'inferred'` mode preserves literal overrides and precise generated field types.
+- Use [`typeMode: 'schema'`](/plugins/plugin-faker/reference/options#typemode) for editable object and intersection fixtures. Factories return the model type and reject unknown properties in inline overrides.
+- The default `'inferred'` mode preserves literal overrides and precise field types.
 
 ## Documentation
 

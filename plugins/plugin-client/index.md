@@ -47,18 +47,14 @@ resources:
 
 # @kubb/plugin-client
 
-`@kubb/plugin-client` turns each OpenAPI operation into a typed async function that calls a client module you write. Kubb generates the operations and their types. It does not choose a transport and does not copy a runtime into your project, so the generated code has no Fetch, Axios, or Kubb dependency.
+Generate typed API calls for your own HTTP client.
 
-Use it when [`@kubb/plugin-fetch`](/plugins/plugin-fetch/) or [`@kubb/plugin-axios`](/plugins/plugin-axios/) do more than you want, for example when you sign requests, share one client across many generated packages, or keep an existing HTTP layer.
+- [Grouped parameters](/plugins/plugin-client/guide/calling-operations): `path`, `query`, `headers`, and `body`.
+- Per-operation [authentication requirements](/plugins/plugin-client/guide/authentication) in a `security` list.
+- Per-call `client` overrides and your client's `RequestResult` return type.
+- Optional [Zod validation schemas](/plugins/plugin-client/recipes/validate-requests-and-responses) passed to your client.
 
-From your spec, the plugin gives you:
-
-- [Typed functions](/plugins/plugin-client/guide/calling-operations) per operation with grouped `path`, `query`, `headers`, and `body`.
-- A `security` list on each call that tells your client which [auth](/plugins/plugin-client/guide/authentication) the operation needs.
-- A per-call `client` override, so one function can use a different client.
-- Optional [validation](/plugins/plugin-client/recipes/validate-requests-and-responses) schemas from [`@kubb/plugin-zod`](/plugins/plugin-zod/), passed to your client.
-
-Each function takes one grouped options object (`{ path, query, headers, body }`) and returns whatever your `client` returns, typed as your `RequestResult`. See [write your client](/plugins/plugin-client/guide/write-your-client) for the exports the module needs.
+Use it for signed requests, a shared client, or an existing HTTP layer. [Write your client](/plugins/plugin-client/guide/write-your-client) to define the required exports. The generated code has no Fetch, Axios, or Kubb runtime dependency.
 
 ## Installation
 
@@ -84,13 +80,11 @@ yarn add -D @kubb/plugin-client
 
 ## Dependencies
 
-The plugin needs `@kubb/plugin-ts` for the operation types. It needs `@kubb/plugin-zod` only when `validator` is set, and generation stops with an error if `@kubb/plugin-zod` is missing.
-
-- [`@kubb/plugin-ts`](/plugins/plugin-ts/)
-- [`@kubb/plugin-zod`](/plugins/plugin-zod/)
+- Add [`pluginTs`](/plugins/plugin-ts/) for operation types.
+- Add [`pluginZod`](/plugins/plugin-zod/) when `validator` is set. Generation fails without it.
 
 > [!IMPORTANT]
-> There is no HTTP client to install. The generated functions call the module you point `importPath` at.
+> Set `importPath` to your client module. No HTTP client package is required.
 
 ## Example
 

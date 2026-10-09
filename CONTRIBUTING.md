@@ -65,13 +65,16 @@ This repo contains only content — no build step, no npm install, no test suite
 - Write in active voice, present tense.
 - Keep paragraphs short — 2-3 sentences.
 - Explain before showing code.
+- On plugin, adapter, and parser overview pages, use a short introduction and bullets for key behavior and dependencies. Keep configuration details on the options page and preserve examples and requirements.
 
 Pages render with Nuxt Content and Nuxt UI's Markdown components. Reuse the same elements for the same purpose:
 
 | Content | Element | Authoring rule |
 | --- | --- | --- |
 | Comparisons and tabular reference data | Markdown table | Keep related values in columns. Escape `\|` in types. |
-| Option overviews and individual option metadata | `::field-group` and `:::field` | Set `name` and `type`, include any default in the body, and link overview entries to their detailed headings. Under a detail heading, set only `type` so the option name is not repeated. Add `required` only for required options. |
+| Plugin, adapter, and parser option overviews | Markdown table | Start with an “Options overview” table with “Option” and “Purpose” columns. Include nested settings, use full option paths, and link each row to its detail heading or the parent section. Follow it with “Option details” and retain existing heading anchors. |
+| Plugin, adapter, and parser option metadata | Markdown table | Under each detail heading, list the type and whether the option is required. Include a default row when one exists. Keep long types out of the overview and escape `\|` in table cells. Preserve usage examples and generated output below the metadata. |
+| Individual option metadata on other reference pages | `::field-group` and `:::field` | Set `name` and `type`, and include any default in the body. Under a detail heading, set only `type` so the option name is not repeated. Add `required` only for required options. |
 | Background information | `> [!NOTE]` | Use for supplementary context. |
 | Recommendations | `> [!TIP]` | Use for optional improvements and useful shortcuts. |
 | Requirements | `> [!IMPORTANT]` | State what the reader must do. |

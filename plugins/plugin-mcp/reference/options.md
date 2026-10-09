@@ -9,61 +9,41 @@ outline: deep
 
 Options for `@kubb/plugin-mcp`, which generates an MCP server where each OpenAPI operation becomes a typed tool handler.
 
-::field-group
+## Options overview
 
-:::field{name="output" type="Output"}
-Where the generated handlers are written and exported. [See details](#output).
+Select an option to see its type, default, and examples. Nested settings link to their own section or the parent option.
 
-Default: `{ path: 'mcp', barrel: { type: 'named' } }`.
-:::
+| Option | Purpose |
+| --- | --- |
+| [`output`](#output) | Where the generated handlers are written and exported. |
+| ↳ [`output.path`](#output-path) | Choose the output folder or file. |
+| ↳ [`output.mode`](#output-mode) | Write a single file or a directory of files. |
+| ↳ [`output.barrel`](#output-barrel) | Configure barrel exports. |
+| ↳ [`output.barrel.type`](#output-barrel) | Use named exports or wildcard exports. |
+| ↳ [`output.barrel.nested`](#output-barrel) | Choose whether barrels reference subdirectory barrels. |
+| ↳ [`output.banner`](#output-banner) | Add content before generated code. |
+| ↳ [`output.footer`](#output-footer) | Add content after generated code. |
+| [`group`](#group) | Split output into per-tag or per-path folders. |
+| ↳ [`group.type`](#group-type) | Group operations by tag or URL path. |
+| ↳ [`group.name`](#group-name) | Customize output group names. |
+| [`client`](#client) | Which registered client plugin the handlers call. |
+| [`include`](#include) | Keep only operations that match. |
+| [`exclude`](#exclude) | Skip operations that match. |
+| [`override`](#override) | Apply different options per pattern. |
+| [`resolver`](#resolver) | Customize generated names and file paths. |
+| [`macros`](#macros) | Rewrite AST nodes before printing. |
 
-:::field{name="group" type="Group"}
-Split output into per-tag or per-path folders. [See details](#group).
-
-No default.
-:::
-
-:::field{name="client" type="'fetch' | 'axios'"}
-Which registered client plugin the handlers call. [See details](#client).
-
-No default.
-:::
-
-:::field{name="include" type="Array<Include>"}
-Keep only operations that match. [See details](#include).
-
-No default.
-:::
-
-:::field{name="exclude" type="Array<Exclude>"}
-Skip operations that match. [See details](#exclude).
-
-Default: `[]`.
-:::
-
-:::field{name="override" type="Array<Override>"}
-Apply different options per pattern. [See details](#override).
-
-Default: `[]`.
-:::
-
-:::field{name="resolver" type="ResolverPatch<ResolverMcp>"}
-Customize generated names and file paths. [See details](#resolver).
-
-No default.
-:::
-
-:::field{name="macros" type="Array<Macro>"}
-Rewrite AST nodes before printing. [See details](#macros).
-
-No default.
-:::
-
-::
+## Option details
 
 ### output
 
 Where the generated MCP handler files are written and how they are exported.
+
+| | |
+| --- | --- |
+| Type | `Output` |
+| Required | `false` |
+| Default | `{ path: 'mcp', barrel: { type: 'named' } }` |
 
 #### output.path
 
@@ -87,6 +67,13 @@ How the plugin consolidates its generated code. Only `'directory'` is supported:
 
 ### group
 
+Split output into per-tag or per-path folders.
+
+| | |
+| --- | --- |
+| Type | `Group` |
+| Required | `false` |
+
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
 #### group.name
@@ -96,6 +83,11 @@ Function that turns a group key into the subdirectory name under `output.path`. 
 ### client
 
 Selects which registered client plugin the handlers call, `'fetch'` for `@kubb/plugin-fetch` or `'axios'` for `@kubb/plugin-axios`. Each handler calls that client's generated `<op>` for the operation, passing one grouped `{ path, query, headers, body }` object. A lone registered client plugin is auto-detected, so set this only to disambiguate when both are registered, and transport options such as `baseURL` live on the client plugin itself.
+
+| | |
+| --- | --- |
+| Type | `'fetch' \| 'axios'` |
+| Required | `false` |
 
 Generated handlers follow the client plugin's `returnType` option:
 - Under `returnType: 'full'` (default), handlers read the success body from `res.data`.
@@ -107,19 +99,47 @@ Generated handlers follow the client plugin's `returnType` option:
 
 ### include
 
+Keep only operations that match.
+
+| | |
+| --- | --- |
+| Type | `Array<Include>` |
+| Required | `false` |
+
 <!--@include: ../../../snippets/how-to/include.md-->
 
 ### exclude
 
+Skip operations that match.
+
+| | |
+| --- | --- |
+| Type | `Array<Exclude>` |
+| Required | `false` |
+| Default | `[]` |
+
 <!--@include: ../../../snippets/how-to/exclude.md-->
 
 ### override
+
+Apply different options per pattern.
+
+| | |
+| --- | --- |
+| Type | `Array<Override>` |
+| Required | `false` |
+| Default | `[]` |
 
 <!--@include: ../../../snippets/how-to/override.md-->
 
 ### resolver
 
 A partial patch changes how the plugin names generated files and symbols. Override only the members you want, and anything you omit keeps `resolverMcp`. See [Override a resolver](/docs/5.x/how-to/resolvers) for the `this` context and how a patch layers over the default.
+
+| | |
+| --- | --- |
+| Type | `ResolverPatch<ResolverMcp>` |
+| Required | `false` |
 
 > [!TIP]
 > Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
@@ -140,3 +160,8 @@ type ResolverMcpPatch = {
 ### macros
 
 <!--@include: ../../../snippets/how-to/macros-option.md-->
+
+| | |
+| --- | --- |
+| Type | `Array<Macro>` |
+| Required | `false` |

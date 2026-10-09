@@ -41,7 +41,10 @@ resources:
 
 # @kubb/plugin-cypress
 
-`@kubb/plugin-cypress` generates typed `cy.request()` helpers from OpenAPI operations. Helpers take grouped `{ body, path, query, headers }` parameters and return the response body as `Cypress.Chainable<{Operation}Response>`. Parameter names match the spec.
+Generate typed `cy.request()` helpers from OpenAPI.
+
+- Grouped `body`, `path`, `query`, and `headers` parameters named after the spec.
+- Response bodies typed as `Cypress.Chainable<{Operation}Response>`.
 
 ## Installation
 
@@ -67,7 +70,8 @@ yarn add -D @kubb/plugin-cypress
 
 ## Dependencies
 
-Add [`pluginTs`](/plugins/plugin-ts/) for request and response types. Generated helpers require Cypress v13 or higher.
+- Add [`pluginTs`](/plugins/plugin-ts/) for request and response types.
+- Generated helpers require Cypress v13 or higher.
 
 ## Example
 

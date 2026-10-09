@@ -9,97 +9,56 @@ outline: deep
 
 Options for `@kubb/plugin-vue-query`, which generates TanStack Vue Query composables from an OpenAPI spec.
 
-::field-group
+## Options overview
 
-:::field{name="output" type="Output"}
-Where the generated composables are written and exported. [See details](#output).
+Select an option to see its type, default, and examples. Nested settings link to their own section or the parent option.
 
-Default: `{ path: 'hooks', barrel: { type: 'named' } }`.
-:::
+| Option | Purpose |
+| --- | --- |
+| [`output`](#output) | Where the generated composables are written and exported. |
+| ↳ [`output.path`](#output-path) | Choose the output folder or file. |
+| ↳ [`output.mode`](#output-mode) | Write a single file or a directory of files. |
+| ↳ [`output.barrel`](#output-barrel) | Configure barrel exports. |
+| ↳ [`output.barrel.type`](#output-barrel) | Use named exports or wildcard exports. |
+| ↳ [`output.barrel.nested`](#output-barrel) | Choose whether barrels reference subdirectory barrels. |
+| ↳ [`output.banner`](#output-banner) | Add content before generated code. |
+| ↳ [`output.footer`](#output-footer) | Add content after generated code. |
+| [`group`](#group) | Split output into per-tag or per-path folders. |
+| ↳ [`group.type`](#group-type) | Group operations by tag or URL path. |
+| ↳ [`group.name`](#group-name) | Customize output group names. |
+| [`client`](#client) | Which registered client plugin the composables call. |
+| [`infinite`](#infinite) | Add `useInfiniteQuery` composables for paginated reads. |
+| ↳ [`infinite.queryParam`](#infinite-queryparam) | Choose the query parameter that carries the cursor. |
+| ↳ [`infinite.initialPageParam`](#infinite-initialpageparam) | Set the first page parameter. |
+| ↳ [`infinite.nextParam`](#infinite-nextparam) | Locate the next-page cursor in the response. |
+| ↳ [`infinite.previousParam`](#infinite-previousparam) | Locate the previous-page cursor in the response. |
+| ↳ [`infinite.cursorParam`](#infinite-cursorparam) | Deprecated cursor path. Use `nextParam` and `previousParam` instead. |
+| [`query`](#query) | Configure or disable query composables. |
+| ↳ [`query.methods`](#query-methods) | Choose which HTTP methods generate queries. |
+| ↳ [`query.importPath`](#query-importpath) | Set the module used for query imports. |
+| [`queryKey`](#querykey) | Build the `queryKey` for each query composable. |
+| [`mutation`](#mutation) | Configure or disable mutation composables. |
+| ↳ [`mutation.methods`](#mutation-methods) | Choose which HTTP methods generate mutations. |
+| ↳ [`mutation.importPath`](#mutation-importpath) | Set the module used for mutation imports. |
+| [`mutationKey`](#mutationkey) | Build the `mutationKey` for each mutation composable. |
+| [`hooks`](#hooks) | Emit `use*` composables on top of the factory helpers. |
+| [`include`](#include) | Keep only operations that match. |
+| [`exclude`](#exclude) | Skip operations that match. |
+| [`override`](#override) | Apply different options per pattern. |
+| [`resolver`](#resolver) | Customize generated names and file paths. |
+| [`macros`](#macros) | Rewrite AST nodes before printing. |
 
-:::field{name="group" type="Group"}
-Split output into per-tag or per-path folders. [See details](#group).
-
-No default.
-:::
-
-:::field{name="client" type="'axios' | 'fetch'"}
-Which registered client plugin the composables call. [See details](#client).
-
-No default.
-:::
-
-:::field{name="infinite" type="Partial<Infinite> | false"}
-Add `useInfiniteQuery` composables for paginated reads. [See details](#infinite).
-
-Default: `false`.
-:::
-
-:::field{name="query" type="Partial<Query> | false"}
-Configure or disable query composables. [See details](#query).
-
-Default: `{ methods: ['GET'], … }`.
-:::
-
-:::field{name="queryKey" type="(props) => Array<unknown>"}
-Build the `queryKey` for each query composable. [See details](#querykey).
-
-Default: `built-in`.
-:::
-
-:::field{name="mutation" type="Partial<Mutation> | false"}
-Configure or disable mutation composables. [See details](#mutation).
-
-Default: `{ methods: ['POST', …], … }`.
-:::
-
-:::field{name="mutationKey" type="(props) => Array<unknown>"}
-Build the `mutationKey` for each mutation composable. [See details](#mutationkey).
-
-Default: `built-in`.
-:::
-
-:::field{name="hooks" type="boolean"}
-Emit `use*` composables on top of the factory helpers. [See details](#hooks).
-
-Default: `false`.
-:::
-
-:::field{name="include" type="Array<Include>"}
-Keep only operations that match. [See details](#include).
-
-No default.
-:::
-
-:::field{name="exclude" type="Array<Exclude>"}
-Skip operations that match. [See details](#exclude).
-
-Default: `[]`.
-:::
-
-:::field{name="override" type="Array<Override>"}
-Apply different options per pattern. [See details](#override).
-
-Default: `[]`.
-:::
-
-:::field{name="resolver" type="ResolverPatch<ResolverVueQuery>"}
-Customize generated names and file paths. [See details](#resolver).
-
-No default.
-:::
-
-:::field{name="macros" type="Array<Macro>"}
-Rewrite AST nodes before printing. [See details](#macros).
-
-No default.
-:::
-
-::
+## Option details
 
 ### output
 
 Where the generated composables are written and how they are exported. Defaults to `{ path: 'hooks', barrel: { type: 'named' } }`.
+
+| | |
+| --- | --- |
+| Type | `Output` |
+| Required | `false` |
+| Default | `{ path: 'hooks', barrel: { type: 'named' } }` |
 
 #### output.path
 
@@ -126,6 +85,13 @@ How generated code is consolidated, `'file'` or `'directory'`. `'file'` writes a
 
 ### group
 
+Split output into per-tag or per-path folders.
+
+| | |
+| --- | --- |
+| Type | `Group` |
+| Required | `false` |
+
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
 #### group.name
@@ -136,9 +102,20 @@ Function turning a group key into a folder or identifier name, typed `(context: 
 
 Selects which registered client plugin the composables call: `'axios'` for `@kubb/plugin-axios` or `'fetch'` for `@kubb/plugin-fetch`. When omitted, the plugin auto-detects the single registered client plugin, so you only need this to disambiguate several. A client plugin must be registered.
 
+| | |
+| --- | --- |
+| Type | `'axios' \| 'fetch'` |
+| Required | `false` |
+
 ### infinite
 
 Adds infinite-query output for cursor- or page-based pagination. Pass an object to configure how the cursor is read, or `false` (the default) to skip. Output is emitted for an operation only when it declares a query parameter matching `infinite.queryParam` (default `'id'`) and [`hooks`](#hooks) is also `true`. Without `hooks: true`, `infinite` produces no file at all, not even the factory:
+
+| | |
+| --- | --- |
+| Type | `Partial<Infinite> \| false` |
+| Required | `false` |
+| Default | `false` |
 
 ::code-group
 
@@ -184,6 +161,12 @@ Deprecated path to the cursor field. Use `nextParam` and `previousParam` instead
 
 Decides which operations are treated as queries. The plugin generates a `queryOptions` factory for each match by default. Pass `false` to skip, or set [`hooks`](#hooks) to also emit `useQuery`.
 
+| | |
+| --- | --- |
+| Type | `Partial<Query> \| false` |
+| Required | `false` |
+| Default | `{ methods: ['GET'], … }` |
+
 #### query.methods
 
 HTTP methods treated as queries, default `['GET']`. Matching operations generate a `queryOptions` factory instead of a mutation. Type `Array<string>`.
@@ -195,6 +178,12 @@ Module specifier for the generated `import { queryOptions } from '...'`. Type `s
 ### queryKey
 
 Builds the `queryKey` for each query composable. The callback receives the operation `node`, the active `casing` and the `variant` (`'query'` or `'infiniteQuery'`, the hook the key is built for) and returns the key array. String values are inlined verbatim, so wrap literals in `JSON.stringify(...)`. Defaults to the built-in `queryKeyTransformer`, which adds `infinite: true` to infinite keys so they never share a cache entry with the plain query.
+
+| | |
+| --- | --- |
+| Type | `(props) => Array<unknown>` |
+| Required | `false` |
+| Default | `built-in` |
 
 ::code-group
 
@@ -212,6 +201,12 @@ export const getUserByNameQueryKey = () => [{ variant: 'query', operationId: 'ge
 
 Decides which operations are treated as mutations. The plugin generates a `mutationKey` helper for each match by default. Pass `false` to skip, or set [`hooks`](#hooks) to also emit `useMutation`.
 
+| | |
+| --- | --- |
+| Type | `Partial<Mutation> \| false` |
+| Required | `false` |
+| Default | `{ methods: ['POST', …], … }` |
+
 #### mutation.methods
 
 HTTP methods treated as mutations, default `['POST', 'PUT', 'PATCH', 'DELETE']`. Matching operations generate mutation output instead of a query. Type `Array<string>`.
@@ -224,27 +219,67 @@ Module specifier for the generated `import { useMutation } from '...'`, emitted 
 
 Builds the `mutationKey` for each mutation composable, useful for batching invalidations. It takes the same `{ node, casing }` props as `queryKey` (with `variant: 'mutation'`), inlines strings the same way (wrap literals in `JSON.stringify(...)`), and defaults to the built-in `mutationKeyTransformer`.
 
+| | |
+| --- | --- |
+| Type | `(props) => Array<unknown>` |
+| Required | `false` |
+| Default | `built-in` |
+
 ### hooks
 
 Controls whether `use*` composables are emitted. The default `false` writes only the `queryOptions`, `queryKey`, and `mutationKey` factory helpers for plain queries and mutations. Set `true` to also generate `useQuery`, `useInfiniteQuery`, and `useMutation`.
+
+| | |
+| --- | --- |
+| Type | `boolean` |
+| Required | `false` |
+| Default | `false` |
 
 [`infinite`](#infinite) is gated on `hooks` too, writing nothing while `hooks` is `false`.
 
 ### include
 
+Keep only operations that match.
+
+| | |
+| --- | --- |
+| Type | `Array<Include>` |
+| Required | `false` |
+
 <!--@include: ../../../snippets/how-to/include.md-->
 
 ### exclude
 
+Skip operations that match.
+
+| | |
+| --- | --- |
+| Type | `Array<Exclude>` |
+| Required | `false` |
+| Default | `[]` |
+
 <!--@include: ../../../snippets/how-to/exclude.md-->
 
 ### override
+
+Apply different options per pattern.
+
+| | |
+| --- | --- |
+| Type | `Array<Override>` |
+| Required | `false` |
+| Default | `[]` |
 
 <!--@include: ../../../snippets/how-to/override.md-->
 
 ### resolver
 
 Overrides generated file and symbol names. Omitted members keep the plugin's resolver defaults. See [Override a resolver](/docs/5.x/how-to/resolvers) for the `this` context and how a patch layers over the default.
+
+| | |
+| --- | --- |
+| Type | `ResolverPatch<ResolverVueQuery>` |
+| Required | `false` |
 
 > [!TIP]
 > Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
@@ -275,3 +310,8 @@ type ResolverVueQueryPatch = {
 ### macros
 
 <!--@include: ../../../snippets/how-to/macros-option.md-->
+
+| | |
+| --- | --- |
+| Type | `Array<Macro>` |
+| Required | `false` |
