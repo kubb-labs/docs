@@ -85,9 +85,14 @@ pluginReactQuery({
 })
 ```
 
-This produces a fixed key such as `['getUserByName']`, independent of arguments. Include relevant path and query parameters in the key when their values identify different resources.
+> [!WARNING]
+> This produces a fixed key such as `['getUserByName']`, independent of arguments. Include relevant path and query parameters in the key when their values identify different resources.
 
 ## Load more pages
+
+::tabs
+
+:::tabs-item{label="Configure"}
 
 Configure [`infinite`](/plugins/plugin-react-query/reference/options#infinite) with a query parameter declared by the operation, its initial value, and the response path for the next cursor.
 
@@ -106,6 +111,10 @@ pluginReactQuery({
 
 Only operations with a `page` query parameter receive infinite-query output. Change `nextParam` to match your API's response.
 
+:::
+
+:::tabs-item{label="Usage"}
+
 Use the generated factory with TanStack Query:
 
 ```typescript [usage.ts]
@@ -117,9 +126,15 @@ const { data, fetchNextPage, hasNextPage } = useInfiniteQuery(
 )
 ```
 
+:::
+
+::
+
 ## Use suspense
 
 Set `suspense: {}` and `hooks: true` to generate suspense hooks alongside regular hooks. Suspense requires TanStack Query v5 or higher.
+
+::code-group
 
 ```typescript [kubb.config.ts]
 import { pluginReactQuery } from '@kubb/plugin-react-query'
@@ -133,7 +148,13 @@ import { useGetPetByIdSuspense } from './gen/hooks/useGetPetByIdSuspense'
 const { data } = useGetPetByIdSuspense({ path: { petId: 1n } })
 ```
 
+::
+
 ## Share hook options
+
+::tabs
+
+:::tabs-item{label="Configure"}
 
 Set [`customOptions`](/plugins/plugin-react-query/reference/options#customoptions) to call one options function from every generated hook.
 
@@ -149,6 +170,10 @@ pluginReactQuery({
 })
 ```
 
+:::
+
+:::tabs-item{label="Shared options"}
+
 Place the function where the generated import resolves. Each hook passes `{ hookName, operationId }`. The generated barrel re-exports `HookOptions`.
 
 ```typescript [src/gen/hooks/useCustomHookOptions.ts]
@@ -163,5 +188,9 @@ export function useCustomHookOptions(
   return {}
 }
 ```
+
+:::
+
+::
 
 Per-call query options override shared options.

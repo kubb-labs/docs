@@ -11,16 +11,43 @@ Projects and articles from the community.
 
 ## Production projects
 
-- [KOPER](https://github.com/dxloop/koper) is a full-stack framework that uses Kubb for type-safe API integration.
-- [Xata MCP Server](https://xata.io/blog/built-xata-mcp-server) is built with Kubb's OpenAPI-to-MCP generation.
-- [ClickHouse with MooseStack](https://clickhouse.com/blog/clickhouse-powered-apis-in-react-app-moosestack#bridging-to-the-frontend) powers React-app APIs with Kubb.
-- [Fiveonefour](https://docs.fiveonefour.com/moose/apis/openapi-sdk) generates OpenAPI SDKs with Kubb.
+::card-group
+
+:::card{title="KOPER" to="https://github.com/dxloop/koper"}
+KOPER is a full-stack framework that uses Kubb for type-safe API integration.
+:::
+
+:::card{title="Xata MCP Server" to="https://xata.io/blog/built-xata-mcp-server"}
+Xata MCP Server is built with Kubb's OpenAPI-to-MCP generation.
+:::
+
+:::card{title="ClickHouse with MooseStack" to="https://clickhouse.com/blog/clickhouse-powered-apis-in-react-app-moosestack#bridging-to-the-frontend"}
+ClickHouse with MooseStack powers React-app APIs with Kubb.
+:::
+
+:::card{title="Fiveonefour" to="https://docs.fiveonefour.com/moose/apis/openapi-sdk"}
+Fiveonefour generates OpenAPI SDKs with Kubb.
+:::
+
+::
 
 ## Articles and tutorials
 
-- [API Consumption with OpenAPI and Typed Code](https://www.rocketseat.com.br/blog/artigos/post/consumo-apis-openapi-codigo-tipado) from RocketSeat covers front-end API consumption with Kubb.
-- [OpenAPI to Frontend](https://apisyouwonthate.com/newsletter/openapi-to-frontend/) from APIs You Won't Hate uses OpenAPI specs for frontend work.
-- [Securing Auth0 API Calls in Next.js](https://medium.com/@laxman.pokhrel.101/from-headache-to-harmony-securing-auth0-api-calls-in-next-js-54fc117bfb92) on Medium combines Kubb, Axios, and the Next.js App Router.
+::card-group
+
+:::card{title="API Consumption with OpenAPI and Typed Code" to="https://www.rocketseat.com.br/blog/artigos/post/consumo-apis-openapi-codigo-tipado"}
+This RocketSeat article covers front-end API consumption with Kubb.
+:::
+
+:::card{title="OpenAPI to Frontend" to="https://apisyouwonthate.com/newsletter/openapi-to-frontend/"}
+This article from APIs You Won't Hate uses OpenAPI specs for frontend work.
+:::
+
+:::card{title="Securing Auth0 API Calls in Next.js" to="https://medium.com/@laxman.pokhrel.101/from-headache-to-harmony-securing-auth0-api-calls-in-next-js-54fc117bfb92"}
+This Medium article combines Kubb, Axios, and the Next.js App Router.
+:::
+
+::
 
 ## Listed in
 

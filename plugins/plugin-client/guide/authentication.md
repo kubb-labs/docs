@@ -28,6 +28,8 @@ An operation without security requirements passes no `security` field. Use that 
 
 The client can `await` anything before it sends the request. This one asks a registered function for a token, so the token can come from a secrets store or a refresh call:
 
+::code-group
+
 ```typescript [src/client.ts]
 type GetToken = () => Promise<string | undefined>
 
@@ -54,6 +56,8 @@ import { setAuth } from './client'
 
 setAuth(async () => readTokenFromSecretsStore())
 ```
+
+::
 
 ## Sign requests or use several auth methods
 

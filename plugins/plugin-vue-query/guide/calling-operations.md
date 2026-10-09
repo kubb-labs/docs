@@ -84,9 +84,14 @@ pluginVueQuery({
 })
 ```
 
-This produces a fixed key such as `['getUserByName']`, independent of arguments. Include relevant path and query parameters in the key when their values identify different resources.
+> [!WARNING]
+> This produces a fixed key such as `['getUserByName']`, independent of arguments. Include relevant path and query parameters in the key when their values identify different resources.
 
 ## Load more pages
+
+::tabs
+
+:::tabs-item{label="Configure"}
 
 Configure [`infinite`](/plugins/plugin-vue-query/reference/options#infinite) with a query parameter declared by the operation, its initial value, and the response path for the next cursor.
 
@@ -105,6 +110,10 @@ pluginVueQuery({
 
 Only operations with a `page` query parameter receive infinite-query output. Change `nextParam` to match your API's response.
 
+:::
+
+:::tabs-item{label="Usage"}
+
 Use the generated factory with TanStack Query:
 
 ```typescript [usage.ts]
@@ -115,6 +124,10 @@ const { data, fetchNextPage, hasNextPage } = useInfiniteQuery(
   findPetsByTagsInfiniteQueryOptions({ query: () => ({ tags: ['dog'] }) }),
 )
 ```
+
+:::
+
+::
 
 ## Refetch when parameters change
 

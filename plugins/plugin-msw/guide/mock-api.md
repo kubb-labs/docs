@@ -27,7 +27,8 @@ export default defineConfig({
 })
 ```
 
-For Node tests, set `baseURL` to the URL your client calls so MSW can match absolute requests. Browser handlers can use relative paths for the current origin.
+> [!TIP]
+> For Node tests, set `baseURL` to the URL your client calls so MSW can match absolute requests. Browser handlers can use relative paths for the current origin.
 
 ## Supply test data
 

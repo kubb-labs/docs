@@ -16,7 +16,8 @@ outline:
 
 Create an organization CI API key in Studio and store it as `KUBB_TOKEN`. On GitHub, use an Actions secret. On GitLab, use a masked CI/CD variable. Snapshot installation uses a separate `registry` API key.
 
-Snapshots expire after seven days. Schedule a default-branch run if it can go a week without a push.
+> [!NOTE]
+> Snapshots expire after seven days. Schedule a default-branch run if it can go a week without a push.
 
 ## GitHub Actions
 

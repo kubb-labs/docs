@@ -16,7 +16,8 @@ navigation:
 
 Use these configurations in an existing project with [Kubb installed](/docs/5.x/installation) and an OpenAPI specification. Replace `./petStore.yaml` with your specification path, install the packages for your chosen stack, then run `npx kubb generate`.
 
-The examples write to `./src/gen`. With `clean: true`, Kubb removes that directory before generation, so keep handwritten files elsewhere. See [Configuration](/docs/5.x/reference/configuration) for option defaults.
+> [!WARNING]
+> The examples write to `./src/gen`. With `clean: true`, Kubb removes that directory before generation, so keep handwritten files elsewhere. See [Configuration](/docs/5.x/reference/configuration) for option defaults.
 
 ## TypeScript only
 

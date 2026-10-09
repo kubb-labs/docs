@@ -21,7 +21,10 @@ Tuning a Kubb config takes repeated runs. You change a plugin option, run `kubb 
 
 ## Generation stays where your agent runs
 
-With a connected CLI or Docker agent, Kubb uses the spec and plugin versions in your environment. Studio receives plugin settings, progress, and generated file paths. Your local spec is not uploaded. During an interactive generation, Studio receives generated file contents only when you grant read access. The shared sandbox runs on shared infrastructure and uses a spec you provide in the browser.
+With a connected CLI or Docker agent, Kubb uses the spec and plugin versions in your environment. Studio receives plugin settings, progress, and generated file paths. Your local spec is not uploaded. During an interactive generation, Studio receives generated file contents only when you grant read access.
+
+> [!NOTE]
+> The shared sandbox runs on shared infrastructure and uses a spec you provide in the browser.
 
 ## One command to connect
 

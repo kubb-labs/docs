@@ -66,15 +66,59 @@ This repo contains only content — no build step, no npm install, no test suite
 - Keep paragraphs short — 2-3 sentences.
 - Explain before showing code.
 
-Pages render with Nuxt Content and Nuxt UI's Markdown components. Use the existing components where they help readers:
+Pages render with Nuxt Content and Nuxt UI's Markdown components. Reuse the same elements for the same purpose:
 
-- `::field-group` with nested `:::field{name="option" type="string"}` for option overviews. Include the default and a link to the detailed heading. Add `required` only when the option is required.
-- `::steps{level="2"}` for sequential tutorials, with an H2 for each step. Keep existing heading anchors with `{#id}` when changing a heading.
-- `::card-group` with nested `:::card{title="Title" to="/path"}` for next steps and related guides.
-- `::code-group` for alternative code examples, and `::file-tree` for generated directory structures.
-- GitHub alerts (`> [!NOTE]`, `> [!TIP]`, `> [!WARNING]`, and `> [!IMPORTANT]`) for context and cautions. The site renders them as callouts.
+| Content | Element | Authoring rule |
+| --- | --- | --- |
+| Comparisons and tabular reference data | Markdown table | Keep related values in columns. Escape `\|` in types. |
+| Option overviews and individual option metadata | `::field-group` and `:::field` | Set `name` and `type`, include any default in the body, and link overview entries to their detailed headings. Add `required` only for required options. |
+| Background information | `> [!NOTE]` | Use for supplementary context. |
+| Recommendations | `> [!TIP]` | Use for optional improvements and useful shortcuts. |
+| Requirements | `> [!IMPORTANT]` | State what the reader must do. |
+| Potential problems | `> [!WARNING]` | Explain the consequence and how to avoid it. |
+| Destructive actions | `> [!CAUTION]` | Explain what the action removes or changes. |
+| Linked context | `::callout` | Set `to`, `icon`, and `color` when the whole callout links to another page. |
+| Sequential instructions | `::steps{level="2"}` | Use an H2 for each step and keep existing anchors with `{#id}`. |
+| Related guides and next steps | `::card-group` and `:::card` | Set `title` and `to`, with a short description in the body. |
+| Alternative code examples | `::code-group` | Label every fence. Use `sync="package-manager"` for package manager alternatives. |
+| Alternative workflows | `::tabs` and `:::tabs-item` | Give each item a `label`. Keep required instructions outside the tabs. |
+| Generated directory structures | `::file-tree` | Supply the `tree` array as YAML component props, with `name`, `type`, and optional `children`. |
+| Examples spanning multiple files | `::code-tree` | Label code fences with their file paths. |
+| Optional long code examples | `::code-collapse` | Set a descriptive `name`. Keep setup and required examples visible. |
+| Optional explanations | `::collapsible` | Set a descriptive `name`. Keep requirements and warnings visible. |
+| Frequently asked questions | `::accordion` and `:::accordion-item` | Give each item a `label` and preserve linked heading anchors. |
+| A rendered example and its source | `::code-preview` | Put the example in the default slot and its source under `#code`. |
+| Copyable AI instructions | `::prompt` | Supply a `description` and put the copied text in the body. The body is not displayed, so keep any prompt readers need to inspect in a visible code block. |
+| Short status labels | `:badge[Label]` | Use a label readers need to interpret the content. |
+| Keyboard shortcuts | `:kbd[Enter]` | Use for keyboard keys rather than commands. |
+| Icons beside labels | `:icon{name="i-iconoir-code"}` | Keep a readable text label beside the icon. |
+| File type icons | `:code-icon{filename="kubb.config.ts"}` | Code block tabs already infer these icons from their file labels. |
 
-Close nested components with `:::` and their enclosing group with `::`. Keep comparison tables when readers need to compare values across columns.
+GitHub alerts render as callouts on kubb.dev and also work in repository-only Markdown such as READMEs and ADRs. Keep those files in GitHub-compatible syntax. MDC components belong in site pages, their included snippets, and the Studio docs in the platform repository.
+
+Close a component with the same number of colons used to open it. Use one more colon for a nested component, including code groups and file trees inside steps:
+
+````md
+::steps{level="2"}
+
+## Install the package
+
+:::code-group{sync="package-manager"}
+
+```shell [pnpm]
+pnpm add -D kubb
+```
+
+```shell [npm]
+npm install --save-dev kubb
+```
+
+:::
+
+::
+````
+
+The site also registers its existing diagrams, `::terminal`, and `::studio-cta`. Reuse them with their current props when the content calls for them.
 
 See `.agents/skills/documentation/SKILL.md` for the full writing guide, and `.claude/rules/` for
 the USA English and humanizer conventions.

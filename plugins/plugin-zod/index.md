@@ -87,10 +87,21 @@ export default defineConfig({
 
 ## Documentation
 
-- [Options](./reference/options)
-- [Format and type mappings](./reference/options#format-and-type-mappings)
-- [Dictionaries and key schemas](./reference/options#dictionaries-open-objects-and-key-schemas)
-- [Customize generated schemas](./guide/customization)
+::card-group
+
+:::card{title="Options" to="/plugins/plugin-zod/reference/options"}
+:::
+
+:::card{title="Format and type mappings" to="/plugins/plugin-zod/reference/options#format-and-type-mappings"}
+:::
+
+:::card{title="Dictionaries and key schemas" to="/plugins/plugin-zod/reference/options#dictionaries-open-objects-and-key-schemas"}
+:::
+
+:::card{title="Customize generated schemas" to="/plugins/plugin-zod/guide/customization"}
+:::
+
+::
 
 ## See also
 

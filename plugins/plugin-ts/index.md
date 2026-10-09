@@ -86,8 +86,15 @@ export default defineConfig({
 
 ## Documentation
 
-- [Options](./reference/options)
-- [Customize generated types](./guide/customization)
+::card-group
+
+:::card{title="Options" to="/plugins/plugin-ts/reference/options"}
+:::
+
+:::card{title="Customize generated types" to="/plugins/plugin-ts/guide/customization"}
+:::
+
+::
 
 ## See also
 

@@ -90,9 +90,12 @@ handling, while fetch has no result to hand the interceptor stacks. See
 ## Add, replace, and remove handlers
 
 `use` registers a handler and returns an id. Pass that id to `eject` to remove it, or to `update`
-to swap its function in place. Response and error handlers run in the order they were registered,
-and so do request handlers on `plugin-fetch`, but `plugin-axios` delegates to axios, which runs
-them in reverse registration order.
+to swap its function in place.
+
+> [!NOTE]
+> Response and error handlers run in the order they were registered,
+> and so do request handlers on `plugin-fetch`, but `plugin-axios` delegates to axios, which runs
+> them in reverse registration order.
 
 ```typescript
 const id = client.interceptors.request.use((request) => request)

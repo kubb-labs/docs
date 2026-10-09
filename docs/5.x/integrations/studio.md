@@ -25,7 +25,8 @@ kubb studio
 
 Approve the machine in the Studio window and answer the permission prompts. Keep the command running, select the connected agent in Studio, and generate to see progress and the file tree.
 
-With a CLI or Docker agent, generation runs in your environment. Studio receives plugin settings, progress, and generated file paths. A local spec is not uploaded. Reading generated file contents or changing local files requires the agent's permission.
+> [!NOTE]
+> With a CLI or Docker agent, generation runs in your environment. Studio receives plugin settings, progress, and generated file paths. A local spec is not uploaded. Reading generated file contents or changing local files requires the agent's permission.
 
 ## Review and save generated files
 
@@ -61,7 +62,8 @@ kubb studio stop
 
 Stop the worker before opening a foreground connection. Restart it after a crash or reboot. If status reports `authentication required`, run `kubb studio login`, then start again. See [Background connection](/docs/5.x/reference/commands/studio#background-connection) for worker states, logs, and restart behavior.
 
-In CI or without a TTY, pass an existing `KUBB_AGENT_TOKEN` and the permission flags the run needs. Headless runs do not prompt.
+> [!IMPORTANT]
+> In CI or without a TTY, pass an existing `KUBB_AGENT_TOKEN` and the permission flags the run needs. Headless runs do not prompt.
 
 ## Snapshot from CI
 

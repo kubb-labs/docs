@@ -24,7 +24,7 @@ Install Kubb in an existing project using your package manager. If you want to l
 
 Add `kubb` as a development dependency. It includes the CLI, core runtime, default OpenAPI adapter, and TypeScript, TSX, and Markdown parsers.
 
-::code-group
+:::code-group
 
 ```shell [pnpm]
 pnpm add -D kubb
@@ -42,7 +42,7 @@ yarn add -D kubb
 bun add -d kubb
 ```
 
-::
+:::
 
 ## Verify the installation
 
@@ -58,7 +58,7 @@ The command prints the installed Kubb version. Use `pnpm exec kubb --version`, `
 
 Each output is provided by a plugin package. Install only the plugins you need. For TypeScript types, install the TypeScript plugin and compiler:
 
-::code-group
+:::code-group
 
 ```shell [pnpm]
 pnpm add -D @kubb/plugin-ts typescript
@@ -76,7 +76,7 @@ yarn add -D @kubb/plugin-ts typescript
 bun add -d @kubb/plugin-ts typescript
 ```
 
-::
+:::
 
 Browse [available plugins](/plugins) to choose outputs for your project.
 

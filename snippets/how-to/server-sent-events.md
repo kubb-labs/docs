@@ -91,8 +91,9 @@ try {
 }
 ```
 
-A drop mid-stream ends the `for await` loop. Track the last event's `id` if you need to reconnect
-from where the stream stopped.
+> [!NOTE]
+> A drop mid-stream ends the `for await` loop. Track the last event's `id` if you need to reconnect
+> from where the stream stopped.
 
 ## See also
 

@@ -7,6 +7,8 @@ outline: deep
 
 # Run an MCP server
 
+::steps{level="2"}
+
 ## Generate the server
 
 Register TypeScript types, Zod schemas, and an Axios or Fetch client alongside `pluginMcp`. A single registered client is detected automatically.
@@ -54,6 +56,8 @@ Run the entry point:
 ```shell [Terminal]
 npx tsx server.ts
 ```
+
+::
 
 ## Select a client
 

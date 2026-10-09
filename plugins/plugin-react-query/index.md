@@ -94,8 +94,15 @@ export default defineConfig({
 
 ## Documentation
 
-- [Options](./reference/options)
-- [Call operations](./guide/calling-operations)
+::card-group
+
+:::card{title="Options" to="/plugins/plugin-react-query/reference/options"}
+:::
+
+:::card{title="Call operations" to="/plugins/plugin-react-query/guide/calling-operations"}
+:::
+
+::
 
 ## See also
 

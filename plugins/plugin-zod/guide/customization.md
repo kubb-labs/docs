@@ -86,7 +86,8 @@ export const slotInputSchema = z.object({
 })
 ```
 
-Use `inferred: true` without `pluginTs` so the client types follow these conversions. Types from `pluginTs` describe the wire format.
+> [!IMPORTANT]
+> Use `inferred: true` without `pluginTs` so the client types follow these conversions. Types from `pluginTs` describe the wire format.
 
 For built-in date conversion, set `dateType: 'date'` on the adapter. Generated response schemas convert ISO datetimes to `Date`. Request schemas convert them back with `toISOString()`.
 

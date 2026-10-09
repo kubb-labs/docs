@@ -95,8 +95,10 @@ With a spec server of `https://api.{env}.example.com`, `server: { index: 0, vari
 
 How `discriminator` fields on `oneOf`/`anyOf` schemas are interpreted.
 
-- `'preserve'` (default) keeps child schemas exactly as written, though the discriminator still narrows types at the call site.
-- `'propagate'` pushes the discriminator property with its literal value into each child schema, so each branch's `type` field is precisely typed.
+| Value | Behavior |
+| --- | --- |
+| `'preserve'` (default) | Keeps child schemas exactly as written, though the discriminator still narrows types at the call site. |
+| `'propagate'` | Pushes the discriminator property with its literal value into each child schema, so each branch's `type` field is precisely typed. |
 
 ::code-group
 
@@ -145,19 +147,25 @@ export type Animal = Cat | Dog
 
 Where inline enums live.
 
-- `'inline'` (default) keeps each enum on the property that declares it.
-- `'root'` lifts every inline enum to a reusable top-level schema named after its context (for example `PetStatusEnum`) and references it wherever it appears.
+| Value | Behavior |
+| --- | --- |
+| `'inline'` (default) | Keeps each enum on the property that declares it. |
+| `'root'` | Lifts every inline enum to a reusable top-level schema named after its context (for example `PetStatusEnum`) and references it wherever it appears. |
 
-```typescript
-// enum [active, inactive] on Pet.status
+For an enum with values `active` and `inactive` on `Pet.status`:
 
-// 'inline' (default)
+::code-group
+
+```typescript ['inline' (default)]
 export type Pet = { status?: 'active' | 'inactive' }
+```
 
-// 'root'
+```typescript ['root']
 export type PetStatusEnum = 'active' | 'inactive'
 export type Pet = { status?: PetStatusEnum }
 ```
+
+::
 
 ### dateType
 
@@ -165,11 +173,13 @@ How `date-time`, `date`, and `time` schemas are represented downstream.
 
 Pass a single value to apply it to all three formats:
 
-- `false` falls through to a plain `string` with no validation.
-- `'string'` (default) emits an ISO 8601 string.
-- `'stringOffset'` emits a datetime string with a timezone offset. `date-time` only; `date` and `time` fall back to `'string'`.
-- `'stringLocal'` emits a local datetime string with no timezone. `date-time` only; `date` and `time` fall back to `'string'`.
-- `'date'` emits a JavaScript `Date`, best for client code, though JSON needs parsing to revive it.
+| Value | Representation |
+| --- | --- |
+| `false` | A plain `string` with no validation. |
+| `'string'` (default) | An ISO 8601 string. |
+| `'stringOffset'` | A datetime string with a timezone offset. `date-time` only; `date` and `time` fall back to `'string'`. |
+| `'stringLocal'` | A local datetime string with no timezone. `date-time` only; `date` and `time` fall back to `'string'`. |
+| `'date'` | A JavaScript `Date`, best for client code, though JSON needs parsing to revive it. |
 
 The string variants all emit `string` at the TypeScript type level. The offset and local distinction surfaces in schema output such as Zod.
 

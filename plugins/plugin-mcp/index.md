@@ -72,7 +72,7 @@ yarn add -D @kubb/plugin-mcp
 
 ## Dependencies
 
-Add [`pluginTs`](/plugins/plugin-ts/), [`pluginZod`](/plugins/plugin-zod/), and an [Axios](/plugins/plugin-axios/) or [Fetch](/plugins/plugin-fetch/) client plugin. Select [`client`](./reference/options#client) when both clients are configured. Generated servers require `@modelcontextprotocol/sdk` v1 or higher.
+Add [`pluginTs`](/plugins/plugin-ts/), [`pluginZod`](/plugins/plugin-zod/), and an [Axios](/plugins/plugin-axios/) or [Fetch](/plugins/plugin-fetch/) client plugin. Select [`client`](/plugins/plugin-mcp/reference/options#client) when both clients are configured. Generated servers require `@modelcontextprotocol/sdk` v1 or higher.
 
 ## Example
 
@@ -97,8 +97,15 @@ export default defineConfig({
 
 ## Documentation
 
-- [Options](./reference/options)
-- [Run an MCP server](./guide/server)
+::card-group
+
+:::card{title="Options" to="/plugins/plugin-mcp/reference/options"}
+:::
+
+:::card{title="Run an MCP server" to="/plugins/plugin-mcp/guide/server"}
+:::
+
+::
 
 ## See also
 

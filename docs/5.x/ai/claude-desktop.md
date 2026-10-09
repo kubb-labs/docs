@@ -13,12 +13,16 @@ navigation:
 
 Start with [Claude Desktop](https://claude.ai/download) installed and an MCP server generated from your API specification. Follow [Run an MCP server](/plugins/plugin-mcp/guide/server) to configure generation, install runtime dependencies, and create a `server.ts` entry point that calls the generated `startServer` function.
 
+::steps{level="2"}
+
 ## Register the server
 
 Open Claude Desktop's **Settings → Developer → Edit Config**. This opens `claude_desktop_config.json`:
 
-- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+| Operating system | Configuration file |
+| --- | --- |
+| macOS | `~/Library/Application Support/Claude/claude_desktop_config.json` |
+| Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
 
 Add the generated entry from `src/gen/mcp/.mcp.json` to the file's `mcpServers` object. Keep existing server entries. Update its command arguments to use the absolute path to your `server.ts` entry point:
 
@@ -38,6 +42,8 @@ Replace the example path with your project path. In Windows JSON paths, escape e
 ## Use the generated tools
 
 Quit Claude Desktop completely and reopen it. Open **Manage connectors**, select your server, and check that the tools match the operations in your specification. Ask Claude to run one of those operations and review its request before approving the API call.
+
+::
 
 ## See also
 
