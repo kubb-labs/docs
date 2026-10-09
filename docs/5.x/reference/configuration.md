@@ -26,9 +26,6 @@ export default defineConfig({
 })
 ```
 
-> [!TIP]
-> `defineConfig` from the `kubb` package adds the OpenAPI adapter and the TypeScript parsers for you, so you don't import them yourself.
-
 ## Config formats
 
 ### Single config object
@@ -84,6 +81,25 @@ export default defineConfig([
 ```
 
 A config function can return an array to combine both forms.
+
+## Defaults {#defaults}
+
+`defineConfig` from `kubb/config` and `createKubb` from `kubb` fill in these fields when you omit them. The bare `@kubb/core` engine applies none of them.
+
+| Field            | Default |
+| ---------------- | ------- |
+| `root`           | `process.cwd()` |
+| `adapter`        | `adapterOas()` from the bundled [OpenAPI adapter](/adapters/adapter-oas/) |
+| `parsers`        | `[parserTs(), parserTsx(), parserMd()]` |
+| `reporters`      | `[cli, json, file, html]` |
+| `plugins`        | `pluginBarrel()` appended when not already present |
+| `storage`        | `fsStorage()` |
+| `output.barrel`  | `false`, so `pluginBarrel` generates nothing until you opt in |
+| `output.format`  | `false` |
+| `output.lint`    | `false` |
+| `output.defaultBanner` | `'simple'` |
+
+Bundler integrations apply a smaller set: no `parserMd` and no reporters. See [Build tools](/docs/5.x/integrations/build-tools).
 
 ## Top-level options
 
@@ -209,40 +225,11 @@ export default defineConfig({
 #### `output.barrel`
 
 :::field{type="{ type: 'all' | 'named' } | false"}
-Behavior of the root `index.ts` barrel file at `output.path`.
-
-Provided by [`@kubb/plugin-barrel`](/plugins/plugin-barrel/).
+Behavior of the root `index.ts` barrel file at `output.path`, and the default every plugin inherits.
 
 Default: `false`.
 
-`{ type: 'all' }` writes `export * from '...'` for every file. `{ type: 'named' }` writes `export { … } from '...'` using each file's named exports. `false` disables the root barrel.
-
-::::code-group
-
-```typescript [named]
-// src/gen/index.ts
-export { CreatePetRequest, Pet } from './pet'
-export { User } from './user'
-export type { GetPetQuery } from './operations/getPet'
-```
-
-```typescript [all]
-// src/gen/index.ts
-export * from './pet'
-export * from './user'
-export * from './operations/getPet'
-```
-
-```typescript [false]
-// no index.ts generated
-```
-
-::::
-
-Each plugin keeps its own `output.barrel` for its sub-folder and can override the root setting. Setting `barrel: false` on a plugin disables that plugin's barrel and drops its files from the root barrel. The `nested` flag works at the plugin level only: `{ nested: true }` writes a barrel in every subdirectory so callers can import from any depth. The root `output.barrel` ignores it.
-
-> [!NOTE]
-> `pluginBarrel` ships by default and generates nothing until `output.barrel` is set, root or per-plugin.
+`{ type: 'named' }` re-exports each symbol by name, `{ type: 'all' }` writes `export *`. See [`@kubb/plugin-barrel` options](/plugins/plugin-barrel/reference/options#output-barrel) for the export styles and the plugin-level `nested` flag, and [Add barrel files](/docs/5.x/how-to/barrel-files) for the setup steps.
 :::
 
 #### `output.defaultBanner`

@@ -7,37 +7,33 @@ outline: deep
 
 # Options
 
-Options for `@kubb/plugin-mcp`, which generates an MCP server where each OpenAPI operation becomes a typed tool handler.
+Pass these options to `pluginMcp()`. Shared options link to [Shared plugin options](/docs/5.x/reference/plugin-options), which documents their behavior once.
 
 ## Options overview
 
-Select an option to see its type, default, and examples. Nested settings link to their own section or the parent option.
-
-| Option | Purpose |
-| --- | --- |
-| [`output`](#output) | Where the generated handlers are written and exported. |
-| ↳ [`output.path`](#output-path) | Choose the output folder or file. |
-| ↳ [`output.mode`](#output-mode) | Write a single file or a directory of files. |
-| ↳ [`output.barrel`](#output-barrel) | Configure barrel exports. |
-| ↳ [`output.barrel.type`](#output-barrel) | Use named exports or wildcard exports. |
-| ↳ [`output.barrel.nested`](#output-barrel) | Choose whether barrels reference subdirectory barrels. |
-| ↳ [`output.banner`](#output-banner) | Add content before generated code. |
-| ↳ [`output.footer`](#output-footer) | Add content after generated code. |
-| [`group`](#group) | Split output into per-tag or per-path folders. |
-| ↳ [`group.type`](#group-type) | Group operations by tag or URL path. |
-| ↳ [`group.name`](#group-name) | Customize output group names. |
-| [`client`](#client) | Which registered client plugin the handlers call. |
-| [`include`](#include) | Keep only operations that match. |
-| [`exclude`](#exclude) | Skip operations that match. |
-| [`override`](#override) | Apply different options per pattern. |
-| [`resolver`](#resolver) | Customize generated names and file paths. |
-| [`macros`](#macros) | Rewrite AST nodes before printing. |
+| Option | Purpose | Default |
+| --- | --- | --- |
+| [`output`](#output) | Where the generated handlers are written and exported. | `{ path: 'mcp', barrel: { type: 'named' } }` |
+| ↳ [`output.path`](#output) | Choose the output folder. | `'mcp'` |
+| ↳ [`output.mode`](#output) | Directory output only. | `'directory'` |
+| ↳ [`output.barrel`](/docs/5.x/reference/plugin-options#output-barrel) | Configure barrel exports. | `{ type: 'named' }` |
+| ↳ [`output.banner`](/docs/5.x/reference/plugin-options#output-banner) | Add content before generated code. | None |
+| ↳ [`output.footer`](/docs/5.x/reference/plugin-options#output-footer) | Add content after generated code. | None |
+| [`group`](/docs/5.x/reference/plugin-options#group) | Split handlers into per-tag or per-path folders. | None |
+| ↳ [`group.type`](/docs/5.x/reference/plugin-options#group-type) | Group operations by tag or URL path. | Required with `group` |
+| ↳ [`group.name`](/docs/5.x/reference/plugin-options#group-name) | Customize output group names. | camelCased tag or raw path segment |
+| [`client`](#client) | Which registered client plugin the handlers call. | Auto-detected |
+| [`include`](/docs/5.x/reference/plugin-options#include) | Keep only operations that match. | None |
+| [`exclude`](/docs/5.x/reference/plugin-options#exclude) | Skip operations that match. | `[]` |
+| [`override`](/docs/5.x/reference/plugin-options#override) | Apply different options per pattern. | `[]` |
+| [`resolver`](#resolver) | Customize generated names and file paths. | `resolverMcp` |
+| [`macros`](/docs/5.x/reference/plugin-options#macros) | Rewrite AST nodes before printing. | `[]` |
 
 ## Option details
 
 ### output
 
-Where the generated MCP handler files are written and how they are exported.
+Where the generated MCP handler files are written. The plugin writes `server.ts` and `.mcp.json` at the root of `output.path`, next to the per-operation handlers, so keep `output.path` an extensionless directory name such as the default `'mcp'`. A single-file output (`output.mode: 'file'`, or a `path` with an extension) has nowhere to put those files. With `group`, the handlers move into subfolders while `server.ts` and `.mcp.json` keep their place at the root.
 
 | | |
 | --- | --- |
@@ -45,44 +41,9 @@ Where the generated MCP handler files are written and how they are exported.
 | Required | `false` |
 | Default | `{ path: 'mcp', barrel: { type: 'named' } }` |
 
-#### output.path
-
-Folder where the plugin writes its files, resolved against the global `output.path` on `defineConfig` and defaulting to `mcp`. Give it an extensionless directory name — `path` naming a single file (with `output.mode: 'file'`, explicit or inferred from an extension) is rejected, since `plugin-mcp` always writes `server.ts` and `.mcp.json` alongside the per-operation handlers.
-
-#### output.mode
-
-How the plugin consolidates its generated code. Only `'directory'` is supported: one file per operation is written under `output.path`, next to the fixed `server.ts` and `.mcp.json` files. `output.mode: 'file'` fails the build with a setup error, since a single file has nowhere to put those extra files — leave `mode` unset (an extensionless `output.path`, the default `mcp`, resolves to `'directory'`) or set it to `'directory'` explicitly.
-
-#### output.barrel
-
-<!--@include: ../../../snippets/how-to/barrel.md-->
-
-#### output.banner
-
-<!--@include: ../../../snippets/how-to/output-banner.md-->
-
-#### output.footer
-
-<!--@include: ../../../snippets/how-to/output-footer.md-->
-
-### group
-
-Split output into per-tag or per-path folders.
-
-| | |
-| --- | --- |
-| Type | `Group` |
-| Required | `false` |
-
-<!--@include: ../../../snippets/how-to/grouping.md-->
-
-#### group.name
-
-Function that turns a group key into the subdirectory name under `output.path`. It defaults to the camelCased tag for `tag` groups and the first URL segment as-is for `path` groups. The `server.ts` and `.mcp.json` files keep their fixed names at the root of `output.path`.
-
 ### client
 
-Selects which registered client plugin the handlers call. A single registered client is auto-detected; set `client` when several are registered.
+Selects which registered client plugin the handlers call. A single registered client is auto-detected. Set `client` when several are registered.
 
 | | |
 | --- | --- |
@@ -103,71 +64,19 @@ Calls the operations generated by [`@kubb/plugin-axios`](/plugins/plugin-axios/)
 
 Each handler passes grouped `{ path, query, headers, body }` options. Configure transport settings such as `baseURL` on the client plugin.
 
-Generated handlers follow the client plugin's `returnType` option:
-
-::field-group
-
-:::field{name="'full'"}
-Default value on the client plugin. Handlers read the success body from `res.data`.
-:::
-
-:::field{name="'data'"}
-Handlers use the resolved call result directly as the tool response body.
-:::
-
-::
-
-Handlers always pass `throwOnError: true` so non-2xx responses throw and surface as tool errors, regardless of client-level `throwOnErrorDefault` settings.
+Generated handlers follow the client plugin's `returnType` option. With `'full'` (the client default) handlers read the success body from `res.data`, and with `'data'` they use the resolved call result directly as the tool response body. Handlers always pass `throwOnError: true` so non-2xx responses throw and surface as tool errors, regardless of the client's `throwOnErrorDefault`.
 
 > [!NOTE]
 > The handlers call a client plugin's functions, so register `@kubb/plugin-fetch` or `@kubb/plugin-axios` alongside this one.
 
-### include
-
-Keep only operations that match.
-
-| | |
-| --- | --- |
-| Type | `Array<Include>` |
-| Required | `false` |
-
-<!--@include: ../../../snippets/how-to/include.md-->
-
-### exclude
-
-Skip operations that match.
-
-| | |
-| --- | --- |
-| Type | `Array<Exclude>` |
-| Required | `false` |
-| Default | `[]` |
-
-<!--@include: ../../../snippets/how-to/exclude.md-->
-
-### override
-
-Apply different options per pattern.
-
-| | |
-| --- | --- |
-| Type | `Array<Override>` |
-| Required | `false` |
-| Default | `[]` |
-
-<!--@include: ../../../snippets/how-to/override.md-->
-
 ### resolver
 
-A partial patch changes how the plugin names generated files and symbols. Override only the members you want, and anything you omit keeps `resolverMcp`. See [Override a resolver](/docs/5.x/how-to/resolvers) for the `this` context and how a patch layers over the default.
+Overrides generated file and symbol names. Omitted members keep `resolverMcp`. The shared members (`name`, `file`, `imports`) and the `this` context are described under [`resolver`](/docs/5.x/reference/plugin-options#resolver).
 
 | | |
 | --- | --- |
 | Type | `ResolverPatch<ResolverMcp>` |
 | Required | `false` |
-
-> [!TIP]
-> Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
 
 ```typescript [Partial override]
 type ResolverMcpPatch = {
@@ -176,17 +85,9 @@ type ResolverMcpPatch = {
     baseName?(params: { name: string; extname: string }): string
     path?(params: { baseName: string; output: Output }): string
   }
+  imports?(options: ResolveImportsOptions): Array<ImportNode>
   handler?: {
-    name?(node: OperationNode): string     // → 'showPetByIdHandler'
+    name?(node: OperationNode): string  // → 'showPetByIdHandler'
   }
 }
 ```
-
-### macros
-
-<!--@include: ../../../snippets/how-to/macros-option.md-->
-
-| | |
-| --- | --- |
-| Type | `Array<Macro>` |
-| Required | `false` |

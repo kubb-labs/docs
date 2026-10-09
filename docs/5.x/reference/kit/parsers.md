@@ -45,7 +45,6 @@ export const parserText = defineParser(() => ({
 Wire it into your config:
 
 ```typescript [kubb.config.ts]
-
 import { defineConfig } from 'kubb/config'
 import { parserTs, parserTsx } from '@kubb/parser-ts'
 import { parserText } from './parserText.ts'
@@ -86,7 +85,4 @@ Parsers share the layout of [plugins](/docs/5.x/explanation/extensions#plugins) 
 
 Call the parser factory when registering it in `parsers`.
 
-> [!TIP]
-> Parsers compose by extension. `parserTs` (`.ts`, `.js`) and `parserTsx` (`.tsx`, `.jsx`) ship in the same [`@kubb/parser-ts`](/parsers/parser-ts/) package and register side by side.
-
-Set `extNames: undefined` for a catch-all fallback when no parser matches.
+Parsers compose by extension. `parserTs` (`.ts`, `.js`) and `parserTsx` (`.tsx`, `.jsx`) ship in the same [`@kubb/parser-ts`](/parsers/parser-ts/) package and register side by side.

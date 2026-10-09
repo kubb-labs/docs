@@ -6,9 +6,9 @@ description: Generates a type-safe Fetch API client from your OpenAPI spec, one
 outline: deep
 guides:
   - id: authentication
-    title: Authenticate
+    title: Authenticate requests
   - id: base-url
-    title: Set base URL
+    title: Set the base URL
   - id: calling-operations
     title: Call operations
   - id: error-handling
@@ -20,7 +20,7 @@ guides:
   - id: server-sent-events
     title: Server-sent events
   - id: transport
-    title: Use custom transport
+    title: Use a custom transport
 kind: plugin
 id: plugin-fetch
 name: Fetch
@@ -92,7 +92,7 @@ yarn add -D @kubb/plugin-fetch
 ## Example
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginFetch } from '@kubb/plugin-fetch'
 
@@ -106,41 +106,7 @@ export default defineConfig({
 })
 ```
 
-## Documentation
-
-::card-group
-
-:::card{title="Options" to="/plugins/plugin-fetch/reference/options"}
-:::
-
-:::card{title="Authenticate" to="/plugins/plugin-fetch/guide/authentication"}
-:::
-
-:::card{title="Set base URL" to="/plugins/plugin-fetch/guide/base-url"}
-:::
-
-:::card{title="Call operations" to="/plugins/plugin-fetch/guide/calling-operations"}
-:::
-
-:::card{title="Handle errors" to="/plugins/plugin-fetch/guide/error-handling"}
-:::
-
-:::card{title="Add interceptors" to="/plugins/plugin-fetch/guide/interceptors"}
-:::
-
-:::card{title="Serialize parameters" to="/plugins/plugin-fetch/guide/serialization"}
-:::
-
-:::card{title="Server-sent events" to="/plugins/plugin-fetch/guide/server-sent-events"}
-:::
-
-:::card{title="Use custom transport" to="/plugins/plugin-fetch/guide/transport"}
-:::
-
-::
-
 ## See also
 
 - [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
 - [`@kubb/plugin-ts`](/plugins/plugin-ts/)
-- [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-fetch/CHANGELOG.md)

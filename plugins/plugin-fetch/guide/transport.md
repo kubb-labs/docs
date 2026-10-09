@@ -6,3 +6,9 @@ outline: deep
 ---
 
 <!--@include: ../../../snippets/how-to/transport.md-->
+
+## See also
+
+- [Add interceptors](/plugins/plugin-fetch/guide/interceptors)
+- [Set the base URL](/plugins/plugin-fetch/guide/base-url)
+- [Call operations](/plugins/plugin-fetch/guide/calling-operations)

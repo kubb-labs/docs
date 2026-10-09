@@ -68,7 +68,7 @@ Credentials, worker state, and a bounded 1 MiB `worker.log` live under `$KUBB_HO
 | `--timeout=<seconds>`                      | `600`                 | `snapshot` only: seconds to wait for the job to finish, capped at `3600`.          |
 | `--json`                                   | `false`               | `snapshot` only: print the result as one JSON object instead of a summary.         |
 
-Without `--allow-read`, a session still generates and reports file paths, but Studio cannot display their contents. The CLI asks about permissions not supplied as flags and remembers answers per project directory. In CI or without a TTY, it does not prompt, so pass the permissions the run needs explicitly.
+Without `--allow-read`, a session still generates and reports file paths, but Studio cannot display their contents. The CLI asks about permissions not supplied as flags and remembers answers per project directory. Without a TTY it skips the permission prompts, so pass the flags the run needs. In CI it also refuses to pair interactively and needs stored credentials or `KUBB_AGENT_TOKEN`.
 
 ## Environment variables
 
@@ -96,21 +96,6 @@ Without `--allow-read`, a session still generates and reports file paths, but St
 The CI agent registers as `gl:<project id>:<merge request iid>`, read from `CI_PROJECT_ID` and `CI_MERGE_REQUEST_IID`, so every pipeline on that merge request reuses one agent. A branch pipeline falls back to `CI_COMMIT_REF_SLUG`, so the default branch has one agent too. Pass `--id` to group runs your own way.
 
 A merge request pipeline also names its target branch's agent, from `CI_MERGE_REQUEST_TARGET_BRANCH_NAME`. The snapshot reports which generated files changed against that branch's latest snapshot in `branchChanges`, and against the merge request's previous pipeline in `changes`. The commit it records is the source branch's head, `CI_MERGE_REQUEST_SOURCE_BRANCH_SHA`, when GitLab sets it.
-
-## Examples
-
-```shell [Terminal]
-kubb studio                              # connect and answer permission prompts
-kubb studio --allow-read                 # allow Studio to show generated file contents
-kubb studio --allow-write --allow-exec   # write files, run the formatter and linter
-kubb studio start --allow-read           # connect in the background
-kubb studio status                       # show worker state and log path
-kubb studio stop                         # stop while keeping pairing
-kubb studio login                        # pair without opening a session
-kubb studio logout                       # forget the stored token
-kubb studio snapshot                     # generate and publish a snapshot from CI
-kubb studio snapshot --json              # print the snapshot as one JSON object
-```
 
 ## See also
 

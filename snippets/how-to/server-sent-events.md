@@ -1,7 +1,6 @@
-
 # Server-sent events
 
-Operations returning `text/event-stream` produce a typed stream rather than a `RequestResult`. Both clients support streaming. Axios uses its fetch adapter unless you select another adapter.
+Operations returning `text/event-stream` produce a typed stream rather than a `RequestResult`. Both clients support streaming. The Axios client switches to the axios fetch adapter for these calls unless you set `adapter` yourself, because the default XHR adapter buffers the whole body.
 
 ## Consume a stream
 
@@ -94,10 +93,3 @@ try {
 > [!NOTE]
 > A drop mid-stream ends the `for await` loop. Track the last event's `id` if you need to reconnect
 > from where the stream stopped.
-
-## See also
-
-- [Call operations](/plugins/plugin-fetch/guide/calling-operations)
-- [Error handling](/plugins/plugin-fetch/guide/error-handling)
-- [`@kubb/plugin-fetch`](/plugins/plugin-fetch/)
-- [`@kubb/plugin-axios`](/plugins/plugin-axios/)

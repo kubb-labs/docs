@@ -1,1 +1,0 @@
-Rewrites AST nodes before they are printed, without forking the generator. Each [macro](/docs/5.x/how-to/macros) callback (such as `schema` or `operation`) receives the node and a context object, and returns a replacement or `undefined` to leave it as is. Omitted callbacks keep their defaults, and macros run in order, so a later one sees the output of an earlier one.

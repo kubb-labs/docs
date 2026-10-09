@@ -49,7 +49,7 @@ kubb generate ./petStore.yaml
 | `--watch`, `-w`                              | `false` | Re-run the pipeline whenever the input spec changes.                      |
 | `--dry-run`                                  | `false` | Preview a run without writing files, formatting, linting, or running post-generate commands. |
 
-`--reporter` takes no short flag.
+`--reporter` takes no short flag. The camelCase spellings from v4 (`--logLevel`, `--dryRun`) still work and print a deprecation warning.
 
 ## Reporters
 
@@ -59,7 +59,7 @@ A reporter decides how a run is rendered. The config registers available reporte
 | -------- | ------------------------------------------------------------------------------- |
 | `cli`    | The end-of-run summary in the terminal. Default. Uses plain text in non-interactive terminals and AI agent sessions. |
 | `json`   | A machine-readable report on stdout for CI. See [Diagnostics](/docs/5.x/reference/diagnostics#machine-readable-output) for the full JSON shape. |
-| `file`   | The run's diagnostics, written to `.kubb/kubb[-<name>]-<timestamp>.log`. The `<name>` segment is dropped when the config has no `name`. |
+| `file`   | The run's diagnostics, written to `.kubb/kubb[-<name>]-<timestamp>.log`. The `<name>` segment is dropped when the config has no `name`. A run without diagnostics writes no file. |
 | `html`   | A browsable report directory with generated files and diagnostics, written to `.kubb/kubb[-<name>]-<timestamp>/index.html`. |
 
 Write a log file:
@@ -78,5 +78,5 @@ kubb generate --reporter json
 ## See also
 
 - [Configuration](/docs/5.x/reference/configuration): full reference for `kubb.config.ts`
-- [Basic usage](/docs/5.x/tutorials/quickstart): end-to-end walkthrough
+- [Generate your first client](/docs/5.x/tutorials/quickstart): end-to-end walkthrough
 - [Plugins](/plugins): available plugins for code generation

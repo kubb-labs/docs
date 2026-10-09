@@ -15,7 +15,7 @@ navigation:
 
 # Use documentation in an AI assistant
 
-Provide current Kubb documentation to an assistant that accepts URLs or pasted text. Choose the full documentation for broad context, or the index when the assistant needs to retrieve individual pages.
+Point an assistant that accepts URLs or pasted text at one of these files.
 
 ## Available files
 
@@ -24,17 +24,15 @@ Provide current Kubb documentation to an assistant that accepts URLs or pasted t
 | [`https://kubb.dev/llms.txt`](https://kubb.dev/llms.txt)           | Table of contents with one-line descriptions per page |
 | [`https://kubb.dev/llms-full.txt`](https://kubb.dev/llms-full.txt) | Complete documentation in a single file               |
 
-## Using llms.txt in your AI assistant
+## Use the files in a prompt
 
-Most chat interfaces let you attach a URL or paste text. Use the full file when you need complete
-documentation coverage:
+Use the full file for complete coverage:
 
 ```text [Prompt]
 Read https://kubb.dev/llms-full.txt and answer questions about Kubb.
 ```
 
-For models with a small context window, use the index file and ask the assistant to fetch
-individual pages on demand:
+For a small context window, use the index and let the assistant fetch pages on demand:
 
 ```text [Prompt]
 Use https://kubb.dev/llms.txt to find relevant pages, then read them.

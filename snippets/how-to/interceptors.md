@@ -1,6 +1,6 @@
-# Interceptors
+# Add interceptors
 
-Register handlers on `client.interceptors.request`, `.response`, or `.error` to apply behavior across calls. Fetch handlers receive resolved request/result objects. Axios handlers receive native Axios objects.
+Register handlers on `client.interceptors.request`, `.response`, or `.error` to apply behavior across calls. Fetch handlers receive resolved request and result objects. Axios handlers receive native Axios objects.
 
 ## Run before the send
 
@@ -84,8 +84,7 @@ channel only fires on the throw path. When you read with `throwOnError: false`, 
 non-2xx response resolves and no error interceptor runs, so inspect the returned `error` on the
 result instead. A transport failure (no response at all) still throws on both, but only axios
 fires the error channel for it, since the channel is wired directly into its own rejection
-handling, while fetch has no result to hand the interceptor stacks. See
-[error handling](/plugins/plugin-fetch/guide/error-handling) for that path.
+handling, while fetch has no result to hand the interceptor stacks.
 
 ## Add, replace, and remove handlers
 
@@ -117,12 +116,3 @@ transport set later with `client.setConfig({ transport })`. When the transport c
 detach from the old instance and attach to the new one, and their IDs stay valid for `eject` and
 `update`. Clearing the transport (`client.setConfig({ transport: undefined })`) moves them back to the
 client's base instance. A per-call `transport` still bypasses client interceptors.
-
-## See also
-
-- [Call operations](/plugins/plugin-fetch/guide/calling-operations)
-- [Error handling](/plugins/plugin-fetch/guide/error-handling)
-- [Authentication](/plugins/plugin-fetch/guide/authentication)
-- [Custom transport](/plugins/plugin-fetch/guide/transport)
-- [`@kubb/plugin-fetch`](/plugins/plugin-fetch/)
-- [`@kubb/plugin-axios`](/plugins/plugin-axios/)

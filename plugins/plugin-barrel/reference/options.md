@@ -7,29 +7,24 @@ outline: deep
 
 # Options
 
-`pluginBarrel` takes no arguments. You configure it through `output.barrel`, either on `defineConfig` to set the root barrel and the default every plugin inherits, or on a single plugin to override that plugin's barrel.
+`pluginBarrel` takes no arguments. You configure it through `output.barrel`, either on `defineConfig` to set the root barrel and the default every plugin inherits, or on a single plugin to override that plugin's barrel. The plugin-level behavior is also summarized under [`output.barrel`](/docs/5.x/reference/plugin-options#output-barrel) in the shared plugin options.
 
 ## Options overview
 
-Select an option to see its type, default, and examples. Nested settings link to their own section or the parent option.
-
-| Option | Purpose |
-| --- | --- |
-| [`output.barrel`](#output-barrel) | Re-export style for the barrel files. |
-| ↳ [`output.barrel.type`](#type) | Named exports or a wildcard export. |
-| ↳ [`output.barrel.nested`](#nested) | Choose whether barrels reference subdirectory barrels. |
+| Option | Purpose | Default |
+| --- | --- | --- |
+| [`output.barrel`](#output-barrel) | Re-export style for the barrel files. | `false` on `defineConfig`, `{ type: 'named' }` in every generator plugin's default `output` |
+| ↳ [`output.barrel.type`](#type) | Named exports or a wildcard export. | Required when `output.barrel` is an object |
+| ↳ [`output.barrel.nested`](#nested) | Choose whether barrels reference subdirectory barrels. | `false` |
 
 ## Option details
 
 ### output.barrel
 
-<!--@include: ../../../snippets/how-to/barrel.md-->
+Toggle the export style and depth to see the generated barrels.
 
-The `type` field picks the export style. A plugin's `output.barrel` also accepts `nested`, so the plugin writes an `index.ts` in every subdirectory. The root `output.barrel` has no `nested` field and always stays flat.
-
-Call a plugin with no `output` at all and it uses its own default, which already sets `barrel: { type: 'named' }`. The moment you pass an `output` object of your own, that default is replaced whole, so a plugin configured as `pluginTs({ output: { path: 'types' } })` has no `barrel` of its own and falls back to `config.output.barrel`, which is `false` unless you set it.
-
-Set `barrel: { type: 'named' | 'all' }` on `defineConfig` to enable barrels everywhere: a root barrel, and the default every plugin without its own `output.barrel` inherits. A plugin that sets its own `output.barrel` overrides that inherited value, including back to `false`, which also drops its files from the root barrel.
+::barrel-tree
+::
 
 | | |
 | --- | --- |
@@ -37,9 +32,20 @@ Set `barrel: { type: 'named' | 'all' }` on `defineConfig` to enable barrels ever
 | Required | `false` |
 | Default | `false` |
 
+The `type` field picks the export style. A plugin's `output.barrel` also accepts `nested`, so the plugin writes an `index.ts` in every subdirectory. The root `output.barrel` has no `nested` field and always stays flat.
+
+Call a plugin with no `output` at all and it uses its own default, which already sets `barrel: { type: 'named' }`. The moment you pass an `output` object of your own, that default is replaced whole, so a plugin configured as `pluginTs({ output: { path: 'types' } })` has no `barrel` of its own and falls back to `config.output.barrel`, which is `false` unless you set it.
+
+Set `barrel: { type: 'named' | 'all' }` on `defineConfig` to enable barrels everywhere: a root barrel, and the default every plugin without its own `output.barrel` inherits. A plugin that sets its own `output.barrel` overrides that inherited value, including back to `false`, which also drops its files from the root barrel. A plugin with `output.mode: 'file'` gets no barrel of its own, and the root barrel re-exports that file directly.
+
 ### type
 
 Export style for the barrel files. Required whenever `output.barrel` is set to an object.
+
+| | |
+| --- | --- |
+| Type | `'all' \| 'named'` |
+| Required | `true` |
 
 ::field-group
 
@@ -52,11 +58,6 @@ Uses `export *`, a smaller barrel that re-exports everything.
 :::
 
 ::
-
-| | |
-| --- | --- |
-| Type | `'all' \| 'named'` |
-| Required | `true` |
 
 ::code-group
 

@@ -1,34 +1,28 @@
-# Set the API base URL
+# Set the base URL
 
-Set `baseURL` on the client plugin or generated client.
+Set `baseURL` on the client plugin or on the generated client.
 
 > [!NOTE]
-> OpenAPI server URLs do not configure the client automatically. The adapter’s server option only sets document metadata.
+> OpenAPI server URLs do not configure the client automatically. The adapter's server option only sets document metadata.
 
 ## Use the baseURL option
 
-Pass `baseURL` to the client plugin to set the generated default. Include `pluginTs`, which the client requires.
-
-::code-group
+Pass `baseURL` to the client plugin to set the generated default. `pluginAxios` takes the same option. Include `pluginTs`, which the client requires.
 
 ```typescript twoslash [kubb.config.ts]
 import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
-import { pluginAxios } from '@kubb/plugin-axios'
+import { pluginFetch } from '@kubb/plugin-fetch'
 
 export default defineConfig({
   input: './petStore.yaml',
-  output: {
-    path: './src/gen',
-  },
+  output: { path: './src/gen' },
   plugins: [
     pluginTs(),
-    pluginAxios({ baseURL: 'https://localhost:8080/api/v1' }),
+    pluginFetch({ baseURL: 'https://localhost:8080/api/v1' }),
   ],
 })
 ```
-
-::
 
 A value containing a `${...}` interpolation stays dynamic. The plugin emits it as a template literal in the generated client config, so `baseURL: '${process.env.API_URL}'` reads the environment variable when the app runs instead of baking in the build-time value.
 
@@ -62,11 +56,3 @@ const { data } = await getPetById({ path: { petId: 1 }, baseURL: 'https://localh
 ```
 
 A `baseURL` set on the call wins over `createClient`, which wins over `setConfig`, which wins over the build-time value.
-
-## See also
-
-- [Custom transport](/plugins/plugin-fetch/guide/transport)
-- [Authentication](/plugins/plugin-fetch/guide/authentication)
-- [Interceptors](/plugins/plugin-fetch/guide/interceptors)
-- [`@kubb/plugin-fetch`](/plugins/plugin-fetch/)
-- [`@kubb/plugin-axios`](/plugins/plugin-axios/)

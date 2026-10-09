@@ -3,7 +3,7 @@ layout: doc
 title: HTTP serialization
 description: Default parameter styles and serialized values for generated Fetch and Axios clients.
 outline: deep
-order: 8
+order: 9
 navigation:
   title: HTTP serialization
   icon: i-iconoir-network
@@ -11,11 +11,9 @@ navigation:
 
 # HTTP serialization
 
-Fetch and Axios clients use the OpenAPI operation’s serialization metadata to encode path, query, header, and cookie parameters.
+Fetch and Axios clients use the OpenAPI operation's serialization metadata to encode path, query, header, and cookie parameters.
 
 ## Parameter styles
-
-The client reads serialization metadata from the generated operation.
 
 ### Query
 

@@ -7,107 +7,41 @@ outline: deep
 
 # Options
 
-Configuration options for `@kubb/plugin-swr`, passed to `pluginSwr({ ... })`. Every field is optional.
+Pass these options to `pluginSwr()`, all of them optional. Shared options link to [Shared plugin options](/docs/5.x/reference/plugin-options), which documents their behavior once.
 
 ## Options overview
 
-Select an option to see its type, default, and examples. Nested settings link to their own section or the parent option.
-
-| Option | Purpose |
-| --- | --- |
-| [`output`](#output) | Where the generated hooks are written and exported. |
-| ↳ [`output.path`](#output-path) | Choose the output folder or file. |
-| ↳ [`output.mode`](#output-mode) | Write a single file or a directory of files. |
-| ↳ [`output.barrel`](#output-barrel) | Configure barrel exports. |
-| ↳ [`output.barrel.type`](#output-barrel) | Use named exports or wildcard exports. |
-| ↳ [`output.barrel.nested`](#output-barrel) | Choose whether barrels reference subdirectory barrels. |
-| ↳ [`output.banner`](#output-banner) | Add content before generated code. |
-| ↳ [`output.footer`](#output-footer) | Add content after generated code. |
-| [`group`](#group) | Split output into per-tag or per-path folders. |
-| ↳ [`group.type`](#group-type) | Group operations by tag or URL path. |
-| ↳ [`group.name`](#group-name) | Customize output group names. |
-| [`client`](#client) | Which registered client plugin the hooks call. |
-| [`query`](#query) | Configure the `useSWR` hooks, or turn them off. |
-| ↳ [`query.methods`](#query-methods) | Choose which HTTP methods generate queries. |
-| ↳ [`query.importPath`](#query-importpath) | Set the module used for query imports. |
-| [`queryKey`](#querykey) | Build the SWR key for each query hook. |
-| [`mutation`](#mutation) | Configure the `useSWRMutation` hooks, or turn them off. |
-| ↳ [`mutation.methods`](#mutation-methods) | Choose which HTTP methods generate mutations. |
-| ↳ [`mutation.importPath`](#mutation-importpath) | Set the module used for mutation imports. |
-| [`mutationKey`](#mutationkey) | Build the SWR key for each mutation hook. |
-| [`include`](#include) | Keep only operations that match. |
-| [`exclude`](#exclude) | Skip operations that match. |
-| [`override`](#override) | Apply different options per pattern. |
-| [`resolver`](#resolver) | Customize generated names and file paths. |
-| [`macros`](#macros) | Rewrite AST nodes before printing. |
+| Option | Purpose | Default |
+| --- | --- | --- |
+| [`output`](/docs/5.x/reference/plugin-options#output) | Where the generated hooks are written and exported. | `{ path: 'hooks', barrel: { type: 'named' } }` |
+| ↳ [`output.path`](/docs/5.x/reference/plugin-options#output-path) | Choose the output folder or file. | `'hooks'` |
+| ↳ [`output.mode`](/docs/5.x/reference/plugin-options#output-mode) | Write a single file or a directory of files. | Inferred from `output.path` |
+| ↳ [`output.barrel`](/docs/5.x/reference/plugin-options#output-barrel) | Configure barrel exports. | `{ type: 'named' }` |
+| ↳ [`output.banner`](/docs/5.x/reference/plugin-options#output-banner) | Add content before generated code. | None |
+| ↳ [`output.footer`](/docs/5.x/reference/plugin-options#output-footer) | Add content after generated code. | None |
+| [`group`](/docs/5.x/reference/plugin-options#group) | Split output into per-tag or per-path folders. | None |
+| ↳ [`group.type`](/docs/5.x/reference/plugin-options#group-type) | Group operations by tag or URL path. | Required with `group` |
+| ↳ [`group.name`](/docs/5.x/reference/plugin-options#group-name) | Customize output group names. | camelCased tag or raw path segment |
+| [`client`](#client) | Which registered client plugin the hooks call. | Auto-detected |
+| [`query`](#query) | Configure the `useSWR` hooks, or turn them off. | `{ methods: ['GET'], importPath: 'swr' }` |
+| ↳ [`query.methods`](#query-methods) | Choose which HTTP methods generate queries. | `['GET']` |
+| ↳ [`query.importPath`](#query-importpath) | Set the module used for query imports. | `'swr'` |
+| [`queryKey`](#querykey) | Build the SWR key for each query hook. | Built-in `queryKeyTransformer` |
+| [`mutation`](#mutation) | Configure the `useSWRMutation` hooks, or turn them off. | `{ methods: ['POST', 'PUT', 'PATCH', 'DELETE'], importPath: 'swr/mutation' }` |
+| ↳ [`mutation.methods`](#mutation-methods) | Choose which HTTP methods generate mutations. | `['POST', 'PUT', 'PATCH', 'DELETE']` |
+| ↳ [`mutation.importPath`](#mutation-importpath) | Set the module used for mutation imports. | `'swr/mutation'` |
+| [`mutationKey`](#mutationkey) | Build the SWR key for each mutation hook. | Built-in `mutationKeyTransformer` |
+| [`include`](/docs/5.x/reference/plugin-options#include) | Keep only operations that match. | None |
+| [`exclude`](/docs/5.x/reference/plugin-options#exclude) | Skip operations that match. | `[]` |
+| [`override`](/docs/5.x/reference/plugin-options#override) | Apply different options per pattern. | `[]` |
+| [`resolver`](#resolver) | Customize generated names and file paths. | `resolverSwr` |
+| [`macros`](/docs/5.x/reference/plugin-options#macros) | Rewrite AST nodes before printing. | `[]` |
 
 ## Option details
 
-### output
-
-Where the generated `.ts` files are written and how they are exported. Defaults to `{ path: 'hooks', barrel: { type: 'named' } }`.
-
-| | |
-| --- | --- |
-| Type | `Output` |
-| Required | `false` |
-| Default | `{ path: 'hooks', barrel: { type: 'named' } }` |
-
-#### output.path
-
-Folder where the plugin writes its files (`string`, default `'hooks'`), resolved against the global `output.path` on `defineConfig`. To write everything to one file instead, set `output.mode: 'file'` and give `path` a file name with its extension, such as `'hooks.ts'`.
-
-#### output.mode
-
-How generated code is consolidated into files.
-
-::field-group
-
-:::field{name="'file'"}
-Writes everything into a single file. `output.path` must include a file extension. This mode cannot be combined with `group`.
-:::
-
-:::field{name="'directory'"}
-Writes separate files under `output.path`. Use `group` to organize them into subdirectories.
-:::
-
-::
-
-Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
-
-> [!IMPORTANT]
-> `group` requires directory output. Kubb infers the mode from `output.path`. Set `mode: 'directory'` to override that inference. Combining `group` with `mode: 'file'` stops generation with `KUBB_INVALID_PLUGIN_OPTIONS`.
-
-#### output.barrel
-
-<!--@include: ../../../snippets/how-to/barrel.md-->
-
-#### output.banner
-
-<!--@include: ../../../snippets/how-to/output-banner.md-->
-
-#### output.footer
-
-<!--@include: ../../../snippets/how-to/output-footer.md-->
-
-### group
-
-Split output into per-tag or per-path folders.
-
-| | |
-| --- | --- |
-| Type | `Group` |
-| Required | `false` |
-
-<!--@include: ../../../snippets/how-to/grouping.md-->
-
-#### group.name
-
-Function that turns a group key into a folder or identifier name, used as the subdirectory name and as a suffix when naming aggregate files. Defaults to `({ group }) => camelCase(group)`, except `type: 'path'` groups use the first URL segment as-is.
-
 ### client
 
-Selects which registered client plugin the hooks call. A single registered client is auto-detected; set `client` when several are registered.
+Selects which registered client plugin the hooks call. A single registered client is auto-detected. Set `client` when several are registered.
 
 | | |
 | --- | --- |
@@ -128,7 +62,7 @@ Calls the operations generated by [`@kubb/plugin-axios`](/plugins/plugin-axios/)
 
 ### query
 
-Configures the generated `useSWR` hooks. Pass an object to change the HTTP methods or import path, or `false` to skip query hook generation. Defaults to `{ methods: ['GET'], importPath: 'swr' }`.
+Configures the generated `useSWR` hooks. Pass an object to change the HTTP methods or import path, or `false` to skip query hook generation.
 
 | | |
 | --- | --- |
@@ -138,21 +72,33 @@ Configures the generated `useSWR` hooks. Pass an object to change the HTTP metho
 
 #### query.methods
 
-HTTP methods treated as queries (`Array<string>`, default `['GET']`). An operation whose method is in this list generates a `useSWR` hook instead of a mutation.
-
-#### query.importPath
-
-Module that `useSWR` is imported from (`string`, default `'swr'`). The plugin emits `import useSWR from '${importPath}'`. Relative and absolute paths are used as written, with relative paths resolved against the generated file.
-
-### queryKey
-
-Builds the SWR key for each query hook. The callback receives the operation `node`, the active `casing` and `variant: 'query'` and returns the key array, and the built-in transformer is used when unset. String values are inlined into generated code verbatim, so wrap any literal string in `JSON.stringify(...)`.
+HTTP methods treated as queries. An operation whose method is in this list generates a `useSWR` hook instead of a mutation.
 
 | | |
 | --- | --- |
-| Type | `Transformer` |
+| Type | `Array<string>` |
 | Required | `false` |
-| Default | `built-in` |
+| Default | `['GET']` |
+
+#### query.importPath
+
+Module that `useSWR` is imported from, emitted as `import useSWR from '${importPath}'`. Relative and absolute paths are used as written, with relative paths resolved against the generated file.
+
+| | |
+| --- | --- |
+| Type | `string` |
+| Required | `false` |
+| Default | `'swr'` |
+
+### queryKey
+
+Builds the SWR key for each query hook. The callback receives the operation `node`, the active `casing` and `variant: 'query'` and returns the key array. String values are inlined into generated code verbatim, so wrap any literal string in `JSON.stringify(...)`.
+
+| | |
+| --- | --- |
+| Type | `(props: { node, casing, variant }) => Array<unknown>` |
+| Required | `false` |
+| Default | Built-in `queryKeyTransformer` |
 
 ```typescript
 queryKey: ({ node, variant }) => [JSON.stringify({ variant, operationId: node.operationId })]
@@ -160,7 +106,7 @@ queryKey: ({ node, variant }) => [JSON.stringify({ variant, operationId: node.op
 
 ### mutation
 
-Configures the generated `useSWRMutation` hooks. Pass an object to change the HTTP methods or import path, or `false` to skip mutation hook generation. Defaults to `{ methods: ['POST', 'PUT', 'PATCH', 'DELETE'], importPath: 'swr/mutation' }`.
+Configures the generated `useSWRMutation` hooks. Pass an object to change the HTTP methods or import path, or `false` to skip mutation hook generation.
 
 | | |
 | --- | --- |
@@ -170,68 +116,44 @@ Configures the generated `useSWRMutation` hooks. Pass an object to change the HT
 
 #### mutation.methods
 
-HTTP methods treated as mutations (`Array<string>`, default `['POST', 'PUT', 'PATCH', 'DELETE']`). An operation whose method is in this list generates a `useSWRMutation` hook instead of a query.
+HTTP methods treated as mutations. An operation whose method is in this list generates a `useSWRMutation` hook instead of a query.
+
+| | |
+| --- | --- |
+| Type | `Array<string>` |
+| Required | `false` |
+| Default | `['POST', 'PUT', 'PATCH', 'DELETE']` |
 
 #### mutation.importPath
 
-Module that `useSWRMutation` is imported from (`string`, default `'swr/mutation'`). The plugin emits `import useSWRMutation from '${importPath}'`. Relative and absolute paths are used as written, with relative paths resolved against the generated file.
+Module that `useSWRMutation` is imported from, emitted as `import useSWRMutation from '${importPath}'`. Relative and absolute paths are used as written, with relative paths resolved against the generated file.
+
+| | |
+| --- | --- |
+| Type | `string` |
+| Required | `false` |
+| Default | `'swr/mutation'` |
 
 ### mutationKey
 
-Builds the SWR key for each mutation hook. Like `queryKey`, the callback receives the operation `node`, the active `casing` and `variant: 'mutation'` and returns the key array, and the built-in transformer is used when unset. String values are inlined verbatim, so wrap any literal string in `JSON.stringify(...)`.
+Builds the SWR key for each mutation hook. Like `queryKey`, the callback receives the operation `node`, the active `casing` and `variant: 'mutation'` and returns the key array. String values are inlined verbatim, so wrap any literal string in `JSON.stringify(...)`.
 
 | | |
 | --- | --- |
-| Type | `Transformer` |
+| Type | `(props: { node, casing, variant }) => Array<unknown>` |
 | Required | `false` |
-| Default | `built-in` |
-
-### include
-
-Keep only operations that match.
-
-| | |
-| --- | --- |
-| Type | `Array<Include>` |
-| Required | `false` |
-
-<!--@include: ../../../snippets/how-to/include.md-->
-
-### exclude
-
-Skip operations that match.
-
-| | |
-| --- | --- |
-| Type | `Array<Exclude>` |
-| Required | `false` |
-| Default | `[]` |
-
-<!--@include: ../../../snippets/how-to/exclude.md-->
-
-### override
-
-Apply different options per pattern.
-
-| | |
-| --- | --- |
-| Type | `Array<Override>` |
-| Required | `false` |
-| Default | `[]` |
-
-<!--@include: ../../../snippets/how-to/override.md-->
+| Default | Built-in `mutationKeyTransformer` |
 
 ### resolver
 
-Overrides generated file and symbol names. Omitted members keep the plugin's resolver defaults. See [Override a resolver](/docs/5.x/how-to/resolvers) for the `this` context and how a patch layers over the default.
+Overrides generated file and symbol names. Omitted members keep `resolverSwr`. The shared members (`name`, `file`, `imports`) and the `this` context are described under [`resolver`](/docs/5.x/reference/plugin-options#resolver).
 
 | | |
 | --- | --- |
 | Type | `ResolverPatch<ResolverSwr>` |
 | Required | `false` |
 
-> [!TIP]
-> Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
+::code-collapse{name="ResolverSwr patch members"}
 
 ```typescript [Partial override]
 type ResolverSwrPatch = {
@@ -240,6 +162,7 @@ type ResolverSwrPatch = {
     baseName?(params: { name: string; extname: string }): string
     path?(params: { baseName: string; output: Output }): string
   }
+  imports?(options: ResolveImportsOptions): Array<ImportNode>
   query?: {
     name?(node: OperationNode): string         // → 'useGetPetById'
     optionsName?(node: OperationNode): string  // → 'getPetByIdQueryOptions'
@@ -256,11 +179,4 @@ type ResolverSwrPatch = {
 }
 ```
 
-### macros
-
-<!--@include: ../../../snippets/how-to/macros-option.md-->
-
-| | |
-| --- | --- |
-| Type | `Array<Macro>` |
-| Required | `false` |
+::

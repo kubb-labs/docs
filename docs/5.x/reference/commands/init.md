@@ -30,11 +30,7 @@ The wizard prompts for three things:
 - The output directory for generated files.
 - Which [plugins](/plugins) to install, such as clients, hooks, validators, and mocks.
 
-Kubb detects the package manager (`bun`, `pnpm`, `npm`, or `yarn`) from your project, so it does not prompt for one.
-
-The wizard writes the config and installs `kubb` with your selected plugins.
-
-The wizard installs `kubb` at the exact version of the CLI you ran and takes the plugins from that same release channel, so `npx kubb@beta init` scaffolds a beta project and a stable CLI scaffolds a stable one.
+Kubb detects the package manager (`bun`, `pnpm`, `npm`, or `yarn`) from your project. It installs `kubb` at the exact version of the CLI you ran and the plugins from the same release channel, so `npx kubb@beta init` scaffolds a beta project.
 
 ## Options
 
@@ -62,16 +58,10 @@ Run with no prompts and a specific spec, output directory, and plugins:
 npx kubb init --input ./openapi.yaml --output ./src/gen --plugins plugin-ts,plugin-zod
 ```
 
-
-Preview what the wizard would install and write, without changing anything:
-
-```shell [Terminal]
-npx kubb init --yes --dry-run
-```
-
+Add `--dry-run` to preview what the wizard would install and write.
 
 ## See also
 
-- [Installation](/docs/5.x/installation): manual setup guide
+- [Installation](/docs/5.x/how-to/installation): manual setup guide
 - [Configuration](/docs/5.x/reference/configuration): full `kubb.config.ts` reference
 - [Plugins](/plugins): browse available plugins

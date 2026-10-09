@@ -14,7 +14,7 @@ outline: deep
 Register TypeScript types, Zod schemas, and an Axios or Fetch client alongside `pluginMcp`. A single registered client is detected automatically.
 
 ```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'
 import { pluginAxios } from '@kubb/plugin-axios'

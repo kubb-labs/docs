@@ -5,7 +5,7 @@ description: Add a generated Kubb MCP server to Claude Desktop so its tools can 
 outline: [2, 3]
 order: 5
 navigation:
-  title: Claude Desktop API tools
+  title: Your API in Claude Desktop
   icon: i-simple-icons-claude
 ---
 
@@ -17,14 +17,7 @@ Start with [Claude Desktop](https://claude.ai/download) installed and an MCP ser
 
 ## Register the server
 
-Open Claude Desktop's **Settings → Developer → Edit Config**. This opens `claude_desktop_config.json`:
-
-| Operating system | Configuration file |
-| --- | --- |
-| macOS | `~/Library/Application Support/Claude/claude_desktop_config.json` |
-| Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
-
-Add the generated entry from `src/gen/mcp/.mcp.json` to the file's `mcpServers` object. Keep existing server entries. Update its command arguments to use the absolute path to your `server.ts` entry point:
+Open Claude Desktop's `Settings → Developer → Edit Config`. This opens `claude_desktop_config.json`, the same file the [Kubb MCP server](/docs/5.x/ai/mcp#client-configuration) uses. Add the generated entry from `src/gen/mcp/.mcp.json` to the file's `mcpServers` object. Keep existing server entries. Update its command arguments to use the absolute path to your `server.ts` entry point:
 
 ```json [claude_desktop_config.json]
 {
@@ -41,7 +34,7 @@ Replace the example path with your project path. In Windows JSON paths, escape e
 
 ## Use the generated tools
 
-Quit Claude Desktop completely and reopen it. Open **Manage connectors**, select your server, and check that the tools match the operations in your specification. Ask Claude to run one of those operations and review its request before approving the API call.
+Quit Claude Desktop completely and reopen it. Open `Manage connectors`, select your server, and check that the tools match the operations in your specification. Ask Claude to run one of those operations and review its request before approving the API call.
 
 ::
 

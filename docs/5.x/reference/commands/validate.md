@@ -24,19 +24,7 @@ output:
 ---
 ::
 
-## Usage
-
-Validate a local OpenAPI file:
-
-```shell [Terminal]
-kubb validate ./petStore.yaml
-```
-
-Validate a remote document:
-
-```shell [Terminal]
-kubb validate https://petstore3.swagger.io/api/v3/openapi.json
-```
+The input can also be a URL, such as `https://petstore3.swagger.io/api/v3/openapi.json`.
 
 ## Arguments
 
@@ -50,4 +38,4 @@ kubb validate https://petstore3.swagger.io/api/v3/openapi.json
 ## See also
 
 - [Adapters](/adapters): OAS adapter that parses the validated spec
-- [Basic usage](/docs/5.x/tutorials/quickstart): end-to-end walkthrough
+- [Generate your first client](/docs/5.x/tutorials/quickstart): end-to-end walkthrough

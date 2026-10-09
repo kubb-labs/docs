@@ -50,12 +50,12 @@ See the [architecture guide](/docs/5.x/explanation/architecture) for details abo
 
 | You want to | Read |
 | --- | --- |
-| Install Kubb in a project | [Installation](/docs/5.x/installation) |
+| Install Kubb in a project | [Installation](/docs/5.x/how-to/installation) |
 | Generate your first client | [Generate your first client](/docs/5.x/tutorials/quickstart) |
 | Configure a stack or workflow | [Configure generation](/docs/5.x/how-to/recipes) |
 | Rename files or customize generated code | [Resolvers](/docs/5.x/how-to/resolvers), [macros](/docs/5.x/how-to/macros), and [printers](/docs/5.x/how-to/printers) |
-| Run generation during a build or in CI | [Vite](/docs/5.x/integrations/vite), [webpack](/docs/5.x/integrations/webpack), and [CI](/docs/5.x/integrations/ci) |
-| Use Kubb with a browser or AI assistant | [Studio](/docs/5.x/integrations/studio), [MCP](/docs/5.x/ai/mcp), and [Claude Code](/docs/5.x/ai/claude) |
+| Run generation during a build or in CI | [Build tools](/docs/5.x/integrations/build-tools) and [CI](/docs/5.x/integrations/ci) |
+| Use Kubb with a browser or AI assistant | [Studio](/docs/5.x/integrations/studio) and [AI assistants](/docs/5.x/ai) |
 | Build a plugin | [Plugin tutorial](/docs/5.x/tutorials/creating-plugins) |
 | Look up an option or API | [Configuration](/docs/5.x/reference/configuration), [commands](/docs/5.x/reference/commands/), and [Kit API](/docs/5.x/reference/kit) |
 | Understand the pipeline | [Architecture](/docs/5.x/explanation/architecture) |

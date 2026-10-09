@@ -1,6 +1,6 @@
-# Error handling
+# Handle errors
 
-Generated Fetch and Axios clients throw on non-2xx responses by default. Set the generated default on the client plugin. Individual operations can override it:
+The generated client throws on non-2xx responses by default. Set the generated default on the client plugin. Individual operations can override it:
 
 ```typescript
 import { getPetById } from './gen/clients/getPetById'
@@ -55,9 +55,8 @@ Check `status` to narrow responses to a specific documented status code.
 
 ## Set the generated default
 
-Set `throwOnErrorDefault` on `@kubb/plugin-fetch` or `@kubb/plugin-axios` to choose how generated
-operations handle non-2xx responses by default. Each call can still override that setting with
-`throwOnError`:
+Set `throwOnErrorDefault` on the client plugin to choose how generated operations handle non-2xx
+responses by default. Each call can still override that setting with `throwOnError`:
 
 ```typescript
 import { pluginFetch } from '@kubb/plugin-fetch'
@@ -96,9 +95,9 @@ Pass an `AbortSignal` to cancel a request. The call rejects with the abort reaso
 
 ## Validation failures
 
-When you turn on the [`validator`](/plugins/plugin-fetch/guide/serialization) option, a body
-that does not match its schema throws a `ParseError` instead of returning. It carries the raw
-`issues` from the schema, so the same handling works across Zod, valibot, and arktype:
+When you turn on the `validator` option, a body that does not match its schema throws a
+`ParseError` instead of returning. It carries the raw `issues` from the schema, so the same
+handling works across Zod, valibot, and arktype:
 
 ```typescript
 import { ParseError } from './gen/.kubb/standardSchema'
@@ -116,13 +115,4 @@ try {
 A `ParseError` reports schema validation issues. A `ResponseError` reports a non-2xx status. On the non-throwing path, configured error schemas validate the error body separately from success schemas.
 
 Calling `.unwrap()` on a `throwOnError: false` call turns that same `error` into a rejection, so a
-`try`/`catch` works there too. See
-[unwrap the success body](/plugins/plugin-fetch/guide/calling-operations#unwrap-the-success-body).
-
-## See also
-
-- [Call operations](/plugins/plugin-fetch/guide/calling-operations)
-- [Serialization](/plugins/plugin-fetch/guide/serialization)
-- [`@kubb/plugin-fetch`](/plugins/plugin-fetch/)
-- [`@kubb/plugin-axios`](/plugins/plugin-axios/)
-- [Custom transport](/plugins/plugin-fetch/guide/transport)
+`try`/`catch` works there too.

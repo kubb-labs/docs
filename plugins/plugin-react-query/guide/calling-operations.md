@@ -73,50 +73,9 @@ A `mutationOptions` factory and `mutationKey` helper are exported next to the ho
 
 <!--@include: ../../../snippets/how-to/query-errors-transport.md-->
 
-## Customize cache keys
+<!--@include: ../../../snippets/how-to/query-keys.md-->
 
-Set [`queryKey`](/plugins/plugin-react-query/reference/options#querykey) to change generated keys. String entries are emitted as source code, so use `JSON.stringify` for a string literal.
-
-```typescript [kubb.config.ts]
-import { pluginReactQuery } from '@kubb/plugin-react-query'
-
-pluginReactQuery({
-  queryKey: ({ node }) => [JSON.stringify(node.operationId)],
-})
-```
-
-> [!WARNING]
-> This produces a fixed key such as `['getUserByName']`, independent of arguments. Include relevant path and query parameters in the key when their values identify different resources.
-
-## Load more pages
-
-Configure [`infinite`](/plugins/plugin-react-query/reference/options#infinite) with a query parameter declared by the operation, its initial value, and the response path for the next cursor.
-
-```typescript [kubb.config.ts]
-import { pluginReactQuery } from '@kubb/plugin-react-query'
-
-pluginReactQuery({
-  hooks: true,
-  infinite: {
-    queryParam: 'page',
-    initialPageParam: 0,
-    nextParam: 'pagination.next.cursor',
-  },
-})
-```
-
-Only operations with a `page` query parameter receive infinite-query output. Change `nextParam` to match your API's response.
-
-Use the generated factory with TanStack Query:
-
-```typescript [usage.ts]
-import { useInfiniteQuery } from '@tanstack/react-query'
-import { findPetsByTagsInfiniteQueryOptions } from './gen/hooks/useFindPetsByTagsInfinite'
-
-const { data, fetchNextPage, hasNextPage } = useInfiniteQuery(
-  findPetsByTagsInfiniteQueryOptions({ query: { tags: ['dog'] } }),
-)
-```
+<!--@include: ../../../snippets/how-to/query-infinite.md-->
 
 ## Use suspense
 

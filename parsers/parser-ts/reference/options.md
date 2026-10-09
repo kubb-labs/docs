@@ -11,11 +11,9 @@ outline: deep
 
 ## Options overview
 
-Select an option to see its type, default, and examples. Nested settings link to their own section or the parent option.
-
-| Option | Purpose |
-| --- | --- |
-| [`extension`](#extension) | Rewrite the extensions emitted in `import`/`export` statements. |
+| Option | Purpose | Default |
+| --- | --- | --- |
+| [`extension`](#extension) | Rewrite the extensions emitted in `import`/`export` statements. | `{ '.ts': '' }` |
 
 ## Option details
 

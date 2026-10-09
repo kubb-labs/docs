@@ -45,10 +45,9 @@ export const adapterCustom = createAdapter<AdapterCustom>((options) => ({
 }))
 ```
 
-Wire it into your config with `defineConfig` from `kubb` and pass the adapter:
+Pass the adapter to your config:
 
 ```typescript [kubb.config.ts]
-
 import { defineConfig } from 'kubb/config'
 import { adapterCustom } from './adapterCustom.ts'
 
@@ -90,5 +89,3 @@ Adapters share the layout of plugins, so [`getResolver`](./generators#defineGene
 | `AdapterFactoryOptions` alias | `Adapter<Name>` (PascalCase)                       | `AdapterOas`        |
 
 Export a `satisfies`-typed name constant so consumers can reuse the runtime name.
-
-Throw from `parse()` or `validate()` with a clear message when the input is invalid. If you rename a schema, set `targetName` on references to preserve imports.

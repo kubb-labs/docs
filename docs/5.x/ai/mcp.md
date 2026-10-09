@@ -19,44 +19,19 @@ Kubb ships a [Model Context Protocol](https://modelcontextprotocol.io/) server t
 code-generation tools to any MCP-capable client. Once connected, your editor or agent runs Kubb
 generation, validates schemas, and scaffolds configuration from the chat.
 
-> [!IMPORTANT]
-> The built-in MCP server needs Kubb v5 or higher.
-
 > [!NOTE]
 > This page covers using Kubb tooling inside your editor over MCP. To generate an MCP server from
 > your OpenAPI spec, see [`@kubb/plugin-mcp`](/plugins/plugin-mcp/) instead.
 
-## Starting the server
+## Client configuration {#client-configuration}
 
-Run the server with one command. See [`kubb mcp`](/docs/5.x/reference/commands/mcp#usage) for the
-stdio transport it uses.
+The server starts with `kubb mcp` over stdio and exposes the `generate`, `validate`, and `init` tools listed in the [command reference](/docs/5.x/reference/commands/mcp#tools). Register it with the same entry in each client.
 
-```shell [Terminal]
-kubb mcp
-```
+### Claude Desktop and Cursor
 
-## Client configuration
+Add the entry to `claude_desktop_config.json` (on macOS under `~/Library/Application Support/Claude/`, on Windows under `%APPDATA%\Claude\`) or to the server list under Cursor's `Settings → MCP`.
 
-### Claude Desktop
-
-Add this to your `claude_desktop_config.json`. On macOS it usually lives at `~/Library/Application Support/Claude/claude_desktop_config.json`.
-
-```json [Claude Desktop]
-{
-  "mcpServers": {
-    "kubb": {
-      "command": "npx",
-      "args": ["kubb", "mcp"]
-    }
-  }
-}
-```
-
-### Cursor
-
-Open `Settings → MCP` and add a new server entry.
-
-```json [Cursor]
+```json [claude_desktop_config.json]
 {
   "mcpServers": {
     "kubb": {
@@ -69,7 +44,7 @@ Open `Settings → MCP` and add a new server entry.
 
 ### VS Code (GitHub Copilot)
 
-Add this to your `.vscode/mcp.json` for the workspace. For a global setup, run `MCP: Open User Configuration` in the Command Palette.
+VS Code uses a `servers` key instead. Add this to `.vscode/mcp.json` for the workspace, or run `MCP: Open User Configuration` in the Command Palette for a global setup.
 
 ```json [.vscode/mcp.json]
 {

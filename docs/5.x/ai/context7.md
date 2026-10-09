@@ -14,8 +14,7 @@ navigation:
 
 # Use Kubb with Context7
 
-[Context7](https://context7.com) gives AI assistants access to current library documentation and
-code examples. Kubb's documentation is indexed under the library ID `/kubb-labs/docs`.
+Kubb's documentation is indexed on [Context7](https://context7.com) under the library ID `/kubb-labs/docs`.
 
 ::steps{level="2"}
 
@@ -40,8 +39,7 @@ Create a kubb.config.ts that generates TypeScript types, a Fetch client, and Rea
 from ./petStore.yaml. Use Context7 library /kubb-labs/docs.
 ```
 
-You can also add a rule to your assistant's instructions so it uses Context7 automatically for
-Kubb configuration and API questions.
+A rule in your assistant's instructions can make it use Context7 for every Kubb question.
 
 ::
 

@@ -13,6 +13,8 @@ npmPackage: "@kubb/parser-md"
 repo: https://github.com/kubb-labs/kubb
 docsPath: /parsers/parser-md
 featured: false
+icon:
+  light: https://kubb.dev/feature/markdown.svg
 maintainers:
   - name: Stijn Van Hulle
     github: stijnvanhulle
@@ -25,6 +27,7 @@ tags:
   - parser
   - docs
   - yaml
+dependencies: []
 resources:
   documentation: https://kubb.dev/parsers/parser-md
   repository: https://github.com/kubb-labs/kubb
@@ -36,7 +39,7 @@ resources:
 
 Generate `.md` and `.markdown` files.
 
-- Join source blocks and prepend `file.meta.frontmatter` as YAML.
+- Join source blocks and prepend [`file.meta.frontmatter`](/parsers/parser-md/reference/options#frontmatter) as YAML.
 - Runs by default with the TypeScript parsers. Takes no options.
 
 > [!IMPORTANT]
@@ -44,76 +47,19 @@ Generate `.md` and `.markdown` files.
 
 ## Installation
 
-::code-group{sync="package-manager"}
-
-```shell [bun]
-bun add -d @kubb/parser-md
-```
-
-```shell [pnpm]
-pnpm add -D @kubb/parser-md
-```
-
-```shell [npm]
-npm install --save-dev @kubb/parser-md
-```
-
-```shell [yarn]
-yarn add -D @kubb/parser-md
-```
-
-::
+Ships with `kubb`, no extra install.
 
 ## Dependencies
 
 - No plugin dependencies.
 - Register custom parsers on `defineConfig.parsers`.
 
-## Frontmatter
-
-Set `file.meta.frontmatter` inside a plugin. Any serializable object becomes a YAML block at the top of the generated page.
-
-::field-group
-
-:::field{name="meta.frontmatter" type="Record<string, unknown> | null"}
-YAML frontmatter prepended to the generated Markdown file.
-:::
-
-::
-
-::code-group
-
-```typescript [plugin.ts]
-import { ast } from 'kubb/kit'
-
-const file = ast.factory.createFile({
-  baseName: 'README.md',
-  path: './src/gen/README.md',
-  meta: {
-    frontmatter: { title: 'API Reference', layout: 'doc' },
-  },
-  sources: [ast.factory.createSource({ nodes: [ast.factory.createText('# API Reference')] })],
-})
-```
-
-```markdown [README.md]
----
-title: API Reference
-layout: doc
----
-```
-
-::
-
-- `parserMd().print` accepts objects and Markdown strings, joined with blank lines.
-- `parserMd().print({ title: 'Pets', layout: 'doc' })` returns `---\ntitle: Pets\nlayout: doc\n---`.
-
 ## Example
 
 Register the Markdown parser explicitly when overriding the default parser set.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { parserMd } from '@kubb/parser-md'
 import { parserTs, parserTsx } from '@kubb/parser-ts'
 
@@ -124,7 +70,3 @@ export default defineConfig({
   plugins: [],
 })
 ```
-
-## See also
-
-- [Changelog](https://github.com/kubb-labs/kubb/blob/main/packages/parser-md/CHANGELOG.md)

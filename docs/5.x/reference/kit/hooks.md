@@ -59,6 +59,7 @@ These wrap a full run. A direct `.build()` or `.safeBuild()` does not fire them.
 | `kubb:setup:start`       | none                                                          | Before the driver and storage are initialized          |
 | `kubb:setup:end`         | none                                                          | After setup, before the build pipeline                 |
 | `kubb:generation:end`    | `{ config, storage, status, diagnostics, filesCreated, hrStart }` | The run finishes, after the output passes         |
+| `kubb:generation:summary`| `KubbGenerationSummaryContext`                                | After the run, with the summary the reporters render |
 | `kubb:lifecycle:end`     | none                                                          | The bundler plugin is done                             |
 
 ## Build pipeline
@@ -111,6 +112,6 @@ These carry log messages and diagnostics, and can fire at any point.
 ## Related
 
 - [Plugins](./plugins) for the plugin `hooks` map and `KubbPluginSetupContext`
-- [Engine and configuration](./engine) for `createKubb`, `.build()`, and `.safeBuild()`
+- [Engine](./engine) for `createKubb`, `.build()`, `.safeBuild()`, and `.generate()`
 - [Plugin concepts](/docs/5.x/explanation/extensions#plugins) for the lifecycle as prose
 - [Diagnostics](../diagnostics) for the shape of `kubb:diagnostic` payloads

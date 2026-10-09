@@ -28,6 +28,7 @@ tags:
   - api-spec
   - parser
   - converter
+dependencies: []
 resources:
   documentation: https://kubb.dev/adapters/adapter-oas
   repository: https://github.com/kubb-labs/kubb
@@ -47,25 +48,7 @@ Read OpenAPI 2.0, 3.0, and 3.1 documents.
 
 ## Installation
 
-::code-group{sync="package-manager"}
-
-```shell [bun]
-bun add -d @kubb/adapter-oas
-```
-
-```shell [pnpm]
-pnpm add -D @kubb/adapter-oas
-```
-
-```shell [npm]
-npm install --save-dev @kubb/adapter-oas
-```
-
-```shell [yarn]
-yarn add -D @kubb/adapter-oas
-```
-
-::
+Ships with `kubb`, no extra install.
 
 ## Dependencies
 
@@ -74,7 +57,7 @@ No plugin dependencies.
 ## Example
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'
 
@@ -85,7 +68,3 @@ export default defineConfig({
   plugins: [pluginTs()],
 })
 ```
-
-## See also
-
-- [Changelog](https://github.com/kubb-labs/kubb/blob/main/packages/adapter-oas/CHANGELOG.md)

@@ -3,7 +3,7 @@ layout: doc
 title: GitHub Actions
 description: Inputs, outputs, runtime selection, and snapshot comments for kubb-labs/action.
 outline: [2, 3]
-order: 7
+order: 8
 navigation:
   title: GitHub Actions
   icon: i-simple-icons-githubactions
@@ -11,7 +11,7 @@ navigation:
 
 # GitHub Actions
 
-The `kubb-labs/action@v1` action generates and publishes a Studio snapshot. See [Publish snapshots from CI](/docs/5.x/integrations/ci#github-actions) for a workflow.
+The `kubb-labs/action@v1` action generates and publishes a Studio snapshot. See [Publish snapshots from CI](/docs/5.x/integrations/github-actions) for a workflow.
 
 ## Inputs
 

@@ -6,7 +6,7 @@ description: The kubb/jsx surface backed by @kubb/renderer-jsx. jsxRenderer, the
 outline:
   - 2
   - 3
-order: 4
+order: 5
 navigation:
   title: JSX
   icon: i-iconoir-code
@@ -15,6 +15,14 @@ navigation:
 # JSX renderer
 
 `kubb/jsx` is Kubb's JSX-based renderer, an alternative to building files with the `ast.factory` node builders from [`kubb/kit`](/docs/5.x/reference/kit). It provides a JSX runtime and a set of built-in components so a generator can emit files and markdown through JSX.
+
+## Renderers {#renderers}
+
+A renderer turns the elements a generator returns into `FileNode`s. Set it on a generator through its `renderer` field (`renderer: jsxRenderer`). Leave the field unset, or pass `renderer: null`, when the generator builds `FileNode`s with `ast.factory` directly.
+
+`jsxRenderer` is React-free. It walks the JSX tree into `FileNode`s without a reconciliation pass, so components run as plain functions and hooks and suspense are not available.
+
+`createRenderer` from `kubb/kit` takes a builder function and returns a factory that produces a `Renderer`. Use it only for a different templating format. `jsxRenderer` is a plain factory and does not depend on it.
 
 ## Setup
 
@@ -57,12 +65,7 @@ const files = renderer.files
 
 ## Built-in components
 
-`kubb/jsx` groups its built-in components into four sets:
-
-- Core components (`File`, `File.Source`, `File.Import`, `File.Export`) declare an output file and the imports, exports, and source blocks that make it up.
-- JavaScript components (`Const`, `Function`, `Function.Arrow`, `Type`) emit TypeScript declarations.
-- Markdown components (`Callout`, `Frontmatter`, `Heading`, `List`, `Paragraph`) emit markdown.
-- `Jsx` embeds a raw JSX string in the generated output.
+Core components declare an output file and its imports, exports, and source blocks. JavaScript components emit TypeScript declarations. Markdown components emit markdown. `Jsx` embeds a raw JSX string.
 
 | Component | Category | Emits |
 | --- | --- | --- |
@@ -260,7 +263,7 @@ await renderer.render(
     <Heading level={2}>Pets</Heading>
     <Paragraph>{'A pet object with an id and a name.'}</Paragraph>
     <List items={['id: number', 'name: string']} />
-    <Callout type="tip">Keep the generator hot with kubb start --watch.</Callout>
+    <Callout type="tip">Keep the generator hot with kubb generate --watch.</Callout>
   </File>,
 )
 ```
@@ -358,4 +361,4 @@ Embeds a raw JSX string in the generated source, including fragments. Use it ins
 
 - [Kit API](/docs/5.x/reference/kit) for `defineGenerator`'s `renderer` field and the `ast.factory` alternative to JSX
 - [Creating plugins](/docs/5.x/tutorials/creating-plugins) for how a generator wires a renderer into its output
-- [Kit API: rendering](/docs/5.x/reference/kit/renderers#jsxrenderer-via-kubb-jsx) for how `jsxRenderer` sits next to `createRenderer`
+- [Renderer concepts](/docs/5.x/explanation/extensions#renderers) for when a custom renderer is worth writing

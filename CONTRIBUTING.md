@@ -34,7 +34,7 @@ recipes:
 Guides follow the same shape under `plugins/<id>/guide/<guide-id>.md` with a `guides` array.
 
 Do NOT edit:
-- `docs/5.x/changelog.md` — auto-synced from kubb-labs/kubb by `.github/workflows/sync-changelog.yml` after each release. To update manually, trigger that workflow with `workflow_dispatch`.
+- `docs/5.x/changelog.md`, auto-synced from kubb-labs/kubb by `.github/workflows/sync-changelog.yml` after each release. To update manually, trigger that workflow with `workflow_dispatch`.
 
 ### Sidebar
 
@@ -53,7 +53,7 @@ A folder gets its title, icon and position from a `.navigation.yml` file inside 
 
 ## Development workflow
 
-This repo contains only content — no build step, no npm install, no test suite.
+This repo contains only content: no build step, no npm install, no test suite.
 
 1. Fork and clone this repo.
 2. Create a branch from `main`.
@@ -63,9 +63,11 @@ This repo contains only content — no build step, no npm install, no test suite
 ## Writing guidelines
 
 - Write in active voice, present tense.
-- Keep paragraphs short — 2-3 sentences.
+- Keep paragraphs short, 2 to 3 sentences.
 - Explain before showing code.
-- On plugin, adapter, and parser overview pages, use a short introduction and bullets for key behavior and dependencies. Keep configuration details on the options page and preserve examples and requirements.
+- On plugin, adapter, and parser overview pages, use a short introduction and bullets for key behavior and dependencies. Keep configuration details on the options page and preserve examples and requirements. Do not add a "Documentation" card group: the sidebar already lists the guides, recipes, and options page from the frontmatter.
+- Import `defineConfig` from `kubb/config` in every example.
+- Put each page in one Diátaxis quadrant (tutorial, how-to, reference, explanation) and link to the owner page instead of repeating its content. The `snippets/` folder holds text that several pages include.
 - Keep each extension overview within an estimated five-minute read: at most 1,000 words at 200 words per minute, counting examples and excluding frontmatter. Move longer explanations to guides or reference pages.
 
 Pages render with Nuxt Content and Nuxt UI's Markdown components. Reuse the same elements for the same purpose:
@@ -73,7 +75,7 @@ Pages render with Nuxt Content and Nuxt UI's Markdown components. Reuse the same
 | Content | Element | Authoring rule |
 | --- | --- | --- |
 | Comparisons and tabular reference data | Markdown table | Keep related values in columns. Escape `\|` in types. |
-| Plugin, adapter, and parser option overviews | Markdown table | Start with an “Options overview” table with “Option” and “Purpose” columns. Include nested settings, use full option paths, and link each row to its detail heading or the parent section. Follow it with “Option details” and retain existing heading anchors. |
+| Plugin, adapter, and parser option overviews | Markdown table | Start with an "Options overview" table with "Option", "Purpose", and "Default" columns. Include nested settings, use full option paths, and link each row to its detail heading. Rows for the shared generator options (`output`, `group`, `include`, `exclude`, `override`, `resolver`, `macros`) link to `/docs/5.x/reference/plugin-options#<option>` and carry only the plugin's default. Follow the table with "Option details" holding plugin-specific options only, and retain existing heading anchors. |
 | Plugin, adapter, and parser option metadata | Markdown table | Under each detail heading, list the type and whether the option is required. Include a default row when one exists. Keep long types out of the overview and escape `\|` in table cells. Preserve usage examples and generated output below the metadata. |
 | Accepted enum values | `::field-group` and `:::field` | Give each accepted value its own field, using the literal value as `name`. Explain its behavior, default status, examples, and constraints in the body. Use fields instead of value comparison tables or bullet lists. Keep option metadata and the compact overview as tables. |
 | Individual option metadata on other reference pages | `::field-group` and `:::field` | Set `name` and `type`, and include any default in the body. Under a detail heading, set only `type` so the option name is not repeated. Add `required` only for required options. |
@@ -136,6 +138,6 @@ A documented option must match the `Options` type in the plugin's `src/types.ts`
 
 ## Opening a pull request
 
-1. Keep changes focused — one topic per PR.
+1. Keep changes focused, one topic per PR.
 2. Use [Conventional Commits](https://www.conventionalcommits.org/): `docs:`, `fix:`, `feat:`.
 3. Push your branch and open a PR against `main`.

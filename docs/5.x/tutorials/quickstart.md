@@ -100,15 +100,7 @@ This configuration writes types to `src/gen/models` and the client to `src/gen/c
 npx kubb generate
 ```
 
-Kubb reports a successful build. List the generated client files:
-
-```shell [Terminal]
-node -e "console.log(require('node:fs').readdirSync('src/gen/clients'))"
-```
-
-The output contains `getPetById.ts`. Open that file and notice that `getPetById` accepts typed path parameters and returns a typed result. Its imported types live in `src/gen/models`.
-
-The generated tree includes:
+Kubb reports a successful build and writes this tree. Open `src/gen/clients/getPetById.ts` and notice that `getPetById` accepts typed path parameters and returns a typed result. Its imported types live in `src/gen/models`.
 
 :::file-tree
 ---
@@ -144,7 +136,7 @@ tag:
   type: string
 ```
 
-Run `npx kubb generate` again and open `src/gen/models/Pet.ts`. It now includes an optional `tag` field because `tag` is not listed in the schema’s `required` array. The client continues to import the regenerated types.
+Run `npx kubb generate` again and open `src/gen/models/Pet.ts`. It now includes an optional `tag` field because `tag` is not listed in the schema's `required` array. The client continues to import the regenerated types.
 
 You now have a typed client and have seen how a specification change flows into its output.
 
@@ -160,10 +152,6 @@ Use the generated Axios client. [Configure its host](/plugins/plugin-axios/guide
 
 :::card{title="Configure generation" icon="i-iconoir-settings" to="/docs/5.x/how-to/recipes"}
 Add React or Vue hooks, validation, and mocks.
-:::
-
-:::card{title="Interactive setup" icon="i-iconoir-terminal" to="/docs/5.x/reference/commands/init"}
-Set up Kubb in an existing project.
 :::
 
 :::card{title="Configuration reference" icon="i-iconoir-bookmark" to="/docs/5.x/reference/configuration"}

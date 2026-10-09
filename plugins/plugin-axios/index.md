@@ -6,9 +6,9 @@ description: Generates a type-safe axios client from your OpenAPI spec, one
 outline: deep
 guides:
   - id: authentication
-    title: Authenticate
+    title: Authenticate requests
   - id: base-url
-    title: Set base URL
+    title: Set the base URL
   - id: calling-operations
     title: Call operations
   - id: error-handling
@@ -17,8 +17,10 @@ guides:
     title: Add interceptors
   - id: serialization
     title: Configure serialization
+  - id: server-sent-events
+    title: Server-sent events
   - id: transport
-    title: Use custom transport
+    title: Use a custom transport
 kind: plugin
 id: plugin-axios
 name: Axios
@@ -91,7 +93,7 @@ yarn add -D @kubb/plugin-axios
 ## Example
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginAxios } from '@kubb/plugin-axios'
 
@@ -105,38 +107,7 @@ export default defineConfig({
 })
 ```
 
-## Documentation
-
-::card-group
-
-:::card{title="Options" to="/plugins/plugin-axios/reference/options"}
-:::
-
-:::card{title="Authenticate" to="/plugins/plugin-axios/guide/authentication"}
-:::
-
-:::card{title="Set base URL" to="/plugins/plugin-axios/guide/base-url"}
-:::
-
-:::card{title="Call operations" to="/plugins/plugin-axios/guide/calling-operations"}
-:::
-
-:::card{title="Handle errors" to="/plugins/plugin-axios/guide/error-handling"}
-:::
-
-:::card{title="Add interceptors" to="/plugins/plugin-axios/guide/interceptors"}
-:::
-
-:::card{title="Serialize parameters" to="/plugins/plugin-axios/guide/serialization"}
-:::
-
-:::card{title="Use custom transport" to="/plugins/plugin-axios/guide/transport"}
-:::
-
-::
-
 ## See also
 
 - [axios](https://axios-http.com/)
 - [`@kubb/plugin-ts`](/plugins/plugin-ts/)
-- [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-axios/CHANGELOG.md)

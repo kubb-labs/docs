@@ -115,3 +115,39 @@ pluginZod({
 ```
 
 Generated files import `myCodec` from `my-codec/zod`. Leave `root` unset on this import to preserve the package specifier. Setting `root` rewrites it as a relative file path.
+
+## Format and type mappings
+
+`@kubb/plugin-zod` generates native Zod v4 schemas for standard OpenAPI types and formats:
+
+| OpenAPI Type / Format | Standard Zod Output | Zod Mini Output | Notes |
+| :--- | :--- | :--- | :--- |
+| `integer` | `z.int()` | `z.int()` | Coerces to `z.coerce.number().int()` when `coercion.numbers` is enabled |
+| `integer`, `format: int32` | `z.int32()` | `z.int32()` | 32-bit signed integer |
+| `integer`, `format: uint32` | `z.uint32()` | `z.uint32()` | 32-bit unsigned integer |
+| `integer`, `format: int64` | `z.bigint()` | `z.bigint()` | 64-bit integer |
+| `string`, `format: byte` / `base64` | `z.base64()` | `z.base64()` | Base64 string validation |
+| `string`, `format: base64url` | `z.base64url()` | `z.base64url()` | URL-safe base64 string validation |
+| `string`, `format: jwt` | `z.jwt()` | `z.jwt()` | JSON Web Token format |
+| `string`, `format: ulid` | `z.ulid()` | `z.ulid()` | ULID format |
+| `string`, `format: iban` | `z.iban()` | `z.iban()` | International Bank Account Number |
+| `string`, `format: duration` | `z.iso.duration()` | `z.iso.duration()` | ISO 8601 duration format |
+| `string`, `format: uuid` | `z.uuid()` (or `z.guid()`) | `z.uuid()` (or `z.guid()`) | Configured via `guidType` |
+| `string`, `format: email` | `z.email()` | `z.email()` | Email format |
+| `string`, `format: uri` / `url` | `z.url()` | `z.url()` | URL format |
+| `string`, `format: ipv4` / `ipv6` | `z.ipv4()` / `z.ipv6()` | `z.ipv4()` / `z.ipv6()` | IP address format |
+| `string`, `format: date` | `z.iso.date()` | `z.iso.date()` | ISO 8601 date |
+| `string`, `format: date-time` | `z.iso.datetime()` | `z.string()` | ISO 8601 date-time |
+| `string`, `format: time` | `z.iso.time()` | `z.iso.time()` | ISO 8601 time |
+| `object`, `additionalProperties: <schema>` | `z.record(z.string(), schema)` | `z.record(z.string(), schema)` | Dictionary with no fixed properties |
+| `object`, `additionalProperties: true` | `z.looseObject(shape)` | `z.looseObject(shape)` | Open/passthrough object allowing extra keys |
+| `object`, `propertyNames: <schema>` | `z.record(keySchema, schema)` | `z.record(keySchema, schema)` | Dynamic map with validated key schema (e.g. pattern, format) |
+| `object`, `propertyNames: <enum>` | `z.partialRecord(enumSchema, schema)` | `z.partialRecord(enumSchema, schema)` | Closed key schemas use partial record to avoid exhaustiveness |
+
+## Dictionaries, open objects, and key schemas
+
+OpenAPI 3.1 `propertyNames` validates dictionary keys. Open key schemas use `z.record(keySchema, valueSchema)`, including regex, UUID, and length constraints. Closed keys, such as enums, literals, or unions of enums, use `z.partialRecord` so only present keys are validated. This preserves OpenAPI's partial semantics and infers `Partial<Record<Keys, Value>>`.
+
+`patternProperties` combines key regex patterns into an alternation and emits `z.record(z.string().regex(...), valueSchema)`. Zod Mini uses `z.string().check(z.regex(...))` for the key schema.
+
+An `additionalProperties` schema without fixed properties produces a dictionary. With fixed properties, it produces `.catchall(valueSchema)` to preserve that declared shape. `additionalProperties: true` emits `z.looseObject(shape)` to allow undeclared keys.

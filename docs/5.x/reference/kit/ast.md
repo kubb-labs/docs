@@ -29,17 +29,7 @@ const root = ast.factory.createInput({
 })
 ```
 
-Node building goes through `ast.factory`. `ast.factory.createFile`, `ast.factory.createSource`, and `ast.factory.createText` build the `FileNode` tree a generator returns.
-
-```typescript twoslash [factory.ts]
-import { ast } from 'kubb/kit'
-
-const file = ast.factory.createFile({
-  baseName: 'pet.ts',
-  path: './pet.ts',
-  sources: [ast.factory.createSource({ nodes: [ast.factory.createText('export type Pet = { id: number }')] })],
-})
-```
+Node building goes through `ast.factory`. `ast.factory.createFile`, `ast.factory.createSource`, and `ast.factory.createText` build the `FileNode` tree a generator returns. See the [factory table](#factory-functions) below.
 
 For why the AST exists and how it fits the pipeline, see [AST concepts](/docs/5.x/explanation/architecture#ast).
 
@@ -86,20 +76,9 @@ A `SchemaNode` is discriminated by its `type`. The values fall into three famili
 | `url`      | URL string                  | `https://example.com`                  |
 | `blob`     | Binary data                 | Raw bytes                              |
 
-## Factory functions
+## Factory functions {#factory-functions}
 
-Factories return defaulted, fully typed nodes for adapters and generator handlers. Never build AST literals by hand.
-
-```typescript twoslash [factories.ts]
-import { ast } from 'kubb/kit'
-
-const root = ast.factory.createInput({
-  schemas: [ast.factory.createSchema({ name: 'Pet', type: 'object', properties: [] }), ast.factory.createSchema({ name: 'Status', type: 'enum', values: ['active', 'inactive'] })],
-  operations: [ast.factory.createOperation({ operationId: 'listPets', method: 'GET', path: '/pets' })],
-})
-```
-
-The `ast.factory` namespace also provides constructors for source files and TypeScript-level artifacts that generators emit:
+Factories return defaulted, fully typed nodes for adapters and generator handlers. Never build AST literals by hand. Besides `createInput`, `createSchema`, and `createOperation`, the namespace provides constructors for source files and the TypeScript-level artifacts generators emit:
 
 | Factory                                                             | Purpose                                                  |
 | ------------------------------------------------------------------- | -------------------------------------------------------- |
@@ -205,7 +184,7 @@ for (const node of ast.collect<ast.OperationNode>(root, { operation: (node) => n
 
 ## Refs and naming helpers
 
-The ref and naming helpers split across two surfaces. `resolveRefName` ships on the `ast` namespace, like the guards and node types. `extractRefName`, `childName`, `enumPropName`, and `syncSchemaRef` are named exports of `kubb/kit` itself, not members of the `ast` namespace (the same split as the built-in macros below).
+The helpers split across two surfaces. `resolveRefName` ships on the `ast` namespace, like the guards and node types. `extractRefName`, `childName`, `enumPropName`, and `syncSchemaRef` are named exports of `kubb/kit` itself. The same split applies to `containsCircularRef` and the built-in macros below.
 
 | Helper           | Purpose                                                             |
 | ---------------- | ------------------------------------------------------------------- |
@@ -224,13 +203,13 @@ const name = extractRefName('#/components/schemas/Pet')
 
 ## Schema graph
 
-Analyze how schemas reference each other, to prune unused schemas or wrap circular ones in a lazy construct. `collectUsedSchemaNames` and `findCircularSchemas` ship on the `ast` namespace. `containsCircularRef` is a named export of `kubb/kit` itself, not a member of the `ast` namespace.
+Analyze how schemas reference each other, to prune unused schemas or wrap circular ones in a lazy construct. `collectUsedSchemaNames` and `findCircularSchemas` ship on the `ast` namespace.
 
 | Helper                   | Purpose                                                                                            |
 | ------------------------ | ------------------------------------------------------------------------------------------------- |
 | `collectUsedSchemaNames` | Collect the names of every top-level schema transitively used by a set of operations. Pair it with `include` filters to leave unreferenced schemas ungenerated. |
 | `findCircularSchemas`    | Find every schema that takes part in a circular dependency chain, so those positions can be wrapped in a lazy getter or `z.lazy(() => …)`. |
-| `containsCircularRef`    | Report whether a schema, or anything nested inside it, references a circular schema. Import it from `kubb/kit` directly, not through `ast`.  |
+| `containsCircularRef`    | Report whether a schema, or anything nested inside it, references a circular schema. |
 
 ## Constants
 
@@ -248,14 +227,14 @@ A macro is a named, composable transform built on `transform` that rewrites node
 | `composeMacros` | Fold an ordered list of macros into one visitor. |
 | `applyMacros`   | Run a list of macros over a node tree.           |
 
-Kubb also ships built-in macros for common schema normalizations that any adapter can compose with its own. These are named exports of `kubb/kit` itself, not members of the `ast` namespace. See [Built-in macros](/docs/5.x/how-to/macros#built-in-macros) for the full walkthrough.
+Kubb also ships built-in macros for common schema normalizations that any adapter can compose with its own. `macroDiscriminatorEnum`, `macroEnumName`, and `macroRenameSchema` read options, so call them to build the macro. Plugins that import another plugin's output compute names from the nodes they see, so register a rename on every plugin that touches the schema, for example by passing one shared `macros` array to each plugin.
 
 | Macro                    | Purpose                                                                                     |
 | ------------------------ | ------------------------------------------------------------------------------------------- |
 | `macroSimplifyUnion`     | Drop union members a broader scalar primitive already covers, such as a multi-value string enum next to `string`. |
 | `macroDiscriminatorEnum` | Replace a discriminator property's schema with a string enum of its allowed values.         |
 | `macroEnumName`          | Name an inline enum schema from its parent and property name.                               |
-| `macroRenameSchema`      | Rename a schema's declaration and retarget every ref pointing at it in one pass.            |
+| `macroRenameSchema`      | Rename a schema's declaration and stamp `targetName` on every ref pointing at it, so `resolveRefName` and `resolver.imports` emit the new name everywhere. |
 
 ### Macro options and callbacks
 
@@ -282,11 +261,9 @@ Lower-level helpers for parsers that turn the AST into source code:
 | --------------- | -------------------------------------- |
 | `createPrinter` | Typed helper for creating a `Printer`. |
 
-`createPrinter` takes an `overrides` map to replace the handler for individual schema node types. Inside an override, `this.base(node)` runs the built-in handler the override replaced, so you can wrap its output instead of re-implementing it. Pass overrides through the `overrides` field rather than spreading them into `nodes`, otherwise `this.base` cannot find the original handler. The `printer.nodes` option on `@kubb/plugin-ts`, `@kubb/plugin-zod`, and `@kubb/plugin-faker` feeds this map. See [Override a printer](/docs/5.x/how-to/printers).
+`createPrinter` takes an `overrides` map to replace the handler for individual schema node types. Pass overrides through the `overrides` field rather than spreading them into `nodes`, otherwise `this.base` cannot find the original handler. The `printer.nodes` option on `@kubb/plugin-ts`, `@kubb/plugin-zod`, and `@kubb/plugin-faker` feeds this map. See [Customize printers](/docs/5.x/how-to/printers).
 
-Inside a handler, `this.import(ast.factory.createImport(...))` declares an import required by the printed code. After printing, the generator calls `printer.drainImports()` to retrieve the imports and clear the list. See [Import a custom codec](/plugins/plugin-zod/guide/customization#import-a-custom-codec) for a complete example.
-
-See [Parsers concepts](/docs/5.x/explanation/architecture#parsers) for how parsers consume printers.
+See [Import a custom codec](/plugins/plugin-zod/guide/customization#import-a-custom-codec) for a complete example and [Parsers concepts](/docs/5.x/explanation/architecture#parsers) for how parsers consume printers.
 
 ### Printer handlers and context
 
@@ -298,4 +275,4 @@ type PrinterNodes = Partial<{
 }>
 ```
 
-Handlers run with a `this` context, so write them as regular functions rather than arrow functions. `this.transform(node)` recurses into a nested schema node through the full handler map, overrides included. `this.base(node)` runs the built-in handler your override replaced, so you can wrap its output instead of rebuilding it. `this.options` reads the resolved printer options, such as `arrayType` on `@kubb/plugin-ts` or `direction` on `@kubb/plugin-zod`.
+Handlers run with a `this` context, so write them as regular functions rather than arrow functions. `this.transform(node)` recurses into a nested schema node through the full handler map, overrides included. `this.base(node)` runs the built-in handler your override replaced, so you can wrap its output instead of rebuilding it. `this.options` reads the resolved printer options, such as `arrayType` on `@kubb/plugin-ts` or `direction` on `@kubb/plugin-zod`. Inside a handler, `this.import(ast.factory.createImport(...))` declares an import the printed code needs. The generator calls `printer.drainImports()` after printing to collect them.

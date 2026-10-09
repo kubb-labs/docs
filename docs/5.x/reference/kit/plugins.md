@@ -58,7 +58,7 @@ export const pluginExample = definePlugin((options: { prefix?: string } = {}) =>
 | `options`        | `TOptions`                                                      | The plugin's own options as passed by the user                |
 
 > [!IMPORTANT]
-> Plugin names should follow the convention `plugin-<feature>` (e.g., `plugin-react-query`, `plugin-zod`). See [Creating plugins](/docs/5.x/tutorials/creating-plugins) for naming conventions.
+> Plugin names follow the convention `plugin-<feature>`, such as `plugin-react-query` or `plugin-zod`.
 
 ## See also
 
