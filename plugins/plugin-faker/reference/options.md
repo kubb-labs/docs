@@ -13,7 +13,7 @@ Configure `@kubb/plugin-faker` by passing these options to `pluginFaker()`, all 
 | ------ | ---- | ------- | ----------- |
 | [`output`](#output) | `Output` | `{ path: 'mocks', barrel: { type: 'named' } }` | Where the generated files are written and exported |
 | [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
-| [`typeMode`](#typemode) | `'inferred' \| 'schema'` | `'inferred'` | Type object factories from generated values or the declared model |
+| [`typeMode`](#typemode) | `'inferred' \| 'schema'` | `'inferred'` | Type object and intersection factories from generated values or the declared model |
 | [`dateParser`](#dateparser) | `'faker' \| 'dayjs' \| 'moment' \| string` | `'faker'` | Library that formats string date and time fields |
 | [`regexGenerator`](#regexgenerator) | `'faker' \| 'randexp'` | `'faker'` | Library that turns a regex `pattern` into a string |
 | [`locale`](#locale) | `string` | `'en'` | Faker locale code for the generated values |
@@ -76,7 +76,7 @@ const complete: true = order.complete
 order.complete = false
 ```
 
-Use `'schema'` for fixtures you modify after creation. Factories accept `Partial<Model>` and return the declared model type, including its optional and nullable fields.
+Use `'schema'` for object and intersection fixtures you modify after creation. Their factories accept `Partial<Model>` and return the declared model type, including its optional and nullable fields.
 
 ```typescript [Schema mode]
 pluginFaker({ typeMode: 'schema' })
@@ -91,7 +91,7 @@ order.complete = true
 createOrder({ quantity: 2, foo: '' })
 ```
 
-Both modes generate the same values and apply overrides with a shallow merge.
+Object and intersection factories generate the same values in both modes and apply overrides with a shallow merge.
 
 Use [`override`](#override) to select a mode for matching schemas or operations. String patterns are regular expressions, so `^Order$` matches only the `Order` schema. For example, generate mutable `Order` fixtures while keeping the default inferred mode for other schemas:
 
