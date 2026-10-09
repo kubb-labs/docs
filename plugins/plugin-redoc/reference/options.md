@@ -7,16 +7,14 @@ outline: deep
 
 # Options
 
-Configuration options for @kubb/plugin-redoc.
+`pluginRedoc()` accepts a single option, the path of the HTML file it writes. It takes none of the [shared plugin options](/docs/5.x/reference/plugin-options).
 
 ## Options overview
 
-Select an option to see its type, default, and examples. Nested settings link to their own section or the parent option.
-
-| Option | Purpose |
-| --- | --- |
-| [`output`](#output) | Where the generated HTML file is written. |
-| ↳ [`output.path`](#output-path) | Choose the generated HTML file path. |
+| Option | Purpose | Default |
+| --- | --- | --- |
+| [`output`](#output) | Where the generated HTML file is written. | `{ path: 'docs.html' }` |
+| ↳ [`output.path`](#output-path) | Choose the generated HTML file path. | `'docs.html'` |
 
 ## Option details
 
@@ -32,9 +30,7 @@ Where the generated Redoc HTML file is written.
 
 #### output.path
 
-File path of the generated HTML, resolved against the global `output.path`. Unlike most plugins, this points at a single file, not a directory.
-
-End the path with a `.html` extension. If you leave the extension off, Kubb still writes the file and uses the path as the plugin output name.
+File path of the generated HTML, resolved against the global `output.path`. Unlike most plugins, this points at a single file, not a directory. End the path with `.html`. If you leave the extension off, Kubb still writes the file and uses the path as the plugin output name.
 
 | | |
 | --- | --- |

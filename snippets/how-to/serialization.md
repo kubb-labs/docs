@@ -1,7 +1,6 @@
-
 # Configure serialization
 
-Fetch and Axios clients encode parameters using OpenAPI `style` and `explode`, serialize request bodies by content type, and decode responses by media type. Generated operations carry the metadata. Most requests need no additional configuration.
+The generated client encodes parameters using OpenAPI `style` and `explode`, serializes request bodies by content type, and decodes responses by media type. Generated operations carry the metadata. Most requests need no additional configuration.
 
 ## Override parameter serialization
 
@@ -21,7 +20,7 @@ client.setConfig({
 ```
 
 A serializer set this way runs for every call, but you can pass `serializer` on a single call to
-override just that request.
+override only that request.
 
 ## Encode request bodies
 
@@ -32,8 +31,7 @@ common types: a plain object becomes JSON, `multipart/form-data` becomes `FormDa
 untouched.
 
 When an operation declares a single request content type, Kubb sets it on the generated function,
-so you pass only the body. For an operation that accepts more than one, set
-[`contentType`](/plugins/plugin-fetch/guide/calling-operations#set-the-content-type) on the
+so you pass only the body. For an operation that accepts more than one, set `contentType` on the
 call.
 
 > [!NOTE]
@@ -89,13 +87,13 @@ const { data } = await downloadInvoice({ path: { id: '123' }, responseType: 'blo
 // data is a Blob even when the server leaves Content-Type unset
 ```
 
-For `responseType: 'stream'`, see [server-sent events](/plugins/plugin-fetch/guide/server-sent-events).
+The server-sent events guide covers `responseType: 'stream'`.
 
-For bidirectional formats, supply both `serialize` and `deserialize` in the media type codec, then set the operation’s request and response `contentType`.
+For bidirectional formats, supply both `serialize` and `deserialize` in the media type codec, then set the operation's request and response `contentType`.
 
 ## Validate responses
 
-Enable `validator` on the client plugin and register `pluginZod` in the same configuration. Validation is disabled by default.
+Enable `validator` on the client plugin and register `pluginZod` in the same configuration. Validation is disabled by default. `pluginAxios` takes the same option.
 
 ```typescript twoslash
 import { pluginFetch } from '@kubb/plugin-fetch'
@@ -114,14 +112,4 @@ pluginFetch({ validator: { request: 'zod', response: 'zod' } })
 With a validator set, Kubb passes the matching schema to each generated call, and the runtime
 parses the body through it. The schemas are Standard Schema compatible, so this works the same
 with Zod, valibot, and arktype. A body that does not match throws a `ParseError` carrying the
-schema's `issues`, covered in
-[error handling](/plugins/plugin-fetch/guide/error-handling#validation-failures).
-
-## See also
-
-- [HTTP serialization reference](/docs/5.x/reference/serialization)
-- [Call operations](/plugins/plugin-fetch/guide/calling-operations)
-- [Error handling](/plugins/plugin-fetch/guide/error-handling)
-- [`@kubb/plugin-fetch`](/plugins/plugin-fetch/)
-- [`@kubb/plugin-axios`](/plugins/plugin-axios/)
-- [`@kubb/plugin-zod`](/plugins/plugin-zod/)
+schema's `issues`, covered in the error handling guide.

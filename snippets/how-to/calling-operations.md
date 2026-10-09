@@ -1,6 +1,6 @@
 # Call operations
 
-Generated Fetch and Axios operations accept grouped request options and return a typed `RequestResult` by default. Both clients share the calling convention below.
+The generated client accepts grouped request options on every operation and returns a typed `RequestResult` by default. The Fetch and Axios clients share the calling convention below.
 
 ## Call an operation
 
@@ -32,8 +32,8 @@ await updatePet({
 ```
 
 Each key is optional and only appears when the operation declares it, so an operation with no
-parameters is called with an empty object, `getStatus({})`. How Kubb encodes arrays and objects in
-each location is covered in [serialization](/plugins/plugin-fetch/guide/serialization).
+parameters is called with an empty object, `getStatus({})`. The serialization guide covers how
+Kubb encodes arrays and objects in each location.
 
 ## Read the result
 
@@ -71,8 +71,7 @@ if (result.status === 200) {
 }
 ```
 
-Reading the `error` body and handling failures is covered in
-[error handling](/plugins/plugin-fetch/guide/error-handling).
+The error handling guide covers reading the `error` body and handling failures.
 
 ## Unwrap the success body
 
@@ -112,9 +111,6 @@ try {
 }
 ```
 
-Reading `error` off the full result instead of catching it is covered in
-[error handling](/plugins/plugin-fetch/guide/error-handling).
-
 ## Set the content type
 
 When an operation accepts or returns more than one media type, set `contentType` on the call. A
@@ -144,64 +140,8 @@ import { uploadFile } from './gen/clients/uploadFile'
 await uploadFile({ path: { petId: '123' }, body: { file: pngBlob } })
 ```
 
-How each content type maps to a request body, and how a response body is decoded, lives in
-[serialization](/plugins/plugin-fetch/guide/serialization).
-
-## Reuse one configuration
-
-Every generated function imports a shared `client`. Call `setConfig` once at startup and every
-call picks up the change:
-
-```typescript
-import { client } from './gen/.kubb/client'
-
-client.setConfig({
-  baseURL: 'https://api.example.com/v1',
-  headers: { 'X-Client': 'web' },
-})
-```
-
-Create and pass a separate client for isolated configuration:
-
-```typescript
-import { createClient } from './gen/.kubb/client'
-import { getPetById } from './gen/clients/getPetById'
-
-const staging = createClient({ baseURL: 'https://staging.example.com/v1' })
-
-await getPetById({ path: { petId: 1 }, client: staging })
-```
-
-The configuration object is the same `ClientConfig` in both cases.
-
-## Validate response bodies
-
-Add `@kubb/plugin-zod` and set the Fetch client's `validator` to `'zod'` to check each success and error response at runtime. A body that fails its generated schema throws a `ParseError`. See the [validator reference](/plugins/plugin-fetch/reference/options#validator) for request validation and per-direction settings.
-
-```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb/config'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginZod } from '@kubb/plugin-zod'
-import { pluginFetch } from '@kubb/plugin-fetch'
-
-export default defineConfig({
-  input: './petStore.yaml',
-  output: { path: './src/gen', clean: true },
-  plugins: [
-    pluginTs({ output: { path: 'types', mode: 'directory' } }),
-    pluginZod({ output: { path: 'zod', mode: 'directory' } }),
-    pluginFetch({ output: { path: 'clients', mode: 'directory' }, validator: 'zod' }),
-  ],
-})
-```
-
-The generated operation validates the response before returning its typed result:
-
-```typescript
-import { findPetsByStatus } from './src/gen/clients/findPetsByStatus'
-
-const { data } = await findPetsByStatus({ query: { status: ['available'] } })
-```
+The serialization guide covers how each content type maps to a request body and how a response
+body is decoded.
 
 ## Pass native client options
 
@@ -216,7 +156,7 @@ await getPetById({ path: { petId: 1 }, options: { timeout: 5_000 } })
 
 For Fetch clients, use options such as `cache`, `mode`, `redirect`, `keepalive`, `duplex`, or `next`. Axios supports `timeout`, `proxy`, `maxRedirects`, `decompress`, and `onUploadProgress`.
 
-Set `client.setConfig({ options })` for shared defaults. Per-call options take precedence. Kubb controls serialization and HTTP error handling, as described in [custom transport](/plugins/plugin-fetch/guide/transport).
+Set `client.setConfig({ options })` for shared defaults. Per-call options take precedence. Kubb keeps control of serialization and HTTP error handling, as described in the custom transport guide.
 
 ## Build a URL without sending
 
@@ -232,14 +172,3 @@ const url = client.getUrl({
 })
 // https://api.example.com/v1/pets/1?fields=name
 ```
-
-## See also
-
-- [`@kubb/plugin-fetch`](/plugins/plugin-fetch/)
-- [`@kubb/plugin-axios`](/plugins/plugin-axios/)
-- [Error handling](/plugins/plugin-fetch/guide/error-handling)
-- [Serialization](/plugins/plugin-fetch/guide/serialization)
-- [Server-sent events](/plugins/plugin-fetch/guide/server-sent-events)
-- [Set your own baseURL](/plugins/plugin-fetch/guide/base-url)
-- [Authentication](/plugins/plugin-fetch/guide/authentication)
-- [Custom transport](/plugins/plugin-fetch/guide/transport)

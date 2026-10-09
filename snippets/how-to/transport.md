@@ -1,9 +1,8 @@
-
 # Use a custom transport
 
 Set a transport at runtime to replace the network send. The client still builds URLs, serializes parameters, resolves authentication, and handles results.
 
-Fetch accepts a transport function. Axios accepts an `AxiosInstance`. Use [interceptors](/plugins/plugin-fetch/guide/interceptors) for request headers or response logging.
+Fetch accepts a transport function. Axios accepts an `AxiosInstance`. Use interceptors for request headers or response logging.
 
 ## Fetch: a transport function
 
@@ -98,16 +97,8 @@ client.setConfig({ transport: instance })
 Every generated function now sends through your instance, so its timeout, headers, and interceptors apply to each call. Any client interceptors registered through `client.interceptors` also transfer to the new transport automatically, preserving their IDs for `eject` and `update`.
 
 > [!NOTE]
-> Kubb sets `transformRequest`, `paramsSerializer`, and `validateStatus` on each request so its own serialization and `throwOnError` handling stay in charge. Configure cross-cutting concerns like timeouts, retries, and interceptors on the instance instead of overriding those fields. For a native axios field on a single call, such as `timeout` or `onUploadProgress`, pass [`options`](/plugins/plugin-axios/guide/calling-operations#pass-native-client-options) instead of building a new instance.
+> Kubb sets `transformRequest`, `paramsSerializer`, and `validateStatus` on each request so its own serialization and `throwOnError` handling stay in charge. Configure cross-cutting concerns like timeouts, retries, and interceptors on the instance instead of overriding those fields. For a native axios field on a single call, such as `timeout` or `onUploadProgress`, pass `options` on the call instead of building a new instance.
 
 ## Where to set it
 
 Use `client.setConfig({ transport })` for shared configuration, `createClient({ transport })` for an isolated instance, or pass `transport` on an operation to override it for one call.
-
-## See also
-
-- [`@kubb/plugin-fetch`](/plugins/plugin-fetch/)
-- [`@kubb/plugin-axios`](/plugins/plugin-axios/)
-- [Interceptors](/plugins/plugin-fetch/guide/interceptors)
-- [Authentication guide](/plugins/plugin-fetch/guide/authentication)
-- [Set your own baseURL](/plugins/plugin-fetch/guide/base-url)

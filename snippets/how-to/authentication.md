@@ -1,6 +1,6 @@
-# Authenticate your API client
+# Authenticate requests
 
-Set an `auth` resolver on the generated Fetch or Axios client. Operations use the security schemes declared in your OpenAPI spec. Requests remain unauthenticated until you provide credentials.
+Set an `auth` resolver on the generated client. Operations use the [security schemes](https://spec.openapis.org/oas/v3.1.0#security-scheme-object) declared in your OpenAPI spec. Requests remain unauthenticated until you provide credentials.
 
 ## Set the auth resolver
 
@@ -69,11 +69,4 @@ const { data } = await getPetById({ path: { petId: 1 }, client: tenant })
 
 To override the client for one request, pass `auth` on that single call, which suits a one-off token refresh. An explicit `headers` value you set on a call always wins over the resolved token.
 
-For authentication outside OpenAPI security schemes, use an async [request interceptor](/plugins/plugin-fetch/guide/interceptors) to sign requests or supply custom headers.
-
-## See also
-
-- [Interceptors](/plugins/plugin-fetch/guide/interceptors)
-- [`@kubb/plugin-fetch`](/plugins/plugin-fetch/)
-- [`@kubb/plugin-axios`](/plugins/plugin-axios/)
-- [OpenAPI security scheme object](https://spec.openapis.org/oas/v3.1.0#security-scheme-object)
+For authentication outside OpenAPI security schemes, use an async request interceptor to sign requests or supply custom headers.

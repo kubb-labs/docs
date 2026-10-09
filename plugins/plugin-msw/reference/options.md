@@ -7,97 +7,31 @@ outline: deep
 
 # Options
 
-Every option below is a key on `pluginMsw({ ... })`.
+Pass these options to `pluginMsw()`. Shared options link to [Shared plugin options](/docs/5.x/reference/plugin-options), which documents their behavior once.
 
 ## Options overview
 
-Select an option to see its type, default, and examples. Nested settings link to their own section or the parent option.
-
-| Option | Purpose |
-| --- | --- |
-| [`output`](#output) | Where the generated files are written and exported. |
-| ↳ [`output.path`](#output-path) | Choose the output folder or file. |
-| ↳ [`output.mode`](#output-mode) | Write a single file or a directory of files. |
-| ↳ [`output.barrel`](#output-barrel) | Configure barrel exports. |
-| ↳ [`output.barrel.type`](#output-barrel) | Use named exports or wildcard exports. |
-| ↳ [`output.barrel.nested`](#output-barrel) | Choose whether barrels reference subdirectory barrels. |
-| ↳ [`output.banner`](#output-banner) | Add content before generated code. |
-| ↳ [`output.footer`](#output-footer) | Add content after generated code. |
-| [`group`](#group) | Split output into per-tag or per-path folders. |
-| ↳ [`group.type`](#group-type) | Group operations by tag or URL path. |
-| ↳ [`group.name`](#group-name) | Customize output group names. |
-| [`baseURL`](#baseurl) | Base URL prepended to every handler's request. |
-| [`handlers`](#handlers) | Emit a `handlers.ts` that re-exports every handler. |
-| [`parser`](#parser) | Source of the response body each handler returns. |
-| [`include`](#include) | Keep only operations that match. |
-| [`exclude`](#exclude) | Skip operations that match. |
-| [`override`](#override) | Apply different options per pattern. |
-| [`resolver`](#resolver) | Customize generated names and file paths. |
-| [`macros`](#macros) | Rewrite AST nodes before printing. |
+| Option | Purpose | Default |
+| --- | --- | --- |
+| [`output`](/docs/5.x/reference/plugin-options#output) | Where the generated handlers are written and exported. | `{ path: 'handlers', barrel: { type: 'named' } }` |
+| ↳ [`output.path`](/docs/5.x/reference/plugin-options#output-path) | Choose the output folder or file. | `'handlers'` |
+| ↳ [`output.mode`](/docs/5.x/reference/plugin-options#output-mode) | Write a single file or a directory of files. | Inferred from `output.path` |
+| ↳ [`output.barrel`](/docs/5.x/reference/plugin-options#output-barrel) | Configure barrel exports. | `{ type: 'named' }` |
+| ↳ [`output.banner`](/docs/5.x/reference/plugin-options#output-banner) | Add content before generated code. | None |
+| ↳ [`output.footer`](/docs/5.x/reference/plugin-options#output-footer) | Add content after generated code. | None |
+| [`group`](/docs/5.x/reference/plugin-options#group) | Split output into per-tag or per-path folders. | None |
+| ↳ [`group.type`](/docs/5.x/reference/plugin-options#group-type) | Group operations by tag or URL path. | Required with `group` |
+| ↳ [`group.name`](/docs/5.x/reference/plugin-options#group-name) | Customize output group names. | camelCased tag or raw path segment |
+| [`baseURL`](#baseurl) | Base URL prepended to every handler's request. | None |
+| [`handlers`](#handlers) | Emit a `handlers.ts` that re-exports every handler. | `false` |
+| [`parser`](#parser) | Source of the response body each handler returns. | `'data'` |
+| [`include`](/docs/5.x/reference/plugin-options#include) | Keep only operations that match. | None |
+| [`exclude`](/docs/5.x/reference/plugin-options#exclude) | Skip operations that match. | `[]` |
+| [`override`](/docs/5.x/reference/plugin-options#override) | Apply different options per pattern. | `[]` |
+| [`resolver`](#resolver) | Customize generated names and file paths. | `resolverMsw` |
+| [`macros`](/docs/5.x/reference/plugin-options#macros) | Rewrite AST nodes before printing. | `[]` |
 
 ## Option details
-
-### output
-
-Where the generated handler files are written and how they are exported.
-
-| | |
-| --- | --- |
-| Type | `Output` |
-| Required | `false` |
-| Default | `{ path: 'handlers', barrel: { type: 'named' } }` |
-
-#### output.path
-
-Folder where the plugin writes its files, resolved against the global `output.path` on `defineConfig` and defaulting to `'handlers'`. To write everything to one file instead, set `output.mode: 'file'` and give `path` a file name with its extension, such as `'handlers.ts'`.
-
-#### output.mode
-
-How generated code is consolidated into files.
-
-::field-group
-
-:::field{name="'file'"}
-Writes everything into a single file. `output.path` must include a file extension. This mode cannot be combined with `group`.
-:::
-
-:::field{name="'directory'"}
-Writes separate files under `output.path`. Use `group` to organize them into subdirectories.
-:::
-
-::
-
-Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
-
-> [!IMPORTANT]
-> `group` requires directory output. Kubb infers the mode from `output.path`. Set `mode: 'directory'` to override that inference. Combining `group` with `mode: 'file'` stops generation with `KUBB_INVALID_PLUGIN_OPTIONS`.
-
-#### output.barrel
-
-<!--@include: ../../../snippets/how-to/barrel.md-->
-
-#### output.banner
-
-<!--@include: ../../../snippets/how-to/output-banner.md-->
-
-#### output.footer
-
-<!--@include: ../../../snippets/how-to/output-footer.md-->
-
-### group
-
-Split output into per-tag or per-path folders.
-
-| | |
-| --- | --- |
-| Type | `Group` |
-| Required | `false` |
-
-<!--@include: ../../../snippets/how-to/grouping.md-->
-
-#### group.name
-
-Function that turns a group key into the subdirectory name. It defaults to `({ group }) => camelCase(group)` for tag groups, while `type: 'path'` groups default to the raw first URL segment, uncased.
 
 ### baseURL
 
@@ -160,52 +94,14 @@ export function getPetHandler(data?: GetPetQueryResponse | ((info: Parameters<Pa
 }
 ```
 
-### include
-
-Keep only operations that match.
-
-| | |
-| --- | --- |
-| Type | `Array<Include>` |
-| Required | `false` |
-
-<!--@include: ../../../snippets/how-to/include.md-->
-
-### exclude
-
-Skip operations that match.
-
-| | |
-| --- | --- |
-| Type | `Array<Exclude>` |
-| Required | `false` |
-| Default | `[]` |
-
-<!--@include: ../../../snippets/how-to/exclude.md-->
-
-### override
-
-Apply different options per pattern.
-
-| | |
-| --- | --- |
-| Type | `Array<Override>` |
-| Required | `false` |
-| Default | `[]` |
-
-<!--@include: ../../../snippets/how-to/override.md-->
-
 ### resolver
 
-Overrides generated file and symbol names. Omitted members keep the plugin's resolver defaults. See [Override a resolver](/docs/5.x/how-to/resolvers) for the `this` context and how a patch layers over the default.
+Overrides generated file and symbol names. Omitted members keep `resolverMsw`. The shared members (`name`, `file`, `imports`) and the `this` context are described under [`resolver`](/docs/5.x/reference/plugin-options#resolver).
 
 | | |
 | --- | --- |
 | Type | `ResolverPatch<ResolverMsw>` |
 | Required | `false` |
-
-> [!TIP]
-> Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
 
 ```typescript [Partial override]
 type ResolverMswPatch = {
@@ -214,18 +110,10 @@ type ResolverMswPatch = {
     baseName?(params: { name: string; extname: string }): string
     path?(params: { baseName: string; output: Output }): string
   }
+  imports?(options: ResolveImportsOptions): Array<ImportNode>
   handler?: {
-    name?(node: OperationNode): string
-    listName?(): string
+    name?(node: OperationNode): string  // → 'getPetHandler'
+    listName?(): string                 // → 'handlers'
   }
 }
 ```
-
-### macros
-
-<!--@include: ../../../snippets/how-to/macros-option.md-->
-
-| | |
-| --- | --- |
-| Type | `Array<Macro>` |
-| Required | `false` |

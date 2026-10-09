@@ -13,8 +13,6 @@ All `adapterOas` options are optional. Types and defaults are listed below.
 
 ## Options overview
 
-Select an option to see its type, default, and examples. Nested settings link to their own section or the parent option.
-
 | Option | Purpose |
 | --- | --- |
 | [`validate`](#validate) | Validate the spec before parsing. |
