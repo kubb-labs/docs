@@ -9,20 +9,81 @@ outline: deep
 
 Configuration options for `@kubb/plugin-swr`, passed to `pluginSwr({ ... })`. Every field is optional.
 
-| Option | Type | Default | Description |
-| ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'hooks', barrel: { type: 'named' } }` | Where the generated hooks are written and exported |
-| [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
-| [`client`](#client) | `'fetch' \| 'axios'` | — | Which registered client plugin the hooks call |
-| [`query`](#query) | `Partial<Query> \| false` | `{ methods: ['GET'], importPath: 'swr' }` | Configure the `useSWR` hooks, or turn them off |
-| [`queryKey`](#querykey) | `Transformer` | `built-in` | Build the SWR key for each query hook |
-| [`mutation`](#mutation) | `Partial<Mutation> \| false` | `{ methods: ['POST', 'PUT', 'PATCH', 'DELETE'], importPath: 'swr/mutation' }` | Configure the `useSWRMutation` hooks, or turn them off |
-| [`mutationKey`](#mutationkey) | `Transformer` | `built-in` | Build the SWR key for each mutation hook |
-| [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
-| [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
-| [`override`](#override) | `Array<Override>` | `[]` | Apply different options per pattern |
-| [`resolver`](#resolver) | `ResolverPatch<ResolverSwr>` | — | Customize generated names and file paths |
-| [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
+::field-group
+
+:::field{name="output" type="Output"}
+Where the generated hooks are written and exported. [See details](#output).
+
+Default: `{ path: 'hooks', barrel: { type: 'named' } }`.
+:::
+
+:::field{name="group" type="Group"}
+Split output into per-tag or per-path folders. [See details](#group).
+
+No default.
+:::
+
+:::field{name="client" type="'fetch' | 'axios'"}
+Which registered client plugin the hooks call. [See details](#client).
+
+No default.
+:::
+
+:::field{name="query" type="Partial<Query> | false"}
+Configure the `useSWR` hooks, or turn them off. [See details](#query).
+
+Default: `{ methods: ['GET'], importPath: 'swr' }`.
+:::
+
+:::field{name="queryKey" type="Transformer"}
+Build the SWR key for each query hook. [See details](#querykey).
+
+Default: `built-in`.
+:::
+
+:::field{name="mutation" type="Partial<Mutation> | false"}
+Configure the `useSWRMutation` hooks, or turn them off. [See details](#mutation).
+
+Default: `{ methods: ['POST', 'PUT', 'PATCH', 'DELETE'], importPath: 'swr/mutation' }`.
+:::
+
+:::field{name="mutationKey" type="Transformer"}
+Build the SWR key for each mutation hook. [See details](#mutationkey).
+
+Default: `built-in`.
+:::
+
+:::field{name="include" type="Array<Include>"}
+Keep only operations that match. [See details](#include).
+
+No default.
+:::
+
+:::field{name="exclude" type="Array<Exclude>"}
+Skip operations that match. [See details](#exclude).
+
+Default: `[]`.
+:::
+
+:::field{name="override" type="Array<Override>"}
+Apply different options per pattern. [See details](#override).
+
+Default: `[]`.
+:::
+
+:::field{name="resolver" type="ResolverPatch<ResolverSwr>"}
+Customize generated names and file paths. [See details](#resolver).
+
+No default.
+:::
+
+:::field{name="macros" type="Array<Macro>"}
+Rewrite AST nodes before printing. [See details](#macros).
+
+No default.
+:::
+
+::
 
 ### output
 

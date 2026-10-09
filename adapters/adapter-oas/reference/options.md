@@ -11,18 +11,69 @@ outline: deep
 
 All `adapterOas` options are optional. Types and defaults are listed below.
 
-| Option | Type | Default | Description |
-| ------ | ---- | ------- | ----------- |
-| [`validate`](#validate) | `boolean` | `true` | Validate the spec before parsing |
-| [`contentType`](#contenttype) | `'application/json' \| string` | — | Preferred media type for request and response schemas |
-| [`server`](#server) | `{ index?: number, variables?: Record<string, string> }` | — | Which spec server Kubb resolves into the document `baseURL` |
-| [`discriminator`](#discriminator) | `'preserve' \| 'propagate'` | `'preserve'` | How `discriminator` fields are interpreted |
-| [`enums`](#enums) | `'inline' \| 'root'` | `'inline'` | Where inline enums live |
-| [`dateType`](#datetype) | `false \| 'string' \| 'stringOffset' \| 'stringLocal' \| 'date' \| { dateTime?, date?, time? }` | `'string'` | How `date-time`, `date`, and `time` schemas are represented |
-| [`integerType`](#integertype) | `'number' \| 'bigint'` | `'bigint'` | How integers map to TypeScript |
-| [`unknownType`](#unknowntype) | `'any' \| 'unknown' \| 'void'` | `'unknown'` | Type for schemas Kubb cannot infer |
-| [`emptySchemaType`](#emptyschematype) | `'any' \| 'unknown' \| 'void'` | `unknownType` (`'unknown'` by default) | Type for empty schemas |
-| [`enumSuffix`](#enumsuffix) | `string` | `'enum'` | Suffix for derived enum names |
+::field-group
+
+:::field{name="validate" type="boolean"}
+Validate the spec before parsing. [See details](#validate).
+
+Default: `true`.
+:::
+
+:::field{name="contentType" type="'application/json' | string"}
+Preferred media type for request and response schemas. [See details](#contenttype).
+
+No default.
+:::
+
+:::field{name="server" type="{ index?: number, variables?: Record<string, string> }"}
+Which spec server Kubb resolves into the document `baseURL`. [See details](#server).
+
+No default.
+:::
+
+:::field{name="discriminator" type="'preserve' | 'propagate'"}
+How `discriminator` fields are interpreted. [See details](#discriminator).
+
+Default: `'preserve'`.
+:::
+
+:::field{name="enums" type="'inline' | 'root'"}
+Where inline enums live. [See details](#enums).
+
+Default: `'inline'`.
+:::
+
+:::field{name="dateType" type="false | 'string' | 'stringOffset' | 'stringLocal' | 'date' | { dateTime?, date?, time? }"}
+How `date-time`, `date`, and `time` schemas are represented. [See details](#datetype).
+
+Default: `'string'`.
+:::
+
+:::field{name="integerType" type="'number' | 'bigint'"}
+How integers map to TypeScript. [See details](#integertype).
+
+Default: `'bigint'`.
+:::
+
+:::field{name="unknownType" type="'any' | 'unknown' | 'void'"}
+Type for schemas Kubb cannot infer. [See details](#unknowntype).
+
+Default: `'unknown'`.
+:::
+
+:::field{name="emptySchemaType" type="'any' | 'unknown' | 'void'"}
+Type for empty schemas. [See details](#emptyschematype).
+
+Default: `unknownType` (`'unknown'` by default).
+:::
+
+:::field{name="enumSuffix" type="string"}
+Suffix for derived enum names. [See details](#enumsuffix).
+
+Default: `'enum'`.
+:::
+
+::
 
 ### validate
 

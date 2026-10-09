@@ -9,11 +9,27 @@ outline: deep
 
 `pluginBarrel` takes no arguments. You configure it through `output.barrel`, either on `defineConfig` to set the root barrel and the default every plugin inherits, or on a single plugin to override that plugin's barrel.
 
-| Option | Type | Default | Description |
-| ------ | ---- | ------- | ----------- |
-| [`output.barrel`](#output-barrel) | `{ type: 'all' \| 'named' } \| false` | `false` | Re-export style for the barrel files |
-| [`type`](#type) | `'all' \| 'named'` | Required | Named exports or a wildcard export |
-| [`nested`](#nested) | `boolean` | `false` | Write an `index.ts` in every subdirectory |
+::field-group
+
+:::field{name="output.barrel" type="{ type: 'all' | 'named' } | false"}
+Re-export style for the barrel files. [See details](#output-barrel).
+
+Default: `false`.
+:::
+
+:::field{name="type" type="'all' | 'named'" required}
+Named exports or a wildcard export. [See details](#type).
+
+Required; no default.
+:::
+
+:::field{name="nested" type="boolean"}
+Write an `index.ts` in every subdirectory. [See details](#nested).
+
+Default: `false`.
+:::
+
+::
 
 ### output.barrel
 
@@ -25,9 +41,7 @@ Call a plugin with no `output` at all and it uses its own default, which already
 
 Set `barrel: { type: 'named' | 'all' }` on `defineConfig` to enable barrels everywhere: a root barrel, and the default every plugin without its own `output.barrel` inherits. A plugin that sets its own `output.barrel` overrides that inherited value, including back to `false`, which also drops its files from the root barrel.
 
-| Type | Default |
-| --- | --- |
-| `{ type: 'all' \| 'named', nested?: boolean } \| false` | `false` |
+Type: `{ type: 'all' | 'named', nested?: boolean } | false`. Default: `false`.
 
 ### type
 
@@ -36,9 +50,7 @@ Export style for the barrel files. Required whenever `output.barrel` is set to a
 - `'named'` re-exports each symbol by name from the file's named exports. Best for tree-shaking and explicit imports.
 - `'all'` uses `export *`, a smaller barrel that re-exports everything.
 
-| Type | Default |
-| --- | --- |
-| `'all' \| 'named'` | Required, no default |
+Type: `'all' | 'named'`. Required, no default.
 
 ::code-group
 
@@ -62,9 +74,7 @@ export * from './api/types/User'
 
 Changes what each barrel references. A barrel is written for every directory either way. With `nested: false`, the plugin's top barrel reaches through to the leaf files. With `nested: true`, each barrel re-exports only what sits directly inside its directory, including the subdirectory barrels below it, so callers can import from any depth. This field works on a plugin's `output.barrel` only.
 
-| Type | Default |
-| --- | --- |
-| `boolean` | `false` |
+Type: `boolean`. Default: `false`.
 
 ::code-group
 

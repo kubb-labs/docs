@@ -9,21 +9,87 @@ outline: deep
 
 Options for `@kubb/plugin-axios`, which generates a type-safe HTTP client pinned to axios.
 
-| Option | Type | Default | Description |
-| ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'clients', barrel: { type: 'named' } }` | Where the generated files are written and exported |
-| [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
-| [`baseURL`](#baseurl) | `string` | — | Base URL prepended to every request |
-| [`throwOnErrorDefault`](#throwonerrordefault) | `boolean` | `true` | Default error behavior and return type for generated operations |
-| [`validator`](#validator) | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` | `false` | Validate request and response bodies with Zod |
-| [`comments`](#comments) | `'full' \| 'brief' \| 'none'` | `'full'` | How much of each description reaches the JSDoc |
-| [`sdk`](#sdk) | `{ mode?: 'tag' \| 'flat'; name?: string }` | — | Emit a class-based SDK instead of standalone functions |
-| [`returnType`](#returntype) | `'full' \| 'data'` | `'full'` | Shape of the value a generated call resolves to |
-| [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
-| [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
-| [`override`](#override) | `Array<Override>` | `[]` | Apply different options per pattern |
-| [`resolver`](#resolver) | `ResolverPatch<ResolverClient>` | — | Customize generated names and file paths |
-| [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
+::field-group
+
+:::field{name="output" type="Output"}
+Where the generated files are written and exported. [See details](#output).
+
+Default: `{ path: 'clients', barrel: { type: 'named' } }`.
+:::
+
+:::field{name="group" type="Group"}
+Split output into per-tag or per-path folders. [See details](#group).
+
+No default.
+:::
+
+:::field{name="baseURL" type="string"}
+Base URL prepended to every request. [See details](#baseurl).
+
+No default.
+:::
+
+:::field{name="throwOnErrorDefault" type="boolean"}
+Default error behavior and return type for generated operations. [See details](#throwonerrordefault).
+
+Default: `true`.
+:::
+
+:::field{name="validator" type="false | 'zod' | { request?: 'zod'; response?: 'zod' }"}
+Validate request and response bodies with Zod. [See details](#validator).
+
+Default: `false`.
+:::
+
+:::field{name="comments" type="'full' | 'brief' | 'none'"}
+How much of each description reaches the JSDoc. [See details](#comments).
+
+Default: `'full'`.
+:::
+
+:::field{name="sdk" type="{ mode?: 'tag' | 'flat'; name?: string }"}
+Emit a class-based SDK instead of standalone functions. [See details](#sdk).
+
+No default.
+:::
+
+:::field{name="returnType" type="'full' | 'data'"}
+Shape of the value a generated call resolves to. [See details](#returntype).
+
+Default: `'full'`.
+:::
+
+:::field{name="include" type="Array<Include>"}
+Keep only operations that match. [See details](#include).
+
+No default.
+:::
+
+:::field{name="exclude" type="Array<Exclude>"}
+Skip operations that match. [See details](#exclude).
+
+Default: `[]`.
+:::
+
+:::field{name="override" type="Array<Override>"}
+Apply different options per pattern. [See details](#override).
+
+Default: `[]`.
+:::
+
+:::field{name="resolver" type="ResolverPatch<ResolverClient>"}
+Customize generated names and file paths. [See details](#resolver).
+
+No default.
+:::
+
+:::field{name="macros" type="Array<Macro>"}
+Rewrite AST nodes before printing. [See details](#macros).
+
+No default.
+:::
+
+::
 
 ### output
 

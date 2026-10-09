@@ -9,22 +9,93 @@ outline: deep
 
 Options for `@kubb/plugin-vue-query`, which generates TanStack Vue Query composables from an OpenAPI spec.
 
-| Option | Type | Default | Description |
-| ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'hooks', barrel: { type: 'named' } }` | Where the generated composables are written and exported |
-| [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
-| [`client`](#client) | `'axios' \| 'fetch'` | — | Which registered client plugin the composables call |
-| [`infinite`](#infinite) | `Partial<Infinite> \| false` | `false` | Add `useInfiniteQuery` composables for paginated reads |
-| [`query`](#query) | `Partial<Query> \| false` | `{ methods: ['GET'], … }` | Configure or disable query composables |
-| [`queryKey`](#querykey) | `(props) => Array<unknown>` | `built-in` | Build the `queryKey` for each query composable |
-| [`mutation`](#mutation) | `Partial<Mutation> \| false` | `{ methods: ['POST', …], … }` | Configure or disable mutation composables |
-| [`mutationKey`](#mutationkey) | `(props) => Array<unknown>` | `built-in` | Build the `mutationKey` for each mutation composable |
-| [`hooks`](#hooks) | `boolean` | `false` | Emit `use*` composables on top of the factory helpers |
-| [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
-| [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
-| [`override`](#override) | `Array<Override>` | `[]` | Apply different options per pattern |
-| [`resolver`](#resolver) | `ResolverPatch<ResolverVueQuery>` | — | Customize generated names and file paths |
-| [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
+::field-group
+
+:::field{name="output" type="Output"}
+Where the generated composables are written and exported. [See details](#output).
+
+Default: `{ path: 'hooks', barrel: { type: 'named' } }`.
+:::
+
+:::field{name="group" type="Group"}
+Split output into per-tag or per-path folders. [See details](#group).
+
+No default.
+:::
+
+:::field{name="client" type="'axios' | 'fetch'"}
+Which registered client plugin the composables call. [See details](#client).
+
+No default.
+:::
+
+:::field{name="infinite" type="Partial<Infinite> | false"}
+Add `useInfiniteQuery` composables for paginated reads. [See details](#infinite).
+
+Default: `false`.
+:::
+
+:::field{name="query" type="Partial<Query> | false"}
+Configure or disable query composables. [See details](#query).
+
+Default: `{ methods: ['GET'], … }`.
+:::
+
+:::field{name="queryKey" type="(props) => Array<unknown>"}
+Build the `queryKey` for each query composable. [See details](#querykey).
+
+Default: `built-in`.
+:::
+
+:::field{name="mutation" type="Partial<Mutation> | false"}
+Configure or disable mutation composables. [See details](#mutation).
+
+Default: `{ methods: ['POST', …], … }`.
+:::
+
+:::field{name="mutationKey" type="(props) => Array<unknown>"}
+Build the `mutationKey` for each mutation composable. [See details](#mutationkey).
+
+Default: `built-in`.
+:::
+
+:::field{name="hooks" type="boolean"}
+Emit `use*` composables on top of the factory helpers. [See details](#hooks).
+
+Default: `false`.
+:::
+
+:::field{name="include" type="Array<Include>"}
+Keep only operations that match. [See details](#include).
+
+No default.
+:::
+
+:::field{name="exclude" type="Array<Exclude>"}
+Skip operations that match. [See details](#exclude).
+
+Default: `[]`.
+:::
+
+:::field{name="override" type="Array<Override>"}
+Apply different options per pattern. [See details](#override).
+
+Default: `[]`.
+:::
+
+:::field{name="resolver" type="ResolverPatch<ResolverVueQuery>"}
+Customize generated names and file paths. [See details](#resolver).
+
+No default.
+:::
+
+:::field{name="macros" type="Array<Macro>"}
+Rewrite AST nodes before printing. [See details](#macros).
+
+No default.
+:::
+
+::
 
 ### output
 

@@ -9,21 +9,87 @@ outline: deep
 
 Configure `@kubb/plugin-faker` by passing these options to `pluginFaker()`, all of them optional.
 
-| Option | Type | Default | Description |
-| ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'mocks', barrel: { type: 'named' } }` | Where the generated files are written and exported |
-| [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
-| [`typeMode`](#typemode) | `'inferred' \| 'schema'` | `'inferred'` | Type object and intersection factories from generated values or the declared model |
-| [`dateParser`](#dateparser) | `'faker' \| 'dayjs' \| 'moment' \| string` | `'faker'` | Library that formats string date and time fields |
-| [`regexGenerator`](#regexgenerator) | `'faker' \| 'randexp'` | `'faker'` | Library that turns a regex `pattern` into a string |
-| [`locale`](#locale) | `string` | `'en'` | Faker locale code for the generated values |
-| [`seed`](#seed) | `number \| number[]` | — | Value passed to `faker.seed(...)` for deterministic output |
-| [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
-| [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
-| [`override`](#override) | `Array<Override>` | `[]` | Apply different options per pattern |
-| [`resolver`](#resolver) | `ResolverPatch<ResolverFaker>` | — | Customize generated names and file paths |
-| [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
-| [`printer`](#printer) | `{ nodes?: PrinterFakerNodes }` | — | Replace the handler for a schema type |
+::field-group
+
+:::field{name="output" type="Output"}
+Where the generated files are written and exported. [See details](#output).
+
+Default: `{ path: 'mocks', barrel: { type: 'named' } }`.
+:::
+
+:::field{name="group" type="Group"}
+Split output into per-tag or per-path folders. [See details](#group).
+
+No default.
+:::
+
+:::field{name="typeMode" type="'inferred' | 'schema'"}
+Type object and intersection factories from generated values or the declared model. [See details](#typemode).
+
+Default: `'inferred'`.
+:::
+
+:::field{name="dateParser" type="'faker' | 'dayjs' | 'moment' | string"}
+Library that formats string date and time fields. [See details](#dateparser).
+
+Default: `'faker'`.
+:::
+
+:::field{name="regexGenerator" type="'faker' | 'randexp'"}
+Library that turns a regex `pattern` into a string. [See details](#regexgenerator).
+
+Default: `'faker'`.
+:::
+
+:::field{name="locale" type="string"}
+Faker locale code for the generated values. [See details](#locale).
+
+Default: `'en'`.
+:::
+
+:::field{name="seed" type="number | number[]"}
+Value passed to `faker.seed(...)` for deterministic output. [See details](#seed).
+
+No default.
+:::
+
+:::field{name="include" type="Array<Include>"}
+Keep only operations that match. [See details](#include).
+
+No default.
+:::
+
+:::field{name="exclude" type="Array<Exclude>"}
+Skip operations that match. [See details](#exclude).
+
+Default: `[]`.
+:::
+
+:::field{name="override" type="Array<Override>"}
+Apply different options per pattern. [See details](#override).
+
+Default: `[]`.
+:::
+
+:::field{name="resolver" type="ResolverPatch<ResolverFaker>"}
+Customize generated names and file paths. [See details](#resolver).
+
+No default.
+:::
+
+:::field{name="macros" type="Array<Macro>"}
+Rewrite AST nodes before printing. [See details](#macros).
+
+No default.
+:::
+
+:::field{name="printer" type="{ nodes?: PrinterFakerNodes }"}
+Replace the handler for a schema type. [See details](#printer).
+
+No default.
+:::
+
+::
 
 ### output
 

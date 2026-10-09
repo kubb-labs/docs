@@ -9,18 +9,69 @@ outline: deep
 
 Every option below is a key on `pluginMsw({ ... })`.
 
-| Option | Type | Default | Description |
-| ------ | ---- | ------- | ----------- |
-| [`output`](#output) | `Output` | `{ path: 'handlers', barrel: { type: 'named' } }` | Where the generated files are written and exported |
-| [`group`](#group) | `Group` | — | Split output into per-tag or per-path folders |
-| [`baseURL`](#baseurl) | `string` | — | Base URL prepended to every handler's request |
-| [`handlers`](#handlers) | `boolean` | `false` | Emit a `handlers.ts` that re-exports every handler |
-| [`parser`](#parser) | `'data' \| 'faker'` | `'data'` | Source of the response body each handler returns |
-| [`include`](#include) | `Array<Include>` | — | Keep only operations that match |
-| [`exclude`](#exclude) | `Array<Exclude>` | `[]` | Skip operations that match |
-| [`override`](#override) | `Array<Override>` | `[]` | Apply different options per pattern |
-| [`resolver`](#resolver) | `ResolverPatch<ResolverMsw>` | — | Customize generated names and file paths |
-| [`macros`](#macros) | `Array<Macro>` | — | Rewrite AST nodes before printing |
+::field-group
+
+:::field{name="output" type="Output"}
+Where the generated files are written and exported. [See details](#output).
+
+Default: `{ path: 'handlers', barrel: { type: 'named' } }`.
+:::
+
+:::field{name="group" type="Group"}
+Split output into per-tag or per-path folders. [See details](#group).
+
+No default.
+:::
+
+:::field{name="baseURL" type="string"}
+Base URL prepended to every handler's request. [See details](#baseurl).
+
+No default.
+:::
+
+:::field{name="handlers" type="boolean"}
+Emit a `handlers.ts` that re-exports every handler. [See details](#handlers).
+
+Default: `false`.
+:::
+
+:::field{name="parser" type="'data' | 'faker'"}
+Source of the response body each handler returns. [See details](#parser).
+
+Default: `'data'`.
+:::
+
+:::field{name="include" type="Array<Include>"}
+Keep only operations that match. [See details](#include).
+
+No default.
+:::
+
+:::field{name="exclude" type="Array<Exclude>"}
+Skip operations that match. [See details](#exclude).
+
+Default: `[]`.
+:::
+
+:::field{name="override" type="Array<Override>"}
+Apply different options per pattern. [See details](#override).
+
+Default: `[]`.
+:::
+
+:::field{name="resolver" type="ResolverPatch<ResolverMsw>"}
+Customize generated names and file paths. [See details](#resolver).
+
+No default.
+:::
+
+:::field{name="macros" type="Array<Macro>"}
+Rewrite AST nodes before printing. [See details](#macros).
+
+No default.
+:::
+
+::
 
 ### output
 

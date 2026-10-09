@@ -66,6 +66,16 @@ This repo contains only content — no build step, no npm install, no test suite
 - Keep paragraphs short — 2-3 sentences.
 - Explain before showing code.
 
+Pages render with Nuxt Content and Nuxt UI's Markdown components. Use the existing components where they help readers:
+
+- `::field-group` with nested `:::field{name="option" type="string"}` for option overviews. Include the default and a link to the detailed heading. Add `required` only when the option is required.
+- `::steps{level="2"}` for sequential tutorials, with an H2 for each step. Keep existing heading anchors with `{#id}` when changing a heading.
+- `::card-group` with nested `:::card{title="Title" to="/path"}` for next steps and related guides.
+- `::code-group` for alternative code examples, and `::file-tree` for generated directory structures.
+- GitHub alerts (`> [!NOTE]`, `> [!TIP]`, `> [!WARNING]`, and `> [!IMPORTANT]`) for context and cautions. The site renders them as callouts.
+
+Close nested components with `:::` and their enclosing group with `::`. Keep comparison tables when readers need to compare values across columns.
+
 See `.agents/skills/documentation/SKILL.md` for the full writing guide, and `.claude/rules/` for
 the USA English and humanizer conventions.
 

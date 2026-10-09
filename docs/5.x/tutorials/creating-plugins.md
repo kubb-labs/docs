@@ -296,7 +296,10 @@ The dry run should list `dist/index.js`, `dist/index.d.ts`, `dist/plugin.js`, an
 
 ## Publish {#_8-publish}
 
-Add a README showing installation and `pluginExample({ prefix: 'API: ' })` in a Kubb config. Choose a license and include its file. Review the tarball and confirm the package name and version before publishing to npm.
+Add a README showing installation and `pluginExample({ prefix: 'API: ' })` in a Kubb config. Choose a license and include its file.
+
+> [!IMPORTANT]
+> Review the tarball and confirm the package name and version before publishing to npm.
 
 When you are ready, sign in to your npm account and publish:
 
@@ -307,10 +310,22 @@ npm publish --access public
 
 Consumers install your package as a development dependency and import its factory from the package name, rather than from `./src/plugin`.
 
+::
+
 ## See also
 
-- [Extension model](/docs/5.x/explanation/extensions)
-- [Plugin API](/docs/5.x/reference/kit/plugins)
-- [Lifecycle hooks](/docs/5.x/reference/kit/hooks)
+::card-group
+
+:::card{title="Extension model" icon="i-iconoir-ev-plug" to="/docs/5.x/explanation/extensions"}
+Understand how adapters, plugins, and parsers fit together.
+:::
+
+:::card{title="Plugin API" icon="i-iconoir-code" to="/docs/5.x/reference/kit/plugins"}
+Look up plugin options and authoring APIs.
+:::
+
+:::card{title="Lifecycle hooks" icon="i-iconoir-bookmark" to="/docs/5.x/reference/kit/hooks"}
+Find the hooks available during a build.
+:::
 
 ::
