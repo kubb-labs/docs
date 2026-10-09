@@ -7,7 +7,7 @@ outline: deep
 
 # Options
 
-Options for `pluginCypress`, with type and default in the table.
+Options for `pluginCypress`, with each option's type and default listed below.
 
 ::field-group
 

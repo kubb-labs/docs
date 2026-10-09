@@ -11,10 +11,10 @@ Pass these options to `pluginClient()` to control what it generates and where th
 
 ::field-group
 
-:::field{name="importPath" type="string"}
+:::field{name="importPath" type="string" required}
 Import specifier of your client module. [See details](#importpath).
 
-Default: required.
+Required; no default.
 :::
 
 :::field{name="output" type="Output"}
