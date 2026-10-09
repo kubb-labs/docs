@@ -22,8 +22,6 @@ Kubb v5 already ships a built-in MCP server, so AI assistants can drive code gen
 
 ## Install
 
-Install Kubb, then add the repository as a marketplace and install the plugin:
-
 ::steps
 
 ### Install Kubb

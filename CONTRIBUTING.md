@@ -79,7 +79,7 @@ Pages render with Nuxt Content and Nuxt UI's Markdown components. Reuse the same
 | Destructive actions | `> [!CAUTION]` | Explain what the action removes or changes. |
 | Linked context | `::callout` | Set `to`, `icon`, and `color` when the whole callout links to another page. |
 | Sequential instructions | `::steps{level="2"}` | Use an H2 for each step and keep existing anchors with `{#id}`. |
-| Related guides and next steps | `::card-group` and `:::card` | Set `title` and `to`, with a short description in the body. |
+| Related guides and next steps | `::card-group` and `:::card` | Set `title` and `to`. Add a short description in the body when the title alone does not say what the page covers. |
 | Alternative code examples | `::code-group` | Label every fence. Use `sync="package-manager"` for package manager alternatives. |
 | Alternative workflows | `::tabs` and `:::tabs-item` | Give each item a `label`. Keep required instructions outside the tabs. |
 | Generated directory structures | `::file-tree` | Supply the `tree` array as YAML component props, with `name`, `type`, and optional `children`. |

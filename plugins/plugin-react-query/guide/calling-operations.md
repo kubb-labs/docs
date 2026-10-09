@@ -90,10 +90,6 @@ pluginReactQuery({
 
 ## Load more pages
 
-::tabs
-
-:::tabs-item{label="Configure"}
-
 Configure [`infinite`](/plugins/plugin-react-query/reference/options#infinite) with a query parameter declared by the operation, its initial value, and the response path for the next cursor.
 
 ```typescript [kubb.config.ts]
@@ -111,10 +107,6 @@ pluginReactQuery({
 
 Only operations with a `page` query parameter receive infinite-query output. Change `nextParam` to match your API's response.
 
-:::
-
-:::tabs-item{label="Usage"}
-
 Use the generated factory with TanStack Query:
 
 ```typescript [usage.ts]
@@ -125,10 +117,6 @@ const { data, fetchNextPage, hasNextPage } = useInfiniteQuery(
   findPetsByTagsInfiniteQueryOptions({ query: { tags: ['dog'] } }),
 )
 ```
-
-:::
-
-::
 
 ## Use suspense
 
@@ -152,10 +140,6 @@ const { data } = useGetPetByIdSuspense({ path: { petId: 1n } })
 
 ## Share hook options
 
-::tabs
-
-:::tabs-item{label="Configure"}
-
 Set [`customOptions`](/plugins/plugin-react-query/reference/options#customoptions) to call one options function from every generated hook.
 
 ```typescript [kubb.config.ts]
@@ -169,10 +153,6 @@ pluginReactQuery({
   },
 })
 ```
-
-:::
-
-:::tabs-item{label="Shared options"}
 
 Place the function where the generated import resolves. Each hook passes `{ hookName, operationId }`. The generated barrel re-exports `HookOptions`.
 
@@ -188,9 +168,5 @@ export function useCustomHookOptions(
   return {}
 }
 ```
-
-:::
-
-::
 
 Per-call query options override shared options.
