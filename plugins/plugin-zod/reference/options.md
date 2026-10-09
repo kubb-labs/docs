@@ -74,8 +74,17 @@ Folder where the plugin writes its files, resolved against the global `output.pa
 
 How the plugin consolidates generated code into files.
 
-- `'file'` writes everything into a single file, so `output.path` must include the file extension (for example `'zod.ts'`).
-- `'directory'` writes one file per operation or schema under `output.path`.
+::field-group
+
+:::field{name="'file'"}
+Writes everything into a single file, so `output.path` must include the file extension (for example `'zod.ts'`).
+:::
+
+:::field{name="'directory'"}
+Writes one file per operation or schema under `output.path`.
+:::
+
+::
 
 Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 
@@ -163,9 +172,21 @@ Wraps schemas in `z.coerce` so input is coerced before validation, for form data
 | Required | `false` |
 | Default | `false` |
 
-- `true` coerces strings, numbers, and dates.
-- `false` (default) coerces nothing and validates strictly.
-- An object picks which primitives to coerce.
+::field-group
+
+:::field{name="true"}
+Coerces strings, numbers, and dates.
+:::
+
+:::field{name="false"}
+Default value. Coerces nothing and validates strictly.
+:::
+
+:::field{name="Object"}
+Use `{ dates?, strings?, numbers? }` to choose which primitives to coerce.
+:::
+
+::
 
 See [Coercion for primitives](https://zod.dev/?id=coercion-for-primitives).
 
@@ -190,8 +211,17 @@ Validator used for OpenAPI properties with `format: uuid`.
 | Required | `false` |
 | Default | `'uuid'` |
 
-- `'uuid'` (default) generates `z.uuid()`, a standard RFC 4122 UUID.
-- `'guid'` generates `z.guid()`, which is looser and accepts Microsoft-style GUIDs.
+::field-group
+
+:::field{name="'uuid'"}
+Default value. Generates `z.uuid()`, a standard RFC 4122 UUID.
+:::
+
+:::field{name="'guid'"}
+Generates `z.guid()`, which is looser and accepts Microsoft-style GUIDs.
+:::
+
+::
 
 ### regexType
 
@@ -203,8 +233,17 @@ Controls how an OpenAPI `pattern` is written inside `.regex(...)`.
 | Required | `false` |
 | Default | `'literal'` |
 
-- `'literal'` (default) emits a regex literal, such as `.regex(/^[a-z]+$/)`.
-- `'constructor'` emits the `RegExp` constructor, such as `.regex(new RegExp('^[a-z]+$'))`.
+::field-group
+
+:::field{name="'literal'"}
+Default value. Emits a regex literal, such as `.regex(/^[a-z]+$/)`.
+:::
+
+:::field{name="'constructor'"}
+Emits the `RegExp` constructor, such as `.regex(new RegExp('^[a-z]+$'))`.
+:::
+
+::
 
 Use `'constructor'` when a regex literal breaks your build or you need a string pattern.
 
@@ -218,9 +257,21 @@ Wraps schemas in `z.compile(...)` to generate validation code instead of interpr
 | Required | `false` |
 | Default | `false` |
 
-- `true` compiles schemas using `z.compile(...)`.
-- `false` (default) leaves schemas uncompiled.
-- `{ strict: true }` passes `{ strict: true }` to `z.compile(...)`, which throws an error if any part of the schema cannot be compiled into flat JavaScript, preventing silent fallback to the interpreter.
+::field-group
+
+:::field{name="true"}
+Compiles schemas using `z.compile(...)`.
+:::
+
+:::field{name="false"}
+Default value. Leaves schemas uncompiled.
+:::
+
+:::field{name="{ strict: true }"}
+Passes `{ strict: true }` to `z.compile(...)`, which throws an error if any part of the schema cannot be compiled into flat JavaScript, preventing silent fallback to the interpreter.
+:::
+
+::
 
 > [!NOTE]
 > `compile` requires **Zod v4.5.0 or higher**. Schemas with circular references (`z.lazy`) and bare `$ref` response aliases are automatically kept uncompiled to prevent runtime errors.
@@ -281,9 +332,21 @@ z.array(z.string()).check(z.minLength(1), z.maxLength(10))
 
 Generates TypeScript type guards (`is*`) and assertion functions (`assert*`) for schemas using Zod v4's native `validate` API.
 
-- `true`: Generates both `is<Schema>` type guards and `assert<Schema>` assertion functions.
-- `{ is?: boolean; assert?: boolean }`: Selectively enables type guards or assertions.
-- `false` (default): Generates only the Zod schemas.
+::field-group
+
+:::field{name="true"}
+Generates both `is<Schema>` type guards and `assert<Schema>` assertion functions.
+:::
+
+:::field{name="{ is?: boolean; assert?: boolean }"}
+Selectively enables type guards or assertions.
+:::
+
+:::field{name="false"}
+Default value. Generates only the Zod schemas.
+:::
+
+::
 
 ```typescript
 pluginZod({

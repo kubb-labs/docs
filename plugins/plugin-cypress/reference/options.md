@@ -53,8 +53,17 @@ Folder where the plugin writes its files, resolved against the global `output.pa
 
 How the plugin consolidates its generated code into files.
 
-- `'file'` writes everything into a single file. The `output.path` must include the file extension (for example `'cypress.ts'`).
-- `'directory'` writes one file per operation or schema under `output.path`.
+::field-group
+
+:::field{name="'file'"}
+Writes everything into a single file. The `output.path` must include the file extension (for example `'cypress.ts'`).
+:::
+
+:::field{name="'directory'"}
+Writes one file per operation or schema under `output.path`.
+:::
+
+::
 
 Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 

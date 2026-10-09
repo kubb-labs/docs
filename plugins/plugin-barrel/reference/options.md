@@ -41,8 +41,17 @@ Set `barrel: { type: 'named' | 'all' }` on `defineConfig` to enable barrels ever
 
 Export style for the barrel files. Required whenever `output.barrel` is set to an object.
 
-- `'named'` re-exports each symbol by name from the file's named exports. Best for tree-shaking and explicit imports.
-- `'all'` uses `export *`, a smaller barrel that re-exports everything.
+::field-group
+
+:::field{name="'named'"}
+Re-exports each symbol by name from the file's named exports. Best for tree-shaking and explicit imports.
+:::
+
+:::field{name="'all'"}
+Uses `export *`, a smaller barrel that re-exports everything.
+:::
+
+::
 
 | | |
 | --- | --- |

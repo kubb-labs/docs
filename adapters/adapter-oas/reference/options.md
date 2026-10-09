@@ -77,10 +77,17 @@ How `discriminator` fields on `oneOf`/`anyOf` schemas are interpreted.
 | Required | `false` |
 | Default | `'preserve'` |
 
-| Value | Behavior |
-| --- | --- |
-| `'preserve'` (default) | Keeps child schemas exactly as written, though the discriminator still narrows types at the call site. |
-| `'propagate'` | Pushes the discriminator property with its literal value into each child schema, so each branch's `type` field is precisely typed. |
+::field-group
+
+:::field{name="'preserve'"}
+Default value. Keeps child schemas exactly as written, though the discriminator still narrows types at the call site.
+:::
+
+:::field{name="'propagate'"}
+Pushes the discriminator property with its literal value into each child schema, so each branch's `type` field is precisely typed.
+:::
+
+::
 
 ::code-group
 
@@ -135,10 +142,17 @@ Where inline enums live.
 | Required | `false` |
 | Default | `'inline'` |
 
-| Value | Behavior |
-| --- | --- |
-| `'inline'` (default) | Keeps each enum on the property that declares it. |
-| `'root'` | Lifts every inline enum to a reusable top-level schema named after its context (for example `PetStatusEnum`) and references it wherever it appears. |
+::field-group
+
+:::field{name="'inline'"}
+Default value. Keeps each enum on the property that declares it.
+:::
+
+:::field{name="'root'"}
+Lifts every inline enum to a reusable top-level schema named after its context (for example `PetStatusEnum`) and references it wherever it appears.
+:::
+
+::
 
 For an enum with values `active` and `inactive` on `Pet.status`:
 
@@ -167,13 +181,29 @@ How `date-time`, `date`, and `time` schemas are represented downstream.
 
 Pass a single value to apply it to all three formats:
 
-| Value | Representation |
-| --- | --- |
-| `false` | A plain `string` with no validation. |
-| `'string'` (default) | An ISO 8601 string. |
-| `'stringOffset'` | A datetime string with a timezone offset. `date-time` only; `date` and `time` fall back to `'string'`. |
-| `'stringLocal'` | A local datetime string with no timezone. `date-time` only; `date` and `time` fall back to `'string'`. |
-| `'date'` | A JavaScript `Date`, best for client code, though JSON needs parsing to revive it. |
+::field-group
+
+:::field{name="false"}
+Represents date and time values as plain strings without format validation.
+:::
+
+:::field{name="'string'"}
+Default value. Represents `date-time`, `date`, and `time` as ISO 8601 strings. The generated TypeScript type is `string`.
+:::
+
+:::field{name="'stringOffset'"}
+Represents `date-time` as a string with a timezone offset. The `date` and `time` formats fall back to `'string'`.
+:::
+
+:::field{name="'stringLocal'"}
+Represents `date-time` as a local string without a timezone. The `date` and `time` formats fall back to `'string'`.
+:::
+
+:::field{name="'date'"}
+Represents date and time values as JavaScript `Date` objects. JSON values need parsing to revive them as `Date` objects.
+:::
+
+::
 
 The string variants all emit `string` at the TypeScript type level. The offset and local distinction surfaces in schema output such as Zod.
 
@@ -199,20 +229,45 @@ How `type: integer` (and `format: int64`) maps to TypeScript.
 | Required | `false` |
 | Default | `'bigint'` |
 
-- `'bigint'` (default) is exact for 64-bit IDs, but `JSON.stringify` and `JSON.parse` cannot round-trip it. Use it only when you handle bigint serialization yourself.
-- `'number'` fits most JSON APIs. It loses precision above `Number.MAX_SAFE_INTEGER`.
+::field-group
+
+:::field{name="'bigint'"}
+Default value. Represents 64-bit IDs exactly, but `JSON.stringify` and `JSON.parse` cannot round-trip it. Use it only when you handle bigint serialization yourself.
+:::
+
+:::field{name="'number'"}
+Fits most JSON APIs. It loses precision above `Number.MAX_SAFE_INTEGER`.
+:::
+
+::
 
 This option only applies to schemas that declare a numeric type. A schema that declares `type: string` stays a `string` whatever its format, so the `{ type: 'string', format: 'int64' }` that gRPC-gateway and other [ProtoJSON](https://protobuf.dev/programming-guides/json/#int64-strings) producers emit generates a `string`. `@kubb/plugin-zod` validates those fields with a digits `.regex(...)` and `@kubb/plugin-faker` mocks them with a numeric string.
 
 ### unknownType
 
-AST type used when a schema's type cannot be inferred from the spec (`additionalProperties: true`, a missing `type`, and similar). Pick `'unknown'` to force callers to narrow before using the value, `'any'` for the loosest option, or `'void'` to match some legacy APIs.
+AST type used when a schema's type cannot be inferred from the spec (`additionalProperties: true`, a missing `type`, and similar).
 
 | | |
 | --- | --- |
 | Type | `'any' \| 'unknown' \| 'void'` |
 | Required | `false` |
 | Default | `'unknown'` |
+
+::field-group
+
+:::field{name="'unknown'"}
+Requires callers to narrow the value before using it.
+:::
+
+:::field{name="'any'"}
+Allows callers to use the value without type checking.
+:::
+
+:::field{name="'void'"}
+Represents a value callers should not use. Choose it when matching a legacy API that uses `void`.
+:::
+
+::
 
 ### emptySchemaType
 
@@ -223,6 +278,22 @@ AST type used for fully empty schemas (`{}`). It follows `unknownType` unless yo
 | Type | `'any' \| 'unknown' \| 'void'` |
 | Required | `false` |
 | Default | `unknownType` (`'unknown'` by default) |
+
+::field-group
+
+:::field{name="'unknown'"}
+Requires callers to narrow the value before using it.
+:::
+
+:::field{name="'any'"}
+Allows callers to use the value without type checking.
+:::
+
+:::field{name="'void'"}
+Represents a value callers should not use. Choose it when matching a legacy API that uses `void`.
+:::
+
+::
 
 > [!TIP]
 > A common pairing sets `unknownType: 'unknown'` for safety and `emptySchemaType: 'any'` so empty 204 response bodies stay easy to use.

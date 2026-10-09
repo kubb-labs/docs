@@ -57,7 +57,21 @@ Folder where the plugin writes its files, resolved against the global `output.pa
 
 #### output.mode
 
-How the plugin consolidates generated code. `'file'` writes everything into a single file, where `output.path` must include the extension such as `'mocks.ts'`. `'directory'` writes one file per operation or schema under `output.path`. Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
+How generated code is consolidated into files.
+
+::field-group
+
+:::field{name="'file'"}
+Writes everything into a single file. `output.path` must include a file extension. This mode cannot be combined with `group`.
+:::
+
+:::field{name="'directory'"}
+Writes separate files under `output.path`. Use `group` to organize them into subdirectories.
+:::
+
+::
+
+Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 
 > [!IMPORTANT]
 > `group` requires directory output. Kubb infers the mode from `output.path`. Set `mode: 'directory'` to override that inference. Combining `group` with `mode: 'file'` stops generation with `KUBB_INVALID_PLUGIN_OPTIONS`.
@@ -91,13 +105,25 @@ Function `(context: { group: string }) => string` that turns a group key into th
 
 ### typeMode
 
-Controls the input and return types of object and intersection factories. The default `'inferred'` mode derives the return type from generated values and supplied overrides. Generated optional or nullable fields keep their concrete value types, and overrides preserve literal types.
+Controls the input and return types of object and intersection factories.
 
 | | |
 | --- | --- |
 | Type | `'inferred' \| 'schema'` |
 | Required | `false` |
 | Default | `'inferred'` |
+
+::field-group
+
+:::field{name="'inferred'"}
+Default value. Derives return types from generated values and supplied overrides. Optional and nullable fields retain their concrete value types, and overrides preserve literal types.
+:::
+
+:::field{name="'schema'"}
+Accepts `Partial<Model>` and returns the declared model type, including optional and nullable fields. Use it for fixtures you modify after creation.
+:::
+
+::
 
 ```typescript [Inferred mode (default)]
 pluginFaker({ typeMode: 'inferred' })
@@ -110,8 +136,6 @@ const complete: true = order.complete
 // TypeScript error: false is not assignable to true.
 order.complete = false
 ```
-
-Use `'schema'` for object and intersection fixtures you modify after creation. Their factories accept `Partial<Model>` and return the declared model type, including its optional and nullable fields.
 
 ```typescript [Schema mode]
 pluginFaker({ typeMode: 'schema' })
@@ -152,6 +176,26 @@ Library used to format `date` and `time` fields represented as strings. Pick a v
 | Required | `false` |
 | Default | `'faker'` |
 
+::field-group
+
+:::field{name="'faker'"}
+Default value. Uses Faker to generate date and time strings.
+:::
+
+:::field{name="'dayjs'"}
+Formats generated date and time values with Day.js. Install `dayjs` in the consuming app.
+:::
+
+:::field{name="'moment'"}
+Formats generated date and time values with Moment. Install `moment` in the consuming app.
+:::
+
+:::field{name="Custom module"}
+Pass a module name exporting a default formatting function. Kubb adds the import to generated files.
+:::
+
+::
+
 A string `date` field renders differently per parser:
 
 ::code-group
@@ -180,13 +224,25 @@ Install `dayjs` in the consuming app. Generated `date` and `time` strings use `Y
 
 ### regexGenerator
 
-Library used to generate strings that satisfy a regex `pattern` keyword in the spec. The default `'faker'` emits `faker.helpers.fromRegExp(pattern)` and needs no extra dependency. `'randexp'` emits `new RandExp(pattern).gen()`, which supports a wider regex grammar but adds the `randexp` runtime dependency.
+Library used to generate strings that satisfy a regex `pattern` in the spec.
 
 | | |
 | --- | --- |
 | Type | `'faker' \| 'randexp'` |
 | Required | `false` |
 | Default | `'faker'` |
+
+::field-group
+
+:::field{name="'faker'"}
+Default value. Generates `faker.helpers.fromRegExp(pattern)` without an extra dependency.
+:::
+
+:::field{name="'randexp'"}
+Generates `new RandExp(pattern).gen()`. Supports a wider regex grammar and requires the `randexp` runtime dependency.
+:::
+
+::
 
 ### locale
 

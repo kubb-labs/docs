@@ -62,8 +62,17 @@ Folder where the plugin writes its files (`string`, default `'types'`), resolved
 
 How generated code is consolidated into files.
 
-- `'file'` writes everything into a single file, so `output.path` needs a file extension such as `'types.ts'`.
-- `'directory'` writes one file per operation or schema under `output.path`.
+::field-group
+
+:::field{name="'file'"}
+Writes everything into a single file, so `output.path` needs a file extension such as `'types.ts'`.
+:::
+
+:::field{name="'directory'"}
+Writes one file per operation or schema under `output.path`.
+:::
+
+::
 
 Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 
@@ -108,11 +117,29 @@ How OpenAPI enums are represented in the generated TypeScript, and how their nam
 
 Representation of each enum. Defaults to `'asConst'`.
 
-- `'asConst'` emits an `as const` object plus a key/value type. Tree-shakeable, with no runtime.
-- `'enum'` emits a TypeScript `enum` with JavaScript runtime code.
-- `'constEnum'` emits a `const enum`, inlined at compile time and incompatible with `--isolatedModules`.
-- `'literal'` emits a union type with no runtime value.
-- `'inlineLiteral'` inlines the union at each usage site instead of giving it a name.
+::field-group
+
+:::field{name="'asConst'"}
+Emits an `as const` object plus a key/value type. Tree-shakeable, with no runtime.
+:::
+
+:::field{name="'enum'"}
+Emits a TypeScript `enum` with JavaScript runtime code.
+:::
+
+:::field{name="'constEnum'"}
+Emits a `const enum`, inlined at compile time and incompatible with `--isolatedModules`.
+:::
+
+:::field{name="'literal'"}
+Emits a union type with no runtime value.
+:::
+
+:::field{name="'inlineLiteral'"}
+Inlines the union at each usage site instead of giving it a name.
+:::
+
+::
 
 ::code-group
 
@@ -156,8 +183,17 @@ export type PetStatus = 'available' | 'pending' | 'sold'
 
 Casing of the generated const variable when `type` is `'asConst'`. Defaults to `'camelCase'`.
 
-- `'camelCase'` names the const `petStatus`.
-- `'pascalCase'` names the const `PetStatus`, matching the schema name.
+::field-group
+
+:::field{name="'camelCase'"}
+Names the const `petStatus`.
+:::
+
+:::field{name="'pascalCase'"}
+Names the const `PetStatus`, matching the schema name.
+:::
+
+::
 
 ::code-group
 
@@ -225,23 +261,51 @@ export type PetStatus = (typeof petStatus)[keyof typeof petStatus]
 
 Casing applied to enum key names, `'none'` by default (the raw value from the spec).
 
-| Value                  | Example key  |
-| ---------------------- | ------------ |
-| `'screamingSnakeCase'` | `ENUM_VALUE` |
-| `'snakeCase'`          | `enum_value` |
-| `'pascalCase'`         | `EnumValue`  |
-| `'camelCase'`          | `enumValue`  |
-| `'none'` (default)     | as-is        |
+::field-group
+
+:::field{name="'screamingSnakeCase'"}
+Formats keys in screaming snake case, such as `ENUM_VALUE`.
+:::
+
+:::field{name="'snakeCase'"}
+Formats keys in snake case, such as `enum_value`.
+:::
+
+:::field{name="'pascalCase'"}
+Formats keys in PascalCase, such as `EnumValue`.
+:::
+
+:::field{name="'camelCase'"}
+Formats keys in camelCase, such as `enumValue`.
+:::
+
+:::field{name="'none'"}
+Default value. Keeps the raw enum value from the spec as the key.
+:::
+
+::
 
 ### syntaxType
 
-Whether object schemas are emitted as `type` aliases or `interface` declarations, with `type` as the safer default. Pick `interface` only when consumers need declaration merging, which is rare for generated code and covered in [Type vs Interface](https://www.totaltypescript.com/type-vs-interface-which-should-you-use).
+How object schemas are declared.
 
 | | |
 | --- | --- |
 | Type | `'type' \| 'interface'` |
 | Required | `false` |
 | Default | `'type'` |
+
+::field-group
+
+:::field{name="'type'"}
+Default value. Generates type aliases.
+:::
+
+:::field{name="'interface'"}
+Generates interface declarations. Use this when consumers need declaration merging. See [Type vs Interface](https://www.totaltypescript.com/type-vs-interface-which-should-you-use).
+:::
+
+::
 
 ::code-group
 
@@ -269,9 +333,21 @@ How optional properties are written. Defaults to `'questionToken'`.
 | Required | `false` |
 | Default | `'questionToken'` |
 
-- `'questionToken'` writes `type?: string`, so the property may be missing.
-- `'undefined'` writes `type: string | undefined`, so it must exist but may be `undefined`.
-- `'questionTokenAndUndefined'` writes `type?: string | undefined`, the strictest form. Use it with `"exactOptionalPropertyTypes": true`.
+::field-group
+
+:::field{name="'questionToken'"}
+Writes `type?: string`, so the property may be missing.
+:::
+
+:::field{name="'undefined'"}
+Writes `type: string | undefined`, so it must exist but may be `undefined`.
+:::
+
+:::field{name="'questionTokenAndUndefined'"}
+Writes `type?: string | undefined`, the strictest form. Use it with `"exactOptionalPropertyTypes": true`.
+:::
+
+::
 
 ::code-group
 
@@ -305,8 +381,17 @@ Syntax for array types. Defaults to `'array'`.
 | Required | `false` |
 | Default | `'array'` |
 
-- `'array'` uses the postfix `Type[]`.
-- `'generic'` uses `Array<Type>`, which reads better for complex elements like `Array<{ id: number }>`.
+::field-group
+
+:::field{name="'array'"}
+Uses the postfix `Type[]`.
+:::
+
+:::field{name="'generic'"}
+Uses `Array<Type>`, which reads better for complex elements like `Array<{ id: number }>`.
+:::
+
+::
 
 ::code-group
 

@@ -60,7 +60,21 @@ Folder where the plugin writes its files, defaulting to `'clients'` and resolved
 
 #### output.mode
 
-`'file'` writes everything into a single file whose `output.path` must include the extension. `'directory'` writes one file per operation under `output.path`. Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
+How generated code is consolidated into files.
+
+::field-group
+
+:::field{name="'file'"}
+Writes everything into a single file. `output.path` must include a file extension. This mode cannot be combined with `group`.
+:::
+
+:::field{name="'directory'"}
+Writes separate files under `output.path`. Use `group` to organize them into subdirectories.
+:::
+
+::
+
+Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 
 > [!IMPORTANT]
 > `group` requires directory output. Kubb infers the mode from `output.path`. Set `mode: 'directory'` to override that inference. Combining `group` with `mode: 'file'` stops generation with `KUBB_INVALID_PLUGIN_OPTIONS`.
@@ -122,13 +136,29 @@ This setting applies to the whole plugin and cannot be set in `override`. Genera
 
 ### validator
 
-Validates request and response bodies with schemas from `@kubb/plugin-zod`, which you add to the plugins list when either direction is `'zod'`. `false` (the default) skips validation and returns the response cast to the generated type. `'zod'` validates the success response body, plus the error body when a non-2xx call does not throw. `{ request?: 'zod', response?: 'zod' }` opts in per direction, and with validation on the generated function throws a `ParseError` on invalid data.
+Validates request and response bodies using schemas from `@kubb/plugin-zod`. Add `pluginZod()` when either direction uses `'zod'`. Invalid bodies cause the generated function to throw a `ParseError`.
 
 | | |
 | --- | --- |
 | Type | `false \| 'zod' \| { request?: 'zod'; response?: 'zod' }` |
 | Required | `false` |
 | Default | `false` |
+
+::field-group
+
+:::field{name="false"}
+Default value. Skips validation and casts the response to the generated type.
+:::
+
+:::field{name="'zod'"}
+Validates the success response body and, when a non-2xx call does not throw, the error body.
+:::
+
+:::field{name="Object"}
+Use `{ request?: 'zod', response?: 'zod' }` to enable validation separately for requests and responses.
+:::
+
+::
 
 Add the schema plugin alongside the client. The following configuration validates both directions:
 
@@ -151,7 +181,7 @@ export default defineConfig({
 
 ### comments
 
-Controls generated JSDoc. `'full'` (default) keeps complete descriptions. `'brief'` keeps the first sentence and other tags. Descriptions over 150 characters without a sentence ending are cut at the last word before 120. `'none'` omits JSDoc but keeps the generated-by banner.
+Controls generated JSDoc.
 
 | | |
 | --- | --- |
@@ -159,14 +189,42 @@ Controls generated JSDoc. `'full'` (default) keeps complete descriptions. `'brie
 | Required | `false` |
 | Default | `'full'` |
 
+::field-group
+
+:::field{name="'full'"}
+Default value. Keeps complete descriptions and tags.
+:::
+
+:::field{name="'brief'"}
+Keeps the first sentence and other tags. Descriptions over 150 characters without a sentence ending are cut at the last word before 120.
+:::
+
+:::field{name="'none'"}
+Omits JSDoc but keeps the generated-by banner.
+:::
+
+::
+
 ### sdk
 
-Generates a class-based SDK instead of standalone functions, where each tag client is an instance class whose constructor takes a client config and builds its own client, so every environment is a separate instance. `mode: 'tag'` (the default) emits one class per tag such as `PetClient` and `StoreClient`. Add `sdk.name` to also emit a composed root that instantiates every tag client from one shared config, reached as `new PetStore(config).pet.getPetById(...)`. `mode: 'flat'` emits a single class named by `sdk.name` with every operation as a direct method. Leave `sdk` unset to keep the per-operation functions the query plugins consume.
+Generates a class-based SDK. Each instance receives a client configuration, so environments can use separate clients. Leave `sdk` unset to keep the standalone functions used by query plugins.
 
 | | |
 | --- | --- |
 | Type | `{ mode?: 'tag' \| 'flat'; name?: string }` |
 | Required | `false` |
+
+::field-group
+
+:::field{name="'tag'"}
+Default value for `sdk.mode`. Generates one class per tag, such as `PetClient` and `StoreClient`. Set `sdk.name` to also generate a root class that instantiates the tag clients from one shared configuration, used as `new PetStore(config).pet.getPetById(...)`.
+:::
+
+:::field{name="'flat'"}
+Generates a single class named by `sdk.name`, with every operation as a direct method. Supports single-file output.
+:::
+
+::
 
 `mode: 'tag'` needs one file per tag, so pairing it with a single-file `output` (`output.mode: 'file'`, or an `output.path` that already names a file such as `'clients.ts'`) throws [`KUBB_INVALID_PLUGIN_OPTIONS`](/docs/5.x/reference/diagnostics#kubb-invalid-plugin-options). Use `mode: 'flat'` for a single-file SDK, or give `output.path` a directory so `mode: 'tag'` can split per tag.
 
@@ -193,13 +251,25 @@ if (status === 200) {
 
 ### returnType
 
-Shape of the value a generated call resolves to. `'full'` (the default) keeps `{ status, data, error, contentType, request, response }`. `'data'` unwraps that down to the bare success body when `throwOnError` is `true`, and falls back to the full result when `throwOnError` is `false`, since that result still needs `error` to tell success from failure.
+Shape of the value a generated call resolves to.
 
 | | |
 | --- | --- |
 | Type | `'full' \| 'data'` |
 | Required | `false` |
 | Default | `'full'` |
+
+::field-group
+
+:::field{name="'full'"}
+Default value. Returns `{ status, data, error, contentType, request, response }`.
+:::
+
+:::field{name="'data'"}
+Returns the success body when `throwOnError` is `true`. With `throwOnError: false`, returns the full result so callers can distinguish errors from successful responses.
+:::
+
+::
 
 ```typescript
 pluginAxios({ returnType: 'data' })

@@ -62,8 +62,17 @@ Folder for the plugin's files, resolved against the global `output.path` on `def
 
 How the plugin consolidates its code into files, either `'file'` or `'directory'`.
 
-- `'file'` writes everything into a single file, so `output.path` must include the extension (see above).
-- `'directory'` writes one file per operation under `output.path`.
+::field-group
+
+:::field{name="'file'"}
+Writes everything into a single file, so `output.path` must include the extension (see above).
+:::
+
+:::field{name="'directory'"}
+Writes one file per operation under `output.path`.
+:::
+
+::
 
 Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 
@@ -135,9 +144,21 @@ Runtime validator applied to request and response bodies using schemas from `@ku
 | Required | `false` |
 | Default | `false` |
 
-- `false` does no validation and returns the response cast to the generated type.
-- `'zod'` validates the success response body, and the error body when a non-2xx call does not throw.
-- `{ request?: 'zod', response?: 'zod' }` opts in per direction, validating the request body before the call and the response body after.
+::field-group
+
+:::field{name="false"}
+Does no validation and returns the response cast to the generated type.
+:::
+
+:::field{name="'zod'"}
+Validates the success response body, and the error body when a non-2xx call does not throw.
+:::
+
+:::field{name="{ request?: 'zod', response?: 'zod' }"}
+Opts in per direction, validating the request body before the call and the response body after.
+:::
+
+::
 
 Add `@kubb/plugin-zod` to the plugins list when either direction is `'zod'`. With validation on the generated function throws a `ParseError` when a body fails its schema.
 
@@ -162,7 +183,7 @@ export default defineConfig({
 
 ### comments
 
-Controls generated JSDoc. `'full'` (default) keeps complete descriptions. `'brief'` keeps the first sentence and other tags. Descriptions over 150 characters without a sentence ending are cut at the last word before 120. `'none'` omits JSDoc but keeps the generated-by banner.
+Controls generated JSDoc.
 
 | | |
 | --- | --- |
@@ -170,16 +191,42 @@ Controls generated JSDoc. `'full'` (default) keeps complete descriptions. `'brie
 | Required | `false` |
 | Default | `'full'` |
 
+::field-group
+
+:::field{name="'full'"}
+Default value. Keeps complete descriptions and tags.
+:::
+
+:::field{name="'brief'"}
+Keeps the first sentence and other tags. Descriptions over 150 characters without a sentence ending are cut at the last word before 120.
+:::
+
+:::field{name="'none'"}
+Omits JSDoc but keeps the generated-by banner.
+:::
+
+::
+
 ### sdk
 
-Generates a class-based SDK instead of standalone functions, accepting `{ mode?: 'tag' | 'flat'; name?: string }`. Each tag client is an instance class whose constructor takes a client config and builds its own client, so every environment is a separate instance. Leave `sdk` unset to keep the per-operation functions that the query plugins consume.
+Generates a class-based SDK. Each instance receives a client configuration, so environments can use separate clients. Leave `sdk` unset to keep the standalone functions used by query plugins.
 
 | | |
 | --- | --- |
 | Type | `{ mode?: 'tag' \| 'flat'; name?: string }` |
 | Required | `false` |
 
-`mode: 'tag'` (the default) emits one class per tag, such as `PetClient` and `StoreClient`. Set `sdk.name` alongside it to also emit a composed root class that instantiates every tag client from one shared config, reached as `new PetStore(config).pet.getPetById(...)`. `mode: 'flat'` emits a single class named by `sdk.name` with every operation as a direct method.
+::field-group
+
+:::field{name="'tag'"}
+Default value for `sdk.mode`. Generates one class per tag, such as `PetClient` and `StoreClient`. Set `sdk.name` to also generate a root class that instantiates the tag clients from one shared configuration, used as `new PetStore(config).pet.getPetById(...)`.
+:::
+
+:::field{name="'flat'"}
+Generates a single class named by `sdk.name`, with every operation as a direct method. Supports single-file output.
+:::
+
+::
 
 `mode: 'tag'` needs one file per tag, so pairing it with a single-file `output` (`output.mode: 'file'`, or an `output.path` that already names a file such as `'clients.ts'`) throws [`KUBB_INVALID_PLUGIN_OPTIONS`](/docs/5.x/reference/diagnostics#kubb-invalid-plugin-options). Use `mode: 'flat'` for a single-file SDK, or give `output.path` a directory so `mode: 'tag'` can split per tag.
 
@@ -206,13 +253,25 @@ if (status === 200) {
 
 ### returnType
 
-Shape of the value a generated call resolves to. `'full'` (the default) keeps `{ status, data, error, contentType, request, response }`. `'data'` unwraps that down to the bare success body when `throwOnError` is `true`, and falls back to the full result when `throwOnError` is `false`, since that result still needs `error` to tell success from failure.
+Shape of the value a generated call resolves to.
 
 | | |
 | --- | --- |
 | Type | `'full' \| 'data'` |
 | Required | `false` |
 | Default | `'full'` |
+
+::field-group
+
+:::field{name="'full'"}
+Default value. Returns `{ status, data, error, contentType, request, response }`.
+:::
+
+:::field{name="'data'"}
+Returns the success body when `throwOnError` is `true`. With `throwOnError: false`, returns the full result so callers can distinguish errors from successful responses.
+:::
+
+::
 
 ```typescript
 pluginFetch({ returnType: 'data' })

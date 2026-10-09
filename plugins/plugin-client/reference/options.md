@@ -75,8 +75,17 @@ Folder for the plugin's files, resolved against the global `output.path` on `def
 
 How the plugin consolidates its code into files, either `'file'` or `'directory'`.
 
-- `'file'` writes everything into a single file, so `output.path` must include the extension (see above).
-- `'directory'` writes one file per operation under `output.path`.
+::field-group
+
+:::field{name="'file'"}
+Writes everything into a single file, so `output.path` must include the extension (see above).
+:::
+
+:::field{name="'directory'"}
+Writes one file per operation under `output.path`.
+:::
+
+::
 
 Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 
@@ -129,9 +138,21 @@ Passes Zod schemas from `@kubb/plugin-zod` to your client on `config.validator`,
 | Required | `false` |
 | Default | `false` |
 
-- `false` passes nothing.
-- `'zod'` passes the response and error schemas.
-- `{ request?: 'zod', response?: 'zod' }` opts in per direction.
+::field-group
+
+:::field{name="false"}
+Passes nothing.
+:::
+
+:::field{name="'zod'"}
+Passes the response and error schemas.
+:::
+
+:::field{name="{ request?: 'zod', response?: 'zod' }"}
+Opts in per direction.
+:::
+
+::
 
 The plugin does not run the schemas. Your client reads `config.validator` and validates. Add `pluginZod()` to the plugins list when `validator` is set. Generation stops with an error if it is missing. See [validate requests and responses](/plugins/plugin-client/recipes/validate-requests-and-responses).
 

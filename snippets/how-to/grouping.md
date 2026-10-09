@@ -12,5 +12,14 @@ Splits generated files into subfolders by the operation's tag or URL path, each 
 
 Property used to assign each operation to a group (`'tag' | 'path'`), required whenever `group` is set. An operation with no tag goes in the `default` group.
 
-- `'tag'` uses the operation's first tag.
-- `'path'` uses the first URL segment, such as `pet` for `/pet/{petId}`.
+::field-group
+
+:::field{name="'tag'"}
+Uses the operation's first tag.
+:::
+
+:::field{name="'path'"}
+Uses the first URL segment, such as `pet` for `/pet/{petId}`.
+:::
+
+::
