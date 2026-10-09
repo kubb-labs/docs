@@ -13,7 +13,7 @@ outline: deep
 Add `pluginTs` and `pluginMsw` to your configuration. The default `parser: 'data'` creates handlers whose response data you supply.
 
 ```typescript [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginMsw } from '@kubb/plugin-msw'
 

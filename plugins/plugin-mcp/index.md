@@ -82,7 +82,7 @@ yarn add -D @kubb/plugin-mcp
 ## Example
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'
 import { pluginFetch } from '@kubb/plugin-fetch'
@@ -100,19 +100,6 @@ export default defineConfig({
 })
 ```
 
-## Documentation
-
-::card-group
-
-:::card{title="Options" to="/plugins/plugin-mcp/reference/options"}
-:::
-
-:::card{title="Run an MCP server" to="/plugins/plugin-mcp/guide/server"}
-:::
-
-::
-
 ## See also
 
 - [Connect Claude to a remote MCP server](https://modelcontextprotocol.io/docs/tools/claude-desktop)
-- [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-mcp/CHANGELOG.md)

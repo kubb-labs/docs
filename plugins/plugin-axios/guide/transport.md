@@ -6,3 +6,9 @@ outline: deep
 ---
 
 <!--@include: ../../../snippets/how-to/transport.md-->
+
+## See also
+
+- [Add interceptors](/plugins/plugin-axios/guide/interceptors)
+- [Set the base URL](/plugins/plugin-axios/guide/base-url)
+- [Call operations](/plugins/plugin-axios/guide/calling-operations)

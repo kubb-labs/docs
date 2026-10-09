@@ -76,7 +76,7 @@ yarn add -D @kubb/plugin-faker
 ## Example
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -90,21 +90,10 @@ export default defineConfig({
 })
 ```
 
-- Use [`typeMode: 'schema'`](/plugins/plugin-faker/reference/options#typemode) for editable object and intersection fixtures. Factories return the model type and reject unknown properties in inline overrides.
-- The default `'inferred'` mode preserves literal overrides and precise field types.
-
-## Documentation
-
-::card-group
-
-:::card{title="Options" to="/plugins/plugin-faker/reference/options"}
-:::
-
-::
+Set [`typeMode`](/plugins/plugin-faker/reference/options#typemode) to choose between inferred and declared model types for the factories.
 
 ## See also
 
 - [Faker.js](https://fakerjs.dev/)
 - [@kubb/plugin-ts](/plugins/plugin-ts/)
 - [@kubb/plugin-msw](/plugins/plugin-msw/)
-- [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-faker/CHANGELOG.md)

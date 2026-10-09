@@ -9,5 +9,5 @@ outline: deep
 
 ## See also
 
-- [Call operations](/plugins/plugin-fetch/guide/calling-operations)
-- [Handle errors](/plugins/plugin-fetch/guide/error-handling)
+- [Call operations](/plugins/plugin-axios/guide/calling-operations)
+- [Handle errors](/plugins/plugin-axios/guide/error-handling)

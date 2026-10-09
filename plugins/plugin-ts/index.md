@@ -75,7 +75,7 @@ No plugin dependencies.
 ## Example
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
@@ -87,20 +87,7 @@ export default defineConfig({
 })
 ```
 
-## Documentation
-
-::card-group
-
-:::card{title="Options" to="/plugins/plugin-ts/reference/options"}
-:::
-
-:::card{title="Customize generated types" to="/plugins/plugin-ts/guide/customization"}
-:::
-
-::
-
 ## See also
 
 - [TypeScript](https://www.typescriptlang.org/)
 - [TypeScript Compiler API](https://github.com/microsoft/TypeScript/wiki/Using-the-Compiler-API)
-- [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-ts/CHANGELOG.md)

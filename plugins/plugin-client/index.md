@@ -83,15 +83,14 @@ yarn add -D @kubb/plugin-client
 - Add [`pluginTs`](/plugins/plugin-ts/) for operation types.
 - Add [`pluginZod`](/plugins/plugin-zod/) when `validator` is set. Generation fails without it.
 
-> [!IMPORTANT]
-> Set `importPath` to your client module. No HTTP client package is required.
+Set [`importPath`](/plugins/plugin-client/reference/options#importpath) to your client module. No HTTP client package is required.
 
 ## Example
 
 ::code-group
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginClient } from '@kubb/plugin-client'
 
@@ -112,30 +111,8 @@ export default defineConfig({
 
 ::
 
-## Documentation
-
-::card-group
-
-:::card{title="Options" to="/plugins/plugin-client/reference/options"}
-:::
-
-:::card{title="Write your client" to="/plugins/plugin-client/guide/write-your-client"}
-:::
-
-:::card{title="Authenticate" to="/plugins/plugin-client/guide/authentication"}
-:::
-
-:::card{title="Call operations" to="/plugins/plugin-client/guide/calling-operations"}
-:::
-
-:::card{title="Validate requests and responses" to="/plugins/plugin-client/recipes/validate-requests-and-responses"}
-:::
-
-::
-
 ## See also
 
 - [`@kubb/plugin-fetch`](/plugins/plugin-fetch/)
 - [`@kubb/plugin-axios`](/plugins/plugin-axios/)
 - [Example project](https://github.com/kubb-labs/plugins/tree/main/examples/client)
-- [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-client/CHANGELOG.md)

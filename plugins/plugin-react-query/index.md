@@ -81,7 +81,7 @@ yarn add -D @kubb/plugin-react-query
 ## Example
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginFetch } from '@kubb/plugin-fetch'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
@@ -97,19 +97,6 @@ export default defineConfig({
 })
 ```
 
-## Documentation
-
-::card-group
-
-:::card{title="Options" to="/plugins/plugin-react-query/reference/options"}
-:::
-
-:::card{title="Call operations" to="/plugins/plugin-react-query/guide/calling-operations"}
-:::
-
-::
-
 ## See also
 
 - [TanStack Query](https://tanstack.com/query)
-- [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-react-query/CHANGELOG.md)

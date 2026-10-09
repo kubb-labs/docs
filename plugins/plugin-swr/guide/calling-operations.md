@@ -20,7 +20,7 @@ import { useGetPetById } from './gen/hooks/useGetPetById'
 const { data, error, isLoading } = useGetPetById({ path: { petId: 1n } })
 ```
 
-The second argument holds the SWR configuration plus Kubb-specific switches. `query` takes any `SWRConfiguration`, `client` takes per-call request config for the underlying client, `shouldFetch: false` makes the key `null` so SWR skips the request, and `immutable: true` disables revalidation:
+The second argument holds the SWR configuration plus two Kubb switches, `shouldFetch` and `immutable`, explained below. `query` takes any `SWRConfiguration` and `client` takes per-call request config for the underlying client:
 
 ```typescript
 import { useGetPetById } from './gen/hooks/useGetPetById'
@@ -52,13 +52,13 @@ const { trigger, isMutating } = useCreatePet({
 await trigger({ body: { name: 'Fluffy' } })
 ```
 
-A `mutationKey` helper is exported next to the hook, and `shouldFetch: false` sets the key to `null` so the mutation cannot fire.
+A `mutationKey` helper is exported next to the hook.
 
 <!--@include: ../../../snippets/how-to/query-errors-transport.md-->
 
 ## Skip requests until ready
 
-Set `shouldFetch: false` to give SWR a `null` key and skip the request. Enable it once the required parameters are available.
+Set `shouldFetch: false` to give SWR a `null` key and skip the request. Enable it once the required parameters are available. Mutation hooks accept the same switch, and a `null` key stops `trigger` from firing.
 
 ```typescript [usage.ts]
 import { useGetPetById } from './gen/hooks/useGetPetById'
@@ -73,7 +73,7 @@ export function useSelectedPet(petId: bigint | undefined) {
 
 ## Fetch immutable data
 
-Set `immutable: true` for data that stays unchanged. This disables revalidation on stale data, window focus, and reconnect.
+Set `immutable: true` on a query hook for data that stays unchanged. It sets `revalidateIfStale`, `revalidateOnFocus`, and `revalidateOnReconnect` to `false`.
 
 ```typescript [usage.ts]
 import { useGetPetById } from './gen/hooks/useGetPetById'

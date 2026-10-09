@@ -14,6 +14,8 @@ npmPackage: "@kubb/plugin-barrel"
 repo: https://github.com/kubb-labs/kubb
 docsPath: /plugins/plugin-barrel
 featured: true
+icon:
+  light: https://kubb.dev/feature/typescript.svg
 maintainers:
   - name: Stijn Van Hulle
     github: stijnvanhulle
@@ -25,6 +27,7 @@ tags:
   - index
   - exports
   - output
+dependencies: []
 resources:
   documentation: https://kubb.dev/plugins/plugin-barrel
   repository: https://github.com/kubb-labs/kubb
@@ -41,37 +44,19 @@ Generate `index.ts` exports for plugin outputs and the root entry point.
 
 ## Installation
 
-::code-group{sync="package-manager"}
-
-```shell [bun]
-bun add -d @kubb/plugin-barrel
-```
-
-```shell [pnpm]
-pnpm add -D @kubb/plugin-barrel
-```
-
-```shell [npm]
-npm install --save-dev @kubb/plugin-barrel
-```
-
-```shell [yarn]
-yarn add -D @kubb/plugin-barrel
-```
-
-::
+Ships with `kubb`, no extra install.
 
 ## Dependencies
 
 - No plugin dependencies.
-- Do not add it to `plugins`.
+- `defineConfig` adds it to `plugins` for you. Do not add it yourself.
 
 ## Example
 
 Set `output.barrel` on the root configuration to enable a root barrel and the default inherited by plugins without their own barrel setting.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
@@ -81,21 +66,4 @@ export default defineConfig({
 })
 ```
 
-- Use `'all'` for wildcard exports.
-- Set a plugin's `output.barrel` to `false` to exclude its files.
-- Enable `nested` to reference subdirectory barrels.
-
-See [options](/plugins/plugin-barrel/reference/options).
-
-## Documentation
-
-::card-group
-
-:::card{title="Options" to="/plugins/plugin-barrel/reference/options"}
-:::
-
-::
-
-## See also
-
-- [Changelog](https://github.com/kubb-labs/kubb/blob/main/packages/plugin-barrel/CHANGELOG.md)
+See [options](/plugins/plugin-barrel/reference/options) for the export `type`, `nested` barrels, and per-plugin overrides.

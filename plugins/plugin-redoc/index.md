@@ -75,7 +75,7 @@ yarn add -D @kubb/plugin-redoc
 ## Example
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginRedoc } from '@kubb/plugin-redoc'
 
 export default defineConfig({
@@ -87,17 +87,7 @@ export default defineConfig({
 })
 ```
 
-## Documentation
-
-::card-group
-
-:::card{title="Options" to="/plugins/plugin-redoc/reference/options"}
-:::
-
-::
-
 ## See also
 
 - [Redoc](https://redocly.com/redoc)
 - [adapterOas](/adapters/adapter-oas/)
-- [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-redoc/CHANGELOG.md)

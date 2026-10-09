@@ -81,7 +81,7 @@ yarn add -D @kubb/plugin-msw
 ## Example
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginMsw } from '@kubb/plugin-msw'
 
@@ -95,21 +95,8 @@ export default defineConfig({
 })
 ```
 
-## Documentation
-
-::card-group
-
-:::card{title="Options" to="/plugins/plugin-msw/reference/options"}
-:::
-
-:::card{title="Mock API responses" to="/plugins/plugin-msw/guide/mock-api"}
-:::
-
-::
-
 ## See also
 
 - [MSW](https://mswjs.io/)
 - [@kubb/plugin-ts](/plugins/plugin-ts/)
 - [@kubb/plugin-faker](/plugins/plugin-faker/)
-- [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-msw/CHANGELOG.md)

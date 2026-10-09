@@ -16,6 +16,8 @@ npmPackage: "@kubb/plugin-swr"
 repo: https://github.com/kubb-labs/plugins
 docsPath: /plugins/plugin-swr
 featured: true
+icon:
+  light: https://kubb.dev/feature/swr.svg
 maintainers:
   - name: Stijn Van Hulle
     github: stijnvanhulle
@@ -76,7 +78,7 @@ yarn add -D @kubb/plugin-swr
 ## Example
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginFetch } from '@kubb/plugin-fetch'
 import { pluginSwr } from '@kubb/plugin-swr'
@@ -92,19 +94,6 @@ export default defineConfig({
 })
 ```
 
-## Documentation
-
-::card-group
-
-:::card{title="Options" to="/plugins/plugin-swr/reference/options"}
-:::
-
-:::card{title="Call operations" to="/plugins/plugin-swr/guide/calling-operations"}
-:::
-
-::
-
 ## See also
 
 - [SWR](https://swr.vercel.app)
-- [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-swr/CHANGELOG.md)

@@ -28,6 +28,7 @@ tags:
   - parser
   - printer
   - ast
+dependencies: []
 resources:
   documentation: https://kubb.dev/parsers/parser-ts
   repository: https://github.com/kubb-labs/kubb
@@ -53,25 +54,7 @@ Print Kubb's AST with the official [TypeScript compiler](https://www.typescriptl
 
 ## Installation
 
-::code-group{sync="package-manager"}
-
-```shell [bun]
-bun add -d @kubb/parser-ts
-```
-
-```shell [pnpm]
-pnpm add -D @kubb/parser-ts
-```
-
-```shell [npm]
-npm install --save-dev @kubb/parser-ts
-```
-
-```shell [yarn]
-yarn add -D @kubb/parser-ts
-```
-
-::
+Ships with `kubb`, no extra install.
 
 ## Dependencies
 
@@ -83,7 +66,7 @@ yarn add -D @kubb/parser-ts
 Override import extensions while keeping every default parser registered.
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { parserTs, parserTsx } from '@kubb/parser-ts'
 import { parserMd } from '@kubb/parser-md'
 import { pluginTs } from '@kubb/plugin-ts'
@@ -99,7 +82,3 @@ export default defineConfig({
   plugins: [pluginTs()],
 })
 ```
-
-## See also
-
-- [Changelog](https://github.com/kubb-labs/kubb/blob/main/packages/parser-ts/CHANGELOG.md)

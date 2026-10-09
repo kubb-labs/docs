@@ -76,7 +76,7 @@ yarn add -D @kubb/plugin-cypress
 ## Example
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
 
@@ -102,18 +102,8 @@ describe('Pet API', () => {
 })
 ```
 
-## Documentation
-
-::card-group
-
-:::card{title="Options" to="/plugins/plugin-cypress/reference/options"}
-:::
-
-::
-
 ## See also
 
 - [Cypress](https://www.cypress.io/)
 - [cy.request()](https://docs.cypress.io/api/commands/request)
 - [@kubb/plugin-ts](/plugins/plugin-ts/)
-- [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-cypress/CHANGELOG.md)

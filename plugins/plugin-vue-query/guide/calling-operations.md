@@ -72,50 +72,9 @@ mutate({ path: { petId: 1n }, query: { name: 'Fluffy' } })
 
 <!--@include: ../../../snippets/how-to/query-errors-transport.md-->
 
-## Customize cache keys
+<!--@include: ../../../snippets/how-to/query-keys.md-->
 
-Set [`queryKey`](/plugins/plugin-vue-query/reference/options#querykey) to change generated keys. String entries are emitted as source code, so use `JSON.stringify` for a string literal.
-
-```typescript [kubb.config.ts]
-import { pluginVueQuery } from '@kubb/plugin-vue-query'
-
-pluginVueQuery({
-  queryKey: ({ node }) => [JSON.stringify(node.operationId)],
-})
-```
-
-> [!WARNING]
-> This produces a fixed key such as `['getUserByName']`, independent of arguments. Include relevant path and query parameters in the key when their values identify different resources.
-
-## Load more pages
-
-Configure [`infinite`](/plugins/plugin-vue-query/reference/options#infinite) with a query parameter declared by the operation, its initial value, and the response path for the next cursor.
-
-```typescript [kubb.config.ts]
-import { pluginVueQuery } from '@kubb/plugin-vue-query'
-
-pluginVueQuery({
-  hooks: true,
-  infinite: {
-    queryParam: 'page',
-    initialPageParam: 0,
-    nextParam: 'pagination.next.cursor',
-  },
-})
-```
-
-Only operations with a `page` query parameter receive infinite-query output. Change `nextParam` to match your API's response.
-
-Use the generated factory with TanStack Query:
-
-```typescript [usage.ts]
-import { useInfiniteQuery } from '@tanstack/vue-query'
-import { findPetsByTagsInfiniteQueryOptions } from './gen/hooks/useFindPetsByTagsInfinite'
-
-const { data, fetchNextPage, hasNextPage } = useInfiniteQuery(
-  findPetsByTagsInfiniteQueryOptions({ query: () => ({ tags: ['dog'] }) }),
-)
-```
+<!--@include: ../../../snippets/how-to/query-infinite.md-->
 
 ## Refetch when parameters change
 

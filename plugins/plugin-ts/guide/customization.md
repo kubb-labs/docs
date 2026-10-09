@@ -53,7 +53,7 @@ This maps `date` fields to `Date` and `int32` integers to `bigint`. The separate
 
 ## Remove descriptions
 
-Clear schema descriptions with a [macro](/plugins/plugin-ts/reference/options#macros).
+Clear schema descriptions with a [macro](/docs/5.x/reference/plugin-options#macros).
 
 ```typescript [kubb.config.ts]
 import { pluginTs } from '@kubb/plugin-ts'

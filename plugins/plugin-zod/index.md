@@ -76,7 +76,7 @@ yarn add -D @kubb/plugin-zod
 ## Example
 
 ```typescript twoslash [kubb.config.ts]
-import { defineConfig } from 'kubb'
+import { defineConfig } from 'kubb/config'
 import { pluginZod } from '@kubb/plugin-zod'
 
 export default defineConfig({
@@ -88,26 +88,7 @@ export default defineConfig({
 })
 ```
 
-## Documentation
-
-::card-group
-
-:::card{title="Options" to="/plugins/plugin-zod/reference/options"}
-:::
-
-:::card{title="Format and type mappings" to="/plugins/plugin-zod/reference/options#format-and-type-mappings"}
-:::
-
-:::card{title="Dictionaries and key schemas" to="/plugins/plugin-zod/reference/options#dictionaries-open-objects-and-key-schemas"}
-:::
-
-:::card{title="Customize generated schemas" to="/plugins/plugin-zod/guide/customization"}
-:::
-
-::
-
 ## See also
 
 - [Zod](https://zod.dev/)
 - [Zod Mini](https://zod.dev/packages/mini)
-- [Changelog](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-zod/CHANGELOG.md)
