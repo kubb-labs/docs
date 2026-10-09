@@ -65,7 +65,7 @@ Kubb exposes a status-discriminated result that narrows response bodies at runti
 | Recursive schemas                                                                    |  ✅   |       ✅       | ✅             |
 | Server-side schema validation                                                        |  ✅   |       ✅       | ✅             |
 
-**Notes**
+Notes:
 
 1. Only orval's `fetch` client emits a status-narrowable union. Its axios and query clients return the success type and take the error type on the side.
 2. HeyAPI builds a status-keyed type map you index (`Responses[200]`), but the SDK returns a flat `{ data, error }` pair with no `status` to switch on.
@@ -87,7 +87,7 @@ Kubb serializes OpenAPI parameter styles and supports codecs per media type. See
 | [Runtime body validation](/plugins/plugin-fetch/guide/error-handling#validation-failures)                 | ✅<sup>5</sup> | 🔶<sup>5</sup> | ✅<sup>5</sup> |
 | [Server-sent events and streaming](/plugins/plugin-fetch/guide/server-sent-events)                        |  ✅   | 🔶<sup>6</sup> | ✅             |
 
-**Notes**
+Notes:
 
 1. Only orval's `fetch` client reads `style` and `explode` from the spec. Its axios and query clients interpolate path parameters directly and leave query encoding to axios or a `qs` config.
 2. HeyAPI serializes path parameters per parameter but runs one global query serializer, and does not style header or cookie parameters.

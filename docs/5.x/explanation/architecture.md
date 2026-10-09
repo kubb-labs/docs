@@ -70,7 +70,7 @@ See [Extension model](/docs/5.x/explanation/extensions) for how these pieces coo
 
 Each parser claims file extensions. Kubb selects it for the emitted file, prints nodes during generation, and assembles the final source through `parse`. The default parsers handle `.ts`, `.tsx`, and `.md`.
 
-These responsibilities differ: the plugin chooses which files and declarations to emit; a printer chooses how an individual schema appears in that output; the parser assembles the file's source text.
+These responsibilities differ. The plugin chooses which files and declarations to emit. A printer chooses how an individual schema appears in that output. The parser assembles the file's source text.
 
 A printer inside a generator handles schema-specific output. A parser handles the assembled file. See [Customize printers](/docs/5.x/how-to/printers) and [Parser reference](/docs/5.x/reference/kit/parsers).
 

@@ -34,7 +34,7 @@ Replace the example path with your project path. In Windows JSON paths, escape e
 
 ## Use the generated tools
 
-Quit Claude Desktop completely and reopen it. Open **Manage connectors**, select your server, and check that the tools match the operations in your specification. Ask Claude to run one of those operations and review its request before approving the API call.
+Quit Claude Desktop completely and reopen it. Open `Manage connectors`, select your server, and check that the tools match the operations in your specification. Ask Claude to run one of those operations and review its request before approving the API call.
 
 ::
 

@@ -25,7 +25,7 @@ docs/
 
 ## Content rules
 
-Plugin, adapter, and parser pages live under `plugins/<id>/`, `adapters/<id>/`, and `parsers/<id>/`, each with an `index.md` overview and a `reference/options.md`. Options every generator plugin shares (`output`, `group`, `include`, `exclude`, `override`, `resolver`, `macros`) are documented once in `docs/5.x/reference/plugin-options.md`; a plugin page lists only its own defaults and links there. When a plugin's options change in [kubb-labs/kubb](https://github.com/kubb-labs/kubb) or [kubb-labs/plugins](https://github.com/kubb-labs/plugins), update the matching page here in the same PR.
+Plugin, adapter, and parser pages live under `plugins/<id>/`, `adapters/<id>/`, and `parsers/<id>/`, each with an `index.md` overview and a `reference/options.md`. Options every generator plugin shares (`output`, `group`, `include`, `exclude`, `override`, `resolver`, `macros`) are documented once in `docs/5.x/reference/plugin-options.md`. A plugin page lists only its own defaults and links there. When a plugin's options change in [kubb-labs/kubb](https://github.com/kubb-labs/kubb) or [kubb-labs/plugins](https://github.com/kubb-labs/plugins), update the matching page here in the same PR.
 
 Each page sits in one [Diátaxis](https://diataxis.fr) quadrant: `docs/5.x/tutorials/` teaches by doing, `docs/5.x/how-to/` and the plugin `guide/` and `recipes/` folders get one task done, `docs/5.x/reference/` and `reference/options.md` state facts, `docs/5.x/explanation/` builds understanding. Keep them apart: no option tables in a how-to, no walkthroughs in a reference.
 
