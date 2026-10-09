@@ -33,11 +33,11 @@ Run `kubb` with no command and it runs `kubb generate`.
 
 | Command                       | Description                                                       |
 | ----------------------------- | ----------------------------------------------------------------- |
-| [`kubb init`](./init)         | Scaffold a new Kubb project with an interactive wizard.           |
-| [`kubb generate`](./generate) | Run the code-generation pipeline from your `kubb.config.ts`.      |
-| [`kubb validate`](./validate) | Validate a Swagger/OpenAPI document without running the pipeline. |
-| [`kubb mcp`](./mcp)           | Start a Model Context Protocol server for LLM clients.            |
-| [`kubb studio`](./studio)     | Connect the project to Kubb Studio and generate from the browser. |
+| [`kubb init`](/docs/5.x/reference/commands/init) | Scaffold a new Kubb project with an interactive wizard. |
+| [`kubb generate`](/docs/5.x/reference/commands/generate) | Run the code-generation pipeline from your `kubb.config.ts`. |
+| [`kubb validate`](/docs/5.x/reference/commands/validate) | Validate a Swagger/OpenAPI document without running the pipeline. |
+| [`kubb mcp`](/docs/5.x/reference/commands/mcp) | Start a Model Context Protocol server for LLM clients. |
+| [`kubb studio`](/docs/5.x/reference/commands/studio) | Connect the project to Kubb Studio and generate from the browser. |
 
 ## Environment variables
 

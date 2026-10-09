@@ -77,9 +77,10 @@ change the generated default.
 
 ## Network failures still throw
 
-`throwOnError` governs the response status, not the send: a dropped connection, DNS failure, or
-aborted `AbortSignal` rejects regardless of the setting. A `ResponseError` means the server
-answered with a non-2xx, and anything else means the request never completed.
+> [!IMPORTANT]
+> `throwOnError` governs the response status, not the send: a dropped connection, DNS failure, or
+> aborted `AbortSignal` rejects regardless of the setting. A `ResponseError` means the server
+> answered with a non-2xx, and anything else means the request never completed.
 
 ```typescript
 try {

@@ -77,11 +77,16 @@ export default defineConfig({
 })
 ```
 
-Use `'all'` for wildcard exports. Set a plugin's `output.barrel` to `false` to exclude its files, or enable `nested` to reference subdirectory barrels. See [Options](./reference/options).
+Use `'all'` for wildcard exports. Set a plugin's `output.barrel` to `false` to exclude its files, or enable `nested` to reference subdirectory barrels. See [Options](/plugins/plugin-barrel/reference/options).
 
 ## Documentation
 
-- [Options](./reference/options)
+::card-group
+
+:::card{title="Options" to="/plugins/plugin-barrel/reference/options"}
+:::
+
+::
 
 ## See also
 

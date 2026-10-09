@@ -15,7 +15,8 @@ snapshot:
 
 `kubb` ships the Studio runtime, so `npm ci` is the only setup. The `rules` run the job on merge request pipelines and on the default branch, so a merge request has a snapshot of its target branch to compare with.
 
-`resource_group` keeps two pipelines on the same branch or merge request from running the job at once. Registering the agent again ends the other run's session.
+> [!NOTE]
+> `resource_group` keeps two pipelines on the same branch or merge request from running the job at once. Registering the agent again ends the other run's session.
 
 ### Post the result as a note
 
@@ -56,4 +57,5 @@ if (!response.ok) throw new Error(`GitLab answered ${response.status}`)
     - '[ -z "$CI_MERGE_REQUEST_IID" ] || node scripts/kubb-note.mjs'
 ```
 
-Writing a note needs a project access token with the `api` scope, stored as `GITLAB_API_TOKEN`. `CI_JOB_TOKEN` does not carry it.
+> [!IMPORTANT]
+> Writing a note needs a project access token with the `api` scope, stored as `GITLAB_API_TOKEN`. `CI_JOB_TOKEN` does not carry it.

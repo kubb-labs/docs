@@ -20,15 +20,22 @@ Publish an installable Kubb Studio snapshot from GitLab CI so reviewers can comp
 
 Store the CI API key as `KUBB_TOKEN` in a masked CI/CD variable. Snapshot installation uses a separate registry key. Only expose the CI secret to trusted pipelines.
 
+::steps{level="2"}
+
 ## Configure the workflow
 
 <!--@include: ../../../snippets/integrations/gitlab.md-->
 
 ## Review and install the result
 
-Open the snapshot in Studio to review generated changes. Snapshots expire after seven days; schedule a default-branch run if it can go a week without a push.
+Open the snapshot in Studio to review generated changes.
+
+> [!NOTE]
+> Snapshots expire after seven days. Schedule a default-branch run if it can go a week without a push.
 
 To consume the generated package, follow [Install the snapshot](/docs/5.x/integrations/ci#install-the-snapshot).
+
+::
 
 ## See also
 

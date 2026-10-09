@@ -85,7 +85,12 @@ export default defineConfig({
 
 ## Documentation
 
-- [Options](./reference/options)
+::card-group
+
+:::card{title="Options" to="/plugins/plugin-redoc/reference/options"}
+:::
+
+::
 
 ## See also
 

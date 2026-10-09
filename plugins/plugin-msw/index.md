@@ -92,8 +92,15 @@ export default defineConfig({
 
 ## Documentation
 
-- [Options](./reference/options)
-- [Mock API responses](./guide/mock-api)
+::card-group
+
+:::card{title="Options" to="/plugins/plugin-msw/reference/options"}
+:::
+
+:::card{title="Mock API responses" to="/plugins/plugin-msw/guide/mock-api"}
+:::
+
+::
 
 ## See also
 

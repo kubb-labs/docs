@@ -25,7 +25,8 @@ pluginTs({
 
 ## Zod schemas
 
-Write regular methods when you use `this.base`, `this.transform`, or `this.options`; arrow functions do not receive the printer context.
+> [!IMPORTANT]
+> Write regular methods when you use `this.base`, `this.transform`, or `this.options`. Arrow functions do not receive the printer context.
 
 `@kubb/plugin-zod` prints expression strings, so a handler returns the Zod code as a string. With `mini: true` the same overrides target the Zod Mini printer instead.
 

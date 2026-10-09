@@ -1,6 +1,9 @@
 # Set the API base URL
 
-Set `baseURL` on the client plugin or generated client. OpenAPI server URLs do not configure the client automatically. The adapter’s server option only sets document metadata.
+Set `baseURL` on the client plugin or generated client.
+
+> [!NOTE]
+> OpenAPI server URLs do not configure the client automatically. The adapter’s server option only sets document metadata.
 
 ## Use the baseURL option
 

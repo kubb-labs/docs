@@ -100,7 +100,12 @@ describe('Pet API', () => {
 
 ## Documentation
 
-- [Options](./reference/options)
+::card-group
+
+:::card{title="Options" to="/plugins/plugin-cypress/reference/options"}
+:::
+
+::
 
 ## See also
 

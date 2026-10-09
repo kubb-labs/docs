@@ -102,14 +102,33 @@ export default defineConfig({
 
 ## Documentation
 
-- [Options](./reference/options)
-- [Authenticate](./guide/authentication)
-- [Set base URL](./guide/base-url)
-- [Call operations](./guide/calling-operations)
-- [Handle errors](./guide/error-handling)
-- [Add interceptors](./guide/interceptors)
-- [Serialize parameters](./guide/serialization)
-- [Use custom transport](./guide/transport)
+::card-group
+
+:::card{title="Options" to="/plugins/plugin-axios/reference/options"}
+:::
+
+:::card{title="Authenticate" to="/plugins/plugin-axios/guide/authentication"}
+:::
+
+:::card{title="Set base URL" to="/plugins/plugin-axios/guide/base-url"}
+:::
+
+:::card{title="Call operations" to="/plugins/plugin-axios/guide/calling-operations"}
+:::
+
+:::card{title="Handle errors" to="/plugins/plugin-axios/guide/error-handling"}
+:::
+
+:::card{title="Add interceptors" to="/plugins/plugin-axios/guide/interceptors"}
+:::
+
+:::card{title="Serialize parameters" to="/plugins/plugin-axios/guide/serialization"}
+:::
+
+:::card{title="Use custom transport" to="/plugins/plugin-axios/guide/transport"}
+:::
+
+::
 
 ## See also
 

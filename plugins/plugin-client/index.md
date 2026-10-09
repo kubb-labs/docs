@@ -118,6 +118,27 @@ export default defineConfig({
 
 ::
 
+## Documentation
+
+::card-group
+
+:::card{title="Options" to="/plugins/plugin-client/reference/options"}
+:::
+
+:::card{title="Write your client" to="/plugins/plugin-client/guide/write-your-client"}
+:::
+
+:::card{title="Authenticate" to="/plugins/plugin-client/guide/authentication"}
+:::
+
+:::card{title="Call operations" to="/plugins/plugin-client/guide/calling-operations"}
+:::
+
+:::card{title="Validate requests and responses" to="/plugins/plugin-client/recipes/validate-requests-and-responses"}
+:::
+
+::
+
 ## See also
 
 - [`@kubb/plugin-fetch`](/plugins/plugin-fetch/)

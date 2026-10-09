@@ -19,7 +19,8 @@ Update packages, migrate the config, regenerate, and fix generated-code imports.
 
 Use Node.js 22 or higher in development, CI, and Docker. Update `kubb` and the plugins you use to v5. Plugin package names remain unchanged, although their source now lives in [kubb-labs/plugins](https://github.com/kubb-labs/plugins).
 
-Remove `@kubb/plugin-solid-query` and `@kubb/plugin-svelte-query`. They have no v5 replacement. Replace `@kubb/plugin-client` with Axios or Fetch and `@kubb/plugin-oas` with the adapter, as described below.
+> [!WARNING]
+> Remove `@kubb/plugin-solid-query` and `@kubb/plugin-svelte-query`. They have no v5 replacement. Replace `@kubb/plugin-client` with Axios or Fetch and `@kubb/plugin-oas` with the adapter, as described below.
 
 ## Defaults that changed
 

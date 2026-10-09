@@ -85,7 +85,8 @@ pluginReactQuery({
 })
 ```
 
-This produces a fixed key such as `['getUserByName']`, independent of arguments. Include relevant path and query parameters in the key when their values identify different resources.
+> [!WARNING]
+> This produces a fixed key such as `['getUserByName']`, independent of arguments. Include relevant path and query parameters in the key when their values identify different resources.
 
 ## Load more pages
 
@@ -121,6 +122,8 @@ const { data, fetchNextPage, hasNextPage } = useInfiniteQuery(
 
 Set `suspense: {}` and `hooks: true` to generate suspense hooks alongside regular hooks. Suspense requires TanStack Query v5 or higher.
 
+::code-group
+
 ```typescript [kubb.config.ts]
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 
@@ -132,6 +135,8 @@ import { useGetPetByIdSuspense } from './gen/hooks/useGetPetByIdSuspense'
 
 const { data } = useGetPetByIdSuspense({ path: { petId: 1n } })
 ```
+
+::
 
 ## Share hook options
 

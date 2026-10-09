@@ -19,6 +19,7 @@ A barrel file is an `index.ts` that re-exports everything from a directory. Cons
 Toggle the export style and barrel depth to see what each `index.ts` re-exports.
 
 ::barrel-tree
+::
 
 ## Configure the root barrel
 

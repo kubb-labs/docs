@@ -22,21 +22,35 @@ Kubb v5 already ships a built-in MCP server, so AI assistants can drive code gen
 
 ## Install
 
-Add the repository as a marketplace and install the plugin:
+::steps
 
-```shell
+### Install Kubb
+
+The commands run `npx kubb`, so install Kubb in your project or globally first:
+
+:::code-group
+
+```shell [Project]
+npm install -D kubb
+```
+
+```shell [Global]
+npm install -g kubb
+```
+
+:::
+
+### Add the marketplace and plugin
+
+```shell [Claude Code]
 /plugin marketplace add kubb-labs/kubb
 /plugin install kubb@kubb
 ```
 
-The commands run `npx kubb`, so install Kubb in your project or globally first:
+::
 
-```shell
-npm install -D kubb   # in the project
-npm install -g kubb   # or globally
-```
-
-A `SessionStart` hook checks for `kubb` when a session starts and warns you when it is missing. It never installs anything itself, so nothing runs behind your back.
+> [!NOTE]
+> A `SessionStart` hook checks for `kubb` when a session starts and warns you when it is missing. It never installs anything itself, so nothing runs behind your back.
 
 ## Three slash commands
 

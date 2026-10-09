@@ -33,7 +33,10 @@ export default {
 }
 ```
 
-Run your project's Rollup build command to generate the files. Bundler integrations do not run `output.postGenerate` commands; use the CLI when you need them.
+Run your project's Rollup build command to generate the files.
+
+> [!NOTE]
+> Bundler integrations do not run `output.postGenerate` commands. Use the CLI when you need them.
 
 ::
 

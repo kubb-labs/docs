@@ -84,7 +84,8 @@ pluginVueQuery({
 })
 ```
 
-This produces a fixed key such as `['getUserByName']`, independent of arguments. Include relevant path and query parameters in the key when their values identify different resources.
+> [!WARNING]
+> This produces a fixed key such as `['getUserByName']`, independent of arguments. Include relevant path and query parameters in the key when their values identify different resources.
 
 ## Load more pages
 

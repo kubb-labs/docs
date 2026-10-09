@@ -56,7 +56,8 @@ pluginFaker({
 
 ## Namespaced names
 
-Use regular methods when accessing `this`. Within a namespace, `this.name` applies the active naming rule; calling it from the top-level `name` override would recurse. Wrap the exported plugin resolver there instead.
+> [!IMPORTANT]
+> Use regular methods when accessing `this`. Within a namespace, `this.name` applies the active naming rule; calling it from the top-level `name` override would recurse. Wrap the exported plugin resolver there instead.
 
 Override `query.keyName` to rename React Query keys. Use `this.name` to retain the active naming rule:
 

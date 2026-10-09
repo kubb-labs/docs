@@ -117,10 +117,9 @@ Where the generated `.ts` files are written and how they are exported.
 
 Folder where the plugin writes its files, resolved against the global `output.path` on `defineConfig`. For a single file, set `output.mode: 'file'` and give `path` an extension, such as `'zod.ts'`.
 
-|          |          |
-| -------: | :------- |
-|    Type: | `string` |
-| Default: | `'zod'`  |
+::field{name="output.path" type="string"}
+Default: `'zod'`.
+::
 
 #### output.mode
 
@@ -131,10 +130,9 @@ How the plugin consolidates generated code into files.
 
 Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 
-|          |                                    |
-| -------: | :--------------------------------- |
-|    Type: | `'directory' \| 'file'`            |
-| Default: | follows the shape of `output.path` |
+::field{name="output.mode" type="'directory' | 'file'"}
+Default: follows the shape of `output.path`.
+::
 
 #### output.barrel
 
@@ -156,10 +154,9 @@ Leave it unset and Kubb reads `output.path`: a name with an extension means one 
 
 Function that turns a group key (first tag or path segment) into a folder or identifier name, used as the subdirectory under `output.path` and a suffix for aggregate files. For `type: 'path'`, the default keeps the URL segment as-is instead of camelCasing.
 
-|          |                                          |
-| -------: | :--------------------------------------- |
-|    Type: | `(context: { group: string }) => string` |
-| Default: | `'tag'`: `({ group }) => camelCase(group)`; `'path'`: the raw URL segment, uncased |
+::field{name="group.name" type="(context: { group: string }) => string"}
+Default: `'tag'`: `({ group }) => camelCase(group)`; `'path'`: the raw URL segment, uncased.
+::
 
 ### importPath
 

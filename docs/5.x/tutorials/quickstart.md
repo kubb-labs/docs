@@ -110,7 +110,7 @@ The output contains `getPetById.ts`. Open that file and notice that `getPetById`
 
 The generated tree includes:
 
-::file-tree
+:::file-tree
 ---
 tree:
   - name: src
@@ -131,7 +131,7 @@ tree:
               - name: GetPetById.ts
               - name: Pet.ts
 ---
-::
+:::
 
 The `.kubb` directory holds shared client and serialization helpers.
 
