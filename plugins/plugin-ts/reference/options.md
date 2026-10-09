@@ -7,85 +7,52 @@ outline: deep
 
 # Options
 
-::field-group
+Configuration options for @kubb/plugin-ts.
 
-:::field{name="output" type="Output"}
-Where the generated files are written and exported. [See details](#output).
+## Options overview
 
-Default: `{ path: 'types', barrel: { type: 'named' } }`.
-:::
+Select an option to see its type, default, and examples. Nested settings link to their own section or the parent option.
 
-:::field{name="group" type="Group"}
-Split output into per-tag or per-path folders. [See details](#group).
+| Option | Purpose |
+| --- | --- |
+| [`output`](#output) | Where the generated files are written and exported. |
+| ↳ [`output.path`](#output-path) | Choose the output folder or file. |
+| ↳ [`output.mode`](#output-mode) | Write a single file or a directory of files. |
+| ↳ [`output.barrel`](#output-barrel) | Configure barrel exports. |
+| ↳ [`output.barrel.type`](#output-barrel) | Use named exports or wildcard exports. |
+| ↳ [`output.barrel.nested`](#output-barrel) | Choose whether barrels reference subdirectory barrels. |
+| ↳ [`output.banner`](#output-banner) | Add content before generated code. |
+| ↳ [`output.footer`](#output-footer) | Add content after generated code. |
+| [`group`](#group) | Split output into per-tag or per-path folders. |
+| ↳ [`group.type`](#group-type) | Group operations by tag or URL path. |
+| ↳ [`group.name`](#group-name) | Customize output group names. |
+| [`enum`](#enum) | How enums are generated and cased. |
+| ↳ [`enum.type`](#enum-type) | Choose how enums are generated. |
+| ↳ [`enum.constCasing`](#enum-constcasing) | Set the casing of enum constants. |
+| ↳ [`enum.typeSuffix`](#enum-typesuffix) | Set the companion type suffix. |
+| ↳ [`enum.keyCasing`](#enum-keycasing) | Set the casing of enum keys. |
+| [`syntaxType`](#syntaxtype) | Emit object schemas as type aliases or interfaces. |
+| [`optionalType`](#optionaltype) | How optional properties are written. |
+| [`arrayType`](#arraytype) | `Type[]` or `Array<Type>`. |
+| [`include`](#include) | Keep only operations that match. |
+| [`exclude`](#exclude) | Skip operations that match. |
+| [`override`](#override) | Apply different options per pattern. |
+| [`resolver`](#resolver) | Customize generated names and file paths. |
+| [`macros`](#macros) | Rewrite AST nodes before printing. |
+| [`printer`](#printer) | Replace the handler for a schema type. |
+| ↳ [`printer.nodes`](#printer) | Customize handlers for schema node types. |
 
-No default.
-:::
-
-:::field{name="enum" type="EnumOptions"}
-How enums are generated and cased. [See details](#enum).
-
-Default: `{ type: 'asConst', … }`.
-:::
-
-:::field{name="syntaxType" type="'type' | 'interface'"}
-Emit object schemas as type aliases or interfaces. [See details](#syntaxtype).
-
-Default: `'type'`.
-:::
-
-:::field{name="optionalType" type="'questionToken' | 'undefined' | 'questionTokenAndUndefined'"}
-How optional properties are written. [See details](#optionaltype).
-
-Default: `'questionToken'`.
-:::
-
-:::field{name="arrayType" type="'array' | 'generic'"}
-`Type[]` or `Array<Type>`. [See details](#arraytype).
-
-Default: `'array'`.
-:::
-
-:::field{name="include" type="Array<Include>"}
-Keep only operations that match. [See details](#include).
-
-No default.
-:::
-
-:::field{name="exclude" type="Array<Exclude>"}
-Skip operations that match. [See details](#exclude).
-
-Default: `[]`.
-:::
-
-:::field{name="override" type="Array<Override>"}
-Apply different options per pattern. [See details](#override).
-
-Default: `[]`.
-:::
-
-:::field{name="resolver" type="ResolverPatch<ResolverTs>"}
-Customize generated names and file paths. [See details](#resolver).
-
-No default.
-:::
-
-:::field{name="macros" type="Array<Macro>"}
-Rewrite AST nodes before printing. [See details](#macros).
-
-No default.
-:::
-
-:::field{name="printer" type="{ nodes?: PrinterTsNodes }"}
-Replace the handler for a schema type. [See details](#printer).
-
-No default.
-:::
-
-::
+## Option details
 
 ### output
 
 Where the generated `.ts` files are written and how they are exported.
+
+| | |
+| --- | --- |
+| Type | `Output` |
+| Required | `false` |
+| Default | `{ path: 'types', barrel: { type: 'named' } }` |
 
 #### output.path
 
@@ -95,8 +62,17 @@ Folder where the plugin writes its files (`string`, default `'types'`), resolved
 
 How generated code is consolidated into files.
 
-- `'file'` writes everything into a single file, so `output.path` needs a file extension such as `'types.ts'`.
-- `'directory'` writes one file per operation or schema under `output.path`.
+::field-group
+
+:::field{name="'file'"}
+Writes everything into a single file, so `output.path` needs a file extension such as `'types.ts'`.
+:::
+
+:::field{name="'directory'"}
+Writes one file per operation or schema under `output.path`.
+:::
+
+::
 
 Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 
@@ -114,6 +90,13 @@ Leave it unset and Kubb reads `output.path`: a name with an extension means one 
 
 ### group
 
+Split output into per-tag or per-path folders.
+
+| | |
+| --- | --- |
+| Type | `Group` |
+| Required | `false` |
+
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
 #### group.name
@@ -124,15 +107,39 @@ Turns a group key into a folder or identifier name, used as the subdirectory nam
 
 How OpenAPI enums are represented in the generated TypeScript, and how their names are cased.
 
+| | |
+| --- | --- |
+| Type | `EnumOptions` |
+| Required | `false` |
+| Default | `{ type: 'asConst', … }` |
+
 #### enum.type
 
 Representation of each enum. Defaults to `'asConst'`.
 
-- `'asConst'` emits an `as const` object plus a key/value type. Tree-shakeable, with no runtime.
-- `'enum'` emits a TypeScript `enum` with JavaScript runtime code.
-- `'constEnum'` emits a `const enum`, inlined at compile time and incompatible with `--isolatedModules`.
-- `'literal'` emits a union type with no runtime value.
-- `'inlineLiteral'` inlines the union at each usage site instead of giving it a name.
+::field-group
+
+:::field{name="'asConst'"}
+Emits an `as const` object plus a key/value type. Tree-shakeable, with no runtime.
+:::
+
+:::field{name="'enum'"}
+Emits a TypeScript `enum` with JavaScript runtime code.
+:::
+
+:::field{name="'constEnum'"}
+Emits a `const enum`, inlined at compile time and incompatible with `--isolatedModules`.
+:::
+
+:::field{name="'literal'"}
+Emits a union type with no runtime value.
+:::
+
+:::field{name="'inlineLiteral'"}
+Inlines the union at each usage site instead of giving it a name.
+:::
+
+::
 
 ::code-group
 
@@ -176,8 +183,17 @@ export type PetStatus = 'available' | 'pending' | 'sold'
 
 Casing of the generated const variable when `type` is `'asConst'`. Defaults to `'camelCase'`.
 
-- `'camelCase'` names the const `petStatus`.
-- `'pascalCase'` names the const `PetStatus`, matching the schema name.
+::field-group
+
+:::field{name="'camelCase'"}
+Names the const `petStatus`.
+:::
+
+:::field{name="'pascalCase'"}
+Names the const `PetStatus`, matching the schema name.
+:::
+
+::
 
 ::code-group
 
@@ -245,17 +261,51 @@ export type PetStatus = (typeof petStatus)[keyof typeof petStatus]
 
 Casing applied to enum key names, `'none'` by default (the raw value from the spec).
 
-| Value                  | Example key  |
-| ---------------------- | ------------ |
-| `'screamingSnakeCase'` | `ENUM_VALUE` |
-| `'snakeCase'`          | `enum_value` |
-| `'pascalCase'`         | `EnumValue`  |
-| `'camelCase'`          | `enumValue`  |
-| `'none'` (default)     | as-is        |
+::field-group
+
+:::field{name="'screamingSnakeCase'"}
+Formats keys in screaming snake case, such as `ENUM_VALUE`.
+:::
+
+:::field{name="'snakeCase'"}
+Formats keys in snake case, such as `enum_value`.
+:::
+
+:::field{name="'pascalCase'"}
+Formats keys in PascalCase, such as `EnumValue`.
+:::
+
+:::field{name="'camelCase'"}
+Formats keys in camelCase, such as `enumValue`.
+:::
+
+:::field{name="'none'"}
+Default value. Keeps the raw enum value from the spec as the key.
+:::
+
+::
 
 ### syntaxType
 
-Whether object schemas are emitted as `type` aliases or `interface` declarations, with `type` as the safer default. Pick `interface` only when consumers need declaration merging, which is rare for generated code and covered in [Type vs Interface](https://www.totaltypescript.com/type-vs-interface-which-should-you-use).
+How object schemas are declared.
+
+| | |
+| --- | --- |
+| Type | `'type' \| 'interface'` |
+| Required | `false` |
+| Default | `'type'` |
+
+::field-group
+
+:::field{name="'type'"}
+Default value. Generates type aliases.
+:::
+
+:::field{name="'interface'"}
+Generates interface declarations. Use this when consumers need declaration merging. See [Type vs Interface](https://www.totaltypescript.com/type-vs-interface-which-should-you-use).
+:::
+
+::
 
 ::code-group
 
@@ -277,9 +327,27 @@ export interface Pet {
 
 How optional properties are written. Defaults to `'questionToken'`.
 
-- `'questionToken'` writes `type?: string`, so the property may be missing.
-- `'undefined'` writes `type: string | undefined`, so it must exist but may be `undefined`.
-- `'questionTokenAndUndefined'` writes `type?: string | undefined`, the strictest form. Use it with `"exactOptionalPropertyTypes": true`.
+| | |
+| --- | --- |
+| Type | `'questionToken' \| 'undefined' \| 'questionTokenAndUndefined'` |
+| Required | `false` |
+| Default | `'questionToken'` |
+
+::field-group
+
+:::field{name="'questionToken'"}
+Writes `type?: string`, so the property may be missing.
+:::
+
+:::field{name="'undefined'"}
+Writes `type: string | undefined`, so it must exist but may be `undefined`.
+:::
+
+:::field{name="'questionTokenAndUndefined'"}
+Writes `type?: string | undefined`, the strictest form. Use it with `"exactOptionalPropertyTypes": true`.
+:::
+
+::
 
 ::code-group
 
@@ -307,8 +375,23 @@ export type Pet = {
 
 Syntax for array types. Defaults to `'array'`.
 
-- `'array'` uses the postfix `Type[]`.
-- `'generic'` uses `Array<Type>`, which reads better for complex elements like `Array<{ id: number }>`.
+| | |
+| --- | --- |
+| Type | `'array' \| 'generic'` |
+| Required | `false` |
+| Default | `'array'` |
+
+::field-group
+
+:::field{name="'array'"}
+Uses the postfix `Type[]`.
+:::
+
+:::field{name="'generic'"}
+Uses `Array<Type>`, which reads better for complex elements like `Array<{ id: number }>`.
+:::
+
+::
 
 ::code-group
 
@@ -328,19 +411,47 @@ export type Pet = {
 
 ### include
 
+Keep only operations that match.
+
+| | |
+| --- | --- |
+| Type | `Array<Include>` |
+| Required | `false` |
+
 <!--@include: ../../../snippets/how-to/include.md-->
 
 ### exclude
 
+Skip operations that match.
+
+| | |
+| --- | --- |
+| Type | `Array<Exclude>` |
+| Required | `false` |
+| Default | `[]` |
+
 <!--@include: ../../../snippets/how-to/exclude.md-->
 
 ### override
+
+Apply different options per pattern.
+
+| | |
+| --- | --- |
+| Type | `Array<Override>` |
+| Required | `false` |
+| Default | `[]` |
 
 <!--@include: ../../../snippets/how-to/override.md-->
 
 ### resolver
 
 Overrides generated file and symbol names. Omitted members keep the plugin's resolver defaults. See [Override a resolver](/docs/5.x/how-to/resolvers) for the `this` context and how a patch layers over the default.
+
+| | |
+| --- | --- |
+| Type | `ResolverPatch<ResolverTs>` |
+| Required | `false` |
 
 > [!TIP]
 > Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
@@ -373,11 +484,23 @@ type ResolverTsPatch = {
 
 ### macros
 
+Rewrite AST nodes before printing.
+
+| | |
+| --- | --- |
+| Type | `Array<Macro>` |
+| Required | `false` |
+
 <!--@include: ../../../snippets/how-to/macros-option.md-->
 
 ### printer
 
 Replaces the node handler for a schema type such as `'integer'` or `'date'` with one that builds its TypeScript AST node. Use `this.transform` to recurse into nested nodes and `this.options` to read printer options. The [printer guide](/docs/5.x/how-to/printers) covers the handler context and how overrides compose with macros.
+
+| | |
+| --- | --- |
+| Type | `{ nodes?: PrinterTsNodes }` |
+| Required | `false` |
 
 ```typescript [Map date schemas to the Date object]
 import ts from 'typescript'

@@ -57,7 +57,10 @@ resources:
 
 # @kubb/plugin-fetch
 
-`@kubb/plugin-fetch` generates a typed async function for each OpenAPI operation using the native [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API). Calls accept grouped request parameters and return a status-keyed result.
+Generate typed API calls with the native [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).
+
+- One async function per OpenAPI operation.
+- Grouped request parameters and status-keyed results.
 
 ## Installation
 
@@ -83,7 +86,8 @@ yarn add -D @kubb/plugin-fetch
 
 ## Dependencies
 
-Add [`pluginTs`](/plugins/plugin-ts/) or [`pluginZod`](/plugins/plugin-zod/) with `inferred: true` for operation types. `pluginTs` takes precedence when both are configured. Validation also requires `pluginZod`. The generated client uses native `fetch`.
+- Add [`pluginTs`](/plugins/plugin-ts/) or [`pluginZod`](/plugins/plugin-zod/) with `inferred: true` for operation types. `pluginTs` takes precedence.
+- Add `pluginZod` for validation.
 
 ## Example
 

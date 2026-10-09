@@ -41,7 +41,9 @@ resources:
 
 # @kubb/plugin-swr
 
-`@kubb/plugin-swr` generates typed [SWR](https://swr.vercel.app/) hooks from OpenAPI operations. Each hook calls a generated Axios or Fetch client.
+Generate typed [SWR](https://swr.vercel.app/) hooks from OpenAPI.
+
+- Each hook calls a generated Axios or Fetch client.
 
 ## Installation
 
@@ -67,7 +69,9 @@ yarn add -D @kubb/plugin-swr
 
 ## Dependencies
 
-Add [`pluginTs`](/plugins/plugin-ts/) and an [Axios](/plugins/plugin-axios/) or [Fetch](/plugins/plugin-fetch/) client plugin. Generated hooks require SWR v2 or higher. Configure validation on the client plugin.
+- Add [`pluginTs`](/plugins/plugin-ts/) and an [Axios](/plugins/plugin-axios/) or [Fetch](/plugins/plugin-fetch/) client plugin.
+- Generated hooks require SWR v2 or higher.
+- Configure validation on the client plugin.
 
 ## Example
 

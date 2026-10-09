@@ -7,23 +7,28 @@ outline: deep
 
 # Options
 
-::field-group
+Configuration options for @kubb/plugin-redoc.
 
-:::field{name="output" type="{ path: string }"}
-Where the generated HTML file is written. [See details](#output).
+## Options overview
 
-Default: `{ path: 'docs.html' }`.
-:::
+Select an option to see its type, default, and examples. Nested settings link to their own section or the parent option.
 
-::
+| Option | Purpose |
+| --- | --- |
+| [`output`](#output) | Where the generated HTML file is written. |
+| ↳ [`output.path`](#output-path) | Choose the generated HTML file path. |
+
+## Option details
 
 ### output
 
 Where the generated Redoc HTML file is written.
 
-::field{type="{ path: string }"}
-Default: `{ path: 'docs.html' }`.
-::
+| | |
+| --- | --- |
+| Type | `{ path: string }` |
+| Required | `false` |
+| Default | `{ path: 'docs.html' }` |
 
 #### output.path
 
@@ -31,9 +36,11 @@ File path of the generated HTML, resolved against the global `output.path`. Unli
 
 End the path with a `.html` extension. If you leave the extension off, Kubb still writes the file and uses the path as the plugin output name.
 
-::field{type="string"}
-Default: `'docs.html'`.
-::
+| | |
+| --- | --- |
+| Type | `string` |
+| Required | `false` |
+| Default | `'docs.html'` |
 
 With `output.path` set to `'docs.html'` and the global `output.path` set to `'./src/gen'`, the plugin writes one file:
 

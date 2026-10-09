@@ -41,7 +41,10 @@ resources:
 
 # @kubb/plugin-ts
 
-`@kubb/plugin-ts` generates TypeScript types and interfaces from OpenAPI schemas. Other plugins use these types for requests, responses, hooks, and mocks.
+Generate TypeScript definitions from OpenAPI schemas.
+
+- Types and interfaces for your API models.
+- Shared types for requests, responses, hooks, and mocks.
 
 ## Installation
 

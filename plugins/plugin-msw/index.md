@@ -45,7 +45,10 @@ resources:
 
 # @kubb/plugin-msw
 
-`@kubb/plugin-msw` generates typed [MSW](https://mswjs.io/) handlers from OpenAPI operations. Supply response data in tests or generate it with Faker.
+Generate typed [MSW](https://mswjs.io/) handlers from OpenAPI.
+
+- Supply response data in tests.
+- Generate mock responses with Faker.
 
 ## Installation
 
@@ -71,7 +74,9 @@ yarn add -D @kubb/plugin-msw
 
 ## Dependencies
 
-Add [`pluginTs`](/plugins/plugin-ts/). Add [`pluginFaker`](/plugins/plugin-faker/) when `parser: 'faker'`. The default `parser: 'data'` does not need it. Generated handlers require MSW v2 or higher.
+- Add [`pluginTs`](/plugins/plugin-ts/).
+- Add [`pluginFaker`](/plugins/plugin-faker/) for `parser: 'faker'`. The default `'data'` parser does not need it.
+- Generated handlers require MSW v2 or higher.
 
 ## Example
 

@@ -37,14 +37,16 @@ resources:
 
 # @kubb/parser-ts
 
-`@kubb/parser-ts` prints Kubb's AST as TypeScript using the official [TypeScript compiler](https://www.typescriptlang.org/). It resolves imports, emits exports and JSDoc, and applies the [`extension`](/parsers/parser-ts/reference/options#extension) mapping.
+Print Kubb's AST with the official [TypeScript compiler](https://www.typescriptlang.org/).
+
+- Resolve imports and emit exports and JSDoc.
+- Rewrite import extensions with [`extension`](/parsers/parser-ts/reference/options#extension).
+- `parserTs` and `parserTsx` run by default alongside `parserMd`.
 
 | Parser | File extensions |
 | --- | --- |
 | `parserTs()` | `.ts`, `.js` |
 | `parserTsx()` | `.tsx`, `.jsx` |
-
-Both run by default alongside `parserMd`.
 
 > [!IMPORTANT]
 > A custom `parsers` array replaces the default set. Include every parser your plugins need. Unmatched files are written as source text.
@@ -73,7 +75,8 @@ yarn add -D @kubb/parser-ts
 
 ## Dependencies
 
-No plugin dependencies. The parser registers on `defineConfig.parsers`.
+- No plugin dependencies.
+- Register custom parsers on `defineConfig.parsers`.
 
 ## Example
 

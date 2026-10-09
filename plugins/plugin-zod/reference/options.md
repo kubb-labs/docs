@@ -9,130 +9,90 @@ outline: deep
 
 Options for `pluginZod`.
 
-::field-group
+## Options overview
 
-:::field{name="output" type="Output"}
-Where the generated files are written and exported. [See details](#output).
+Select an option to see its type, default, and examples. Nested settings link to their own section or the parent option.
 
-Default: `{ path: 'zod', barrel: { type: 'named' } }`.
-:::
+| Option | Purpose |
+| --- | --- |
+| [`output`](#output) | Where the generated files are written and exported. |
+| ↳ [`output.path`](#output-path) | Choose the output folder or file. |
+| ↳ [`output.mode`](#output-mode) | Write a single file or a directory of files. |
+| ↳ [`output.barrel`](#output-barrel) | Configure barrel exports. |
+| ↳ [`output.barrel.type`](#output-barrel) | Use named exports or wildcard exports. |
+| ↳ [`output.barrel.nested`](#output-barrel) | Choose whether barrels reference subdirectory barrels. |
+| ↳ [`output.banner`](#output-banner) | Add content before generated code. |
+| ↳ [`output.footer`](#output-footer) | Add content after generated code. |
+| [`group`](#group) | Split output into per-tag or per-path folders. |
+| ↳ [`group.type`](#group-type) | Group operations by tag or URL path. |
+| ↳ [`group.name`](#group-name) | Customize output group names. |
+| [`importPath`](#importpath) | Module the generated files import `z` from. |
+| [`inferred`](#inferred) | Emit a `z.infer` alias next to each schema. |
+| [`coercion`](#coercion) | Coerce input before validation. |
+| ↳ [`coercion.dates`](#coercion) | Coerce Date-typed fields before validation. |
+| ↳ [`coercion.strings`](#coercion) | Coerce strings before validation. |
+| ↳ [`coercion.numbers`](#coercion) | Coerce numbers before validation. |
+| [`guidType`](#guidtype) | Validator for `format: uuid` properties. |
+| [`regexType`](#regextype) | How an OpenAPI `pattern` is written. |
+| [`compile`](#compile) | Wrap schemas in `z.compile` for fast-path validation. |
+| ↳ [`compile.strict`](#compile) | Require schemas to compile without interpreter fallback. |
+| [`mini`](#mini) | Generate Zod Mini schemas. |
+| [`typeGuards`](#typeguards) | Generate `is*` type guards and `assert*` assertions. |
+| ↳ [`typeGuards.is`](#typeguards) | Generate type guard functions. |
+| ↳ [`typeGuards.assert`](#typeguards) | Generate assertion functions. |
+| [`include`](#include) | Keep only operations that match. |
+| [`exclude`](#exclude) | Skip operations that match. |
+| [`override`](#override) | Apply different options per pattern. |
+| [`resolver`](#resolver) | Customize generated names and file paths. |
+| [`macros`](#macros) | Rewrite AST nodes before printing. |
+| [`printer`](#printer) | Replace the handler for a schema type. |
+| ↳ [`printer.nodes`](#printer) | Customize handlers for schema node types. |
 
-:::field{name="group" type="Group"}
-Split output into per-tag or per-path folders. [See details](#group).
-
-No default.
-:::
-
-:::field{name="importPath" type="string"}
-Module the generated files import `z` from. [See details](#importpath).
-
-Default: `mini ? 'zod/mini' : 'zod'`.
-:::
-
-:::field{name="inferred" type="boolean"}
-Emit a `z.infer` alias next to each schema. [See details](#inferred).
-
-Default: `false`.
-:::
-
-:::field{name="coercion" type="boolean | { dates?: boolean, strings?: boolean, numbers?: boolean }"}
-Coerce input before validation. [See details](#coercion).
-
-Default: `false`.
-:::
-
-:::field{name="guidType" type="'uuid' | 'guid'"}
-Validator for `format: uuid` properties. [See details](#guidtype).
-
-Default: `'uuid'`.
-:::
-
-:::field{name="regexType" type="'literal' | 'constructor'"}
-How an OpenAPI `pattern` is written. [See details](#regextype).
-
-Default: `'literal'`.
-:::
-
-:::field{name="compile" type="boolean | { strict?: boolean }"}
-Wrap schemas in `z.compile` for fast-path validation. [See details](#compile).
-
-Default: `false`.
-:::
-
-:::field{name="mini" type="boolean"}
-Generate Zod Mini schemas. [See details](#mini).
-
-Default: `false`.
-:::
-
-:::field{name="typeGuards" type="boolean | { is?: boolean, assert?: boolean }"}
-Generate `is*` type guards and `assert*` assertions. [See details](#typeguards).
-
-Default: `false`.
-:::
-
-:::field{name="include" type="Array<Include>"}
-Keep only operations that match. [See details](#include).
-
-No default.
-:::
-
-:::field{name="exclude" type="Array<Exclude>"}
-Skip operations that match. [See details](#exclude).
-
-Default: `[]`.
-:::
-
-:::field{name="override" type="Array<Override>"}
-Apply different options per pattern. [See details](#override).
-
-Default: `[]`.
-:::
-
-:::field{name="resolver" type="ResolverPatch<ResolverZod>"}
-Customize generated names and file paths. [See details](#resolver).
-
-No default.
-:::
-
-:::field{name="macros" type="Array<Macro>"}
-Rewrite AST nodes before printing. [See details](#macros).
-
-No default.
-:::
-
-:::field{name="printer" type="{ nodes?: PrinterZodNodes | PrinterZodMiniNodes }"}
-Replace the handler for a schema type. [See details](#printer).
-
-No default.
-:::
-
-::
+## Option details
 
 ### output
 
 Where the generated `.ts` files are written and how they are exported.
 
+| | |
+| --- | --- |
+| Type | `Output` |
+| Required | `false` |
+| Default | `{ path: 'zod', barrel: { type: 'named' } }` |
+
 #### output.path
 
 Folder where the plugin writes its files, resolved against the global `output.path` on `defineConfig`. For a single file, set `output.mode: 'file'` and give `path` an extension, such as `'zod.ts'`.
 
-::field{type="string"}
-Default: `'zod'`.
-::
+| | |
+| --- | --- |
+| Type | `string` |
+| Required | `false` |
+| Default | `'zod'` |
 
 #### output.mode
 
 How the plugin consolidates generated code into files.
 
-- `'file'` writes everything into a single file, so `output.path` must include the file extension (for example `'zod.ts'`).
-- `'directory'` writes one file per operation or schema under `output.path`.
+::field-group
+
+:::field{name="'file'"}
+Writes everything into a single file, so `output.path` must include the file extension (for example `'zod.ts'`).
+:::
+
+:::field{name="'directory'"}
+Writes one file per operation or schema under `output.path`.
+:::
+
+::
 
 Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 
-::field{type="'directory' | 'file'"}
-Default: follows the shape of `output.path`.
-::
+| | |
+| --- | --- |
+| Type | `'directory' \| 'file'` |
+| Required | `false` |
+| Default | follows the shape of `output.path` |
 
 #### output.barrel
 
@@ -148,19 +108,34 @@ Default: follows the shape of `output.path`.
 
 ### group
 
+Split output into per-tag or per-path folders.
+
+| | |
+| --- | --- |
+| Type | `Group` |
+| Required | `false` |
+
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
 #### group.name
 
 Function that turns a group key (first tag or path segment) into a folder or identifier name, used as the subdirectory under `output.path` and a suffix for aggregate files. For `type: 'path'`, the default keeps the URL segment as-is instead of camelCasing.
 
-::field{type="(context: { group: string }) => string"}
-Default: `'tag'`: `({ group }) => camelCase(group)`; `'path'`: the raw URL segment, uncased.
-::
+| | |
+| --- | --- |
+| Type | `(context: { group: string }) => string` |
+| Required | `false` |
+| Default | `'tag'`: `({ group }) => camelCase(group)`; `'path'`: the raw URL segment, uncased |
 
 ### importPath
 
 Module specifier for the `import { z } from '...'` statement in every generated file, so you can re-export Zod from your own module. Defaults to `'zod'`, or `'zod/mini'` when `mini` is on.
+
+| | |
+| --- | --- |
+| Type | `string` |
+| Required | `false` |
+| Default | `mini ? 'zod/mini' : 'zod'` |
 
 > [!NOTE]
 > `'zod'` and `'zod/mini'` import the `z` namespace (`import * as z`), but a custom module imports the named `z` export (`import { z }`), so re-export `z` from there.
@@ -168,6 +143,12 @@ Module specifier for the `import { z } from '...'` statement in every generated 
 ### inferred
 
 Exports a `z.infer<typeof schema>` type alias next to every generated schema, so the schema is the single source of truth and you do not import types from `@kubb/plugin-ts`. The alias is the PascalCased schema name with a `SchemaType` suffix, so `petSchema` becomes `PetSchemaType`.
+
+| | |
+| --- | --- |
+| Type | `boolean` |
+| Required | `false` |
+| Default | `false` |
 
 ```typescript
 import * as z from 'zod'
@@ -185,9 +166,27 @@ It also generates a `ResponsesSchema` per operation, the per-status responses re
 
 Wraps schemas in `z.coerce` so input is coerced before validation, for form data, query params, and similar string sources.
 
-- `true` coerces strings, numbers, and dates.
-- `false` (default) coerces nothing and validates strictly.
-- An object picks which primitives to coerce.
+| | |
+| --- | --- |
+| Type | `boolean \| { dates?: boolean, strings?: boolean, numbers?: boolean }` |
+| Required | `false` |
+| Default | `false` |
+
+::field-group
+
+:::field{name="true"}
+Coerces strings, numbers, and dates.
+:::
+
+:::field{name="false"}
+Default value. Coerces nothing and validates strictly.
+:::
+
+:::field{name="Object"}
+Use `{ dates?, strings?, numbers? }` to choose which primitives to coerce.
+:::
+
+::
 
 See [Coercion for primitives](https://zod.dev/?id=coercion-for-primitives).
 
@@ -206,15 +205,45 @@ z.coerce.date()
 
 Validator used for OpenAPI properties with `format: uuid`.
 
-- `'uuid'` (default) generates `z.uuid()`, a standard RFC 4122 UUID.
-- `'guid'` generates `z.guid()`, which is looser and accepts Microsoft-style GUIDs.
+| | |
+| --- | --- |
+| Type | `'uuid' \| 'guid'` |
+| Required | `false` |
+| Default | `'uuid'` |
+
+::field-group
+
+:::field{name="'uuid'"}
+Default value. Generates `z.uuid()`, a standard RFC 4122 UUID.
+:::
+
+:::field{name="'guid'"}
+Generates `z.guid()`, which is looser and accepts Microsoft-style GUIDs.
+:::
+
+::
 
 ### regexType
 
 Controls how an OpenAPI `pattern` is written inside `.regex(...)`.
 
-- `'literal'` (default) emits a regex literal, such as `.regex(/^[a-z]+$/)`.
-- `'constructor'` emits the `RegExp` constructor, such as `.regex(new RegExp('^[a-z]+$'))`.
+| | |
+| --- | --- |
+| Type | `'literal' \| 'constructor'` |
+| Required | `false` |
+| Default | `'literal'` |
+
+::field-group
+
+:::field{name="'literal'"}
+Default value. Emits a regex literal, such as `.regex(/^[a-z]+$/)`.
+:::
+
+:::field{name="'constructor'"}
+Emits the `RegExp` constructor, such as `.regex(new RegExp('^[a-z]+$'))`.
+:::
+
+::
 
 Use `'constructor'` when a regex literal breaks your build or you need a string pattern.
 
@@ -222,9 +251,27 @@ Use `'constructor'` when a regex literal breaks your build or you need a string 
 
 Wraps schemas in `z.compile(...)` to generate validation code instead of interpreting the schema on each call.
 
-- `true` compiles schemas using `z.compile(...)`.
-- `false` (default) leaves schemas uncompiled.
-- `{ strict: true }` passes `{ strict: true }` to `z.compile(...)`, which throws an error if any part of the schema cannot be compiled into flat JavaScript, preventing silent fallback to the interpreter.
+| | |
+| --- | --- |
+| Type | `boolean \| { strict?: boolean }` |
+| Required | `false` |
+| Default | `false` |
+
+::field-group
+
+:::field{name="true"}
+Compiles schemas using `z.compile(...)`.
+:::
+
+:::field{name="false"}
+Default value. Leaves schemas uncompiled.
+:::
+
+:::field{name="{ strict: true }"}
+Passes `{ strict: true }` to `z.compile(...)`, which throws an error if any part of the schema cannot be compiled into flat JavaScript, preventing silent fallback to the interpreter.
+:::
+
+::
 
 > [!NOTE]
 > `compile` requires **Zod v4.5.0 or higher**. Schemas with circular references (`z.lazy`) and bare `$ref` response aliases are automatically kept uncompiled to prevent runtime errors.
@@ -258,6 +305,12 @@ export const petSchema = z.compile(
 
 Switches code generation to [Zod Mini](https://zod.dev/packages/mini), which uses the functional API (`z.optional(z.string())`) instead of the chainable one (`z.string().optional()`) so bundlers can tree-shake unused validators. `mini: true` also defaults `importPath` to `'zod/mini'`.
 
+| | |
+| --- | --- |
+| Type | `boolean` |
+| Required | `false` |
+| Default | `false` |
+
 ```typescript
 import * as z from 'zod/mini'
 
@@ -271,11 +324,29 @@ z.array(z.string()).check(z.minLength(1), z.maxLength(10))
 > [!IMPORTANT]
 > The generated type guards and assertions require Zod v4.6.0 or higher.
 
+| | |
+| --- | --- |
+| Type | `boolean \| { is?: boolean, assert?: boolean }` |
+| Required | `false` |
+| Default | `false` |
+
 Generates TypeScript type guards (`is*`) and assertion functions (`assert*`) for schemas using Zod v4's native `validate` API.
 
-- `true`: Generates both `is<Schema>` type guards and `assert<Schema>` assertion functions.
-- `{ is?: boolean; assert?: boolean }`: Selectively enables type guards or assertions.
-- `false` (default): Generates only the Zod schemas.
+::field-group
+
+:::field{name="true"}
+Generates both `is<Schema>` type guards and `assert<Schema>` assertion functions.
+:::
+
+:::field{name="{ is?: boolean; assert?: boolean }"}
+Selectively enables type guards or assertions.
+:::
+
+:::field{name="false"}
+Default value. Generates only the Zod schemas.
+:::
+
+::
 
 ```typescript
 pluginZod({
@@ -320,13 +391,36 @@ export function processPayload(payload: unknown) {
 
 ### include
 
+Keep only operations that match.
+
+| | |
+| --- | --- |
+| Type | `Array<Include>` |
+| Required | `false` |
+
 <!--@include: ../../../snippets/how-to/include.md-->
 
 ### exclude
 
+Skip operations that match.
+
+| | |
+| --- | --- |
+| Type | `Array<Exclude>` |
+| Required | `false` |
+| Default | `[]` |
+
 <!--@include: ../../../snippets/how-to/exclude.md-->
 
 ### override
+
+Apply different options per pattern.
+
+| | |
+| --- | --- |
+| Type | `Array<Override>` |
+| Required | `false` |
+| Default | `[]` |
 
 <!--@include: ../../../snippets/how-to/override.md-->
 
@@ -335,6 +429,11 @@ For example, `override: [{ type: 'tag', pattern: 'user', options: { coercion: tr
 ### resolver
 
 Overrides generated file and symbol names. Omitted members keep the plugin's resolver defaults. See [Override a resolver](/docs/5.x/how-to/resolvers) for the `this` context and how a patch layers over the default.
+
+| | |
+| --- | --- |
+| Type | `ResolverPatch<ResolverZod>` |
+| Required | `false` |
 
 > [!TIP]
 > Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
@@ -373,11 +472,23 @@ type ResolverZodPatch = {
 
 ### macros
 
+Rewrite AST nodes before printing.
+
+| | |
+| --- | --- |
+| Type | `Array<Macro>` |
+| Required | `false` |
+
 <!--@include: ../../../snippets/how-to/macros-option.md-->
 
 ### printer
 
 Replaces the Zod handler for a schema type such as `'integer'` or `'string'`, each returning the Zod expression as a string and targeting the Zod Mini printer when `mini: true`. Inside a handler, `this.base(node)` returns the built-in output to wrap and `this.transform(node)` recurses into nested nodes. See the [printer guide](/docs/5.x/how-to/printers).
+
+| | |
+| --- | --- |
+| Type | `{ nodes?: PrinterZodNodes \| PrinterZodMiniNodes }` |
+| Required | `false` |
 
 ```typescript twoslash
 import { pluginZod } from '@kubb/plugin-zod'

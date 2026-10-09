@@ -9,73 +9,43 @@ outline: deep
 
 Every option below is a key on `pluginMsw({ ... })`.
 
-::field-group
+## Options overview
 
-:::field{name="output" type="Output"}
-Where the generated files are written and exported. [See details](#output).
+Select an option to see its type, default, and examples. Nested settings link to their own section or the parent option.
 
-Default: `{ path: 'handlers', barrel: { type: 'named' } }`.
-:::
+| Option | Purpose |
+| --- | --- |
+| [`output`](#output) | Where the generated files are written and exported. |
+| ↳ [`output.path`](#output-path) | Choose the output folder or file. |
+| ↳ [`output.mode`](#output-mode) | Write a single file or a directory of files. |
+| ↳ [`output.barrel`](#output-barrel) | Configure barrel exports. |
+| ↳ [`output.barrel.type`](#output-barrel) | Use named exports or wildcard exports. |
+| ↳ [`output.barrel.nested`](#output-barrel) | Choose whether barrels reference subdirectory barrels. |
+| ↳ [`output.banner`](#output-banner) | Add content before generated code. |
+| ↳ [`output.footer`](#output-footer) | Add content after generated code. |
+| [`group`](#group) | Split output into per-tag or per-path folders. |
+| ↳ [`group.type`](#group-type) | Group operations by tag or URL path. |
+| ↳ [`group.name`](#group-name) | Customize output group names. |
+| [`baseURL`](#baseurl) | Base URL prepended to every handler's request. |
+| [`handlers`](#handlers) | Emit a `handlers.ts` that re-exports every handler. |
+| [`parser`](#parser) | Source of the response body each handler returns. |
+| [`include`](#include) | Keep only operations that match. |
+| [`exclude`](#exclude) | Skip operations that match. |
+| [`override`](#override) | Apply different options per pattern. |
+| [`resolver`](#resolver) | Customize generated names and file paths. |
+| [`macros`](#macros) | Rewrite AST nodes before printing. |
 
-:::field{name="group" type="Group"}
-Split output into per-tag or per-path folders. [See details](#group).
-
-No default.
-:::
-
-:::field{name="baseURL" type="string"}
-Base URL prepended to every handler's request. [See details](#baseurl).
-
-No default.
-:::
-
-:::field{name="handlers" type="boolean"}
-Emit a `handlers.ts` that re-exports every handler. [See details](#handlers).
-
-Default: `false`.
-:::
-
-:::field{name="parser" type="'data' | 'faker'"}
-Source of the response body each handler returns. [See details](#parser).
-
-Default: `'data'`.
-:::
-
-:::field{name="include" type="Array<Include>"}
-Keep only operations that match. [See details](#include).
-
-No default.
-:::
-
-:::field{name="exclude" type="Array<Exclude>"}
-Skip operations that match. [See details](#exclude).
-
-Default: `[]`.
-:::
-
-:::field{name="override" type="Array<Override>"}
-Apply different options per pattern. [See details](#override).
-
-Default: `[]`.
-:::
-
-:::field{name="resolver" type="ResolverPatch<ResolverMsw>"}
-Customize generated names and file paths. [See details](#resolver).
-
-No default.
-:::
-
-:::field{name="macros" type="Array<Macro>"}
-Rewrite AST nodes before printing. [See details](#macros).
-
-No default.
-:::
-
-::
+## Option details
 
 ### output
 
 Where the generated handler files are written and how they are exported.
+
+| | |
+| --- | --- |
+| Type | `Output` |
+| Required | `false` |
+| Default | `{ path: 'handlers', barrel: { type: 'named' } }` |
 
 #### output.path
 
@@ -83,7 +53,21 @@ Folder where the plugin writes its files, resolved against the global `output.pa
 
 #### output.mode
 
-How the plugin consolidates its generated code into files. `'file'` writes everything into a single file, so `output.path` must include the extension. `'directory'` writes one file per operation under `output.path`. Pair `'directory'` with `group` to organize output into subdirectories. Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
+How generated code is consolidated into files.
+
+::field-group
+
+:::field{name="'file'"}
+Writes everything into a single file. `output.path` must include a file extension. This mode cannot be combined with `group`.
+:::
+
+:::field{name="'directory'"}
+Writes separate files under `output.path`. Use `group` to organize them into subdirectories.
+:::
+
+::
+
+Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 
 > [!IMPORTANT]
 > `group` requires directory output. Kubb infers the mode from `output.path`. Set `mode: 'directory'` to override that inference. Combining `group` with `mode: 'file'` stops generation with `KUBB_INVALID_PLUGIN_OPTIONS`.
@@ -102,6 +86,13 @@ How the plugin consolidates its generated code into files. `'file'` writes every
 
 ### group
 
+Split output into per-tag or per-path folders.
+
+| | |
+| --- | --- |
+| Type | `Group` |
+| Required | `false` |
+
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
 #### group.name
@@ -112,9 +103,20 @@ Function that turns a group key into the subdirectory name. It defaults to `({ g
 
 Base URL prepended to every handler's request. When omitted, no host is prepended and each handler matches the operation's relative path from the spec. Set it to point at a different environment than the spec.
 
+| | |
+| --- | --- |
+| Type | `string` |
+| Required | `false` |
+
 ### handlers
 
 Emits a `handlers.ts` file that re-exports every generated handler in operation order. Spread it into your MSW `setupServer(...handlers)` or `setupWorker(...handlers)` call.
+
+| | |
+| --- | --- |
+| Type | `boolean` |
+| Required | `false` |
+| Default | `false` |
 
 ```typescript [gen/handlers.ts]
 import { getPetHandler } from './getPetHandler'
@@ -125,7 +127,25 @@ export const handlers = [getPetHandler(), addPetHandler()] as const
 
 ### parser
 
-Source of the response body each handler returns. `'data'` (the default) returns a typed payload from `@kubb/plugin-ts` that you fill in from tests, so the handler body is `new Response(JSON.stringify(data), ...)`. `'faker'` falls back to a value built by `@kubb/plugin-faker` when you pass no data. Register `pluginFaker()` in the plugins array, since the plugin depends on Faker only for this value.
+Source of the response body each handler returns.
+
+| | |
+| --- | --- |
+| Type | `'data' \| 'faker'` |
+| Required | `false` |
+| Default | `'data'` |
+
+::field-group
+
+:::field{name="'data'"}
+Default value. Returns a typed payload from `@kubb/plugin-ts` that you supply in tests. The handler uses `new Response(JSON.stringify(data), ...)`.
+:::
+
+:::field{name="'faker'"}
+Falls back to a value generated by `@kubb/plugin-faker` when no data is supplied. Register `pluginFaker()` alongside this plugin.
+:::
+
+::
 
 ```typescript ['faker']
 export function getPetHandler(data?: GetPetQueryResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Response | Promise<Response>)) {
@@ -142,19 +162,47 @@ export function getPetHandler(data?: GetPetQueryResponse | ((info: Parameters<Pa
 
 ### include
 
+Keep only operations that match.
+
+| | |
+| --- | --- |
+| Type | `Array<Include>` |
+| Required | `false` |
+
 <!--@include: ../../../snippets/how-to/include.md-->
 
 ### exclude
 
+Skip operations that match.
+
+| | |
+| --- | --- |
+| Type | `Array<Exclude>` |
+| Required | `false` |
+| Default | `[]` |
+
 <!--@include: ../../../snippets/how-to/exclude.md-->
 
 ### override
+
+Apply different options per pattern.
+
+| | |
+| --- | --- |
+| Type | `Array<Override>` |
+| Required | `false` |
+| Default | `[]` |
 
 <!--@include: ../../../snippets/how-to/override.md-->
 
 ### resolver
 
 Overrides generated file and symbol names. Omitted members keep the plugin's resolver defaults. See [Override a resolver](/docs/5.x/how-to/resolvers) for the `this` context and how a patch layers over the default.
+
+| | |
+| --- | --- |
+| Type | `ResolverPatch<ResolverMsw>` |
+| Required | `false` |
 
 > [!TIP]
 > Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
@@ -176,3 +224,8 @@ type ResolverMswPatch = {
 ### macros
 
 <!--@include: ../../../snippets/how-to/macros-option.md-->
+
+| | |
+| --- | --- |
+| Type | `Array<Macro>` |
+| Required | `false` |

@@ -45,7 +45,10 @@ resources:
 
 # @kubb/plugin-vue-query
 
-`@kubb/plugin-vue-query` generates TanStack Query option factories and cache keys from OpenAPI operations. Set `hooks: true` to also generate Vue composables with reactive parameters.
+Generate [TanStack Query](https://tanstack.com/query/latest/docs/framework/vue/overview) helpers from OpenAPI.
+
+- Option factories and cache keys by default.
+- Vue composables with reactive parameters when `hooks: true`.
 
 ## Installation
 
@@ -71,7 +74,9 @@ yarn add -D @kubb/plugin-vue-query
 
 ## Dependencies
 
-Add [`pluginTs`](/plugins/plugin-ts/) and an [Axios](/plugins/plugin-axios/) or [Fetch](/plugins/plugin-fetch/) client plugin. Generated output requires `@tanstack/vue-query` v5 or higher. Configure validation on the client plugin.
+- Add [`pluginTs`](/plugins/plugin-ts/) and an [Axios](/plugins/plugin-axios/) or [Fetch](/plugins/plugin-fetch/) client plugin.
+- Generated output requires `@tanstack/vue-query` v5 or higher.
+- Configure validation on the client plugin.
 
 ## Example
 

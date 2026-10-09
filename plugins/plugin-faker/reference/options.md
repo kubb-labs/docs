@@ -9,91 +9,47 @@ outline: deep
 
 Configure `@kubb/plugin-faker` by passing these options to `pluginFaker()`, all of them optional.
 
-::field-group
+## Options overview
 
-:::field{name="output" type="Output"}
-Where the generated files are written and exported. [See details](#output).
+Select an option to see its type, default, and examples. Nested settings link to their own section or the parent option.
 
-Default: `{ path: 'mocks', barrel: { type: 'named' } }`.
-:::
+| Option | Purpose |
+| --- | --- |
+| [`output`](#output) | Where the generated files are written and exported. |
+| ↳ [`output.path`](#output-path) | Choose the output folder or file. |
+| ↳ [`output.mode`](#output-mode) | Write a single file or a directory of files. |
+| ↳ [`output.barrel`](#output-barrel) | Configure barrel exports. |
+| ↳ [`output.barrel.type`](#output-barrel) | Use named exports or wildcard exports. |
+| ↳ [`output.barrel.nested`](#output-barrel) | Choose whether barrels reference subdirectory barrels. |
+| ↳ [`output.banner`](#output-banner) | Add content before generated code. |
+| ↳ [`output.footer`](#output-footer) | Add content after generated code. |
+| [`group`](#group) | Split output into per-tag or per-path folders. |
+| ↳ [`group.type`](#group-type) | Group operations by tag or URL path. |
+| ↳ [`group.name`](#group-name) | Customize output group names. |
+| [`typeMode`](#typemode) | Type object and intersection factories from generated values or the declared model. |
+| [`dateParser`](#dateparser) | Library that formats string date and time fields. |
+| [`regexGenerator`](#regexgenerator) | Library that turns a regex `pattern` into a string. |
+| [`locale`](#locale) | Faker locale code for the generated values. |
+| [`seed`](#seed) | Value passed to `faker.seed(...)` for deterministic output. |
+| [`include`](#include) | Keep only operations that match. |
+| [`exclude`](#exclude) | Skip operations that match. |
+| [`override`](#override) | Apply different options per pattern. |
+| [`resolver`](#resolver) | Customize generated names and file paths. |
+| [`macros`](#macros) | Rewrite AST nodes before printing. |
+| [`printer`](#printer) | Replace the handler for a schema type. |
+| ↳ [`printer.nodes`](#printer) | Customize handlers for schema node types. |
 
-:::field{name="group" type="Group"}
-Split output into per-tag or per-path folders. [See details](#group).
-
-No default.
-:::
-
-:::field{name="typeMode" type="'inferred' | 'schema'"}
-Type object and intersection factories from generated values or the declared model. [See details](#typemode).
-
-Default: `'inferred'`.
-:::
-
-:::field{name="dateParser" type="'faker' | 'dayjs' | 'moment' | string"}
-Library that formats string date and time fields. [See details](#dateparser).
-
-Default: `'faker'`.
-:::
-
-:::field{name="regexGenerator" type="'faker' | 'randexp'"}
-Library that turns a regex `pattern` into a string. [See details](#regexgenerator).
-
-Default: `'faker'`.
-:::
-
-:::field{name="locale" type="string"}
-Faker locale code for the generated values. [See details](#locale).
-
-Default: `'en'`.
-:::
-
-:::field{name="seed" type="number | number[]"}
-Value passed to `faker.seed(...)` for deterministic output. [See details](#seed).
-
-No default.
-:::
-
-:::field{name="include" type="Array<Include>"}
-Keep only operations that match. [See details](#include).
-
-No default.
-:::
-
-:::field{name="exclude" type="Array<Exclude>"}
-Skip operations that match. [See details](#exclude).
-
-Default: `[]`.
-:::
-
-:::field{name="override" type="Array<Override>"}
-Apply different options per pattern. [See details](#override).
-
-Default: `[]`.
-:::
-
-:::field{name="resolver" type="ResolverPatch<ResolverFaker>"}
-Customize generated names and file paths. [See details](#resolver).
-
-No default.
-:::
-
-:::field{name="macros" type="Array<Macro>"}
-Rewrite AST nodes before printing. [See details](#macros).
-
-No default.
-:::
-
-:::field{name="printer" type="{ nodes?: PrinterFakerNodes }"}
-Replace the handler for a schema type. [See details](#printer).
-
-No default.
-:::
-
-::
+## Option details
 
 ### output
 
 Where the generated `.ts` files are written and how they are exported.
+
+| | |
+| --- | --- |
+| Type | `Output` |
+| Required | `false` |
+| Default | `{ path: 'mocks', barrel: { type: 'named' } }` |
 
 #### output.path
 
@@ -101,7 +57,21 @@ Folder where the plugin writes its files, resolved against the global `output.pa
 
 #### output.mode
 
-How the plugin consolidates generated code. `'file'` writes everything into a single file, where `output.path` must include the extension such as `'mocks.ts'`. `'directory'` writes one file per operation or schema under `output.path`. Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
+How generated code is consolidated into files.
+
+::field-group
+
+:::field{name="'file'"}
+Writes everything into a single file. `output.path` must include a file extension. This mode cannot be combined with `group`.
+:::
+
+:::field{name="'directory'"}
+Writes separate files under `output.path`. Use `group` to organize them into subdirectories.
+:::
+
+::
+
+Leave it unset and Kubb reads `output.path`: a name with an extension means one file, anything else a directory.
 
 > [!IMPORTANT]
 > `group` requires directory output. Kubb infers the mode from `output.path`. Set `mode: 'directory'` to override that inference. Combining `group` with `mode: 'file'` stops generation with `KUBB_INVALID_PLUGIN_OPTIONS`.
@@ -120,6 +90,13 @@ How the plugin consolidates generated code. `'file'` writes everything into a si
 
 ### group
 
+Split output into per-tag or per-path folders.
+
+| | |
+| --- | --- |
+| Type | `Group` |
+| Required | `false` |
+
 <!--@include: ../../../snippets/how-to/grouping.md-->
 
 #### group.name
@@ -128,7 +105,25 @@ Function `(context: { group: string }) => string` that turns a group key into th
 
 ### typeMode
 
-Controls the input and return types of object and intersection factories. The default `'inferred'` mode derives the return type from generated values and supplied overrides. Generated optional or nullable fields keep their concrete value types, and overrides preserve literal types.
+Controls the input and return types of object and intersection factories.
+
+| | |
+| --- | --- |
+| Type | `'inferred' \| 'schema'` |
+| Required | `false` |
+| Default | `'inferred'` |
+
+::field-group
+
+:::field{name="'inferred'"}
+Default value. Derives return types from generated values and supplied overrides. Optional and nullable fields retain their concrete value types, and overrides preserve literal types.
+:::
+
+:::field{name="'schema'"}
+Accepts `Partial<Model>` and returns the declared model type, including optional and nullable fields. Use it for fixtures you modify after creation.
+:::
+
+::
 
 ```typescript [Inferred mode (default)]
 pluginFaker({ typeMode: 'inferred' })
@@ -141,8 +136,6 @@ const complete: true = order.complete
 // TypeScript error: false is not assignable to true.
 order.complete = false
 ```
-
-Use `'schema'` for object and intersection fixtures you modify after creation. Their factories accept `Partial<Model>` and return the declared model type, including its optional and nullable fields.
 
 ```typescript [Schema mode]
 pluginFaker({ typeMode: 'schema' })
@@ -177,6 +170,32 @@ pluginFaker({
 
 Library used to format `date` and `time` fields represented as strings. Pick a value other than `'faker'` when your project already uses a date library. Any library exporting a default function works, and Kubb adds the import for you.
 
+| | |
+| --- | --- |
+| Type | `'faker' \| 'dayjs' \| 'moment' \| string` |
+| Required | `false` |
+| Default | `'faker'` |
+
+::field-group
+
+:::field{name="'faker'"}
+Default value. Uses Faker to generate date and time strings.
+:::
+
+:::field{name="'dayjs'"}
+Formats generated date and time values with Day.js. Install `dayjs` in the consuming app.
+:::
+
+:::field{name="'moment'"}
+Formats generated date and time values with Moment. Install `moment` in the consuming app.
+:::
+
+:::field{name="Custom module"}
+Pass a module name exporting a default formatting function. Kubb adds the import to generated files.
+:::
+
+::
+
 A string `date` field renders differently per parser:
 
 ::code-group
@@ -205,11 +224,35 @@ Install `dayjs` in the consuming app. Generated `date` and `time` strings use `Y
 
 ### regexGenerator
 
-Library used to generate strings that satisfy a regex `pattern` keyword in the spec. The default `'faker'` emits `faker.helpers.fromRegExp(pattern)` and needs no extra dependency. `'randexp'` emits `new RandExp(pattern).gen()`, which supports a wider regex grammar but adds the `randexp` runtime dependency.
+Library used to generate strings that satisfy a regex `pattern` in the spec.
+
+| | |
+| --- | --- |
+| Type | `'faker' \| 'randexp'` |
+| Required | `false` |
+| Default | `'faker'` |
+
+::field-group
+
+:::field{name="'faker'"}
+Default value. Generates `faker.helpers.fromRegExp(pattern)` without an extra dependency.
+:::
+
+:::field{name="'randexp'"}
+Generates `new RandExp(pattern).gen()`. Supports a wider regex grammar and requires the `randexp` runtime dependency.
+:::
+
+::
 
 ### locale
 
 Faker locale code. It switches the named import to `fakerXX` from `@faker-js/faker`, so generated values reflect the target region. The default `'en'` imports `fakerEN`, `'de'` imports `fakerDE`, and `'de_AT'` imports `fakerDE_AT`. See [Faker.js localization](https://fakerjs.dev/api/localization.html) for all locale codes.
+
+| | |
+| --- | --- |
+| Type | `string` |
+| Required | `false` |
+| Default | `'en'` |
 
 ```typescript [kubb.config.ts]
 import { pluginFaker } from '@kubb/plugin-faker'
@@ -221,6 +264,11 @@ pluginFaker({ locale: 'de' })
 
 Value passed to `faker.seed(...)` and emitted at the top of each generated factory, giving deterministic output across runs for snapshot tests and reproducible local data. Pass a single number or an array of numbers.
 
+| | |
+| --- | --- |
+| Type | `number \| number[]` |
+| Required | `false` |
+
 ```typescript [kubb.config.ts]
 import { pluginFaker } from '@kubb/plugin-faker'
 
@@ -231,19 +279,47 @@ Factories still accept overrides, such as `createPet({ name: 'Rex' })`.
 
 ### include
 
+Keep only operations that match.
+
+| | |
+| --- | --- |
+| Type | `Array<Include>` |
+| Required | `false` |
+
 <!--@include: ../../../snippets/how-to/include.md-->
 
 ### exclude
 
+Skip operations that match.
+
+| | |
+| --- | --- |
+| Type | `Array<Exclude>` |
+| Required | `false` |
+| Default | `[]` |
+
 <!--@include: ../../../snippets/how-to/exclude.md-->
 
 ### override
+
+Apply different options per pattern.
+
+| | |
+| --- | --- |
+| Type | `Array<Override>` |
+| Required | `false` |
+| Default | `[]` |
 
 <!--@include: ../../../snippets/how-to/override.md-->
 
 ### resolver
 
 Overrides generated file and symbol names. Omitted members keep the plugin's resolver defaults. See [Override a resolver](/docs/5.x/how-to/resolvers) for the `this` context and how a patch layers over the default.
+
+| | |
+| --- | --- |
+| Type | `ResolverPatch<ResolverFaker>` |
+| Required | `false` |
 
 > [!TIP]
 > Inside a method `this` is the full resolver, so `this.default.name(name)` reuses the built-in casing.
@@ -272,11 +348,23 @@ type ResolverFakerPatch = {
 
 ### macros
 
+Rewrite AST nodes before printing.
+
+| | |
+| --- | --- |
+| Type | `Array<Macro>` |
+| Required | `false` |
+
 <!--@include: ../../../snippets/how-to/macros-option.md-->
 
 ### printer
 
 Replaces the Faker node handler for a specific schema type, such as `'integer'`, `'date'`, or `'string'`. Each handler returns the Faker expression as a string. Use `this.transform` to recurse into nested nodes and `this.options` to read printer options. The [printer guide](/docs/5.x/how-to/printers) covers how overrides compose with macros.
+
+| | |
+| --- | --- |
+| Type | `{ nodes?: PrinterFakerNodes }` |
+| Required | `false` |
 
 ```typescript twoslash [Map integer schemas to a float]
 import { pluginFaker } from '@kubb/plugin-faker'

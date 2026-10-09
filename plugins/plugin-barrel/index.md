@@ -34,7 +34,10 @@ resources:
 
 # @kubb/plugin-barrel
 
-`@kubb/plugin-barrel` generates `index.ts` files for plugin outputs and a root entry point. Kubb registers it by default. Configure [`output.barrel`](/plugins/plugin-barrel/reference/options#output-barrel) to control exports.
+Generate `index.ts` exports for plugin outputs and the root entry point.
+
+- Runs automatically with Kubb.
+- Configure exports through [`output.barrel`](/plugins/plugin-barrel/reference/options#output-barrel).
 
 ## Installation
 
@@ -60,7 +63,8 @@ yarn add -D @kubb/plugin-barrel
 
 ## Dependencies
 
-No plugin dependencies. The plugin ships with Kubb and runs by default. Do not add it to `plugins`.
+- No plugin dependencies.
+- Do not add it to `plugins`.
 
 ## Example
 
@@ -77,7 +81,11 @@ export default defineConfig({
 })
 ```
 
-Use `'all'` for wildcard exports. Set a plugin's `output.barrel` to `false` to exclude its files, or enable `nested` to reference subdirectory barrels. See [Options](/plugins/plugin-barrel/reference/options).
+- Use `'all'` for wildcard exports.
+- Set a plugin's `output.barrel` to `false` to exclude its files.
+- Enable `nested` to reference subdirectory barrels.
+
+See [options](/plugins/plugin-barrel/reference/options).
 
 ## Documentation
 

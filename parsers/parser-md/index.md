@@ -34,9 +34,10 @@ resources:
 
 # @kubb/parser-md
 
-`@kubb/parser-md` emits `.md` and `.markdown` files by joining source blocks with blank lines. It prepends YAML frontmatter from `file.meta.frontmatter`.
+Generate `.md` and `.markdown` files.
 
-The parser takes no options and runs by default alongside `parserTs` and `parserTsx`.
+- Join source blocks and prepend `file.meta.frontmatter` as YAML.
+- Runs by default with the TypeScript parsers. Takes no options.
 
 > [!IMPORTANT]
 > A custom `parsers` array replaces the default set. Include every parser your plugins need. Unmatched files are written as source text.
@@ -65,11 +66,12 @@ yarn add -D @kubb/parser-md
 
 ## Dependencies
 
-No plugin dependencies. The parser registers on `defineConfig.parsers`.
+- No plugin dependencies.
+- Register custom parsers on `defineConfig.parsers`.
 
 ## Frontmatter
 
-To add a YAML frontmatter block to a generated page, set `frontmatter` on a file's `meta` inside a plugin. The parser renders those keys and prepends them to the output. Any serializable object works.
+Set `file.meta.frontmatter` inside a plugin. Any serializable object becomes a YAML block at the top of the generated page.
 
 ::field-group
 
@@ -103,7 +105,8 @@ layout: doc
 
 ::
 
-You can also call `parserMd().print` directly to build a frontmatter envelope. It accepts objects and markdown strings and joins them with blank lines, so `parserMd().print({ title: 'Pets', layout: 'doc' })` returns `---\ntitle: Pets\nlayout: doc\n---`.
+- `parserMd().print` accepts objects and Markdown strings, joined with blank lines.
+- `parserMd().print({ title: 'Pets', layout: 'doc' })` returns `---\ntitle: Pets\nlayout: doc\n---`.
 
 ## Example
 

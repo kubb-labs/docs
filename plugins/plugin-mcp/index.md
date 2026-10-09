@@ -46,7 +46,10 @@ resources:
 
 # @kubb/plugin-mcp
 
-`@kubb/plugin-mcp` generates MCP tools, handlers, and a server from OpenAPI operations. Each tool calls a generated HTTP client and uses Zod schemas for validation.
+Generate an MCP server from OpenAPI.
+
+- Tools and handlers call a generated HTTP client.
+- Zod schemas validate tool input.
 
 ## Installation
 
@@ -72,7 +75,9 @@ yarn add -D @kubb/plugin-mcp
 
 ## Dependencies
 
-Add [`pluginTs`](/plugins/plugin-ts/), [`pluginZod`](/plugins/plugin-zod/), and an [Axios](/plugins/plugin-axios/) or [Fetch](/plugins/plugin-fetch/) client plugin. Select [`client`](/plugins/plugin-mcp/reference/options#client) when both clients are configured. Generated servers require `@modelcontextprotocol/sdk` v1 or higher.
+- Add [`pluginTs`](/plugins/plugin-ts/), [`pluginZod`](/plugins/plugin-zod/), and an [Axios](/plugins/plugin-axios/) or [Fetch](/plugins/plugin-fetch/) client plugin.
+- Set [`client`](/plugins/plugin-mcp/reference/options#client) when both clients are configured.
+- Generated servers require `@modelcontextprotocol/sdk` v1 or higher.
 
 ## Example
 
