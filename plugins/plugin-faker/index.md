@@ -44,7 +44,6 @@ resources:
 
 Generate typed mock-data factories from OpenAPI schemas.
 
-- Create test fixtures with Faker.
 - Override generated values with partial data.
 
 ## Installation

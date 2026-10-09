@@ -41,7 +41,7 @@ Print Kubb's AST with the official [TypeScript compiler](https://www.typescriptl
 
 - Resolve imports and emit exports and JSDoc.
 - Rewrite import extensions with [`extension`](/parsers/parser-ts/reference/options#extension).
-- Both parsers run by default alongside `parserMd`.
+- `parserTs` and `parserTsx` run by default alongside `parserMd`.
 
 | Parser | File extensions |
 | --- | --- |

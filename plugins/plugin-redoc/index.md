@@ -70,7 +70,7 @@ yarn add -D @kubb/plugin-redoc
 ## Dependencies
 
 - No plugin dependencies or Redoc runtime package.
-- Uses Kubb's default OpenAPI adapter and loads Redoc from a CDN.
+- Uses Kubb's default OpenAPI adapter.
 
 ## Example
 

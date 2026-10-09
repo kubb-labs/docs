@@ -64,7 +64,7 @@ yarn add -D @kubb/plugin-barrel
 ## Dependencies
 
 - No plugin dependencies.
-- Ships with Kubb and runs by default. Do not add it to `plugins`.
+- Do not add it to `plugins`.
 
 ## Example
 

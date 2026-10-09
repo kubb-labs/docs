@@ -66,6 +66,7 @@ This repo contains only content — no build step, no npm install, no test suite
 - Keep paragraphs short — 2-3 sentences.
 - Explain before showing code.
 - On plugin, adapter, and parser overview pages, use a short introduction and bullets for key behavior and dependencies. Keep configuration details on the options page and preserve examples and requirements.
+- Keep each extension overview within an estimated five-minute read: at most 1,000 words at 200 words per minute, counting examples and excluding frontmatter. Move longer explanations to guides or reference pages.
 
 Pages render with Nuxt Content and Nuxt UI's Markdown components. Reuse the same elements for the same purpose:
 

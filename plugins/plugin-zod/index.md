@@ -44,8 +44,7 @@ resources:
 
 Generate Zod schemas for runtime validation.
 
-- Validate API data against generated schemas.
-- Export TypeScript types with `inferred: true`.
+- Export TypeScript types with `inferred: true`, without `pluginTs`.
 
 ## Installation
 
@@ -73,7 +72,6 @@ yarn add -D @kubb/plugin-zod
 
 - No plugin dependencies.
 - Install [Zod](https://zod.dev/) v4 or higher in the consuming app.
-- Use `inferred` for schema-derived types without `pluginTs`.
 
 ## Example
 

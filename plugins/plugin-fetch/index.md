@@ -88,7 +88,6 @@ yarn add -D @kubb/plugin-fetch
 
 - Add [`pluginTs`](/plugins/plugin-ts/) or [`pluginZod`](/plugins/plugin-zod/) with `inferred: true` for operation types. `pluginTs` takes precedence.
 - Add `pluginZod` for validation.
-- Uses native `fetch`.
 
 ## Example
 
