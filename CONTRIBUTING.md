@@ -89,6 +89,7 @@ Pages render with Nuxt Content and Nuxt UI's Markdown components. Reuse the same
 | Related guides and next steps | `::card-group` and `:::card` | Set `title` and `to`. Add a short description in the body when the title alone does not say what the page covers. |
 | Alternative code examples | `::code-group` | Label every fence. Use `sync="package-manager"` for package manager alternatives. |
 | Alternative workflows | `::tabs` and `:::tabs-item` | Give each item a `label`. Keep required instructions outside the tabs. |
+| Input and output of a pipeline step | `::flow-diagram` | Set `preset` to `adapter`, `macros`, or `parsers`. The component shows the code before and after the step side by side. |
 | Generated directory structures | `::file-tree` | Supply the `tree` array as YAML component props, with `name`, `type`, and optional `children`. |
 | Examples spanning multiple files | `::code-tree` | Label code fences with their file paths. |
 | Optional long code examples | `::code-collapse` | Set a descriptive `name`. Keep setup and required examples visible. |
