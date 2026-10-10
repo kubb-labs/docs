@@ -71,6 +71,11 @@ export const pluginRename = definePlugin(() => ({
 }))
 ```
 
+Together, the two macros on this page turn a `Pet` schema node into the node on the right. Hover a line to see what changed it.
+
+::flow-diagram{preset="macros"}
+::
+
 Macros run before resolver options are computed, so a renamed `operationId` or `SchemaNode.name` flows into `resolveOptions`, `resolvePath`, and `resolveFile`.
 
 > [!TIP]
